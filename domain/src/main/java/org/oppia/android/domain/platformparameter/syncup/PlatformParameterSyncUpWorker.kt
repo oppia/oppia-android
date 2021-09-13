@@ -10,10 +10,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.threading.BackgroundDispatcher
+import retrofit2.Response
 import javax.inject.Inject
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
@@ -21,6 +24,7 @@ class PlatformParameterSyncUpWorker private constructor(
   context: Context,
   params: WorkerParameters,
   private val platformParameterController: PlatformParameterController,
+  private val platformParameterService: PlatformParameterService,
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
@@ -49,7 +53,7 @@ class PlatformParameterSyncUpWorker private constructor(
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
       when (inputData.getString(WORKER_TYPE_KEY)) {
-        PLATFORM_PARAMETER_WORKER -> Result.failure()
+        PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
         else -> Result.failure()
       }
     }
@@ -84,13 +88,13 @@ class PlatformParameterSyncUpWorker private constructor(
   }
 
   /** Synchronously executes the network request to get platform parameters from the Oppia backend */
-  /*private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>> {
+  private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>> {
     return platformParameterService.getPlatformParametersByVersion(
       applicationContext.getVersionName()
     ).execute()
-  }*/
+  }
 
-  /** Extracts platform parameters from the remote service and stores them in the cache store *//*
+  /** Extracts platform parameters from the remote service and stores them in the cache store */
   private suspend fun refreshPlatformParameters(): Result {
     return try {
       val response = makeNetworkCallForPlatformParameters()
@@ -111,11 +115,12 @@ class PlatformParameterSyncUpWorker private constructor(
       exceptionsController.logNonFatalException(e)
       Result.failure()
     }
-  }*/
+  }
 
   /** Creates an instance of [PlatformParameterSyncUpWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val platformParameterController: PlatformParameterController,
+    private val platformParameterService: PlatformParameterService,
     private val oppiaLogger: OppiaLogger,
     private val exceptionsController: ExceptionsController,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
@@ -126,6 +131,7 @@ class PlatformParameterSyncUpWorker private constructor(
         context,
         params,
         platformParameterController,
+        platformParameterService,
         oppiaLogger,
         exceptionsController,
         backgroundDispatcher
