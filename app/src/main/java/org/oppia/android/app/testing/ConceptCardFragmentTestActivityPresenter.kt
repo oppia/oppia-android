@@ -8,6 +8,7 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 /** The presenter for [ConceptCardFragmentTestActivity] */
 class ConceptCardFragmentTestActivityPresenter @Inject constructor(
@@ -16,11 +17,11 @@ class ConceptCardFragmentTestActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.setContentView(R.layout.concept_card_fragment_test_activity)
     activity.findViewById<Button>(R.id.open_dialog_0).setOnClickListener {
-      val frag = ConceptCardFragment.newInstance(TEST_SKILL_ID_0)
+      val frag = ConceptCardFragment.newInstance(TEST_SKILL_ID_0, ProfileId.getDefaultInstance())
       frag.showNow(activity.supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }
     activity.findViewById<Button>(R.id.open_dialog_1).setOnClickListener {
-      val frag = ConceptCardFragment.newInstance(TEST_SKILL_ID_1)
+      val frag = ConceptCardFragment.newInstance(TEST_SKILL_ID_1, ProfileId.getDefaultInstance())
       frag.showNow(activity.supportFragmentManager, TAG_CONCEPT_CARD_DIALOG)
     }
   }

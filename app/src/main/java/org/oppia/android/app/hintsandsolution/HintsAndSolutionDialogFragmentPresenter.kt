@@ -24,6 +24,7 @@ import org.oppia.android.util.parser.html.HtmlParser
 import java.lang.IllegalStateException
 import java.util.Locale
 import javax.inject.Inject
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
@@ -48,6 +49,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private lateinit var binding: HintsAndSolutionFragmentBinding
   private lateinit var state: State
   private lateinit var helpIndex: HelpIndex
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
   private lateinit var itemList: List<HintsAndSolutionItemViewModel>
   private lateinit var bindingAdapter: BindableAdapter<HintsAndSolutionItemViewModel>
 
@@ -64,6 +66,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     state: State,
     helpIndex: HelpIndex,
+    writtenTranslationContext: WrittenTranslationContext,
     id: String?,
     currentExpandedHintListIndex: Int?,
     expandedHintListIndexListener: ExpandedHintListIndexListener,
@@ -94,6 +97,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
     this.state = state
     this.helpIndex = helpIndex
+    this.writtenTranslationContext = writtenTranslationContext
     // The newAvailableHintIndex received here is coming from state player but in this
     // implementation hints/solutions are shown on every even index and on every odd index we show a
     // divider. The relative index therefore needs to be doubled to account for the divider.
@@ -138,7 +142,9 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private fun loadHintsAndSolution(state: State) {
     // Check if hints are available for this state.
     if (state.interaction.hintList.isNotEmpty()) {
-      viewModel.initialize(helpIndex, state.interaction.hintList, state.interaction.solution)
+      viewModel.initialize(
+        helpIndex, state.interaction.hintList, state.interaction.solution, writtenTranslationContext
+      )
 
       itemList = viewModel.processHintList()
 

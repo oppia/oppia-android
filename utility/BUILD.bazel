@@ -66,7 +66,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/threading:concurrent_collections",
         "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],
 )

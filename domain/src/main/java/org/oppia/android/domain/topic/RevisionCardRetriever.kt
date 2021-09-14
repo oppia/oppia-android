@@ -7,6 +7,11 @@ import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
+import org.json.JSONObject
+import org.oppia.android.app.model.HtmlTranslationList
+import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
+import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
@@ -52,6 +57,45 @@ class RevisionCardRetriever @Inject constructor(
           )
           .build()
       )
+      .putAllWrittenTranslation(
+        createWrittenTranslationMappingsFromJson(subtopicData.getJSONObject("written_translations"))
+      )
       .build()
   }
+
+  private fun createWrittenTranslationMappingsFromJson(
+    writtenTranslations: JSONObject
+  ): Map<String, TranslationMapping> {
+    val translationsMappingJson = writtenTranslations.getJSONObject("translations_mapping")
+    return translationsMappingJson.keys().asSequence().filter { contentId ->
+      translationsMappingJson.getJSONObject(contentId).length() != 0
+    }.associateWith { contentId ->
+      val translationJson = translationsMappingJson.getJSONObject(contentId)
+      TranslationMapping.newBuilder().apply {
+        putAllTranslationMapping(
+          translationJson.keys().asSequence().associateWith { languageCode ->
+            createTranslationFromJson(translationJson.getJSONObject(languageCode))
+          }
+        )
+      }.build()
+    }
+  }
+
+  private fun createTranslationFromJson(translatorJson: JSONObject): Translation =
+    Translation.newBuilder().apply {
+      val translationJson = translatorJson.getJSONObject("translation")
+      needsUpdate = translatorJson.getBoolean("needs_update")
+      when (val dataFormat = translatorJson.getStringFromObject("data_format")) {
+        "html", "unicode" -> html = translationJson.getStringFromObject("translation")
+        "set_of_normalized_string", "set_of_unicode_string" -> {
+          val array = translationJson.getJSONArray("translations")
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            for (i in 0 until array.length()) {
+              addHtml(array.getStringFromArray(i))
+            }
+          }.build()
+        }
+        else -> error("Unsupported data format: $dataFormat")
+      }
+    }.build()
 }

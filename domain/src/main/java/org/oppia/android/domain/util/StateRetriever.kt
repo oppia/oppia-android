@@ -33,6 +33,9 @@ import org.oppia.android.app.model.TranslatableSetOfNormalizedString
 import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
 import javax.inject.Inject
+import org.oppia.android.app.model.HtmlTranslationList
+import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
 
 /** Utility that helps create a [State] object given its JSON representation. */
 class StateRetriever @Inject constructor() {
@@ -46,6 +49,11 @@ class StateRetriever @Inject constructor() {
       if (stateJson.has("recorded_voiceovers")) {
         putAllRecordedVoiceovers(
           createVoiceoverMappingsFromJson(stateJson.getJSONObject("recorded_voiceovers"))
+        )
+      }
+      if (stateJson.has("written_translations")) {
+        putAllWrittenTranslations(
+          createWrittenTranslationMappingsFromJson(stateJson.getJSONObject("written_translations"))
         )
       }
     }.build()
@@ -213,6 +221,42 @@ class StateRetriever @Inject constructor() {
     Voiceover.newBuilder().apply {
       needsUpdate = voiceoverJson.getBoolean("needs_update")
       fileName = voiceoverJson.getStringFromObject("filename")
+    }.build()
+
+  private fun createWrittenTranslationMappingsFromJson(
+    writtenTranslations: JSONObject
+  ): Map<String, TranslationMapping> {
+    val translationsMappingJson = writtenTranslations.getJSONObject("translations_mapping")
+    return translationsMappingJson.keys().asSequence().filter { contentId ->
+      translationsMappingJson.getJSONObject(contentId).length() != 0
+    }.associateWith { contentId ->
+      val translationJson = translationsMappingJson.getJSONObject(contentId)
+      TranslationMapping.newBuilder().apply {
+        putAllTranslationMapping(
+          translationJson.keys().asSequence().associateWith { languageCode ->
+            createTranslationFromJson(translationJson.getJSONObject(languageCode))
+          }
+        )
+      }.build()
+    }
+  }
+
+  private fun createTranslationFromJson(translatorJson: JSONObject): Translation =
+    Translation.newBuilder().apply {
+      val translationJson = translatorJson.getJSONObject("translation")
+      needsUpdate = translatorJson.getBoolean("needs_update")
+      when (val dataFormat = translatorJson.getStringFromObject("data_format")) {
+        "html", "unicode" -> html = translationJson.getStringFromObject("translation")
+        "set_of_normalized_string", "set_of_unicode_string" -> {
+          val array = translationJson.getJSONArray("translations")
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            for (i in 0 until array.length()) {
+              addHtml(array.getStringFromArray(i))
+            }
+          }.build()
+        }
+        else -> error("Unsupported data format: $dataFormat")
+      }
     }.build()
 
   // Creates the list of rule spec objects from JSON

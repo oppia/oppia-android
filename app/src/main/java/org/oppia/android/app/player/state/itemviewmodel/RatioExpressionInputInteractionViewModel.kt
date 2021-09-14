@@ -8,12 +8,14 @@ import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.StringToRatioParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.toAccessibleAnswerString
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.toAnswerString
 
 /** [StateItemViewModel] for the ratio expression input interaction. */
@@ -22,7 +24,9 @@ class RatioExpressionInputInteractionViewModel(
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val writtenTranslationContext: WrittenTranslationContext,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
@@ -48,18 +52,18 @@ class RatioExpressionInputInteractionViewModel(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
       val ratioAnswer = stringToRatioParser.parseRatioOrThrow(answerText.toString())
-      userAnswerBuilder.answer = InteractionObject.newBuilder()
-        .setRatioExpression(ratioAnswer)
-        .build()
-      userAnswerBuilder.plainAnswer = ratioAnswer.toAnswerString()
-      userAnswerBuilder.contentDescription = ratioAnswer.toAccessibleAnswerString(resourceHandler)
+      answer = InteractionObject.newBuilder().apply {
+        ratioExpression = ratioAnswer
+      }.build()
+      plainAnswer = ratioAnswer.toAnswerString()
+      contentDescription = ratioAnswer.toAccessibleAnswerString(resourceHandler)
+      this.writtenTranslationContext =
+        this@RatioExpressionInputInteractionViewModel.writtenTranslationContext
     }
-    return userAnswerBuilder.build()
-  }
+  }.build()
 
   /** It checks the pending error for the current ratio input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
@@ -102,7 +106,9 @@ class RatioExpressionInputInteractionViewModel(
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     val placeholder =
-      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.unicodeStr ?: ""
+      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
     return when {
       placeholder.isNotEmpty() -> placeholder
       else -> resourceHandler.getStringInLocale(R.string.ratio_default_hint_text)

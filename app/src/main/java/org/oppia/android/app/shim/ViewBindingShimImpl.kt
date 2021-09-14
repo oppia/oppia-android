@@ -21,6 +21,8 @@ import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.translation.TranslationController
 
 /**
  * Creates bindings for Views in order to avoid View files directly depending on Binding files.
@@ -31,7 +33,9 @@ import javax.inject.Inject
  * View once Gradle has been removed.
  */
 // TODO(#1619): Remove file post-Gradle
-class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
+class ViewBindingShimImpl @Inject constructor(
+  private val translationController: TranslationController
+) : ViewBindingShim {
 
   override fun providePromotedStoryCardInflatedView(
     inflater: LayoutInflater,
@@ -89,7 +93,8 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
+    entityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   ) {
     val binding =
       DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
@@ -100,7 +105,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
         entityId,
         false
       ).parseOppiaHtml(
-        viewModel.htmlContent.html,
+        translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
         binding.itemSelectionContentsTextView
       )
     binding.viewModel = viewModel
@@ -124,7 +129,8 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
+    entityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   ) {
     val binding =
       DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
@@ -132,7 +138,8 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       htmlParserFactory.create(
         resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
       ).parseOppiaHtml(
-        viewModel.htmlContent.html, binding.multipleChoiceContentTextView
+        translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
+        binding.multipleChoiceContentTextView
       )
     binding.viewModel = viewModel
   }

@@ -2,6 +2,10 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
@@ -16,15 +20,13 @@ import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -39,7 +41,6 @@ private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_
  */
 @Singleton
 class ExplorationProgressController @Inject constructor(
-  dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
   private val answerClassificationController: AnswerClassificationController,
@@ -48,7 +49,8 @@ class ExplorationProgressController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
-  private val hintHandlerFactory: HintHandler.Factory
+  private val hintHandlerFactory: HintHandler.Factory,
+  private val translationController: TranslationController
 ) : HintHandler.HintMonitor {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
@@ -63,11 +65,6 @@ class ExplorationProgressController @Inject constructor(
   //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
   //  make decisions based on a value of the checkpointState which might not be up-to date.
 
-  private val currentStateDataProvider =
-    dataProviders.createInMemoryDataProviderAsync(
-      CURRENT_STATE_DATA_PROVIDER_ID,
-      this::retrieveCurrentStateAsync
-    )
   private val explorationProgress = ExplorationProgress()
   private val explorationProgressLock = ReentrantLock()
   private lateinit var hintHandler: HintHandler
@@ -180,14 +177,15 @@ class ExplorationProgressController @Inject constructor(
           val outcome =
             answerClassificationController.classify(
               topPendingState.interaction,
-              userAnswer.answer
+              userAnswer.answer,
+              userAnswer.writtenTranslationContext
             ).outcome
           answerOutcome =
             explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
           explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
 
           // Follow the answer's outcome to another part of the graph if it's different.
-          val ephemeralState = computeCurrentEphemeralState()
+          val ephemeralState = computeBaseCurrentEphemeralState()
           when {
             answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
               val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
@@ -433,11 +431,19 @@ class ExplorationProgressController @Inject constructor(
    * This method is safe to be called before an exploration has started. If there is no ongoing
    * exploration, it should return a pending state.
    */
-  fun getCurrentState(): DataProvider<EphemeralState> = currentStateDataProvider
+  fun getCurrentState(): DataProvider<EphemeralState> {
+    return translationController.getWrittenTranslationContentLocale(
+      explorationProgress.currentProfileId
+    ).transformAsync(CURRENT_STATE_DATA_PROVIDER_ID) { contentLocale ->
+      return@transformAsync retrieveCurrentStateAsync(contentLocale)
+    }
+  }
 
-  private suspend fun retrieveCurrentStateAsync(): AsyncResult<EphemeralState> {
+  private suspend fun retrieveCurrentStateAsync(
+    writtenTranslationContentLocale: OppiaLocale.ContentLocale
+  ): AsyncResult<EphemeralState> {
     return try {
-      retrieveCurrentStateWithinCacheAsync()
+      retrieveCurrentStateWithinCacheAsync(writtenTranslationContentLocale)
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       AsyncResult.failed(e)
@@ -445,7 +451,9 @@ class ExplorationProgressController @Inject constructor(
   }
 
   @Suppress("RedundantSuspendModifier") // Function is 'suspend' to restrict calling some methods.
-  private suspend fun retrieveCurrentStateWithinCacheAsync(): AsyncResult<EphemeralState> {
+  private suspend fun retrieveCurrentStateWithinCacheAsync(
+    writtenTranslationContentLocale: OppiaLocale.ContentLocale
+  ): AsyncResult<EphemeralState> {
     val explorationId: String? = explorationProgressLock.withLock {
       if (explorationProgress.playStage == ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
         explorationProgress.currentExplorationId
@@ -473,24 +481,14 @@ class ExplorationProgressController @Inject constructor(
           try {
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
-            AsyncResult.success(
-              computeCurrentEphemeralState()
-                .toBuilder()
-                .setCheckpointState(explorationProgress.checkpointState)
-                .build()
-            )
+            AsyncResult.success(computeCurrentEphemeralState(writtenTranslationContentLocale))
           } catch (e: Exception) {
             exceptionsController.logNonFatalException(e)
             AsyncResult.failed(e)
           }
         }
         ExplorationProgress.PlayStage.VIEWING_STATE ->
-          AsyncResult.success(
-            computeCurrentEphemeralState()
-              .toBuilder()
-              .setCheckpointState(explorationProgress.checkpointState)
-              .build()
-          )
+          AsyncResult.success(computeCurrentEphemeralState(writtenTranslationContentLocale))
         ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
     }
@@ -523,8 +521,22 @@ class ExplorationProgressController @Inject constructor(
     saveExplorationCheckpoint()
   }
 
-  private fun computeCurrentEphemeralState(): EphemeralState =
+  private fun computeBaseCurrentEphemeralState(): EphemeralState =
     explorationProgress.stateDeck.getCurrentEphemeralState(computeCurrentHelpIndex())
+
+  private fun computeCurrentEphemeralState(
+    writtenTranslationContentLocale: OppiaLocale.ContentLocale
+  ): EphemeralState {
+    return computeBaseCurrentEphemeralState().toBuilder().apply {
+      // Ensure that the state has an up-to-date checkpoint state & translation context (which may
+      // not necessarily be up-to-date in the state deck).
+      checkpointState = explorationProgress.checkpointState
+      writtenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          state.writtenTranslationsMap, writtenTranslationContentLocale
+        )
+    }.build()
+  }
 
   private fun computeCurrentHelpIndex(): HelpIndex = hintHandler.getCurrentHelpIndex()
 

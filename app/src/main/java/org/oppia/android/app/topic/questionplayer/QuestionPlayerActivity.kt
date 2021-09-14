@@ -19,7 +19,13 @@ import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 
+private const val QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
+  "QuestionPlayerActivity.profile_id"
 const val QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY =
   "QuestionPlayerActivity.skill_id_list"
 private const val TAG_STOP_TRAINING_SESSION_DIALOG = "STOP_TRAINING_SESSION_DIALOG"
@@ -39,12 +45,19 @@ class QuestionPlayerActivity :
 
   @Inject
   lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
+
   private lateinit var state: State
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    questionPlayerActivityPresenter.handleOnCreate()
+    val extras = checkNotNull(intent.extras) { "Expected extras to be defined for QuestionPlayerActivity" }
+    val profileId =
+      extras.getProto(
+        QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance()
+      )
+    questionPlayerActivityPresenter.handleOnCreate(profileId)
   }
 
   override fun onBackPressed() {
@@ -68,18 +81,19 @@ class QuestionPlayerActivity :
   }
 
   companion object {
-    /** Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list. */
+    /**
+     * Returns a new [Intent] to route to [QuestionPlayerActivity] for a specified skill ID list and
+     * profile.
+     */
     fun createQuestionPlayerActivityIntent(
       context: Context,
-      skillIdList: ArrayList<String>
+      skillIdList: ArrayList<String>,
+      profileId: ProfileId
     ): Intent {
-      val intent = Intent(context, QuestionPlayerActivity::class.java)
-      intent.putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
-      return intent
-    }
-
-    fun getIntentKey(): String {
-      return QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
+      return Intent(context, QuestionPlayerActivity::class.java).apply {
+        extras?.putProto(QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
+        putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
+      }
     }
   }
 
@@ -106,7 +120,8 @@ class QuestionPlayerActivity :
         HintsAndSolutionDialogFragment.newInstance(
           questionId,
           state,
-          helpIndex
+          helpIndex,
+          writtenTranslationContext
         )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
@@ -116,8 +131,11 @@ class QuestionPlayerActivity :
     getHintsAndSolution()?.dismiss()
   }
 
-  override fun onQuestionStateLoaded(state: State) {
+  override fun onQuestionStateLoaded(
+    state: State, writtenTranslationContext: WrittenTranslationContext
+  ) {
     this.state = state
+    this.writtenTranslationContext = writtenTranslationContext
   }
 
   override fun dismissConceptCard() {

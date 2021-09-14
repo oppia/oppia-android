@@ -16,6 +16,8 @@ import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.translation.TranslationController
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
 @FragmentScope
@@ -26,15 +28,16 @@ class ConceptCardFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @ConceptCardHtmlParserEntityType private val entityType: String,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>
+  private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
+  private val translationController: TranslationController
 ) {
-  private lateinit var skillId: String
-
   /**
    * Sets up data binding and toolbar.
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
    */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, id: String): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater, container: ViewGroup?, skillId: String, profileId: ProfileId
+  ): View? {
     val binding = ConceptCardFragmentBinding.inflate(
       inflater,
       container,
@@ -43,8 +46,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
     val view = binding.conceptCardExplanationText
     val viewModel = getConceptCardViewModel()
 
-    skillId = id
-    viewModel.setSkillId(skillId)
+    viewModel.initialize(skillId, profileId)
     logConceptCardEvent(skillId)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -62,10 +64,15 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
     viewModel.conceptCardLiveData.observe(
       fragment,
-      Observer {
+      { ephemeralConceptCard ->
+        val explanationHtml =
+          translationController.extractString(
+            ephemeralConceptCard.conceptCard.explanation,
+            ephemeralConceptCard.writtenTranslationContext
+          )
         view.text = htmlParserFactory
           .create(resourceBucketName, entityType, skillId, imageCenterAlign = true)
-          .parseOppiaHtml(it.explanation.html, view)
+          .parseOppiaHtml(explanationHtml, view)
       }
     )
 

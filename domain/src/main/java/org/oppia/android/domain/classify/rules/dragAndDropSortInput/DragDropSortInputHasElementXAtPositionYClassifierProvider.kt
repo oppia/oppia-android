@@ -5,6 +5,7 @@ import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.TRANSLATABLE_HTML_CONTENT_ID
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -41,9 +42,10 @@ class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject construc
   }
 
   override fun matches(
-    answer: ListOfSetsOfTranslatableHtmlContentIds,
-    firstInput: TranslatableHtmlContentId,
-    secondInput: Int
+          answer: ListOfContentIdSets1,
+          firstInput: ContentId1,
+          secondInput: Int,
+          writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     // Note that the '1' returned here is to have consistency with the web platform: matched indexes
     // start at 1 rather than 0 to make the indexes more human friendly.

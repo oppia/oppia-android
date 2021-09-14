@@ -2300,12 +2300,13 @@ questions {
           }
           rule_type: "Equals"
         }
+      }
+      answer_groups {
         outcome {
           feedback {
             html: "<p>Try again!</p>"
             content_id: "feedback_2"
           }
-          labelled_as_correct: false
         }
         rule_specs {
           input {
@@ -2487,6 +2488,8 @@ questions {
           html: "<p>Hint text will appear here</p>"
           content_id: "hint_1"
         }
+      }
+      hint {
         hint_content {
           html: "<p>Second hint text will appear here</p>"
           content_id: "hint_2"

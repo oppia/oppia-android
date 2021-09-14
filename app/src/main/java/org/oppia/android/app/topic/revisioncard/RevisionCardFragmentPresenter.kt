@@ -17,6 +17,8 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.translation.TranslationController
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -27,15 +29,20 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>
+  private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>,
+  private val translationController: TranslationController
 ) : HtmlParser.CustomOppiaTagActionListener {
+  private lateinit var profileId: ProfileId
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     topicId: String,
-    subtopicId: Int
+    subtopicId: Int,
+    profileId: ProfileId
   ): View? {
+    this.profileId = profileId
+
     val binding =
       RevisionCardFragmentBinding.inflate(
         inflater,
@@ -45,7 +52,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
     val view = binding.revisionCardExplanationText
     val viewModel = getReviewCardViewModel()
 
-    viewModel.setTopicAndSubtopicId(topicId, subtopicId)
+    viewModel.initialize(topicId, subtopicId, profileId)
     logRevisionCardEvent(topicId, subtopicId)
 
     binding.let {
@@ -55,12 +62,17 @@ class RevisionCardFragmentPresenter @Inject constructor(
 
     viewModel.revisionCardLiveData.observe(
       fragment,
-      Observer {
+      { ephemeralRevisionCard ->
+        val pageContentsHtml =
+          translationController.extractString(
+            ephemeralRevisionCard.revisionCard.pageContents,
+            ephemeralRevisionCard.writtenTranslationContext
+          )
         view.text = htmlParserFactory.create(
           resourceBucketName, entityType, topicId, imageCenterAlign = true,
           customOppiaTagActionListener = this
         ).parseOppiaHtml(
-          it.pageContents.html, view, supportsLinks = true, supportsConceptCards = true
+          pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true
         )
       }
     )
@@ -91,7 +103,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     ConceptCardFragment
-      .newInstance(skillId)
+      .newInstance(skillId, profileId)
       .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 }

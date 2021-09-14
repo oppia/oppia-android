@@ -230,7 +230,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.getDefaultInstance(),
+          ProfileId.newBuilder().apply {
+            internalId = internalProfileId
+          }.build(),
           explorationId
         ).toLiveData()
       explorationCheckpointLiveData.observe(
@@ -248,6 +250,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                 explorationCheckpoint = it.getOrThrow()
               )
             } else if (it.isFailure()) {
+              oppiaLogger.e(
+                "TopicLessonsFragment", "Failed to retrieve checkpoint", it.getErrorOrNull()
+              )
               explorationCheckpointLiveData.removeObserver(this)
               playExploration(
                 internalProfileId,

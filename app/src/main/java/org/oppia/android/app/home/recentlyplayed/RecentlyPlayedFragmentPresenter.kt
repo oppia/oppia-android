@@ -241,7 +241,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.getDefaultInstance(),
+          ProfileId.newBuilder().apply {
+            internalId = internalProfileId
+          }.build(),
           promotedStory.explorationId
         ).toLiveData()
 

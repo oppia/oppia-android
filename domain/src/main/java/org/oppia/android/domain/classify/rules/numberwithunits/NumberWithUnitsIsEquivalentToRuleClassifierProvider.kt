@@ -2,6 +2,7 @@ package org.oppia.android.domain.classify.rules.numberwithunits
 
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.NumberWithUnits
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -29,7 +30,10 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject constructor(
   }
 
   // TODO(#209): Determine whether additional normalization of the input is necessary here.
-  override fun matches(answer: NumberWithUnits, input: NumberWithUnits): Boolean {
+  override fun matches(
+    answer: NumberWithUnits, input: NumberWithUnits,
+    writtenTranslationContext: WrittenTranslationContext
+  ): Boolean {
     // Units must match, but in different orders is fine.
     if (answer.unitList.toSet() != input.unitList.toSet()) {
       return false

@@ -15,6 +15,7 @@ import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.model.ProfileId
 
 /** The activity for testing [TopicFragment]. */
 class TopicTestActivity :
@@ -40,7 +41,7 @@ class TopicTestActivity :
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this, skillIdList
+        this, skillIdList, ProfileId.getDefaultInstance()
       )
     )
   }

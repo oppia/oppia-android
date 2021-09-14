@@ -13,6 +13,7 @@ load("//domain:domain_test.bzl", "domain_test")
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/domain/oppialogger/**/*.kt",
     "src/main/java/org/oppia/android/domain/util/*.kt",
 ])
 
@@ -50,6 +51,7 @@ DOMAIN_ASSETS = generate_assets_list_from_text_protos(
         "GJ2rLXRKD5hw_3",
         "GJ2rLXRKD5hw_4",
         "omzF4oqgeTXd_1",
+        "test_topic_id_0_1",
     ],
     topic_file_names = [
         "test_topic_id_0",
@@ -81,6 +83,9 @@ kt_android_library(
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//domain/src/main/java/org/oppia/android/domain/util:retriever",

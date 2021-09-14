@@ -9,6 +9,7 @@ import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -24,6 +25,7 @@ class ImageRegionSelectionInteractionViewModel(
   interaction: Interaction,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   val isSplitView: Boolean,
+  private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
@@ -67,17 +69,18 @@ class ImageRegionSelectionInteractionViewModel(
     }
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     val answerTextString = answerText.toString()
-    userAnswerBuilder.answer =
-      InteractionObject.newBuilder().setClickOnImage(parseClickOnImage(answerTextString)).build()
-    userAnswerBuilder.plainAnswer = resourceHandler.getStringInLocale(
+    answer = InteractionObject.newBuilder().apply {
+      clickOnImage = parseClickOnImage(answerTextString)
+    }.build()
+    plainAnswer = resourceHandler.getStringInLocale(
       R.string.image_interaction_answer_text,
       answerTextString
     )
-    return userAnswerBuilder.build()
-  }
+    this.writtenTranslationContext =
+      this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
+  }.build()
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }

@@ -30,13 +30,12 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.system.OppiaClock
 
 // TODO: document how notifications work (everything is rooted from changing Locale).
 private const val ANDROID_SYSTEM_LOCALE_DATA_PROVIDER_ID = "android_locale"
-private const val APP_STRING_LOCALE_DATA_BASE_PROVIDER_ID = "app_string_locale."
-private const val WRITTEN_TRANSLATION_LOCALE_BASE_DATA_PROVIDER_ID = "written_translation_locale."
-private const val AUDIO_TRANSLATIONS_LOCALE_BASE_DATA_PROVIDER_ID = "audio_translations_locale."
+private const val APP_STRING_LOCALE_DATA_BASE_PROVIDER_ID = "app_string_locale"
+private const val WRITTEN_TRANSLATION_LOCALE_BASE_DATA_PROVIDER_ID = "written_translation_locale"
+private const val AUDIO_TRANSLATIONS_LOCALE_BASE_DATA_PROVIDER_ID = "audio_translations_locale"
 private const val SYSTEM_LANGUAGE_DATA_PROVIDER_ID = "system_language"
 
 @Singleton
@@ -46,7 +45,6 @@ class LocaleController @Inject constructor(
   private val languageConfigRetriever: LanguageConfigRetriever,
   private val oppiaLogger: OppiaLogger,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val oppiaClock: OppiaClock,
   private val machineLocale: MachineLocale
 ) {
   private val definitionsLock = ReentrantLock()
@@ -118,14 +116,12 @@ class LocaleController @Inject constructor(
   fun retrieveSystemLanguage(): DataProvider<OppiaLanguage> {
     val providerId = SYSTEM_LANGUAGE_DATA_PROVIDER_ID
     return getSystemLocaleProfile().transformAsync(providerId) { systemLocaleProfile ->
-      // TODO: fix failover
       AsyncResult.success(
-        retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile.languageCode)?.language
+        retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)?.language
           ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
       )
     }
   }
-
 
   // TODO: document that this can't be called due to Locale being prohibited broadly in the
   //  codebase. Might be nice to find a more private signal mechanism.
@@ -166,12 +162,14 @@ class LocaleController @Inject constructor(
     // try and pick the best matching system locale (per the user's preferences) rather than the
     // "first or nothing" currently implemented here.
     return if (!locales.isEmpty) {
+      locales[0]
+    } else {
       oppiaLogger.e(
         "LocaleController",
         "No locales defined for application context. Defaulting to default Locale."
       )
-      locales[0]
-    } else Locale.getDefault()
+      Locale.getDefault()
+    }
   }
 
   private suspend fun <T : OppiaLocale> computeLocaleResult(
@@ -237,12 +235,11 @@ class LocaleController @Inject constructor(
     // 3. If that fails, create a basic definition to represent the system language.
     // Content strings & audio translations only perform step 1 since there's no reasonable
     // fallback.
-    val currentSystemLanguageCode by lazy { systemLocaleProfile.languageCode }
     val matchedDefinition = retrieveLanguageDefinition(language)
     return if (usageMode == APP_STRINGS) {
       matchedDefinition
-        ?: retrieveLanguageDefinitionFromSystemCode(currentSystemLanguageCode)
-        ?: computeDefaultLanguageDefinitionForSystemLanguage(currentSystemLanguageCode)
+        ?: retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)
+        ?: computeDefaultLanguageDefinitionForSystemLanguage(systemLocaleProfile)
     } else matchedDefinition
   }
 
@@ -271,16 +268,20 @@ class LocaleController @Inject constructor(
    * system languages.
    */
   private suspend fun retrieveLanguageDefinitionFromSystemCode(
-    languageCode: String
+    localeProfile: AndroidLocaleProfile
   ): LanguageSupportDefinition? {
     val definitions = retrieveAllLanguageDefinitions()
     // Attempt to find a matching definition. Note that while Locale's language code is expected to
     // be an ISO 639-1/2/3 code, it not necessarily match the IETF BCP 47 tag defined for this
     // language. If a language is unknown, return a definition that attempts to be interoperable
-    // with Android.
+    // with Android. The check is done by either trying to match against the full IETF BCP 47 esque
+    // language tag or just the language code if the tag doesn't match (since BCP 47 mostly
+    // supersedes ISO 639).
+    val languageTag = localeProfile.computeIetfLanguageTag()
     return definitions.languageDefinitionsList.find {
       machineLocale.run {
-        languageCode.equalsIgnoreCase(it.retrieveAppLanguageCode())
+        languageTag.equalsIgnoreCase(it.retrieveAppLanguageCode()) ||
+          localeProfile.languageCode.equalsIgnoreCase(it.retrieveAppLanguageCode())
       }
     }
   }
@@ -330,7 +331,7 @@ class LocaleController @Inject constructor(
   }
 
   private fun computeDefaultLanguageDefinitionForSystemLanguage(
-    languageCode: String
+    systemLocaleProfile: AndroidLocaleProfile
   ) = LanguageSupportDefinition.newBuilder().apply {
     language = OppiaLanguage.LANGUAGE_UNSPECIFIED
     minAndroidSdkVersion = 1 // Assume it's supported on the current version.
@@ -339,7 +340,7 @@ class LocaleController @Inject constructor(
     // can be constructed from it.
     appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
       ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = languageCode
+        ietfLanguageTag = systemLocaleProfile.computeIetfLanguageTag()
       }.build()
     }.build()
   }.build()

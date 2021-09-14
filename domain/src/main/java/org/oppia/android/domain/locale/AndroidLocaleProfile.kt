@@ -15,6 +15,12 @@ data class AndroidLocaleProfile(val languageCode: String, val regionCode: String
     }
   }
 
+  fun computeIetfLanguageTag(): String {
+    return if (regionCode.isNotEmpty()) {
+      "$languageCode-$regionCode"
+    } else languageCode
+  }
+
   companion object {
     fun createFrom(androidLocale: Locale): AndroidLocaleProfile =
       AndroidLocaleProfile(androidLocale.language, androidLocale.country)

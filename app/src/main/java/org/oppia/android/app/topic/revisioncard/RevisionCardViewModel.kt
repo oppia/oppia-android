@@ -11,6 +11,9 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
+import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 /** [ObservableViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope
@@ -21,11 +24,12 @@ class RevisionCardViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private lateinit var topicId: String
   private var subtopicId: Int = 0
+  private lateinit var profileId: ProfileId
 
   private val returnToTopicClickListener: ReturnToTopicClickListener =
     activity as ReturnToTopicClickListener
 
-  val revisionCardLiveData: LiveData<RevisionCard> by lazy {
+  val revisionCardLiveData: LiveData<EphemeralRevisionCard> by lazy {
     processRevisionCardLiveData()
   }
 
@@ -33,26 +37,24 @@ class RevisionCardViewModel @Inject constructor(
     returnToTopicClickListener.onReturnToTopicClicked()
   }
 
-  /** Sets the value of topicId, subtopicId before anything else. */
-  fun setTopicAndSubtopicId(
-    topicId: String,
-    subtopicId: Int
-  ) {
+  /** Initializes this view model with necessary identifiers. */
+  fun initialize(topicId: String, subtopicId: Int, profileId: ProfileId) {
     this.topicId = topicId
     this.subtopicId = subtopicId
+    this.profileId = profileId
   }
 
-  private val revisionCardResultLiveData: LiveData<AsyncResult<RevisionCard>> by lazy {
-    topicController.getRevisionCard(topicId, subtopicId)
+  private val revisionCardResultLiveData: LiveData<AsyncResult<EphemeralRevisionCard>> by lazy {
+    topicController.getRevisionCard(profileId, topicId, subtopicId).toLiveData()
   }
 
-  private fun processRevisionCardLiveData(): LiveData<RevisionCard> {
+  private fun processRevisionCardLiveData(): LiveData<EphemeralRevisionCard> {
     return Transformations.map(revisionCardResultLiveData, ::processRevisionCard)
   }
 
   private fun processRevisionCard(
-    revisionCardResult: AsyncResult<RevisionCard>
-  ): RevisionCard {
+    revisionCardResult: AsyncResult<EphemeralRevisionCard>
+  ): EphemeralRevisionCard {
     if (revisionCardResult.isFailure()) {
       oppiaLogger.e(
         "RevisionCardFragment",
@@ -60,9 +62,6 @@ class RevisionCardViewModel @Inject constructor(
         revisionCardResult.getErrorOrNull()!!
       )
     }
-
-    return revisionCardResult.getOrDefault(
-      RevisionCard.getDefaultInstance()
-    )
+    return revisionCardResult.getOrDefault(EphemeralRevisionCard.getDefaultInstance())
   }
 }

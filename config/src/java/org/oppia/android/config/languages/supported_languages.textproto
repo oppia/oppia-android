@@ -28,7 +28,7 @@ language_definitions {
       ietf_language_tag: "en"
     }
     android_resources_language_id {
-      language_code: "en"
+      language_code: ""
     }
   }
   content_string_id {
@@ -82,6 +82,11 @@ language_definitions {
 language_definitions {
   language: PORTUGUESE
   min_android_sdk_version: 1
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt"
+    }
+  }
 }
 language_definitions {
   language: BRAZILIAN_PORTUGUESE

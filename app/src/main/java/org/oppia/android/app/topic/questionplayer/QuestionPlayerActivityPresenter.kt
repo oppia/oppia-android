@@ -11,6 +11,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
 private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_QUESTION_MANAGER"
@@ -22,7 +23,11 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private val questionTrainingController: QuestionTrainingController,
   private val oppiaLogger: OppiaLogger
 ) {
-  fun handleOnCreate() {
+  private lateinit var profileId: ProfileId
+
+  fun handleOnCreate(profileId: ProfileId) {
+    this.profileId = profileId
+
     val binding = DataBindingUtil.setContentView<QuestionPlayerActivityBinding>(
       activity,
       R.layout.question_player_activity
@@ -42,7 +47,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       startTrainingSessionWithCallback {
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment(),
+          QuestionPlayerFragment.newInstance(profileId),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
@@ -77,7 +82,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         // Re-add the player fragment when the new session is ready.
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment(),
+          QuestionPlayerFragment.newInstance(profileId),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
@@ -87,7 +92,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
     val skillIds =
       activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
-    questionTrainingController.startQuestionTrainingSession(skillIds).observe(
+    questionTrainingController.startQuestionTrainingSession(profileId, skillIds).observe(
       activity,
       Observer {
         when {

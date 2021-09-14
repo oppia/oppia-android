@@ -21,6 +21,7 @@ import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSaved
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.model.WrittenTranslationContext
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -45,6 +46,7 @@ class ExplorationActivity :
   private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var state: State
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
   private var backflowScreen: Int? = null
   private var isCheckpointingEnabled: Boolean = false
 
@@ -165,7 +167,8 @@ class ExplorationActivity :
       val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
         explorationId,
         state,
-        helpIndex
+        helpIndex,
+        writtenTranslationContext
       )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
@@ -179,8 +182,11 @@ class ExplorationActivity :
     explorationActivityPresenter.loadExplorationFragment(readingTextSize)
   }
 
-  override fun onExplorationStateLoaded(state: State) {
+  override fun onExplorationStateLoaded(
+    state: State, writtenTranslationContext: WrittenTranslationContext
+  ) {
     this.state = state
+    this.writtenTranslationContext = writtenTranslationContext
   }
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()

@@ -19,6 +19,9 @@ import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -46,7 +49,11 @@ class QuestionPlayerFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return questionPlayerFragmentPresenter.handleCreateView(inflater, container)
+    val args = checkNotNull(arguments) {
+      "Expected arguments to be passed to QuestionPlayerFragment"
+    }
+    val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId)
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
@@ -87,4 +94,22 @@ class QuestionPlayerFragment :
   }
 
   fun dismissConceptCard() = questionPlayerFragmentPresenter.dismissConceptCard()
+
+  companion object {
+    private const val PROFILE_ID_ARGUMENT_KEY = "QuestionPlayerFragment.profile_id"
+
+    /**
+     * Creates a new fragment to play a question session.
+     *
+     * @param profileId the profile in which the question play session will be played
+     * @return a new [QuestionPlayerFragment] to start a question play session
+     */
+    fun newInstance(profileId: ProfileId): QuestionPlayerFragment {
+      return QuestionPlayerFragment().apply {
+        arguments = Bundle().apply {
+          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+        }
+      }
+    }
+  }
 }

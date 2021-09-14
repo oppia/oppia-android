@@ -2,6 +2,7 @@ package org.oppia.android.domain.classify.rules.ratioinput
 
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.RatioExpression
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -25,7 +26,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProvider @Inject constructor(
     )
   }
 
-  override fun matches(answer: RatioExpression, input: Int): Boolean {
-    return answer.ratioComponentCount == input
-  }
+  override fun matches(
+    answer: RatioExpression, input: Int, writtenTranslationContext: WrittenTranslationContext
+  ): Boolean = answer.ratioComponentCount == input
 }

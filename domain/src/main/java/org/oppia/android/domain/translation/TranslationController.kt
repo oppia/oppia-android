@@ -5,13 +5,19 @@ import javax.inject.Inject
 import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.MACARONIC_ID
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
+import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
@@ -19,6 +25,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.locale.OppiaLocale
 
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
 private const val APP_LANGUAGE_DATA_PROVIDER_ID = "app_language"
@@ -35,10 +42,20 @@ private const val AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID =
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 
+/**
+ * Represents the Oppia language code corresponding to the default language to use for written
+ * translations if the user-selected language is unavailable. Note that while this is English, it's
+ * unexpected to be used since most lessons supported by the app are in English by default (which
+ * means their English translations are the default content strings). This is defined here so that
+ * future non-English based lessons properly support language fail-over.
+ */
+private const val DEFAULT_WRITTEN_TRANSLATION_LANGUAGE_CODE = "en"
+
 class TranslationController @Inject constructor(
   private val dataProviders: DataProviders,
   private val localeController: LocaleController,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
   // TODO(#52): Finish this implementation. The implementation below doesn't actually save/restore
   //  settings from the local filesystem since the UI has been currently disabled as part of #20.
@@ -139,12 +156,35 @@ class TranslationController @Inject constructor(
   }
 
   fun extractString(html: SubtitledHtml, context: WrittenTranslationContext): String {
-    return context.translationsMap[html.contentId]?.html ?: html.html
+    return context.translationsMap[html.contentId]?.extractHtml() ?: html.html
   }
 
   fun extractString(unicode: SubtitledUnicode, context: WrittenTranslationContext): String {
-    return context.translationsMap[unicode.contentId]?.html ?: unicode.unicodeStr
+    return context.translationsMap[unicode.contentId]?.extractHtml() ?: unicode.unicodeStr
   }
+
+  fun extractStringList(
+    translatableSetOfNormalizedString: TranslatableSetOfNormalizedString,
+    context: WrittenTranslationContext
+  ): List<String> {
+    return context.translationsMap[translatableSetOfNormalizedString.contentId]?.extractHtmlList()
+      ?: translatableSetOfNormalizedString.normalizedStringsList
+  }
+
+  fun computeWrittenTranslationContext(
+    writtenTranslationsMap: Map<String, TranslationMapping>,
+    writtenTranslationContentLocale: OppiaLocale.ContentLocale
+  ): WrittenTranslationContext = WrittenTranslationContext.newBuilder().apply {
+    val languageCode = writtenTranslationContentLocale.getLanguageId().getOppiaLanguageCode()
+    val fallbackLanguageCode =
+      writtenTranslationContentLocale.getFallbackLanguageId().getOppiaLanguageCode()
+    val contentMapping = writtenTranslationsMap.mapValuesNotNull { (_, mapping) ->
+      mapping.selectTranslation(languageCode, fallbackLanguageCode)
+    }
+    // Translations that don't match this context are excluded (so app layer code is expected to
+    // default to the base HTML translation).
+    putAllTranslations(contentMapping)
+  }.build()
 
   private fun computeAppLanguage(
     profileId: ProfileId,
@@ -239,4 +279,36 @@ class TranslationController @Inject constructor(
 
   private fun getSystemLanguage(): DataProvider<OppiaLanguage> =
     localeController.retrieveSystemLanguage()
+
+  private fun TranslationMapping.selectTranslation(
+    languageCode: String?,
+    fallbackLanguageCode: String?
+  ): Translation? {
+    return languageCode?.let { translationMappingMap[it] }
+      ?: fallbackLanguageCode?.let { translationMappingMap[it] }
+      ?: translationMappingMap[DEFAULT_WRITTEN_TRANSLATION_LANGUAGE_CODE]
+  }
+
+  private fun LanguageSupportDefinition.LanguageId.getOppiaLanguageCode(): String? {
+    return when (languageTypeCase) {
+      IETF_BCP47_ID -> machineLocale.run { ietfBcp47Id.ietfLanguageTag.toMachineLowerCase() }
+      MACARONIC_ID -> machineLocale.run { macaronicId.combinedLanguageCode.toMachineLowerCase() }
+      LANGUAGETYPE_NOT_SET, null -> null
+    }
+  }
+
+  private companion object {
+    private fun Translation.extractHtml(): String? = takeIf {
+      it.dataFormatCase == Translation.DataFormatCase.HTML
+    }?.html
+
+    private fun Translation.extractHtmlList(): List<String>? = takeIf {
+      it.dataFormatCase == Translation.DataFormatCase.HTML_LIST
+    }?.htmlList?.htmlList
+
+    private fun <K, I, O> Map<K, I>.mapValuesNotNull(map: (Map.Entry<K, I>) -> O?): Map<K, O> {
+      // The force-non-null operator is safe here since nulls are filtered out.
+      return mapValues(map).filterValues { it != null }.mapValues { (_, value) -> value!! }
+    }
+  }
 }

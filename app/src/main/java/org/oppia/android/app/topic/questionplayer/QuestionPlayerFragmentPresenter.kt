@@ -36,6 +36,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -67,7 +68,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater, container: ViewGroup?, profileId: ProfileId
+  ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
       inflater,
       container,
@@ -75,7 +78,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
 
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, "skill"),
+      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView
     )

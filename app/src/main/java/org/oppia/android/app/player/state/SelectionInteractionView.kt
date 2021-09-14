@@ -16,6 +16,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.view.ViewComponentImpl
 
 /**
@@ -45,6 +46,7 @@ class SelectionInteractionView @JvmOverloads constructor(
   lateinit var bindingInterface: ViewBindingShim
 
   private lateinit var entityId: String
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -69,6 +71,15 @@ class SelectionInteractionView @JvmOverloads constructor(
     this.entityId = entityId
   }
 
+  /**
+   * Sets the [WrittenTranslationContext] used to translate strings in this view.
+   *
+   * This must be called during view initialization.
+   */
+  fun setWrittenTranslationContext(writtenTranslationContext: WrittenTranslationContext) {
+    this.writtenTranslationContext = writtenTranslationContext
+  }
+
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
     return when (selectionItemInputType) {
       SelectionItemInputType.CHECKBOXES ->
@@ -89,7 +100,8 @@ class SelectionInteractionView @JvmOverloads constructor(
                 htmlParserFactory,
                 resourceBucketName,
                 entityType,
-                entityId
+                entityId,
+                writtenTranslationContext
               )
             }
           )
@@ -112,7 +124,8 @@ class SelectionInteractionView @JvmOverloads constructor(
                 htmlParserFactory,
                 resourceBucketName,
                 entityType,
-                entityId
+                entityId,
+                writtenTranslationContext
               )
             }
           )
@@ -127,3 +140,10 @@ fun setEntityId(
   selectionInteractionView: SelectionInteractionView,
   entityId: String
 ) = selectionInteractionView.setEntityId(entityId)
+
+/** Sets the translation context for a specific [SelectionInteractionView] via data-binding. */
+@BindingAdapter("writtenTranslationContext")
+fun setWrittenTranslationContext(
+  selectionInteractionView: SelectionInteractionView,
+  writtenTranslationContext: WrittenTranslationContext
+) = selectionInteractionView.setWrittenTranslationContext(writtenTranslationContext)
