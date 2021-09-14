@@ -14,7 +14,7 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
   OnboardingViewPagerViewModel() {
   val slideImage = ObservableField<Int>(R.drawable.ic_portrait_onboarding_0)
   val title =
-    ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_title))
+    ObservableField<String>(getOnboardingSlide0Title())
   val description =
     ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_description))
   private val orientation = Resources.getSystem().configuration.orientation
@@ -35,7 +35,7 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_0)
         }
-        title.set(context.resources.getString(R.string.onboarding_slide_0_title))
+        title.set(getOnboardingSlide0Title())
         description.set(context.resources.getString(R.string.onboarding_slide_0_description))
       }
       ViewPagerSlide.SLIDE_1 -> {
@@ -65,5 +65,10 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         description.set(context.resources.getString(R.string.onboarding_slide_2_description))
       }
     }
+  }
+
+  private fun getOnboardingSlide0Title(): String {
+    val appName = context.resources.getString(R.string.app_name)
+    return context.resources.getString(R.string.onboarding_slide_0_title, appName)
   }
 }

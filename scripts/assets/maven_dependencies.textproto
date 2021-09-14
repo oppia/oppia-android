@@ -565,8 +565,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.protobuf:protobuf-lite:3.0.0"
-  artifact_version: "3.0.0"
+  artifact_name: "com.google.protobuf:protobuf-javalite:3.17.3"
+  artifact_version: "3.17.3"
   license {
     license_name: "Simplified BSD License"
     extracted_copy_link {
