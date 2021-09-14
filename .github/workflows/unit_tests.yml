@@ -237,6 +237,7 @@ jobs:
           i=0
           while [ $i -ne 5 ]; do
             i=$(( $i+1 ))
+            echo "Build attempt $i/5"
             bazel build --keep_going --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
           done
 
@@ -250,6 +251,7 @@ jobs:
           i=0
           while [ $i -ne 5 ]; do
             i=$(( $i+1 ))
+            echo "Build attempt $i/5"
             bazel build --keep_going -- $BAZEL_TEST_TARGETS
           done
       - name: Run Oppia Tests (with caching, non-fork only)
