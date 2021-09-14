@@ -37,12 +37,12 @@
           "translations_mapping": {
             "content": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Este é o fim e nbsp; </p>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> هذه هي النهاية & nbsp؛ </p>"},
                 "needs_update": false
               }
@@ -331,132 +331,132 @@
           "translations_mapping": {
             "content": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Nosso sistema solar consiste em nove planetas orbitando em torno de nosso sol: Mercúrio, Venus, Terra, Marte, Júpiter, Saturno, Urano, Netuno e Plutão. Eles variam de gigantes de gás enormes a pequenos planetas anões gelados. </P> <p> </p> <p> Clique nos planetas abaixo para descobrir mais sobre cada um! </P>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> يتكون نظامنا الشمسي من تسعة كواكب تدور حول الشمس: الزئبق، فينوس، الأرض، المريخ، كوكب المشتري، زحل، أورانوس، نبتون، بلوتو. وهي تتراوح بين عمالقة الغاز الضخمة إلى كواكب الأقزم القزم الصغيرة. </p> <p> </p> <p> انقر على الكواكب أدناه لمعرفة المزيد عن كل واحد! </p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Este é venus, o segundo planeta do sol. É o planeta mais brilhante do sistema solar, e às vezes pode ser visto durante o dia. Embora o mercúrio esteja mais perto do sol do que Vênus, Venus é o planeta mais quente do sistema solar, porque sua atmosfera espessa de dióxido de carbono traga calor na sua superfície. </P>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> هذا هو فينوس، والكوكب الثاني من الشمس. إنه ألمع كوكب في النظام الشمسي، ويمكن أن ينظر إليه في بعض الأحيان خلال اليوم. على الرغم من أن الزئبق أقرب إلى الشمس من فينوس، فإن فينوس هو سخونة كوكب في النظام الشمسي، لأن جو سميكة ثاني أكسيد الكربون الفخاخ الحرارة على سطحه. </p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Terra! Nosso planeta de casa é o terceiro planeta do sol. Apesar da vastidão do sistema solar e do resto do espaço, é o único lugar que sabemos que a vida existe. É apenas a distância certa do sol para garantir uma temperatura confortável para que existam. </P>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> الأرض! كوكبنا الرئيسي هو الكوكب الثالث من الشمس. على الرغم من استمرار النظام الشمسي وبقية المساحة، فإن المكان الوحيد الذي نعرفه أن الحياة موجودة. في المسافة اليمنى فقط من الشمس لضمان درجة حرارة مريحة بالنسبة لنا موجودة فيها. </p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Isso é mercúrio, um pequeno planeta metálico mais próximo do sol. Como é tão perto do sol, leva apenas 88 dias para viajar uma órbita inteira, então um ano em Mercúrio só seria de 88 dias. </P>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<!DOCTYPE html>\n<html lang="},
                 "needs_update": false
               }
             },
             "feedback_6": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Saturno, o sexto planeta do sol, é mais conhecido por seus belos anéis de gelo e poeira em torno dele. Como Júpiter, é um gigante de gás, principalmente feito de camadas de hidrogênio que ficam progressivamente mais densos em relação ao seu núcleo sólido. </p>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<P> Saturn، الكوكب السادس من الشمس، هو معروف جيدا لحلقاتها الجميلة من الجليد والغبار المدار حولها. مثل كوكب المشتري، فهي عملاقة غازية، معظمها مصنوعة من طبقات الهيدروجين التي تحصل على كثافة تدريجية نحو جوهرها الصلب. </p>"},
                 "needs_update": false
               }
             },
             "feedback_7": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Urano é o sétimo planeta do sol. Foi o primeiro planeta que foi descoberto usando um telescópio, já que é normalmente muito obscuro para ser visto com os olhos nus. É o planeta mais frio, e é formado de camadas de gás de hidrogênio envolvendo um núcleo frígido de rocha e gelo. </P>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> أورانوس هو الكوكب السابع من الشمس. كان أول كوكب يتم اكتشافه باستخدام التلسكوب ، لأنه عادة ما يكون خافتًا جدًا بحيث لا يمكن رؤيته بالعين المجردة. إنه أبرد كوكب ، ويتكون من طبقات من غاز الهيدروجين تحيط بنواة متجمدة من الصخور والجليد. </p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Marte é o quarto planeta do sol. Muitas vezes é apelidado do \"Planeta Vermelho\" devido à sua cor, que é resultado de grandes quantidades de óxido de ferro em sua superfície. Tem uma atmosfera fina de dióxido de carbono e cápsulas de gelo em cada extremidade, e tem duas pequenas luas de forma irregular chamada Phobos e Deimos. </P>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> المريخ هو الكوكب الرابع من الشمس. غالبا ما يطلق عليه \"الكوكب الأحمر\" بسبب لونه، وهو نتيجة كميات كبيرة من أكسيد الحديد على سطحها. يحتوي على جو رقيق من ثاني أكسيد الكربون والقبعات الجليدية في أي من الطرفين، ولديه اثنين من أقمار صغيرة على شكل غير منتظم يسمى فوبوس وديموس. </p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Júpiter, o quinto planeta a partir do Sol, é um enorme planeta 2,5 vezes mais pesado do que todos os outros planetas do nosso Sistema Solar combinados. É principalmente formado por gases espessos em torno de um núcleo sólido. Uma característica famosa é a \"Grande Mancha Vermelha\", que é uma enorme tempestade em sua superfície que assola há pelo menos 350 anos e é grande o suficiente para engolir três Terras inteiras. </p>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<P> كوكب المشتري، الكوكب الخامس من الشمس، هو كوكب ضخم يبلغ من العمر 2.5 مرة من كل الكواكب الأخرى في نظامنا الشمسي مجتمعة. يتم تشكيلها في الغالب من الغازات السميكة حول جوهر صلب. ميزة واحدة مشهورة بها هي \"بقعة حمراء رائعة\"، وهي عاصفة كبيرة على سطحها الذي اندلعت لمدة 350 عاما على الأقل، وهو كبير بما يكفي لابتلاع ثلاثة أذرع بأكملها. </p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Isso não parece ser a escolha correta.Tente novamente </p>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> هذا لا يبدو وكأنه الاختيار الصحيح. مرة أخرى </p>"},
                 "needs_update": false
               }
             },
             "feedback_8": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> Netuno é o oitavo planeta do sol. É um \"gigante de gelo\", como Urano, com uma camada externa de hidrogênio, hélio e metano envolvendo um núcleo gelado. O metano em sua atmosfera absorve a luz vermelha, dando-lhe uma bela cor azul. Foi previsto primeiro existir de cálculos gravitacionais, e só foi descoberto pelo telescópio mais tarde. </P>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<p> نبتون هو الكوكب الثامن من الشمس. إنه \"عملاق ثلج\"، مثل أورانوس، بطبقة خارجية من الهيدروجين والهيليوم والميثان يغليف جوهر جليدي. يمتص الميثان في جوها الضوء الأحمر، مما يمنحه اللون الأزرق الجميل. تم توقع وجوده لأول مرة من حسابات الجاذبية، وتم اكتشافه فقط بواسطة التلسكوب في وقت لاحق. </p>"},
                 "needs_update": false
               }
             },
             "feedback_9": {
               "pt": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<P> Plutão já foi considerado o nono planeta do sol, mas agora foi reclassificado como um \"planeta anão\". É formado por gelo e rocha, e é ainda menor que a nossa lua. A primeira espaçonave a visitar Plutão é devido ao alcance em julho de 2015. </P>"},
                 "needs_update": false
               },
               "ar": {
-                "data_format": "TRANSLATABLE_HTML",
+                "data_format": "html",
                 "translation": {"translation" : "<P> كان بلوتو يعتبر مرة واحدة الكوكب التاسع من الشمس، لكن تم إعادة تصنيفه الآن باعتباره \"كوكب قزم\". يتم تشكيله من الجليد والصخور، وهو أصغر من قمرنا. من المقرر أن يصل المركبة الفضائية الأولى إلى زيارة بلوتو في يوليو 2015. </p>"},
                 "needs_update": false
               }

@@ -90,7 +90,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "90d3aef0-213b-45d5-b1f0-1c2655079c7e"
                 normalized_strings: "1/4"
               }
             }
@@ -102,7 +102,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "96835528-a82c-486b-83fb-26e0e527b7c5"
                 normalized_strings: "2/8"
               }
             }
@@ -123,7 +123,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "8cbef3d6-4b7c-434e-9d39-ee0534e0507b"
                 normalized_strings: "1/5"
               }
             }
@@ -143,7 +143,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "11e221ba-cc2d-4501-984c-89b13d7af5e7"
                 normalized_strings: "1/9"
               }
             }
@@ -183,8 +183,8 @@ questions {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter a fraction, e.g. 1/9."
+            subtitled_unicode {
+              unicode_str: "Enter a fraction, e.g. 1/9."
               content_id: "ca_placeholder_0"
             }
           }
@@ -288,7 +288,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "5e835fef-1f4e-4419-b17a-07a2e8ec65b5"
                 normalized_strings: "1/4"
               }
             }
@@ -308,7 +308,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "4b167750-8e57-44ac-a8b5-6c2e94746c8f"
                 normalized_strings: "1/8"
               }
             }
@@ -329,7 +329,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "fc96a01d-4537-4617-ad7c-96dfbba55930"
                 normalized_strings: "1/2"
               }
             }
@@ -369,8 +369,8 @@ questions {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter a fraction here, e.g. 1/8."
+            subtitled_unicode {
+              unicode_str: "Enter a fraction here, e.g. 1/8."
               content_id: "ca_placeholder_0"
             }
           }
@@ -474,7 +474,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "d631bcec-736b-4424-aed4-aa48d6414fc7"
                 normalized_strings: "3/4"
               }
             }
@@ -486,7 +486,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "8a591c46-ae39-4cd7-89f3-7e8027d54828"
                 normalized_strings: "6/8"
               }
             }
@@ -506,7 +506,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "3d875b53-f5bf-4cdf-9d10-dee7882b327c"
                 normalized_strings: "1/8"
               }
             }
@@ -527,7 +527,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "ad458dd1-260d-4e91-9323-3e53bb0b3500"
                 normalized_strings: "4/6"
               }
             }
@@ -539,7 +539,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "ed460737-225c-4b81-92e9-c6bc56017e7f"
                 normalized_strings: "2/3"
               }
             }
@@ -579,8 +579,8 @@ questions {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter a fraction here, e.g. 1/8."
+            subtitled_unicode {
+              unicode_str: "Enter a fraction here, e.g. 1/8."
               content_id: "ca_placeholder_0"
             }
           }
@@ -2293,7 +2293,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "51b2cc07-4214-43c8-9b1b-adcbf0ecf5e8"
                 normalized_strings: "1/4"
               }
             }
@@ -2313,7 +2313,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "68354fee-8964-4ecb-96d1-a4d985b93e65"
                 normalized_strings: "123/456"
               }
             }
@@ -2346,8 +2346,8 @@ questions {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Write your fraction as x/y"
+            subtitled_unicode {
+              unicode_str: "Write your fraction as x/y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -2717,7 +2717,7 @@ questions {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "9f7f33c3-3d76-47d2-b6b0-819be70cafa4"
                 normalized_strings: "1/2"
               }
             }
@@ -2750,8 +2750,8 @@ questions {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Write your fraction as x/y"
+            subtitled_unicode {
+              unicode_str: "Write your fraction as x/y"
               content_id: "ca_placeholder_0"
             }
           }
