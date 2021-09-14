@@ -81,7 +81,7 @@ sealed class OppiaLocale {
     abstract fun computeDateTimeString(timestampMillis: Long): String
 
     // TODO: mention bidi wrapping (only applied to strings) & machine readable args
-    // TODO: document that receiver is the format (unlike String.format()).
+    // TODO: document that receiver is the format (unlike String.format).
     abstract fun String.formatInLocale(vararg args: Any?): String
 
     abstract fun String.capitalizeForHumans(): String
