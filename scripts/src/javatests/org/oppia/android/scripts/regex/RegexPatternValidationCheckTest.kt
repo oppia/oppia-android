@@ -829,6 +829,30 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
+  fun testFileContent_translatableString_inPrimaryStringsFile_fileContentIsCorrect() {
+    val prohibitedContent = "<string name=\"test\">Translatable</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_translatableString_inTranslatedPrimaryStringsFile_fileContentIsCorrect() {
+    val prohibitedContent = "<string name=\"test\">Translatable</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values-ar")
+    val stringFilePath = "app/src/main/res/values-ar/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
   fun testFilenameAndContent_useProhibitedFileName_useProhibitedFileContent_multipleFailures() {
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val prohibitedFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
