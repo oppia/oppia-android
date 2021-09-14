@@ -243,6 +243,7 @@
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
   <string name="required_fields_content_description">Fields marked with an * are required.</string>
+  <string name="required_fields_content_description_star">Asterisk sign</string>
   <string name="current_profile_picture_content_description">Current profile picture</string>
   <string name="edit_profile_picture_content_description">Edit profile picture</string>
   <!-- OnboardingActivity -->
@@ -326,7 +327,8 @@
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
   <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
-  <string name="add_profile_required">*Required</string>
+  <string name="add_profile_required">Required</string>
+  <string name="add_profile_required_star">*</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
   <!-- AdministratorControlsFragment -->
@@ -461,30 +463,6 @@
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
   <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
-  <!-- DeveloperOptionsActivity -->
-  <string name="developer_options_activity_title">Developer Options</string>
-  <string name="mark_chapters_completed_activity_title">Mark Chapters Completed</string>
-  <string name="mark_stories_completed_activity_title">Mark Stories Completed</string>
-  <string name="mark_topics_completed_activity_title">Mark Topics Completed</string>
-  <string name="view_event_logs_activity_title">View Event Logs</string>
-  <string name="force_network_type_activity_title">Force Network Type</string>
-  <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
-  <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
-  <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>
-  <string name="developer_options_mark_topics_completed">Mark Topics Completed</string>
-  <string name="developer_options_view_logs_label">View Logs</string>
-  <string name="developer_options_event_logs">Event Logs</string>
-  <string name="developer_options_override_app_behaviors_label">Override App Behaviors</string>
-  <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
-  <string name="developer_options_force_network_type">Force network type</string>
-  <string name="developer_options_force_crash">Force crash</string>
-  <string name="modify_lesson_progress_all">All</string>
-  <string name="modify_lesson_progress_mark_completed_uppercase">MARK COMPLETED</string>
-  <string name="force_network_type_network_selected">Network is selected</string>
-  <string name="force_network_type_default_network">Default</string>
-  <string name="force_network_type_wifi_network">Wifi</string>
-  <string name="force_network_type_cellular_network">Cellular</string>
-  <string name="force_network_type_no_network">No network</string>
   <!-- ThirdPartyDependencyListActivity -->
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
   <string name="third_party_dependency_version_formatter">version %s</string>

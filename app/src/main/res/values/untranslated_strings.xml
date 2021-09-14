@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name" translatable="false">Oppia</string>
+  <!-- DeveloperOptionsActivity -->
+  <string name="developer_options_activity_title">Developer Options</string>
+  <string name="developer_options_modify_lesson_progress_label">Modify Lesson Progress</string>
+  <string name="developer_options_mark_chapters_completed">Mark Chapters Completed</string>
+  <string name="developer_options_mark_stories_completed">Mark Stories Completed</string>
+  <string name="developer_options_mark_topics_completed">Mark Topics Completed</string>
+  <string name="developer_options_view_logs_label">View Logs</string>
+  <string name="developer_options_event_logs">Event Logs</string>
+  <string name="developer_options_override_app_behaviors_label">Override App Behaviors</string>
+  <string name="developer_options_show_all_hints_solution">Show all hints/solution</string>
+  <string name="developer_options_force_network_type">Force network type</string>
+  <string name="developer_options_force_crash">Force crash</string>
+  <string name="modify_lesson_progress_all">All</string>
+  <string name="modify_lesson_progress_mark_completed_uppercase">MARK COMPLETED</string>
+  <string name="force_network_type_network_selected">Network is selected</string>
+  <string name="force_network_type_default_network">Default</string>
+  <string name="force_network_type_wifi_network">Wifi</string>
+  <string name="force_network_type_cellular_network">Cellular</string>
+  <string name="force_network_type_no_network">No network</string>
+  <string name="mark_chapters_completed_activity_title">Mark Chapters Completed</string>
+  <string name="mark_stories_completed_activity_title">Mark Stories Completed</string>
+  <string name="mark_topics_completed_activity_title">Mark Topics Completed</string>
+  <string name="force_network_type_activity_title">Force Network Type</string>
+  <string name="view_event_logs_activity_title">View Event Logs</string>
 </resources>
