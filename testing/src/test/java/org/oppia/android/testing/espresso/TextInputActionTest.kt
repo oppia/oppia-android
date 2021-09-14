@@ -20,10 +20,7 @@ class TextInputActionTest {
    */
   @Test
   fun testTextInputAction_hasErrorText_correctDescription() {
-    val matcher =
-      TextInputAction.hasErrorText(
-        "Incorrect Administrator PIN. Please try again."
-      )
+    val matcher = TextInputAction.hasErrorText("Incorrect Administrator PIN. Please try again.")
     assertThat(matcher.toString()).isEqualTo(
       "The expected error text is 'Incorrect Administrator PIN. Please try again.'"
     )
@@ -35,8 +32,7 @@ class TextInputActionTest {
    */
   @Test
   fun testTextInputAction_hasNoErrorText_correctDescription() {
-    val matcher =
-      TextInputAction.hasNoErrorText()
+    val matcher = TextInputAction.hasNoErrorText()
     assertThat(matcher.toString()).isEqualTo("There is no error text")
   }
 
@@ -45,10 +41,7 @@ class TextInputActionTest {
     val expectedErrorText = "This name is already in use by another profile."
     val boundedMatcher = ErrorTextExisted(expectedErrorText)
 
-    val matcher =
-      TextInputAction.hasErrorText(
-        "This name is already in use by another profile."
-      )
+    val matcher = TextInputAction.hasErrorText("This name is already in use by another profile.")
     assertThat(matcher.toString()).isEqualTo(boundedMatcher.toString())
   }
 
@@ -57,10 +50,7 @@ class TextInputActionTest {
     val expectedErrorText = "This name is already in use by another profile."
     val boundedMatcher = ErrorTextExisted(expectedErrorText)
 
-    val matcher =
-      TextInputAction.hasErrorText(
-        "Your PIN should be 5 digits long."
-      )
+    val matcher = TextInputAction.hasErrorText("Your PIN should be 5 digits long.")
     assertThat(matcher.toString()).isNotEqualTo(boundedMatcher.toString())
   }
 
