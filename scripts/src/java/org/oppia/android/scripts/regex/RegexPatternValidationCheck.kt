@@ -228,7 +228,7 @@ private data class MatchableFileContentCheck(
   fun computeAffectedLines(lines: Iterable<String>): List<Int> {
     return lines.withIndex().filter { (_, line) ->
       prohibitedContentRegex.containsMatchIn(line)
-    }.map { (index, ) -> index }
+    }.map { (index, _) -> index }
   }
 
   private fun isFileExempted(relativePath: String): Boolean =
