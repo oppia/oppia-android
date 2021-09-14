@@ -42,8 +42,6 @@ public final class ImageViewBindingAdapters {
       @DrawableRes int drawableResourceId
   ) {
     imageView.setImageResource(drawableResourceId);
-    // vvv
-    imageView.setTag(drawableResourceId);
   }
 
   /**
