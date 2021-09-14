@@ -260,6 +260,11 @@
   <dimen name="all_topics_text_margin_end">76dp</dimen>
   <dimen name="all_topics_text_margin_bottom">12dp</dimen>
 
+  <!-- Profile Chooser Fragment -->
+  <dimen name="profile_chooser_fragment_profile_select_text_margin_top">64dp</dimen>
+  <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">12dp</dimen>
+  <dimen name="profile_chooser_profile_view_view_margin_top">32dp</dimen>
+
   <!-- Coming Soon Topic List -->
   <dimen name="coming_soon_topic_list_constraint_layout_padding_start">72dp</dimen>
   <dimen name="coming_soon_topic_list_constraint_layout_padding_end">72dp</dimen>
@@ -297,4 +302,9 @@
 
   <dimen name="home_fragment_padding_top">40dp</dimen>
   <dimen name="home_fragment_padding_bottom">96dp</dimen>
+
+  <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
+  <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="promoted_story_card_text_size">14sp</dimen>
+  <dimen name="promoted_story_card_margin_top">8dp</dimen>
 </resources>
