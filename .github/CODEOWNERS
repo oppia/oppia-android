@@ -58,7 +58,7 @@ gradlew.bat @BenHenning
 /app/src/main/res/values*/strings.xml @BenHenning
 /app/src/main/res/values*/untranslated_strings.xml @BenHenning
 
-# Proguard configuration.
+# Proguard configurations.
 *.pro @BenHenning
 
 # Lesson assets.
@@ -85,6 +85,9 @@ buf.yaml @anandwana001
 
 # Binary files.
 *.png @BenHenning
+
+# Configurations for Bazel-built Android App Bundles.
+bundle_config.pb.json @BenHenning
 
 # Important codebase files.
 LICENSE @BenHenning
@@ -225,3 +228,9 @@ WORKSPACE @BenHenning
 
 # License texts.
 /app/src/main/res/values/third_party_dependencies.xml @BenHenning
+
+# Exemptions to resource shrinking.
+app/src/main/res/raw/shrink_exemptions.xml @BenHenning
+
+# Version tracking.
+version.bzl @BenHenning

@@ -354,7 +354,7 @@ class TestBazelWorkspaceTest {
     val buildContent = testBazelWorkspace.rootBuildFile.readAsJoinedString()
     assertThat(buildContent.countMatches("kt_jvm_test\\(")).isEqualTo(1)
     assertThat(buildContent).contains("srcs = [\"FirstTest.kt\"]")
-    assertThat(buildContent).contains("deps = [\":FirstTestDependency_lib\",]")
+    assertThat(buildContent).contains("deps = [\"//:FirstTestDependency_lib\",]")
     // And the generated library.
     assertThat(buildContent.countMatches("kt_jvm_library\\(")).isEqualTo(1)
     assertThat(buildContent).contains("srcs = [\"FirstTestDependency.kt\"]")
@@ -483,7 +483,7 @@ class TestBazelWorkspaceTest {
     // Both dependencies should be included in the test's deps.
     val buildContent = testBazelWorkspace.rootBuildFile.readAsJoinedString()
     assertThat(buildContent.countMatches("kt_jvm_test\\(")).isEqualTo(1)
-    assertThat(buildContent).contains("deps = [\":FirstTestDependency_lib\",\"//:ExtraDep\",]")
+    assertThat(buildContent).contains("deps = [\"//:FirstTestDependency_lib\",\"//:ExtraDep\",]")
   }
 
   @Test
@@ -602,7 +602,7 @@ class TestBazelWorkspaceTest {
     val buildContent = testBazelWorkspace.rootBuildFile.readAsJoinedString()
     assertThat(buildContent.countMatches("kt_jvm_test\\(")).isEqualTo(1)
     assertThat(buildContent).contains("srcs = [\"FirstTest.kt\"]")
-    assertThat(buildContent).contains("deps = [\":FirstTestDependency_lib\",]")
+    assertThat(buildContent).contains("deps = [\"//:FirstTestDependency_lib\",]")
     // And the generated library.
     assertThat(buildContent.countMatches("kt_jvm_library\\(")).isEqualTo(1)
     assertThat(buildContent).contains("srcs = [\"FirstTestDependency.kt\"]")
@@ -709,7 +709,7 @@ class TestBazelWorkspaceTest {
     // Both dependencies should be included in the test's deps.
     val buildContent = testBazelWorkspace.rootBuildFile.readAsJoinedString()
     assertThat(buildContent.countMatches("kt_jvm_test\\(")).isEqualTo(1)
-    assertThat(buildContent).contains("deps = [\":FirstTestDependency_lib\",\"//:ExtraDep\",]")
+    assertThat(buildContent).contains("deps = [\"//:FirstTestDependency_lib\",\"//:ExtraDep\",]")
   }
 
   @Test
@@ -745,7 +745,7 @@ class TestBazelWorkspaceTest {
 
     val (targetName, files) = testBazelWorkspace.createLibrary(dependencyName = "ExampleDep")
 
-    assertThat(targetName).isEqualTo("ExampleDep_lib")
+    assertThat(targetName).isEqualTo("//:ExampleDep_lib")
     assertThat(files.getFileNames()).containsExactly("WORKSPACE", "BUILD.bazel", "ExampleDep.kt")
   }
 
@@ -854,7 +854,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.createLibrary(dependencyName = "ExampleLib")
 
-    val libFile = testBazelWorkspace.retrieveLibraryFile(dependencyName = "ExampleLib")
+    val libFile = testBazelWorkspace.retrieveLibraryFile(dependencyName = "//:ExampleLib")
 
     assertThat(libFile.exists()).isTrue()
     assertThat(libFile.isRelativeTo(tempFolder.root)).isTrue()

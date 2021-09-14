@@ -48,7 +48,7 @@ def oppia_android_test(
         assets_dir = None,
         **kwargs):
     """
-    Creates a local  Oppia test target with Kotlin support.
+    Creates a local Oppia test target with Kotlin support.
 
     Note that this creates an additional, internal library.
 
