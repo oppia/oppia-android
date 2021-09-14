@@ -17,13 +17,18 @@ class RegexPatternValidationCheckTest {
   private val originalOut: PrintStream = System.out
   private val REGEX_CHECK_PASSED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS PASSED"
   private val REGEX_CHECK_FAILED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS FAILED"
+  private val activitiesPlacementErrorMessage =
+    "Activities cannot be placed outside the app or testing module."
+  private val nestedResourceSubdirectoryErrorMessage =
+    "Only one level of subdirectories under res/ should be maintained (further subdirectories " +
+      "aren't supported by the project configuration)."
   private val supportLibraryUsageErrorMessage =
     "AndroidX should be used instead of the support library"
   private val coroutineWorkerUsageErrorMessage =
     "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   private val settableFutureUsageErrorMessage =
-    "SettableFuture should only be used in pre-approved locations since it's easy to potentially" +
-      " mess up & lead to a hanging ListenableFuture."
+    "SettableFuture should only be used in pre-approved locations since it's easy to potentially " +
+      "mess up & lead to a hanging ListenableFuture."
   private val androidGravityLeftErrorMessage =
     "Use android:gravity=\"start\", instead, for proper RTL support"
   private val androidGravityRightErrorMessage =
@@ -47,8 +52,8 @@ class RegexPatternValidationCheckTest {
   private val androidTouchAnchorSideRightErrorMessage =
     "Use motion:touchAnchorSide=\"end\", instead, for proper RTL support"
   private val oppiaCantBeTranslatedErrorMessage =
-    "Oppia should never used directly in a string (since it shouldn't be translated). Instead," +
-      " use a parameter & insert the string retrieved from app_name."
+    "Oppia should never used directly in a string (since it shouldn't be translated). Instead, " +
+      "use a parameter & insert the string retrieved from app_name."
   private val untranslatableStringsGoInSpecificFileErrorMessage =
     "Untranslatable strings should go in untranslated_strings.xml, instead."
   private val translatableStringsGoInMainFileErrorMessage =
@@ -104,8 +109,58 @@ class RegexPatternValidationCheckTest {
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
       """
-      File name/path violation: Activities cannot be placed outside the app or testing module
+      File name/path violation: $activitiesPlacementErrorMessage
       - data/src/main/TestActivity.kt
+
+      $wikiReferenceNote
+      """.trimIndent()
+    )
+  }
+
+  @Test
+  fun testFileNamePattern_appResources_stringsFile_fileNamePatternIsCorrect() {
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    tempFolder.newFile("testfiles/app/src/main/res/values/strings.xml")
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileNamePattern_appResources_subValuesDir_stringsFile_fileNamePatternIsNotCorrect() {
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values", "subdir")
+    tempFolder.newFile("testfiles/app/src/main/res/values/subdir/strings.xml")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim()).isEqualTo(
+      """
+      File name/path violation: $nestedResourceSubdirectoryErrorMessage
+      - app/src/main/res/values/subdir/strings.xml
+
+      $wikiReferenceNote
+      """.trimIndent()
+    )
+  }
+
+  @Test
+  fun testFileNamePattern_domainResources_subValuesDir_stringsFile_fileNamePatternIsNotCorrect() {
+    tempFolder.newFolder("testfiles", "domain", "src", "main", "res", "drawable", "subdir")
+    tempFolder.newFile("testfiles/domain/src/main/res/drawable/subdir/example.png")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim()).isEqualTo(
+      """
+      File name/path violation: $nestedResourceSubdirectoryErrorMessage
+      - domain/src/main/res/drawable/subdir/example.png
       
       $wikiReferenceNote
       """.trimIndent()
@@ -829,6 +884,30 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
+  fun testFileContent_translatableString_inPrimaryStringsFile_fileContentIsCorrect() {
+    val prohibitedContent = "<string name=\"test\">Translatable</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_translatableString_inTranslatedPrimaryStringsFile_fileContentIsCorrect() {
+    val prohibitedContent = "<string name=\"test\">Translatable</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values-ar")
+    val stringFilePath = "app/src/main/res/values-ar/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
   fun testFilenameAndContent_useProhibitedFileName_useProhibitedFileContent_multipleFailures() {
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val prohibitedFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
@@ -842,10 +921,10 @@ class RegexPatternValidationCheckTest {
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
       """
-      File name/path violation: Activities cannot be placed outside the app or testing module
+      File name/path violation: $activitiesPlacementErrorMessage
       - data/src/main/TestActivity.kt
 
-      data/src/main/TestActivity.kt:1: AndroidX should be used instead of the support library
+      data/src/main/TestActivity.kt:1: $supportLibraryUsageErrorMessage
       $wikiReferenceNote
       """.trimIndent()
     )
