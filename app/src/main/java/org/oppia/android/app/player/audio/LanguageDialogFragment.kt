@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import java.util.Locale
 import kotlin.collections.ArrayList
@@ -59,6 +58,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       if (languageCode == "hi-en") {
         languageNameArrayList.add("Hinglish")
       } else {
+        // TODO(#3791): Remove this dependency.
         val locale = Locale(languageCode)
         val name = locale.getDisplayLanguage(locale)
         languageNameArrayList.add(name)

@@ -230,6 +230,8 @@ class AppVersionActivityTest {
     }
   }
 
+  // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
+  //  package to generate these strings).
   private fun getDateTime(dateTimeTimestamp: Long): String? {
     return oppiaDateTimeFormatter.formatDateFromDateString(
       OppiaDateTimeFormatter.DD_MMM_YYYY,

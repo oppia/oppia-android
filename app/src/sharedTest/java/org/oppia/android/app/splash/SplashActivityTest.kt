@@ -108,6 +108,8 @@ class SplashActivityTest {
   @Inject
   lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
 
+  // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
+  //  package to generate these strings).
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
   @Before

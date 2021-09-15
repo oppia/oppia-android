@@ -49,6 +49,8 @@ class AppLanguageResourceHandler @Inject constructor(
   fun computeDateTimeString(timestampMillis: Long): String =
     getDisplayLocale().computeDateTimeString(timestampMillis)
 
+  fun getLayoutDirection(): Int = getDisplayLocale().getLayoutDirection()
+
   private fun getDisplayLocale(): OppiaLocale.DisplayLocale =
     appLanguageLocaleHandler.getDisplayLocale()
 }

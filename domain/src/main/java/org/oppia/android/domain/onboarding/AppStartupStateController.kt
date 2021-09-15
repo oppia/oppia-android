@@ -1,5 +1,7 @@
 package org.oppia.android.domain.onboarding
 
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.OnboardingState
@@ -7,13 +9,8 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.locale.OppiaLocale
 
 private const val APP_STARTUP_STATE_DATA_PROVIDER_ID = "app_startup_state_data_provider_id"
 
@@ -22,10 +19,9 @@ private const val APP_STARTUP_STATE_DATA_PROVIDER_ID = "app_startup_state_data_p
 class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
-  private val expirationMetaDataRetriever: ExpirationMetaDataRetriever
+  private val expirationMetaDataRetriever: ExpirationMetaDataRetriever,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
-  private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
-
   private val onboardingFlowStore =
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
 
@@ -88,18 +84,9 @@ class AppStartupStateController @Inject constructor(
       ) ?: true
     return if (isAppExpirationEnabled) {
       val expirationDateString = applicationMetadata?.getStringFromBundle("expiration_date")
-      val expirationDate = expirationDateString?.let { parseDate(it) }
+      val expirationDate = expirationDateString?.let { machineLocale.parseOppiaDate(it) }
       // Assume the app is in an expired state if something fails when comparing the date.
-      expirationDate?.before(Date()) ?: true
+      expirationDate?.isBeforeToday() ?: true
     } else false
-  }
-
-  private fun parseDate(dateString: String): Date? {
-    return try {
-      expirationDateFormat.parse(dateString)
-    } catch (e: ParseException) {
-      oppiaLogger.e("DOMAIN", "Failed to parse date string: $dateString", e)
-      null
-    }
   }
 }

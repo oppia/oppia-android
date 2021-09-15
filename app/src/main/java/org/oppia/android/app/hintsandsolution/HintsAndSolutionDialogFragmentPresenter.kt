@@ -22,7 +22,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import java.lang.IllegalStateException
-import java.util.Locale
 import javax.inject.Inject
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.translation.AppLanguageResourceHandler

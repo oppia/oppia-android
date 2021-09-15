@@ -6,7 +6,6 @@ import org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQItemViewModel
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import java.util.Locale
 import javax.inject.Inject
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 

@@ -8,10 +8,14 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.text.TextUtilsCompat
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import javax.inject.Inject
 import org.oppia.android.R
-import java.util.Locale
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
 
 private const val STROKE_DASH_GAP_IN_DEGREE = 12
 
@@ -22,10 +26,14 @@ private const val STROKE_DASH_GAP_IN_DEGREE = 12
  * Reference: // https://stackoverflow.com/a/39210676
  */
 class SegmentedCircularProgressView : View {
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private var sweepAngle = 0f
   private var strokeWidth = 0f
-  private val isRTL = TextUtilsCompat
-    .getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
+  private val isRtl by lazy {
+    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  }
 
   private lateinit var baseRect: RectF
   private lateinit var chapterFinishedArcPaint: Paint
@@ -81,8 +89,16 @@ class SegmentedCircularProgressView : View {
     }
   }
 
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+
+    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    viewComponent.inject(this)
+  }
+
   override fun onDraw(canvas: Canvas) {
-    if (isRTL)
+    if (isRtl)
       rotationY = 180f
     super.onDraw(canvas)
     if (!this::baseRect.isInitialized) {

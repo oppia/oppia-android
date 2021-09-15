@@ -4,6 +4,7 @@ import android.view.View
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.customview.LessonThumbnailImageView
+import org.oppia.android.app.customview.SegmentedCircularProgressView
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsListView
 import org.oppia.android.app.home.promotedlist.PromotedStoryListView
 import org.oppia.android.app.player.state.DragDropSortInteractionView
@@ -30,4 +31,5 @@ interface ViewComponentImpl: ViewComponent {
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
   fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
   fun inject(promotedStoryListView: PromotedStoryListView)
+  fun inject(segmentedCircularProgressView: SegmentedCircularProgressView)
 }

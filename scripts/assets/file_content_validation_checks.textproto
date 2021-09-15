@@ -170,3 +170,47 @@ file_content_checks {
   prohibited_content_regex: "android:configChanges"
   failure_message: "Never explicitly handle configuration changes. Instead, use saved instance states for retaining state across rotations. For other types of configuration changes, follow up with the developer mailing list with how to proceed if you think this is a legitimate case."
 }
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "java\\.util\\.Calendar"
+  failure_message: "Don't use Calendar directly. Instead, use OppiaClock and/or OppiaLocale for calendar-specific operations."
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
+  exempted_file_name: "testing/src/test/java/org/oppia/android/testing/time/FakeOppiaClockTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/system/OppiaClock.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "java\\.util\\.Date"
+  failure_message: "Don't use Date directly. Instead, perform date-based operations using OppiaLocale."
+  exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/locale/DisplayLocaleImpl.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/system/OppiaClock.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "java\\.text"
+  failure_message: "Don't perform date/time formatting directly. Instead, use OppiaLocale."
+  exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/locale/DisplayLocaleImpl.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "java\\.util\\.Locale"
+  failure_message: "Don't use Locale directly. Instead, use LocaleController, or OppiaLocale & its subclasses."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/audio/LanguageDialogFragment.kt"
+  exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/administratorcontrols/AppVersionActivityTest.kt"
+  exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/player/audio/AudioFragmentTest.kt"
+  exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt"
+  exempted_file_patterns: "domain/src/main/java/org/oppia/android/domain/locale/.+?\\.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
+  exempted_file_patterns: "scripts/.+?\\.kt"
+  exempted_file_patterns: "utility/src/main/java/org/oppia/android/util/locale/.+?\\.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseEventLogger.kt"
+}

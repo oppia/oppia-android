@@ -313,6 +313,7 @@ class AudioFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_language_icon)).perform(click())
 
+      // TODO(#3791): Remove this dependency.
       val locale = Locale("es")
 
       testCoroutineDispatchers.runCurrent()
