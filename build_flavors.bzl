@@ -32,6 +32,7 @@ _FLAVOR_METADATA = {
         "target_sdk_version": 29,
         "multidex": "legacy",
         "proguard_specs": [
+            "config/proguard/android-proguard-rules.pro",
             "config/proguard/androidx-proguard-rules.pro",
             "config/proguard/firebase-components-proguard-rules.pro",
             "config/proguard/glide-proguard-rules.pro",
