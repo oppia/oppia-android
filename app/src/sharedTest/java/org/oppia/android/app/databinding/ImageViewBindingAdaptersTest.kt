@@ -4,7 +4,11 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
@@ -15,9 +19,12 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import dagger.Component
 import kotlinx.android.synthetic.main.activity_image_view_binding_adapters_test.*
 import org.hamcrest.Description
@@ -44,6 +51,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.utility.EspressoTestsMatchers
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -84,12 +92,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import android.graphics.Bitmap
-import android.graphics.Canvas
-
-import android.graphics.drawable.Drawable
-import com.google.common.truth.Truth.assertThat
-import org.oppia.android.app.utility.EspressoTestsMatchers
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -118,6 +121,7 @@ class ImageViewBindingAdaptersTest {
   fun tearDown() {
     Intents.release()
   }
+
   fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap? {
     val mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(mutableBitmap)
@@ -125,6 +129,7 @@ class ImageViewBindingAdaptersTest {
     drawable.draw(canvas)
     return mutableBitmap
   }
+
   fun drawableIsCorrect(@DrawableRes drawableResId: Int): Matcher<View> {
     return object : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description) {
@@ -142,7 +147,7 @@ class ImageViewBindingAdaptersTest {
         val expectedDrawable = ContextCompat.getDrawable(target.context, drawableResId)
           ?: return false
 
-        val bitmap = convertToBitmap(target.drawable,target.width,target.height)
+        val bitmap = convertToBitmap(target.drawable, target.width, target.height)
         val otherBitmap = (expectedDrawable as BitmapDrawable).bitmap
         if (bitmap != null) {
           return bitmap.sameAs(otherBitmap)
@@ -153,15 +158,37 @@ class ImageViewBindingAdaptersTest {
   }
 
   @Test
-  fun setImageDrawableWithGlide() {
+  fun setImageDrawableWithStaticDrawables() {
     val imageView = activityRule.scenario.runWithActivity {
       val imageView = it.findViewById<ImageView>(R.id.imageView)
-      ImageViewBindingAdapters.setImageDrawable(imageView, R.drawable.bg_blue_card)
+      ImageViewBindingAdapters.setImageDrawable(
+        imageView,
+        R.drawable.lesson_thumbnail_graphic_baker
+      )
       return@runWithActivity imageView
     }
-//    assertThat().isEqualTo(R.drawable.bg_blue_card)
     onView(withId(R.id.imageView))
-      .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.bg_blue_card)))
+      .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.lesson_thumbnail_graphic_baker)))
+    onView(isRoot()).perform(orientationLandscape())
+    ImageViewBindingAdapters.setImageDrawable(imageView, R.drawable.lesson_thumbnail_graphic_baker)
+    onView(withId(R.id.imageView))
+      .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.lesson_thumbnail_graphic_baker)))
+  }
+
+  @Test
+  fun setImageDrawableWithGlide() {
+    runOnUiThread(object: Runnable {
+      override fun run() {
+        val imageViewID = activityRule.scenario.runWithActivity{
+          var imageView = it.findViewById<ImageView>(R.id.imageView)
+          return@runWithActivity imageView;
+        }
+        ImageViewBindingAdapters.setImageDrawable(imageViewID, "https://images.unsplash.com/photo-1554080353-a576cf803bda?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGhvdG98ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80")
+        onView(withId(R.id.imageView))
+          .check(matches(isDisplayed()))
+      }
+
+    })
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
