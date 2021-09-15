@@ -19,7 +19,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "git_client",
-    testonly = True,
     srcs = [
         "GitClient.kt",
     ],
@@ -31,7 +30,6 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "command_executor",
-    testonly = True,
     srcs = [
         "CommandExecutor.kt",
         "CommandExecutorImpl.kt",

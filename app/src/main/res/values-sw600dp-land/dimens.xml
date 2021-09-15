@@ -313,6 +313,10 @@
   <dimen name="app_version_image_view_margin_start">24dp</dimen>
   <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
+  <!-- Pin Password -->
+  <dimen name="pin_password_text_input_layout_width">304dp</dimen>
+  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
+
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">360dp</dimen>
   <dimen name="add_profile_main_padding_top">52dp</dimen>
@@ -323,7 +327,8 @@
   <dimen name="home_fragment_padding_top">48dp</dimen>
   <dimen name="home_fragment_padding_bottom">100dp</dimen>
 
-  <!-- Pin Password -->
-  <dimen name="pin_password_text_input_layout_width">304dp</dimen>
-  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
+  <dimen name="promoted_story_card_layout_margin_start">0dp</dimen>
+  <dimen name="promoted_story_card_layout_margin_end">32dp</dimen>
+  <dimen name="promoted_story_card_text_size">16sp</dimen>
+  <dimen name="promoted_story_card_margin_top">4dp</dimen>
 </resources>

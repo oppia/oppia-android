@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reference: https://developer.android.com/studio/build/shrink-code#keep-resources. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+  tools:keep="@string/default_web_client_id,@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_api_key,@string/google_app_id,@string/google_crash_reporting_api_key,@string/google_storage_bucket,@string/project_id,@string/com.crashlytics.android.build_id" />

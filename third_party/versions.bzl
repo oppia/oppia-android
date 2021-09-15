@@ -107,6 +107,10 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
 HTTP_DEPENDENCY_VERSIONS = {
+    "android_bundletool": {
+        "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
+        "version": "1.8.0",
+    },
     "dagger": {
         "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
         "version": "2.28.1",
