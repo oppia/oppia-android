@@ -160,9 +160,8 @@ class ImageViewBindingAdaptersTest {
       return@runWithActivity imageView
     }
 //    assertThat().isEqualTo(R.drawable.bg_blue_card)
-//    onView(withId(R.id.imageView))
-//      .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.bg_blue_card)))
-      
+    onView(withId(R.id.imageView))
+      .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.bg_blue_card)))
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
