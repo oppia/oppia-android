@@ -1,5 +1,6 @@
 package org.oppia.android.util.locale
 
+import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -19,6 +20,9 @@ class MachineLocaleImpl @Inject constructor(
   private val oppiaClock: OppiaClock
 ): OppiaLocale.MachineLocale(machineLocaleContext) {
   private val parsableDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", machineAndroidLocale) }
+  private val timeFormat by lazy {
+    DateFormat.getTimeInstance(DateFormat.SHORT, machineAndroidLocale)
+  }
 
   override fun String.formatForMachines(vararg args: Any?): String =
     format(machineAndroidLocale, *args)
@@ -54,6 +58,8 @@ class MachineLocaleImpl @Inject constructor(
     }
     return parsedDate?.let { OppiaDateImpl(it, oppiaClock.getCurrentDate()) }
   }
+
+  override fun computeCurrentTimeString(): String = timeFormat.format(Date(oppiaClock.getCurrentTimeMs()))
 
   override fun toString(): String = "MachineLocaleImpl[context=$machineLocaleContext]"
 
