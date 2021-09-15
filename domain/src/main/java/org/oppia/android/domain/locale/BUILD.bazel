@@ -24,12 +24,34 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "display_locale_impl",
+    name = "android_locale_factory",
+    srcs = [
+        "AndroidLocaleFactory.kt",
+    ],
+    deps = [
+        ":android_locale_profile",
+        ":dagger",
+    ],
+)
+
+kt_android_library(
+    name = "android_locale_profile",
     srcs = [
         "AndroidLocaleProfile.kt",
+    ],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+    ],
+)
+
+kt_android_library(
+    name = "display_locale_impl",
+    srcs = [
         "DisplayLocaleImpl.kt",
     ],
     deps = [
+        ":android_locale_factory",
+        "//third_party:androidx_core_core",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],

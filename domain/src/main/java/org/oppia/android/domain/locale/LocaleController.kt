@@ -2,35 +2,34 @@ package org.oppia.android.domain.locale
 
 import android.content.Context
 import android.content.res.Configuration
-import org.oppia.android.app.model.LanguageSupportDefinition
-import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.OppiaLocaleContext
-import org.oppia.android.app.model.OppiaRegion
-import org.oppia.android.app.model.RegionSupportDefinition
-import org.oppia.android.app.model.SupportedLanguages
-import org.oppia.android.app.model.SupportedRegions
-import org.oppia.android.util.data.DataProvider
 import java.util.Locale
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.AUDIO_TRANSLATIONS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.UNRECOGNIZED
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.USAGE_MODE_UNSPECIFIED
-import org.oppia.android.util.locale.OppiaLocale.ContentLocale
-import org.oppia.android.util.locale.OppiaLocale.DisplayLocale
-import org.oppia.android.util.locale.OppiaLocale.MachineLocale
+import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.RegionSupportDefinition
+import org.oppia.android.app.model.SupportedLanguages
+import org.oppia.android.app.model.SupportedRegions
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.locale.OppiaLocale.ContentLocale
+import org.oppia.android.util.locale.OppiaLocale.DisplayLocale
+import org.oppia.android.util.locale.OppiaLocale.MachineLocale
 
 // TODO: document how notifications work (everything is rooted from changing Locale).
 private const val ANDROID_SYSTEM_LOCALE_DATA_PROVIDER_ID = "android_locale"
@@ -46,8 +45,8 @@ class LocaleController @Inject constructor(
   private val languageConfigRetriever: LanguageConfigRetriever,
   private val oppiaLogger: OppiaLogger,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val oppiaClock: OppiaClock,
-  private val machineLocale: MachineLocale
+  private val machineLocale: MachineLocale,
+  private val androidLocaleFactory: AndroidLocaleFactory
 ) {
   private val definitionsLock = ReentrantLock()
   private lateinit var supportedLanguages: SupportedLanguages
@@ -82,7 +81,7 @@ class LocaleController @Inject constructor(
 
   // TODO: this should also work in cases when the process dies.
   fun reconstituteDisplayLocale(oppiaLocaleContext: OppiaLocaleContext): DisplayLocale {
-    return DisplayLocaleImpl(oppiaLocaleContext, machineLocale)
+    return DisplayLocaleImpl(oppiaLocaleContext, machineLocale, androidLocaleFactory)
   }
 
   // TODO: document
@@ -141,7 +140,6 @@ class LocaleController @Inject constructor(
       // consistency by always retrieving the latest state when requested. This does mean locale
       // changes can be missed if they aren't accompanied by a configuration change or activity
       // recreation.
-      // TODO: add regex prohibiting this
       Locale.setDefault(locale.formattingLocale)
       notifyPotentialLocaleChange()
     } ?: error("Invalid display locale type passed in: $displayLocale")
@@ -220,7 +218,7 @@ class LocaleController @Inject constructor(
     }
 
     return when (usageMode) {
-      APP_STRINGS -> DisplayLocaleImpl(localeContext, machineLocale)
+      APP_STRINGS -> DisplayLocaleImpl(localeContext, machineLocale, androidLocaleFactory)
       CONTENT_STRINGS, AUDIO_TRANSLATIONS -> ContentLocale(localeContext)
       USAGE_MODE_UNSPECIFIED, UNRECOGNIZED -> null
     }

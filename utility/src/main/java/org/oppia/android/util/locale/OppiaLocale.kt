@@ -13,28 +13,20 @@ import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.CONTENT_
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.UNRECOGNIZED
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.USAGE_MODE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.domain.locale.getFallbackLanguageId
+import org.oppia.android.domain.locale.getLanguageId
 
 // TOOD: document that equals, tostring, and hashcode are all properly implemented for subclasses?
 sealed class OppiaLocale {
-  protected abstract val localeContext: OppiaLocaleContext
+  abstract val localeContext: OppiaLocaleContext
 
   // TODO: verify exclusivity of regions/languages table in tests.
 
   fun getCurrentLanguage(): OppiaLanguage = localeContext.languageDefinition.language
 
-  fun getLanguageId(): LanguageId = when (localeContext.usageMode) {
-    APP_STRINGS -> localeContext.languageDefinition.appStringId
-    CONTENT_STRINGS -> localeContext.languageDefinition.contentStringId
-    AUDIO_TRANSLATIONS -> localeContext.languageDefinition.audioTranslationId
-    USAGE_MODE_UNSPECIFIED, UNRECOGNIZED, null -> LanguageId.getDefaultInstance()
-  }
+  fun getLanguageId(): LanguageId = localeContext.getLanguageId()
 
-  fun getFallbackLanguageId(): LanguageId = when (localeContext.usageMode) {
-    APP_STRINGS -> localeContext.fallbackLanguageDefinition.appStringId
-    CONTENT_STRINGS -> localeContext.fallbackLanguageDefinition.contentStringId
-    AUDIO_TRANSLATIONS -> localeContext.fallbackLanguageDefinition.audioTranslationId
-    USAGE_MODE_UNSPECIFIED, UNRECOGNIZED, null -> LanguageId.getDefaultInstance()
-  }
+  fun getFallbackLanguageId(): LanguageId = localeContext.getFallbackLanguageId()
 
   fun getCurrentRegion(): OppiaRegion = localeContext.regionDefinition.region
 
@@ -61,6 +53,9 @@ sealed class OppiaLocale {
     //  (which isn't tied to the locale).
     abstract fun parseOppiaDate(dateString: String): OppiaDate?
 
+    // TODO: document that this computes time not considering the locale and should only be used for machine cases (like log statements).
+    abstract fun computeCurrentTimeString(): String
+
     enum class TimeOfDay {
       MORNING,
       AFTERNOON,
@@ -79,6 +74,8 @@ sealed class OppiaLocale {
     abstract fun computeTimeString(timestampMillis: Long): String
 
     abstract fun computeDateTimeString(timestampMillis: Long): String
+
+    abstract fun getLayoutDirection(): Int
 
     // TODO: mention bidi wrapping (only applied to strings) & machine readable args
     // TODO: document that receiver is the format (unlike String.format()).
