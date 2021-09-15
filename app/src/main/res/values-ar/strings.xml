@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
 * MohamedMedhat
+* Mouradeq
 -->
 <resources>
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
@@ -65,7 +66,7 @@
   <string name="frequently_asked_questions">الأسئلة المتكررة</string>
   <string name="faq_activity_title">الأسئلة المتكررة</string>
   <string name="pin_password_activity_title">التحقق من رقم التعريف الشخصي</string>
-  <string name="onboarding_activity_title" fuzzy="true">مقدمة عن أوبيا</string>
+  <string name="onboarding_activity_title">مقدمة</string>
   <string name="frequently_asked_questions_FAQ">الأسئلة الأكثر تكرارا</string>
   <string name="info">معلومات</string>
   <string name="lessons">الدروس</string>
@@ -185,7 +186,7 @@
   <string name="required_fields_content_description">الحقول المعلمة بـ* مطلوبة.</string>
   <string name="current_profile_picture_content_description">صورة الملف الشخصي الحالية.</string>
   <string name="edit_profile_picture_content_description">تعديل صورة الملف الشخصي</string>
-  <string name="onboarding_slide_0_title" fuzzy="true">مرحبًا بكم في أوبيا!</string>
+  <string name="onboarding_slide_0_title">مرحبًا بكم في %s</string>
   <string name="onboarding_slide_0_description">تعلّم أي شيءٍ تريده بطريقة فعّالة وممتعة.</string>
   <string name="onboarding_slide_1_title">أضف مستخدمين إلى حسابك.</string>
   <string name="onboarding_slide_1_description">شارك الخبرة وأنشئ حتى 10 ملفات شخصية.</string>
@@ -207,7 +208,7 @@
   <string name="pin_password_close">إغلاق</string>
   <string name="pin_password_success">تم تغيير رقم التعريف الشخصي بنجاح</string>
   <string name="pin_password_forgot_title">نسيت رقم التعريف الشخصي؟</string>
-  <string name="pin_password_forgot_message" fuzzy="true">لإعادة ضبط رقم التعريف الشخصي الخاص بك، برجاء حذف تطبيق أوبيا وإعادة تثبيته مرة أخرى.\n\nبرجاء العلم أنه في حالة عدم اتصال الجهاز بالإنترنت قد تفقد تقدم المستخدم في عدة حسابات.</string>
+  <string name="pin_password_forgot_message">لإعادة ضبط رقم التعريف الشخصي PIN الخاص بك، إحذف تطبيق %s وأعد تثبيته مرة أخرى.\n\nضع في اعتبارك أنه إذا لم يكن الجهاز متصلاً بالإنترنت ، فقد تفقد تقدم المستخدم في حسابات متعددة.</string>
   <string name="pin_password_play_store">الذهاب إلى متجر بلاي (Play Store).</string>
   <string name="show_hide_password_icon">إظهار/إخفاء أيقونة كلمة السر</string>
   <string name="password_shown_icon">أيقونة كلمة المرور ظاهرة.</string>
@@ -363,6 +364,7 @@
   <string name="mark_stories_completed_activity_title">تمييز القصص كمكتملة</string>
   <string name="mark_topics_completed_activity_title">تمييز المواضيع كمكتملة</string>
   <string name="view_event_logs_activity_title">عرض سجلات الأحداث (Event Logs)</string>
+  <string name="force_network_type_activity_title">فرض نوع الشبكة</string>
   <string name="developer_options_modify_lesson_progress_label">تعديل تقدم الدرس</string>
   <string name="developer_options_mark_chapters_completed">تمييز الفصول كمكتملة</string>
   <string name="developer_options_mark_stories_completed">تمييز القصص كمكتملة</string>
@@ -375,8 +377,40 @@
   <string name="developer_options_force_crash">تعطيل التطبيق</string>
   <string name="modify_lesson_progress_all">الكل</string>
   <string name="modify_lesson_progress_mark_completed_uppercase">اكتمل التحديد</string>
+  <string name="force_network_type_network_selected">تم تحديد الشبكة</string>
+  <string name="force_network_type_default_network">افتراضي</string>
+  <string name="force_network_type_wifi_network">الويفي</string>
+  <string name="force_network_type_cellular_network">شبكة الهاتف</string>
+  <string name="force_network_type_no_network">لا يوجد شبكة</string>
   <string name="third_party_dependency_list_activity_title">مكتبات برمجية (Third-party Dependencies)</string>
   <string name="third_party_dependency_version_formatter">إصدار %s</string>
   <string name="license_list_activity_title">رخص حقوق النسخ</string>
   <string name="license_text_viewer_activity_title">عارض رخصة حقوق النسخ</string>
+  <string name="help_activity_back_arrow_description">انتقل مرة أخرى إلى %s</string>
+  <string name="help_activity_third_party_dependencies_list">قائمة تبعيات الطرف الثالث</string>
+  <string name="help_activity_copyright_licenses_list">قائمة تراخيص حقوق النشر</string>
+  <string name="resume_lesson_activity_title">استئناف الدرس</string>
+  <string name="resume_lesson_button">تابع</string>
+  <string name="start_over_lesson_button">ابدأ من جديد</string>
+  <string name="home_screen_good_morning_greeting_fragment">صباح الخير</string>
+  <string name="home_screen_good_afternoon_greeting_fragment">مساء الخير</string>
+  <string name="home_screen_good_evening_greeting_fragment">مساء الخير،</string>
+  <string name="faq_question_1">كيف يمكنني إنشاء ملف تعريف(حساب) جديد؟</string>
+  <string name="faq_question_2">كيف يمكنني حذف ملف التعريف(حساب)؟</string>
+  <string name="faq_question_3">كيف يمكنني تغيير بريدي الإلكتروني / رقم هاتفي؟</string>
+  <string name="faq_question_4">ما هي %s؟</string>
+  <string name="faq_question_5">من هو المشرف؟</string>
+  <string name="faq_question_6">لماذا لا يتم تحميل مشغل الاستكشاف؟</string>
+  <string name="faq_question_7">لماذا لا يتم تشغيل الصوت الخاص بي؟</string>
+  <string name="faq_question_8">كيف يمكنني تنزيل موضوع؟</string>
+  <string name="faq_question_9">لا أجد سؤالي هنا.  ماذا الان؟</string>
+  <string name="faq_answer_1">&lt;p&gt;إذا كانت هذه هي المرة الأولى التي تنشئ فيها ملفًا شخصيًا وليس لديك رقم تعريف شخصي: &lt;/p&gt; \n&lt;p&gt; 1. من منتقي الملف الشخصي ، اضغط على\n&lt;strong&gt; قم بإعداد ملفات تعريف متعددة&lt;/strong&gt;\n&lt;/p&gt;\n&lt;p&gt; 2. قم بإنشاء رقم تعريف شخصي و\n&lt;strong&gt;احفظ&lt;/strong&gt;\n&lt;/p&gt; \n&lt;p&gt; 3. املأ جميع البيانات للملف الشخصي.&lt;/p&gt; \n&lt;ol&gt; \n&lt;li&gt;(اختياري) قم بتحميل صورة.&lt;/li&gt; \n&lt;li&gt;إدخال اسم.&lt;/li&gt; \n&lt;li&gt;(اختياري) قم بتعيين رقم تعريف شخصي مكون من 3 أرقام.&lt;/li&gt; \n&lt;/ol&gt; \n&lt;p&gt; 4. اضغط\n&lt;strong&gt;إنشاء&lt;/strong&gt; . تمت إضافة هذا الملف الشخصي إلى منتقي ملف التعريف الخاص بك!\n&lt;br/&gt; \n&lt;br/&gt; إذا قمت بإنشاء ملف تعريف من قبل ولديك رقم تعريف شخصي:\n&lt;/p&gt;\n&lt;p&gt; 1. من منتقي الملف الشخصي ، اضغط على\n&lt;strong&gt;إضافة الملف الشخصي&lt;/strong&gt;\n&lt;/p&gt; \n&lt;p&gt; 2. أدخل رقم التعريف الشخصي الخاص بك وانقر فوق\n&lt;strong&gt;إرسال&lt;/strong&gt;\n&lt;/p&gt; \n&lt;p&gt;3. املأ جميع الحقول للملف الشخصي.&lt;/p&gt; \n&lt;ol&gt; \n&lt;li&gt;(اختياري) قم بتحميل صورة.&lt;/li&gt; \n&lt;li&gt;إدخال اسم.&lt;/li&gt; \n&lt;li&gt;(اختياري) قم بتعيين رقم تعريف شخصي مكون من 3 أرقام.&lt;/li&gt; \n&lt;/ol&gt; \n&lt;p&gt; 4. اضغط\n&lt;strong&gt;إنشاء&lt;/strong&gt; . تمت إضافة هذا الملف الشخصي إلى منتقي ملف التعريف الخاص بك!\n&lt;br/&gt;&lt;br/&gt; ملاحظة: فقط ال\n&lt;u&gt;مدير&lt;/u&gt; قادر على إدارة الملفات الشخصية.\n&lt;/p&gt;</string>
+  <string name="faq_answer_2">&lt;p&gt;بمجرد حذف ملف التعريف:&lt;/p&gt;\n&lt;p&gt;&lt;br&gt;&lt;/p&gt; \n&lt;p&gt;\n&lt;li&gt;لا يمكن استعادة ملف التعريف.&lt;/li&gt;\n&lt;/p&gt;\n&lt;p&gt;&lt;li&gt;سيتم حذف معلومات الملف الشخصي مثل الاسم والصور والتقدم بشكل دائم.&lt;/li&gt;&lt;/p&gt;\n&lt;p&gt;&lt;br&gt;&lt;/p&gt;\n&lt;p&gt;لحذف ملف تعريف (باستثناء&lt;u&gt;المسؤول&lt;/u&gt;&lt;/p&gt;\n&lt;p&gt;1. من الصفحة الرئيسية للمسؤول ، اضغط على زر القائمة أعلى اليسار.&lt;/p&gt;\n&lt;p&gt;2. اضغط على&lt;strong&gt;ضوابط المسؤول&lt;/strong&gt;&lt;/p&gt;\n&lt;p&gt;3. اضغط على&lt;strong&gt;تحرير ملفات التعريف&lt;/strong&gt;&lt;/p&gt;\n&lt;p&gt;4. اضغط على الملف الشخصي الذي ترغب في حذفه.&lt;/p&gt;\n&lt;p&gt;5. في الجزء السفلي من الشاشة ، انقر فوق&lt;strong&gt;حذف الملف الشخصي&lt;/strong&gt;&lt;/p&gt;\n&lt;p&gt;6. اضغط&lt;strong&gt;حذف&lt;/strong&gt;لتأكيد الحذف.&lt;/p&gt;\n&lt;p&gt;&lt;br&gt;&lt;/p&gt;\n&lt;p&gt;ملاحظة:&lt;u&gt;المسؤول&lt;/u&gt;فقط هو القادر على إدارة الملفات الشخصية.&lt;/p&gt;</string>
+  <string name="faq_answer_3">&lt;p&gt;لتغيير بريدك الإلكتروني / رقم هاتفك:&lt;/p&gt; &lt;p&gt;1. من الصفحة الرئيسية للمشرف ، اضغط على زر القائمة أعلى اليسار.&lt;/p&gt; &lt;p&gt;2. اضغط على &lt;strong&gt; عناصر تحكم المسؤول &lt;/ strong&gt;.&lt;/p&gt; &lt;p&gt;3. اضغط على &lt;strong&gt; تعديل الحساب &lt;/ strong&gt;.&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;إذا كنت تريد تغيير بريدك الإلكتروني:&lt;/p&gt; &lt;p&gt;4. أدخل بريدك الإلكتروني الجديد وانقر على &lt;strong&gt; حفظ &lt;/ strong&gt;.&lt;/p&gt; &lt;p&gt;5. يتم إرسال رابط التأكيد لتأكيد بريدك الإلكتروني الجديد. ستنتهي صلاحية الرابط بعد 24 ساعة ويجب النقر عليه لربطه بحسابك.&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;في حالة تغيير رقم هاتفك: &lt;/ p&gt; &lt;p&gt; 4. أدخل رقم هاتفك الجديد وانقر على &lt;strong&gt; تحقق &lt;/ strong&gt;.&lt;/p&gt; &lt;p&gt;5. يتم إرسال رمز لتأكيد رقمك الجديد. ستنتهي صلاحية الرمز بعد 5 دقائق ويجب إدخاله في الشاشة الجديدة لربطه بحسابك.&lt;/p&gt;</string>
+  <string name="faq_answer_4">&lt;p&gt;%1$s \n&lt;i&gt;\"أو-بي-يا\"&lt;/i&gt;(فنلندية) - \"للتعلم\"&lt;/p&gt;\n&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$sمهمتنا هي مساعدة أي شخص على تعلم أي شيء يريده بطريقة فعالة وممتعة.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;من خلال إنشاء مجموعة من الدروس المجانية عالية الجودة والفعالة بشكل واضح بمساعدة معلمين من جميع أنحاء العالم ، تهدف %1$s إلى تزويد الطلاب بتعليم جيد - بغض النظر عن مكان وجودهم أو الموارد التقليدية التي يمكنهم الوصول إليها.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;كطالب ، يمكنك أن تبدأ مغامرتك التعليمية من خلال تصفح الموضوعات المدرجة في الصفحة الرئيسية!&lt;/p&gt;</string>
+  <string name="faq_answer_5">&lt;p&gt;المشرف هو المستخدم الرئيسي الذي يدير ملفات التعريف والإعدادات لكل ملف تعريف على حسابه. هم على الأرجح والدك أو معلمك أو وصي عليك الذي أنشأ هذا الملف الشخصي لك.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;يمكن للمسؤولين إدارة الملفات الشخصية وتعيين أرقام التعريف الشخصية وتغيير الإعدادات الأخرى ضمن حساباتهم. بناءً على ملف التعريف الخاص بك ، قد تكون أذونات المسؤول مطلوبة لبعض الميزات مثل تنزيل الموضوعات وتغيير رقم التعريف الشخصي وغير ذلك.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;لمعرفة من هو المسؤول لديك ، انتقل إلى منتقي الملف الشخصي. الملف الشخصي الأول المدرج ولديه \"المسؤول\" مكتوب باسمه هو المسؤول.&lt;/p&gt;</string>
+  <string name="faq_answer_6">&lt;p&gt;إذا لم يتم تحميل مشغل الاستكشاف&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;&lt;p&gt; &lt;ol&gt; &lt;li&gt; انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار &lt;/li&gt; &lt;/ol&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;p&gt; &lt;li&gt; إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;اطلب من المشرف التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;p&gt; &lt;li&gt; اطلب من المشرف استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;p&gt; &lt;li&gt; أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org. &lt;/li&gt; &lt;/p&gt;</string>
+  <string name="faq_answer_7">&lt;p&gt;إذا لم يتم تشغيل الصوت الخاص بك&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;\n&lt;p&gt;تحقق لمعرفة ما إذا كان التطبيق محدثًا أم لا:&lt;/p&gt;\n&lt;p&gt; &lt;li&gt;انتقل إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;\n&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;p&gt; &lt;li&gt;إذا كان اتصالك بالإنترنت بطيئًا ، فحاول إعادة الاتصال بشبكة Wi-Fi أو الاتصال بشبكة أخرى. قد يتسبب الإنترنت البطيء في تحميل الصوت بشكل غير منتظم ، مما يجعل من الصعب تشغيله.&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;\n&lt;p&gt;اطلب من المسؤول التحقق من أجهزتهم واتصال الإنترنت:&lt;/p&gt;&lt;p&gt; \n&lt;li&gt;اطلب من المسؤول استكشاف الأخطاء وإصلاحها باستخدام الخطوات المذكورة أعلاه&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;\n&lt;p&gt;أخبرنا إذا كنت لا تزال تواجه مشكلات في التحميل:&lt;/p&gt;&lt;p&gt; &lt;li&gt;أبلغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/p&gt;</string>
+  <string name="faq_answer_8">&lt;p&gt;لتنزيل استكشاف:&lt;/p&gt;\n&lt;p&gt;1. من الصفحة الرئيسية ، انقر فوق موضوع أو استكشاف.&lt;/p&gt;\n&lt;p&gt;2. من صفحة الموضوع هذه ، انقر على علامة التبويب &lt;strong&gt; معلومات &lt;/ strong&gt;.&lt;/p&gt;\n&lt;p&gt;3. اضغط على &lt;strong&gt; تنزيل الموضوع &lt;/ strong&gt;.&lt;/p&gt;\n&lt;p&gt;4. اعتمادًا على إعدادات التطبيق ، قد تحتاج إلى موافقة المسؤول أو اتصال Wifi ثابتًا لإكمال التنزيل. إذا لزم الأمر ، بمجرد استيفاء هذه المتطلبات ، يتم تنزيل الموضوع على الجهاز ويمكن استخدامه في وضع عدم الاتصال بواسطة جميع ملفات التعريف. &lt;p&gt;</string>
+  <string name="faq_answer_9">&lt;p&gt; إذا لم تتمكن من العثور على سؤالك أو كنت ترغب في الإبلاغ عن خطأ ، فاتصل بنا على admin@oppia.org. &lt;/p&gt;</string>
 </resources>
