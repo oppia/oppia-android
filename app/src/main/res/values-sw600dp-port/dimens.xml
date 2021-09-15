@@ -324,5 +324,9 @@
 
   <dimen name="home_fragment_padding_top">48dp</dimen>
   <dimen name="home_fragment_padding_bottom">100dp</dimen>
-  
+
+  <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="promoted_story_card_layout_margin_end">24dp</dimen>
+  <dimen name="promoted_story_card_text_size">16sp</dimen>
+  <dimen name="promoted_story_card_margin_top">4dp</dimen>
 </resources>
