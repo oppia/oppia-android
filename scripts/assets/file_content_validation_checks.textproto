@@ -92,5 +92,5 @@ file_content_checks {
   file_path_regex: ".+?.xml"
   prohibited_content_regex: "<string name=\"[^\"]+\">"
   failure_message: "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
-  exempted_file_name: "app/src/main/res/values/strings.xml"
+  exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
 }
