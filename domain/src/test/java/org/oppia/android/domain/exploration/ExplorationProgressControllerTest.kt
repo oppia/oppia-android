@@ -2068,8 +2068,8 @@ class ExplorationProgressControllerTest {
     )
     val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-    assertThat(exception).hasMessageThat().contains(INVALID_EXPLORATION_ID)
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Asset doesn't exist: $INVALID_EXPLORATION_ID")
   }
 
   @Test

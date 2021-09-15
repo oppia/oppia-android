@@ -1143,7 +1143,8 @@ class TopicControllerTest {
 
     val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Asset doesn't exist")
   }
 
   private fun setUpTestApplicationComponent() {

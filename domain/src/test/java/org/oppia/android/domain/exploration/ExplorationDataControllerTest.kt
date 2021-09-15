@@ -227,8 +227,8 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
     val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-    assertThat(exception).hasMessageThat().contains("NON_EXISTENT_TEST")
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Asset doesn't exist: NON_EXISTENT_TEST")
   }
 
   @Test
@@ -241,8 +241,8 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
     val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-    assertThat(exception).hasMessageThat().contains("NON_EXISTENT_TEST")
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Asset doesn't exist: NON_EXISTENT_TEST")
   }
 
   @Test
