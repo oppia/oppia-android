@@ -19,13 +19,16 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** [ViewModel] for [OptionsFragment]. */
 @FragmentScope
 class OptionControlsViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  @EnableLanguageSelectionUi private val enableLanguageSelectionUi: PlatformParameterValue<Boolean>
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
@@ -96,7 +99,9 @@ class OptionControlsViewModel @Inject constructor(
 
     itemViewModelList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
 
-    itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
+    if (enableLanguageSelectionUi.value) {
+      itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
+    }
 
     itemViewModelList.add(optionAudioViewViewModel as OptionsItemViewModel)
 

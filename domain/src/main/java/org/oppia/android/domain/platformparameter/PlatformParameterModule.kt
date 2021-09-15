@@ -2,6 +2,8 @@ package org.oppia.android.domain.platformparameter
 
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
@@ -38,6 +40,14 @@ class PlatformParameterModule {
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
     ) ?: PlatformParameterValue.createDefaultParameter(
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @EnableLanguageSelectionUi
+  fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     )
   }
 }

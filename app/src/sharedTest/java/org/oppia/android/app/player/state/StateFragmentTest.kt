@@ -1754,7 +1754,7 @@ class StateFragmentTest {
   }
 
   private fun waitForImageViewInteractionToFullyLoad() {
-    // TODO(#669): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
+    // TODO(#1523): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
     waitForTheView(
       allOf(
         withId(R.id.image_click_interaction_image_view),
