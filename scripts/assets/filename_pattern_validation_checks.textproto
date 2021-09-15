@@ -1,4 +1,8 @@
 filename_checks {
   prohibited_filename_regex: "^((?!(app|testing)).)+/src/main/.+?Activity.kt"
-  failure_message: "Activities cannot be placed outside the app or testing module"
+  failure_message: "Activities cannot be placed outside the app or testing module."
+}
+filename_checks {
+  prohibited_filename_regex: "^.+?/res/([^/]+/){2,}[^/]+$"
+  failure_message: "Only one level of subdirectories under res/ should be maintained (further subdirectories aren't supported by the project configuration)."
 }
