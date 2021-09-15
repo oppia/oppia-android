@@ -64,33 +64,17 @@
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintRight_toRightOf="@+id/add_profile_activity_user_image_view" />
 
-          <LinearLayout
-            android:id="@+id/add_profile_activity_required_relative_layout"
-            android:layout_width="wrap_content"
+          <TextView
+            android:id="@+id/add_profile_activity_required_heading_text_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:orientation="horizontal"
+            android:contentDescription="@string/required_fields_content_description"
+            android:text="@{'*' + @string/add_profile_required}"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view">
-
-            <TextView
-              android:id="@+id/add_profile_activity_required_heading_star"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:contentDescription="@string/required_fields_content_description_star"
-              android:text="@string/add_profile_required_star"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="12sp" />
-
-            <TextView
-              android:id="@+id/add_profile_activity_required_heading_text_view"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:contentDescription="@string/required_fields_content_description"
-              android:text="@string/add_profile_required"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="12sp" />
-          </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
           <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_profile_activity_user_name"
@@ -102,7 +86,7 @@
             app:errorMessage="@{viewModel.nameErrorMsg}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_required_relative_layout">
+            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_required_heading_text_view">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/add_profile_activity_user_name_edit_text"
