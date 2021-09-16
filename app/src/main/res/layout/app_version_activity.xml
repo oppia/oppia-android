@@ -27,14 +27,16 @@
       app:title="@string/administrator_controls_app_version"
       app:titleTextAppearance="@style/ToolbarTextAppearance"
       app:titleTextColor="@color/white" />
-
-    <View
-      android:id="@+id/app_version_shadow_view"
-      android:layout_width="match_parent"
-      android:layout_height="4dp"
-      android:layout_gravity="top"
-      android:background="@drawable/toolbar_drop_shadow" />
   </com.google.android.material.appbar.AppBarLayout>
+
+  <View
+    android:id="@+id/app_version_shadow_view"
+    android:layout_width="match_parent"
+    android:layout_height="4dp"
+    android:layout_gravity="top"
+    android:background="@drawable/toolbar_drop_shadow"
+    app:layout_constraintTop_toBottomOf="@id/app_version_app_bar_layout"
+    app:layout_constraintBottom_toTopOf="@id/app_version_fragment_placeholder"/>
 
   <FrameLayout
     android:id="@+id/app_version_fragment_placeholder"
@@ -43,6 +45,6 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/app_version_app_bar_layout"
+    app:layout_constraintTop_toBottomOf="@id/app_version_shadow_view"
     app:layout_constraintVertical_weight="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>
