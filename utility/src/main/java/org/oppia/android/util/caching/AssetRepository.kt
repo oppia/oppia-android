@@ -79,7 +79,8 @@ class AssetRepository @Inject constructor(
   }
 
   private fun <T : MessageLite> maybeProtoFromLocalAssetsOrFail(
-    assetName: String, baseMessage: T
+    assetName: String,
+    baseMessage: T
   ): T? {
     return loadProtoBlobFromLocalAssets(assetName)?.let { serializedProto ->
       @Suppress("UNCHECKED_CAST") // Safe type-cast per newBuilderForType's contract.

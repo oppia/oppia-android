@@ -1,17 +1,30 @@
 package org.oppia.android.domain.locale
 
 import android.os.Build
-import java.util.Locale
-import javax.inject.Inject
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.locale.getFallbackLanguageId
+import org.oppia.android.util.locale.getLanguageId
+import java.util.Locale
+import javax.inject.Inject
 
+/**
+ * Factory for creating new Android [Locale]s. This is meant only to be used within the locale
+ * domain package.
+ */
 class AndroidLocaleFactory @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale
 ) {
+  /**
+   * Returns a new [Locale] that matches the given [OppiaLocaleContext]. Note this will
+   * automatically fail over to the context's backup fallback language if the primary language
+   * doesn't match any available locales on the device. Further, if no locale can be found, the
+   * returned [Locale] will be forced to match the specified context (which will result in some
+   * default/root locale behavior in Android).
+   */
   fun createAndroidLocale(localeContext: OppiaLocaleContext): Locale {
     val languageId = localeContext.getLanguageId()
     val fallbackLanguageId = localeContext.getFallbackLanguageId()
@@ -101,7 +114,8 @@ class AndroidLocaleFactory @Inject constructor(
   }
 
   private fun maybeConstructProfile(
-    languageCode: String, regionCode: String
+    languageCode: String,
+    regionCode: String
   ): AndroidLocaleProfile? {
     return if (languageCode.isNotEmpty() && regionCode.isNotEmpty()) {
       AndroidLocaleProfile(languageCode, regionCode)

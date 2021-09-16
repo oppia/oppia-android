@@ -2,11 +2,6 @@ package org.oppia.android.domain.locale
 
 import android.content.Context
 import android.content.res.Configuration
-import java.util.Locale
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -30,6 +25,11 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.locale.OppiaLocale.ContentLocale
 import org.oppia.android.util.locale.OppiaLocale.DisplayLocale
 import org.oppia.android.util.locale.OppiaLocale.MachineLocale
+import java.util.Locale
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 
 // TODO: document how notifications work (everything is rooted from changing Locale).
 private const val ANDROID_SYSTEM_LOCALE_DATA_PROVIDER_ID = "android_locale"
@@ -38,6 +38,7 @@ private const val WRITTEN_TRANSLATION_LOCALE_BASE_DATA_PROVIDER_ID = "written_tr
 private const val AUDIO_TRANSLATIONS_LOCALE_BASE_DATA_PROVIDER_ID = "audio_translations_locale."
 private const val SYSTEM_LANGUAGE_DATA_PROVIDER_ID = "system_language"
 
+/** Controller for creating & retrieving user-specified [OppiaLocale]s. */
 @Singleton
 class LocaleController @Inject constructor(
   private val applicationContext: Context,
@@ -52,7 +53,17 @@ class LocaleController @Inject constructor(
   private lateinit var supportedLanguages: SupportedLanguages
   private lateinit var supportedRegions: SupportedRegions
 
-  // TODO: explain what this is & how/when to use it.
+  /**
+   * Returns the [OppiaLocaleContext] which provides a reasonable default context when building a
+   * locale for app strings. Generally this should be used in conjunction with
+   * [reconstituteDisplayLocale], and only during locale bootstrapping. App layer classes should
+   * rely on a consistent locale fetched via one of the data providers below rather than creating an
+   * immediate locale using these methods.
+   *
+   * Note that the returned locale cannot be assumed to follow any particular locale, only that it's
+   * likely to correspond to a valid Android locale when setting up an activity's configuration for
+   * string resource selection and layout arrangement.
+   */
   fun getLikelyDefaultAppStringLocaleContext(): OppiaLocaleContext {
     return OppiaLocaleContext.newBuilder().apply {
       // Assume English for the default language since it has the highest chance of being
@@ -79,12 +90,31 @@ class LocaleController @Inject constructor(
     }.build()
   }
 
-  // TODO: this should also work in cases when the process dies.
+  // TODO(#3800): Utilize this method to build in resilience for low-memory process deaths resulting
+  //  in crashes upon the app be foregrounded.
+  /**
+   * Returns a new [DisplayLocale] corresponding to the specified [OppiaLocaleContext]. This is
+   * meant to be used in cases when a context needs to be saved (e.g. in a bundle) and later
+   * restored without needing to synchronously re-fetch the locale via a data provider.
+   *
+   * [DisplayLocale] implementations guarantee functional equivalence between different instances so
+   * long as they have the same context, so the fetch is only needed for eventual consistency (i.e.
+   * for cases in which the user changed their selected language).
+   */
   fun reconstituteDisplayLocale(oppiaLocaleContext: OppiaLocaleContext): DisplayLocale {
     return DisplayLocaleImpl(oppiaLocaleContext, machineLocale, androidLocaleFactory)
   }
 
-  // TODO: document
+  /**
+   * Notifies that the default Android locale may have changed.
+   *
+   * Since there's no way to reliably get notified when the default system locale is changed, it's
+   * the expected responsibility of calling infrastructure to ensure detected changes to the system
+   * locale (such as per an activity configuration change) result in downstream data providers being
+   * recomputed in case they rely on the system locale & the locale has indeed changed.
+   *
+   * This generally shouldn't be called broadly.
+   */
   fun notifyPotentialLocaleChange() {
     // There may not actually be a change in the default locale, but assume there is & trigger an
     // update for data providers.
@@ -92,6 +122,12 @@ class LocaleController @Inject constructor(
   }
 
   // TODO: document that retrieving country is a fixed thing. Explain usage mode.
+  /**
+   * Returns the [DisplayLocale] corresponding to the specified [OppiaLanguage], or potentially a
+   * best-match locale that should be compatible with both the supported languages of the app and
+   * the system (though this isn't guaranteed). Cases in which no match can be determined will
+   * result in a failed result.
+   */
   fun retrieveAppStringDisplayLocale(language: OppiaLanguage): DataProvider<DisplayLocale> {
     val providerId = "$APP_STRING_LOCALE_DATA_BASE_PROVIDER_ID.${language.name}"
     return getSystemLocaleProfile().transformAsync(providerId) { systemLocaleProfile ->
@@ -99,6 +135,12 @@ class LocaleController @Inject constructor(
     }
   }
 
+  /**
+   * Returns the [ContentLocale] corresponding to the specified [OppiaLanguage] (which is
+   * guaranteed to be supported by the app) to be used for written translations, or a failure if for
+   * some reason that's not possible (such as if the loaded language configuration doesn't include
+   * the specified language).
+   */
   fun retrieveWrittenTranslationsLocale(language: OppiaLanguage): DataProvider<ContentLocale> {
     val providerId = "$WRITTEN_TRANSLATION_LOCALE_BASE_DATA_PROVIDER_ID.${language.name}"
     return getSystemLocaleProfile().transformAsync(providerId) { systemLocaleProfile ->
@@ -106,6 +148,10 @@ class LocaleController @Inject constructor(
     }
   }
 
+  /**
+   * Returns the [ContentLocale] corresponding to the specified [OppiaLanguage] for audio
+   * translations with the same failure stipulation as [retrieveWrittenTranslationsLocale].
+   */
   fun retrieveAudioTranslationsLocale(language: OppiaLanguage): DataProvider<ContentLocale> {
     val providerId = "$AUDIO_TRANSLATIONS_LOCALE_BASE_DATA_PROVIDER_ID.${language.name}"
     return getSystemLocaleProfile().transformAsync(providerId) { systemLocaleProfile ->
@@ -113,11 +159,17 @@ class LocaleController @Inject constructor(
     }
   }
 
-  // TODO: document only matches to app language definitions.
+  /**
+   * Returns the [OppiaLanguage] best matching the current system locale (based on the list of
+   * supported languages by the app), or [OppiaLanguage.LANGUAGE_UNSPECIFIED] if the current system
+   * locale does not correspond to a supported language.
+   *
+   * Note that the system locale is only ever matched against app language definitions, never
+   * written or audio content translations.
+   */
   fun retrieveSystemLanguage(): DataProvider<OppiaLanguage> {
     val providerId = SYSTEM_LANGUAGE_DATA_PROVIDER_ID
     return getSystemLocaleProfile().transformAsync(providerId) { systemLocaleProfile ->
-      // TODO: fix failover
       AsyncResult.success(
         retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile.languageCode)?.language
           ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
@@ -125,9 +177,14 @@ class LocaleController @Inject constructor(
     }
   }
 
-
-  // TODO: document that this can't be called due to Locale being prohibited broadly in the
-  //  codebase. Might be nice to find a more private signal mechanism.
+  /**
+   * Updates both the system and the specified [Configuration] to use the [DisplayLocale] as the
+   * default locale for the current app process (which will affect string resource retrieval).
+   *
+   * Note that this may result in data providers returned by this class being notified of changes if
+   * any depend on the current system locale, and will likely change the result of the data provider
+   * returned by [retrieveSystemLanguage].
+   */
   fun setAsDefault(displayLocale: DisplayLocale, configuration: Configuration) {
     (displayLocale as? DisplayLocaleImpl)?.let { locale ->
       locale.setAsDefault(configuration)
@@ -173,7 +230,9 @@ class LocaleController @Inject constructor(
   }
 
   private suspend fun <T : OppiaLocale> computeLocaleResult(
-    language: OppiaLanguage, systemLocaleProfile: AndroidLocaleProfile, usageMode: LanguageUsageMode
+    language: OppiaLanguage,
+    systemLocaleProfile: AndroidLocaleProfile,
+    usageMode: LanguageUsageMode
   ): AsyncResult<T> {
     // The safe-cast here is meant to ensure a strongly typed public API with robustness against
     // internal weirdness that would lead to a wrong type being produced from the generic helpers.
@@ -191,7 +250,9 @@ class LocaleController @Inject constructor(
   }
 
   private suspend fun computeLocale(
-    language: OppiaLanguage, systemLocaleProfile: AndroidLocaleProfile, usageMode: LanguageUsageMode
+    language: OppiaLanguage,
+    systemLocaleProfile: AndroidLocaleProfile,
+    usageMode: LanguageUsageMode
   ): OppiaLocale? {
     val localeContext = OppiaLocaleContext.newBuilder().apply {
       languageDefinition =
@@ -219,7 +280,7 @@ class LocaleController @Inject constructor(
 
     return when (usageMode) {
       APP_STRINGS -> DisplayLocaleImpl(localeContext, machineLocale, androidLocaleFactory)
-      CONTENT_STRINGS, AUDIO_TRANSLATIONS -> ContentLocale(localeContext)
+      CONTENT_STRINGS, AUDIO_TRANSLATIONS -> ContentLocaleImpl(localeContext)
       USAGE_MODE_UNSPECIFIED, UNRECOGNIZED -> null
     }
   }

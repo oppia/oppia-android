@@ -12,6 +12,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":content_locale_impl",
         ":dagger",
         ":display_locale_impl",
         ":language_config_retriever",
@@ -53,6 +54,17 @@ kt_android_library(
         ":android_locale_factory",
         "//third_party:androidx_core_core",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+    ],
+)
+
+kt_android_library(
+    name = "content_locale_impl",
+    srcs = [
+        "ContentLocaleImpl.kt",
+    ],
+    deps = [
+        "//model:languages_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],
 )
