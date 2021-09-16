@@ -10,14 +10,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [TextInputAction]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class TextInputActionTest {
-  /**
-   * Checks if the returned [BoundedMatcher] from [TextInputAction.hasErrorText]
-   * has correct description.
-   */
+
   @Test
   fun testTextInputAction_hasErrorText_correctDescription() {
     val matcher = TextInputAction.hasErrorText("Incorrect Administrator PIN. Please try again.")
@@ -26,10 +22,6 @@ class TextInputActionTest {
     )
   }
 
-  /**
-   * Checks if the returned [BoundedMatcher] from [TextInputAction.hasNoErrorText]
-   * has correct description.
-   */
   @Test
   fun testTextInputAction_hasNoErrorText_correctDescription() {
     val matcher = TextInputAction.hasNoErrorText()
