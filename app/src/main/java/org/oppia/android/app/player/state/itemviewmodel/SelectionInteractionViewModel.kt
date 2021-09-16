@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.databinding.ObservableList
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -48,6 +49,7 @@ class SelectionInteractionViewModel(
       ?: minAllowableSelectionCount
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
+  val selectedItemsCount = ObservableInt()
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
 
@@ -121,6 +123,7 @@ class SelectionInteractionViewModel(
     if (areCheckboxesBound()) {
       if (isCurrentlySelected) {
         selectedItems -= itemIndex
+        selectedItemsCount.set(selectedItems.size)
         val wasSelectedItemListEmpty = isAnswerAvailable.get()
         if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
           isAnswerAvailable.set(selectedItems.isNotEmpty())
@@ -130,6 +133,7 @@ class SelectionInteractionViewModel(
         // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
         //  number required.
         selectedItems += itemIndex
+        selectedItemsCount.set(selectedItems.size)
         val wasSelectedItemListEmpty = isAnswerAvailable.get()
         if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
           isAnswerAvailable.set(selectedItems.isNotEmpty())
@@ -141,6 +145,7 @@ class SelectionInteractionViewModel(
       choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
       selectedItems.clear()
       selectedItems += itemIndex
+      selectedItemsCount.set(selectedItems.size)
       val wasSelectedItemListEmpty = isAnswerAvailable.get()
       if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
         isAnswerAvailable.set(selectedItems.isNotEmpty())

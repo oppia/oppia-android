@@ -1298,6 +1298,103 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_interactions_noCheckboxItemSelected_selectionInteractionTextIsDisplayed(){
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
+    }
+  }
+  @Test
+  fun testStateFragment_interactions_land_noCheckboxItemSelected_selectionInteractionTextIsDisplayed(){
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      rotateToLandscape()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_singleCheckboxItemSelected_selectionInteractionTextIsNotDisplayed(){
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_land_singleCheckboxItemSelected_selectionInteractionTextIsNotDisplayed(){
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      rotateToLandscape()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_multipleCheckboxItemSelected_selectionInteractionTextIsNotDisplayed(){
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_land_multipleCheckboxItemSelected_selectionInteractionTextIsNotDisplayed(){
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      rotateToLandscape()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+    }
+  }
+  @Test
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
