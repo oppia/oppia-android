@@ -268,6 +268,7 @@ class LocaleController @Inject constructor(
     // be, but the app should generally still behave correctly).
     val selectedLanguage = localeContext.languageDefinition.language
     val matchedRegion = localeContext.regionDefinition
+    // TODO: test this log case?
     if (selectedLanguage !in matchedRegion.languagesList) {
       oppiaLogger.w(
         "LocaleController",

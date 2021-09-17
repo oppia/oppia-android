@@ -45,19 +45,19 @@ class AndroidLocaleFactory @Inject constructor(
     val firstSupportedProfile = potentialProfiles.findFirstSupported()
     val selectedProfile = firstSupportedProfile
       ?: languageId.computeForcedProfile(localeContext.regionDefinition)
-    return Locale(selectedProfile.languageCode, selectedProfile.regionCode)
+    return Locale(selectedProfile.languageCode, selectedProfile.getNonWildcardRegionCode())
   }
 
   private fun computePotentialLanguageProfiles(
     localeContext: OppiaLocaleContext,
     languageId: LanguageId
-  ): List<AndroidLocaleProfile?> =
+  ): List<AndroidLocaleProfile> =
     computeLanguageProfiles(localeContext, localeContext.languageDefinition, languageId)
 
   private fun computePotentialFallbackLanguageProfiles(
     localeContext: OppiaLocaleContext,
     fallbackLanguageId: LanguageId
-  ): List<AndroidLocaleProfile?> {
+  ): List<AndroidLocaleProfile> {
     return computeLanguageProfiles(
       localeContext, localeContext.fallbackLanguageDefinition, fallbackLanguageId
     )
@@ -67,9 +67,9 @@ class AndroidLocaleFactory @Inject constructor(
     localeContext: OppiaLocaleContext,
     definition: LanguageSupportDefinition,
     languageId: LanguageId
-  ): List<AndroidLocaleProfile?> {
+  ): List<AndroidLocaleProfile> {
     return if (definition.minAndroidSdkVersion <= Build.VERSION.SDK_INT) {
-      listOf(
+      listOfNotNull(
         languageId.computeLocaleProfileFromAndroidId(),
         languageId.computeLocaleProfileFromIetfDefinitions(localeContext.regionDefinition),
         languageId.computeLocaleProfileFromMacaronicLanguage()
@@ -79,7 +79,12 @@ class AndroidLocaleFactory @Inject constructor(
 
   private fun LanguageId.computeLocaleProfileFromAndroidId(): AndroidLocaleProfile? {
     return if (hasAndroidResourcesLanguageId()) {
-      androidResourcesLanguageId.run { maybeConstructProfile(languageCode, regionCode) }
+      androidResourcesLanguageId.run {
+        // Empty region codes are allowed for Android resource IDs since they should always be used
+        // verbatim to ensure the correct Android resource string can be computed (such as for macro
+        // languages).
+        maybeConstructProfile(languageCode, regionCode, emptyRegionAsWildcard = true)
+      }
     } else null
   }
 
@@ -87,10 +92,13 @@ class AndroidLocaleFactory @Inject constructor(
     regionDefinition: RegionSupportDefinition
   ): AndroidLocaleProfile? {
     if (!hasIetfBcp47Id()) return null
-    if (!regionDefinition.hasRegionId()) return null
-    return maybeConstructProfile(
-      ietfBcp47Id.ietfLanguageTag, regionDefinition.regionId.ietfRegionTag
-    )
+    return if ("-" in ietfBcp47Id.ietfLanguageTag) {
+      val (languageCode, regionCode) = ietfBcp47Id.ietfLanguageTag.divide("-") ?: return null
+      maybeConstructProfile(languageCode, regionCode)
+    } else {
+      if (!regionDefinition.hasRegionId()) return null
+      maybeConstructProfile(ietfBcp47Id.ietfLanguageTag, regionDefinition.regionId.ietfRegionTag)
+    }
   }
 
   private fun LanguageId.computeLocaleProfileFromMacaronicLanguage(): AndroidLocaleProfile? {
@@ -108,26 +116,46 @@ class AndroidLocaleFactory @Inject constructor(
   private fun LanguageId.computeForcedProfile(
     regionDefinition: RegionSupportDefinition
   ): AndroidLocaleProfile {
-    return AndroidLocaleProfile(
-      ietfBcp47Id.ietfLanguageTag, regionDefinition.regionId.ietfRegionTag
-    )
+    if (hasAndroidResourcesLanguageId()) {
+      // Create a locale exactly matching the Android ID profile.
+      return AndroidLocaleProfile(
+        androidResourcesLanguageId.languageCode, androidResourcesLanguageId.regionCode
+      )
+    }
+    return when (languageTypeCase) {
+      LanguageId.LanguageTypeCase.IETF_BCP47_ID -> {
+        AndroidLocaleProfile(
+          ietfBcp47Id.ietfLanguageTag, regionDefinition.regionId.ietfRegionTag
+        )
+      }
+      LanguageId.LanguageTypeCase.MACARONIC_ID -> {
+        val (languageCode, regionCode) =
+          macaronicId.combinedLanguageCode.divide("-")
+            ?: error("Invalid macaronic ID: ${macaronicId.combinedLanguageCode}")
+        AndroidLocaleProfile(languageCode, regionCode)
+      }
+      LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET, null ->
+        error("Invalid language case: $languageTypeCase")
+    }
   }
 
   private fun maybeConstructProfile(
     languageCode: String,
-    regionCode: String
+    regionCode: String,
+    emptyRegionAsWildcard: Boolean = false
   ): AndroidLocaleProfile? {
-    return if (languageCode.isNotEmpty() && regionCode.isNotEmpty()) {
-      AndroidLocaleProfile(languageCode, regionCode)
+    return if (languageCode.isNotEmpty() && (regionCode.isNotEmpty() || emptyRegionAsWildcard)) {
+      val adjustedRegionCode = if (emptyRegionAsWildcard && regionCode.isEmpty()) {
+        AndroidLocaleProfile.REGION_WILDCARD
+      } else regionCode
+      AndroidLocaleProfile(languageCode, adjustedRegionCode)
     } else null
   }
 
-  private fun List<AndroidLocaleProfile?>.findFirstSupported(): AndroidLocaleProfile? = find {
-    it?.let { profileToMatch ->
-      availableLocaleProfiles.any { availableProfile ->
-        availableProfile.matches(machineLocale, profileToMatch)
-      }
-    } ?: false // Ignore null profiles.
+  private fun List<AndroidLocaleProfile>.findFirstSupported(): AndroidLocaleProfile? = find {
+    availableLocaleProfiles.any { availableProfile ->
+      availableProfile.matches(machineLocale, it)
+    }
   }
 
   private companion object {
@@ -140,6 +168,12 @@ class AndroidLocaleFactory @Inject constructor(
       return if (results.size == 2) {
         results[0] to results[1]
       } else null
+    }
+
+    private fun AndroidLocaleProfile.getNonWildcardRegionCode(): String {
+      return if (regionCode != AndroidLocaleProfile.REGION_WILDCARD) {
+        regionCode
+      } else ""
     }
   }
 }

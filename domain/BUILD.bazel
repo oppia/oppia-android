@@ -8,6 +8,20 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 load("//domain:domain_test.bzl", "domain_test")
 
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
+# Visibility for migrated domain tests.
+package_group(
+    name = "domain_testing_visibility",
+    packages = [
+        "//domain/src/test/...",
+    ],
+)
+
 # Source files that have been migrated to their own package-based libraries. Files added to this
 # list will be excluded automatically from the top-level utility library. It is recommended to use
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the

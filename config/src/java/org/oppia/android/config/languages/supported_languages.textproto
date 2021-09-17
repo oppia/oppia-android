@@ -69,13 +69,13 @@ language_definitions {
   fallback_macro_language: ENGLISH
   min_android_sdk_version: 1
   content_string_id {
-    ietf_bcp47_id {
-      ietf_language_tag: "hi-en"
+    macaronic_id {
+      combined_language_code: "hi-en"
     }
   }
   audio_translation_id {
-    ietf_bcp47_id {
-      ietf_language_tag: "hi-en"
+    macaronic_id {
+      combined_language_code: "hi-en"
     }
   }
 }
