@@ -43,11 +43,8 @@ file_content_checks {
   failure_message: "Use start/end versions of layout properties, instead, for proper RTL support"
   exempted_file_name: "app/src/main/res/layout/add_profile_activity.xml"
   exempted_file_name: "app/src/main/res/layout/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-land/add_profile_activity.xml"
   exempted_file_name: "app/src/main/res/layout-land/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-land/add_profile_activity.xml"
   exempted_file_name: "app/src/main/res/layout-sw600dp-land/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-port/add_profile_activity.xml"
   exempted_file_name: "app/src/main/res/layout-sw600dp-port/profile_progress_header.xml"
   exempted_file_name: "app/src/main/res/values/styles.xml"
 }
@@ -60,10 +57,6 @@ file_content_checks {
   file_path_regex: ".+?.xml"
   prohibited_content_regex: "app:barrierDirection=\"right\""
   failure_message: "Use app:barrierDirection=\"end\", instead, for proper RTL support"
-  exempted_file_name: "app/src/main/res/layout/topic_practice_subtopic.xml"
-  exempted_file_name: "app/src/main/res/layout-land/topic_practice_subtopic.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-land/topic_practice_subtopic.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-port/topic_practice_subtopic.xml"
 }
 file_content_checks {
   file_path_regex: ".+?.xml"
@@ -100,5 +93,5 @@ file_content_checks {
   file_path_regex: ".+?.xml"
   prohibited_content_regex: "<string name=\"[^\"]+\">"
   failure_message: "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
-  exempted_file_name: "app/src/main/res/values/strings.xml"
+  exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
 }

@@ -40,6 +40,18 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "ProtoStringEncoderTest",
+    srcs = ["ProtoStringEncoderTest.kt"],
+    deps = [
+        "//model:test_models",
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
     name = "RepositoryFileTest",
     srcs = ["RepositoryFileTest.kt"],
     deps = [
