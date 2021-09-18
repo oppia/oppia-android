@@ -22,6 +22,7 @@
     android:paddingTop="12dp"
     android:paddingEnd="16dp"
     android:paddingBottom="12dp"
+    android:layoutDirection="ltr"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationSplitViewMarginEnd="@{@dimen/interaction_item_split_view_margin_end}"
