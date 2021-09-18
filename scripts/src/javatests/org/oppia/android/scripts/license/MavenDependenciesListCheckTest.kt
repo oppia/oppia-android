@@ -38,7 +38,7 @@ class MavenDependenciesListCheckTest {
   private val DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX =
     "//third_party:androidx_databinding_databinding-adapters"
   private val PROTO_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_google_protobuf_protobuf-lite"
+    "//third_party:com_google_protobuf_protobuf-javalite"
   private val GLIDE_DEP_WITH_THIRD_PARTY_PREFIX =
     "//third_party:com_github_bumptech_glide_annotations"
   private val FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX =
