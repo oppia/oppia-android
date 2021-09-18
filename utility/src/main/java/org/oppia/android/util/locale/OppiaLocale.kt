@@ -139,6 +139,8 @@ sealed class OppiaLocale {
     /**
      * Returns an [OppiaDate] object representing the specified date string, or null if the string
      * is incorrectly formatted. This has the same timezone caveat as [getCurrentTimeOfDay].
+     *
+     * Dates are expected in the format: YYYY-MM-DD.
      */
     abstract fun parseOppiaDate(dateString: String): OppiaDate?
 
@@ -146,6 +148,10 @@ sealed class OppiaLocale {
      * Returns a time string corresponding to the current wall clock time. Note that, as with other
      * methods in this class, this should never be used for UI-displayed strings. It's intended for
      * developer-facing strings, instead, such as log statements.
+     *
+     * The returned string is guaranteed to include at least the hour, minute, and second pertaining
+     * to the current wall time (though no guarantees are made to other time information being
+     * included, or in how this information is presented).
      */
     abstract fun computeCurrentTimeString(): String
 

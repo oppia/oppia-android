@@ -33,21 +33,8 @@ kt_android_library(
         "//domain:domain_testing_visibility",
     ],
     deps = [
-        ":android_locale_profile",
         ":dagger",
-    ],
-)
-
-kt_android_library(
-    name = "android_locale_profile",
-    srcs = [
-        "AndroidLocaleProfile.kt",
-    ],
-    visibility = [
-        "//domain:domain_testing_visibility",
-    ],
-    deps = [
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/locale:android_locale_profile",
     ],
 )
 

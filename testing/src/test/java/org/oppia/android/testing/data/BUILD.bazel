@@ -1,16 +1,17 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
-Tests for domain components pertaining to managing translations.
+Tests for data processing test utilities.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
-    name = "TranslationControllerTest",
-    srcs = ["TranslationControllerTest.kt"],
-    custom_package = "org.oppia.android.domain.translation",
-    test_class = "org.oppia.android.domain.translation.TranslationControllerTest",
-    test_manifest = "//domain:test_manifest",
+    name = "DataProviderTestMonitorTest",
+    srcs = ["DataProviderTestMonitorTest.kt"],
+    custom_package = "org.oppia.android.testing.data",
+    test_class = "org.oppia.android.testing.data.DataProviderTestMonitorTest",
+    test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
@@ -19,14 +20,15 @@ oppia_android_test(
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
-        "//third_party:org_mockito_mockito-core",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],

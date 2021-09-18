@@ -1,5 +1,8 @@
 package org.oppia.android.domain.translation
 
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
@@ -16,9 +19,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import kotlin.concurrent.withLock
 
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
 private const val APP_LANGUAGE_DATA_PROVIDER_ID = "app_language"
@@ -109,10 +109,10 @@ class TranslationController @Inject constructor(
    * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
    *     result is ever provided)
    */
-  fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any?> {
+  fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any> {
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID) {
       updateAppLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(null)
+      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
     }
   }
 
@@ -159,11 +159,11 @@ class TranslationController @Inject constructor(
   fun updateWrittenTranslationContentLanguage(
     profileId: ProfileId,
     selection: WrittenTranslationLanguageSelection
-  ): DataProvider<Any?> {
+  ): DataProvider<Any> {
     val providerId = UPDATE_WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
       updateWrittenTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(null)
+      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
     }
   }
 
@@ -210,11 +210,11 @@ class TranslationController @Inject constructor(
   fun updateAudioTranslationContentLanguage(
     profileId: ProfileId,
     selection: AudioTranslationLanguageSelection
-  ): DataProvider<Any?> {
+  ): DataProvider<Any> {
     val providerId = UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
       updateAudioTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(null)
+      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
     }
   }
 

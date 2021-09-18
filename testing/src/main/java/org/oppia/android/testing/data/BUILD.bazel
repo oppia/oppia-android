@@ -1,0 +1,26 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Package for common test utilities corresponding to data processing & data providers.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "data_provider_test_monitor",
+    testonly = True,
+    srcs = [
+        "DataProviderTestMonitor.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//testing/src/main/java/org/oppia/android/testing/mockito",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//third_party:org_mockito_mockito-core",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+dagger_rules()

@@ -2,6 +2,11 @@ package org.oppia.android.domain.locale
 
 import android.content.Context
 import android.content.res.Configuration
+import java.util.Locale
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -21,15 +26,11 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.locale.AndroidLocaleProfile
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.locale.OppiaLocale.ContentLocale
 import org.oppia.android.util.locale.OppiaLocale.DisplayLocale
 import org.oppia.android.util.locale.OppiaLocale.MachineLocale
-import java.util.Locale
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 // TODO: document how notifications work (everything is rooted from changing Locale).
 private const val ANDROID_SYSTEM_LOCALE_DATA_PROVIDER_ID = "android_locale"
@@ -171,7 +172,7 @@ class LocaleController @Inject constructor(
     val providerId = SYSTEM_LANGUAGE_DATA_PROVIDER_ID
     return getSystemLocaleProfile().transformAsync(providerId) { systemLocaleProfile ->
       AsyncResult.success(
-        retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile.languageCode)?.language
+        retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)?.language
           ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
       )
     }
@@ -198,6 +199,15 @@ class LocaleController @Inject constructor(
       // changes can be missed if they aren't accompanied by a configuration change or activity
       // recreation.
       Locale.setDefault(locale.formattingLocale)
+
+      // Ensure that the application context is also using the new locale (which it should by
+      // default since Android's responsible for setting it, but this is done for assurance since
+      // other code in this controller relies on the application context's locale rather than the
+      // system default). Note also that this has the side effect of overriding user-selected
+      // locales for fallback languages (which is probably fine since the app relies on its own
+      // fallback mechanism when choosing the primary locale).
+      applicationContext.resources.configuration.setLocale(locale.formattingLocale)
+
       notifyPotentialLocaleChange()
     } ?: error("Invalid display locale type passed in: $displayLocale")
   }
@@ -220,13 +230,13 @@ class LocaleController @Inject constructor(
     // Also, this only matches against the first locale. In the future, some effort could be made to
     // try and pick the best matching system locale (per the user's preferences) rather than the
     // "first or nothing" currently implemented here.
-    return if (!locales.isEmpty) {
+    return if (locales.isEmpty) {
       oppiaLogger.e(
         "LocaleController",
         "No locales defined for application context. Defaulting to default Locale."
       )
-      locales[0]
-    } else Locale.getDefault()
+      Locale.getDefault()
+    } else locales[0]
   }
 
   private suspend fun <T : OppiaLocale> computeLocaleResult(
@@ -297,12 +307,11 @@ class LocaleController @Inject constructor(
     // 3. If that fails, create a basic definition to represent the system language.
     // Content strings & audio translations only perform step 1 since there's no reasonable
     // fallback.
-    val currentSystemLanguageCode by lazy { systemLocaleProfile.languageCode }
     val matchedDefinition = retrieveLanguageDefinition(language)
     return if (usageMode == APP_STRINGS) {
       matchedDefinition
-        ?: retrieveLanguageDefinitionFromSystemCode(currentSystemLanguageCode)
-        ?: computeDefaultLanguageDefinitionForSystemLanguage(currentSystemLanguageCode)
+        ?: retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)
+        ?: computeDefaultLanguageDefinitionForSystemLanguage(systemLocaleProfile.languageCode)
     } else matchedDefinition
   }
 
@@ -324,25 +333,28 @@ class LocaleController @Inject constructor(
   }
 
   /**
-   * Returns the [LanguageSupportDefinition] corresponding to the specified language code, or null
+   * Returns the [LanguageSupportDefinition] corresponding to the specified locale profile, or null
    * if none match.
    *
    * This only matches against app string IDs since content & audio translations never fall back to
    * system languages.
    */
   private suspend fun retrieveLanguageDefinitionFromSystemCode(
-    languageCode: String
+    localeProfile: AndroidLocaleProfile
   ): LanguageSupportDefinition? {
     val definitions = retrieveAllLanguageDefinitions()
     // Attempt to find a matching definition. Note that while Locale's language code is expected to
     // be an ISO 639-1/2/3 code, it not necessarily match the IETF BCP 47 tag defined for this
     // language. If a language is unknown, return a definition that attempts to be interoperable
-    // with Android.
-    return definitions.languageDefinitionsList.find {
-      machineLocale.run {
-        languageCode.equalsIgnoreCase(it.retrieveAppLanguageCode())
+    // with Android. Note that a sequence is used here to avoid computing extra profiles when not
+    // needed.
+    return definitions.languageDefinitionsList.asSequence().mapNotNull { definition ->
+      return@mapNotNull definition.retrieveAppLanguageProfile()?.let { profile ->
+        profile to definition
       }
-    }
+    }.find { (profile, _) ->
+      localeProfile.matches(machineLocale, profile)
+    }?.let { (_, definition) -> definition }
   }
 
   private suspend fun retrieveRegionDefinition(countryCode: String): RegionSupportDefinition {
@@ -379,12 +391,14 @@ class LocaleController @Inject constructor(
     return@withLock supportedRegions
   }
 
-  private fun LanguageSupportDefinition.retrieveAppLanguageCode(): String? {
+  private fun LanguageSupportDefinition.retrieveAppLanguageProfile(): AndroidLocaleProfile? {
     return when (appStringId.languageTypeCase) {
       LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID ->
-        appStringId.ietfBcp47Id.ietfLanguageTag
-      LanguageSupportDefinition.LanguageId.LanguageTypeCase.MACARONIC_ID ->
-        appStringId.macaronicId.combinedLanguageCode // Likely won't match against system languages.
+        AndroidLocaleProfile.createFromIetfDefinitions(appStringId, regionDefinition = null)
+      LanguageSupportDefinition.LanguageId.LanguageTypeCase.MACARONIC_ID -> {
+        // Likely won't match against system languages.
+        AndroidLocaleProfile.createFromMacaronicLanguage(appStringId)
+      }
       LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET, null -> null
     }
   }

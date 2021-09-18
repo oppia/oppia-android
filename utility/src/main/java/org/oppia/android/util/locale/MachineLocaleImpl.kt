@@ -28,7 +28,7 @@ class MachineLocaleImpl @Inject constructor(
 ) : OppiaLocale.MachineLocale(machineLocaleContext) {
   private val parsableDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", machineAndroidLocale) }
   private val timeFormat by lazy {
-    DateFormat.getTimeInstance(DateFormat.SHORT, machineAndroidLocale)
+    DateFormat.getTimeInstance(DateFormat.MEDIUM, machineAndroidLocale)
   }
 
   override fun String.formatForMachines(vararg args: Any?): String =
@@ -52,7 +52,7 @@ class MachineLocaleImpl @Inject constructor(
     return when (oppiaClock.getCurrentCalendar().get(Calendar.HOUR_OF_DAY)) {
       in 4..11 -> TimeOfDay.MORNING
       in 12..16 -> TimeOfDay.AFTERNOON
-      in 17 downTo 3 -> TimeOfDay.EVENING
+      in 0..3, in 17..23 -> TimeOfDay.EVENING
       else -> TimeOfDay.UNKNOWN
     }
   }

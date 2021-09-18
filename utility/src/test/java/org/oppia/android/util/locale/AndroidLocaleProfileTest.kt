@@ -1,4 +1,4 @@
-package org.oppia.android.domain.locale
+package org.oppia.android.util.locale
 
 import android.app.Application
 import android.content.Context
@@ -15,9 +15,13 @@ import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.LanguageSupportDefinition.IetfBcp47LanguageId
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
+import org.oppia.android.app.model.LanguageSupportDefinition.MacaronicLanguageId
+import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.RegionSupportDefinition
+import org.oppia.android.app.model.RegionSupportDefinition.IetfBcp47RegionId
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.MachineLocaleModule
-import org.oppia.android.util.locale.OppiaLocale
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -38,6 +42,8 @@ class AndroidLocaleProfileTest {
   fun setUp() {
     setUpTestApplicationComponent()
   }
+
+  /* Tests for createFrom */
 
   @Test
   fun testCreateProfile_fromRootLocale_returnsProfileWithoutLanguageAndRegionCode() {
@@ -62,6 +68,245 @@ class AndroidLocaleProfileTest {
     assertThat(profile.languageCode).isEqualTo("pt")
     assertThat(profile.regionCode).isEqualTo("BR")
   }
+
+  /* Tests for createFromIetfDefinitions */
+
+  @Test
+  fun testCreateProfileFromIetf_defaultLanguageId_nullRegion_returnsNull() {
+    val profile =
+      AndroidLocaleProfile.createFromIetfDefinitions(
+        languageId = LanguageId.getDefaultInstance(), regionDefinition = null
+      )
+
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromIetf_languageIdWithoutIetf_withRegion_returnsNull() {
+    val languageWithoutIetf = LanguageId.newBuilder().apply {
+      macaronicId = MacaronicLanguageId.newBuilder().apply {
+        combinedLanguageCode = "hi-en"
+      }.build()
+    }.build()
+
+    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithoutIetf, REGION_INDIA)
+
+    // The language ID needs to have an IETF BCP 47 ID defined.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromIetf_languageIdWithEmptyIetf_withRegion_returnsNull() {
+    val languageWithIetf = LanguageId.newBuilder().apply {
+      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+        ietfLanguageTag = ""
+      }.build()
+    }.build()
+
+    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
+
+    // The language ID needs to have an IETF BCP 47 ID defined.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromIetf_languageIdWithMalformedIetf_withRegion_returnsNull() {
+    val languageWithIetf = LanguageId.newBuilder().apply {
+      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+        ietfLanguageTag = "mal-form-ed"
+      }.build()
+    }.build()
+
+    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
+
+    // The language ID needs to have a well-formed IETF BCP 47 ID defined.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromIetf_languageIdWithIetfLanguageCode_withRegion_returnsCombinedProfile() {
+    val languageWithIetf = LanguageId.newBuilder().apply {
+      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+        ietfLanguageTag = "pt"
+      }.build()
+    }.build()
+
+    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
+
+    // The constituent language code should come from the language ID, and the region code from the
+    // provided region definition.
+    assertThat(profile?.languageCode).isEqualTo("pt")
+    assertThat(profile?.regionCode).isEqualTo("IN")
+  }
+
+  @Test
+  fun testCreateProfileFromIetf_withIetfLanguageRegionTag_withRegion_returnsIetfRegionProfile() {
+    val languageWithIetf = LanguageId.newBuilder().apply {
+      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+        ietfLanguageTag = "pt-BR"
+      }.build()
+    }.build()
+
+    val profile = AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
+
+    // In this case, the region comes from the IETF language tag since it's included.
+    assertThat(profile?.languageCode).isEqualTo("pt")
+    assertThat(profile?.regionCode).isEqualTo("BR")
+  }
+
+  @Test
+  fun testCreateProfileFromIetf_languageIdWithIetfLanguageCode_withDefaultRegion_returnsNull() {
+    val languageWithIetf = LanguageId.newBuilder().apply {
+      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+        ietfLanguageTag = "pt"
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromIetfDefinitions(
+        languageWithIetf, regionDefinition = RegionSupportDefinition.getDefaultInstance()
+      )
+
+    // The region is needed in this case, so it needs to be provided.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromIetf_languageIdWithIetfLanguageCode_withEmptyRegion_returnsNull() {
+    val languageWithIetf = LanguageId.newBuilder().apply {
+      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+        ietfLanguageTag = "pt"
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromIetfDefinitions(
+        languageWithIetf, regionDefinition = RegionSupportDefinition.getDefaultInstance()
+      )
+
+    // The region is needed in this case, so a valid one needs to be provided.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromIetf_withIetfLanguageCode_withNullRegion_returnsWildcardProfile() {
+    val languageWithIetf = LanguageId.newBuilder().apply {
+      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+        ietfLanguageTag = "pt"
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromIetfDefinitions(languageWithIetf, regionDefinition = null)
+
+    // A null region specifically means to use a wildcard match for regions.
+    assertThat(profile?.languageCode).isEqualTo("pt")
+    assertThat(profile?.regionCode).isEqualTo(AndroidLocaleProfile.REGION_WILDCARD)
+  }
+
+  /* Tests for createFromMacaronicLanguage */
+
+  @Test
+  fun testCreateProfileFromMacaronic_defaultLanguageId_returnsNull() {
+    val profile =
+      AndroidLocaleProfile.createFromMacaronicLanguage(languageId = LanguageId.getDefaultInstance())
+
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromMacaronic_languageIdWithoutMacaronic_returnsNull() {
+    val languageWithoutMacaronic = LanguageId.newBuilder().apply {
+      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
+        ietfLanguageTag = "pt"
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithoutMacaronic)
+
+    // The provided language ID must have a macaronic ID defined.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromMacaronic_languageIdWithEmptyMacaronic_returnsNull() {
+    val languageWithMacaronic = LanguageId.newBuilder().apply {
+      macaronicId = MacaronicLanguageId.newBuilder().apply {
+        combinedLanguageCode = ""
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+
+    // The provided language ID must have a macaronic ID defined.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromMacaronic_languageIdWithMalformedMacaronic_extraFields__returnsNull() {
+    val languageWithMacaronic = LanguageId.newBuilder().apply {
+      macaronicId = MacaronicLanguageId.newBuilder().apply {
+        combinedLanguageCode = "mal-form-ed"
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+
+    // The provided language ID must have a well-formed macaronic ID defined.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromMacaronic_languageId_malformedMacaronic_missingSecondLang_returnsNull() {
+    val languageWithMacaronic = LanguageId.newBuilder().apply {
+      macaronicId = MacaronicLanguageId.newBuilder().apply {
+        combinedLanguageCode = "hi"
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+
+    // The provided language ID must have a well-formed macaronic ID defined, that is, it must have
+    // two language parts defined.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromMacaronic_languageId_emptyMacaronicRegion_returnsNull() {
+    val languageWithMacaronic = LanguageId.newBuilder().apply {
+      macaronicId = MacaronicLanguageId.newBuilder().apply {
+        combinedLanguageCode = "hi-"
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+
+    // The macaronic ID has two parts as expected, but the second language ID must be filled in.
+    assertThat(profile).isNull()
+  }
+
+  @Test
+  fun testCreateProfileFromMacaronic_languageIdWithValidMacaronic_returnsProfile() {
+    val languageWithMacaronic = LanguageId.newBuilder().apply {
+      macaronicId = MacaronicLanguageId.newBuilder().apply {
+        combinedLanguageCode = "hi-en"
+      }.build()
+    }.build()
+
+    val profile =
+      AndroidLocaleProfile.createFromMacaronicLanguage(languageWithMacaronic)
+
+    // The macaronic ID was valid. Verify that both language IDs correctly populate the profile.
+    assertThat(profile?.languageCode).isEqualTo("hi")
+    assertThat(profile?.regionCode).isEqualTo("en")
+  }
+
+  /* Tests for matches() */
 
   @Test
   fun testMatchProfile_rootProfile_withItself_match() {
@@ -286,5 +531,14 @@ class AndroidLocaleProfileTest {
     }
 
     fun inject(androidLocaleProfileTest: AndroidLocaleProfileTest)
+  }
+
+  private companion object {
+    private val REGION_INDIA = RegionSupportDefinition.newBuilder().apply {
+      region = OppiaRegion.INDIA
+      regionId = IetfBcp47RegionId.newBuilder().apply {
+        ietfRegionTag = "IN"
+      }.build()
+    }.build()
   }
 }

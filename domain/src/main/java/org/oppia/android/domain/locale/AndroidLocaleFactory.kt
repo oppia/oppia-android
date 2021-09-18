@@ -10,6 +10,7 @@ import org.oppia.android.util.locale.getFallbackLanguageId
 import org.oppia.android.util.locale.getLanguageId
 import java.util.Locale
 import javax.inject.Inject
+import org.oppia.android.util.locale.AndroidLocaleProfile
 
 /**
  * Factory for creating new Android [Locale]s. This is meant only to be used within the locale
@@ -71,8 +72,8 @@ class AndroidLocaleFactory @Inject constructor(
     return if (definition.minAndroidSdkVersion <= Build.VERSION.SDK_INT) {
       listOfNotNull(
         languageId.computeLocaleProfileFromAndroidId(),
-        languageId.computeLocaleProfileFromIetfDefinitions(localeContext.regionDefinition),
-        languageId.computeLocaleProfileFromMacaronicLanguage()
+        AndroidLocaleProfile.createFromIetfDefinitions(languageId, localeContext.regionDefinition),
+        AndroidLocaleProfile.createFromMacaronicLanguage(languageId)
       )
     } else listOf()
   }
@@ -83,28 +84,9 @@ class AndroidLocaleFactory @Inject constructor(
         // Empty region codes are allowed for Android resource IDs since they should always be used
         // verbatim to ensure the correct Android resource string can be computed (such as for macro
         // languages).
-        maybeConstructProfile(languageCode, regionCode, emptyRegionAsWildcard = true)
+        maybeConstructProfileWithWildcardSupport(languageCode, regionCode)
       }
     } else null
-  }
-
-  private fun LanguageId.computeLocaleProfileFromIetfDefinitions(
-    regionDefinition: RegionSupportDefinition
-  ): AndroidLocaleProfile? {
-    if (!hasIetfBcp47Id()) return null
-    return if ("-" in ietfBcp47Id.ietfLanguageTag) {
-      val (languageCode, regionCode) = ietfBcp47Id.ietfLanguageTag.divide("-") ?: return null
-      maybeConstructProfile(languageCode, regionCode)
-    } else {
-      if (!regionDefinition.hasRegionId()) return null
-      maybeConstructProfile(ietfBcp47Id.ietfLanguageTag, regionDefinition.regionId.ietfRegionTag)
-    }
-  }
-
-  private fun LanguageId.computeLocaleProfileFromMacaronicLanguage(): AndroidLocaleProfile? {
-    if (!hasMacaronicId()) return null
-    val (languageCode, regionCode) = macaronicId.combinedLanguageCode.divide("-") ?: return null
-    return maybeConstructProfile(languageCode, regionCode)
   }
 
   /**
@@ -129,23 +111,20 @@ class AndroidLocaleFactory @Inject constructor(
         )
       }
       LanguageId.LanguageTypeCase.MACARONIC_ID -> {
-        val (languageCode, regionCode) =
-          macaronicId.combinedLanguageCode.divide("-")
-            ?: error("Invalid macaronic ID: ${macaronicId.combinedLanguageCode}")
-        AndroidLocaleProfile(languageCode, regionCode)
+        AndroidLocaleProfile.createFromMacaronicLanguage(this)
+          ?: error("Invalid macaronic ID: ${macaronicId.combinedLanguageCode}")
       }
       LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET, null ->
         error("Invalid language case: $languageTypeCase")
     }
   }
 
-  private fun maybeConstructProfile(
+  private fun maybeConstructProfileWithWildcardSupport(
     languageCode: String,
-    regionCode: String,
-    emptyRegionAsWildcard: Boolean = false
+    regionCode: String
   ): AndroidLocaleProfile? {
-    return if (languageCode.isNotEmpty() && (regionCode.isNotEmpty() || emptyRegionAsWildcard)) {
-      val adjustedRegionCode = if (emptyRegionAsWildcard && regionCode.isEmpty()) {
+    return if (languageCode.isNotEmpty()) {
+      val adjustedRegionCode = if (regionCode.isEmpty()) {
         AndroidLocaleProfile.REGION_WILDCARD
       } else regionCode
       AndroidLocaleProfile(languageCode, adjustedRegionCode)
@@ -161,13 +140,6 @@ class AndroidLocaleFactory @Inject constructor(
   private companion object {
     private val availableLocaleProfiles by lazy {
       Locale.getAvailableLocales().map(AndroidLocaleProfile::createFrom)
-    }
-
-    private fun String.divide(delimiter: String): Pair<String, String>? {
-      val results = split(delimiter)
-      return if (results.size == 2) {
-        results[0] to results[1]
-      } else null
     }
 
     private fun AndroidLocaleProfile.getNonWildcardRegionCode(): String {
