@@ -329,4 +329,10 @@
   <dimen name="promoted_story_card_layout_margin_end">24dp</dimen>
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">4dp</dimen>
+
+  <!-- Topic Revision Fragment -->
+  <dimen name="topic_revision_fragment_paddingStart">96dp</dimen>
+  <dimen name="topic_revision_fragment_paddingTop">8dp</dimen>
+  <dimen name="topic_revision_fragment_paddingEnd">96dp</dimen>
+  <dimen name="topic_revision_fragment_paddingBottom">112dp</dimen>
 </resources>
