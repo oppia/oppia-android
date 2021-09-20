@@ -31,10 +31,12 @@
 
   <View
     android:id="@+id/app_version_shadow_view"
-    android:layout_width="match_parent"
+    android:layout_width="0dp"
     android:layout_height="4dp"
     android:layout_gravity="top"
     android:background="@drawable/toolbar_drop_shadow"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@id/app_version_app_bar_layout"
     app:layout_constraintBottom_toTopOf="@id/app_version_fragment_placeholder"/>
 
