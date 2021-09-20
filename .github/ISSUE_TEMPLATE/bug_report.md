@@ -24,9 +24,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots or videos to help explain your problem.
 
 **Environment**
-- Device/emulator being used
-- Android or SDK version (e.g. Android 5 or SDK 21)
-- App version (you can get this through system app settings or via the admin controls menu in-app)
+- Device/emulator being used: <device version/emulator>
+- Android or SDK version (e.g. Android 5 or SDK 21): <os/sdk version>
+- App version (you can get this through system app settings or via the admin controls menu in-app): <app version>
 
 **Additional context**
 Add any other context about the problem here.
