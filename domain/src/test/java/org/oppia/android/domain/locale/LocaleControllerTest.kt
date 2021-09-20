@@ -41,9 +41,10 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.MachineLocaleModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -849,7 +850,8 @@ class LocaleControllerTest {
     modules = [
       TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
-      MachineLocaleModule::class, FakeOppiaClockModule::class, RobolectricModule::class
+      LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
+      AssetModule::class
     ]
   )
   interface TestApplicationComponent: DataProvidersInjector {

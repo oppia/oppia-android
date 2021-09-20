@@ -102,3 +102,10 @@ file_content_checks {
   failure_message: "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
   exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
 }
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "android.text.BidiFormatter"
+  failure_message: "Do not use Android's BidiFormatter directly. Instead, use the wrapper utility OppiaBidiFormatter so that tests can verify that formatting actually occurs on select strings."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatterImpl.kt"
+}

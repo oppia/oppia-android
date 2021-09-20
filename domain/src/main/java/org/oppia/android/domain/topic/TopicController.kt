@@ -84,15 +84,15 @@ private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
 class TopicController @Inject constructor(
-  private val dataProviders: DataProviders,
-  private val jsonAssetRetriever: JsonAssetRetriever,
-  private val questionRetriever: QuestionRetriever,
-  private val conceptCardRetriever: ConceptCardRetriever,
-  private val revisionCardRetriever: RevisionCardRetriever,
-  private val storyProgressController: StoryProgressController,
-  private val exceptionsController: ExceptionsController,
-  private val assetRepository: AssetRepository,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+        private val dataProviders: DataProviders,
+        private val jsonAssetRetriever: JsonAssetRetriever,
+        private val questionRetriever: QuestionRetriever,
+        private val conceptCardRetriever: ConceptCardRetriever,
+        private val revisionCardRetriever: RevisionCardRetriever,
+        private val storyProgressController: StoryProgressController,
+        private val exceptionsController: ExceptionsController,
+        private val assetRepository: AssetRepository,
+        @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
 
   /**

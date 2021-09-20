@@ -2,23 +2,24 @@ package org.oppia.android.domain.locale
 
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.text.BidiFormatter
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.core.text.TextUtilsCompat
-import org.oppia.android.app.model.OppiaLocaleContext
-import org.oppia.android.util.locale.OppiaLocale
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.Objects
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.util.locale.OppiaBidiFormatter
+import org.oppia.android.util.locale.OppiaLocale
 
 // TODO(#3766): Restrict to be 'internal'.
 /** Implementation of [OppiaLocale.DisplayLocale]. */
 class DisplayLocaleImpl(
   localeContext: OppiaLocaleContext,
   private val machineLocale: MachineLocale,
-  private val androidLocaleFactory: AndroidLocaleFactory
+  private val androidLocaleFactory: AndroidLocaleFactory,
+  private val formatterFactory: OppiaBidiFormatter.Factory
 ) : OppiaLocale.DisplayLocale(localeContext) {
   // TODO(#3766): Restrict to be 'internal'.
   /** The [Locale] used for user-facing string formatting in this display locale. */
@@ -32,7 +33,7 @@ class DisplayLocaleImpl(
   private val dateTimeFormat by lazy {
     DateFormat.getDateTimeInstance(DATE_FORMAT_LENGTH, TIME_FORMAT_LENGTH, formattingLocale)
   }
-  private val bidiFormatter by lazy { BidiFormatter.getInstance(formattingLocale) }
+  private val bidiFormatter by lazy { formatterFactory.createFormatter(formattingLocale) }
 
   // TODO(#3766): Restrict to be 'internal'.
   /**
@@ -60,9 +61,7 @@ class DisplayLocaleImpl(
 
   override fun String.formatInLocaleWithWrapping(vararg args: CharSequence): String {
     return formatInLocaleWithoutWrapping(
-      *args.map { arg ->
-        bidiFormatter.unicodeWrap(arg)
-      }.toTypedArray()
+      *args.map { arg -> bidiFormatter.wrapText(arg) }.toTypedArray()
     )
   }
 

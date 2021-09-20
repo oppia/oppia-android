@@ -34,6 +34,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.AssetModule
 
 /** Tests for [ExplorationStorageModule]. */
 @RunWith(AndroidJUnit4::class)
@@ -108,7 +109,7 @@ class ExplorationStorageModuleTest {
     modules = [
       TestModule::class, TestLogReportingModule::class,
       ExplorationStorageModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LogStorageModule::class, NetworkConnectionUtilDebugModule::class
+      LogStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -88,6 +88,7 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
@@ -1023,7 +1024,8 @@ class ProfileResetPinActivityTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+AssetModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -10,6 +10,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -59,6 +62,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -70,9 +74,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [StoryProgressTestHelper]. */
 @RunWith(AndroidJUnit4::class)
@@ -1769,7 +1770,8 @@ class StoryProgressTestHelperTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class
+      ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class,
+      AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

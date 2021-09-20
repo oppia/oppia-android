@@ -1,15 +1,15 @@
 package org.oppia.android.scripts.regex
 
 import com.google.common.truth.Truth.assertThat
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.PrintStream
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.PrintStream
 
 /** Tests for [RegexPatternValidationCheck]. */
 class RegexPatternValidationCheckTest {
@@ -58,6 +58,10 @@ class RegexPatternValidationCheckTest {
     "Untranslatable strings should go in untranslated_strings.xml, instead."
   private val translatableStringsGoInMainFileErrorMessage =
     "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
+  private val importingAndroidBidiFormatterErrorMessage =
+    "Do not use Android's BidiFormatter directly. Instead, use the wrapper utility" +
+      " OppiaBidiFormatter so that tests can verify that formatting actually occurs on select" +
+      " strings."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -866,6 +870,27 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $translatableStringsGoInMainFileErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_bidiFormatterImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import android.text.BidiFormatter"
+    tempFolder.newFolder("testfiles", "data", "src", "main")
+    val stringFilePath = "data/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $importingAndroidBidiFormatterErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )

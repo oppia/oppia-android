@@ -59,6 +59,7 @@ import org.robolectric.annotation.LooperMode
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.AssetModule
 
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
@@ -1280,7 +1281,7 @@ class TopicControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      NetworkConnectionUtilDebugModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

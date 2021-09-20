@@ -58,6 +58,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
@@ -148,7 +149,7 @@ class DateTimeUtilTest {
       HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverModule::class,
       GlideImageLoaderModule::class, PrimeTopicAssetsControllerModule::class,
       HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

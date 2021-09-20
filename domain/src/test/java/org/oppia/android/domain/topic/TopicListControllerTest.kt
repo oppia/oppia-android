@@ -10,6 +10,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,6 +38,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
@@ -53,8 +56,6 @@ import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [TopicListController]. */
 @RunWith(AndroidJUnit4::class)
@@ -872,7 +873,7 @@ class TopicListControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      NetworkConnectionUtilDebugModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

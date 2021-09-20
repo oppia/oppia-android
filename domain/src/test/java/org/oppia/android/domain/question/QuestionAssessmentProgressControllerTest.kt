@@ -11,6 +11,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,6 +61,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -70,9 +74,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TOLERANCE = 1e-5
 
@@ -1882,7 +1883,7 @@ class QuestionAssessmentProgressControllerTest {
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       CachingTestModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class
+      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

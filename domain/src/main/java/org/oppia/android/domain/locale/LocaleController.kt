@@ -27,6 +27,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.AndroidLocaleProfile
+import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.locale.OppiaLocale.ContentLocale
 import org.oppia.android.util.locale.OppiaLocale.DisplayLocale
@@ -48,7 +49,8 @@ class LocaleController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val machineLocale: MachineLocale,
-  private val androidLocaleFactory: AndroidLocaleFactory
+  private val androidLocaleFactory: AndroidLocaleFactory,
+  private val formatterFactory: OppiaBidiFormatter.Factory
 ) {
   private val definitionsLock = ReentrantLock()
   private lateinit var supportedLanguages: SupportedLanguages
@@ -103,7 +105,9 @@ class LocaleController @Inject constructor(
    * for cases in which the user changed their selected language).
    */
   fun reconstituteDisplayLocale(oppiaLocaleContext: OppiaLocaleContext): DisplayLocale {
-    return DisplayLocaleImpl(oppiaLocaleContext, machineLocale, androidLocaleFactory)
+    return DisplayLocaleImpl(
+      oppiaLocaleContext, machineLocale, androidLocaleFactory, formatterFactory
+    )
   }
 
   /**
@@ -290,7 +294,8 @@ class LocaleController @Inject constructor(
     }
 
     return when (usageMode) {
-      APP_STRINGS -> DisplayLocaleImpl(localeContext, machineLocale, androidLocaleFactory)
+      APP_STRINGS ->
+        DisplayLocaleImpl(localeContext, machineLocale, androidLocaleFactory, formatterFactory)
       CONTENT_STRINGS, AUDIO_TRANSLATIONS -> ContentLocaleImpl(localeContext)
       USAGE_MODE_UNSPECIFIED, UNRECOGNIZED -> null
     }

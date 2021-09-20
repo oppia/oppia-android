@@ -47,6 +47,7 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.AssetModule
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -482,7 +483,7 @@ class AudioPlayerControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      NetworkConnectionUtilDebugModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent {

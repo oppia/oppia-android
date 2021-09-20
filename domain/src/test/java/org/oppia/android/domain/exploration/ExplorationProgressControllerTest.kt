@@ -94,6 +94,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.AssetModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -3842,8 +3843,7 @@ class ExplorationProgressControllerTest {
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class
-    ]
+      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class    ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder

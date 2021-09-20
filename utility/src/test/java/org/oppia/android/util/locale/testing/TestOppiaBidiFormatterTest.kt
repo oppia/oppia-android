@@ -1,45 +1,40 @@
-package org.oppia.android.util.locale
+package org.oppia.android.util.locale.testing
 
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
 import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [MachineLocaleModule]. */
+/** Tests for [TestOppiaBidiFormatter]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class MachineLocaleModuleTest {
-  @Inject
-  lateinit var machineLocale: OppiaLocale.MachineLocale
-
+class TestOppiaBidiFormatterTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
+  // TODO: finish (particularly for different locales)
+
   @Test
-  fun testModule_injectsProductImplementationOfMachineLocale() {
-    assertThat(machineLocale).isInstanceOf(MachineLocaleImpl::class.java)
+  fun testCreateLocale_default_throwsException() {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMachineLocaleModuleTest_TestApplicationComponent.builder()
+    DaggerTestOppiaBidiFormatterTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -59,7 +54,7 @@ class MachineLocaleModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, MachineLocaleModule::class, FakeOppiaClockModule::class
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {
@@ -71,6 +66,6 @@ class MachineLocaleModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(machineLocaleModuleTest: MachineLocaleModuleTest)
+    fun inject(testOppiaBidiFormatterTest: TestOppiaBidiFormatterTest)
   }
 }

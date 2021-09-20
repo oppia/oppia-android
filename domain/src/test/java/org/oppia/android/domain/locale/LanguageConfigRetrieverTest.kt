@@ -1,17 +1,17 @@
 package org.oppia.android.domain.locale
 
-import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,6 +23,7 @@ import org.oppia.android.app.model.SupportedLanguages
 import org.oppia.android.app.model.SupportedRegions
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -41,8 +42,6 @@ class LanguageConfigRetrieverTest {
   fun setUp() {
     setUpTestApplicationComponent()
   }
-
-  // TODO: create another variant of this test for no config
 
   @Test
   fun testOppiaLanguage_hasSupportForSixLanguages() {
@@ -250,7 +249,8 @@ class LanguageConfigRetrieverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class
+      TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      AssetModule::class
     ]
   )
   interface TestApplicationComponent {

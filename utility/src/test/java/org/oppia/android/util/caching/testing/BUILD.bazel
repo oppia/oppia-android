@@ -1,0 +1,40 @@
+"""
+Tests for testing utilities corresponding asset caching utilities.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "AssetTestModuleTest",
+    srcs = ["AssetTestModuleTest.kt"],
+    custom_package = "org.oppia.android.util.caching.testing",
+    test_class = "org.oppia.android.util.caching.testing.AssetTestModuleTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
+    name = "TestAssetRepositoryTest",
+    srcs = ["TestAssetRepositoryTest.kt"],
+    custom_package = "org.oppia.android.util.caching.testing",
+    test_class = "org.oppia.android.util.caching.testing.TestAssetRepositoryTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+dagger_rules()

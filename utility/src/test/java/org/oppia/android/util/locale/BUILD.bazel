@@ -10,7 +10,7 @@ oppia_android_test(
     srcs = ["AndroidLocaleProfileTest.kt"],
     custom_package = "org.oppia.android.util.locale",
     test_class = "org.oppia.android.util.locale.AndroidLocaleProfileTest",
-    test_manifest = "//domain:test_manifest",
+    test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -25,11 +25,11 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "MachineLocaleModuleTest",
-    srcs = ["MachineLocaleModuleTest.kt"],
+    name = "LocaleProdModuleTest",
+    srcs = ["LocaleProdModuleTest.kt"],
     custom_package = "org.oppia.android.util.locale",
-    test_class = "org.oppia.android.util.locale.MachineLocaleModuleTest",
-    test_manifest = "//domain:test_manifest",
+    test_class = "org.oppia.android.util.locale.LocaleProdModuleTest",
+    test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -47,7 +47,7 @@ oppia_android_test(
     srcs = ["MachineLocaleImplTest.kt"],
     custom_package = "org.oppia.android.util.locale",
     test_class = "org.oppia.android.util.locale.MachineLocaleImplTest",
-    test_manifest = "//domain:test_manifest",
+    test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
@@ -61,11 +61,27 @@ oppia_android_test(
 )
 
 oppia_android_test(
+    name = "OppiaBidiFormatterImplTest",
+    srcs = ["OppiaBidiFormatterImplTest.kt"],
+    custom_package = "org.oppia.android.util.locale",
+    test_class = "org.oppia.android.util.locale.OppiaBidiFormatterImplTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
     name = "OppiaLocaleContextExtensionsTest",
     srcs = ["OppiaLocaleContextExtensionsTest.kt"],
     custom_package = "org.oppia.android.util.locale",
     test_class = "org.oppia.android.util.locale.OppiaLocaleContextExtensionsTest",
-    test_manifest = "//domain:test_manifest",
+    test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
         "//model:languages_java_proto_lite",

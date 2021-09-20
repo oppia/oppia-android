@@ -47,6 +47,7 @@ kt_android_library(
         ":android_locale_factory",
         "//third_party:androidx_core_core",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_bidi_formatter",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],
 )
@@ -77,7 +78,8 @@ kt_android_library(
         ":dagger",
         "//config/src/java/org/oppia/android/config:languages_config",
         "//model:languages_java_proto_lite",
-        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
     ],
 )
 

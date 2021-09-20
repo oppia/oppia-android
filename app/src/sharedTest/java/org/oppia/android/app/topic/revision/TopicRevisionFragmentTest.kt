@@ -23,6 +23,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -82,6 +84,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -92,8 +95,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -310,7 +311,8 @@ class TopicRevisionFragmentTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+AssetModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
