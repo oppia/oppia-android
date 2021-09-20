@@ -289,6 +289,8 @@ sealed class OppiaLocale {
      * format retrieved from this [Resources] object (according to this locale). For this reason,
      * strings that include non-string parameters are not supported for wrapping. Instead, arguments
      * should be correctly converted to human-readable strings before being passed to this method.
+     * This also means that the strings themselves should only ever take string types since
+     * non-strings cannot be passed in.
      */
     abstract fun Resources.getStringInLocaleWithWrapping(
       @StringRes id: Int,

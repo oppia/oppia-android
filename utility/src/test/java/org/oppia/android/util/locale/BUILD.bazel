@@ -68,11 +68,14 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:shadow_bidi_formatter",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_bidi_formatter",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     ],
 )
 

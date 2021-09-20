@@ -4,9 +4,9 @@ import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.caching.AssetRepository
 
-/** Test-only module for loading assets. */
+/** Test-only module for no-op loading assets. */
 @Module
-class AssetTestModule {
+class AssetTestNoOpModule {
   @Provides
-  fun provideAssetRepository(impl: TestAssetRepository): AssetRepository = impl
+  fun provideAssetRepository(impl: TestNoOpAssetRepository): AssetRepository = impl
 }

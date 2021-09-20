@@ -28,14 +28,22 @@ class LocaleProdModuleTest {
   @Inject
   lateinit var machineLocale: OppiaLocale.MachineLocale
 
+  @Inject
+  lateinit var formatterFactory: OppiaBidiFormatter.Factory
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
   @Test
-  fun testModule_injectsProductImplementationOfMachineLocale() {
+  fun testModule_injectsProductionImplementationOfMachineLocale() {
     assertThat(machineLocale).isInstanceOf(MachineLocaleImpl::class.java)
+  }
+
+  @Test
+  fun testModule_injectsProductionImplementationOfBidiFormatterFactory() {
+    assertThat(formatterFactory).isInstanceOf(OppiaBidiFormatterImpl.FactoryImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {

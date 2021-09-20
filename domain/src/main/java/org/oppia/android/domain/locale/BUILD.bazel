@@ -43,6 +43,9 @@ kt_android_library(
     srcs = [
         "DisplayLocaleImpl.kt",
     ],
+    visibility = [
+        "//domain:domain_testing_visibility",
+    ],
     deps = [
         ":android_locale_factory",
         "//third_party:androidx_core_core",

@@ -4,37 +4,42 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
 import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.util.caching.AssetRepository
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [TestAssetRepository]. */
+/** Tests for [AssetTestNoOpModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class TestAssetRepositoryTest {
+class AssetTestNoOpModuleTest {
+  @Inject
+  lateinit var assetRepository: AssetRepository
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
-  // TODO: finish
-
   @Test
-  fun testCreateLocale_default_throwsException() {
+  fun testModule_injectsTestImplementationOfAssetRepository() {
+    assertThat(assetRepository).isInstanceOf(TestNoOpAssetRepository::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerTestAssetRepositoryTest_TestApplicationComponent.builder()
+    DaggerAssetTestNoOpModuleTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -54,7 +59,7 @@ class TestAssetRepositoryTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class
+      TestModule::class, AssetTestNoOpModule::class
     ]
   )
   interface TestApplicationComponent {
@@ -66,6 +71,6 @@ class TestAssetRepositoryTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(testAssetRepositoryTest: TestAssetRepositoryTest)
+    fun inject(assetTestNoOpModuleTest: AssetTestNoOpModuleTest)
   }
 }

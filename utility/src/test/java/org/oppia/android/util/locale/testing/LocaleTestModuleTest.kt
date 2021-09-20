@@ -4,14 +4,20 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
 import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.MachineLocaleImpl
+import org.oppia.android.util.locale.OppiaBidiFormatter
+import org.oppia.android.util.locale.OppiaLocale
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -22,15 +28,25 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class LocaleTestModuleTest {
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Inject
+  lateinit var formatterFactory: OppiaBidiFormatter.Factory
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
-  // TODO: finish
+  @Test
+  fun testModule_injectsProductionImplementationOfMachineLocale() {
+    assertThat(machineLocale).isInstanceOf(MachineLocaleImpl::class.java)
+  }
 
   @Test
-  fun testCreateLocale_default_throwsException() {
+  fun testModule_injectsTestImplementationOfBidiFormatterFactory() {
+    assertThat(formatterFactory).isInstanceOf(TestOppiaBidiFormatter.FactoryImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -54,7 +70,7 @@ class LocaleTestModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class
+      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -33,6 +33,14 @@ android_library(
     resource_files = glob(["src/main/res/**/*.xml"]),
 )
 
+# Visibility for migrated utility tests.
+package_group(
+    name = "utility_testing_visibility",
+    packages = [
+        "//utility/src/test/...",
+    ],
+)
+
 # Library for general-purpose utilities.
 kt_android_library(
     name = "utility",

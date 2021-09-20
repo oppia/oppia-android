@@ -1,10 +1,11 @@
 package org.oppia.android.domain.locale
 
-import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -20,7 +21,6 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import com.google.common.truth.Truth.assertThat
 
 /**
  * Tests for [ContentLocaleImpl].
@@ -48,7 +48,7 @@ class ContentLocaleImplTest {
   }
 
   @Test
-  fun testCreateContentLocaleImpl_onDefaultInstance_hasCorrectInstanceContext() {
+  fun testCreateContentLocaleImpl_forProvidedContext_hasCorrectInstanceContext() {
     val impl = ContentLocaleImpl(LOCALE_CONTEXT)
 
     assertThat(impl.oppiaLocaleContext).isEqualTo(LOCALE_CONTEXT)
@@ -152,7 +152,7 @@ class ContentLocaleImplTest {
 
   private companion object {
     private val LOCALE_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      usageMode = OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
       languageDefinition = LanguageSupportDefinition.newBuilder().apply {
         language = OppiaLanguage.HINGLISH
         fallbackMacroLanguage = OppiaLanguage.ENGLISH

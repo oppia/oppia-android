@@ -20,10 +20,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "asset_test_module",
+    name = "asset_test_no_op_module",
     testonly = True,
     srcs = [
-        "AssetTestModule.kt",
+        "AssetTestNoOpModule.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
@@ -36,7 +36,7 @@ kt_android_library(
     name = "test_asset_repository",
     testonly = True,
     srcs = [
-        "TestAssetRepository.kt",
+        "TestNoOpAssetRepository.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [

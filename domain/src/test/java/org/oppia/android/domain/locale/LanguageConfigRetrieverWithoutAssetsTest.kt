@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -15,7 +16,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.util.caching.testing.AssetTestModule
+import org.oppia.android.util.caching.testing.AssetTestNoOpModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -40,10 +41,20 @@ class LanguageConfigRetrieverWithoutAssetsTest {
     setUpTestApplicationComponent()
   }
 
-  // TODO: finish
+  @Test
+  fun testLoadSupportedLanguages_withoutAssets_returnsDefaultInstance() {
+    val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
+
+    // Using the no-op asset repository results in no assets being present.
+    assertThat(supportedLanguages).isEqualToDefaultInstance()
+  }
 
   @Test
-  fun testCreateLocale_default_throwsException() {
+  fun testLoadSupportedRegions_withoutAssets_returnsDefaultInstance() {
+    val supportedRegions = languageConfigRetriever.loadSupportedRegions()
+
+    // Using the no-op asset repository results in no assets being present.
+    assertThat(supportedRegions).isEqualToDefaultInstance()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -68,7 +79,7 @@ class LanguageConfigRetrieverWithoutAssetsTest {
   @Component(
     modules = [
       TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      AssetTestModule::class
+      AssetTestNoOpModule::class
     ]
   )
   interface TestApplicationComponent {
