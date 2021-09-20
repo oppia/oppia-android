@@ -33,7 +33,7 @@
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
       app:cardCornerRadius="4dp"
       app:cardElevation="@dimen/story_chapter_card_playable_state_elevation"
-      app:strokeColor="@color/colorPrimary"
+      app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/colorPrimary : @color/chapterCardGreyBorder}"
       app:strokeWidth="2dp">
 
       <androidx.constraintlayout.widget.ConstraintLayout
