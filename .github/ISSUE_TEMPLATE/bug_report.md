@@ -20,12 +20,13 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
+**Demonstration**
 If applicable, add screenshots or videos to help explain your problem.
 
-**Device**
+**Environment**
 - Device/emulator being used
-- SDK version
+- Android or SDK version (e.g. Android 5 or SDK 21)
+- App version (you can get this through system app settings or via the admin controls menu in-app)
 
 **Additional context**
 Add any other context about the problem here.
