@@ -1,16 +1,19 @@
 """
-build bazel file for tesing oppia logger loguploader
+Package for testing utilities for log uploading functionality.
 """
 
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
     name = "fake_log_uploader",
-    srcs = [
-        "FakeLogUploader.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
+    srcs = glob([
+        "src/main/java/org/oppia/android/domain/testing/**/*.kt",
+    ]),
+    testOnly = true,
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
+        ":dagger",
         "//third_party:androidx_work_work-runtime",
         "//third_party:androidx_work_work-runtime-ktx",
         "//third_party:javax_inject_javax_inject",
