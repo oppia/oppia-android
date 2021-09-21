@@ -31,7 +31,7 @@ class TextInputAction {
       return ErrorTextNotExisted()
     }
 
-    private class ErrorTextExisted(private val expectedErrorText: String) :
+    class ErrorTextExisted(private val expectedErrorText: String) :
       BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
       override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
         return textInputLayout.error == expectedErrorText
@@ -42,7 +42,7 @@ class TextInputAction {
       }
     }
 
-    private class ErrorTextNotExisted :
+    class ErrorTextNotExisted :
       BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
       override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
         return textInputLayout.error.isNullOrEmpty()
