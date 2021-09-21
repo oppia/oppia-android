@@ -7,10 +7,10 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
     name = "fake_log_uploader",
+    testonly = True,
     srcs = glob([
         "src/main/java/org/oppia/android/domain/testing/**/*.kt",
     ]),
-    testonly = True,
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
@@ -20,4 +20,5 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
     ],
 )
+
 dagger_rules()
