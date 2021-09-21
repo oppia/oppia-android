@@ -1,12 +1,12 @@
 package org.oppia.android.domain.classify.rules.textinput
 
+import javax.inject.Inject
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.domain.util.normalizeWhitespace
-import javax.inject.Inject
 import org.oppia.android.util.locale.OppiaLocale
 
 /**
@@ -34,7 +34,9 @@ class TextInputStartsWithRuleClassifierProvider @Inject constructor(
   override fun matches(answer: String, input: TranslatableSetOfNormalizedString): Boolean {
     val normalizedAnswer = machineLocale.run { answer.normalizeWhitespace().toMachineLowerCase() }
     return input.normalizedStringsList.any {
-      normalizedAnswer.contains(machineLocale.run { it.normalizeWhitespace().toMachineLowerCase() })
+      normalizedAnswer.startsWith(
+        machineLocale.run { it.normalizeWhitespace().toMachineLowerCase() }
+      )
     }
   }
 }
