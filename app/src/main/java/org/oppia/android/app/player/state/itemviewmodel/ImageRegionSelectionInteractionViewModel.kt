@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.content.Context
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -72,7 +71,7 @@ class ImageRegionSelectionInteractionViewModel(
     val answerTextString = answerText.toString()
     userAnswerBuilder.answer =
       InteractionObject.newBuilder().setClickOnImage(parseClickOnImage(answerTextString)).build()
-    userAnswerBuilder.plainAnswer = resourceHandler.getStringInLocale(
+    userAnswerBuilder.plainAnswer = resourceHandler.getStringInLocaleWithWrapping(
       R.string.image_interaction_answer_text,
       answerTextString
     )

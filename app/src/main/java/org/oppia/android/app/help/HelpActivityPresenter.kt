@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import javax.inject.Inject
+import kotlin.properties.Delegates
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
@@ -16,8 +18,6 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
-import javax.inject.Inject
-import kotlin.properties.Delegates
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [HelpActivity]. */
@@ -261,7 +261,7 @@ class HelpActivityPresenter @Inject constructor(
           R.string.help_activity_third_party_dependencies_list
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = resourceHandler.getStringInLocale(
+          .contentDescription = resourceHandler.getStringInLocaleWithoutWrapping(
           R.string.help_activity_back_arrow_description,
           thirdPartyDependenciesList
         )
@@ -271,7 +271,7 @@ class HelpActivityPresenter @Inject constructor(
           R.string.help_activity_copyright_licenses_list
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = resourceHandler.getStringInLocale(
+          .contentDescription = resourceHandler.getStringInLocaleWithoutWrapping(
           R.string.help_activity_back_arrow_description,
           copyrightLicensesList
         )

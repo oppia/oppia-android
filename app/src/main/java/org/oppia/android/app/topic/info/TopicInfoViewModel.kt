@@ -3,13 +3,13 @@ package org.oppia.android.app.topic.info
 import android.content.Context
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [ViewModel] for showing topic info details. */
 @FragmentScope
@@ -42,28 +42,41 @@ class TopicInfoViewModel @Inject constructor(
       val sizeInMb = sizeInKb / 1024
       val sizeInGb = sizeInMb / 1024
       return@let when {
-        sizeInGb >= 1 ->
-          resourceHandler.getStringInLocale(R.string.size_gb, roundUpToHundreds(sizeInGb))
-        sizeInMb >= 1 ->
-          resourceHandler.getStringInLocale(R.string.size_mb, roundUpToHundreds(sizeInMb))
-        sizeInKb >= 1 ->
-          resourceHandler.getStringInLocale(R.string.size_kb, roundUpToHundreds(sizeInKb))
-        else ->
-          resourceHandler.getStringInLocale(R.string.size_bytes, roundUpToHundreds(sizeInBytes))
+        sizeInGb >= 1 -> {
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.size_gb, roundUpToHundredsString(sizeInGb)
+          )
+        }
+        sizeInMb >= 1 -> {
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.size_mb, roundUpToHundredsString(sizeInMb)
+          )
+        }
+        sizeInKb >= 1 -> {
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.size_kb, roundUpToHundredsString(sizeInKb)
+          )
+        }
+        else -> {
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.size_bytes, roundUpToHundredsString(sizeInBytes)
+          )
+        }
       }
     } ?: resourceHandler.getStringInLocale(R.string.unknown_size)
-    topicSizeText.set(resourceHandler.getStringInLocale(R.string.topic_download_text, sizeWithUnit))
-  }
-
-  private fun computeStoryCountText(topic: Topic): String {
-    return resourceHandler.getQuantityStringInLocale(
-      R.plurals.story_count, topic.storyCount, topic.storyCount
+    topicSizeText.set(
+      resourceHandler.getStringInLocaleWithWrapping(R.string.topic_download_text, sizeWithUnit)
     )
   }
 
-  private fun roundUpToHundreds(intValue: Int): Int {
-    return ((intValue + 9) / 10) * 10
+  private fun computeStoryCountText(topic: Topic): String {
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.story_count, topic.storyCount, topic.storyCount.toString()
+    )
   }
+
+  private fun roundUpToHundredsString(intValue: Int): String =
+    (((intValue + 9) / 10) * 10).toString()
 
   fun clickSeeMore() {
     isDescriptionExpanded.set(!isDescriptionExpanded.get()!!)

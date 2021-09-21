@@ -96,6 +96,8 @@ class StoryChapterSummaryViewModel(
   }
 
   fun computeChapterTitleText(): String {
-    return resourceHandler.getStringInLocale(R.string.chapter_name, index + 1, name)
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.chapter_name, (index + 1).toString(), name
+    )
   }
 }

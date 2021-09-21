@@ -3,15 +3,15 @@ package org.oppia.android.app.topic.questionplayer
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
+import javax.inject.Inject
 import org.oppia.android.app.R
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [ObservableViewModel] for the question player. */
 class QuestionPlayerViewModel @Inject constructor(
@@ -58,8 +58,10 @@ class QuestionPlayerViewModel @Inject constructor(
     return if (isAtEndOfSession.get()) {
       resourceHandler.getStringInLocale(R.string.question_training_session_progress_finished)
     } else {
-      resourceHandler.getStringInLocale(
-        R.string.question_training_session_progress, currentQuestion, questionCount
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.question_training_session_progress,
+        currentQuestion.toString(),
+        questionCount.toString()
       )
     }
   }

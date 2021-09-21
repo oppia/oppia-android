@@ -72,6 +72,6 @@ class OnboardingSlideViewModel(
 
   private fun getOnboardingSlide0Title(): String {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
-    return resourceHandler.getStringInLocale(R.string.onboarding_slide_0_title, appName)
+    return resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_slide_0_title, appName)
   }
 }

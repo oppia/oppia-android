@@ -23,7 +23,7 @@ public final class TextViewBindingAdapters {
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String time = resourceHandler.computeDateString(timestamp);
-    textView.setText(resourceHandler.getStringInLocale(
+    textView.setText(resourceHandler.getStringInLocaleWithWrapping(
         R.string.profile_edit_created,
         time
     ));
@@ -35,7 +35,7 @@ public final class TextViewBindingAdapters {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used);
     String timeAgoTimeStamp = getTimeAgo(textView, timestamp);
-    String profileLastVisited = resourceHandler.getStringInLocale(
+    String profileLastVisited = resourceHandler.getStringInLocaleWithWrapping(
         R.string.profile_last_visited,
         profileLastUsed,
         timeAgoTimeStamp
@@ -84,9 +84,11 @@ public final class TextViewBindingAdapters {
       int count
   ) {
     // TODO: file an issue to combine these strings together.
-    return resourceHandler.getStringInLocale(
+    return resourceHandler.getStringInLocaleWithWrapping(
         R.string.time_ago,
-        resourceHandler.getQuantityStringInLocale(pluralsResId, count, count)
+        resourceHandler.getQuantityStringInLocaleWithWrapping(
+            pluralsResId, count, String.valueOf(count)
+        )
     );
   }
 

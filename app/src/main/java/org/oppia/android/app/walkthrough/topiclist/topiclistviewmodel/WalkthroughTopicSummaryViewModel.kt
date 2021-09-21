@@ -26,8 +26,10 @@ class WalkthroughTopicSummaryViewModel(
   }
 
   fun computeWalkthroughLessonCountText(): String {
-    return resourceHandler.getQuantityStringInLocale(
-      R.plurals.lesson_count, topicSummary.totalChapterCount, topicSummary.totalChapterCount
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.lesson_count,
+      topicSummary.totalChapterCount,
+      topicSummary.totalChapterCount.toString()
     )
   }
 

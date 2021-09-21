@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,10 +15,10 @@ import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonN
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [TextInputContainsRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -256,7 +258,7 @@ class TextInputContainsRuleClassifierProviderTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [])
+  @Component(modules = [LocaleProdModule::class, FakeOppiaClockModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

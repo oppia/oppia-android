@@ -13,8 +13,12 @@ class AppLanguageResourceHandler @Inject constructor(
 ) {
   private val resources by lazy { activity.resources }
 
-  fun formatInLocale(format: String, vararg formatArgs: Any?): String {
-    return getDisplayLocale().run { format.formatInLocale(*formatArgs) }
+  fun formatInLocaleWithWrapping(format: String, vararg formatArgs: String): String {
+    return getDisplayLocale().run { format.formatInLocaleWithWrapping(*formatArgs) }
+  }
+
+  fun formatInLocaleWithoutWrapping(format: String, vararg formatArgs: String): String {
+    return getDisplayLocale().run { format.formatInLocaleWithoutWrapping(*formatArgs) }
   }
 
   fun capitalizeForHumans(str: String): String {
@@ -25,8 +29,14 @@ class AppLanguageResourceHandler @Inject constructor(
     return getDisplayLocale().run { resources.getStringInLocale(id) }
   }
 
-  fun getStringInLocale(@StringRes id: Int, vararg formatArgs: Any?): String {
-    return getDisplayLocale().run { resources.getStringInLocale(id, *formatArgs) }
+  fun getStringInLocaleWithWrapping(@StringRes id: Int, vararg formatArgs: CharSequence): String {
+    return getDisplayLocale().run { resources.getStringInLocaleWithWrapping(id, *formatArgs) }
+  }
+
+  fun getStringInLocaleWithoutWrapping(
+    @StringRes id: Int, vararg formatArgs: CharSequence
+  ): String {
+    return getDisplayLocale().run { resources.getStringInLocaleWithoutWrapping(id, *formatArgs) }
   }
 
   fun getStringArrayInLocale(@ArrayRes id: Int): List<String> {
@@ -37,10 +47,20 @@ class AppLanguageResourceHandler @Inject constructor(
     return getDisplayLocale().run { resources.getQuantityStringInLocale(id, quantity) }
   }
 
-  fun getQuantityStringInLocale(
-    @PluralsRes id: Int, quantity: Int, vararg formatArgs: Any?
+  fun getQuantityStringInLocaleWithWrapping(
+    @PluralsRes id: Int, quantity: Int, vararg formatArgs: CharSequence
   ): String {
-    return getDisplayLocale().run { resources.getQuantityStringInLocale(id, quantity, *formatArgs) }
+    return getDisplayLocale().run {
+      resources.getQuantityStringInLocaleWithWrapping(id, quantity, *formatArgs)
+    }
+  }
+
+  fun getQuantityStringInLocaleWithoutWrapping(
+    @PluralsRes id: Int, quantity: Int, vararg formatArgs: CharSequence
+  ): String {
+    return getDisplayLocale().run {
+      resources.getQuantityStringInLocaleWithoutWrapping(id, quantity, *formatArgs)
+    }
   }
 
   fun computeDateString(timestampMillis: Long): String =

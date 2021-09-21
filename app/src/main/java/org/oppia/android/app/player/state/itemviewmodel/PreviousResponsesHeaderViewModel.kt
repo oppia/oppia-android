@@ -18,8 +18,8 @@ class PreviousResponsesHeaderViewModel(
   fun onResponsesHeaderClicked() = previousResponsesHeaderClickListener.onResponsesHeaderClicked()
 
   fun computePreviousResponsesHeaderText(): String {
-    return resourceHandler.getStringInLocale(
-      R.string.previous_responses_header, previousAnswerCount
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.previous_responses_header, previousAnswerCount.toString()
     )
   }
 }

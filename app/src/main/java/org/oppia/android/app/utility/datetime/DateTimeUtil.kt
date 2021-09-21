@@ -20,7 +20,7 @@ class DateTimeUtil @Inject constructor(
         resourceHandler.getStringInLocale(R.string.home_screen_good_morning_greeting_fragment)
       OppiaLocale.MachineLocale.TimeOfDay.AFTERNOON ->
         resourceHandler.getStringInLocale(R.string.home_screen_good_afternoon_greeting_fragment)
-      OppiaLocale.MachineLocale.TimeOfDay.EVENING, null ->
+      OppiaLocale.MachineLocale.TimeOfDay.EVENING, OppiaLocale.MachineLocale.TimeOfDay.UNKNOWN ->
         resourceHandler.getStringInLocale(R.string.home_screen_good_evening_greeting_fragment)
     }
   }

@@ -1,10 +1,10 @@
 package org.oppia.android.app.home.topiclist
 
 import androidx.appcompat.app.AppCompatActivity
+import java.util.Objects
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
-import java.util.Objects
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The view model corresponding to individual topic summaries in the topic summary RecyclerView. */
@@ -102,8 +102,10 @@ class TopicSummaryViewModel(
   }
 
   fun computeLessonCountText(): String {
-    return resourceHandler.getQuantityStringInLocale(
-      R.plurals.lesson_count, topicSummary.totalChapterCount, topicSummary.totalChapterCount
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.lesson_count,
+      topicSummary.totalChapterCount,
+      topicSummary.totalChapterCount.toString()
     )
   }
 

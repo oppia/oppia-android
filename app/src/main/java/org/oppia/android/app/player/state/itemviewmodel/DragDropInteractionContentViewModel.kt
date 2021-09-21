@@ -43,21 +43,29 @@ class DragDropInteractionContentViewModel(
 
   fun computeDragDropMoveUpItemContentDescription(): String {
     return if (itemIndex != 0) {
-      resourceHandler.getStringInLocale(R.string.move_item_up_content_description, itemIndex)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.move_item_up_content_description, itemIndex.toString()
+      )
     } else resourceHandler.getStringInLocale(R.string.up_button_disabled)
   }
 
   fun computeDragDropMoveDownItemContentDescription(): String {
     return if (itemIndex != listSize - 1) {
-      resourceHandler.getStringInLocale(R.string.move_item_down_content_description, itemIndex + 2)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.move_item_down_content_description, (itemIndex + 2).toString()
+      )
     } else resourceHandler.getStringInLocale(R.string.down_button_disabled)
   }
 
   fun computeDragDropGroupItemContentDescription(): String {
-    return resourceHandler.getStringInLocale(R.string.link_to_item_below, itemIndex + 2)
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.link_to_item_below, (itemIndex + 2).toString()
+    )
   }
 
   fun computeDragDropUnlinkItemContentDescription(): String {
-    return resourceHandler.getStringInLocale(R.string.unlink_items, itemIndex + 1)
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.unlink_items, (itemIndex + 1).toString()
+    )
   }
 }

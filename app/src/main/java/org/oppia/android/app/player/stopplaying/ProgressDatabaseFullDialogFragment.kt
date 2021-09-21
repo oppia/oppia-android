@@ -52,8 +52,10 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val oldestSavedExplorationTitle = arguments
-      ?.getStringFromBundle(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
+    val args = checkNotNull(arguments) { "Expected arguments to be passed to dialog fragment" }
+    val oldestSavedExplorationTitle =
+      args.getStringFromBundle(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
+        ?: error("Expected exploration title to be passed via arguments")
     val stopStatePlayingSessionListenerWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =
         activity as StopStatePlayingSessionWithSavedProgressListener
@@ -62,7 +64,7 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.progress_database_full_dialog_title)
       .setMessage(
-        resourceHandler.getStringInLocale(
+        resourceHandler.getStringInLocaleWithWrapping(
           R.string.progress_database_full_dialog_description, oldestSavedExplorationTitle
         )
       )

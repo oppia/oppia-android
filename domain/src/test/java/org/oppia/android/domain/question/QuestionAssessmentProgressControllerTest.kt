@@ -74,6 +74,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.locale.LocaleProdModule
 
 private const val TOLERANCE = 1e-5
 
@@ -1883,7 +1884,8 @@ class QuestionAssessmentProgressControllerTest {
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       CachingTestModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class
+      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
+      AssetModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

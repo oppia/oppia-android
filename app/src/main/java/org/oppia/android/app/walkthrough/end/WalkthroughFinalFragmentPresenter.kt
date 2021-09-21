@@ -76,7 +76,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private fun setTopicName() {
     if (::walkthroughFinalViewModel.isInitialized && ::topicName.isInitialized) {
       walkthroughFinalViewModel.topicTitle.set(
-        resourceHandler.getStringInLocale(
+        resourceHandler.getStringInLocaleWithWrapping(
           R.string.are_you_interested,
           topicName
         )

@@ -100,7 +100,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private fun setProfileName() {
     if (::walkthroughWelcomeViewModel.isInitialized && ::profileName.isInitialized) {
       walkthroughWelcomeViewModel.profileName.set(
-        resourceHandler.getStringInLocale(R.string.welcome, profileName)
+        resourceHandler.getStringInLocaleWithWrapping(R.string.welcome, profileName)
       )
     }
   }

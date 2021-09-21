@@ -49,9 +49,13 @@ class SubmittedAnswerViewModel(
   ): String {
     val answer = accessibleAnswer ?: submittedAnswer
     return if (isCorrectAnswer) {
-      resourceHandler.getStringInLocale(R.string.correct_submitted_answer_with_append, answer)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.correct_submitted_answer_with_append, answer
+      )
     } else {
-      resourceHandler.getStringInLocale(R.string.incorrect_submitted_answer_with_append, answer)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.incorrect_submitted_answer_with_append, answer
+      )
     }
   }
 
