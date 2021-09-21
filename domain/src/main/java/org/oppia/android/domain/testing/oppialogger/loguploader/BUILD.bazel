@@ -10,7 +10,7 @@ kt_android_library(
     srcs = glob([
         "src/main/java/org/oppia/android/domain/testing/**/*.kt",
     ]),
-    testOnly = True,
+    testonly = True,
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
