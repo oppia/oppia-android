@@ -2,13 +2,14 @@ package org.oppia.android.testing.time
 
 import android.annotation.SuppressLint
 import android.os.SystemClock
-import org.oppia.android.util.system.OppiaClock
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode
+import org.oppia.android.util.system.OppiaClock
 
 /**
  * A test-friendly fake for [OppiaClock] that provides better Robolectric/test time
@@ -23,6 +24,11 @@ import javax.inject.Singleton
 class FakeOppiaClock @Inject constructor() : OppiaClock {
   private var fixedFakeTimeMs: Long = 0
   private var fakeTimeMode: FakeTimeMode = FakeTimeMode.MODE_WALL_CLOCK_TIME
+
+  init {
+    // Ensure tests that rely on this clock are always operating in UTC.
+    TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+  }
 
   override fun getCurrentTimeMs(): Long {
     return when (fakeTimeMode) {

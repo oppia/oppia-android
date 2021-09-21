@@ -3,6 +3,7 @@ package org.oppia.android.util.caching
 import android.content.Context
 import com.google.protobuf.MessageLite
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
 import java.net.URL
@@ -40,8 +41,13 @@ class AssetRepositoryImpl @Inject constructor(
     repositoryLock.withLock {
       if (assetName !in textFileAssets) {
         logger.d("AssetRepo", "Caching local text asset: $assetName")
-        textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use {
-          it.readText()
+        try {
+          textFileAssets[assetName] = context.assets.open(assetName).bufferedReader().use {
+            it.readText()
+          }
+        } catch (e: FileNotFoundException) {
+          // Catch & rethrow for consistency with the proto asset codepath.
+          error("Asset doesn't exist: $assetName")
         }
       }
     }

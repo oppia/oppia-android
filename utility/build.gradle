@@ -70,6 +70,7 @@ dependencies {
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
+      'com.google.protobuf:protobuf-javalite:3.17.3',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
   )
   compileOnly(
@@ -81,6 +82,7 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:0.43',
+      'com.google.truth.extensions:truth-liteproto-extension:0.43',
       'junit:junit:4.12',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
