@@ -1,5 +1,5 @@
 """
-build bazel for domain state
+Domain services & definitions corresponding to managing ephemeral states in play sessions.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
