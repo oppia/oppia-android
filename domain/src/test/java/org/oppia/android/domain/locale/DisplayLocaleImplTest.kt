@@ -32,8 +32,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// TODO: run this only in Bazel (due to test resources).
-
 /** Tests for [DisplayLocaleImpl]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")

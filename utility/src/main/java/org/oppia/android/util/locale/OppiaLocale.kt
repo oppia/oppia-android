@@ -36,8 +36,6 @@ sealed class OppiaLocale {
   /** The deterministic context that represents this exact locale instance. */
   abstract val localeContext: OppiaLocaleContext
 
-  // TODO: verify exclusivity of regions/languages table in tests.
-
   /**
    * Returns the [OppiaLanguage] corresponding to this locale. Locale instances can only correspond
    * to a single language.
