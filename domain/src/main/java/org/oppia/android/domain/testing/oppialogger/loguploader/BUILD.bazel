@@ -20,3 +20,4 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
     ],
 )
+dagger_rules()
