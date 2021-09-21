@@ -1,8 +1,5 @@
 package org.oppia.android.domain.translation
 
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import kotlin.concurrent.withLock
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
@@ -11,7 +8,6 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
@@ -19,6 +15,10 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.locale.OppiaLocale
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import kotlin.concurrent.withLock
 
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
 private const val APP_LANGUAGE_DATA_PROVIDER_ID = "app_language"
@@ -35,6 +35,13 @@ private const val AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID =
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 
+/**
+ * Domain controller for performing operations corresponding to translations.
+ *
+ * This controller is often used instead of [LocaleController] since it provides additional
+ * functionality which simplifies interacting with the locales needed for various translation
+ * scenarios, but it relies on locale controller as its source of truth.
+ */
 class TranslationController @Inject constructor(
   private val dataProviders: DataProviders,
   private val localeController: LocaleController,
@@ -44,7 +51,10 @@ class TranslationController @Inject constructor(
   //  settings from the local filesystem since the UI has been currently disabled as part of #20.
   //  Also, there should be a proper default locale for pre-profile selection (either a default
   //  app-wide setting determined by the administrator, or the last locale used by a profile)--more
-  //  product & UX thought is needed here.
+  //  product & UX thought is needed here. Further, extra work is likely needed to handle the case
+  //  when the user switches between a system & non-system language since the existing system
+  //  defaulting behavior breaks down when the system locale is overwritten (such as when a
+  //  different language is selected).
 
   private val dataLock = ReentrantLock()
   private val appLanguageSettings = mutableMapOf<ProfileId, AppLanguageSelection>()
@@ -53,18 +63,32 @@ class TranslationController @Inject constructor(
   private val audioVoiceoverLanguageSettings =
     mutableMapOf<ProfileId, AudioTranslationLanguageSelection>()
 
+  /**
+   * Returns a data provider for an app string [OppiaLocale.DisplayLocale] corresponding to the
+   * current user-selected system language.
+   */
   fun getSystemLanguageLocale(): DataProvider<OppiaLocale.DisplayLocale> {
     return getSystemLanguage().transformAsync(SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID) { language ->
       localeController.retrieveAppStringDisplayLocale(language).retrieveData()
     }
   }
 
+  /**
+   * Returns a data provider for the current [OppiaLanguage] selected for app strings for the
+   * specified user (per their [profileId]).
+   *
+   * This language can be updated via [updateAppLanguage].
+   */
   fun getAppLanguage(profileId: ProfileId): DataProvider<OppiaLanguage> {
     return getAppLanguageLocale(profileId).transform(APP_LANGUAGE_DATA_PROVIDER_ID) { locale ->
       locale.getCurrentLanguage()
     }
   }
 
+  /**
+   * Returns a data provider for a [OppiaLocale.DisplayLocale] corresponding to the user's selected
+   * language for app strings (see [getAppLanguage]).
+   */
   fun getAppLanguageLocale(profileId: ProfileId): DataProvider<OppiaLocale.DisplayLocale> {
     val providerId = APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID
     return getSystemLanguage().transformAsync(providerId) { systemLanguage ->
@@ -73,13 +97,31 @@ class TranslationController @Inject constructor(
     }
   }
 
-  fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any?> {
+  /**
+   * Updates the language to be used by the specified user for app string translations. Note that
+   * the provided [AppLanguageSelection] provides the user with the option of either selecting a
+   * specific supported language for app strings, or to fall back to the system default.
+   *
+   * The app guarantees app language compatibility for any non-system language selected, and a
+   * best-effort basis for translating strings for system languages (generally if the system
+   * language matches a supported language, otherwise the app defaults to English).
+   *
+   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
+   *     result is ever provided)
+   */
+  fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any> {
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID) {
       updateAppLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(null)
+      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
     }
   }
 
+  /**
+   * Returns a data provider for the current [OppiaLanguage] selected for written content strings
+   * for the specified user (per their [profileId]).
+   *
+   * This language can be updated via [updateWrittenTranslationContentLanguage].
+   */
   fun getWrittenTranslationContentLanguage(profileId: ProfileId): DataProvider<OppiaLanguage> {
     val providerId = WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return getWrittenTranslationContentLocale(profileId).transform(providerId) { locale ->
@@ -87,6 +129,10 @@ class TranslationController @Inject constructor(
     }
   }
 
+  /**
+   * Returns a data provider for a [OppiaLocale.ContentLocale] corresponding to the user's selected
+   * language for written content strings (see [getWrittenTranslationContentLanguage]).
+   */
   fun getWrittenTranslationContentLocale(
     profileId: ProfileId
   ): DataProvider<OppiaLocale.ContentLocale> {
@@ -98,17 +144,35 @@ class TranslationController @Inject constructor(
     }
   }
 
+  /**
+   * Updates the language to be used by the specified user for written content string translations.
+   * Note that the provided [WrittenTranslationLanguageSelection] provides the user with the option
+   * of either selecting a specific supported language for content strings, or to fall back to
+   * whatever the app language selection is (which may be the system default).
+   *
+   * Note that the app guarantees a list of languages to support for written translations as a
+   * superset. The actual availability for a particular language is topic-dependent.
+   *
+   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
+   *     result is ever provided)
+   */
   fun updateWrittenTranslationContentLanguage(
     profileId: ProfileId,
     selection: WrittenTranslationLanguageSelection
-  ): DataProvider<Any?> {
+  ): DataProvider<Any> {
     val providerId = UPDATE_WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
       updateWrittenTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(null)
+      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
     }
   }
 
+  /**
+   * Returns a data provider for the current [OppiaLanguage] selected for audio voiceovers for the
+   * specified user (per their [profileId]).
+   *
+   * This language can be updated via [updateAudioTranslationContentLanguage].
+   */
   fun getAudioTranslationContentLanguage(profileId: ProfileId): DataProvider<OppiaLanguage> {
     val providerId = AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return getAudioTranslationContentLocale(profileId).transform(providerId) { locale ->
@@ -116,6 +180,10 @@ class TranslationController @Inject constructor(
     }
   }
 
+  /**
+   * Returns a data provider for a [OppiaLocale.ContentLocale] corresponding to the user's selected
+   * language for audio voiceovers (see [getAudioTranslationContentLanguage]).
+   */
   fun getAudioTranslationContentLocale(
     profileId: ProfileId
   ): DataProvider<OppiaLocale.ContentLocale> {
@@ -127,21 +195,46 @@ class TranslationController @Inject constructor(
     }
   }
 
+  /**
+   * Updates the language to be used by the specified user for audio voiceover selection. Note that
+   * the provided [AudioTranslationLanguageSelection] provides the user with the option of either
+   * selecting a specific supported language for audio voiceovers, or to fall back to whatever the
+   * app language selection is (which may be the system default).
+   *
+   * Note that the app guarantees a list of languages to support for audio voiceovers as a superset.
+   * The actual availability for a particular language is topic-dependent.
+   *
+   * @return a [DataProvider] which succeeds only if the update succeeds, otherwise fails (only one
+   *     result is ever provided)
+   */
   fun updateAudioTranslationContentLanguage(
     profileId: ProfileId,
     selection: AudioTranslationLanguageSelection
-  ): DataProvider<Any?> {
+  ): DataProvider<Any> {
     val providerId = UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
       updateAudioTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(null)
+      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
     }
   }
 
+  /**
+   * Returns a potentially translated HTML string for the given [SubtitledHtml] to display to the
+   * user, considering the specified [WrittenTranslationContext].
+   *
+   * Generally, this method will attempt to return the translated string corresponding to this
+   * [SubtitledHtml] given the translation context, but will fall back to the default string
+   * contents if no translation exists for the subtitle.
+   */
   fun extractString(html: SubtitledHtml, context: WrittenTranslationContext): String {
     return context.translationsMap[html.contentId]?.html ?: html.html
   }
 
+  /**
+   * Returns a potentially translated Unicode string for the given [SubtitledUnicode] to display to
+   * the user, with the same considerations and behavior as the [extractString] ([SubtitledHtml]
+   * variant).
+   */
   fun extractString(unicode: SubtitledUnicode, context: WrittenTranslationContext): String {
     return context.translationsMap[unicode.contentId]?.html ?: unicode.unicodeStr
   }
@@ -193,7 +286,8 @@ class TranslationController @Inject constructor(
   }
 
   private suspend fun updateAppLanguageSelection(
-    profileId: ProfileId, selection: AppLanguageSelection
+    profileId: ProfileId,
+    selection: AppLanguageSelection
   ) {
     dataLock.withLock {
       appLanguageSettings[profileId] = selection
@@ -211,7 +305,8 @@ class TranslationController @Inject constructor(
   }
 
   private suspend fun updateWrittenTranslationContentLanguageSelection(
-    profileId: ProfileId, selection: WrittenTranslationLanguageSelection
+    profileId: ProfileId,
+    selection: WrittenTranslationLanguageSelection
   ) {
     dataLock.withLock {
       writtenTranslationLanguageSettings[profileId] = selection
@@ -229,7 +324,8 @@ class TranslationController @Inject constructor(
   }
 
   private suspend fun updateAudioTranslationContentLanguageSelection(
-    profileId: ProfileId, selection: AudioTranslationLanguageSelection
+    profileId: ProfileId,
+    selection: AudioTranslationLanguageSelection
   ) {
     dataLock.withLock {
       audioVoiceoverLanguageSettings[profileId] = selection

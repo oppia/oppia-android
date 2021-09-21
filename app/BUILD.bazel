@@ -591,7 +591,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-runtime",
         "//third_party:circularimageview_circular_image_view",
         "//utility/src/main/java/org/oppia/android/util/accessibility",
-        "//utility/src/main/java/org/oppia/android/util/caching:caching_module",
+        "//utility/src/main/java/org/oppia/android/util/caching:caching_prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
     ],
@@ -724,6 +724,7 @@ kt_android_library(
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         # TODO(#2432): Replace debug_module with prod_module when building the app in prod mode.
@@ -808,6 +809,7 @@ TEST_DEPS = [
     "//utility",
     "//utility/src/main/java/org/oppia/android/util/accessibility",
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+    "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
 ]
 
