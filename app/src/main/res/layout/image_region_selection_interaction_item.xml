@@ -57,7 +57,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:layoutDirection="ltr"
         app:clickableAreas="@{viewModel.selectableRegions}"
         app:entityId="@{viewModel.entityId}"
         app:imageUrl="@{viewModel.imagePath}"
