@@ -4,6 +4,7 @@ import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.view.ViewCompat
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
 import org.oppia.android.R
@@ -109,6 +110,7 @@ class ClickableAreasImage(
           imageRect.height().roundToInt()
         )
         val newView = View(it.context)
+        ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
         newView.layoutParams = layoutParams
         newView.x = imageRect.left
         newView.y = imageRect.top

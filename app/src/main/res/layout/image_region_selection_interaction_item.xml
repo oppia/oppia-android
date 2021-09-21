@@ -11,10 +11,17 @@
       type="org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/interaction_container_constraint_layout"
+  <FrameLayout
+    android:id="@+id/interaction_container_frame_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/drag_drop_white_background"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:paddingStart="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.splitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationSplitViewMarginEnd="@{@dimen/interaction_item_split_view_margin_end}"
@@ -36,37 +43,20 @@
     app:questionViewMarginStart="@{@dimen/interaction_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/interaction_item_question_view_margin_top}">
 
-    <FrameLayout
-      android:id="@+id/interaction_container_frame_layout"
-      android:layout_width="match_parent"
+    <org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
+      android:id="@+id/image_click_interaction_image_view"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:background="@drawable/drag_drop_white_background"
-      android:descendantFocusability="beforeDescendants"
-      android:focusableInTouchMode="true"
-      android:layoutDirection="ltr"
-      android:paddingStart="16dp"
-      android:paddingTop="12dp"
-      android:paddingEnd="16dp"
-      android:paddingBottom="12dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+      android:adjustViewBounds="true"
+      app:clickableAreas="@{viewModel.selectableRegions}"
+      app:entityId="@{viewModel.entityId}"
+      app:imageUrl="@{viewModel.imagePath}"
+      app:onRegionClicked="@{(region) -> viewModel.onClickableAreaTouched(region)}"
+      app:overlayView="@{interactionContainerFrameLayout}" />
 
-      <org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
-        android:id="@+id/image_click_interaction_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        app:clickableAreas="@{viewModel.selectableRegions}"
-        app:entityId="@{viewModel.entityId}"
-        app:imageUrl="@{viewModel.imagePath}"
-        app:onRegionClicked="@{(region) -> viewModel.onClickableAreaTouched(region)}"
-        app:overlayView="@{interactionContainerFrameLayout}" />
-
-      <View
-        android:id="@+id/default_selected_region"
-        android:layout_width="24dp"
-        android:layout_height="24dp" />
-    </FrameLayout>
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+      android:id="@+id/default_selected_region"
+      android:layout_width="24dp"
+      android:layout_height="24dp" />
+  </FrameLayout>
 </layout>
