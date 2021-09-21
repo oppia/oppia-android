@@ -363,8 +363,8 @@
     <item quantity="other">%d horas</item>
   </plurals>
   <plurals name="days">
-    <item quantity="one">\num dia</item>
-    <item quantity="other">\n%d dias</item>
+    <item quantity="one">um dia</item>
+    <item quantity="other">%d dias</item>
   </plurals>
   <string name="item_selection_text">Por favor, selecione pelo menos uma opção.</string>
   <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
