@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +18,8 @@ import org.oppia.android.util.caching.testing.AssetTestNoOpModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // TODO(#59): Use a build-time configuration instead of the runtime AssetRepository fake (i.e. by
 //  not including the config assets during build time).

@@ -32,11 +32,11 @@ import kotlin.concurrent.withLock
  */
 @Singleton
 class AudioPlayerController @Inject constructor(
-        private val oppiaLogger: OppiaLogger,
-        private val assetRepository: AssetRepository,
-        private val exceptionsController: ExceptionsController,
-        @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-        @CacheAssetsLocally private val cacheAssetsLocally: Boolean
+  private val oppiaLogger: OppiaLogger,
+  private val assetRepository: AssetRepository,
+  private val exceptionsController: ExceptionsController,
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
 
   inner class AudioMutableLiveData :

@@ -12,9 +12,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,6 +48,9 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Tests for [LocaleController].
@@ -854,7 +854,7 @@ class LocaleControllerTest {
       AssetModule::class
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

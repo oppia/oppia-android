@@ -1,11 +1,11 @@
 package org.oppia.android.util.locale.testing
 
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaBidiFormatterImpl
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter.Checker
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Test-only implementation of [OppiaBidiFormatter] for verifying calls to the formatter.
@@ -20,7 +20,7 @@ import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter.Checker
 class TestOppiaBidiFormatter private constructor(
   private val prodFormatter: OppiaBidiFormatter,
   private val checker: Checker
-): OppiaBidiFormatter {
+) : OppiaBidiFormatter {
   override fun wrapText(unicode: CharSequence): CharSequence {
     check(unicode !is WrappedStringMarker) {
       "Error: encountered string that's already been wrapped: $unicode"
@@ -33,7 +33,7 @@ class TestOppiaBidiFormatter private constructor(
   class FactoryImpl @Inject constructor(
     private val prodFactoryImpl: OppiaBidiFormatterImpl.FactoryImpl,
     private val checker: Checker
-  ): OppiaBidiFormatter.Factory {
+  ) : OppiaBidiFormatter.Factory {
     override fun createFormatter(locale: Locale): OppiaBidiFormatter =
       TestOppiaBidiFormatter(prodFactoryImpl.createFormatter(locale), checker)
   }

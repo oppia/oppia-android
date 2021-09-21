@@ -10,9 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -52,6 +49,9 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [TranslationController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -816,7 +816,7 @@ class TranslationControllerTest {
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
     assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
   }
-  
+
   /* Tests for string extraction functions */
 
   @Test
@@ -832,9 +832,12 @@ class TranslationControllerTest {
   @Test
   fun testExtractString_defaultSubtitledHtml_validContext_returnsEmptyString() {
     val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations("other_content_id", Translation.newBuilder().apply {
-        html = "Translated string"
-      }.build())
+      putTranslations(
+        "other_content_id",
+        Translation.newBuilder().apply {
+          html = "Translated string"
+        }.build()
+      )
     }.build()
 
     val extracted = translationController.extractString(SubtitledHtml.getDefaultInstance(), context)
@@ -864,9 +867,12 @@ class TranslationControllerTest {
       html = "default html"
     }.build()
     val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations("other_content_id", Translation.newBuilder().apply {
-        html = "Translated string"
-      }.build())
+      putTranslations(
+        "other_content_id",
+        Translation.newBuilder().apply {
+          html = "Translated string"
+        }.build()
+      )
     }.build()
 
     val extracted = translationController.extractString(subtitledHtml, context)
@@ -882,9 +888,12 @@ class TranslationControllerTest {
       html = "default html"
     }.build()
     val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations("content_id", Translation.newBuilder().apply {
-        html = "Translated string"
-      }.build())
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          html = "Translated string"
+        }.build()
+      )
     }.build()
 
     val extracted = translationController.extractString(subtitledHtml, context)
@@ -906,9 +915,12 @@ class TranslationControllerTest {
   @Test
   fun testExtractString_defaultSubtitledUnicode_validContext_returnsEmptyString() {
     val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations("other_content_id", Translation.newBuilder().apply {
-        html = "Translated string"
-      }.build())
+      putTranslations(
+        "other_content_id",
+        Translation.newBuilder().apply {
+          html = "Translated string"
+        }.build()
+      )
     }.build()
 
     val extracted =
@@ -939,9 +951,12 @@ class TranslationControllerTest {
       unicodeStr = "default str"
     }.build()
     val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations("other_content_id", Translation.newBuilder().apply {
-        html = "Translated string"
-      }.build())
+      putTranslations(
+        "other_content_id",
+        Translation.newBuilder().apply {
+          html = "Translated string"
+        }.build()
+      )
     }.build()
 
     val extracted = translationController.extractString(subtitledUnicode, context)
@@ -957,9 +972,12 @@ class TranslationControllerTest {
       unicodeStr = "default str"
     }.build()
     val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations("content_id", Translation.newBuilder().apply {
-        html = "Translated string"
-      }.build())
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          html = "Translated string"
+        }.build()
+      )
     }.build()
 
     val extracted = translationController.extractString(subtitledUnicode, context)
@@ -1001,7 +1019,8 @@ class TranslationControllerTest {
   }
 
   private fun ensureWrittenTranslationsLanguageIsUpdatedTo(
-    profileId: ProfileId, language: OppiaLanguage
+    profileId: ProfileId,
+    language: OppiaLanguage
   ) {
     val resultProvider =
       translationController.updateWrittenTranslationContentLanguage(
@@ -1027,7 +1046,8 @@ class TranslationControllerTest {
   }
 
   private fun ensureAudioTranslationsLanguageIsUpdatedTo(
-    profileId: ProfileId, language: OppiaLanguage
+    profileId: ProfileId,
+    language: OppiaLanguage
   ) {
     val resultProvider =
       translationController.updateAudioTranslationContentLanguage(
@@ -1072,7 +1092,7 @@ class TranslationControllerTest {
       AssetModule::class
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

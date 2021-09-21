@@ -1,6 +1,5 @@
 package org.oppia.android.domain.topic
 
-import javax.inject.Inject
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -14,6 +13,7 @@ import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
 /** Retriever for [ConceptCard] objects from the filesystem. */

@@ -2,6 +2,7 @@ package org.oppia.android.util.caching
 
 import android.content.Context
 import com.google.protobuf.MessageLite
+import org.oppia.android.util.logging.ConsoleLogger
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -11,7 +12,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import org.oppia.android.util.logging.ConsoleLogger
 
 // TODO(#169): Leverage this repository or a version of it for caching all topic contents in a
 //  proto. It may also be worth keeping a version of this repository for caching audio files within

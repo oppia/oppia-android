@@ -1,9 +1,9 @@
 package org.oppia.android.domain.locale
 
-import javax.inject.Inject
 import org.oppia.android.app.model.SupportedLanguages
 import org.oppia.android.app.model.SupportedRegions
 import org.oppia.android.util.caching.AssetRepository
+import javax.inject.Inject
 
 /**
  * Retriever for language configurations from the app's embedded assets.

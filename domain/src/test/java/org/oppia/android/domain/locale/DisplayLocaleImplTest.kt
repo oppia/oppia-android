@@ -12,8 +12,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +29,8 @@ import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // TODO: run this only in Bazel (due to test resources).
 

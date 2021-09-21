@@ -8,8 +8,6 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
@@ -18,6 +16,8 @@ import org.oppia.android.util.parser.svg.ScalableVectorGraphic
 import org.oppia.android.util.parser.svg.SvgBlurTransformation
 import org.oppia.android.util.parser.svg.SvgDecoder
 import org.oppia.android.util.parser.svg.SvgPictureDrawable
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** An [ImageLoader] that uses Glide. */
 @Singleton

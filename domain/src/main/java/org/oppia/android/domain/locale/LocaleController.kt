@@ -2,11 +2,6 @@ package org.oppia.android.domain.locale
 
 import android.content.Context
 import android.content.res.Configuration
-import java.util.Locale
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.concurrent.withLock
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -32,6 +27,11 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.locale.OppiaLocale.ContentLocale
 import org.oppia.android.util.locale.OppiaLocale.DisplayLocale
 import org.oppia.android.util.locale.OppiaLocale.MachineLocale
+import java.util.Locale
+import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.concurrent.withLock
 
 // TODO: document how notifications work (everything is rooted from changing Locale).
 private const val ANDROID_SYSTEM_LOCALE_DATA_PROVIDER_ID = "android_locale"

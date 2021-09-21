@@ -87,13 +87,13 @@ private val EVICTION_TIME_MILLIS = TimeUnit.DAYS.toMillis(1)
 /** Controller for retrieving the list of topics available to the learner to play. */
 @Singleton
 class TopicListController @Inject constructor(
-        private val jsonAssetRetriever: JsonAssetRetriever,
-        private val topicController: TopicController,
-        private val storyProgressController: StoryProgressController,
-        private val dataProviders: DataProviders,
-        private val oppiaClock: OppiaClock,
-        private val assetRepository: AssetRepository,
-        @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+  private val jsonAssetRetriever: JsonAssetRetriever,
+  private val topicController: TopicController,
+  private val storyProgressController: StoryProgressController,
+  private val dataProviders: DataProviders,
+  private val oppiaClock: OppiaClock,
+  private val assetRepository: AssetRepository,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
 
   /**

@@ -15,10 +15,10 @@ import javax.inject.Inject
 /** Internal class for actually retrieving an exploration object for uses in domain controllers. */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class ExplorationRetriever @Inject constructor(
-        private val jsonAssetRetriever: JsonAssetRetriever,
-        private val stateRetriever: StateRetriever,
-        private val assetRepository: AssetRepository,
-        @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
+  private val jsonAssetRetriever: JsonAssetRetriever,
+  private val stateRetriever: StateRetriever,
+  private val assetRepository: AssetRepository,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
   // TODO(#169): Force callers of this method on a background thread.
   /** Loads and returns an exploration for the specified exploration ID, or fails. */

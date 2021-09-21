@@ -2,7 +2,6 @@ package org.oppia.android.testing.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import javax.inject.Inject
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
@@ -15,6 +14,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 // TODO(#3813): Migrate all data provider tests over to using this utility.
 /**

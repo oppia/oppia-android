@@ -10,8 +10,6 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +25,8 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [UrlImageParser]. */
 @RunWith(AndroidJUnit4::class)

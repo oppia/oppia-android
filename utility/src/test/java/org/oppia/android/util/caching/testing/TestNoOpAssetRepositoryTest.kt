@@ -10,8 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +18,8 @@ import org.oppia.android.testing.assertThrows
 import org.oppia.android.util.caching.AssetRepository
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [TestNoOpAssetRepository]. */
 // FunctionName: test names are conventionally named with underscores.

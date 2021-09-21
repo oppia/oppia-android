@@ -1,5 +1,11 @@
 package org.oppia.android.util.locale
 
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.RegionSupportDefinition
+import org.oppia.android.util.system.OppiaClock
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -7,12 +13,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
-import org.oppia.android.app.model.LanguageSupportDefinition
-import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.OppiaLocaleContext
-import org.oppia.android.app.model.OppiaRegion
-import org.oppia.android.app.model.RegionSupportDefinition
-import org.oppia.android.util.system.OppiaClock
 
 // TODO(#3766): Restrict to be 'internal'.
 /**

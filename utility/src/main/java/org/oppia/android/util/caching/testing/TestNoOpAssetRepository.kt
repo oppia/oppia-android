@@ -1,9 +1,9 @@
 package org.oppia.android.util.caching.testing
 
 import com.google.protobuf.MessageLite
+import org.oppia.android.util.caching.AssetRepository
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.caching.AssetRepository
 
 /**
  * Test-only implementation of [AssetRepository] that provides no support for loading any assets
@@ -12,7 +12,7 @@ import org.oppia.android.util.caching.AssetRepository
  * This class is safe to interact with across multiple simultaneous threads.
  */
 @Singleton
-class TestNoOpAssetRepository @Inject constructor(): AssetRepository {
+class TestNoOpAssetRepository @Inject constructor() : AssetRepository {
   override fun loadTextFileFromLocalAssets(assetName: String): String {
     error("Local text asset doesn't exist: $assetName")
   }
@@ -26,7 +26,8 @@ class TestNoOpAssetRepository @Inject constructor(): AssetRepository {
   }
 
   override fun <T : MessageLite> tryLoadProtoFromLocalAssets(
-    assetName: String, defaultMessage: T
+    assetName: String,
+    defaultMessage: T
   ): T = defaultMessage // Just return default since the asset doesn't exist.
 
   override fun getLocalAssetProtoSize(assetName: String): Int = -1 // Asset doesn't exist.

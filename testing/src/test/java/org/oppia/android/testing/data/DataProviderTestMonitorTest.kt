@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,6 +31,8 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [DataProviderTestMonitor]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -737,7 +737,9 @@ class DataProviderTestMonitorTest {
       AsyncResult.pending()
     }
 
-    val failure = assertThrows(IllegalStateException::class) { monitorFactory.waitForNextFailureResult(dataProvider) }
+    val failure = assertThrows(IllegalStateException::class) {
+      monitorFactory.waitForNextFailureResult(dataProvider)
+    }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -759,7 +761,9 @@ class DataProviderTestMonitorTest {
       AsyncResult.success("str value")
     }
 
-    val failure = assertThrows(IllegalStateException::class) { monitorFactory.waitForNextFailureResult(dataProvider) }
+    val failure = assertThrows(IllegalStateException::class) {
+      monitorFactory.waitForNextFailureResult(dataProvider)
+    }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -785,7 +789,9 @@ class DataProviderTestMonitorTest {
       )
     monitorFactory.waitForNextFailureResult(dataProvider)
 
-    val failure = assertThrows(IllegalStateException::class) { monitorFactory.waitForNextFailureResult(dataProvider) }
+    val failure = assertThrows(IllegalStateException::class) {
+      monitorFactory.waitForNextFailureResult(dataProvider)
+    }
 
     assertThat(failure).hasMessageThat().contains("Expected next result to be a failure")
   }
@@ -818,7 +824,8 @@ class DataProviderTestMonitorTest {
   }
 
   private fun <T> createDataProviderWithResultsQueue(
-    id: Any, vararg results: AsyncResult<T>
+    id: Any,
+    vararg results: AsyncResult<T>
   ): DataProvider<T> {
     val resultsQueue = createResultQueue(*results)
     return dataProviders.createInMemoryDataProviderAsync(id) {
@@ -853,7 +860,7 @@ class DataProviderTestMonitorTest {
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class
     ]
   )
-  interface TestApplicationComponent: DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

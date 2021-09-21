@@ -1,9 +1,8 @@
 package org.oppia.android.util.locale
 
-import java.util.Locale
-import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.RegionSupportDefinition
+import java.util.Locale
 
 /**
  * A profile to represent an Android [Locale] object which can be used to easily compare different

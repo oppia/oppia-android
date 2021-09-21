@@ -1,15 +1,15 @@
 package org.oppia.android.scripts.regex
 
 import com.google.common.truth.Truth.assertThat
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.PrintStream
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.PrintStream
 
 /** Tests for [RegexPatternValidationCheck]. */
 class RegexPatternValidationCheckTest {

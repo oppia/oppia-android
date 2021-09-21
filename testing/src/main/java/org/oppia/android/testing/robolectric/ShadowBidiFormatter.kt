@@ -1,12 +1,12 @@
 package org.oppia.android.testing.robolectric
 
 import android.text.BidiFormatter
-import java.util.Locale
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
 import org.robolectric.annotation.RealObject
 import org.robolectric.shadow.api.Shadow
 import org.robolectric.util.ReflectionHelpers
+import java.util.Locale
 
 /**
  * A custom Robolectric shadow for tracking interactions with [BidiFormatter].

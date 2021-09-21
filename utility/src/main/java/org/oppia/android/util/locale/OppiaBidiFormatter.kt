@@ -1,7 +1,7 @@
 package org.oppia.android.util.locale
 
-import java.util.Locale
 import org.oppia.android.util.locale.OppiaBidiFormatter.Factory
+import java.util.Locale
 
 /**
  * A custom wrapper to Android's bidirectional formatter so that interactions with this class can be

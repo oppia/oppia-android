@@ -5,13 +5,13 @@ import android.content.res.Resources
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.core.text.TextUtilsCompat
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.util.locale.OppiaBidiFormatter
+import org.oppia.android.util.locale.OppiaLocale
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.Objects
-import org.oppia.android.app.model.OppiaLocaleContext
-import org.oppia.android.util.locale.OppiaBidiFormatter
-import org.oppia.android.util.locale.OppiaLocale
 
 // TODO(#3766): Restrict to be 'internal'.
 /** Implementation of [OppiaLocale.DisplayLocale]. */

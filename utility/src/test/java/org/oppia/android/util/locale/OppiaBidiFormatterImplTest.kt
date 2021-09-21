@@ -9,9 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -19,6 +16,9 @@ import org.junit.runner.RunWith
 import org.oppia.android.testing.robolectric.ShadowBidiFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [OppiaBidiFormatterImpl]. */
 // FunctionName: test names are conventionally named with underscores.
