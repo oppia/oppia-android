@@ -387,7 +387,7 @@ class TopicControllerTest {
     verifyGetStorySucceeded()
     val story = storySummaryResultCaptor.value!!.getOrThrow()
     assertThat(story.getChapter(0).summary)
-      .isEqualTo("This is outline/summary for <b>What is a Fraction?</b>")
+      .isEqualTo("Matthew learns about fractions.")
   }
 
   @Test
