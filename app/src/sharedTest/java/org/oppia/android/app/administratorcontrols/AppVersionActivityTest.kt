@@ -23,6 +23,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import java.text.SimpleDateFormat
+import java.util.Date
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -85,12 +87,12 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.system.OppiaDateTimeFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.locale.MachineLocaleImpl
 
 /** Tests for [AppVersionActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -112,11 +114,11 @@ class AppVersionActivityTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
-  private lateinit var lastUpdateDate: String
-
-  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val parsableDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.US) }
+
+  private lateinit var lastUpdateDate: String
 
   @Before
   fun setUp() {
@@ -124,7 +126,7 @@ class AppVersionActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     val lastUpdateDateTime = context.getLastUpdateTime()
-    lastUpdateDate = getDateTime(lastUpdateDateTime)!!
+    lastUpdateDate = getDateTime(lastUpdateDateTime)
   }
 
   @Test
@@ -232,13 +234,8 @@ class AppVersionActivityTest {
     }
   }
 
-  private fun getDateTime(dateTimeTimestamp: Long): String? {
-    return oppiaDateTimeFormatter.formatDateFromDateString(
-      OppiaDateTimeFormatter.DD_MMM_YYYY,
-      dateTimeTimestamp,
-      Locale.US
-    )
-  }
+  private fun getDateTime(dateTimeTimestamp: Long): String =
+    parsableDateFormat.format(Date(dateTimeTimestamp))
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
     val intent = AppVersionActivity.createAppVersionActivityIntent(

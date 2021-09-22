@@ -5,7 +5,7 @@ import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.locale.OppiaLocale
 
-/** Utility to manage date and time for user-facing strings. */
+/** Per-activity utility to manage date and time for user-facing strings. */
 class DateTimeUtil @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
@@ -23,5 +23,11 @@ class DateTimeUtil @Inject constructor(
       OppiaLocale.MachineLocale.TimeOfDay.EVENING, OppiaLocale.MachineLocale.TimeOfDay.UNKNOWN ->
         resourceHandler.getStringInLocale(R.string.home_screen_good_evening_greeting_fragment)
     }
+  }
+
+  /** Injector to retrieve instances of [DateTimeUtil] from Dagger. */
+  interface Injector {
+    /** Returns [DateTimeUtil] for the current Dagger graph. */
+    fun getDateTimeUtil(): DateTimeUtil
   }
 }

@@ -318,14 +318,15 @@ class PromotedStoryListViewModelTest {
   }
 
   private fun createPromotedStoryListViewModel(
-    activity: AppCompatActivity,
+    activity: HomeFragmentTestActivity,
     promotedStoryList: List<PromotedStory>,
     promotedActivityList: PromotedActivityList
   ): PromotedStoryListViewModel {
     return PromotedStoryListViewModel(
       activity,
       createPromotedStoryViewModelList(activity, promotedStoryList),
-      promotedActivityList
+      promotedActivityList,
+      activity.getAppLanguageResourceHandler()
     )
   }
 

@@ -4,13 +4,17 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
@@ -46,15 +50,16 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.activity.TestActivity
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -66,8 +71,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -82,9 +85,14 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 @Config(application = DateTimeUtilTest.TestApplication::class)
 class DateTimeUtilTest {
 
-  @Inject lateinit var dateTimeUtil: DateTimeUtil
   @Inject lateinit var context: Context
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TestActivity>(
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
 
   @Before
   fun setUp() {
@@ -94,20 +102,29 @@ class DateTimeUtilTest {
 
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceeded() {
-    fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
-    assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    activityRule.scenario.onActivity { activity ->
+      val dateTimeUtil = activity.getDateTimeUtil()
+      fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    }
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodMorningMessageSucceeded() {
-    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
-    assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+    activityRule.scenario.onActivity { activity ->
+      val dateTimeUtil = activity.getDateTimeUtil()
+      fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+    }
   }
 
   @Test
   fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceeded() {
-    fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
-    assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
+    activityRule.scenario.onActivity { activity ->
+      val dateTimeUtil = activity.getDateTimeUtil()
+      fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
+      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
+    }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -150,7 +167,8 @@ class DateTimeUtilTest {
       HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverModule::class,
       GlideImageLoaderModule::class, PrimeTopicAssetsControllerModule::class,
       HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class, LocaleProdModule::class
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
+      LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

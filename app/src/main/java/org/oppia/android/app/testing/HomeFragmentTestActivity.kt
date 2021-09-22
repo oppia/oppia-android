@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.testing.activity.TestActivity
 
 /**
  * Test Activity for testing view models on the [HomeFragment].
@@ -18,7 +18,7 @@ class HomeFragmentTestActivity :
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
   RouteToRecentlyPlayedListener,
-  InjectableAppCompatActivity() {
+  TestActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

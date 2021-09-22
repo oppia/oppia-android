@@ -16,6 +16,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -79,7 +82,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.system.OppiaDateTimeFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -106,13 +108,12 @@ class ViewEventLogsFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
-
-  @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var oppiaLogger: OppiaLogger
+
+  private val parsableDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.US) }
 
   @Before
   fun setUp() {
@@ -576,12 +577,8 @@ class ViewEventLogsFragmentTest {
     ).check(matches(isDisplayed()))
   }
 
-  private fun convertTimeStampToDateAndTime(timestamp: Long): String {
-    return oppiaDateTimeFormatter.formatDateFromDateString(
-      OppiaDateTimeFormatter.DD_MMM_hh_mm_aa,
-      timestamp
-    )
-  }
+  private fun convertTimeStampToDateAndTime(timestamp: Long): String =
+    parsableDateFormat.format(Date(timestamp))
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.view_event_logs_recycler_view)).perform(

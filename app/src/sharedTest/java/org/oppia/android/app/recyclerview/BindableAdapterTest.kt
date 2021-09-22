@@ -105,6 +105,10 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.activity.ActivityIntentFactoriesModule
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.view.ViewComponentBuilderModule
 
 /** Tests for [BindableAdapter]. */
 @RunWith(AndroidJUnit4::class)
@@ -679,12 +683,13 @@ class BindableAdapterTest {
   @Subcomponent(
     modules = [
       FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class
+      ViewBindingShimModule::class, ViewComponentBuilderModule::class
     ]
   )
-  interface TestFragmentComponent : FragmentComponent, BindableAdapterTestFragment.TestInjector {
+  interface TestFragmentComponent
+    : FragmentComponentImpl, BindableAdapterTestFragment.TestInjector {
     @Subcomponent.Builder
-    interface Builder : FragmentComponent.Builder
+    interface Builder : FragmentComponentImpl.Builder
   }
 
   @Module(subcomponents = [TestFragmentComponent::class])
@@ -698,10 +703,12 @@ class BindableAdapterTest {
   }
 
   @ActivityScope
-  @Subcomponent(modules = [TestActivityModule::class])
-  interface TestActivityComponent : ActivityComponent, BindableAdapterTestActivity.TestInjector {
+  @Subcomponent(modules = [TestActivityModule::class, ActivityIntentFactoriesModule::class])
+  interface TestActivityComponent :
+    ActivityComponentImpl, BindableAdapterTestActivity.TestInjector {
+
     @Subcomponent.Builder
-    interface Builder : ActivityComponent.Builder
+    interface Builder : ActivityComponentImpl.Builder
   }
 
   @Module(subcomponents = [TestActivityComponent::class])
@@ -713,12 +720,12 @@ class BindableAdapterTest {
     @Binds
     fun provideContext(@ApplicationContext context: Context): Context
 
-    // Bridge the test & original ActivityComponent builders to properly hook up the replacement
+    // Bridge the test & original ActivityComponent builders to properly hook up the :replacement
     // test subcomponent.
     @Binds
     fun provideActivityComponentBuilder(
       builder: TestActivityComponent.Builder
-    ): ActivityComponent.Builder
+    ): ActivityComponentImpl.Builder
   }
 
   @Singleton

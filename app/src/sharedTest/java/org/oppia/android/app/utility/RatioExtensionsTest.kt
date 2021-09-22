@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -65,15 +66,19 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.oppia.android.testing.activity.TestActivity
 
 /** Tests for [RatioExtensions]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = RatioExtensionsTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class RatioExtensionsTest {
-
-  @Inject
-  lateinit var context: Context
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TestActivity>(
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
 
   @Before
   fun setUp() {
@@ -82,22 +87,26 @@ class RatioExtensionsTest {
 
   @Test
   fun testRatio_ratioLengthThree_returnsAccessibleRatioString() {
-    val ratio = createRatio(listOf(1, 2, 3))
-    assertThat(
-      ratio.toAccessibleAnswerString(
-        context
-      )
-    ).isEqualTo("1 to 2 to 3")
+    activityRule.scenario.onActivity { activity ->
+      val ratio = createRatio(listOf(1, 2, 3))
+      assertThat(
+        ratio.toAccessibleAnswerString(
+          activity.getAppLanguageResourceHandler()
+        )
+      ).isEqualTo("1 to 2 to 3")
+    }
   }
 
   @Test
   fun testRatio_ratioLengthTwo_returnsAccessibleRatioString() {
-    val ratio = createRatio(listOf(1, 2))
-    assertThat(
-      ratio.toAccessibleAnswerString(
-        context
-      )
-    ).isEqualTo("1 to 2")
+    activityRule.scenario.onActivity { activity ->
+      val ratio = createRatio(listOf(1, 2))
+      assertThat(
+        ratio.toAccessibleAnswerString(
+          activity.getAppLanguageResourceHandler()
+        )
+      ).isEqualTo("1 to 2")
+    }
   }
 
   private fun setUpTestApplicationComponent() {

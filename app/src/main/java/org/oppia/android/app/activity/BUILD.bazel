@@ -27,7 +27,10 @@ kt_android_library(
     srcs = [
         "InjectableAppCompatActivity.kt",
     ],
-    visibility = ["//app:app_visibility"],
+    visibility = [
+        "//app:app_visibility",
+        "//testing/src/main/java/org/oppia/android/testing/activity:__pkg__",
+    ],
     deps = [
         ":activity_component",
         ":activity_component_factory",
@@ -49,6 +52,7 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector",
+        "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
     ],
 )
 

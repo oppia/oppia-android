@@ -35,7 +35,8 @@ class RecentlyPlayedActivity :
   }
 
   companion object {
-    private const val RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    const val RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
       "RecentlyPlayedActivity.internal_profile_id"
 
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
