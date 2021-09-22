@@ -128,7 +128,7 @@
   <string name="ratio_error_includes_zero">Proporções não podem ter 0 como elemento.</string>
   <string name="unknown_size">Tamanho desconhecido</string>
   <string name="size_bytes">%s Bytes</string>
-  <string name="size_kb">%S KB</string>
+  <string name="size_kb">%s KB</string>
   <string name="size_mb">%s MB</string>
   <string name="size_gb">%s GB</string>
   <string name="correct">Correto!</string>

@@ -154,6 +154,11 @@ file_content_checks {
   failure_message: "String plurals shouldn't be constructed directly through databinding. Instead, pass in AppLanguageResourceHandler from the view model or call a new function through the view model to compute the string. Both should use the handler's locale-safe formatting/quantity string methods."
 }
 file_content_checks {
+  file_path_regex: "app/src/main/res/values.*?/strings\\.xml"
+  prohibited_content_regex: "[^%]*%(\\d+\\$)?[A-Za-z&&[^s]]"
+  failure_message: "Only string type specifiers should use for strings (to avoid runtime errors due to bidirectional wrapping requirements)."
+}
+file_content_checks {
   file_path_regex: ".+?.kt"
   prohibited_content_regex: "\\sActivity\\("
   failure_message: "Activity should never be subclassed. Use AppCompatActivity, instead."

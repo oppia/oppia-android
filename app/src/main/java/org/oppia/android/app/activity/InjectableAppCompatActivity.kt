@@ -53,16 +53,6 @@ abstract class InjectableAppCompatActivity :
 
   override fun getAppLanguageActivityInjector(): AppLanguageActivityInjector = activityComponent
 
-  // TODO: make open or remove KDoc.
-  /**
-   * Called during context attachment to initialize the [activityComponent] and before localization
-   * is initialized for the activity. In general, this method should never be overridden as it's
-   * only meant to be used in very specific situations, and in cases where it is overridden, it must
-   * be called.
-   *
-   * Finally, care should be taken when overriding since this is called during context attachment
-   * which means certain activity fields won't be present (such as its intent).
-   */
   private fun onInitializeActivityComponent(applicationContext: Context) {
     val componentFactory = applicationContext as ActivityComponentFactory
     activityComponent = componentFactory.createActivityComponent(this)
