@@ -185,7 +185,7 @@ class ResumeLessonFragmentTest {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withText("This is outline/summary for What is a Fraction?"))
+        matches(withText("Matthew learns about fractions."))
       )
     }
   }
@@ -197,7 +197,7 @@ class ResumeLessonFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withText("This is outline/summary for What is a Fraction?"))
+        matches(withText("Matthew learns about fractions."))
       )
     }
   }
