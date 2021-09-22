@@ -1298,7 +1298,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_noCheckboxItemSelected_selectionInteractionTextIsDisplayed(){
+  fun testStateFragment_interactions_noItemSelected_selectionTextIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1312,7 +1312,7 @@ class StateFragmentTest {
     }
   }
   @Test
-  fun testStateFragment_interactions_land_noCheckboxItemSelected_selectionInteractionTextIsDisplayed(){
+  fun testStateFragment_interactions_land_noItemSelected_selectionTextIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
@@ -1328,7 +1328,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_singleCheckboxItemSelected_selectionInteractionTextIsNotDisplayed(){
+  fun testStateFragment_interactions_singleItemSelected_selectionTextIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1344,7 +1344,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_land_singleCheckboxItemSelected_selectionInteractionTextIsNotDisplayed(){
+  fun testStateFragment_interactions_land_singleItemSelected_selectionTextIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
@@ -1361,7 +1361,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_multipleCheckboxItemSelected_selectionInteractionTextIsNotDisplayed(){
+  fun testStateFragment_interactions_multipleItemSelected_selectionTextIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1378,7 +1378,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_land_multipleCheckboxItemSelected_selectionInteractionTextIsNotDisplayed(){
+  fun testStateFragment_interactions_land_multipleItemSelected_selectionTextIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
@@ -1394,6 +1394,29 @@ class StateFragmentTest {
       onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
     }
   }
+
+  @Test
+  fun testStateFragment_interactions_selectUnselectCheckbox_selectionTextIsDisplayedCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      rotateToLandscape()
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
+    }
+  }
+
   @Test
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
