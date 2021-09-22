@@ -94,7 +94,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ImageRegionSelectionInteractionViewTest.TestApplication::class,
-  qualifiers = "port-560dpi"
+  qualifiers = "port-xxhdpi"
 )
 class ImageRegionSelectionInteractionViewTest {
 
@@ -116,8 +116,7 @@ class ImageRegionSelectionInteractionViewTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-
-  @Config(qualifiers = "port")
+  
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @Ignore
