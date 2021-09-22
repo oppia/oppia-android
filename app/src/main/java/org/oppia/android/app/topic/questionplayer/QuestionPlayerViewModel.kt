@@ -32,12 +32,29 @@ class QuestionPlayerViewModel @Inject constructor(
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 
+  val questionProgressText: ObservableField<String> =
+    ObservableField(
+      computeQuestionProgressText(
+        DEFAULT_CURRENT_QUESTION, DEFAULT_QUESTION_COUNT, DEFAULT_IS_AT_END_OF_SESSION
+      )
+    )
+
   fun setHintBulbVisibility(hintBulbVisible: Boolean) {
     isHintBulbVisible.set(hintBulbVisible)
   }
 
   fun setHintOpenedAndUnRevealedVisibility(hintOpenedAndUnRevealedVisible: Boolean) {
     isHintOpenedAndUnRevealed.set(hintOpenedAndUnRevealedVisible)
+  }
+
+  fun updateQuestionProgress(currentQuestion: Int, questionCount: Int, progressPercentage: Int, isAtEndOfSession: Boolean) {
+    this.currentQuestion.set(currentQuestion)
+    this.questionCount.set(questionCount)
+    this.progressPercentage.set(progressPercentage)
+    this.isAtEndOfSession.set(isAtEndOfSession)
+    questionProgressText.set(
+      computeQuestionProgressText(currentQuestion, questionCount, isAtEndOfSession)
+    )
   }
 
   fun setCanSubmitAnswer(canSubmitAnswer: Boolean) = this.canSubmitAnswer.set(canSubmitAnswer)
@@ -54,15 +71,18 @@ class QuestionPlayerViewModel @Inject constructor(
     ) ?: UserAnswer.getDefaultInstance()
   }
 
-  // TODO: fix. Probably needs to be a LiveData since it's not updating.
-  fun computeQuestionProgressText(): String {
-    return if (isAtEndOfSession.get()) {
+  private fun computeQuestionProgressText(
+    currentQuestion: Int,
+    questionCount: Int,
+    isAtEndOfSession: Boolean
+  ): String {
+    return if (isAtEndOfSession) {
       resourceHandler.getStringInLocale(R.string.question_training_session_progress_finished)
     } else {
       resourceHandler.getStringInLocaleWithWrapping(
         R.string.question_training_session_progress,
-        currentQuestion.get().toString(),
-        questionCount.get().toString()
+        currentQuestion.toString(),
+        questionCount.toString()
       )
     }
   }
@@ -83,5 +103,11 @@ class QuestionPlayerViewModel @Inject constructor(
     } else {
       itemList
     }
+  }
+
+  private companion object {
+    private const val DEFAULT_CURRENT_QUESTION = 0
+    private const val DEFAULT_QUESTION_COUNT = 0
+    private const val DEFAULT_IS_AT_END_OF_SESSION = false
   }
 }

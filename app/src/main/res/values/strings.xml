@@ -414,15 +414,15 @@
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
-    <item quantity="other">%d minutes</item>
+    <item quantity="other">%s minutes</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">an hour</item>
-    <item quantity="other">%d hours</item>
+    <item quantity="other">%s hours</item>
   </plurals>
   <plurals name="days">
     <item quantity="one">a day</item>
-    <item quantity="other">%d days</item>
+    <item quantity="other">%s days</item>
   </plurals>
   <!-- ViewTags -->
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
