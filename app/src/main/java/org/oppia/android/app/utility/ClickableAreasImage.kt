@@ -110,6 +110,10 @@ class ClickableAreasImage(
           imageRect.height().roundToInt()
         )
         val newView = View(it.context)
+        // ClickableArea co-ordinates are not laid-out properly in RTL. The image region co-ordinates are
+        // from left-to-right and touch co-ordinates that draws frame are from right-to-left and it looks
+        // that the co-ordinates are always towards the right end in RTL which is creating problem.Thus to
+        // avoid this situation force layout direction to LTR
         ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
         newView.layoutParams = layoutParams
         newView.x = imageRect.left

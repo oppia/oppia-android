@@ -3,6 +3,7 @@ package org.oppia.android.app.testing
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -93,7 +94,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ImageRegionSelectionInteractionViewTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-560dpi"
 )
 class ImageRegionSelectionInteractionViewTest {
 
@@ -116,12 +117,36 @@ class ImageRegionSelectionInteractionViewTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Config(qualifiers = "port")
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @Ignore
   fun testImageRegionSelectionInteractionView_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
+      }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
+      )
+
+      verify(onClickableAreaClickedListener)
+        .onClickableAreaTouched(
+          capture(regionClickedEvent)
+        )
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+    }
+  }
+
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  fun testImageRegionSelectionInteractionView_rtl_clickRegion3_region3Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
         it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
           .setListener(onClickableAreaClickedListener)
       }
@@ -144,6 +169,45 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
+      }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 2"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      verify(
+        onClickableAreaClickedListener,
+        times(2)
+      ).onClickableAreaTouched(
+        capture(
+          regionClickedEvent
+        )
+      )
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
+    }
+  }
+
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  fun testImageRegionSelectionInteractionView_rtl_clickRegion3_clickRegion2_region2Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
         it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
           .setListener(onClickableAreaClickedListener)
       }
@@ -182,6 +246,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
         it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
           .setListener(onClickableAreaClickedListener)
       }
@@ -204,6 +269,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
         it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
           .setListener(onClickableAreaClickedListener)
       }
@@ -241,6 +307,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
         it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
           .setListener(onClickableAreaClickedListener)
       }
@@ -266,6 +333,7 @@ class ImageRegionSelectionInteractionViewTest {
   fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
         it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
           .setListener(onClickableAreaClickedListener)
       }
