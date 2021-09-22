@@ -47,7 +47,7 @@ class SubmittedAnswerViewModel(
   private fun computeSubmittedAnswerContentDescription(
     isCorrectAnswer: Boolean, submittedAnswer: CharSequence, accessibleAnswer: String?
   ): String {
-    val answer = accessibleAnswer ?: submittedAnswer
+    val answer = if (accessibleAnswer.isNullOrBlank()) submittedAnswer else accessibleAnswer
     return if (isCorrectAnswer) {
       resourceHandler.getStringInLocaleWithWrapping(
         R.string.correct_submitted_answer_with_append, answer

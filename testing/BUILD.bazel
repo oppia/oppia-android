@@ -33,7 +33,12 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         ":dagger",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_locale_handler",
         "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector_provider",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//third_party:androidx_core_core-ktx",

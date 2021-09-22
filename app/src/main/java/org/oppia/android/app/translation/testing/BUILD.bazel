@@ -1,0 +1,34 @@
+"""
+Testing utilities for languages & locales.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "test_activity_recreator",
+    testonly = True,
+    srcs = [
+        "TestActivityRecreator.kt",
+    ],
+    deps = [
+        ":dagger",
+        "//app/src/main/java/org/oppia/android/app/translation:activity_recreator",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "ActivityRecreatorTestModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//app/src/main/java/org/oppia/android/app/translation:activity_recreator",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_activity_recreator",
+    ],
+)
+
+dagger_rules()

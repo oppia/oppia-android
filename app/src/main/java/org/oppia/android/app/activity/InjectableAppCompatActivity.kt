@@ -30,28 +30,10 @@ abstract class InjectableAppCompatActivity :
     val applicationContext = checkNotNull(newBase?.applicationContext) {
       "Expected attached Context to have an application context defined."
     }
-    initializeActivityComponent(applicationContext)
-
-    // Given how DataProviders work (i.e. by resolving data races using eventual consistency), it's
-    // possible to miss some updates in really unlikely situations. No additional work will be done
-    // to prevent these data races unless they're actually hit by users. It shouldn't, in practice,
-    // be possible since it requires changing the system language between activity transitions, and
-    // in most cases that should result in an activity recreation by the mixin, anyway.
-    val appLanguageAppInjectorProvider =
-      applicationContext as AppLanguageApplicationInjectorProvider
-    val appLanguageAppInjector = appLanguageAppInjectorProvider.getAppLanguageApplicationInjector()
-    val appLanguageActivityInjector = activityComponent as AppLanguageActivityInjector
-    val appLanguageLocaleHandler = appLanguageAppInjector.getAppLanguageHandler()
-    val appLanguageWatcherMixin = appLanguageActivityInjector.getAppLanguageWatcherMixin()
-    appLanguageWatcherMixin.initialize()
-    val newConfiguration = Configuration(newBase?.resources?.configuration)
-    appLanguageLocaleHandler.initializeLocaleForActivity(newConfiguration)
-
-    // Notify the potential locale change at the end since it may result in another activity
-    // recreation.
-    appLanguageLocaleHandler.notifyPotentialLocaleChange()
-
-    super.attachBaseContext(newBase?.createConfigurationContext(newConfiguration))
+    onInitializeActivityComponent(applicationContext)
+    val newConfiguration = onInitializeLocalization(applicationContext, newBase)
+//    super.attachBaseContext(newBase?.createConfigurationContext(newConfiguration))
+    super.attachBaseContext(newBase)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,9 +53,40 @@ abstract class InjectableAppCompatActivity :
 
   override fun getAppLanguageActivityInjector(): AppLanguageActivityInjector = activityComponent
 
-  private fun initializeActivityComponent(applicationContext: Context) {
+  // TODO: make open or remove KDoc.
+  /**
+   * Called during context attachment to initialize the [activityComponent] and before localization
+   * is initialized for the activity. In general, this method should never be overridden as it's
+   * only meant to be used in very specific situations, and in cases where it is overridden, it must
+   * be called.
+   *
+   * Finally, care should be taken when overriding since this is called during context attachment
+   * which means certain activity fields won't be present (such as its intent).
+   */
+  private fun onInitializeActivityComponent(applicationContext: Context) {
     val componentFactory = applicationContext as ActivityComponentFactory
     activityComponent = componentFactory.createActivityComponent(this)
+  }
+
+  private fun onInitializeLocalization(
+    applicationContext: Context,
+    newBase: Context?
+  ): Configuration {
+    // Given how DataProviders work (i.e. by resolving data races using eventual consistency), it's
+    // possible to miss some updates in really unlikely situations. No additional work will be done
+    // to prevent these data races unless they're actually hit by users. It shouldn't, in practice,
+    // be possible since it requires changing the system language between activity transitions, and
+    // in most cases that should result in an activity recreation by the mixin, anyway.
+    val appLanguageAppInjectorProvider =
+      applicationContext as AppLanguageApplicationInjectorProvider
+    val appLanguageAppInjector = appLanguageAppInjectorProvider.getAppLanguageApplicationInjector()
+    val appLanguageActivityInjector = activityComponent as AppLanguageActivityInjector
+    val appLanguageLocaleHandler = appLanguageAppInjector.getAppLanguageHandler()
+    val appLanguageWatcherMixin = appLanguageActivityInjector.getAppLanguageWatcherMixin()
+    appLanguageWatcherMixin.initialize()
+    return Configuration(newBase?.resources?.configuration).also { newConfiguration ->
+      appLanguageLocaleHandler.initializeLocaleForActivity(newConfiguration)
+    }
   }
 
   private fun ensureLayoutDirection() {

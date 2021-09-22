@@ -11,7 +11,8 @@ class AppLanguageWatcherMixin @Inject constructor(
   private val activity: AppCompatActivity,
   private val translationController: TranslationController,
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val activityRecreator: ActivityRecreator
 ) {
   fun initialize() {
     // TODO(#52): Hook this up properly to profiles, and handle the non-profile activity cases.
@@ -32,7 +33,7 @@ class AppLanguageWatcherMixin @Inject constructor(
           // locale faster (maybe by short-circuiting some of the system locale selection code since
           // the underlying I/O state is technically fixed and doesn't need a DataProvider past the
           // splash screen).
-          activity.recreate()
+          activityRecreator.recreate(activity)
         }
       } else if (localeResult.isFailure()) {
         oppiaLogger.e(

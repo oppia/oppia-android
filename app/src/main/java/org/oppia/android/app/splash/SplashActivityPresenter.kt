@@ -3,6 +3,7 @@ package org.oppia.android.app.splash
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import javax.inject.Inject
 import org.oppia.android.R
@@ -57,32 +58,41 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun subscribeToOnboardingFlow() {
-    computeInitStateLiveData().observe(
+    val liveData = computeInitStateLiveData()
+    liveData.observe(
       activity,
-      { initState ->
-        // First, initialize the app's initial locale.
-        appLanguageLocaleHandler.initializeLocale(initState.displayLocale)
+      object: Observer<SplashInitState> {
+        override fun onChanged(initState: SplashInitState) {
+          // It's possible for the observer to still be active & change due to the next activity
+          // causing a notification to be posted. That's always invalid to process here: the splash
+          // activity should never do anything after its initial state since it always finishes (or
+          // in the case of the deprecation dialog, blocks) the activity.
+          liveData.removeObserver(this)
 
-        // Second, route the user to the correct desintation.
-        when (initState.startupMode) {
-          StartupMode.USER_IS_ONBOARDED -> {
-            activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-            activity.finish()
-          }
-          StartupMode.APP_IS_DEPRECATED -> {
-            if (getDeprecationNoticeDialogFragment() == null) {
-              activity.supportFragmentManager.beginTransaction()
-                .add(
-                  AutomaticAppDeprecationNoticeDialogFragment.newInstance(),
-                  AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG
-                ).commitNow()
+          // First, initialize the app's initial locale.
+          appLanguageLocaleHandler.initializeLocale(initState.displayLocale)
+
+          // Second, route the user to the correct destination.
+          when (initState.startupMode) {
+            StartupMode.USER_IS_ONBOARDED -> {
+              activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
+              activity.finish()
             }
-          }
-          else -> {
-            // In all other cases (including errors when the startup state fails to load or is
-            // defaulted), assume the user needs to be onboarded.
-            activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
-            activity.finish()
+            StartupMode.APP_IS_DEPRECATED -> {
+              if (getDeprecationNoticeDialogFragment() == null) {
+                activity.supportFragmentManager.beginTransaction()
+                  .add(
+                    AutomaticAppDeprecationNoticeDialogFragment.newInstance(),
+                    AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG
+                  ).commitNow()
+              }
+            }
+            else -> {
+              // In all other cases (including errors when the startup state fails to load or is
+              // defaulted), assume the user needs to be onboarded.
+              activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
+              activity.finish()
+            }
           }
         }
       }

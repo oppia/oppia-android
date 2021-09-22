@@ -54,14 +54,15 @@ class QuestionPlayerViewModel @Inject constructor(
     ) ?: UserAnswer.getDefaultInstance()
   }
 
+  // TODO: fix. Probably needs to be a LiveData since it's not updating.
   fun computeQuestionProgressText(): String {
     return if (isAtEndOfSession.get()) {
       resourceHandler.getStringInLocale(R.string.question_training_session_progress_finished)
     } else {
       resourceHandler.getStringInLocaleWithWrapping(
         R.string.question_training_session_progress,
-        currentQuestion.toString(),
-        questionCount.toString()
+        currentQuestion.get().toString(),
+        questionCount.get().toString()
       )
     }
   }

@@ -20,10 +20,6 @@ class AppLanguageLocaleHandler @Inject constructor(
     displayLocale = locale
   }
 
-  fun notifyPotentialLocaleChange() {
-    localeController.notifyPotentialLocaleChange()
-  }
-
   fun initializeLocaleForActivity(newConfiguration: Configuration) {
     localeController.setAsDefault(displayLocale, newConfiguration)
   }

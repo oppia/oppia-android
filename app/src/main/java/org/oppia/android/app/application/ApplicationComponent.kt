@@ -52,6 +52,7 @@ import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.util.locale.LocaleProdModule
 
 /**
@@ -90,6 +91,7 @@ import org.oppia.android.util.locale.LocaleProdModule
     DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConnectionUtilDebugModule::class,
     NetworkConfigProdModule::class, AssetModule::class, LocaleProdModule::class,
+    ActivityRecreatorProdModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
     NetworkConnectionDebugUtilModule::class

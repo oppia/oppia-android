@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -16,9 +17,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
 import dagger.Component
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -72,6 +70,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -86,6 +85,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.InitializeDefaultLocaleRule
 
 private const val TEST_TIMESTAMP = 1624902815000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -100,6 +100,8 @@ private const val TEST_SUB_TOPIC_ID = 1
   qualifiers = "port-xxhdpi"
 )
 class ViewEventLogsFragmentTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
@@ -112,8 +114,6 @@ class ViewEventLogsFragmentTest {
 
   @Inject
   lateinit var oppiaLogger: OppiaLogger
-
-  private val parsableDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.US) }
 
   @Before
   fun setUp() {
@@ -356,36 +356,36 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_dateAndTimeIsDisplayedCorrectly() {
-    launch(ViewEventLogsTestActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
     }
@@ -393,37 +393,37 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_dateAndTimeIsDisplayedCorrectly() {
-    launch(ViewEventLogsTestActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
     }
@@ -577,8 +577,16 @@ class ViewEventLogsFragmentTest {
     ).check(matches(isDisplayed()))
   }
 
-  private fun convertTimeStampToDateAndTime(timestamp: Long): String =
-    parsableDateFormat.format(Date(timestamp))
+  private fun ActivityScenario<ViewEventLogsTestActivity>.convertTimeStampToDateAndTime(
+    timestampMillis: Long
+  ): String {
+    lateinit var dateTimeString: String
+    onActivity { activity ->
+      val resourceHandler = activity.getAppLanguageResourceHandler()
+      dateTimeString = resourceHandler.computeDateTimeString(timestampMillis)
+    }
+    return dateTimeString
+  }
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.view_event_logs_recycler_view)).perform(
@@ -609,7 +617,7 @@ class ViewEventLogsFragmentTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
 

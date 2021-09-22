@@ -23,8 +23,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import java.text.SimpleDateFormat
-import java.util.Date
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -78,6 +76,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -89,10 +88,9 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.locale.MachineLocaleImpl
+import org.oppia.android.testing.InitializeDefaultLocaleRule
 
 /** Tests for [AppVersionActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -102,6 +100,9 @@ import org.oppia.android.util.locale.MachineLocaleImpl
   qualifiers = "port-xxhdpi"
 )
 class AppVersionActivityTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
@@ -116,17 +117,11 @@ class AppVersionActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val parsableDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.US) }
-
-  private lateinit var lastUpdateDate: String
-
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    val lastUpdateDateTime = context.getLastUpdateTime()
-    lastUpdateDate = getDateTime(lastUpdateDateTime)
   }
 
   @Test
@@ -157,7 +152,8 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
-    launchAppVersionActivityIntent().use {
+    launchAppVersionActivityIntent().use { scenario ->
+      val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
       onView(
         withText(
           String.format(
@@ -181,8 +177,9 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
-    launchAppVersionActivityIntent().use {
+    launchAppVersionActivityIntent().use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
+      val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
       onView(
         withId(
           R.id.app_version_text_view
@@ -234,8 +231,16 @@ class AppVersionActivityTest {
     }
   }
 
-  private fun getDateTime(dateTimeTimestamp: Long): String =
-    parsableDateFormat.format(Date(dateTimeTimestamp))
+  private fun ActivityScenario<AppVersionActivity>.convertTimeStampToDate(
+    timestampMillis: Long
+  ): String {
+    lateinit var dateTimeString: String
+    onActivity { activity ->
+      val resourceHandler = activity.activityComponent.getAppLanguageResourceHandler()
+      dateTimeString = resourceHandler.computeDateString(timestampMillis)
+    }
+    return dateTimeString
+  }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
     val intent = AppVersionActivity.createAppVersionActivityIntent(
@@ -273,7 +278,7 @@ class AppVersionActivityTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
