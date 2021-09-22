@@ -116,7 +116,7 @@ class ImageRegionSelectionInteractionViewTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-  
+
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @Ignore
