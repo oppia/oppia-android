@@ -423,7 +423,7 @@ class TopicControllerTest {
     val chapterSummary = chapterSummaryResultCaptor.value.getOrThrow()
     assertThat(chapterSummary.name).isEqualTo("What is a Fraction?")
     assertThat(chapterSummary.summary)
-      .isEqualTo("This is outline/summary for <b>What is a Fraction?</b>")
+      .isEqualTo("Matthew learns about fractions.")
   }
 
   @Test
