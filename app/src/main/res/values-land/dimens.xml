@@ -307,4 +307,9 @@
   <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
   <dimen name="promoted_story_card_text_size">14sp</dimen>
   <dimen name="promoted_story_card_margin_top">8dp</dimen>
+
+  <!-- Topic Lessons Title -->
+  <dimen name="topic_lessons_title_marginStart">100dp</dimen>
+  <dimen name="topic_lessons_title_marginTop">32dp</dimen>
+  <dimen name="topic_lessons_title_marginEnd">100dp</dimen>
 </resources>
