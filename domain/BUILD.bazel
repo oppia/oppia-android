@@ -13,6 +13,7 @@ load("//domain:domain_test.bzl", "domain_test")
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/domain/feedbackreporting/*.kt",
     "src/main/java/org/oppia/android/domain/util/*.kt",
 ])
 
@@ -131,6 +132,8 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+    "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/network:network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
