@@ -13,7 +13,7 @@ load("//domain:domain_test.bzl", "domain_test")
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
-    "src/main/java/org/oppia/android/domain/oppialogger/*.kt",
+    "src/main/java/org/oppia/android/domain/oppialogger/**/*.kt",
     "src/main/java/org/oppia/android/domain/util/*.kt",
 ])
 

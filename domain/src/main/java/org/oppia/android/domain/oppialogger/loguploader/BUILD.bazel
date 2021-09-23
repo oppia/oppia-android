@@ -1,5 +1,5 @@
 """
-Library for providing log uploading functionality to the Oppia Android app.
+Package for providing log uploading functionality.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
