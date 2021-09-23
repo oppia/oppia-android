@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 
 /** Tests for [RegexPatternValidationCheck]. */
@@ -16,13 +17,18 @@ class RegexPatternValidationCheckTest {
   private val originalOut: PrintStream = System.out
   private val REGEX_CHECK_PASSED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS PASSED"
   private val REGEX_CHECK_FAILED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS FAILED"
+  private val activitiesPlacementErrorMessage =
+    "Activities cannot be placed outside the app or testing module."
+  private val nestedResourceSubdirectoryErrorMessage =
+    "Only one level of subdirectories under res/ should be maintained (further subdirectories " +
+      "aren't supported by the project configuration)."
   private val supportLibraryUsageErrorMessage =
     "AndroidX should be used instead of the support library"
   private val coroutineWorkerUsageErrorMessage =
     "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   private val settableFutureUsageErrorMessage =
-    "SettableFuture should only be used in pre-approved locations since it's easy to potentially" +
-      " mess up & lead to a hanging ListenableFuture."
+    "SettableFuture should only be used in pre-approved locations since it's easy to potentially " +
+      "mess up & lead to a hanging ListenableFuture."
   private val androidGravityLeftErrorMessage =
     "Use android:gravity=\"start\", instead, for proper RTL support"
   private val androidGravityRightErrorMessage =
@@ -45,6 +51,13 @@ class RegexPatternValidationCheckTest {
     "Use motion:touchAnchorSide=\"start\", instead, for proper RTL support"
   private val androidTouchAnchorSideRightErrorMessage =
     "Use motion:touchAnchorSide=\"end\", instead, for proper RTL support"
+  private val oppiaCantBeTranslatedErrorMessage =
+    "Oppia should never used directly in a string (since it shouldn't be translated). Instead, " +
+      "use a parameter & insert the string retrieved from app_name."
+  private val untranslatableStringsGoInSpecificFileErrorMessage =
+    "Untranslatable strings should go in untranslated_strings.xml, instead."
+  private val translatableStringsGoInMainFileErrorMessage =
+    "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -96,8 +109,58 @@ class RegexPatternValidationCheckTest {
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
       """
-      File name/path violation: Activities cannot be placed outside the app or testing module
-      - ${retrieveTestFilesPath()}/data/src/main/TestActivity.kt
+      File name/path violation: $activitiesPlacementErrorMessage
+      - data/src/main/TestActivity.kt
+
+      $wikiReferenceNote
+      """.trimIndent()
+    )
+  }
+
+  @Test
+  fun testFileNamePattern_appResources_stringsFile_fileNamePatternIsCorrect() {
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    tempFolder.newFile("testfiles/app/src/main/res/values/strings.xml")
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileNamePattern_appResources_subValuesDir_stringsFile_fileNamePatternIsNotCorrect() {
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values", "subdir")
+    tempFolder.newFile("testfiles/app/src/main/res/values/subdir/strings.xml")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim()).isEqualTo(
+      """
+      File name/path violation: $nestedResourceSubdirectoryErrorMessage
+      - app/src/main/res/values/subdir/strings.xml
+
+      $wikiReferenceNote
+      """.trimIndent()
+    )
+  }
+
+  @Test
+  fun testFileNamePattern_domainResources_subValuesDir_stringsFile_fileNamePatternIsNotCorrect() {
+    tempFolder.newFolder("testfiles", "domain", "src", "main", "res", "drawable", "subdir")
+    tempFolder.newFile("testfiles/domain/src/main/res/drawable/subdir/example.png")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim()).isEqualTo(
+      """
+      File name/path violation: $nestedResourceSubdirectoryErrorMessage
+      - domain/src/main/res/drawable/subdir/example.png
       
       $wikiReferenceNote
       """.trimIndent()
@@ -127,7 +190,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/TestFile.kt:1: $supportLibraryUsageErrorMessage
+        TestFile.kt:1: $supportLibraryUsageErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -147,7 +210,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/TestFile.kt:1: $coroutineWorkerUsageErrorMessage
+        TestFile.kt:1: $coroutineWorkerUsageErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -167,7 +230,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/TestFile.kt:1: $settableFutureUsageErrorMessage
+        TestFile.kt:1: $settableFutureUsageErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -187,7 +250,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGravityLeftErrorMessage
+        test_layout.xml:1: $androidGravityLeftErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -207,7 +270,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGravityRightErrorMessage
+        test_layout.xml:1: $androidGravityRightErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -227,7 +290,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidLayoutGravityLeftErrorMessage
+        test_layout.xml:1: $androidLayoutGravityLeftErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -247,7 +310,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidLayoutGravityRightErrorMessage
+        test_layout.xml:1: $androidLayoutGravityRightErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -267,7 +330,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -287,7 +350,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -307,7 +370,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -327,7 +390,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -347,7 +410,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -367,7 +430,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -387,7 +450,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -407,7 +470,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -427,7 +490,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -447,7 +510,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -467,7 +530,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -487,7 +550,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -507,7 +570,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -527,7 +590,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -547,7 +610,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -567,7 +630,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -587,7 +650,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -607,7 +670,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
+        test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -627,7 +690,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidBarrierDirectionLeftErrorMessage
+        test_layout.xml:1: $androidBarrierDirectionLeftErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -647,7 +710,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidBarrierDirectionRightErrorMessage
+        test_layout.xml:1: $androidBarrierDirectionRightErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -667,7 +730,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidDragDirectionLeftErrorMessage
+        test_layout.xml:1: $androidDragDirectionLeftErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -687,7 +750,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidDragDirectionRightErrorMessage
+        test_layout.xml:1: $androidDragDirectionRightErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -707,7 +770,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidTouchAnchorSideLeftErrorMessage
+        test_layout.xml:1: $androidTouchAnchorSideLeftErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -727,10 +790,121 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        ${retrieveTestFilesPath()}/test_layout.xml:1: $androidTouchAnchorSideRightErrorMessage
+        test_layout.xml:1: $androidTouchAnchorSideRightErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
+  }
+
+  @Test
+  fun testFileContent_oppiaInString_inPrimaryStringsFile_fileContentIsNotCorrect() {
+    val prohibitedContent = "<string name=\"test\">String with Oppia in it</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $oppiaCantBeTranslatedErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_untranslatableString_inPrimaryStringsFile_fileContentIsNotCorrect() {
+    val prohibitedContent = "<string name=\"test\" translatable=\"false\">Something</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $untranslatableStringsGoInSpecificFileErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_untranslatableString_inUntranslatedStringsFile_fileContentIsCorrect() {
+    val prohibitedContent = "<string name=\"test\" translatable=\"false\">Something</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/untranslated_strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_translatableString_outsidePrimaryStringsFile_fileContentIsNotCorrect() {
+    val prohibitedContent = "<string name=\"test\">Translatable</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/untranslated_strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $translatableStringsGoInMainFileErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_untranslatableString_outsidePrimaryStringsFile_fileContentIsCorrect() {
+    val prohibitedContent = "<string name=\"test\">Translatable</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_translatableString_inPrimaryStringsFile_fileContentIsCorrect() {
+    val prohibitedContent = "<string name=\"test\">Translatable</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_translatableString_inTranslatedPrimaryStringsFile_fileContentIsCorrect() {
+    val prohibitedContent = "<string name=\"test\">Translatable</string>"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values-ar")
+    val stringFilePath = "app/src/main/res/values-ar/strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   @Test
@@ -747,22 +921,17 @@ class RegexPatternValidationCheckTest {
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
       """
-      File name/path violation: Activities cannot be placed outside the app or testing module
-      - ${retrieveTestFilesPath()}/data/src/main/TestActivity.kt
-      
-      ${retrieveTestFilesPath()}/data/src/main/TestActivity.kt:1: AndroidX should be used instead of the support library
+      File name/path violation: $activitiesPlacementErrorMessage
+      - data/src/main/TestActivity.kt
+
+      data/src/main/TestActivity.kt:1: $supportLibraryUsageErrorMessage
       $wikiReferenceNote
       """.trimIndent()
     )
   }
 
-  /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesPath(): String {
-    return "${tempFolder.root}/testfiles"
-  }
-
   /** Runs the regex_pattern_validation_check. */
   private fun runScript() {
-    main(retrieveTestFilesPath())
+    main(File(tempFolder.root, "testfiles").absolutePath)
   }
 }

@@ -96,7 +96,7 @@
       android:id="@+id/add_profile_divider_view"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:layout_marginTop="60dp"
+      android:layout_marginTop="@dimen/profile_chooser_profile_view_view_margin_top"
       android:background="@color/oppiaProfileChooserDivider"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintEnd_toEndOf="parent"

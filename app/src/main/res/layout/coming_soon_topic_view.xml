@@ -13,11 +13,11 @@
     android:id="@+id/topic_container"
     android:layout_width="144dp"
     android:layout_height="wrap_content"
-    app:layoutMarginEnd="@{viewModel.endMargin}"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    app:layoutMarginEnd="@{viewModel.endMargin}">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-     android:layout_width="match_parent"
+      android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:clickable="true"
       android:focusable="true">

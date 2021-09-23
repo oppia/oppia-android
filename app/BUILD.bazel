@@ -28,7 +28,9 @@ exports_files(["src/main/AndroidManifest.xml"])
 # NOTE: if the file is added here make sure to remove this from the other sub lists
 # of EXCLUDED_APP_LIB_FILES.
 # keep sorted
-MIGRATED_SOURCE_FILES = [
+MIGRATED_SOURCE_FILES = glob([
+    "src/main/java/org/oppia/android/app/utility/datetime/*.kt",
+]) + [
     "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
     "src/main/java/org/oppia/android/app/viewmodel/ObservableViewModel.kt",
 ]
@@ -502,7 +504,7 @@ android_library(
         ["src/main/res/**"],
         exclude = DATABINDING_LAYOUTS,
     ),
-    visibility = ["//visibility:private"],
+    visibility = ["//app:__subpackages__"],
     deps = ["//third_party:com_google_android_material_material"],
 )
 
@@ -606,6 +608,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
+        "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
         "//domain",
         "//third_party:androidx_core_core",
         "//third_party:androidx_databinding_databinding-common",

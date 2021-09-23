@@ -1,16 +1,16 @@
 file_content_checks {
-  filename_regex: ".+?.kt"
+  file_path_regex: ".+?.kt"
   prohibited_content_regex: "^import .+?support.+?$"
   failure_message: "AndroidX should be used instead of the support library"
 }
 file_content_checks {
-  filename_regex: ".+?.kt"
+  file_path_regex: ".+?.kt"
   prohibited_content_regex: "CoroutineWorker"
   failure_message: "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  filename_regex: ".+?.kt"
+  file_path_regex: ".+?.kt"
   prohibited_content_regex: "SettableFuture"
   failure_message: "SettableFuture should only be used in pre-approved locations since it's easy to potentially mess up & lead to a hanging ListenableFuture."
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
@@ -18,70 +18,80 @@ file_content_checks {
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "android:gravity=\"left\""
   failure_message: "Use android:gravity=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "android:gravity=\"right\""
   failure_message: "Use android:gravity=\"end\", instead, for proper RTL support"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "android:layout_gravity=\"left\""
   failure_message: "Use android:layout_gravity=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "android:layout_gravity=\"right\""
   failure_message: "Use android:layout_gravity=\"end\", instead, for proper RTL support"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "paddingLeft|paddingRight|drawableLeft|drawableRight|layout_alignLeft|layout_alignRight|layout_marginLeft|layout_marginRight|layout_alignParentLeft|layout_alignParentRight|layout_toLeftOf|layout_toRightOf|layout_constraintLeft_toLeftOf|layout_constraintLeft_toRightOf|layout_constraintRight_toLeftOf|layout_constraintRight_toRightOf|layout_goneMarginLeft|layout_goneMarginRight"
   failure_message: "Use start/end versions of layout properties, instead, for proper RTL support"
   exempted_file_name: "app/src/main/res/layout/add_profile_activity.xml"
   exempted_file_name: "app/src/main/res/layout/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-land/add_profile_activity.xml"
   exempted_file_name: "app/src/main/res/layout-land/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-land/add_profile_activity.xml"
   exempted_file_name: "app/src/main/res/layout-sw600dp-land/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-port/add_profile_activity.xml"
   exempted_file_name: "app/src/main/res/layout-sw600dp-port/profile_progress_header.xml"
   exempted_file_name: "app/src/main/res/values/styles.xml"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "app:barrierDirection=\"left\""
   failure_message: "Use app:barrierDirection=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "app:barrierDirection=\"right\""
   failure_message: "Use app:barrierDirection=\"end\", instead, for proper RTL support"
-  exempted_file_name: "app/src/main/res/layout/topic_practice_subtopic.xml"
-  exempted_file_name: "app/src/main/res/layout-land/topic_practice_subtopic.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-land/topic_practice_subtopic.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-port/topic_practice_subtopic.xml"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "motion:dragDirection=\"left\""
   failure_message: "Use motion:dragDirection=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "motion:dragDirection=\"right\""
   failure_message: "Use motion:dragDirection=\"end\", instead, for proper RTL support"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "motion:touchAnchorSide=\"left\""
   failure_message: "Use motion:touchAnchorSide=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  filename_regex: ".+?.xml"
+  file_path_regex: ".+?.xml"
   prohibited_content_regex: "motion:touchAnchorSide=\"right\""
   failure_message: "Use motion:touchAnchorSide=\"end\", instead, for proper RTL support"
+}
+file_content_checks {
+  file_path_regex: "app/src/main/res/values/strings.xml"
+  prohibited_content_regex: "Oppia"
+  failure_message: "Oppia should never used directly in a string (since it shouldn't be translated). Instead, use a parameter & insert the string retrieved from app_name."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/res/values/strings.xml"
+  prohibited_content_regex: "translatable=\"false\""
+  failure_message: "Untranslatable strings should go in untranslated_strings.xml, instead."
+  exempted_file_name: "app/src/main/res/values/untranslated_strings.xml"
+}
+file_content_checks {
+  file_path_regex: ".+?.xml"
+  prohibited_content_regex: "<string name=\"[^\"]+\">"
+  failure_message: "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
+  exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
 }
