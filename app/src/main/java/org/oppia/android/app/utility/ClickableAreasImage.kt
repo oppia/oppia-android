@@ -111,7 +111,8 @@ class ClickableAreasImage(
         )
         val newView = View(it.context)
         // ClickableArea coordinates are not laid-out properly in RTL. The image region coordinates are
-        // from left-to-right with an upper left origin and touch coordinates from Android start from the right in RTL mode. Thus, to avoid this situation, force layout direction to LTR in all situations.
+        // from left-to-right with an upper left origin and touch coordinates from Android start from the right
+        // in RTL mode. Thus, to avoid this situation, force layout direction to LTR in all situations.
         ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
         newView.layoutParams = layoutParams
         newView.x = imageRect.left
