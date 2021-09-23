@@ -29,6 +29,12 @@ package_group(
     ],
 )
 
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
 # Source files for the migrated source files library. The files inside the migrated source files
 # library are dependencies in app module that have their own libraries.
 # Place your files here if:

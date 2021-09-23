@@ -160,6 +160,9 @@ class HomeActivityTest {
   private lateinit var profileId: ProfileId
   private lateinit var profileId1: ProfileId
 
+  // TODO: add tests to ensure various language selection, defaulting, and recreation flows correctly translate this activity
+  // TODO: test this on Espresso
+
   @Before
   fun setUp() {
     Intents.init()

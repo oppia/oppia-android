@@ -1,0 +1,68 @@
+"""
+Tests for language & locale UI utilities.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "AppLanguageLocaleHandlerTest",
+    srcs = ["AppLanguageLocaleHandlerTest.kt"],
+    custom_package = "org.oppia.android.app.translation",
+    test_class = "org.oppia.android.app.translation.AppLanguageLocaleHandlerTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+oppia_android_test(
+    name = "AppLanguageResourceHandlerTest",
+    srcs = ["AppLanguageResourceHandlerTest.kt"],
+    custom_package = "org.oppia.android.app.translation",
+    test_class = "org.oppia.android.app.translation.AppLanguageResourceHandlerTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+oppia_android_test(
+    name = "AppLanguageWatcherMixinTest",
+    srcs = ["AppLanguageWatcherMixinTest.kt"],
+    custom_package = "org.oppia.android.app.translation",
+    test_class = "org.oppia.android.app.translation.AppLanguageWatcherMixinTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+dagger_rules()

@@ -13,6 +13,8 @@ import java.io.PrintStream
 
 /** Tests for [RegexPatternValidationCheck]. */
 class RegexPatternValidationCheckTest {
+  // TODO: add new tests
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val REGEX_CHECK_PASSED_OUTPUT_INDICATOR: String = "REGEX PATTERN CHECKS PASSED"

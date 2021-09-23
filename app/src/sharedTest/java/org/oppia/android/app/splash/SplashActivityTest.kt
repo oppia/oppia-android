@@ -115,6 +115,8 @@ class SplashActivityTest {
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
+  // TODO: add tests to verify that locale initialization works correctly
+
   @Before
   fun setUp() {
     Intents.init()
