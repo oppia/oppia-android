@@ -7,6 +7,7 @@ import org.oppia.android.app.topic.TopicActivity
 
 // TODO(#59): Split this to be per-activity.
 
+/** Module for providing [ActivityIntentFactories] factories. */
 @Module
 interface ActivityIntentFactoriesModule {
   @Binds

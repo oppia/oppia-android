@@ -7,6 +7,12 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
+/**
+ * Activity mixin for automatically monitoring & recreating the activity whenever the current app
+ * language changes (such as if it's set to system language & the system language changes).
+ *
+ * This is an activity-level class & must be initialized with a call to [initialize].
+ */
 class AppLanguageWatcherMixin @Inject constructor(
   private val activity: AppCompatActivity,
   private val translationController: TranslationController,
@@ -14,6 +20,10 @@ class AppLanguageWatcherMixin @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val activityRecreator: ActivityRecreator
 ) {
+  /**
+   * Initializes this mixin by starting language monitoring. This method should only ever be called
+   * once for the lifetime of the current activity.
+   */
   fun initialize() {
     // TODO(#52): Hook this up properly to profiles, and handle the non-profile activity cases.
     val profileId = ProfileId.getDefaultInstance()

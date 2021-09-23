@@ -12,6 +12,14 @@ import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
 import org.oppia.android.domain.locale.LocaleController
 
+/**
+ * JUnit rule for automatically initializing the application's locale in app layer tests. Note that
+ * this is likely needed for all app layer tests that make use of activities which interact with the
+ * application's Dagger graph (likely nearly all of them).
+ *
+ * This rule initializes the app to the same default locale that the splash activity would if it
+ * failed to look up a locale (US English).
+ */
 class InitializeDefaultLocaleRule: TestRule {
   override fun apply(base: Statement?, description: Description?): Statement {
     return object : Statement() {

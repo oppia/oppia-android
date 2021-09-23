@@ -75,7 +75,7 @@ import org.oppia.android.app.view.ViewComponentBuilderModule
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each fragment.
 
-/** Root subcomponent for all fragments. */
+/** Implementation of [FragmentComponent]. */
 @Subcomponent(
   modules = [
     FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
@@ -84,6 +84,7 @@ import org.oppia.android.app.view.ViewComponentBuilderModule
 )
 @FragmentScope
 interface FragmentComponentImpl: FragmentComponent, ViewComponentBuilderInjector {
+  /** Implementation of [FragmentComponent.Builder]. */
   @Subcomponent.Builder
   interface Builder : FragmentComponent.Builder {
     @BindsInstance

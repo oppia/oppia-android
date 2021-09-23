@@ -16,6 +16,9 @@ class WelcomeViewModel(
   /** Text [String] to greet the learner and display on-screen when launching the home activity. */
   val greeting: String = dateTimeUtil.getGreetingMessage()
 
+  /**
+   * Returns the user-readable portion of the welcome screen greeting that contains the user's name.
+   */
   fun computeProfileNameText(): String {
     return resourceHandler.getStringInLocaleWithWrapping(R.string.welcome_profile_name, profileName)
   }

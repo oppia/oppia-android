@@ -81,7 +81,7 @@ import org.oppia.android.app.testing.InputInteractionViewTestActivity
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each activity.
 
-/** Root subcomponent for all activities. */
+/** Implementation of [ActivityComponent]. */
 @Subcomponent(modules = [
   ActivityModule::class, FragmentComponentBuilderModule::class, ActivityIntentFactoriesModule::class
 ])

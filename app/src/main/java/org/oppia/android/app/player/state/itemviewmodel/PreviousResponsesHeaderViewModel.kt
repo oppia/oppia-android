@@ -17,6 +17,7 @@ class PreviousResponsesHeaderViewModel(
   /** Called when the user clicks on the previous response header. */
   fun onResponsesHeaderClicked() = previousResponsesHeaderClickListener.onResponsesHeaderClicked()
 
+  /** Returns the user-readable header text for previous responses. */
   fun computePreviousResponsesHeaderText(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.previous_responses_header, previousAnswerCount.toString()
