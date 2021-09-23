@@ -134,7 +134,7 @@
   <string name="topic_prefix">الموضوع: %s</string>
   <string name="chapter_count_with_story_name">%1$s في %2$s</string>
   <string name="chapter_count">{{PLURAL|one=\nفصلًا واحدًا\n|\n%d من الفصول</string>
-  <string name="story_count">{{PLURAL|one=\nقصة واحدة\n|\n%d من القصص</string>
+  <string name="story_count">{{PLURAL|one=\nقصة واحدة\n|\n%d من القصص\n{{</string>
   <string name="story_total_chapters">{{PLURAL|one=\n%d من %d فصل مكتمل\n|\n%d من %d من الفصول مكتملة</string>
   <string name="lesson_count">{{PLURAL|one=\nدرسًا واحدًا\n|\n%d من الدروس</string>
   <string name="completed_story_count">{{PLURAL|one=\nقصة واحدة مكتملة\n|zero=\n%d قصة مكتملة\n|\n%d من القصص مكتملة</string>
