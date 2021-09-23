@@ -283,6 +283,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @Ignore
   fun testImageRegionSelectionInteractionView_rtl_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -305,6 +306,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @Ignore
   fun testImageRegionSelectionInteractionView_rtl_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
