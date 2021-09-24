@@ -1,7 +1,10 @@
 package org.oppia.android.domain.locale
 
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -257,8 +260,16 @@ class LocaleController @Inject constructor(
    * generally prefers pulling from the application context since the app overwrites the static
    * singleton Locale for the app.
    */
+  @SuppressLint("ObsoleteSdkInt") // Incorrect warning since the app has a lower min sdk.
   private fun getSystemLocale(): Locale {
-    val locales = applicationContext.resources.configuration.locales
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      getDefaultLocaleApi24(applicationContext.resources.configuration)
+    } else getDefaultLocale(applicationContext.resources.configuration)
+  }
+
+  @TargetApi(Build.VERSION_CODES.N)
+  private fun getDefaultLocaleApi24(configuration: Configuration): Locale {
+    val locales = configuration.locales
     // Note that if this ever defaults to Locale.getDefault() it will break language switching when
     // the user indicates that the app should use the system language (without restarting the app).
     // Also, this only matches against the first locale. In the future, some effort could be made to
@@ -272,6 +283,9 @@ class LocaleController @Inject constructor(
       Locale.getDefault()
     } else locales[0]
   }
+
+  @Suppress("DEPRECATION") // Old API is needed for SDK versions < N.
+  private fun getDefaultLocale(configuration: Configuration): Locale = configuration.locale
 
   private suspend fun <T : OppiaLocale> computeLocaleResult(
     language: OppiaLanguage,
