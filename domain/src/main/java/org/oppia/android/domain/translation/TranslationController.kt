@@ -18,6 +18,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
@@ -42,6 +43,7 @@ private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
  * functionality which simplifies interacting with the locales needed for various translation
  * scenarios, but it relies on locale controller as its source of truth.
  */
+@Singleton
 class TranslationController @Inject constructor(
   private val dataProviders: DataProviders,
   private val localeController: LocaleController,
