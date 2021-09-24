@@ -102,7 +102,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti

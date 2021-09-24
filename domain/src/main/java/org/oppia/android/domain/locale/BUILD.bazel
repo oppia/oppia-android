@@ -93,7 +93,7 @@ kt_android_library(
     ],
     visibility = [
         "//app:__pkg__",
-        "//testing:__pkg__",
+        "//testing/src/main/java/org/oppia/android/testing/junit:__pkg__",
     ],
     deps = [
         ":locale_controller",
@@ -107,7 +107,7 @@ kt_android_library(
     ],
     visibility = [
         "//app:__pkg__",
-        "//testing:__pkg__",
+        "//testing/src/main/java/org/oppia/android/testing/junit:__pkg__",
     ],
     deps = [
         ":locale_application_injector",

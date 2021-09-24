@@ -30,7 +30,10 @@ class AppLanguageLocaleHandler @Inject constructor(
    * the lifetime of the application.
    */
   fun initializeLocale(locale: OppiaLocale.DisplayLocale) {
-    check(!::displayLocale.isInitialized) { "Expected to initialize the locale for the first time" }
+    check(!::displayLocale.isInitialized) {
+      "Expected to initialize the locale for the first time. If this is in a test, did you use" +
+        " InitializeDefaultLocaleRule?"
+    }
     displayLocale = locale
   }
 
@@ -42,6 +45,7 @@ class AppLanguageLocaleHandler @Inject constructor(
    * translations).
    */
   fun initializeLocaleForActivity(newConfiguration: Configuration) {
+    verifyDisplayLocaleIsInitialized()
     localeController.setAsDefault(displayLocale, newConfiguration)
   }
 
@@ -52,9 +56,7 @@ class AppLanguageLocaleHandler @Inject constructor(
    * @return whether the new locale is actually different from the current displayed locale
    */
   fun updateLocale(newLocale: OppiaLocale.DisplayLocale): Boolean {
-    check(::displayLocale.isInitialized) {
-      "Expected locale to already be initialized before being updated"
-    }
+    verifyDisplayLocaleIsInitialized()
     return displayLocale.let { oldLocale ->
       displayLocale = newLocale
       return@let oldLocale != newLocale
@@ -62,5 +64,15 @@ class AppLanguageLocaleHandler @Inject constructor(
   }
 
   /** Returns the current [OppiaLocale.DisplayLocale]. */
-  fun getDisplayLocale(): OppiaLocale.DisplayLocale = displayLocale
+  fun getDisplayLocale(): OppiaLocale.DisplayLocale {
+    verifyDisplayLocaleIsInitialized()
+    return displayLocale
+  }
+
+  private fun verifyDisplayLocaleIsInitialized() {
+    check(::displayLocale.isInitialized) {
+      "Expected locale to be initialized. If this is in a test, did you remember to include" +
+        " InitializeDefaultLocaleRule?"
+    }
+  }
 }

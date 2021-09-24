@@ -71,7 +71,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 import org.junit.Rule
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)

@@ -72,7 +72,10 @@ kt_android_library(
     srcs = [
         "ActivityIntentFactories.kt",
     ],
-    visibility = ["//app:app_visibility"],
+    visibility = [
+        "//app:app_visibility",
+        "//testing/src/main/java/org/oppia/android/testing/activity:__pkg__",
+    ],
     deps = [
         "//model:profile_java_proto_lite",
     ],

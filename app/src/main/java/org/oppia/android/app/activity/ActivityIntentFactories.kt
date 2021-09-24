@@ -7,7 +7,6 @@ import org.oppia.android.app.model.ProfileId
 //  This pattern will probably need to be used for all activities (& maybe fragments) as part of app
 //  layer Bazel modularization.
 
-// TODO: document that each of these must be injected within an activity context.
 /** Container of factories for creating launchable [Intent]s. */
 interface ActivityIntentFactories {
   /**

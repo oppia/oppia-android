@@ -118,7 +118,7 @@ class SplashActivityPresenter @Inject constructor(
     if (initStateResult.isFailure()) {
       oppiaLogger.e(
         "SplashActivity",
-        "Failed to compute initial state state",
+        "Failed to compute initial state",
         initStateResult.getErrorOrNull()
       )
     }

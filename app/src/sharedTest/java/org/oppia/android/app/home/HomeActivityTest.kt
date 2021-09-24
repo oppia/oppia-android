@@ -3,9 +3,11 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -27,7 +29,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import java.util.Locale
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
@@ -114,7 +118,22 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.junit.Ignore
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.LanguageSupportDefinition.AndroidLanguageId
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ARABIC
+import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
+import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
+import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE
+import org.oppia.android.app.model.OppiaLanguage.ENGLISH
+import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.RegionSupportDefinition
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
+import org.oppia.android.app.translation.testing.TestActivityRecreator
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -131,6 +150,11 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 @Config(
   application = HomeActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
+)
+@DefineAppLanguageLocaleContext(
+  oppiaLanguageEnumId = ENGLISH_VALUE,
+  appStringIetfTag = "en",
+  appStringAndroidLanguageId = "en"
 )
 class HomeActivityTest {
   @get:Rule
@@ -154,14 +178,17 @@ class HomeActivityTest {
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
+  @Inject
+  lateinit var testActivityRecreator: TestActivityRecreator
+
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
   private val longNameInternalProfileId: Int = 3
   private lateinit var profileId: ProfileId
   private lateinit var profileId1: ProfileId
-
-  // TODO: add tests to ensure various language selection, defaulting, and recreation flows correctly translate this activity
-  // TODO: test this on Espresso
 
   @Before
   fun setUp() {
@@ -1351,6 +1378,207 @@ class HomeActivityTest {
     }
   }
 
+  @Test
+  fun testHomeActivity_defaultState_displaysStringsInEnglish() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 0)
+
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Good morning,"
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_defaultState_hasEnglishAndroidLocale() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the locale is set up correctly (for string resource selection).
+      val locale = Locale.getDefault()
+      assertThat(locale.language).isEqualTo("en")
+    }
+  }
+
+  @Test
+  fun testHomeActivity_defaultState_hasEnglishDisplayLocale() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+    }
+  }
+
+  @Test
+  @Ignore("Current language switching mechanism doesn't work correctly in Robolectric") // TODO: file a TODO to explain why this can't be tested yet (that the entire mechanism probably needs to be rethought to properly update system locale & pipe it through; unclear why the current solution works but Robolectric shows it's problematic).
+  fun testHomeActivity_changeSystemLocaleAndConfigChange_recreatesActivity() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      // Sanity check to ensure that no recreations initially happen.
+      assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(0)
+
+      // Attempt to change the configuration's locale & recreate it (to simulate a locale-based
+      // configuration change).
+      val newLocale = BRAZIL_PORTUGUESE_LOCALE
+      scenario.onActivity { activity ->
+        val newConfiguration = Configuration(activity.resources.configuration)
+        newConfiguration.setLocale(newLocale)
+        activity.resources.configuration.updateFrom(newConfiguration)
+      }
+      context.resources.configuration.setLocale(newLocale)
+      Locale.setDefault(newLocale)
+      scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Bom dia,"
+      )
+      assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(1)
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testHomeActivity_initialArabicContext_displaysStringsInArabic() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 0)
+
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "صباح الخير"
+      )
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testHomeActivity_initialArabicContext_isInRtlLayout() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val layoutDirection = displayLocale.getLayoutDirection()
+      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testHomeActivity_initialArabicContext_hasArabicDisplayLocale() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ARABIC)
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = BRAZILIAN_PORTUGUESE_VALUE,
+    appStringIetfTag = "pt-BR",
+    appStringAndroidLanguageId = "pt",
+    appStringAndroidRegionId = "BR"
+  )
+  fun testHomeActivity_initialBrazilianPortugueseContext_displayStringsInPortuguese() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 0)
+
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Bom dia,"
+      )
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = BRAZILIAN_PORTUGUESE_VALUE,
+    appStringIetfTag = "pt-BR",
+    appStringAndroidLanguageId = "pt",
+    appStringAndroidRegionId = "BR"
+  )
+  fun testHomeActivity_initialBrazilianPortugueseContext_isInLtrLayout() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val layoutDirection = displayLocale.getLayoutDirection()
+      assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = BRAZILIAN_PORTUGUESE_VALUE,
+    appStringIetfTag = "pt-BR",
+    appStringAndroidLanguageId = "pt",
+    appStringAndroidRegionId = "BR"
+  )
+  fun testHomeActivity_initialBrazilianPortugueseContext_hasPortugueseDisplayLocale() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+    }
+  }
+
+  // TODO: test this on Espresso
+
   private fun createHomeActivityIntent(profileId: Int): Intent {
     return HomeActivity.createHomeActivity(context, profileId)
   }
@@ -1504,5 +1732,9 @@ class HomeActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
   }
 }

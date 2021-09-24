@@ -72,7 +72,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 private const val TEST_FRAGMENT_TAG = "topic_summary_view_model_test_fragment"
 

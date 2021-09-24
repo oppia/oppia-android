@@ -2,6 +2,7 @@ package org.oppia.android.app.translation.testing
 
 import androidx.appcompat.app.AppCompatActivity
 import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.translation.ActivityRecreator
 
 /**
@@ -14,8 +15,15 @@ import org.oppia.android.app.translation.ActivityRecreator
  * that recreation itself works (since that's ultimately testing Robolectric in this case).
  * Recreation flows can also be directly tested using ActivityScenario if needed.
  */
+@Singleton
 class TestActivityRecreator @Inject constructor(): ActivityRecreator {
+  private var recreationCount: Int = 0
+
   override fun recreate(activity: AppCompatActivity) {
     // Do nothing since activity recreation doesn't work correctly in Robolectric.
+    ++recreationCount
   }
+
+  /** Returns the number of times [recreate] was called for this recreator. */
+  fun getRecreateCount(): Int = recreationCount
 }

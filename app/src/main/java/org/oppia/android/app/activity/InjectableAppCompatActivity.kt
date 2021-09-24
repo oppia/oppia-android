@@ -32,8 +32,7 @@ abstract class InjectableAppCompatActivity :
     }
     onInitializeActivityComponent(applicationContext)
     val newConfiguration = onInitializeLocalization(applicationContext, newBase)
-//    super.attachBaseContext(newBase?.createConfigurationContext(newConfiguration))
-    super.attachBaseContext(newBase)
+    super.attachBaseContext(newBase?.createConfigurationContext(newConfiguration))
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

@@ -102,7 +102,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 /**
  * TODO(#59): Make this test work with Espresso.

@@ -71,7 +71,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)

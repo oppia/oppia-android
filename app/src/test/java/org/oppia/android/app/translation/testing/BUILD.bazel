@@ -13,6 +13,7 @@ oppia_android_test(
     test_manifest = "//app:test_manifest",
     deps = [
         ":dagger",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_activity_recreator",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

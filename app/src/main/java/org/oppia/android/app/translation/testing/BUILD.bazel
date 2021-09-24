@@ -11,6 +11,9 @@ kt_android_library(
     srcs = [
         "TestActivityRecreator.kt",
     ],
+    visibility = [
+        "//app:app_testing_visibility",
+    ],
     deps = [
         ":dagger",
         "//app/src/main/java/org/oppia/android/app/translation:activity_recreator",

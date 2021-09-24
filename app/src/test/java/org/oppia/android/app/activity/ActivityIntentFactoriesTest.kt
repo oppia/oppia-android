@@ -1,22 +1,72 @@
 package org.oppia.android.app.activity
 
 import android.app.Application
-import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.truth.content.IntentSubject.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import javax.inject.Singleton
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.application.ApplicationModule
+import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.activity.TestActivity
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.util.data.DataProvidersInjector
-import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -27,7 +77,14 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ActivityIntentFactoriesTest.TestApplication::class)
 class ActivityIntentFactoriesTest {
-  // TODO: finish
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TestActivity>(
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
 
   @Before
   fun setUp() {
@@ -35,7 +92,54 @@ class ActivityIntentFactoriesTest {
   }
 
   @Test
-  fun doSomething_andPass() {
+  fun testTopicActivityIntentFactory_createIntent_returnsIntentToStartTopicActivity() {
+    val intent =
+      getTopicActivityIntentFactory().createIntent(
+        ProfileId.getDefaultInstance(), topicId = "test_topic_id"
+      )
+
+    assertThat(intent).hasComponentClass(TopicActivity::class.java)
+    assertThat(intent).extras().integer(TOPIC_PROFILE_ID_KEY).isEqualTo(0)
+    assertThat(intent).extras().string(TOPIC_ID_KEY).isEqualTo("test_topic_id")
+    assertThat(intent).extras().doesNotContainKey(STORY_ID_KEY)
+  }
+
+  @Test
+  fun testTopicActivityIntentFactory_createIntent_withStoryId_returnsIntentToStartTopicActivity() {
+    val intent =
+      getTopicActivityIntentFactory().createIntent(
+        ProfileId.getDefaultInstance(), topicId = "test_topic_id", storyId = "test_story_id"
+      )
+
+    assertThat(intent).hasComponentClass(TopicActivity::class.java)
+    assertThat(intent).extras().integer(TOPIC_PROFILE_ID_KEY).isEqualTo(0)
+    assertThat(intent).extras().string(TOPIC_ID_KEY).isEqualTo("test_topic_id")
+    assertThat(intent).extras().string(STORY_ID_KEY).isEqualTo("test_story_id")
+  }
+
+  @Test
+  fun testRecentlyPlayedActivityIntentFactory_createIntent_returnsIntentToStartCorrectActivity() {
+    val intent =
+      getRecentlyPlayedActivityIntentFactory().createIntent(ProfileId.getDefaultInstance())
+
+    assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
+    assertThat(intent).extras().integer(RECENTLY_PLAYED_PROFILE_ID_KEY).isEqualTo(0)
+  }
+
+  private fun getTopicActivityIntentFactory(): ActivityIntentFactories.TopicActivityIntentFactory {
+    lateinit var factory: ActivityIntentFactories.TopicActivityIntentFactory
+    activityRule.scenario.onActivity { activity ->
+      factory = activity.topicActivityIntentFactory
+    }
+    return factory
+  }
+
+  private fun getRecentlyPlayedActivityIntentFactory(): ActivityIntentFactories.RecentlyPlayedActivityIntentFactory {
+    lateinit var factory: ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
+    activityRule.scenario.onActivity { activity ->
+      factory = activity.recentlyPlayedActivityIntentFactory
+    }
+    return factory
   }
 
   private fun setUpTestApplicationComponent() {
@@ -43,24 +147,30 @@ class ActivityIntentFactoriesTest {
   }
 
   // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-  }
-
-  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-      RobolectricModule::class
+      RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      PlatformParameterModule::class, LoggerModule::class, ContinueModule::class,
+      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
+      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
+      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      ActivityIntentFactoriesModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -72,7 +182,7 @@ class ActivityIntentFactoriesTest {
     fun inject(activityIntentFactoriesTest: ActivityIntentFactoriesTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerActivityIntentFactoriesTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -83,6 +193,18 @@ class ActivityIntentFactoriesTest {
       component.inject(activityIntentFactoriesTest)
     }
 
-    override fun getDataProvidersInjector(): DataProvidersInjector = component
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    private const val TOPIC_PROFILE_ID_KEY =
+      "NavigationDrawerFragmentPresenter.navigation_profile_id"
+    private const val TOPIC_ID_KEY = "TopicActivity.topic_id"
+    private const val STORY_ID_KEY = "TopicActivity.story_id"
+    private const val RECENTLY_PLAYED_PROFILE_ID_KEY = "RecentlyPlayedActivity.internal_profile_id"
   }
 }

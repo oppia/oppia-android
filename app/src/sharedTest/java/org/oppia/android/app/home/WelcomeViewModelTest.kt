@@ -11,7 +11,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

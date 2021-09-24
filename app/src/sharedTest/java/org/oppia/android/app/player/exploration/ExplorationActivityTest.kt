@@ -136,7 +136,7 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)

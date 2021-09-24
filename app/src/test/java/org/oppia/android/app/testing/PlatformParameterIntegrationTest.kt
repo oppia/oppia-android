@@ -101,7 +101,7 @@ import retrofit2.mock.MockRetrofit
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 /** Tests to verify the working of Platform Parameter Architecture. */
 @RunWith(AndroidJUnit4::class)

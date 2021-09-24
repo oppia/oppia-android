@@ -88,7 +88,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 // TODO(#1815): Remove these duplicate values once Screenshot tests are implemented.
 private const val SMALL_TEXT_SIZE_SCALE = 0.8f

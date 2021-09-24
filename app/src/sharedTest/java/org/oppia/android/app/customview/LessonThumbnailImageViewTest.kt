@@ -72,7 +72,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 /** Tests for [LessonThumbnailImageView]. */
 @RunWith(AndroidJUnit4::class)

@@ -29,6 +29,14 @@ package_group(
     ],
 )
 
+# Visibility for migrated app tests.
+package_group(
+    name = "app_testing_visibility",
+    packages = [
+        "//app/src/test/...",
+    ],
+)
+
 filegroup(
     name = "test_manifest",
     srcs = ["src/test/AndroidManifest.xml"],
@@ -788,6 +796,7 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/espresso:generic_view_matchers",
     "//testing/src/main/java/org/oppia/android/testing/espresso:image_view_matcher",
     "//testing/src/main/java/org/oppia/android/testing/espresso:konfetti_view_matcher",
+    "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
     "//testing/src/main/java/org/oppia/android/testing/mockito",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",

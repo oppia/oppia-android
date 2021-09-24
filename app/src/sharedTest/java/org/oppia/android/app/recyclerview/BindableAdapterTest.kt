@@ -107,7 +107,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactoriesModule
 import org.oppia.android.app.fragment.FragmentComponentImpl

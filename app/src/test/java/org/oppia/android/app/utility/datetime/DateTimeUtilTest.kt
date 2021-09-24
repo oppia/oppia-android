@@ -49,7 +49,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.activity.TestActivity
 import org.oppia.android.testing.robolectric.RobolectricModule

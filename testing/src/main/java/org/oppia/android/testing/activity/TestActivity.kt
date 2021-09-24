@@ -2,8 +2,11 @@ package org.oppia.android.testing.activity
 
 import android.content.Context
 import android.content.Intent
+import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 
 // TODO(#3830): Migrate all test activities over to using this test activity & make this closed.
@@ -17,15 +20,33 @@ import org.oppia.android.app.utility.datetime.DateTimeUtil
  *   in tests
  */
 open class TestActivity: InjectableAppCompatActivity() {
+  @Inject
+  lateinit var appLanguageResourceHandler: AppLanguageResourceHandler
+
+  @Inject
+  lateinit var dateTimeUtil: DateTimeUtil
+
+  @Inject
+  lateinit var topicActivityIntentFactory: ActivityIntentFactories.TopicActivityIntentFactory
+
+  @Inject
+  lateinit var recentlyPlayedActivityIntentFactory:
+    ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
+
+  @Inject
+  lateinit var appLanguageWatcherMixin: AppLanguageWatcherMixin
+
+  override fun attachBaseContext(newBase: Context?) {
+    super.attachBaseContext(newBase)
+    (activityComponent as Injector).inject(this)
+  }
+
+  interface Injector {
+    fun inject(testActivity: TestActivity)
+  }
+
   companion object {
     /** Returns a new [Intent] for the given [Context] to launch new [TestActivity]s. */
     fun createIntent(context: Context): Intent = Intent(context, TestActivity::class.java)
   }
-
-  /** Returns the [AppLanguageResourceHandler] corresponding to this activity. */
-  fun getAppLanguageResourceHandler(): AppLanguageResourceHandler =
-    activityComponent.getAppLanguageResourceHandler()
-
-  /** Returns the [DateTimeUtil] corresponding to this activity. */
-  fun getDateTimeUtil(): DateTimeUtil = activityComponent.getDateTimeUtil()
 }
