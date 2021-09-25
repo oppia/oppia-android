@@ -132,6 +132,8 @@ import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.TestActivityRecreator
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
@@ -162,6 +164,9 @@ class HomeActivityTest {
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -1379,6 +1384,7 @@ class HomeActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
   fun testHomeActivity_defaultState_displaysStringsInEnglish() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1396,6 +1402,7 @@ class HomeActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
   fun testHomeActivity_defaultState_hasEnglishAndroidLocale() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1407,6 +1414,7 @@ class HomeActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
   fun testHomeActivity_defaultState_hasEnglishDisplayLocale() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1419,6 +1427,7 @@ class HomeActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
   @Ignore("Current language switching mechanism doesn't work correctly in Robolectric") // TODO: file a TODO to explain why this can't be tested yet (that the entire mechanism probably needs to be rethought to properly update system locale & pipe it through; unclear why the current solution works but Robolectric shows it's problematic).
   fun testHomeActivity_changeSystemLocaleAndConfigChange_recreatesActivity() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -1462,6 +1471,7 @@ class HomeActivityTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
   fun testHomeActivity_initialArabicContext_displaysStringsInArabic() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1484,6 +1494,7 @@ class HomeActivityTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
   fun testHomeActivity_initialArabicContext_isInRtlLayout() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1502,6 +1513,7 @@ class HomeActivityTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
   fun testHomeActivity_initialArabicContext_hasArabicDisplayLocale() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1522,6 +1534,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
   fun testHomeActivity_initialBrazilianPortugueseContext_displayStringsInPortuguese() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1545,6 +1558,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
   fun testHomeActivity_initialBrazilianPortugueseContext_isInLtrLayout() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1564,6 +1578,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
   fun testHomeActivity_initialBrazilianPortugueseContext_hasPortugueseDisplayLocale() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1577,13 +1592,11 @@ class HomeActivityTest {
     }
   }
 
-  // TODO: test this on Espresso
-
   private fun createHomeActivityIntent(profileId: Int): Intent {
     return HomeActivity.createHomeActivity(context, profileId)
   }
 
-  // Refrence - https://stackoverflow.com/a/61455336/12215015
+  // Reference - https://stackoverflow.com/a/61455336/12215015
   private fun isEllipsized() = object : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {
       description.appendText("with ellipsized text")

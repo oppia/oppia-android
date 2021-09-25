@@ -331,7 +331,7 @@ class PromotedStoryListViewModelTest {
       activity,
       createPromotedStoryViewModelList(activity, promotedStoryList),
       promotedActivityList,
-      activity.getAppLanguageResourceHandler()
+      activity.appLanguageResourceHandler
     )
   }
 

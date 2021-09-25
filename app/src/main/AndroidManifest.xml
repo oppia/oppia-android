@@ -259,7 +259,7 @@
       android:label="@string/resume_lesson_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-      android:name=".testing.activity.TestActivity"
+      android:name=".app.testing.activity.TestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider

@@ -68,7 +68,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 import org.junit.Rule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.activity.TestActivity
+import org.oppia.android.app.testing.activity.TestActivity
 
 /** Tests for [StringToRatioParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -97,7 +97,7 @@ class StringToRatioParserTest {
     activityRule.scenario.onActivity { activity ->
       val error =
         stringToRatioParser.getRealTimeAnswerError("abc")
-          .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo(
         "Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3)."
       )
@@ -108,7 +108,7 @@ class StringToRatioParserTest {
   fun testParser_realtimeError_answerWithTwoAdjacentColons_returnsInvalidColonsError() {
     activityRule.scenario.onActivity { activity ->
       val error = stringToRatioParser.getRealTimeAnswerError("1::2")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo("Your answer has two colons (:) next to each other.")
     }
   }
@@ -117,7 +117,7 @@ class StringToRatioParserTest {
   fun testParser_realtimeError_answerWithCorrectRatio_returnsValid() {
     activityRule.scenario.onActivity { activity ->
       val error = stringToRatioParser.getRealTimeAnswerError("1:2:3")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo(null)
     }
   }
@@ -126,7 +126,7 @@ class StringToRatioParserTest {
   fun testParser_submitTimeError_numberOfTermsZero_returnsValid() {
     activityRule.scenario.onActivity { activity ->
       val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 0)
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo(null)
     }
   }
@@ -135,7 +135,7 @@ class StringToRatioParserTest {
   fun testParser_submitTimeError_numberOfTermsThree_returnsInvalidSizeError() {
     activityRule.scenario.onActivity { activity ->
       val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 3)
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo("Number of terms is not equal to the required terms.")
     }
   }
@@ -144,7 +144,7 @@ class StringToRatioParserTest {
   fun testParser_submitTimeError_numberOfTermsFour_returnsValid() {
     activityRule.scenario.onActivity { activity ->
       val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 4)
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo(null)
     }
   }
@@ -153,7 +153,7 @@ class StringToRatioParserTest {
   fun testParser_submitTimeError_numberOfTermsFive_returnsInvalidSizeError() {
     activityRule.scenario.onActivity { activity ->
       val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 5)
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo("Number of terms is not equal to the required terms.")
     }
   }
@@ -163,7 +163,7 @@ class StringToRatioParserTest {
     activityRule.scenario.onActivity { activity ->
       val error =
         stringToRatioParser.getSubmitTimeError("1:2:3:", numberOfTerms = 3)
-          .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
     }
   }
@@ -172,7 +172,7 @@ class StringToRatioParserTest {
   fun testParser_realtimeError_answerWithMixedFrationRatio_returnInvalidFormatError() {
     activityRule.scenario.onActivity { activity ->
       val error = stringToRatioParser.getSubmitTimeError("1/2:3:4", 0)
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo("Please enter a valid ratio (e.g. 1:2 or 1:2:3).")
     }
   }
@@ -182,7 +182,7 @@ class StringToRatioParserTest {
     activityRule.scenario.onActivity { activity ->
       val error =
         stringToRatioParser.getSubmitTimeError("1:2:0", numberOfTerms = 3)
-          .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo("Ratios cannot have 0 as an element.")
     }
   }
@@ -191,7 +191,7 @@ class StringToRatioParserTest {
   fun testParser_submitTimeError_returnsValid() {
     activityRule.scenario.onActivity { activity ->
       val error = stringToRatioParser.getSubmitTimeError("1:2:3:4", numberOfTerms = 4)
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(error).isEqualTo(null)
     }
   }

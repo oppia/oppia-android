@@ -582,7 +582,7 @@ class ViewEventLogsFragmentTest {
   ): String {
     lateinit var dateTimeString: String
     onActivity { activity ->
-      val resourceHandler = activity.getAppLanguageResourceHandler()
+      val resourceHandler = activity.appLanguageResourceHandler
       dateTimeString = resourceHandler.computeDateTimeString(timestampMillis)
     }
     return dateTimeString

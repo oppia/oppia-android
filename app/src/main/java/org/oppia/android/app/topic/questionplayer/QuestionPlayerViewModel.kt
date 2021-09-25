@@ -4,7 +4,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import javax.inject.Inject
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler

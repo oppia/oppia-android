@@ -12,15 +12,28 @@ class OppiaTestRule : TestRule {
     return object : Statement() {
       override fun evaluate() {
         val targetPlatforms = description.getTargetPlatforms()
+        val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
-        if (currentPlatform in targetPlatforms) {
-          // Only run this test if it's targeting the current platform.
-          base?.evaluate()
-        } else {
-          // See https://github.com/junit-team/junit4/issues/116 for context.
-          throw AssumptionViolatedException(
-            "Test targeting ${targetPlatforms.toPluralDescription()} ignored on $currentPlatform"
-          )
+        val currentEnvironment = getCurrentBuildEnvironment()
+        when {
+          currentPlatform in targetPlatforms && currentEnvironment in targetEnvironments -> {
+            // Only run this test if it's targeting the current platform & environment.
+            base?.evaluate()
+          }
+          currentPlatform !in targetPlatforms -> {
+            // See https://github.com/junit-team/junit4/issues/116 for context.
+            throw AssumptionViolatedException(
+              "Test targeting ${targetPlatforms.toPluralPlatformDescription()} ignored on" +
+                " $currentPlatform"
+            )
+          }
+          currentEnvironment !in targetEnvironments -> {
+            throw AssumptionViolatedException(
+              "Test targeting ${targetEnvironments.toPluralEnvironmentDescription()} ignored on" +
+                " $currentEnvironment"
+            )
+          }
+          else -> throw AssertionError("Reached impossible state in test rule")
         }
       }
     }
@@ -34,23 +47,50 @@ class OppiaTestRule : TestRule {
     }
   }
 
+  private fun getCurrentBuildEnvironment(): BuildEnvironment {
+    val command = System.getProperty("sun.java.command") ?: ""
+    return if (command.contains("bazel", ignoreCase = true)) {
+      BuildEnvironment.BAZEL
+    } else {
+      BuildEnvironment.GRADLE
+    }
+  }
+
   private companion object {
-    private fun Array<out TestPlatform>.toPluralDescription(): String {
+    private fun List<TestPlatform>.toPluralPlatformDescription(): String {
       return if (size > 1) "platforms ${this.joinToString()}" else "platform ${this.first()}"
     }
 
-    private fun Description?.getTargetPlatforms(): Array<out TestPlatform> {
+    private fun Description?.getTargetPlatforms(): List<TestPlatform> {
       val methodTargetPlatforms = this?.getTargetTestPlatforms()
       val classTargetPlatforms = this?.testClass?.getTargetTestPlatforms()
-      return methodTargetPlatforms ?: classTargetPlatforms ?: TestPlatform.values()
+      return methodTargetPlatforms ?: classTargetPlatforms ?: TestPlatform.values().toList()
     }
 
-    private fun Description.getTargetTestPlatforms(): Array<out TestPlatform>? {
-      return getAnnotation(RunOn::class.java)?.testPlatforms
+    private fun Description.getTargetTestPlatforms(): List<TestPlatform>? {
+      return getAnnotation(RunOn::class.java)?.testPlatforms?.toList()
     }
 
-    private fun <T> Class<T>.getTargetTestPlatforms(): Array<out TestPlatform>? {
-      return getAnnotation(RunOn::class.java)?.testPlatforms
+    private fun <T> Class<T>.getTargetTestPlatforms(): List<TestPlatform>? {
+      return getAnnotation(RunOn::class.java)?.testPlatforms?.toList()
+    }
+
+    private fun List<BuildEnvironment>.toPluralEnvironmentDescription(): String {
+      return if (size > 1) "environments ${this.joinToString()}" else "environment ${this.first()}"
+    }
+
+    private fun Description?.getTargetEnvironments(): List<BuildEnvironment> {
+      val methodBuildEnvironments = this?.getTargetBuildEnvironments()
+      val classBuildEnvironments = this?.testClass?.getTargetBuildEnvironments()
+      return methodBuildEnvironments ?: classBuildEnvironments ?: BuildEnvironment.values().toList()
+    }
+
+    private fun Description.getTargetBuildEnvironments(): List<BuildEnvironment>? {
+      return getAnnotation(RunOn::class.java)?.buildEnvironments?.toList()
+    }
+
+    private fun <T> Class<T>.getTargetBuildEnvironments(): List<BuildEnvironment>? {
+      return getAnnotation(RunOn::class.java)?.buildEnvironments?.toList()
     }
   }
 }

@@ -68,11 +68,14 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import javax.inject.Singleton
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 
 // Devices reference: https://material.io/resources/devices/
 @RunWith(AndroidJUnit4::class)
 @Config(application = PlayerSplitScreenTesting.TestApplication::class)
 class PlayerSplitScreenTesting {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Before
   fun setUp() {

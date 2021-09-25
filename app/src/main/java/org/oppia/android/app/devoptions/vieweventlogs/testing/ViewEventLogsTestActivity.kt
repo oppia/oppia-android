@@ -7,7 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
-import org.oppia.android.testing.activity.TestActivity
+import org.oppia.android.app.testing.activity.TestActivity
 
 /** Activity for testing [ViewEventLogsFragment]. */
 class ViewEventLogsTestActivity : TestActivity() {

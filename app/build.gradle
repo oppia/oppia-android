@@ -91,6 +91,18 @@ android {
   }
 }
 
+// See notice for the excluded files in domain/build.gradle for an explanation.
+def filesToExclude = [
+    '**/*AppLanguageLocaleHandlerTest*.kt',
+    '**/*AppLanguageResourceHandlerTest*.kt',
+    '**/*AppLanguageWatcherMixinTest*.kt',
+]
+tasks.withType(SourceTask.class).configureEach {
+  it.exclude(filesToExclude)
+}
+android.sourceSets.test.java.exclude(filesToExclude)
+android.sourceSets.test.kotlin.exclude(filesToExclude)
+
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
@@ -140,9 +152,11 @@ dependencies {
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
+      'androidx.test.ext:truth:1.4.0',
       'androidx.work:work-testing:2.4.0',
       'com.github.bumptech.glide:mocks:4.11.0',
       'com.google.truth:truth:0.43',
+      'com.google.truth.extensions:truth-liteproto-extension:0.43',
       'org.robolectric:annotations:4.4',
       'org.robolectric:robolectric:4.4',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',

@@ -208,7 +208,7 @@ class TopicSummaryViewModelTest {
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.getAppLanguageResourceHandler()
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
         val topicSummaryViewModelTopicSummary2 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
@@ -216,7 +216,7 @@ class TopicSummaryViewModelTest {
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.getAppLanguageResourceHandler()
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
 
         assertThat(topicSummaryViewModelTopicSummary1)
@@ -238,7 +238,7 @@ class TopicSummaryViewModelTest {
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.getAppLanguageResourceHandler()
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
         val topicSummaryViewModelEntity2 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
@@ -246,7 +246,7 @@ class TopicSummaryViewModelTest {
           entityType = "entity_2",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.getAppLanguageResourceHandler()
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
 
         assertThat(topicSummaryViewModelEntity1).isNotEqualTo(topicSummaryViewModelEntity2)
@@ -267,7 +267,7 @@ class TopicSummaryViewModelTest {
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 4,
-          homeFragmentTestActivity.getAppLanguageResourceHandler()
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
         val topicSummaryViewModelPosition5 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
@@ -275,7 +275,7 @@ class TopicSummaryViewModelTest {
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.getAppLanguageResourceHandler()
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
 
         assertThat(topicSummaryViewModelPosition4).isNotEqualTo(topicSummaryViewModelPosition5)
@@ -335,7 +335,7 @@ class TopicSummaryViewModelTest {
       entityType = "entity",
       topicSummaryClickListener = testFragment,
       position = 5,
-      activity.getAppLanguageResourceHandler()
+      activity.appLanguageResourceHandler
     )
   }
 

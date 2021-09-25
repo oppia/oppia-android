@@ -1,4 +1,4 @@
-package org.oppia.android.testing.activity
+package org.oppia.android.app.testing.activity
 
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import android.app.Application

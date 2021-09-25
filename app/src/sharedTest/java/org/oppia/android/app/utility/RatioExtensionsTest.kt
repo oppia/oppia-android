@@ -67,7 +67,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.activity.TestActivity
+import org.oppia.android.app.testing.activity.TestActivity
 
 /** Tests for [RatioExtensions]. */
 @RunWith(AndroidJUnit4::class)
@@ -94,7 +94,7 @@ class RatioExtensionsTest {
       val ratio = createRatio(listOf(1, 2, 3))
       assertThat(
         ratio.toAccessibleAnswerString(
-          activity.getAppLanguageResourceHandler()
+          activity.appLanguageResourceHandler
         )
       ).isEqualTo("1 to 2 to 3")
     }
@@ -106,7 +106,7 @@ class RatioExtensionsTest {
       val ratio = createRatio(listOf(1, 2))
       assertThat(
         ratio.toAccessibleAnswerString(
-          activity.getAppLanguageResourceHandler()
+          activity.appLanguageResourceHandler
         )
       ).isEqualTo("1 to 2")
     }

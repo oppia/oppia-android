@@ -100,6 +100,8 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestPlatform
 
@@ -113,6 +115,9 @@ import org.oppia.android.testing.TestPlatform
 class SplashActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -260,6 +265,7 @@ class SplashActivityTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
   fun testSplashActivity_englishLocale_initializesLocaleHandlerWithEnglishContext() {
     initializeTestApplication()
     forceDefaultLocale(Locale.ENGLISH)
@@ -281,6 +287,7 @@ class SplashActivityTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
   fun testSplashActivity_arabicLocale_initializesLocaleHandlerWithArabicContext() {
     initializeTestApplication()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -296,6 +303,7 @@ class SplashActivityTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
   fun testSplashActivity_brazilianPortugueseLocale_initializesLocaleHandlerPortugueseContext() {
     initializeTestApplication()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
@@ -309,6 +317,7 @@ class SplashActivityTest {
     val context = displayLocale.localeContext
     assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
   }
+
   @Test
   fun testSplashActivity_unsupportedLocale_initializesLocaleHandlerWithUnspecifiedLanguage() {
     initializeTestApplication()
@@ -346,7 +355,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(testPlatforms = [TestPlatform.ROBOLECTRIC])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testSplashActivity_initializationFailure_logsError() {
     // Simulate a corrupted cache file to trigger an initialization failure.
     corruptCacheFile()

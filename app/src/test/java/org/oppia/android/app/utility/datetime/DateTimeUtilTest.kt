@@ -51,7 +51,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.activity.TestActivity
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
@@ -107,7 +107,7 @@ class DateTimeUtilTest {
   @Test
   fun testGreetingMessageBasedOnTime_goodEveningMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.getDateTimeUtil()
+      val dateTimeUtil = activity.dateTimeUtil
       fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
       assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
     }
@@ -116,7 +116,7 @@ class DateTimeUtilTest {
   @Test
   fun testGreetingMessageBasedOnTime_goodMorningMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.getDateTimeUtil()
+      val dateTimeUtil = activity.dateTimeUtil
       fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
       assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
     }
@@ -125,7 +125,7 @@ class DateTimeUtilTest {
   @Test
   fun testGreetingMessageBasedOnTime_goodAfternoonMessageSucceeded() {
     activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.getDateTimeUtil()
+      val dateTimeUtil = activity.dateTimeUtil
       fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
       assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
     }

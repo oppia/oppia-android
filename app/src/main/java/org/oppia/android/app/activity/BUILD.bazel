@@ -29,7 +29,6 @@ kt_android_library(
     ],
     visibility = [
         "//app:app_visibility",
-        "//testing/src/main/java/org/oppia/android/testing/activity:__pkg__",
     ],
     deps = [
         ":activity_component",
@@ -74,7 +73,6 @@ kt_android_library(
     ],
     visibility = [
         "//app:app_visibility",
-        "//testing/src/main/java/org/oppia/android/testing/activity:__pkg__",
     ],
     deps = [
         "//model:profile_java_proto_lite",

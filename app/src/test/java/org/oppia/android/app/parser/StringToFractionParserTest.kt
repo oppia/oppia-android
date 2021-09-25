@@ -68,7 +68,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 import org.junit.Rule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.activity.TestActivity
+import org.oppia.android.app.testing.activity.TestActivity
 
 /** Tests for [StringToFractionParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -132,7 +132,7 @@ class StringToFractionParserTest {
   fun testSubmitTimeError_validMixedNumber_noErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getSubmitTimeError("11 22/33")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage).isNull()
     }
   }
@@ -147,7 +147,7 @@ class StringToFractionParserTest {
   fun testSubmitTimeError_tenDigitNumber_numberTooLong_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getSubmitTimeError("0123456789")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
     }
@@ -163,7 +163,7 @@ class StringToFractionParserTest {
   fun testSubmitTimeError_nonDigits_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getSubmitTimeError("jdhfc")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -179,7 +179,7 @@ class StringToFractionParserTest {
   fun testSubmitTimeError_divisionByZero_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getSubmitTimeError("123/0")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage).isEqualTo("Please do not put 0 in the denominator")
     }
   }
@@ -194,7 +194,7 @@ class StringToFractionParserTest {
   fun testSubmitTimeError_ambiguousSpacing_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getSubmitTimeError("1 2 3/4")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -210,7 +210,7 @@ class StringToFractionParserTest {
   fun testSubmitTimeError_emptyString_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getSubmitTimeError("")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -256,7 +256,7 @@ class StringToFractionParserTest {
   fun testRealTimeError_validRegularFraction_noErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getRealTimeAnswerError("2/3")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage).isNull()
     }
   }
@@ -271,7 +271,7 @@ class StringToFractionParserTest {
   fun testRealTimeError_nonDigits_invalidChars_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getRealTimeAnswerError("abc")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please only use numerical digits, spaces or forward slashes (/)")
     }
@@ -287,7 +287,7 @@ class StringToFractionParserTest {
   fun testRealTimeError_noNumerator_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getRealTimeAnswerError("/3")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -303,7 +303,7 @@ class StringToFractionParserTest {
   fun testRealTimeError_severalSlashes_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getRealTimeAnswerError("1/3/8")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -319,7 +319,7 @@ class StringToFractionParserTest {
   fun testRealTimeError_severalDashes_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getRealTimeAnswerError("-1/-3")
-        .getErrorMessageFromStringRes(activity.getAppLanguageResourceHandler())
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }

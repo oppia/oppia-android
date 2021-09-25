@@ -211,13 +211,13 @@ class WelcomeViewModelTest {
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           "Profile 1",
-          activity.getAppLanguageResourceHandler(),
-          activity.getDateTimeUtil()
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
         val welcomeViewModelProfile2Morning = WelcomeViewModel(
           "Profile 2",
-          activity.getAppLanguageResourceHandler(),
-          activity.getDateTimeUtil()
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
 
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile2Morning)
@@ -235,14 +235,14 @@ class WelcomeViewModelTest {
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           "Profile 1",
-          activity.getAppLanguageResourceHandler(),
-          activity.getDateTimeUtil()
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
         setTimeToEvening()
         val welcomeViewModelProfile1Evening = WelcomeViewModel(
           "Profile 1",
-          activity.getAppLanguageResourceHandler(),
-          activity.getDateTimeUtil()
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
 
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile1Evening)
@@ -260,13 +260,13 @@ class WelcomeViewModelTest {
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           "Profile 1",
-          activity.getAppLanguageResourceHandler(),
-          activity.getDateTimeUtil()
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
         val welcomeViewModelProfile1MorningCopy = WelcomeViewModel(
           "Profile 1",
-          activity.getAppLanguageResourceHandler(),
-          activity.getDateTimeUtil()
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
 
@@ -287,8 +287,8 @@ class WelcomeViewModelTest {
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
           "Profile 1",
-          activity.getAppLanguageResourceHandler(),
-          activity.getDateTimeUtil()
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
 
         // Verify that hashCode consistently returns the same value.
@@ -319,7 +319,7 @@ class WelcomeViewModelTest {
   private fun createBasicWelcomeViewModel(activity: HomeFragmentTestActivity): WelcomeViewModel {
     setTimeToMorning()
     return WelcomeViewModel(
-      "Profile 1", activity.getAppLanguageResourceHandler(), activity.getDateTimeUtil()
+      "Profile 1", activity.appLanguageResourceHandler, activity.dateTimeUtil
     )
   }
 

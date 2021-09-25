@@ -76,7 +76,7 @@ import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentBuilderModule
 import org.oppia.android.app.testing.InputInteractionViewTestActivity
-import org.oppia.android.testing.activity.TestActivity
+import org.oppia.android.app.testing.activity.TestActivity
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each activity.
 
