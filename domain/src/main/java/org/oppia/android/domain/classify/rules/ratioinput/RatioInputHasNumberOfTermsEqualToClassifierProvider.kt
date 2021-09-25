@@ -27,6 +27,8 @@ class RatioInputHasNumberOfTermsEqualToClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-    answer: RatioExpression, input: Int, writtenTranslationContext: WrittenTranslationContext
+    answer: RatioExpression,
+    input: Int,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean = answer.ratioComponentCount == input
 }

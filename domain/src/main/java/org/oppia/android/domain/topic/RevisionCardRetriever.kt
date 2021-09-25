@@ -1,19 +1,18 @@
 package org.oppia.android.domain.topic
 
+import org.json.JSONObject
+import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtopicRecord
+import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
-import org.json.JSONObject
-import org.oppia.android.app.model.HtmlTranslationList
-import org.oppia.android.app.model.Translation
-import org.oppia.android.app.model.TranslationMapping
-import org.oppia.android.domain.util.getStringFromArray
-import org.oppia.android.domain.util.getStringFromObject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
 /** Retriever for [RevisionCard] objects from the filesystem. */

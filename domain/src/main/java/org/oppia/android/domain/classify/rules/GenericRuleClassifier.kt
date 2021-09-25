@@ -1,9 +1,9 @@
 package org.oppia.android.domain.classify.rules
 
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import javax.inject.Inject
-import org.oppia.android.app.model.WrittenTranslationContext
 
 /**
  * A convenience [RuleClassifier] which performs parameter extraction and sanitation to simplify
@@ -21,7 +21,8 @@ class GenericRuleClassifier constructor(
   val matcherDelegate: MatcherDelegate
 ) : RuleClassifier {
   override fun matches(
-    answer: InteractionObject, inputs: Map<String, InteractionObject>,
+    answer: InteractionObject,
+    inputs: Map<String, InteractionObject>,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     check(answer.objectTypeCase == expectedAnswerObjectType) {
@@ -74,7 +75,9 @@ class GenericRuleClassifier constructor(
      * input parameter per the specification of this classifier.
      */
     fun matches(
-      answer: AT, input: IT, writtenTranslationContext: WrittenTranslationContext
+      answer: AT,
+      input: IT,
+      writtenTranslationContext: WrittenTranslationContext
     ): Boolean
   }
 
@@ -84,7 +87,9 @@ class GenericRuleClassifier constructor(
      * input parameters per the specification of this classifier.
      */
     fun matches(
-      answer: AT, firstInput: ITF, secondInput: ITS,
+      answer: AT,
+      firstInput: ITF,
+      secondInput: ITS,
       writtenTranslationContext: WrittenTranslationContext
     ): Boolean
   }
@@ -95,7 +100,9 @@ class GenericRuleClassifier constructor(
      * input parameters per the specification of this classifier.
      */
     fun matches(
-      answer: T, firstInput: T, secondInput: T,
+      answer: T,
+      firstInput: T,
+      secondInput: T,
       writtenTranslationContext: WrittenTranslationContext
     ): Boolean
   }
@@ -103,7 +110,8 @@ class GenericRuleClassifier constructor(
   sealed class MatcherDelegate {
 
     abstract fun matches(
-      answer: InteractionObject, inputs: List<InteractionObject>,
+      answer: InteractionObject,
+      inputs: List<InteractionObject>,
       writtenTranslationContext: WrittenTranslationContext
     ): Boolean
 
@@ -112,7 +120,8 @@ class GenericRuleClassifier constructor(
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
       override fun matches(
-        answer: InteractionObject, inputs: List<InteractionObject>,
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
         writtenTranslationContext: WrittenTranslationContext
       ): Boolean {
         check(inputs.isEmpty())
@@ -125,7 +134,8 @@ class GenericRuleClassifier constructor(
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
       override fun matches(
-        answer: InteractionObject, inputs: List<InteractionObject>,
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
         writtenTranslationContext: WrittenTranslationContext
       ): Boolean {
         check(inputs.size == 1)
@@ -141,7 +151,8 @@ class GenericRuleClassifier constructor(
       private val extractInputObject: (InteractionObject) -> IT
     ) : MatcherDelegate() {
       override fun matches(
-        answer: InteractionObject, inputs: List<InteractionObject>,
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
         writtenTranslationContext: WrittenTranslationContext
       ): Boolean {
         check(inputs.size == 1)
@@ -156,7 +167,8 @@ class GenericRuleClassifier constructor(
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
       override fun matches(
-        answer: InteractionObject, inputs: List<InteractionObject>,
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
         writtenTranslationContext: WrittenTranslationContext
       ): Boolean {
         check(inputs.size == 2)
@@ -176,7 +188,8 @@ class GenericRuleClassifier constructor(
       private val extractSecondParamObject: (InteractionObject) -> ITS
     ) : MatcherDelegate() {
       override fun matches(
-        answer: InteractionObject, inputs: List<InteractionObject>,
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
         writtenTranslationContext: WrittenTranslationContext
       ): Boolean {
         check(inputs.size == 2)

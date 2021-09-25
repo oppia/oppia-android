@@ -11,16 +11,15 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
-import org.oppia.android.app.model.RevisionCard
+import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.databinding.RevisionCardActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
-import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralRevisionCard
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
@@ -76,14 +75,14 @@ class RevisionCardActivityPresenter @Inject constructor(
     return when (item?.itemId) {
       R.id.action_preferences -> {
         val intent = OptionsActivity.createOptionsActivity(
-          activity, profileId.internalId, isFromNavigationDrawer= false
+          activity, profileId.internalId, isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, profileId.internalId, isFromNavigationDrawer= false
+          activity, profileId.internalId, isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true

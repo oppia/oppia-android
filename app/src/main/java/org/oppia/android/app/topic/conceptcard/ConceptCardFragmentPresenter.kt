@@ -4,20 +4,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ConceptCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.domain.translation.TranslationController
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
 @FragmentScope
@@ -36,7 +35,10 @@ class ConceptCardFragmentPresenter @Inject constructor(
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
    */
   fun handleCreateView(
-    inflater: LayoutInflater, container: ViewGroup?, skillId: String, profileId: ProfileId
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    skillId: String,
+    profileId: ProfileId
   ): View? {
     val binding = ConceptCardFragmentBinding.inflate(
       inflater,

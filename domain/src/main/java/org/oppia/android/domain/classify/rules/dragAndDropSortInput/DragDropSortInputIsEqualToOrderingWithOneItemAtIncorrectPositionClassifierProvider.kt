@@ -31,9 +31,9 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   }
 
   override fun matches(
-          answer: ListOfSetsOfTranslatableHtmlContentIds,
-          input: ListOfSetsOfTranslatableHtmlContentIds,
-          writtenTranslationContext: WrittenTranslationContext
+    answer: ListOfSetsOfTranslatableHtmlContentIds,
+    input: ListOfSetsOfTranslatableHtmlContentIds,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     val answerStringSets = answer.contentIdListsList
     val inputStringSets = input.contentIdListsList

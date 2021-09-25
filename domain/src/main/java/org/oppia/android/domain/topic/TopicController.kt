@@ -1,8 +1,6 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
@@ -10,7 +8,8 @@ import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.ConceptCard
+import org.oppia.android.app.model.EphemeralConceptCard
+import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
@@ -28,6 +27,7 @@ import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionRetriever
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
@@ -36,14 +36,10 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EphemeralConceptCard
-import org.oppia.android.app.model.EphemeralRevisionCard
-import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.domain.util.getStringFromObject
-import org.oppia.android.util.data.DataProviders.Companion.transform
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
@@ -210,7 +206,9 @@ class TopicController @Inject constructor(
    * a failed result if there is none.
    */
   fun getRevisionCard(
-    profileId: ProfileId, topicId: String, subtopicId: Int
+    profileId: ProfileId,
+    topicId: String,
+    subtopicId: Int
   ): DataProvider<EphemeralRevisionCard> {
     return translationController.getWrittenTranslationContentLocale(
       profileId

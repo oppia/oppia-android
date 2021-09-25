@@ -23,9 +23,11 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -84,13 +86,10 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.domain.translation.TranslationController
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 

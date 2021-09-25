@@ -32,7 +32,9 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
   }
 
   override fun matches(
-    answer: Fraction, input: Fraction, writtenTranslationContext: WrittenTranslationContext
+    answer: Fraction,
+    input: Fraction,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     return answer.toFloat().approximatelyEquals(input.toFloat()) && answer == input.toSimplestForm()
   }

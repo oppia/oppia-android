@@ -27,7 +27,8 @@ class FractionInputHasNoFractionalPartRuleClassifierProvider @Inject constructor
   }
 
   override fun matches(
-    answer: Fraction, writtenTranslationContext: WrittenTranslationContext
+    answer: Fraction,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     return answer.numerator == 0
   }

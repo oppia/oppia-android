@@ -30,8 +30,8 @@ class ItemSelectionInputEqualsRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-          answer: SetOfTranslatableHtmlContentIds,
-          input: SetOfTranslatableHtmlContentIds,
-          writtenTranslationContext: WrittenTranslationContext
+    answer: SetOfTranslatableHtmlContentIds,
+    input: SetOfTranslatableHtmlContentIds,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean = answer.getContentIdSet() == input.getContentIdSet()
 }

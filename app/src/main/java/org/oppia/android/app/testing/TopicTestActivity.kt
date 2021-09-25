@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.RouteToQuestionPlayerListener
@@ -15,8 +16,6 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.model.ProfileId
 
 /** The activity for testing [TopicFragment]. */
 class TopicTestActivity :

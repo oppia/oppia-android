@@ -29,7 +29,9 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProvider @Inject construct
   }
 
   override fun matches(
-    answer: Fraction, input: Int, writtenTranslationContext: WrittenTranslationContext
+    answer: Fraction,
+    input: Int,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     return answer.wholeNumber == input
   }

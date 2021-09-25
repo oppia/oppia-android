@@ -11,6 +11,7 @@ import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerListener
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
@@ -18,8 +19,6 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.model.WrittenTranslationContext
 
 internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_profile_id"
@@ -125,7 +124,8 @@ class StateFragmentTestActivity :
   }
 
   override fun onExplorationStateLoaded(
-    state: State, writtenTranslationContext: WrittenTranslationContext
+    state: State,
+    writtenTranslationContext: WrittenTranslationContext
   ) {
     this.state = state
     this.writtenTranslationContext = writtenTranslationContext

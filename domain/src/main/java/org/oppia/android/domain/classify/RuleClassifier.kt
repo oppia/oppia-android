@@ -10,7 +10,8 @@ interface RuleClassifier {
    * classification strategy.
    */
   fun matches(
-    answer: InteractionObject, inputs: Map<String, InteractionObject>,
+    answer: InteractionObject,
+    inputs: Map<String, InteractionObject>,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean
 }

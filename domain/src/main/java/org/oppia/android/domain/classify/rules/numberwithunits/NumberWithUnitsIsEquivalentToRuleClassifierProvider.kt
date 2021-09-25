@@ -31,7 +31,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject constructor(
 
   // TODO(#209): Determine whether additional normalization of the input is necessary here.
   override fun matches(
-    answer: NumberWithUnits, input: NumberWithUnits,
+    answer: NumberWithUnits,
+    input: NumberWithUnits,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     // Units must match, but in different orders is fine.

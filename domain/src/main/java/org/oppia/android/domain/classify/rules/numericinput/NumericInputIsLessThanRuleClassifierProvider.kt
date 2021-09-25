@@ -26,6 +26,8 @@ class NumericInputIsLessThanRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-    answer: Double, input: Double, writtenTranslationContext: WrittenTranslationContext
+    answer: Double,
+    input: Double,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean = answer < input
 }

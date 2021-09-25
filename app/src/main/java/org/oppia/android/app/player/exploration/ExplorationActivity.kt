@@ -15,14 +15,13 @@ import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.model.WrittenTranslationContext
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -184,7 +183,8 @@ class ExplorationActivity :
   }
 
   override fun onExplorationStateLoaded(
-    state: State, writtenTranslationContext: WrittenTranslationContext
+    state: State,
+    writtenTranslationContext: WrittenTranslationContext
   ) {
     this.state = state
     this.writtenTranslationContext = writtenTranslationContext

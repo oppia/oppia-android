@@ -1,7 +1,7 @@
 package org.oppia.android.domain.locale
 
-import java.util.Locale
 import org.oppia.android.util.locale.OppiaLocale
+import java.util.Locale
 
 data class AndroidLocaleProfile(val languageCode: String, val regionCode: String) {
   fun matches(

@@ -28,7 +28,9 @@ class FractionInputIsExactlyEqualToRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-    answer: Fraction, input: Fraction, writtenTranslationContext: WrittenTranslationContext
+    answer: Fraction,
+    input: Fraction,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     return answer == input
   }
