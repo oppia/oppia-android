@@ -60,6 +60,7 @@ import org.oppia.android.app.testing.HomeTestActivity
 import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
+import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
@@ -124,6 +125,7 @@ interface ActivityComponent {
   fun inject(markStoriesCompletedTestActivity: MarkStoriesCompletedTestActivity)
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
   fun inject(marginBindableAdaptersTestActivity: MarginBindingAdaptersTestActivity)
+  fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
   fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)

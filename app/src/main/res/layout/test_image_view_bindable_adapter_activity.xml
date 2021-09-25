@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+    <import type="org.oppia.android.app.model.ChapterSummary" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
+  </data>
+
+  <ImageView
+    android:id="@+id/image_view_for_data_binding"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
+    android:layout_gravity="center_horizontal"
+    android:src="@{viewModel.chapterSummary.chapterPlayState}" />
+
+</layout>
