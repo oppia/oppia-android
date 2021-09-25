@@ -21,6 +21,7 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HomeFragment
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HomeTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HtmlParserTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ImageRegionSelectionTestActivity"
+exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ImageViewBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/InputInteractionViewTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/LessonThumbnailImageViewTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/MarginBindingAdaptersTestActivity"
