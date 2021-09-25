@@ -36,6 +36,7 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
 import org.oppia.android.app.profile.AddProfileActivity
 import org.oppia.android.app.profile.AdminAuthActivity
 import org.oppia.android.app.profile.AdminPinActivity
@@ -75,7 +76,6 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import javax.inject.Provider
-import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
 
 /** Root subcomponent for all activities. */
 @Subcomponent(modules = [ActivityModule::class])

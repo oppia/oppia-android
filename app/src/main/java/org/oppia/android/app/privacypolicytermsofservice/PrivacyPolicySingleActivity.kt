@@ -15,7 +15,7 @@ class PrivacyPolicySingleActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     activityComponent.inject(this)
-    val privacyPolicy = intent.getStringExtra(PRIVACY_POLICY_SINGLE_ACTIVITY)
+    intent.getStringExtra(PRIVACY_POLICY_SINGLE_ACTIVITY)
     privacyPolicySingleActivityPresenter.handleOnCreate()
   }
 
@@ -24,8 +24,7 @@ class PrivacyPolicySingleActivity : InjectableAppCompatActivity() {
     const val PRIVACY_POLICY_SINGLE_ACTIVITY = "PrivacyPolicySingleActivity"
 
     fun createPrivacyPolicySingleActivityIntent(context: Context): Intent {
-      val intent = Intent(context, PrivacyPolicySingleActivity::class.java)
-      return intent
+      return Intent(context, PrivacyPolicySingleActivity::class.java)
     }
   }
 }

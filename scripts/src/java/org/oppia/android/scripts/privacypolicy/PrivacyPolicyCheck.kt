@@ -16,11 +16,8 @@ fun main(vararg args: String) {
   // Path of the repo to be analyzed.
   val repoPath = "${args[0]}/"
 
-  for (k in 1..10){
+  for (k in 1..10) {
     println("Kotlin script")
-    println("Kotlin script"+ repoPath)
+    println("Kotlin script" + repoPath)
   }
 }
-
-
-

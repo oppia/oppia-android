@@ -1,10 +1,10 @@
 package org.oppia.android.app.onboarding
 
-import android.R.attr
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,10 +23,6 @@ import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import android.R.attr.text
-
-import android.R.string.no
-import android.util.Log
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -39,7 +35,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = OnboardingFragmentBinding.inflate(
       inflater,
       container,
@@ -165,8 +161,9 @@ class OnboardingFragmentPresenter @Inject constructor(
         endIndex2,
         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
       )
-    binding.slideTermsofservicePrivacypolicyTextView!!.text = spannableStringBuilder
-    binding.slideTermsofservicePrivacypolicyTextView!!.setMovementMethod(LinkMovementMethod.getInstance())
+    binding.slideTermsofservicePrivacypolicyTextView?.text = spannableStringBuilder
+    binding.slideTermsofservicePrivacypolicyTextView?.movementMethod =
+      LinkMovementMethod.getInstance()
   }
 
   private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {
