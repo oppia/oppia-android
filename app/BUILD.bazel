@@ -67,8 +67,6 @@ MIGRATED_SOURCE_FILES = glob([
 #  - It is not considered a listener
 #  - It does not depend on any other file not included in this list
 
-# TODO: see if this can be removed & folded into the main app module since it's not an annotation
-# (and maybe inline the annotations lib).
 # keep sorted
 ANNOTATIONS = [
     "src/main/java/org/oppia/android/app/utility/KeyboardHelper.kt",
@@ -788,10 +786,10 @@ TEST_DEPS = [
     ":dagger",
     ":resources",
     ":test_deps",
+    "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//domain",
     "//testing",
-    "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
     "//testing/src/main/java/org/oppia/android/testing/espresso:generic_view_matchers",
     "//testing/src/main/java/org/oppia/android/testing/espresso:image_view_matcher",

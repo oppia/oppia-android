@@ -644,6 +644,7 @@ exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/Ed
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/GenericViewMatchers.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/ImageViewMatcher.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/KonfettiViewMatcher.kt"
+exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/DefineAppLanguageLocaleContext.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/mockito/MockitoKotlinHelper.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/ApiMockLoader.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockClassroomService.kt"

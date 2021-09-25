@@ -1,6 +1,5 @@
 package org.oppia.android.testing.junit
 
-// TODO: add tests
 /**
  * Specifies a custom locale context to use either at the class level or method level in conjunction
  * with [InitializeDefaultLocaleRule].
@@ -28,6 +27,10 @@ annotation class DefineAppLanguageLocaleContext(
   val appStringAndroidRegionId: String = DEFAULT_UNDEFINED_STRING_VALUE,
 ) {
   companion object {
+    /**
+     * Represents the value of an undefined property for strings passed to
+     * [DefineAppLanguageLocaleContext] (undefined is generally treated as absent).
+     */
     const val DEFAULT_UNDEFINED_STRING_VALUE = "<undefined>"
   }
 }

@@ -162,6 +162,7 @@ file_content_checks {
   file_path_regex: ".+?.kt"
   prohibited_content_regex: "\\sActivity\\("
   failure_message: "Activity should never be subclassed. Use AppCompatActivity, instead."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
   file_path_regex: ".+?.kt"
@@ -170,12 +171,14 @@ file_content_checks {
   exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
   exempted_file_name: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing/.*?TestActivity.kt$"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
   file_path_regex: ".+?.kt"
   prohibited_content_regex: "\\sDialogFragment\\("
   failure_message: "DialogFragment should never be subclassed. Use InjectableDialogFragment, instead."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/fragment/InjectableDialogFragment.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
   file_path_regex: ".+?AndroidManifest.xml"

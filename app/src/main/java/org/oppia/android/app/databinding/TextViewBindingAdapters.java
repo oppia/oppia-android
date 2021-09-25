@@ -83,7 +83,7 @@ public final class TextViewBindingAdapters {
       @PluralsRes int pluralsResId,
       int count
   ) {
-    // TODO: file an issue to combine these strings together.
+    // TODO(#3841): Combine these strings together.
     return resourceHandler.getStringInLocaleWithWrapping(
         R.string.time_ago,
         resourceHandler.getQuantityStringInLocaleWithWrapping(
@@ -93,7 +93,7 @@ public final class TextViewBindingAdapters {
   }
 
   private static long ensureTimestampIsInMilliseconds(long lastVisitedTimestamp) {
-    // TODO: file issue to investigate & remove this method.
+    // TODO(#3842): Investigate & remove this check.
     if (lastVisitedTimestamp < 1000000000000L) {
       // If timestamp is given in seconds, convert that to milliseconds.
       return TimeUnit.SECONDS.toMillis(lastVisitedTimestamp);

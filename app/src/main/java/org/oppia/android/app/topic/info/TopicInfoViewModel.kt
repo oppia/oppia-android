@@ -35,7 +35,6 @@ class TopicInfoViewModel @Inject constructor(
   }
 
   fun calculateTopicSizeWithUnit() {
-    // TODO: file an issue to combine these strings into one.
     val sizeWithUnit = topic.get()?.let { topic ->
       val sizeInBytes: Int = topic.diskSizeBytes.toInt()
       val sizeInKb = sizeInBytes / 1024

@@ -39,7 +39,7 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
   }
 
   private fun computeProfileProgressText(): String {
-    // TODO: file an issue to fix this (should be a single string so that translators can properly configure ordering).
+    // TODO(#3843): Either combine these strings into one or use separate views to display them.
     val completedStoryCountText =
       resourceHandler.getQuantityStringInLocaleWithWrapping(
         R.plurals.completed_story_count, completedStoryCount, completedStoryCount.toString()

@@ -1384,7 +1384,7 @@ class HomeActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso.
   fun testHomeActivity_defaultState_displaysStringsInEnglish() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1402,7 +1402,7 @@ class HomeActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso.
   fun testHomeActivity_defaultState_hasEnglishAndroidLocale() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1413,8 +1413,9 @@ class HomeActivityTest {
     }
   }
 
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_defaultState_hasEnglishDisplayLocale() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -1426,9 +1427,9 @@ class HomeActivityTest {
     }
   }
 
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
-  @Ignore("Current language switching mechanism doesn't work correctly in Robolectric") // TODO: file a TODO to explain why this can't be tested yet (that the entire mechanism probably needs to be rethought to properly update system locale & pipe it through; unclear why the current solution works but Robolectric shows it's problematic).
+  @Ignore("Current language switching mechanism doesn't work correctly in Robolectric")
   fun testHomeActivity_changeSystemLocaleAndConfigChange_recreatesActivity() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1471,7 +1472,7 @@ class HomeActivityTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_displaysStringsInArabic() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1494,7 +1495,7 @@ class HomeActivityTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_isInRtlLayout() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1507,13 +1508,14 @@ class HomeActivityTest {
     }
   }
 
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ARABIC_VALUE,
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialArabicContext_hasArabicDisplayLocale() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1534,7 +1536,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialBrazilianPortugueseContext_displayStringsInPortuguese() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1558,7 +1560,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialBrazilianPortugueseContext_isInLtrLayout() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
@@ -1571,6 +1573,7 @@ class HomeActivityTest {
     }
   }
 
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = BRAZILIAN_PORTUGUESE_VALUE,
@@ -1578,7 +1581,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialBrazilianPortugueseContext_hasPortugueseDisplayLocale() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)

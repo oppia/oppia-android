@@ -41,7 +41,9 @@ open class TestActivity: InjectableAppCompatActivity() {
     (activityComponent as Injector).inject(this)
   }
 
+  /** Activity injector for [TestActivity]. */
   interface Injector {
+    /** Injects the prerequisite dependencies into [TestActivity]. */
     fun inject(testActivity: TestActivity)
   }
 

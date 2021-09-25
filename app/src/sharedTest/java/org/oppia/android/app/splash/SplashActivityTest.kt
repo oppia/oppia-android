@@ -265,7 +265,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_englishLocale_initializesLocaleHandlerWithEnglishContext() {
     initializeTestApplication()
     forceDefaultLocale(Locale.ENGLISH)
@@ -287,7 +287,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_arabicLocale_initializesLocaleHandlerWithArabicContext() {
     initializeTestApplication()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -303,7 +303,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // TODO: file TODO to remove
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_brazilianPortugueseLocale_initializesLocaleHandlerPortugueseContext() {
     initializeTestApplication()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
