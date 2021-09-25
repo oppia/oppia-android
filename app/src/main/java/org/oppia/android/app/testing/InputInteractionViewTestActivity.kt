@@ -3,7 +3,6 @@ package org.oppia.android.app.testing
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
@@ -21,6 +20,7 @@ import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
+import javax.inject.Inject
 
 /**
  * This is a dummy activity to test input interaction views.

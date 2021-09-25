@@ -9,8 +9,8 @@ import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.PromotedActivityList
-import java.util.Objects
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import java.util.Objects
 
 /** [ViewModel] for the promoted story list displayed in [HomeFragment]. */
 class PromotedStoryListViewModel(

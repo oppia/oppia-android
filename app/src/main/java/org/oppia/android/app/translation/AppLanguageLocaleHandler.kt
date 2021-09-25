@@ -1,10 +1,10 @@
 package org.oppia.android.app.translation
 
 import android.content.res.Configuration
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Application-scoped handler for the current locale configured for all app layer components.

@@ -2,7 +2,6 @@ package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.HelpIndex
@@ -11,6 +10,7 @@ import org.oppia.android.app.model.Solution
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
+import javax.inject.Inject
 
 /**
  * RecyclerView items are 2 times of (No. of Hints + Solution),

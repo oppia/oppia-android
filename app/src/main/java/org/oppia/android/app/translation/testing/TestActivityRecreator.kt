@@ -1,9 +1,9 @@
 package org.oppia.android.app.translation.testing
 
 import androidx.appcompat.app.AppCompatActivity
+import org.oppia.android.app.translation.ActivityRecreator
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.translation.ActivityRecreator
 
 /**
  * Test version of [ActivityRecreator] that no-ops activity recreation.
@@ -16,7 +16,7 @@ import org.oppia.android.app.translation.ActivityRecreator
  * Recreation flows can also be directly tested using ActivityScenario if needed.
  */
 @Singleton
-class TestActivityRecreator @Inject constructor(): ActivityRecreator {
+class TestActivityRecreator @Inject constructor() : ActivityRecreator {
   private var recreationCount: Int = 0
 
   override fun recreate(activity: AppCompatActivity) {

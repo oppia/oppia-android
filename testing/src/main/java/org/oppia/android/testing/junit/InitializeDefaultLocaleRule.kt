@@ -3,7 +3,6 @@ package org.oppia.android.testing.junit
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import java.util.Locale
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -18,6 +17,7 @@ import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
+import java.util.Locale
 
 // TODO(#2747): Update this to not need reflection, and instead depend on the necessary app layer
 //  packages directly. At the time of writing this utility, Gradle disallowed a dependency in
@@ -34,7 +34,7 @@ import org.oppia.android.util.locale.OppiaLocale
  *
  * Custom locales can defined at the class & method level using [DefineAppLanguageLocaleContext].
  */
-class InitializeDefaultLocaleRule: TestRule {
+class InitializeDefaultLocaleRule : TestRule {
   override fun apply(base: Statement?, description: Description?): Statement {
     return object : Statement() {
       override fun evaluate() {

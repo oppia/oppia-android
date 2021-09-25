@@ -9,9 +9,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.MyDownloadsFragmentBinding
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [MyDownloadsFragment]. */
 @FragmentScope

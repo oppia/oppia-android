@@ -1,11 +1,11 @@
 package org.oppia.android.app.profile
 
 import androidx.databinding.ObservableField
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import javax.inject.Inject
 
 private const val DEFAULT_NAME = ""
 

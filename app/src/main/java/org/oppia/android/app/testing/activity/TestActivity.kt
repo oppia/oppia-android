@@ -2,12 +2,12 @@ package org.oppia.android.app.testing.activity
 
 import android.content.Context
 import android.content.Intent
-import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil
+import javax.inject.Inject
 
 // TODO(#3830): Migrate all test activities over to using this test activity & make this closed.
 /**
@@ -19,7 +19,7 @@ import org.oppia.android.app.utility.datetime.DateTimeUtil
  * 2. As a superclass for other test activities where specific activity-level components are needed
  *   in tests
  */
-open class TestActivity: InjectableAppCompatActivity() {
+open class TestActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var appLanguageResourceHandler: AppLanguageResourceHandler
 

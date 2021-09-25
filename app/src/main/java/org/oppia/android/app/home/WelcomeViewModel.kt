@@ -1,10 +1,10 @@
 package org.oppia.android.app.home
 
 import androidx.lifecycle.ViewModel
-import java.util.Objects
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.datetime.DateTimeUtil
+import java.util.Objects
 
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel(

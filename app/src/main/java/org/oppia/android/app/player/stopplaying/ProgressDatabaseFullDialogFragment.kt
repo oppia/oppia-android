@@ -5,12 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
+import javax.inject.Inject
 
 private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
   "MaximumStorageCapacityReachedDialogFragment.oldest_saved_exploration_title"

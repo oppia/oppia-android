@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.UserAnswer
@@ -18,7 +19,6 @@ import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButton
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :

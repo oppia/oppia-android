@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
@@ -15,7 +14,6 @@ import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.domain.locale.LocaleController
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.PrimeTopicAssetsController
@@ -24,6 +22,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val SPLASH_INIT_STATE_DATA_PROVIDER_ID = "splash_init_state_data_provider"
@@ -61,7 +61,7 @@ class SplashActivityPresenter @Inject constructor(
     val liveData = computeInitStateLiveData()
     liveData.observe(
       activity,
-      object: Observer<SplashInitState> {
+      object : Observer<SplashInitState> {
         override fun onChanged(initState: SplashInitState) {
           // It's possible for the observer to still be active & change due to the next activity
           // causing a notification to be posted. That's always invalid to process here: the splash

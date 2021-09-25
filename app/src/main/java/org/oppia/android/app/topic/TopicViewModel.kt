@@ -2,7 +2,6 @@ package org.oppia.android.app.topic
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
@@ -13,6 +12,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** The ObservableViewModel for [TopicFragment]. */
 @FragmentScope

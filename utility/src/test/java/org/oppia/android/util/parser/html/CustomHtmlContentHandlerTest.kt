@@ -15,11 +15,11 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.domain.util.getStringFromObject
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
 import kotlin.reflect.KClass
-import org.oppia.android.domain.util.getStringFromObject
 
 /** Tests for [CustomHtmlContentHandler]. */
 @RunWith(AndroidJUnit4::class)

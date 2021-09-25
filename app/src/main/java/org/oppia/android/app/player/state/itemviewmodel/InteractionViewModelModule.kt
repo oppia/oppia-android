@@ -25,7 +25,7 @@ class InteractionViewModelModule {
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(fragment: Fragment): InteractionViewModelFactory {
     return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton,
-             isSplitView ->
+      isSplitView ->
       ContinueInteractionViewModel(
         interactionAnswerReceiver,
         hasConversationView,
@@ -41,7 +41,7 @@ class InteractionViewModelModule {
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
-             interactionAnswerErrorReceiver, _, isSplitView ->
+      interactionAnswerErrorReceiver, _, isSplitView ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
@@ -58,7 +58,7 @@ class InteractionViewModelModule {
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputViewModelFactory(): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
-             interactionAnswerErrorReceiver, _, isSplitView ->
+      interactionAnswerErrorReceiver, _, isSplitView ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
@@ -77,7 +77,7 @@ class InteractionViewModelModule {
     resourceHandler: AppLanguageResourceHandler
   ): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-             isSplitView ->
+      isSplitView ->
       FractionInteractionViewModel(
         interaction,
         hasConversationView,
@@ -109,7 +109,7 @@ class InteractionViewModelModule {
   @StringKey("TextInput")
   fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-             isSplitView ->
+      isSplitView ->
       TextInputViewModel(
         interaction, hasConversationView, interactionAnswerErrorReceiver, isSplitView
       )
@@ -123,7 +123,7 @@ class InteractionViewModelModule {
     resourceHandler: AppLanguageResourceHandler
   ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-             isSplitView ->
+      isSplitView ->
       DragAndDropSortInteractionViewModel(
         entityId, hasConversationView, interaction, interactionAnswerErrorReceiver, isSplitView,
         resourceHandler

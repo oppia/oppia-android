@@ -10,8 +10,10 @@ import org.oppia.android.util.system.OppiaClockInjector
 import org.oppia.android.util.system.OppiaClockInjectorProvider
 
 /** Provider for [ApplicationInjector]. The application context will implement this interface. */
-interface ApplicationInjectorProvider : DataProvidersInjectorProvider,
-  AppLanguageApplicationInjectorProvider, OppiaClockInjectorProvider,
+interface ApplicationInjectorProvider :
+  DataProvidersInjectorProvider,
+  AppLanguageApplicationInjectorProvider,
+  OppiaClockInjectorProvider,
   LocaleApplicationInjectorProvider {
   fun getApplicationInjector(): ApplicationInjector
 

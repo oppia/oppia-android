@@ -3,6 +3,7 @@ package org.oppia.android.app.story
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
@@ -10,7 +11,6 @@ import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity for stories. */
 class StoryActivity :

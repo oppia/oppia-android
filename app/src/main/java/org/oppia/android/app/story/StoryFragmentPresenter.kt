@@ -29,6 +29,7 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewMod
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.app.topic.RouteToResumeLessonListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.StoryChapterViewBinding
 import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
@@ -40,7 +41,6 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(

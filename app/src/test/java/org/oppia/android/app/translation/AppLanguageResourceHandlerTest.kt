@@ -10,9 +10,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,6 +28,7 @@ import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -57,11 +55,10 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -80,6 +77,9 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Tests for [AppLanguageResourceHandler].
@@ -443,16 +443,20 @@ class AppLanguageResourceHandlerTest {
   }
 
   private fun updateAppLanguageTo(language: OppiaLanguage) {
-    updateAndSetAppLanguage(AppLanguageSelection.newBuilder().apply {
-      selectedLanguage = language
-    }.build())
+    updateAndSetAppLanguage(
+      AppLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
   }
 
   private fun updateAppLanguageToSystem(locale: Locale) {
     forceDefaultLocale(locale)
-    updateAndSetAppLanguage(AppLanguageSelection.newBuilder().apply {
-      useSystemLanguageOrAppDefault = true
-    }.build())
+    updateAndSetAppLanguage(
+      AppLanguageSelection.newBuilder().apply {
+        useSystemLanguageOrAppDefault = true
+      }.build()
+    )
   }
 
   private fun forceDefaultLocale(locale: Locale) {

@@ -3,9 +3,9 @@ package org.oppia.android.app.walkthrough
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity that contains the walkthrough flow for users. */
 class WalkthroughActivity : InjectableAppCompatActivity(), WalkthroughFragmentChangeListener {

@@ -48,6 +48,7 @@ import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
@@ -60,7 +61,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.locale.OppiaLocale
 
 private const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
 private const val REPLACE_IMG_TAG = "img"

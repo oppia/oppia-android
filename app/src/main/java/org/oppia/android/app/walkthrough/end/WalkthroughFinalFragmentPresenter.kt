@@ -12,6 +12,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.databinding.WalkthroughFinalFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -19,7 +20,6 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [WalkthroughFinalFragment]. */
 @FragmentScope

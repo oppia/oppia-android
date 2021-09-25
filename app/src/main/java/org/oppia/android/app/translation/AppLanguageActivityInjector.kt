@@ -8,4 +8,3 @@ interface AppLanguageActivityInjector {
   /** Returns an [AppLanguageResourceHandler] from the Dagger graph. */
   fun getAppLanguageResourceHandler(): AppLanguageResourceHandler
 }
-

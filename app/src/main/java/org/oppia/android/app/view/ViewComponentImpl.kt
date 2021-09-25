@@ -15,10 +15,10 @@ import org.oppia.android.app.player.state.SelectionInteractionView
 /** Implementation of [ViewComponent]. */
 @Subcomponent
 @ViewScope
-interface ViewComponentImpl: ViewComponent {
+interface ViewComponentImpl : ViewComponent {
   /** Implementation of [ViewComponent.Builder]. */
   @Subcomponent.Builder
-  interface Builder: ViewComponent.Builder {
+  interface Builder : ViewComponent.Builder {
     @BindsInstance
     override fun setView(view: View): Builder
 

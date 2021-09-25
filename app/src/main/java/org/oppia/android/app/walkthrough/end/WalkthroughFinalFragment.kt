@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.oppia.android.app.fragment.InjectableFragment
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.util.extensions.getStringFromBundle
+import javax.inject.Inject
 
 private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
 

@@ -1,10 +1,10 @@
 package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.help.HelpViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 /**
  * View model in [ThirdPartyDependencyListFragment] that contains the list of third-party

@@ -4,8 +4,8 @@ import androidx.annotation.ArrayRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import javax.inject.Inject
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 
 /**
  * Convenience resource handler for formatting user-readable strings, and retrieving/formatting
@@ -65,7 +65,8 @@ class AppLanguageResourceHandler @Inject constructor(
    * string corresponding to the current activity's resources.
    */
   fun getStringInLocaleWithoutWrapping(
-    @StringRes id: Int, vararg formatArgs: CharSequence
+    @StringRes id: Int,
+    vararg formatArgs: CharSequence
   ): String {
     return getDisplayLocale().run { resources.getStringInLocaleWithoutWrapping(id, *formatArgs) }
   }
@@ -91,7 +92,9 @@ class AppLanguageResourceHandler @Inject constructor(
    * returns a quantity string corresponding to the current activity's resources.
    */
   fun getQuantityStringInLocaleWithWrapping(
-    @PluralsRes id: Int, quantity: Int, vararg formatArgs: CharSequence
+    @PluralsRes id: Int,
+    quantity: Int,
+    vararg formatArgs: CharSequence
   ): String {
     return getDisplayLocale().run {
       resources.getQuantityStringInLocaleWithWrapping(id, quantity, *formatArgs)
@@ -103,7 +106,9 @@ class AppLanguageResourceHandler @Inject constructor(
    * returns a quantity string corresponding to the current activity's resources.
    */
   fun getQuantityStringInLocaleWithoutWrapping(
-    @PluralsRes id: Int, quantity: Int, vararg formatArgs: CharSequence
+    @PluralsRes id: Int,
+    quantity: Int,
+    vararg formatArgs: CharSequence
   ): String {
     return getDisplayLocale().run {
       resources.getQuantityStringInLocaleWithoutWrapping(id, quantity, *formatArgs)

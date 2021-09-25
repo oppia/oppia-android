@@ -62,6 +62,7 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.ContentItemBinding
 import org.oppia.android.databinding.ContinueInteractionItemBinding
@@ -86,7 +87,6 @@ import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 

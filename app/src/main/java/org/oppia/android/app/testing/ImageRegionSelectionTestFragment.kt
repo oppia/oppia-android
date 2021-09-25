@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.utility.ClickableAreasImage
 import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
 
 const val IMAGE_REGION_SELECTION_TEST_FRAGMENT_TAG = "image_region_selection_test_fragment"
 

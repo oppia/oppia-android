@@ -1,6 +1,5 @@
 package org.oppia.android.domain.classify.rules.textinput
 
-import javax.inject.Inject
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
 import org.oppia.android.domain.classify.RuleClassifier
@@ -8,6 +7,7 @@ import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.domain.util.normalizeWhitespace
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether an answer starts with the rule's input per the

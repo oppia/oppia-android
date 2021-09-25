@@ -1,16 +1,15 @@
 package org.oppia.android.app.testing.activity
 
-import androidx.test.ext.truth.content.IntentSubject.assertThat
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.truth.content.IntentSubject.assertThat
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -69,7 +68,8 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import com.google.common.truth.Truth.assertThat
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [TestActivity]. */
 // FunctionName: test names are conventionally named with underscores.
