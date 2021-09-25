@@ -96,6 +96,7 @@ class ImageViewBindingAdaptersTest {
 
   @Before
   fun setUp() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     imageView = ImageView(context)
   }
 
