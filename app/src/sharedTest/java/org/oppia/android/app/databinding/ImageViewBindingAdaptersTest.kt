@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
@@ -52,6 +51,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.utility.EspressoTestsMatchers
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -92,12 +92,16 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 
 /** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ImageViewBindingAdaptersTest {
+  var url1 = "https://images.unsplash"
+  var url2 = ".com/photo-1554080353-a576cf803bda?ixid"
+  var url3 = "=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGhvdG98ZW58MHx8MHx8"
+  var url4 = "&ixlib=rb-1.2.1&w=1000&q=80"
+  var url = url1 + url2 + url3 + url4
 
   @Inject
   lateinit var context: Context
@@ -179,12 +183,12 @@ class ImageViewBindingAdaptersTest {
   fun setImageDrawableWithGlide() {
     val imageViewID = activityRule.scenario.runWithActivity {
       var imageView = it.findViewById<ImageView>(R.id.imageView)
-      return@runWithActivity imageView;
+      return@runWithActivity imageView
     }
     runOnUiThread {
       ImageViewBindingAdapters.setImageDrawable(
         imageViewID,
-        "https://images.unsplash.com/photo-1554080353-a576cf803bda?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGhvdG98ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+        url
       )
     }
 //    Thread.sleep(5000)
@@ -195,7 +199,7 @@ class ImageViewBindingAdaptersTest {
     runOnUiThread {
       ImageViewBindingAdapters.setImageDrawable(
         imageViewID,
-        "https://images.unsplash.com/photo-1554080353-a576cf803bda?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGhvdG98ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+        url
       )
     }
 //    Thread.sleep(5000)
