@@ -24,8 +24,8 @@ class OngoingTopicItemViewModel(
   }
 
   fun computeStoryCountText(): String {
-    return resourceHandler.getQuantityStringInLocale(
-      R.plurals.lesson_count, topic.storyCount, topic.storyCount
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.lesson_count, topic.storyCount, topic.storyCount.toString()
     )
   }
 

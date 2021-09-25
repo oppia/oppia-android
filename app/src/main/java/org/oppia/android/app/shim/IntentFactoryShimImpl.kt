@@ -2,10 +2,10 @@ package org.oppia.android.app.shim
 
 import android.content.Context
 import android.content.Intent
-import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
 import org.oppia.android.app.activity.ActivityIntentFactories.TopicActivityIntentFactory
 import org.oppia.android.app.model.ProfileId
+import javax.inject.Inject
 
 /**
  * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
@@ -31,9 +31,12 @@ class IntentFactoryShimImpl @Inject constructor(
     topicId: String,
     storyId: String
   ): Intent {
-    return topicActivityIntentFactory.createIntent(ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build(), topicId, storyId)
+    return topicActivityIntentFactory.createIntent(
+      ProfileId.newBuilder().apply {
+        internalId = internalProfileId
+      }.build(),
+      topicId, storyId
+    )
   }
 
   /**
@@ -44,9 +47,12 @@ class IntentFactoryShimImpl @Inject constructor(
     internalProfileId: Int,
     topicId: String
   ): Intent {
-    return topicActivityIntentFactory.createIntent(ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build(), topicId)
+    return topicActivityIntentFactory.createIntent(
+      ProfileId.newBuilder().apply {
+        internalId = internalProfileId
+      }.build(),
+      topicId
+    )
   }
 
   /**
@@ -57,8 +63,10 @@ class IntentFactoryShimImpl @Inject constructor(
     context: Context,
     internalProfileId: Int
   ): Intent {
-    return recentlyPlayedActivityIntentFactory.createIntent(ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build())
+    return recentlyPlayedActivityIntentFactory.createIntent(
+      ProfileId.newBuilder().apply {
+        internalId = internalProfileId
+      }.build()
+    )
   }
 }

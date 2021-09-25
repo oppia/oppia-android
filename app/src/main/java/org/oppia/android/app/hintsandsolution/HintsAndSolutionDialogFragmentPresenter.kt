@@ -13,6 +13,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.android.databinding.HintsDividerBinding
@@ -22,7 +23,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import java.lang.IllegalStateException
-import java.util.Locale
 import javax.inject.Inject
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -313,7 +313,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     // TODO(#1050): Update to display answers for any answer type.
     if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
       binding.solutionCorrectAnswer.text =
-        resourceHandler.getStringInLocale(
+        resourceHandler.getStringInLocaleWithoutWrapping(
           R.string.hints_android_solution_correct_answer,
           solutionViewModel.numerator.get().toString(),
           solutionViewModel.denominator.get().toString()

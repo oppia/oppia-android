@@ -4,6 +4,7 @@ import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtopicRecord
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject

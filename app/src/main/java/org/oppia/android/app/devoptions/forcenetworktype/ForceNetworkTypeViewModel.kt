@@ -1,13 +1,12 @@
 package org.oppia.android.app.devoptions.forcenetworktype
 
-import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /**
  * [ViewModel] for [ForceNetworkTypeFragment]. It populates the recycler view with a list of

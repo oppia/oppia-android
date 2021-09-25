@@ -67,15 +67,15 @@ import org.oppia.android.app.topic.questionplayer.HintsAndSolutionQuestionManage
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
 import org.oppia.android.app.topic.revision.TopicRevisionFragment
 import org.oppia.android.app.topic.revisioncard.RevisionCardFragment
+import org.oppia.android.app.view.ViewComponentBuilderInjector
+import org.oppia.android.app.view.ViewComponentBuilderModule
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
-import org.oppia.android.app.view.ViewComponentBuilderInjector
-import org.oppia.android.app.view.ViewComponentBuilderModule
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each fragment.
 
-/** Root subcomponent for all fragments. */
+/** Implementation of [FragmentComponent]. */
 @Subcomponent(
   modules = [
     FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
@@ -83,7 +83,8 @@ import org.oppia.android.app.view.ViewComponentBuilderModule
   ]
 )
 @FragmentScope
-interface FragmentComponentImpl: FragmentComponent, ViewComponentBuilderInjector {
+interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjector {
+  /** Implementation of [FragmentComponent.Builder]. */
   @Subcomponent.Builder
   interface Builder : FragmentComponent.Builder {
     @BindsInstance

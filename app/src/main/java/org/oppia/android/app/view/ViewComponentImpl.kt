@@ -12,12 +12,13 @@ import org.oppia.android.app.player.state.SelectionInteractionView
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each view.
 
-/** Root subcomponent for custom views. */
+/** Implementation of [ViewComponent]. */
 @Subcomponent
 @ViewScope
-interface ViewComponentImpl: ViewComponent {
+interface ViewComponentImpl : ViewComponent {
+  /** Implementation of [ViewComponent.Builder]. */
   @Subcomponent.Builder
-  interface Builder: ViewComponent.Builder {
+  interface Builder : ViewComponent.Builder {
     @BindsInstance
     override fun setView(view: View): Builder
 

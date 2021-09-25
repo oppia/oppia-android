@@ -2,9 +2,9 @@ package org.oppia.android.app.home
 
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import java.util.Objects
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [ViewModel] for welcome text in home screen. */
 class WelcomeViewModel(
@@ -16,8 +16,11 @@ class WelcomeViewModel(
   /** Text [String] to greet the learner and display on-screen when launching the home activity. */
   val greeting: String = dateTimeUtil.getGreetingMessage()
 
+  /**
+   * Returns the user-readable portion of the welcome screen greeting that contains the user's name.
+   */
   fun computeProfileNameText(): String {
-    return resourceHandler.getStringInLocale(R.string.welcome_profile_name, profileName)
+    return resourceHandler.getStringInLocaleWithWrapping(R.string.welcome_profile_name, profileName)
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel

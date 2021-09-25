@@ -3,15 +3,15 @@ package org.oppia.android.app.topic.questionplayer
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
-import org.oppia.android.app.R
+import org.oppia.android.R
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [ObservableViewModel] for the question player. */
 class QuestionPlayerViewModel @Inject constructor(
@@ -32,12 +32,34 @@ class QuestionPlayerViewModel @Inject constructor(
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 
+  val questionProgressText: ObservableField<String> =
+    ObservableField(
+      computeQuestionProgressText(
+        DEFAULT_CURRENT_QUESTION, DEFAULT_QUESTION_COUNT, DEFAULT_IS_AT_END_OF_SESSION
+      )
+    )
+
   fun setHintBulbVisibility(hintBulbVisible: Boolean) {
     isHintBulbVisible.set(hintBulbVisible)
   }
 
   fun setHintOpenedAndUnRevealedVisibility(hintOpenedAndUnRevealedVisible: Boolean) {
     isHintOpenedAndUnRevealed.set(hintOpenedAndUnRevealedVisible)
+  }
+
+  fun updateQuestionProgress(
+    currentQuestion: Int,
+    questionCount: Int,
+    progressPercentage: Int,
+    isAtEndOfSession: Boolean
+  ) {
+    this.currentQuestion.set(currentQuestion)
+    this.questionCount.set(questionCount)
+    this.progressPercentage.set(progressPercentage)
+    this.isAtEndOfSession.set(isAtEndOfSession)
+    questionProgressText.set(
+      computeQuestionProgressText(currentQuestion, questionCount, isAtEndOfSession)
+    )
   }
 
   fun setCanSubmitAnswer(canSubmitAnswer: Boolean) = this.canSubmitAnswer.set(canSubmitAnswer)
@@ -54,12 +76,18 @@ class QuestionPlayerViewModel @Inject constructor(
     ) ?: UserAnswer.getDefaultInstance()
   }
 
-  fun computeQuestionProgressText(): String {
-    return if (isAtEndOfSession.get()) {
+  private fun computeQuestionProgressText(
+    currentQuestion: Int,
+    questionCount: Int,
+    isAtEndOfSession: Boolean
+  ): String {
+    return if (isAtEndOfSession) {
       resourceHandler.getStringInLocale(R.string.question_training_session_progress_finished)
     } else {
-      resourceHandler.getStringInLocale(
-        R.string.question_training_session_progress, currentQuestion, questionCount
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.question_training_session_progress,
+        currentQuestion.toString(),
+        questionCount.toString()
       )
     }
   }
@@ -80,5 +108,11 @@ class QuestionPlayerViewModel @Inject constructor(
     } else {
       itemList
     }
+  }
+
+  private companion object {
+    private const val DEFAULT_CURRENT_QUESTION = 0
+    private const val DEFAULT_QUESTION_COUNT = 0
+    private const val DEFAULT_IS_AT_END_OF_SESSION = false
   }
 }

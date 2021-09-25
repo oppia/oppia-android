@@ -3,12 +3,12 @@ package org.oppia.android.app.resumelesson
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity that allows the user to resume a saved exploration. */
 class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationListener {

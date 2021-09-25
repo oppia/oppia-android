@@ -21,6 +21,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
 import org.oppia.android.domain.audio.CellularAudioDialogController
@@ -30,7 +31,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"

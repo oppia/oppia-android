@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.View
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.view.ViewComponent
-import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentBuilderInjector
+import org.oppia.android.app.view.ViewComponentFactory
 
 /**
  * A fragment that facilitates field injection to children. This fragment can only be used with

@@ -3,8 +3,8 @@ package org.oppia.android.app.help.thirdparty
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.help.HelpViewModel
-import javax.inject.Inject
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 /**
  * View model in [ThirdPartyDependencyListFragment] that contains the list of third-party
@@ -29,7 +29,7 @@ class ThirdPartyDependencyListViewModel @Inject constructor(
       ThirdPartyDependencyItemViewModel(
         activity = activity,
         dependencyName = name,
-        dependencyVersion = resourceHandler.getStringInLocale(
+        dependencyVersion = resourceHandler.getStringInLocaleWithWrapping(
           R.string.third_party_dependency_version_formatter,
           thirdPartyDependencyVersions[index]
         ),

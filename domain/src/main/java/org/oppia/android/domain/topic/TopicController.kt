@@ -29,6 +29,7 @@ import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult

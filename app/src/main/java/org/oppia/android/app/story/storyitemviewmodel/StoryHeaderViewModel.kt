@@ -9,9 +9,13 @@ class StoryHeaderViewModel(
   private val totalChapters: Int,
   private val resourceHandler: AppLanguageResourceHandler
 ) : StoryItemViewModel() {
+  /** Returns the user-readable progress completion text corresponding to chapters in a story. */
   fun computeStoryProgressChapterCompletedText(): String {
-    return resourceHandler.getQuantityStringInLocale(
-      R.plurals.story_total_chapters, totalChapters, completedChapters, totalChapters
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.story_total_chapters,
+      totalChapters,
+      completedChapters.toString(),
+      totalChapters.toString()
     )
   }
 }

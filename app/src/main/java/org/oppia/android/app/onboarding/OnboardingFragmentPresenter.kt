@@ -11,13 +11,13 @@ import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope

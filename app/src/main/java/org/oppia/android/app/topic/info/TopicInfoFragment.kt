@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
-import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.util.extensions.getStringFromBundle
+import javax.inject.Inject
 
 /** Fragment that contains info of Topic. */
 class TopicInfoFragment : InjectableFragment() {

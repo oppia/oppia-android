@@ -8,11 +8,26 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 load("//domain:domain_test.bzl", "domain_test")
 
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
+# Visibility for migrated domain tests.
+package_group(
+    name = "domain_testing_visibility",
+    packages = [
+        "//domain/src/test/...",
+    ],
+)
+
 # Source files that have been migrated to their own package-based libraries. Files added to this
 # list will be excluded automatically from the top-level utility library. It is recommended to use
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
+    "src/main/java/org/oppia/android/domain/feedbackreporting/*.kt",
     "src/main/java/org/oppia/android/domain/oppialogger/**/*.kt",
     "src/main/java/org/oppia/android/domain/util/*.kt",
 ])
@@ -116,6 +131,18 @@ kt_android_library(
     ],
 )
 
+android_library(
+    name = "test_resources",
+    testonly = True,
+    custom_package = "org.oppia.android.domain",
+    manifest = ":test_manifest",
+    resource_files = glob(["src/test/res/**"]),
+    visibility = [
+        ":domain_testing_visibility",
+        "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
+    ],
+)
+
 # TODO(#2143): Move InteractionObjectTestBuilder to a testing package outside the test folder.
 kt_android_library(
     name = "interaction_object_test_builder",
@@ -137,6 +164,8 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+    "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/network:network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
@@ -152,8 +181,10 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+    "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
 ]

@@ -3,9 +3,9 @@ package org.oppia.android.app.settings.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** Activity to display all profiles to admin. */
 class ProfileListActivity : InjectableAppCompatActivity() {

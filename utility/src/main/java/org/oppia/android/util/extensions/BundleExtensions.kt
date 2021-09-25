@@ -43,4 +43,8 @@ fun <T : MessageLite> Bundle.getProto(name: String, defaultValue: T): T {
   } ?: defaultValue
 }
 
+/**
+ * Returns the string from this [Bundle] corresponding to the specified key, or null if there isn't
+ * one.
+ */
 fun Bundle.getStringFromBundle(key: String): String? = getString(key)

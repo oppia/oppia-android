@@ -12,6 +12,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser

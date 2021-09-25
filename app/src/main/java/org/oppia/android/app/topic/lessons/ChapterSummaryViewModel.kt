@@ -23,13 +23,19 @@ class ChapterSummaryViewModel(
 
   fun computeChapterPlayStateIconContentDescription(): String {
     return if (chapterPlayState == ChapterPlayState.COMPLETED) {
-      resourceHandler.getStringInLocale(R.string.chapter_completed, index + 1, chapterName)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.chapter_completed, (index + 1).toString(), chapterName
+      )
     } else {
-      resourceHandler.getStringInLocale(R.string.chapter_in_progress, index + 1, chapterName)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.chapter_in_progress, (index + 1).toString(), chapterName
+      )
     }
   }
 
   fun computePlayChapterIndexText(): String {
-    return resourceHandler.getStringInLocale(R.string.topic_play_chapter_index, index + 1)
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.topic_play_chapter_index, (index + 1).toString()
+    )
   }
 }

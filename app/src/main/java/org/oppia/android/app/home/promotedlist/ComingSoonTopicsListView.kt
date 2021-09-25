@@ -10,9 +10,9 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
-import org.oppia.android.app.view.ViewComponentImpl
 
 private const val COMING_SOON_TOPIC_LIST_VIEW_TAG = "ComingSoonTopicsListView"
 

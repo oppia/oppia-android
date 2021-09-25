@@ -10,6 +10,7 @@ import javax.inject.Inject
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether two strings are fuzzily equal per the text

@@ -16,13 +16,13 @@ import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import javax.inject.Inject
 import kotlin.math.max
-import org.oppia.android.util.locale.OppiaLocale
 
 // TODO(#169): Replace this with exploration asset downloader.
 

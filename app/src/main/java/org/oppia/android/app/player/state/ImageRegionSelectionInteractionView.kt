@@ -10,19 +10,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.shim.ViewBindingShim
-import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.util.accessibility.AccessibilityChecker
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
-import org.oppia.android.app.view.ViewComponentImpl
-import org.oppia.android.util.locale.OppiaLocale
 
 /**
  * A custom [AppCompatImageView] with a list of [LabeledRegion] to work with

@@ -12,6 +12,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPageChanger
@@ -22,7 +23,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [WalkthroughWelcomeFragment]. */
 @FragmentScope
@@ -100,7 +100,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private fun setProfileName() {
     if (::walkthroughWelcomeViewModel.isInitialized && ::profileName.isInitialized) {
       walkthroughWelcomeViewModel.profileName.set(
-        resourceHandler.getStringInLocale(R.string.welcome, profileName)
+        resourceHandler.getStringInLocaleWithWrapping(R.string.welcome, profileName)
       )
     }
   }

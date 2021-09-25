@@ -6,13 +6,13 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The ObservableViewModel for [TopicFragment]. */
 @FragmentScope
@@ -39,7 +39,7 @@ class TopicViewModel @Inject constructor(
 
   val topicToolbarTitleLiveData: LiveData<String> by lazy {
     Transformations.map(topicNameLiveData) { name ->
-      resourceHandler.getStringInLocale(R.string.topic_name, name)
+      resourceHandler.getStringInLocaleWithWrapping(R.string.topic_name, name)
     }
   }
 

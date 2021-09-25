@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.android.databinding.TextSizeItemsBinding
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [ReadingTextSizeFragment]. */
 class ReadingTextSizeFragmentPresenter @Inject constructor(

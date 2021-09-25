@@ -10,6 +10,7 @@ import javax.inject.Inject
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether an answer starts with the rule's input per the
@@ -41,7 +42,9 @@ class TextInputStartsWithRuleClassifierProvider @Inject constructor(
     val normalizedAnswer = machineLocale.run { answer.normalizeWhitespace().toMachineLowerCase() }
     val inputStringList = translationController.extractStringList(input, writtenTranslationContext)
     return inputStringList.any {
-      normalizedAnswer.contains(machineLocale.run { it.normalizeWhitespace().toMachineLowerCase() })
+      normalizedAnswer.startsWith(
+        machineLocale.run { it.normalizeWhitespace().toMachineLowerCase() }
+      )
     }
   }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.UserAnswer
@@ -18,9 +19,8 @@ import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickL
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
-import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.util.extensions.getStringFromBundle
+import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :

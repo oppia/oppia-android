@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
 
 private const val READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY =
   "ReadingTextSizeFragment.reading_text_size_preference_summary_value"

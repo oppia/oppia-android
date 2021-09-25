@@ -1,11 +1,11 @@
 package org.oppia.android.app.devoptions.vieweventlogs
 
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.firebase.DebugEventLogger
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.locale.OppiaLocale
 
 /**
  * [ViewModel] for [ViewEventLogsFragment]. It populates the recyclerview with a list of

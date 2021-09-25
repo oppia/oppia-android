@@ -33,25 +33,25 @@ class StorySummaryViewModel(
   }
 
   fun computeStoryNameChapterCountContainerContentDescription(): String {
-    // TODO: file an issue to combine this into a single string.
+    // TODO(#3844): Combine these strings together.
     val chapterCountText =
-      resourceHandler.getQuantityStringInLocale(
-        R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount
+      resourceHandler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount.toString()
       )
-    return resourceHandler.getStringInLocale(
+    return resourceHandler.getStringInLocaleWithWrapping(
       R.string.chapter_count_with_story_name, chapterCountText, storySummary.storyName
     )
   }
 
   fun computeChapterCountText(): String {
-    return resourceHandler.getQuantityStringInLocale(
-      R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount.toString()
     )
   }
 
   private fun computeStoryProgressPercentageText(storyPercentage: Int): String {
-    return resourceHandler.getStringInLocale(
-      R.string.topic_story_progress_percentage, storyPercentage
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.topic_story_progress_percentage, storyPercentage.toString()
     )
   }
 

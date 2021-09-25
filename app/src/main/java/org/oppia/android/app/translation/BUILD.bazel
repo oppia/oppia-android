@@ -10,6 +10,10 @@ kt_android_library(
     srcs = [
         "AppLanguageLocaleHandler.kt",
     ],
+    visibility = [
+        "//app:app_testing_visibility",
+        "//testing/src/test/java/org/oppia/android/testing/junit:__pkg__",
+    ],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
@@ -37,9 +41,47 @@ kt_android_library(
     ],
     visibility = ["//app:app_visibility"],
     deps = [
+        ":activity_recreator",
         ":app_language_locale_handler",
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+    ],
+)
+
+kt_android_library(
+    name = "activity_recreator",
+    srcs = [
+        "ActivityRecreator.kt",
+    ],
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/translation/testing:__pkg__",
+    ],
+    deps = [
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)
+
+kt_android_library(
+    name = "impl",
+    srcs = [
+        "ActivityRecreatorImpl.kt",
+    ],
+    deps = [
+        ":activity_recreator",
+        ":dagger",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "ActivityRecreatorProdModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":activity_recreator",
+        ":dagger",
+        ":impl",
     ],
 )
 

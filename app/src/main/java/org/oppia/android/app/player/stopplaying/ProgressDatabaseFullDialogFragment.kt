@@ -5,12 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
+import javax.inject.Inject
 
 private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
   "MaximumStorageCapacityReachedDialogFragment.oldest_saved_exploration_title"
@@ -52,8 +52,10 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val oldestSavedExplorationTitle = arguments
-      ?.getStringFromBundle(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
+    val args = checkNotNull(arguments) { "Expected arguments to be passed to dialog fragment" }
+    val oldestSavedExplorationTitle =
+      args.getStringFromBundle(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
+        ?: error("Expected exploration title to be passed via arguments")
     val stopStatePlayingSessionListenerWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =
         activity as StopStatePlayingSessionWithSavedProgressListener
@@ -62,7 +64,7 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.progress_database_full_dialog_title)
       .setMessage(
-        resourceHandler.getStringInLocale(
+        resourceHandler.getStringInLocaleWithWrapping(
           R.string.progress_database_full_dialog_description, oldestSavedExplorationTitle
         )
       )

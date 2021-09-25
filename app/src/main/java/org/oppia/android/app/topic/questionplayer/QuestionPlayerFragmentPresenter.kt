@@ -235,12 +235,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
-    questionViewModel.currentQuestion.set(currentQuestionIndex + 1)
-    questionViewModel.questionCount.set(questionCount)
-    questionViewModel.progressPercentage.set(
-      (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt()
+    questionViewModel.updateQuestionProgress(
+      currentQuestion = currentQuestionIndex + 1,
+      questionCount = questionCount,
+      progressPercentage = (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt(),
+      isAtEndOfSession = currentQuestionIndex == questionCount
     )
-    questionViewModel.isAtEndOfSession.set(currentQuestionIndex == questionCount)
   }
 
   private fun updateEndSessionMessage(ephemeralState: EphemeralState) {

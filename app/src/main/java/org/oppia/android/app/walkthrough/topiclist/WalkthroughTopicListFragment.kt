@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.TopicSummary
 import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /** The second slide for [WalkthroughActivity]. */
 class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickListener {

@@ -13,7 +13,8 @@ kt_android_library(
     deps = [
         ":extensions",
         "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/caching:assets",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
     ],
 )
 

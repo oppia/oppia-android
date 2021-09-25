@@ -4,9 +4,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Text Size list view model for the recycler view in [ReadingTextSizeFragment]. */
 @FragmentScope

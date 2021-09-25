@@ -13,8 +13,8 @@ import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import javax.inject.Inject
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 
 /** [ObservableViewModel] for audio-player state. */
 @FragmentScope
