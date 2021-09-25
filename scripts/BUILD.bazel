@@ -213,6 +213,18 @@ kt_jvm_binary(
     ],
 )
 
+kt_jvm_binary(
+    name = "privacy_policy_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.privacypolicy.PrivacyPolicyCheckKt",
+    visibility = [
+         "//:oppia_binary_visibility",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/privacypolicy:privacy_policy_check_lib"
+    ],
+)
+
 # Note that this is intentionally not test-only since it's used by the app build pipeline. Also,
 # this apparently needs to be a java_binary to set up runfiles correctly when executed within a
 # Starlark rule as a tool.

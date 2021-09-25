@@ -75,6 +75,7 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import javax.inject.Provider
+import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
 
 /** Root subcomponent for all activities. */
 @Subcomponent(modules = [ActivityModule::class])
@@ -132,6 +133,7 @@ interface ActivityComponent {
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
   fun inject(profileChooserActivity: ProfileChooserActivity)
+  fun inject(privacyPolicySingleActivity: PrivacyPolicySingleActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
   fun inject(profileListActivity: ProfileListActivity)

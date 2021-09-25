@@ -1,10 +1,16 @@
 package org.oppia.android.app.onboarding
 
+import android.R.attr
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -17,6 +23,10 @@ import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import android.R.attr.text
+
+import android.R.string.no
+import android.util.Log
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -44,6 +54,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
     setUpViewPager()
     addDots()
+
     return binding.root
   }
 
@@ -104,10 +115,58 @@ class OnboardingFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.ONBOARDING_FINAL_SLIDE,
         inflateDataBinding = OnboardingSlideFinalBinding::inflate,
-        setViewModel = OnboardingSlideFinalBinding::setViewModel,
+        setViewModel = this::bindOnboardingSlideFinal,
         transformViewModel = { it as OnboardingSlideFinalViewModel }
       )
       .build()
+  }
+
+  private fun bindOnboardingSlideFinal(
+    binding: OnboardingSlideFinalBinding,
+    model: OnboardingSlideFinalViewModel
+  ) {
+    binding.viewModel = model
+    setTermsAndCondition(binding)
+  }
+
+  private fun setTermsAndCondition(binding: OnboardingSlideFinalBinding) {
+    val termsOfService: String = activity.getString(R.string.terms_of_service)
+    val privacyPolicy: String = activity.getString(R.string.privacy_policy)
+    Log.d("termsOfService", "" + termsOfService)
+    val completeString: String =
+      activity.getString(R.string.agree_to_terms) + termsOfService + " and " + privacyPolicy
+
+    val startIndex = completeString.indexOf(termsOfService)
+    val endIndex = startIndex + termsOfService.length
+    val startIndex2 = completeString.indexOf(privacyPolicy)
+    val endIndex2 = startIndex2 + privacyPolicy.length
+    val spannableStringBuilder = SpannableStringBuilder(completeString)
+    val clickOnTerms = object : ClickableSpan() {
+      override fun onClick(widget: View) {
+        Toast.makeText(activity, "click on terms of service", Toast.LENGTH_SHORT).show()
+      }
+    }
+    val clickOnPrivacy = object : ClickableSpan() {
+      override fun onClick(widget: View) {
+        (activity as RouteToPrivacyPolicySingleListener).onRouteToPrivacyPolicySingle()
+      }
+    }
+    if (startIndex > 0)
+      spannableStringBuilder.setSpan(
+        clickOnTerms,
+        startIndex,
+        endIndex,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+      )
+    if (startIndex2 > 0)
+      spannableStringBuilder.setSpan(
+        clickOnPrivacy,
+        startIndex2,
+        endIndex2,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+      )
+    binding.slideTermsofservicePrivacypolicyTextView!!.text = spannableStringBuilder
+    binding.slideTermsofservicePrivacypolicyTextView!!.setMovementMethod(LinkMovementMethod.getInstance())
   }
 
   private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {
