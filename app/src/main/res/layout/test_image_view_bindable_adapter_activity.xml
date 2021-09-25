@@ -11,6 +11,7 @@
 
   <ImageView
     android:id="@+id/image_view_for_data_binding"
+    android:importantForAccessibility="no"
     android:layout_width="32dp"
     android:layout_height="32dp"
     android:layout_gravity="center_horizontal"
