@@ -27,6 +27,12 @@ data class AndroidLocaleProfile(val languageCode: String, val regionCode: String
     }
   }
 
+  fun computeIetfLanguageTag(): String {
+    return if (regionCode.isNotEmpty()) {
+      "$languageCode-$regionCode"
+    } else languageCode
+  }
+
   companion object {
     /** A wildcard that will match against any region when provided. */
     const val REGION_WILDCARD = "*"
