@@ -177,21 +177,30 @@ class ImageViewBindingAdaptersTest {
 
   @Test
   fun setImageDrawableWithGlide() {
-    runOnUiThread(object : Runnable {
-      override fun run() {
-        val imageViewID = activityRule.scenario.runWithActivity {
-          var imageView = it.findViewById<ImageView>(R.id.imageView)
-          return@runWithActivity imageView;
-        }
-        ImageViewBindingAdapters.setImageDrawable(
-          imageViewID,
-          "https://images.unsplash.com/photo-1554080353-a576cf803bda?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGhvdG98ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
-        )
-        onView(withId(R.id.imageView))
-          .check(matches(isDisplayed()))
-      }
+    val imageViewID = activityRule.scenario.runWithActivity {
+      var imageView = it.findViewById<ImageView>(R.id.imageView)
+      return@runWithActivity imageView;
+    }
+    runOnUiThread {
+      ImageViewBindingAdapters.setImageDrawable(
+        imageViewID,
+        "https://images.unsplash.com/photo-1554080353-a576cf803bda?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGhvdG98ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+      )
+    }
+//    Thread.sleep(5000)
+    onView(withId(R.id.imageView))
+      .check(matches(isDisplayed()))
 
-    })
+    onView(isRoot()).perform(orientationLandscape())
+    runOnUiThread {
+      ImageViewBindingAdapters.setImageDrawable(
+        imageViewID,
+        "https://images.unsplash.com/photo-1554080353-a576cf803bda?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGhvdG98ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+      )
+    }
+//    Thread.sleep(5000)
+    onView(withId(R.id.imageView))
+      .check(matches(isDisplayed()))
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
