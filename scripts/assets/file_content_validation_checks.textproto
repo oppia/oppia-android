@@ -122,6 +122,7 @@ file_content_checks {
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/extensions/BundleExtensions.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/parser/html/CustomHtmlContentHandlerTest.kt"
   exempted_file_patterns: "app/src/test/.+?Test\\.kt"
   exempted_file_patterns: "app/src/sharedTest/.+?Test\\.kt"
   exempted_file_patterns: "scripts/.+"
