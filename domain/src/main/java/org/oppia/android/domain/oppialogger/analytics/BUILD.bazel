@@ -1,5 +1,5 @@
 """
-Package for providing logging analytics.
+Package for providing logging support for analytics events.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
