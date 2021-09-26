@@ -46,6 +46,21 @@ android {
   }
 }
 
+// See notice for the excluded files in domain/build.gradle for an explanation. Note that these
+// tests can't be built in Gradle since they depend on app layer dependencies & Gradle doesn't allow
+// a dependency between this & the app module since the latter is an Android application rather than
+// a library.
+def filesToExclude = [
+    '**/*InitializeDefaultLocaleRuleCustomContextTest*.kt',
+    '**/*InitializeDefaultLocaleRuleOmissionTest*.kt',
+    '**/*InitializeDefaultLocaleRuleTest*.kt',
+]
+tasks.withType(SourceTask.class).configureEach {
+  it.exclude(filesToExclude)
+}
+android.sourceSets.test.java.exclude(filesToExclude)
+android.sourceSets.test.kotlin.exclude(filesToExclude)
+
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
