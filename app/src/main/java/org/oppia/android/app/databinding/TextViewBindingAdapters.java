@@ -18,6 +18,8 @@ import org.oppia.android.util.system.OppiaClockInjectorProvider;
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
 
+  // TODO(#3846): Add tests for these adapters.
+
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {

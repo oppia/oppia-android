@@ -54,6 +54,7 @@ jobs:
         run: sudo ./gradlew --full-stacktrace assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
 
       - name: Utility tests
+        if: always()
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Utility Test Reports
@@ -64,6 +65,7 @@ jobs:
           path: utility/build/reports
 
       - name: Data tests
+        if: always()
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: sudo ./gradlew --full-stacktrace :data:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Data Test Reports
@@ -74,6 +76,7 @@ jobs:
           path: data/build/reports
 
       - name: Domain tests
+        if: always()
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Domain Test Reports
@@ -84,6 +87,7 @@ jobs:
           path: domain/build/reports
 
       - name: Testing tests
+        if: always()
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run:  sudo ./gradlew --full-stacktrace :testing:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload Testing Test Reports

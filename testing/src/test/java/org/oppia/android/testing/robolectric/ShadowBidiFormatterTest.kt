@@ -104,7 +104,7 @@ class ShadowBidiFormatterTest {
 
     val shadow = ShadowBidiFormatter.lookUpFormatter(Locale.US)
     assertThat(shadow?.getAllWrappedSequences())
-      .containsAllOf("test string one", "test string two").inOrder()
+      .containsAtLeast("test string one", "test string two").inOrder()
   }
 
   @Test
