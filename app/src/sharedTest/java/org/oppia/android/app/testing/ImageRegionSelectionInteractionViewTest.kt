@@ -91,6 +91,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.oppia.android.testing.OppiaTestRule
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -109,6 +111,9 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Captor
   lateinit var regionClickedEvent: ArgumentCaptor<RegionClickedEvent>
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Before
   fun setUp() {
