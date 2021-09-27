@@ -1,5 +1,6 @@
 package org.oppia.android.app.topic.practice
 
+import org.oppia.android.app.topic.questionplayer.QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -258,7 +259,7 @@ class TopicPracticeFragmentTest {
       scrollToPosition(position = 5)
       clickPracticeItem(position = 5, targetViewId = R.id.topic_practice_start_button)
       intended(hasComponent(QuestionPlayerActivity::class.java.name))
-      intended(hasExtra(QuestionPlayerActivity.getIntentKey(), skillIdList))
+      intended(hasExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList))
     }
   }
 

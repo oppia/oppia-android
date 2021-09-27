@@ -1,11 +1,15 @@
 package org.oppia.android.domain.classify.rules.textinput
 
 import android.app.Application
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +23,14 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 
 /** Tests for [TextInputFuzzyEqualsRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -59,6 +71,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
   @Before
   fun setUp() {
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
 
@@ -69,8 +82,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches =
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
@@ -82,8 +95,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches =
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
@@ -95,8 +108,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches =
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isFalse()
   }
@@ -108,8 +121,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches =
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_DIFF_UPPERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isFalse()
   }
@@ -121,8 +134,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches =
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_LOWERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
@@ -134,8 +147,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches =
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_LOWERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
@@ -147,8 +160,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches =
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_DIFF_LOWERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isFalse()
   }
@@ -160,8 +173,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches =
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_DIFF_LOWERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isFalse()
   }
@@ -172,8 +185,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
-      inputs = inputs
-    )
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
@@ -184,8 +197,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_WITH_WHITESPACE,
-      inputs = inputs
-    )
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
@@ -196,8 +209,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_THIS,
-      inputs = inputs
-    )
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
@@ -208,8 +221,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TEST,
-      inputs = inputs
-    )
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
@@ -220,8 +233,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TESTING,
-      inputs = inputs
-    )
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isFalse()
   }
@@ -233,8 +246,8 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
-        inputs = inputs
-      )
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -249,8 +262,21 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       .inject(this)
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+  }
+
   @Singleton
-  @Component(modules = [LocaleProdModule::class, FakeOppiaClockModule::class])
+  @Component(modules = [
+    LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
+    TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
+    TestLogReportingModule::class, AssetModule::class, RobolectricModule::class, TestModule::class
+  ])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

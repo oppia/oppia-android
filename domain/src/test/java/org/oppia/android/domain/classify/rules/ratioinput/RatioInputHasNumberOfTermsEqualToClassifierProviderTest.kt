@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -54,36 +55,36 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_3)
 
     val matches =
-      hasNumberOfTermsEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs
-      )
+            hasNumberOfTermsEqualToClassifierProvider.matches(
+                    answer = RATIO_VALUE_TEST_1_2_3,
+                    inputs = inputs,
+                    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
 
-  @Test
-  fun testAnswer_withThreeTerms_expectedFour_doesNotMatch() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_4)
+    @Test
+    fun testAnswer_withThreeTerms_expectedFour_doesNotMatch() {
+        val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_4)
 
-    val matches =
-      hasNumberOfTermsEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs
-      )
+        val matches =
+                hasNumberOfTermsEqualToClassifierProvider.matches(
+                        answer = RATIO_VALUE_TEST_1_2_3,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
   @Test
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("y" to RATIO_VALUE_TEST_1_2_3)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasNumberOfTermsEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs
-      )
+        hasNumberOfTermsEqualToClassifierProvider.matches(
+                answer = RATIO_VALUE_TEST_1_2_3,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -98,10 +99,10 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_4)
 
     val exception = assertThrows(IllegalStateException::class) {
-      hasNumberOfTermsEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs
-      )
+        hasNumberOfTermsEqualToClassifierProvider.matches(
+                answer = RATIO_VALUE_TEST_1_2_3,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)

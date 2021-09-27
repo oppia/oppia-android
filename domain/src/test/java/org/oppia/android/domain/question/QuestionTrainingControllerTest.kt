@@ -16,7 +16,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
@@ -63,6 +62,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Before
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.testing.data.DataProviderTestMonitor
 
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
@@ -86,38 +88,39 @@ class QuestionTrainingControllerTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
-
-  @Mock
   lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
-
-  @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any>>
 
   @Captor
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
+  // TODO(#3813): Migrate all tests in this suite to use this factory.
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private lateinit var profileId1: ProfileId
+
+  @Before
+  fun setUp() {
+    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+  }
+
   @Test
   fun testController_startTrainingSession_succeeds() {
     setUpTestApplicationComponent(questionSeed = 0)
-    val questionListLiveData =
+
+    val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+        profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
-    testCoroutineDispatchers.runCurrent()
 
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
   }
 
   @Test
   fun testController_startTrainingSession_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+      profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -136,24 +139,20 @@ class QuestionTrainingControllerTest {
   @Test
   fun testController_startTrainingSession_differentSeed_succeeds() {
     setUpTestApplicationComponent(questionSeed = 2)
-    val questionListLiveData =
+
+    val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+        profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
-    testCoroutineDispatchers.runCurrent()
 
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
   }
 
   @Test
   fun testController_startTrainingSession_differentSeed_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 2)
     questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+      profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -172,24 +171,20 @@ class QuestionTrainingControllerTest {
   @Test
   fun testController_startTrainingSession_differentSkills_succeeds() {
     setUpTestApplicationComponent(questionSeed = 0)
-    val questionListLiveData =
+
+    val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+        profileId1, listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
       )
-    testCoroutineDispatchers.runCurrent()
 
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
   }
 
   @Test
   fun testController_startTrainingSession_differentSkills_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+      profileId1, listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -208,22 +203,18 @@ class QuestionTrainingControllerTest {
   @Test
   fun testController_startTrainingSession_noSkills_fails() {
     setUpTestApplicationComponent(questionSeed = 0)
-    val questionListLiveData =
-      questionTrainingController.startQuestionTrainingSession(listOf())
-    testCoroutineDispatchers.runCurrent()
 
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val questionListDataProvider =
+      questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
 
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
+    monitorFactory.waitForNextFailureResult(questionListDataProvider)
   }
 
   @Test
   fun testController_startTrainingSession_noSkills_fails_logsException() {
     setUpTestApplicationComponent(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(listOf())
-    questionTrainingController.startQuestionTrainingSession(listOf())
+    questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
+    questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
     testCoroutineDispatchers.runCurrent()
 
     val exception = fakeExceptionLogger.getMostRecentException()

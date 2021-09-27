@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -44,77 +45,77 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-  @Test
-  fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_1)
+    @Test
+    fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SELECTION_1)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs
-    )
+        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SELECTION_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_16)
+    @Test
+    fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SELECTION_16)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs
-    )
+        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SELECTION_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_12)
+    @Test
+    fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SELECTION_12)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs
-    )
+        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SELECTION_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_126)
+    @Test
+    fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SELECTION_126)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs
-    )
+        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SELECTION_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_NONE)
+    @Test
+    fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
+        val inputs = mapOf("x" to ITEM_SELECTION_NONE)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs
-    )
+        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SELECTION_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_6)
+    @Test
+    fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
+        val inputs = mapOf("x" to ITEM_SELECTION_6)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs
-    )
+        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SELECTION_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
   private fun setUpTestApplicationComponent() {
     DaggerItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest_TestApplicationComponent

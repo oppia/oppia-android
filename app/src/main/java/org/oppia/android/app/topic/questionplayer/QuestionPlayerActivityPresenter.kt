@@ -12,6 +12,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
 private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_QUESTION_MANAGER"
@@ -92,9 +93,11 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
     val skillIds =
       activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
-    questionTrainingController.startQuestionTrainingSession(profileId, skillIds).observe(
+    val startDataProvider =
+      questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
+    startDataProvider.toLiveData().observe(
       activity,
-      Observer {
+      {
         when {
           it.isPending() -> oppiaLogger.d(
             "QuestionPlayerActivity",
@@ -118,9 +121,9 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
-    questionTrainingController.stopQuestionTrainingSession().observe(
+    questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
       activity,
-      Observer<AsyncResult<Any?>> {
+      {
         when {
           it.isPending() -> oppiaLogger.d(
             "QuestionPlayerActivity",

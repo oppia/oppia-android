@@ -12,6 +12,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.Point2d
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -42,45 +43,45 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
     imageClickInputIsInRegionClassifierProvider.createRuleClassifier()
   }
 
-  @Test
-  fun testAnswer_testClickOnImage_regionA_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(ITEM_REGION_A))
+    @Test
+    fun testAnswer_testClickOnImage_regionA_bothValuesMatch() {
+        val inputs = mapOf("x" to createString(ITEM_REGION_A))
 
-    val matches =
-      isInRegionClassifierProvider.matches(answer = IMAGE_REGION_ABC_POSITION_1, inputs = inputs)
+        val matches =
+                isInRegionClassifierProvider.matches(answer = IMAGE_REGION_ABC_POSITION_1, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testAnswer_testClickOnImage_regionC_bothValuesMatch() {
-    val inputs = mapOf("x" to createString(ITEM_REGION_C))
+    @Test
+    fun testAnswer_testClickOnImage_regionC_bothValuesMatch() {
+        val inputs = mapOf("x" to createString(ITEM_REGION_C))
 
-    val matches =
-      isInRegionClassifierProvider.matches(answer = IMAGE_REGION_ABC_POSITION_1, inputs = inputs)
+        val matches =
+                isInRegionClassifierProvider.matches(answer = IMAGE_REGION_ABC_POSITION_1, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testAnswer_testClickOnImage_regionD_bothValuesDoNoMatch() {
-    val inputs = mapOf("x" to createString(ITEM_REGION_D))
+    @Test
+    fun testAnswer_testClickOnImage_regionD_bothValuesDoNoMatch() {
+        val inputs = mapOf("x" to createString(ITEM_REGION_D))
 
-    val matches =
-      isInRegionClassifierProvider.matches(answer = IMAGE_REGION_ABC_POSITION_1, inputs = inputs)
+        val matches =
+                isInRegionClassifierProvider.matches(answer = IMAGE_REGION_ABC_POSITION_1, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
   @Test
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-      isInRegionClassifierProvider.matches(
-        answer = IMAGE_REGION_ABC_POSITION_1,
-        inputs = inputs
-      )
+        isInRegionClassifierProvider.matches(
+                answer = IMAGE_REGION_ABC_POSITION_1,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -95,10 +96,10 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
     val inputs = mapOf("y" to createString(ITEM_REGION_A))
 
     val exception = assertThrows(IllegalStateException::class) {
-      isInRegionClassifierProvider.matches(
-        answer = IMAGE_REGION_ABC_POSITION_1,
-        inputs = inputs
-      )
+        isInRegionClassifierProvider.matches(
+                answer = IMAGE_REGION_ABC_POSITION_1,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)

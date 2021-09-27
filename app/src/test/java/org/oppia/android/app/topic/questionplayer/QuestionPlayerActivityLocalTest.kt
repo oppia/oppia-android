@@ -1,5 +1,6 @@
 package org.oppia.android.app.topic.questionplayer
 
+import org.oppia.android.app.model.ProfileId
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -277,7 +278,7 @@ class QuestionPlayerActivityLocalTest {
   ): ActivityScenario<QuestionPlayerActivity> {
     return ActivityScenario.launch(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, skillIdList
+        context, skillIdList, ProfileId.getDefaultInstance()
       )
     )
   }

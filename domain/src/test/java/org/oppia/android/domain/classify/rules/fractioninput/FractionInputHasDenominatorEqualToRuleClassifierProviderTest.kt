@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -67,63 +68,63 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_1)
 
     val matches =
-      denominatorIsEqualClassifierProvider.matches(
-        answer = WHOLE_NUMBER_VALUE_TEST_123,
-        inputs = inputs
-      )
+            denominatorIsEqualClassifierProvider.matches(
+                    answer = WHOLE_NUMBER_VALUE_TEST_123,
+                    inputs = inputs,
+                    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     // This should match because whole numbers have a denominator of 1 by default
     assertThat(matches).isTrue()
   }
 
-  @Test
-  fun testDenominatorEquals_wholeNumber123Answer_withInt2Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_2)
+    @Test
+    fun testDenominatorEquals_wholeNumber123Answer_withInt2Input_bothValuesDoNotMatch() {
+        val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_2)
 
-    val matches =
-      denominatorIsEqualClassifierProvider.matches(
-        answer = WHOLE_NUMBER_VALUE_TEST_123,
-        inputs = inputs
-      )
+        val matches =
+                denominatorIsEqualClassifierProvider.matches(
+                        answer = WHOLE_NUMBER_VALUE_TEST_123,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testDenominatorEquals_fraction2Over4Answer_withInt1Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_1)
+    @Test
+    fun testDenominatorEquals_fraction2Over4Answer_withInt1Input_bothValuesDoNotMatch() {
+        val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_1)
 
-    val matches =
-      denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
-      )
+        val matches =
+                denominatorIsEqualClassifierProvider.matches(
+                        answer = FRACTION_VALUE_TEST_2_OVER_4,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testDenominatorEquals_fraction1Over2Answer_withInt2Input_bothValuesMatch() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_2)
+    @Test
+    fun testDenominatorEquals_fraction1Over2Answer_withInt2Input_bothValuesMatch() {
+        val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_2)
 
-    val matches =
-      denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_1_OVER_2,
-        inputs = inputs
-      )
+        val matches =
+                denominatorIsEqualClassifierProvider.matches(
+                        answer = FRACTION_VALUE_TEST_1_OVER_2,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
   @Test
   fun testDenominatorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to FRACTION_VALUE_TEST_2_OVER_4)
 
     val exception = assertThrows(IllegalStateException::class) {
-      denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
-      )
+        denominatorIsEqualClassifierProvider.matches(
+                answer = FRACTION_VALUE_TEST_2_OVER_4,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -138,10 +139,10 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_1)
 
     val exception = assertThrows(IllegalStateException::class) {
-      denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
-      )
+        denominatorIsEqualClassifierProvider.matches(
+                answer = FRACTION_VALUE_TEST_2_OVER_4,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)

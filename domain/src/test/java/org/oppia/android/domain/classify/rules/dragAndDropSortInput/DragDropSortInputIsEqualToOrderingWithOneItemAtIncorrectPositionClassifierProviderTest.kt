@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.RuleClassifier
@@ -69,10 +70,10 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = LIST_OF_SETS_12_4_5,
-        inputs = inputs
-      )
+        isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+                answer = LIST_OF_SETS_12_4_5,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -82,67 +83,67 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       )
   }
 
-  @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_sameValue_bothValuesMatch_failsCorrectly() {
-    val inputs = mapOf("x" to LIST_OF_SETS_12_4_5)
+    @Test
+    fun testAnswer_testLisOfSetsOfHtmlString_sameValue_bothValuesMatch_failsCorrectly() {
+        val inputs = mapOf("x" to LIST_OF_SETS_12_4_5)
 
-    val matches =
-      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = LIST_OF_SETS_12_4_5,
-        inputs = inputs
-      )
+        val matches =
+                isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+                        answer = LIST_OF_SETS_12_4_5,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to LIST_OF_SETS_12_4_5)
+    @Test
+    fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_bothValuesDoNotMatch() {
+        val inputs = mapOf("x" to LIST_OF_SETS_12_4_5)
 
-    val matches =
-      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = LIST_OF_SETS_1_4_5,
-        inputs = inputs
-      )
+        val matches =
+                isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+                        answer = LIST_OF_SETS_1_4_5,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_differentOrder_bothValuesDoNotMatch_failsCorrectly() { // ktlint-disable max-line-length
-    val inputs = mapOf("x" to LIST_OF_SETS_4_5_12)
+    @Test
+    fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_differentOrder_bothValuesDoNotMatch_failsCorrectly() { // ktlint-disable max-line-length
+        val inputs = mapOf("x" to LIST_OF_SETS_4_5_12)
 
-    val matches =
-      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = LIST_OF_SETS_1_4_5,
-        inputs = inputs
-      )
+        val matches =
+                isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+                        answer = LIST_OF_SETS_1_4_5,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_differByTwoElements_bothValuesDoNotMatch_failsCorrectly() { // ktlint-disable max-line-length
-    val inputs = mapOf("x" to LIST_OF_SETS_123_4_5)
+    @Test
+    fun testAnswer_testLisOfSetsOfHtmlString_differByTwoElements_bothValuesDoNotMatch_failsCorrectly() { // ktlint-disable max-line-length
+        val inputs = mapOf("x" to LIST_OF_SETS_123_4_5)
 
-    val matches =
-      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = LIST_OF_SETS_1_4_5,
-        inputs = inputs
-      )
+        val matches =
+                isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+                        answer = LIST_OF_SETS_1_4_5,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
     val inputs = mapOf("y" to LIST_OF_SETS_12_4_5)
 
     val exception = assertThrows(IllegalStateException::class) {
-      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = LIST_OF_SETS_12_4_5,
-        inputs = inputs
-      )
+        isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+                answer = LIST_OF_SETS_12_4_5,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)

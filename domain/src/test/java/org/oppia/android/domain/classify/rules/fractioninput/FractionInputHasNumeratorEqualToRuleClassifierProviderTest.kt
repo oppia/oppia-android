@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -75,75 +76,75 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
 
     val matches =
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_NEGATIVE_2_OVER_4,
-        inputs = inputs
-      )
+            numeratorIsEqualClassifierProvider.matches(
+                    answer = FRACTION_VALUE_TEST_NEGATIVE_2_OVER_4,
+                    inputs = inputs,
+                    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
 
-  @Test
-  fun testNumeratorEquals_wholeNumber123Answer_withSignedInt1Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_1)
+    @Test
+    fun testNumeratorEquals_wholeNumber123Answer_withSignedInt1Input_bothValuesDoNotMatch() {
+        val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_1)
 
-    val matches =
-      numeratorIsEqualClassifierProvider.matches(
-        answer = WHOLE_NUMBER_VALUE_TEST_123,
-        inputs = inputs
-      )
+        val matches =
+                numeratorIsEqualClassifierProvider.matches(
+                        answer = WHOLE_NUMBER_VALUE_TEST_123,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testNumeratorEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_1)
+    @Test
+    fun testNumeratorEquals_fraction2Over4Answer_withSignedInt1Input_bothValuesDoNotMatch() {
+        val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_1)
 
-    val matches =
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
-      )
+        val matches =
+                numeratorIsEqualClassifierProvider.matches(
+                        answer = FRACTION_VALUE_TEST_2_OVER_4,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testNumeratorEquals_fraction2Over4Answer_withSignedIntNegative2Input_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
+    @Test
+    fun testNumeratorEquals_fraction2Over4Answer_withSignedIntNegative2Input_bothValuesDoNotMatch() {
+        val inputs = mapOf("x" to SIGNED_INT_NEGATIVE_VALUE_TEST_2)
 
-    val matches =
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
-      )
+        val matches =
+                numeratorIsEqualClassifierProvider.matches(
+                        answer = FRACTION_VALUE_TEST_2_OVER_4,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testNumeratorEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
-    val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_2)
+    @Test
+    fun testNumeratorEquals_fraction2Over4Answer_withSignedInt2Input_bothValuesMatch() {
+        val inputs = mapOf("x" to SIGNED_INT_VALUE_TEST_2)
 
-    val matches =
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
-      )
+        val matches =
+                numeratorIsEqualClassifierProvider.matches(
+                        answer = FRACTION_VALUE_TEST_2_OVER_4,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
   @Test
   fun testNumeratorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
-      )
+        numeratorIsEqualClassifierProvider.matches(
+                answer = FRACTION_VALUE_TEST_2_OVER_4,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -158,10 +159,10 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_4)
 
     val exception = assertThrows(IllegalStateException::class) {
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
-      )
+        numeratorIsEqualClassifierProvider.matches(
+                answer = FRACTION_VALUE_TEST_2_OVER_4,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)

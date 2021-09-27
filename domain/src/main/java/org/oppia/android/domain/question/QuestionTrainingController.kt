@@ -1,23 +1,23 @@
 package org.oppia.android.domain.question
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.random.Random
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.random.Random
 
 private const val RETRIEVE_QUESTION_FOR_SKILLS_ID_PROVIDER_ID =
   "retrieve_question_for_skills_id_provider_id"
-private const val START_QUESTION_TRAINING_SESSION_PROVIDER_ID = "" +
+private const val START_QUESTION_TRAINING_SESSION_PROVIDER_ID =
   "start_question_training_session_provider_id"
+private const val STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID =
+  "stop_question_training_session_provider_id"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
@@ -25,6 +25,7 @@ class QuestionTrainingController @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val topicController: TopicController,
   private val exceptionsController: ExceptionsController,
+  private val dataProviders: DataProviders,
   @QuestionCountPerTrainingSession private val questionCountPerSession: Int,
   @QuestionTrainingSeed private val questionTrainingSeed: Long
 ) {
@@ -46,20 +47,19 @@ class QuestionTrainingController @Inject constructor(
   fun startQuestionTrainingSession(
     profileId: ProfileId,
     skillIdsList: List<String>
-  ): LiveData<AsyncResult<Any>> {
+  ): DataProvider<Any> {
     return try {
-      val retrieveQuestionsDataProvider =
-        retrieveQuestionsForSkillIds(skillIdsList)
+      val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
       questionAssessmentProgressController.beginQuestionTrainingSession(
         retrieveQuestionsDataProvider, profileId
       )
       // Convert the data provider type to 'Any' via a transformation.
-      val erasedDataProvider: DataProvider<Any> = retrieveQuestionsDataProvider
-        .transform(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) { it }
-      erasedDataProvider.toLiveData()
+      retrieveQuestionsDataProvider.transform(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) { it }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      MutableLiveData(AsyncResult.failed(e))
+      dataProviders.createInMemoryDataProviderAsync(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) {
+        AsyncResult.failed(e)
+      }
     }
   }
 
@@ -112,13 +112,15 @@ class QuestionTrainingController @Inject constructor(
    * method should only be called if there is a training session is being played, otherwise an
    * exception will be thrown.
    */
-  fun stopQuestionTrainingSession(): LiveData<AsyncResult<Any?>> {
+  fun stopQuestionTrainingSession(): DataProvider<Any> {
     return try {
       questionAssessmentProgressController.finishQuestionTrainingSession()
-      MutableLiveData(AsyncResult.success<Any?>(null))
+      dataProviders.createInMemoryDataProvider(STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID) { }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      MutableLiveData(AsyncResult.failed(e))
+      dataProviders.createInMemoryDataProviderAsync(STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID) {
+        AsyncResult.failed(e)
+      }
     }
   }
 }

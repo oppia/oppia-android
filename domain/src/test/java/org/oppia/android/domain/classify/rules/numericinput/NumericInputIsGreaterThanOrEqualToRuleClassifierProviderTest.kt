@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -59,118 +60,118 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
     val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
     val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+            inputIsGreaterThanOrEqualToRuleClassifier
+                    .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
 
-  @Test
-  fun testNegativeRealAnswer_negativeRealInput_sameExactValues_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+    @Test
+    fun testNegativeRealAnswer_negativeRealInput_sameExactValues_answerGreaterOrEqual() {
+        val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testPositiveRealAnswer_positiveRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
+    @Test
+    fun testPositiveRealAnswer_positiveRealInput_answerValueGreater_answerGreaterOrEqual() {
+        val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testPositiveRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
+    @Test
+    fun testPositiveRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
+        val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testNegativeRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_3_5)
+    @Test
+    fun testNegativeRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
+        val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_3_5)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testNegativeRealAnswer_negativeRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+    @Test
+    fun testNegativeRealAnswer_negativeRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
+        val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testNegativeRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
+    @Test
+    fun testNegativeRealAnswer_positiveRealInput_answerValueSmaller_answerNotGreaterOrEqual() {
+        val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testPositiveRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+    @Test
+    fun testPositiveRealAnswer_negativeRealInput_answerValueGreater_answerGreaterOrEqual() {
+        val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testPositiveIntAnswer_negativeIntInput_answerValueGreater_answerGreaterOrEqual() {
-    val inputs = mapOf("x" to NEGATIVE_INT_VALUE_3)
+    @Test
+    fun testPositiveIntAnswer_negativeIntInput_answerValueGreater_answerGreaterOrEqual() {
+        val inputs = mapOf("x" to NEGATIVE_INT_VALUE_3)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testNegativeIntAnswer_positiveIntInput_answerValueSmaller_answerNotGreaterOrEqual() {
-    val inputs = mapOf("x" to POSITIVE_INT_VALUE_3)
+    @Test
+    fun testNegativeIntAnswer_positiveIntInput_answerValueSmaller_answerNotGreaterOrEqual() {
+        val inputs = mapOf("x" to POSITIVE_INT_VALUE_3)
 
-    val matches =
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = NEGATIVE_INT_VALUE_1, inputs = inputs)
+        val matches =
+                inputIsGreaterThanOrEqualToRuleClassifier
+                        .matches(answer = NEGATIVE_INT_VALUE_1, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
   @Test
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+        inputIsGreaterThanOrEqualToRuleClassifier
+                .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -183,8 +184,8 @@ class NumericInputIsGreaterThanOrEqualToRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsGreaterThanOrEqualToRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+        inputIsGreaterThanOrEqualToRuleClassifier
+                .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)

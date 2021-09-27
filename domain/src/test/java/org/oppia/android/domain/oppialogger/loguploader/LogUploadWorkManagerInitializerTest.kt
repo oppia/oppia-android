@@ -44,6 +44,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -164,20 +167,6 @@ class LogUploadWorkManagerInitializerTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   @Module
@@ -206,7 +195,8 @@ class LogUploadWorkManagerInitializerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class
+      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
+      LoggerModule::class, AssetModule::class, LoggerModule::class
     ]
   )
   interface TestApplicationComponent {

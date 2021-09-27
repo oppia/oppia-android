@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -101,78 +102,78 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
     val matches =
-      unitsIsEqualsRuleClassifier.matches(
-        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
-      )
+            unitsIsEqualsRuleClassifier.matches(
+                    answer = ANSWER_TEST_NUMBER_WITH_UNITS,
+                    inputs = inputs,
+                    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
     assertThat(matches).isTrue()
   }
 
-  @Test
-  fun testDifferentFractionWithUnits_withRealAnswerNumberWithUnits_bothDoNotMatch() {
-    val inputs = mapOf("f" to TEST_DIFFERENT_NUMBERS_WITH_UNITS)
+    @Test
+    fun testDifferentFractionWithUnits_withRealAnswerNumberWithUnits_bothDoNotMatch() {
+        val inputs = mapOf("f" to TEST_DIFFERENT_NUMBERS_WITH_UNITS)
 
-    val matches =
-      unitsIsEqualsRuleClassifier.matches(
-        answer = TEST_REAL_INPUT_NUMBER_WITH_UNITS,
-        inputs = inputs
-      )
+        val matches =
+                unitsIsEqualsRuleClassifier.matches(
+                        answer = TEST_REAL_INPUT_NUMBER_WITH_UNITS,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testFractionNumberWithUnits_withFractionNumberWithUnits_bothValuesMatches() {
-    val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
+    @Test
+    fun testFractionNumberWithUnits_withFractionNumberWithUnits_bothValuesMatches() {
+        val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
-    val matches =
-      unitsIsEqualsRuleClassifier.matches(
-        answer = INPUT_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
-      )
+        val matches =
+                unitsIsEqualsRuleClassifier.matches(
+                        answer = INPUT_TEST_NUMBER_WITH_UNITS,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testFractionInputNumberWithUnits_withSameFractionInputNumberWithUnits_bothValueMatch() {
-    val inputs = mapOf("f" to ANSWER_TEST_NUMBER_WITH_UNITS)
+    @Test
+    fun testFractionInputNumberWithUnits_withSameFractionInputNumberWithUnits_bothValueMatch() {
+        val inputs = mapOf("f" to ANSWER_TEST_NUMBER_WITH_UNITS)
 
-    val matches =
-      unitsIsEqualsRuleClassifier.matches(
-        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
-      )
+        val matches =
+                unitsIsEqualsRuleClassifier.matches(
+                        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testDifferentFractionWithUnitsInput_withFractionAnswerWithUnits_bothValueMatch() {
-    val inputs = mapOf("f" to TEST_DIFFERENT_NUMBERS_WITH_UNITS)
+    @Test
+    fun testDifferentFractionWithUnitsInput_withFractionAnswerWithUnits_bothValueMatch() {
+        val inputs = mapOf("f" to TEST_DIFFERENT_NUMBERS_WITH_UNITS)
 
-    val matches =
-      unitsIsEqualsRuleClassifier.matches(
-        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
-      )
+        val matches =
+                unitsIsEqualsRuleClassifier.matches(
+                        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testInputRealNumbersWithUnits_withRealAnswerNumberWithUnits_bothValueMatch() {
-    val inputs = mapOf("f" to TEST_REAL_INPUT_NUMBER_WITH_UNITS)
+    @Test
+    fun testInputRealNumbersWithUnits_withRealAnswerNumberWithUnits_bothValueMatch() {
+        val inputs = mapOf("f" to TEST_REAL_INPUT_NUMBER_WITH_UNITS)
 
-    val matches =
-      unitsIsEqualsRuleClassifier.matches(
-        answer = TEST_REAL_ANSWER_NUMBER_WITH_UNITS,
-        inputs = inputs
-      )
+        val matches =
+                unitsIsEqualsRuleClassifier.matches(
+                        answer = TEST_REAL_ANSWER_NUMBER_WITH_UNITS,
+                        inputs = inputs,
+                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
   @Test
   fun testWholeNumberInputValue_withRealAnswerNumWithUnits_throwsException() {
@@ -180,10 +181,10 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
 
     val exception = assertThrows(IllegalStateException::class) {
 
-      unitsIsEqualsRuleClassifier.matches(
-        answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
-        inputs = inputs
-      )
+        unitsIsEqualsRuleClassifier.matches(
+                answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)

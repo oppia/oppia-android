@@ -1,5 +1,6 @@
 package org.oppia.android.app.topic.questionplayer
 
+import org.oppia.android.app.model.ProfileId
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -201,7 +202,8 @@ class QuestionPlayerActivityTest {
   private fun createQuestionPlayerActivityIntent(): Intent {
     return QuestionPlayerActivity.createQuestionPlayerActivityIntent(
       context,
-      ArrayList(SKILL_ID_LIST)
+      ArrayList(SKILL_ID_LIST),
+      ProfileId.getDefaultInstance()
     )
   }
 
@@ -359,7 +361,7 @@ class QuestionPlayerActivityTest {
   ): ActivityScenario<QuestionPlayerActivity> {
     val scenario = ActivityScenario.launch<QuestionPlayerActivity>(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, ArrayList(skillIdList)
+        context, ArrayList(skillIdList), ProfileId.getDefaultInstance()
       )
     )
     testCoroutineDispatchers.runCurrent()

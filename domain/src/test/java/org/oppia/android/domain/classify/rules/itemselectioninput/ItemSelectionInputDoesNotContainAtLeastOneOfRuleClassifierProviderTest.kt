@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.oppia.android.testing.assertThrows
@@ -47,111 +48,111 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-  @Test
-  fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_1)
+    @Test
+    fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SET_1)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs
-    )
+        val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_16)
+    @Test
+    fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SET_16)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs
-    )
+        val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_12)
+    @Test
+    fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SET_12)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs
-    )
+        val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_126)
+    @Test
+    fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SET_126)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs
-    )
+        val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SET_EMPTY)
+    @Test
+    fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
+        val inputs = mapOf("x" to ITEM_SET_EMPTY)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs
-    )
+        val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SET_6)
+    @Test
+    fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
+        val inputs = mapOf("x" to ITEM_SET_6)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs
-    )
+        val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testItemSet_setAnswerIsEmpty_inputIsNonEmpty_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SET_12345)
+    @Test
+    fun testItemSet_setAnswerIsEmpty_inputIsNonEmpty_answerDoesNotContainInput() {
+        val inputs = mapOf("x" to ITEM_SET_12345)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_EMPTY,
-      inputs = inputs
-    )
+        val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_EMPTY,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isTrue()
-  }
+        assertThat(matches).isTrue()
+    }
 
-  @Test
-  fun testItemSet_setAnswer_inputIsASuperset_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_12345)
+    @Test
+    fun testItemSet_setAnswer_inputIsASuperset_answerContainsInput() {
+        val inputs = mapOf("x" to ITEM_SET_12345)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12,
-      inputs = inputs
-    )
+        val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
 
-    assertThat(matches).isFalse()
-  }
+        assertThat(matches).isFalse()
+    }
 
   @Test
   fun testItemSet_inputIsMissing_throwsException() {
     val inputs = mapOf("y" to ITEM_SET_1)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = ITEM_SET_12345,
-        inputs = inputs
-      )
+        inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -164,10 +165,10 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val inputs = mapOf("x" to DIFFERENT_INTERACTION_OBJECT_TYPE)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = ITEM_SET_12345,
-        inputs = inputs
-      )
+        inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = ITEM_SET_12345,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
@@ -180,10 +181,10 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
     val inputs = mapOf("x" to ITEM_SET_12345)
 
     val exception = assertThrows(IllegalStateException::class) {
-      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = DIFFERENT_INTERACTION_OBJECT_TYPE,
-        inputs = inputs
-      )
+        inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+                answer = DIFFERENT_INTERACTION_OBJECT_TYPE,
+                inputs = inputs,
+                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
     }
 
     assertThat(exception)
