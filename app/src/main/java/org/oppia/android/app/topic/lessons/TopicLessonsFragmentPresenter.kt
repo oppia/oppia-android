@@ -250,9 +250,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                 explorationCheckpoint = it.getOrThrow()
               )
             } else if (it.isFailure()) {
-              oppiaLogger.e(
-                "TopicLessonsFragment", "Failed to retrieve checkpoint", it.getErrorOrNull()
-              )
               explorationCheckpointLiveData.removeObserver(this)
               playExploration(
                 internalProfileId,

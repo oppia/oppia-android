@@ -27,6 +27,11 @@ data class AndroidLocaleProfile(val languageCode: String, val regionCode: String
     }
   }
 
+  /**
+   * Returns an IETF BCP 47-esque language tag that represents this locale profile. For profiles
+   * that have valid IETF BCP 47 language & region codes, the returned tag should be a valid IETF
+   * BCP 47 language tag.
+   */
   fun computeIetfLanguageTag(): String {
     return if (regionCode.isNotEmpty()) {
       "$languageCode-$regionCode"

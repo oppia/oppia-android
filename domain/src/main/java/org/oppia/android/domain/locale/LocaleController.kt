@@ -275,15 +275,13 @@ class LocaleController @Inject constructor(
     // Also, this only matches against the first locale. In the future, some effort could be made to
     // try and pick the best matching system locale (per the user's preferences) rather than the
     // "first or nothing" currently implemented here.
-    return if (!locales.isEmpty) {
-      locales[0]
-    } else {
+    return if (locales.isEmpty) {
       oppiaLogger.e(
         "LocaleController",
         "No locales defined for application context. Defaulting to default Locale."
       )
       Locale.getDefault()
-    }
+    } else locales[0]
   }
 
   @Suppress("DEPRECATION") // Old API is needed for SDK versions < N.

@@ -258,6 +258,10 @@ class TranslationController @Inject constructor(
     return context.translationsMap[unicode.contentId]?.extractHtml() ?: unicode.unicodeStr
   }
 
+  /**
+   * Returns a potentially translated list of strings extracted from the provided
+   * [TranslatableSetOfNormalizedString] based on the provided [WrittenTranslationContext].
+   */
   fun extractStringList(
     translatableSetOfNormalizedString: TranslatableSetOfNormalizedString,
     context: WrittenTranslationContext
@@ -266,6 +270,13 @@ class TranslationController @Inject constructor(
       ?: translatableSetOfNormalizedString.normalizedStringsList
   }
 
+  /**
+   * Returns a new [WrittenTranslationContext] based on the specific written translation map and
+   * [OppiaLocale.ContentLocale] to translate content strings into.
+   *
+   * The returned context is meant to be used to translate content-specific strings using
+   * [extractString] and [extractStringList].
+   */
   fun computeWrittenTranslationContext(
     writtenTranslationsMap: Map<String, TranslationMapping>,
     writtenTranslationContentLocale: OppiaLocale.ContentLocale
