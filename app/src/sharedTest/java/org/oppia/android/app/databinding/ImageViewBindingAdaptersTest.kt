@@ -4,7 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.ImageView
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.test.core.app.ActivityScenario
@@ -107,7 +109,6 @@ class ImageViewBindingAdaptersTest {
 
   @Before
   fun setUp() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     setUpTestApplicationComponent()
     Intents.init()
   }
@@ -158,6 +159,12 @@ class ImageViewBindingAdaptersTest {
       ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
     )
     verifyIfDrawableMatches(R.drawable.circular_stroke_1dp_grey_32dp)
+  }
+
+  private inline fun <A : Activity, reified V : View> ActivityScenario<A>.findViewById(
+    @IdRes viewResId: Int
+  ): V {
+    return runWithActivity { it.findViewById(viewResId) }
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
