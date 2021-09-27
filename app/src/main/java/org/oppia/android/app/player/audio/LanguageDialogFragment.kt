@@ -6,10 +6,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import org.oppia.android.R
-import java.util.Locale
-import kotlin.collections.ArrayList
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import java.util.Locale
+import kotlin.collections.ArrayList
 
 private const val LANGUAGE_LIST_ARGUMENT_KEY = "LanguageDialogFragment.language_list"
 private const val SELECTED_INDEX_ARGUMENT_KEY = "LanguageDialogFragment.selected_index"
@@ -44,7 +44,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
   }
-  
+
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val args = checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
 

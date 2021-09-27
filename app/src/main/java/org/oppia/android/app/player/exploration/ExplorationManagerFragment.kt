@@ -2,9 +2,9 @@ package org.oppia.android.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /**
  * ManagerFragment of [ExplorationFragment] that observes data provider that retrieve default story

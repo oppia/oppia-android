@@ -29,7 +29,9 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider
   }
 
   override fun matches(
-    answer: Fraction, input: Fraction, writtenTranslationContext: WrittenTranslationContext
+    answer: Fraction,
+    input: Fraction,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     return answer.numerator == input.numerator && answer.denominator == input.denominator
   }

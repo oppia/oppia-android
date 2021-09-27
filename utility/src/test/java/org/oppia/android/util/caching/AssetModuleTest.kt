@@ -1,4 +1,4 @@
-package org.oppia.android.util.system
+package org.oppia.android.util.caching
 
 import android.app.Application
 import android.content.Context
@@ -12,64 +12,44 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// Time: Wed Apr 24 2019 08:22:00
-private const val MORNING_TIMESTAMP = 1556094120000
-// Time: Formatted time for 1556094120000 timestamp
-private const val MORNING_FORMATTED_TIME = "24 April 2019"
-private const val MILLISECONDS = 1586774460000
-private const val TIMESTAMP_IN_SECONDS = 1586774460L
-
-/** Tests for [OppiaDateTimeFormatter]. */
+/** Tests for [AssetModule]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class OppiaDateTimeFormatterTest {
-
-  // TODO: convert to tests for TextViewBindingAdapters?
-
+class AssetModuleTest {
   @Inject
-  lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
+  lateinit var assetRepository: AssetRepository
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
+  @Test
+  fun testModule_injectsProductionImplementationOfAssetRepository() {
+    assertThat(assetRepository).isInstanceOf(AssetRepositoryImpl::class.java)
+  }
+
   private fun setUpTestApplicationComponent() {
-    DaggerOppiaDateTimeFormatterTest_TestApplicationComponent.builder()
+    DaggerAssetModuleTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
   }
 
-  @Test
-  fun testFormatDateFromDateString_successFormatToString() {
-    assertThat(
-      oppiaDateTimeFormatter.formatDateFromDateString(
-        OppiaDateTimeFormatter.DD_MMM_YYYY,
-        MORNING_TIMESTAMP
-      )
-    ).isEqualTo(MORNING_FORMATTED_TIME)
-  }
-
-  @Test
-  fun testCheckAndConvertTimestampToMilliseconds_successConvertedToMilliseconds() {
-    assertThat(
-      oppiaDateTimeFormatter.checkAndConvertTimestampToMilliseconds(
-        TIMESTAMP_IN_SECONDS
-      )
-    ).isEqualTo(MILLISECONDS)
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -79,7 +59,12 @@ class OppiaDateTimeFormatterTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(
+    modules = [
+      TestModule::class, AssetModule::class, LoggerModule::class, TestDispatcherModule::class,
+      RobolectricModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -89,6 +74,6 @@ class OppiaDateTimeFormatterTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(oppiaTimeFormatterTest: OppiaDateTimeFormatterTest)
+    fun inject(assetModuleTest: AssetModuleTest)
   }
 }

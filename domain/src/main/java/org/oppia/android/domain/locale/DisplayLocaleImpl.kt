@@ -2,28 +2,27 @@ package org.oppia.android.domain.locale
 
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
-import android.text.BidiFormatter
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.core.text.TextUtilsCompat
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.util.locale.OppiaBidiFormatter
+import org.oppia.android.util.locale.OppiaLocale
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.Objects
-import org.oppia.android.app.model.LanguageSupportDefinition
-import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
-import org.oppia.android.app.model.OppiaLocaleContext
-import org.oppia.android.app.model.RegionSupportDefinition
-import org.oppia.android.util.locale.OppiaLocale
 
 // TODO(#3766): Restrict to be 'internal'.
+/** Implementation of [OppiaLocale.DisplayLocale]. */
 class DisplayLocaleImpl(
   localeContext: OppiaLocaleContext,
   private val machineLocale: MachineLocale,
-  private val androidLocaleFactory: AndroidLocaleFactory
-): OppiaLocale.DisplayLocale(localeContext) {
+  private val androidLocaleFactory: AndroidLocaleFactory,
+  private val formatterFactory: OppiaBidiFormatter.Factory
+) : OppiaLocale.DisplayLocale(localeContext) {
   // TODO(#3766): Restrict to be 'internal'.
+  /** The [Locale] used for user-facing string formatting in this display locale. */
   val formattingLocale: Locale by lazy { androidLocaleFactory.createAndroidLocale(localeContext) }
   private val dateFormat by lazy {
     DateFormat.getDateInstance(DATE_FORMAT_LENGTH, formattingLocale)
@@ -34,9 +33,15 @@ class DisplayLocaleImpl(
   private val dateTimeFormat by lazy {
     DateFormat.getDateTimeInstance(DATE_FORMAT_LENGTH, TIME_FORMAT_LENGTH, formattingLocale)
   }
-  private val bidiFormatter by lazy { BidiFormatter.getInstance(formattingLocale) }
+  private val bidiFormatter by lazy { formatterFactory.createFormatter(formattingLocale) }
 
   // TODO(#3766): Restrict to be 'internal'.
+  /**
+   * Updates the specified [Configuration] to reference the formatting locale backing this display
+   * locale. Note that this may not be sufficient for actually updating the configuration--it may
+   * need to be done during activity initialization and in some cases an activity recreation may be
+   * necessary.
+   */
   fun setAsDefault(configuration: Configuration) {
     configuration.setLocale(formattingLocale)
   }
@@ -54,17 +59,28 @@ class DisplayLocaleImpl(
     return TextUtilsCompat.getLayoutDirectionFromLocale(formattingLocale)
   }
 
-  override fun String.formatInLocale(vararg args: Any?): String =
-    format(formattingLocale, *args.map { arg ->
-      if (arg is CharSequence) bidiFormatter.unicodeWrap(arg) else arg
-    }.toTypedArray())
+  override fun String.formatInLocaleWithWrapping(vararg args: CharSequence): String {
+    return formatInLocaleWithoutWrapping(
+      *args.map { arg -> bidiFormatter.wrapText(arg) }.toTypedArray()
+    )
+  }
+
+  override fun String.formatInLocaleWithoutWrapping(vararg args: CharSequence): String =
+    format(formattingLocale, *args)
 
   override fun String.capitalizeForHumans(): String = capitalize(formattingLocale)
 
   override fun Resources.getStringInLocale(@StringRes id: Int): String = getString(id)
 
-  override fun Resources.getStringInLocale(@StringRes id: Int, vararg formatArgs: Any?): String =
-    getStringInLocale(id).formatInLocale(*formatArgs)
+  override fun Resources.getStringInLocaleWithWrapping(
+    id: Int,
+    vararg formatArgs: CharSequence
+  ): String = getStringInLocale(id).formatInLocaleWithWrapping(*formatArgs)
+
+  override fun Resources.getStringInLocaleWithoutWrapping(
+    id: Int,
+    vararg formatArgs: CharSequence
+  ): String = getStringInLocale(id).formatInLocaleWithoutWrapping(*formatArgs)
 
   override fun Resources.getStringArrayInLocale(@ArrayRes id: Int): List<String> =
     getStringArray(id).toList()
@@ -72,9 +88,17 @@ class DisplayLocaleImpl(
   override fun Resources.getQuantityStringInLocale(id: Int, quantity: Int): String =
     getQuantityTextInLocale(id, quantity).toString()
 
-  override fun Resources.getQuantityStringInLocale(
-    id: Int, quantity: Int, vararg formatArgs: Any?
-  ): String = getQuantityStringInLocale(id, quantity).formatInLocale(*formatArgs)
+  override fun Resources.getQuantityStringInLocaleWithWrapping(
+    id: Int,
+    quantity: Int,
+    vararg formatArgs: CharSequence
+  ): String = getQuantityStringInLocale(id, quantity).formatInLocaleWithWrapping(*formatArgs)
+
+  override fun Resources.getQuantityStringInLocaleWithoutWrapping(
+    id: Int,
+    quantity: Int,
+    vararg formatArgs: CharSequence
+  ): String = getQuantityStringInLocale(id, quantity).formatInLocaleWithoutWrapping(*formatArgs)
 
   override fun Resources.getQuantityTextInLocale(id: Int, quantity: Int): CharSequence =
     getQuantityText(id, quantity)

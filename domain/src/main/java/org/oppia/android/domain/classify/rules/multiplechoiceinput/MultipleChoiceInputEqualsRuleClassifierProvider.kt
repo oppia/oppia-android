@@ -27,6 +27,8 @@ class MultipleChoiceInputEqualsRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-    answer: Int, input: Int, writtenTranslationContext: WrittenTranslationContext
+    answer: Int,
+    input: Int,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean = answer == input
 }

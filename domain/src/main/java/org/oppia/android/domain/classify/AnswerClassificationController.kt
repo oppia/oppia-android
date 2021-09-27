@@ -4,8 +4,8 @@ import org.oppia.android.app.model.AnswerGroup
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.Outcome
-import javax.inject.Inject
 import org.oppia.android.app.model.WrittenTranslationContext
+import javax.inject.Inject
 
 // TODO(#59): Restrict the visibility of this class to only other controllers.
 /**

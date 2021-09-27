@@ -19,7 +19,6 @@ import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
 import kotlin.reflect.KClass
-import org.oppia.android.domain.util.getStringFromObject
 
 /** Tests for [CustomHtmlContentHandler]. */
 @RunWith(AndroidJUnit4::class)
@@ -226,7 +225,7 @@ class CustomHtmlContentHandlerTest {
 
     assertThat(jsonObject).isNotNull()
     assertThat(jsonObject?.has("key")).isTrue()
-    assertThat(jsonObject?.getStringFromObject("key")).isEqualTo("value with \\frac{1}{2}")
+    assertThat(jsonObject?.getString("key")).isEqualTo("value with \\frac{1}{2}")
   }
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =

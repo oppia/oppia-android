@@ -5,9 +5,9 @@ import org.oppia.android.R
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQItemViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** View model in [FAQListFragment]. */
 class FAQListViewModel @Inject constructor(
@@ -30,7 +30,7 @@ class FAQListViewModel @Inject constructor(
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     return questionsOrAnswers.mapIndexed { index, questionOrAnswer ->
       if (index == QUESTION_INDEX_WITH_OPPIA_REFERENCE) {
-        resourceHandler.formatInLocale(questionOrAnswer, appName)
+        resourceHandler.formatInLocaleWithWrapping(questionOrAnswer, appName)
       } else questionOrAnswer
     }
   }

@@ -26,7 +26,7 @@ class InteractionViewModelModule {
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(fragment: Fragment): InteractionViewModelFactory {
     return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton,
-             isSplitView, writtenTranslationContext ->
+      isSplitView, writtenTranslationContext ->
       ContinueInteractionViewModel(
         interactionAnswerReceiver,
         hasConversationView,
@@ -45,7 +45,7 @@ class InteractionViewModelModule {
     translationController: TranslationController
   ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
-             interactionAnswerErrorReceiver, _, isSplitView, writtenTranslationContext ->
+      interactionAnswerErrorReceiver, _, isSplitView, writtenTranslationContext ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
@@ -66,7 +66,7 @@ class InteractionViewModelModule {
     translationController: TranslationController
   ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
-             interactionAnswerErrorReceiver, _, isSplitView, writtenTranslationContext ->
+      interactionAnswerErrorReceiver, _, isSplitView, writtenTranslationContext ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
@@ -88,7 +88,7 @@ class InteractionViewModelModule {
     translationController: TranslationController
   ): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-             isSplitView, writtenTranslationContext ->
+      isSplitView, writtenTranslationContext ->
       FractionInteractionViewModel(
         interaction,
         hasConversationView,
@@ -108,7 +108,7 @@ class InteractionViewModelModule {
     resourceHandler: AppLanguageResourceHandler
   ): InteractionViewModelFactory {
     return { _, hasConversationView, _, _, interactionAnswerErrorReceiver, _, isSplitView,
-             writtenTranslationContext ->
+      writtenTranslationContext ->
       NumericInputViewModel(
         hasConversationView,
         interactionAnswerErrorReceiver,
@@ -126,7 +126,7 @@ class InteractionViewModelModule {
     translationController: TranslationController
   ): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-             isSplitView, writtenTranslationContext ->
+      isSplitView, writtenTranslationContext ->
       TextInputViewModel(
         interaction, hasConversationView, interactionAnswerErrorReceiver, isSplitView,
         writtenTranslationContext, translationController
@@ -142,7 +142,7 @@ class InteractionViewModelModule {
     translationController: TranslationController
   ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-             isSplitView, writtenTranslationContext ->
+      isSplitView, writtenTranslationContext ->
       DragAndDropSortInteractionViewModel(
         entityId, hasConversationView, interaction, interactionAnswerErrorReceiver, isSplitView,
         writtenTranslationContext, resourceHandler, translationController
@@ -157,7 +157,7 @@ class InteractionViewModelModule {
     resourceHandler: AppLanguageResourceHandler
   ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView,
-             writtenTranslationContext ->
+      writtenTranslationContext ->
       ImageRegionSelectionInteractionViewModel(
         entityId,
         hasConversationView,
@@ -178,7 +178,7 @@ class InteractionViewModelModule {
     translationController: TranslationController
   ): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView,
-             writtenTranslationContext ->
+      writtenTranslationContext ->
       RatioExpressionInputInteractionViewModel(
         interaction,
         hasConversationView,

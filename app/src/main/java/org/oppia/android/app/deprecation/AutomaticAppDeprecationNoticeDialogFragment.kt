@@ -3,9 +3,9 @@ package org.oppia.android.app.deprecation
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
 
 /**
  * Dialog fragment to be shown when the pre-release version of the app should no longer be playable

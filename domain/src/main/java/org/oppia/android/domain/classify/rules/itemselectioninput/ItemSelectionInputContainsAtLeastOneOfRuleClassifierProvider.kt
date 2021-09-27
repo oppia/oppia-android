@@ -30,8 +30,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider @Inject const
   }
 
   override fun matches(
-          answer: SetOfTranslatableHtmlContentIds,
-          input: SetOfTranslatableHtmlContentIds,
-          writtenTranslationContext: WrittenTranslationContext
+    answer: SetOfTranslatableHtmlContentIds,
+    input: SetOfTranslatableHtmlContentIds,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean = answer.getContentIdSet().intersect(input.getContentIdSet()).isNotEmpty()
 }

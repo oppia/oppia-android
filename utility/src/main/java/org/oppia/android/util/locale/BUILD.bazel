@@ -6,6 +6,29 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
+    name = "android_locale_profile",
+    srcs = [
+        "AndroidLocaleProfile.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":oppia_locale",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_bidi_formatter",
+    srcs = [
+        "OppiaBidiFormatter.kt",
+    ],
+    visibility = [
+        "//domain/src/main/java/org/oppia/android/domain/locale:__pkg__",
+        "//utility:utility_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:__pkg__",
+    ],
+)
+
+kt_android_library(
     name = "oppia_locale",
     srcs = [
         "OppiaLocale.kt",
@@ -19,12 +42,15 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "machine_locale_impl",
+    name = "impl",
     srcs = [
         "MachineLocaleImpl.kt",
+        "OppiaBidiFormatterImpl.kt",
     ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/locale/testing:__pkg__"],
     deps = [
         ":dagger",
+        ":oppia_bidi_formatter",
         ":oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
@@ -43,12 +69,12 @@ kt_android_library(
 kt_android_library(
     name = "prod_module",
     srcs = [
-        "MachineLocaleModule.kt",
+        "LocaleProdModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
-        ":machine_locale_impl",
+        ":impl",
         ":oppia_locale",
     ],
 )

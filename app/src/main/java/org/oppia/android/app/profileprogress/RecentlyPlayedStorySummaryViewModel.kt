@@ -22,7 +22,7 @@ class RecentlyPlayedStorySummaryViewModel(
   }
 
   fun computeLessonThumbnailContentDescription(): String {
-    return resourceHandler.getStringInLocale(
+    return resourceHandler.getStringInLocaleWithWrapping(
       R.string.lesson_thumbnail_content_description, promotedStory.nextChapterName
     )
   }

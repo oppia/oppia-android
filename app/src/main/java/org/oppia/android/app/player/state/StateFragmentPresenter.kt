@@ -274,7 +274,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(
-      fragment, { result ->
+      fragment,
+      { result ->
         processEphemeralStateResult(result)
       }
     )

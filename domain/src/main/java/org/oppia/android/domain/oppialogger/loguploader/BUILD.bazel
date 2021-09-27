@@ -40,7 +40,7 @@ kt_android_library(
     srcs = [
         "LogUploadWorkerFactory.kt",
     ],
-    visibility = ["//domain:__subpackages__"],
+    visibility = ["//domain:__pkg__"],
     deps = [
         ":worker",
         "//third_party:androidx_work_work-runtime-ktx",

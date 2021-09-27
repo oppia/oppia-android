@@ -1,15 +1,15 @@
 package org.oppia.android.util.data
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.oppia.android.util.threading.BackgroundDispatcher
 import java.lang.IllegalStateException
 import java.lang.StringBuilder
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.oppia.android.util.threading.BackgroundDispatcher
 
 typealias ObserveAsyncChange = suspend () -> Unit
 
@@ -58,7 +58,8 @@ class AsyncDataSubscriptionManager @Inject constructor(
           val childSubscriptionTree = computeSubscriptionTreeString(childId)
           throw IllegalStateException(
             "Encountered cycle when trying to add '$childId' to '$parentId' (at " +
-              "'$failingId'). Subscription trees:\n$parentSubscriptionTree\n\n$childSubscriptionTree"
+              "'$failingId'). Subscription trees:\n$parentSubscriptionTree\n\n" +
+              childSubscriptionTree
           )
         }
 
@@ -111,7 +112,9 @@ class AsyncDataSubscriptionManager @Inject constructor(
   }
 
   private fun verifyNoCyclesInClosureAux(
-    nextParentId: Any, usedParentIds: MutableSet<Any>, children: Iterable<Any>
+    nextParentId: Any,
+    usedParentIds: MutableSet<Any>,
+    children: Iterable<Any>
   ): Any? {
     if (nextParentId in usedParentIds) {
       return nextParentId
@@ -179,7 +182,8 @@ class AsyncDataSubscriptionManager @Inject constructor(
     StringBuilder().computeSubscriptionTreeStringAux(parentId, indent = 0).toString()
 
   private fun StringBuilder.computeSubscriptionTreeStringAux(
-    parentId: Any, indent: Int
+    parentId: Any,
+    indent: Int
   ): StringBuilder {
     appendSpacing(indent).append(parentId)
     associatedIds[parentId]?.let { childIds ->

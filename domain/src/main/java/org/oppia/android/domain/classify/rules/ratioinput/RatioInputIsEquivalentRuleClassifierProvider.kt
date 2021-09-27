@@ -27,7 +27,8 @@ class RatioInputIsEquivalentRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-    answer: RatioExpression, input: RatioExpression,
+    answer: RatioExpression,
+    input: RatioExpression,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean = answer.toSimplestForm() == input.toSimplestForm()
 }

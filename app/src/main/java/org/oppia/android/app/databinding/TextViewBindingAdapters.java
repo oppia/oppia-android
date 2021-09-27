@@ -18,12 +18,14 @@ import org.oppia.android.util.system.OppiaClockInjectorProvider;
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
 
+  // TODO(#3846): Add tests for these adapters.
+
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String time = resourceHandler.computeDateString(timestamp);
-    textView.setText(resourceHandler.getStringInLocale(
+    textView.setText(resourceHandler.getStringInLocaleWithWrapping(
         R.string.profile_edit_created,
         time
     ));
@@ -35,7 +37,7 @@ public final class TextViewBindingAdapters {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used);
     String timeAgoTimeStamp = getTimeAgo(textView, timestamp);
-    String profileLastVisited = resourceHandler.getStringInLocale(
+    String profileLastVisited = resourceHandler.getStringInLocaleWithWrapping(
         R.string.profile_last_visited,
         profileLastUsed,
         timeAgoTimeStamp
@@ -83,15 +85,17 @@ public final class TextViewBindingAdapters {
       @PluralsRes int pluralsResId,
       int count
   ) {
-    // TODO: file an issue to combine these strings together.
-    return resourceHandler.getStringInLocale(
+    // TODO(#3841): Combine these strings together.
+    return resourceHandler.getStringInLocaleWithWrapping(
         R.string.time_ago,
-        resourceHandler.getQuantityStringInLocale(pluralsResId, count, count)
+        resourceHandler.getQuantityStringInLocaleWithWrapping(
+            pluralsResId, count, String.valueOf(count)
+        )
     );
   }
 
   private static long ensureTimestampIsInMilliseconds(long lastVisitedTimestamp) {
-    // TODO: file issue to investigate & remove this method.
+    // TODO(#3842): Investigate & remove this check.
     if (lastVisitedTimestamp < 1000000000000L) {
       // If timestamp is given in seconds, convert that to milliseconds.
       return TimeUnit.SECONDS.toMillis(lastVisitedTimestamp);

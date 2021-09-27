@@ -5,15 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.RevisionCard
+import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
-import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralRevisionCard
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** [ObservableViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope

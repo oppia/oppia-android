@@ -35,6 +35,7 @@ import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILA
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -42,6 +43,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
@@ -49,6 +51,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -56,8 +59,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.FileNotFoundException
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -65,6 +66,8 @@ private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 
 /** Tests for [TopicController]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = TopicControllerTest.TestApplication::class)
@@ -124,6 +127,10 @@ class TopicControllerTest {
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  // TODO(#3813): Migrate all tests in this suite to use this factory.
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
@@ -441,281 +448,248 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validSkill_isSuccessful() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCardResult = conceptCardLiveData.value
-    assertThat(conceptCardResult).isNotNull()
-    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
   }
 
   @Test
   fun testGetConceptCard_validSkill_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_0)
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.skillId).isEqualTo(TEST_SKILL_ID_0)
   }
 
   @Test
   fun testGetConceptCard_validSkill_returnsCardWithCorrectDescription() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillDescription).isEqualTo("An important skill")
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.skillDescription).isEqualTo("An important skill")
   }
 
   @Test
   fun testGetConceptCard_validSkill_returnsCardWithCorrectExplanation() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.explanation.html).isEqualTo("Hello. Welcome to Oppia.")
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.explanation.html)
+      .isEqualTo("Hello. Welcome to Oppia.")
   }
 
   @Test
   fun testGetConceptCard_validSkill_returnsCardWithCorrectWorkedExample() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.workedExampleCount).isEqualTo(1)
-    assertThat(conceptCard.getWorkedExample(0).html)
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.workedExampleCount).isEqualTo(1)
+    assertThat(ephemeralConceptCard.conceptCard.getWorkedExample(0).html)
       .isEqualTo("This is the first example.")
   }
 
   @Test
   fun getConceptCard_validSkill_returnsCardWithSpanishTranslationForExplanation() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    val contentId = conceptCard.explanation.contentId
-    assertThat(conceptCard.writtenTranslationMap).containsKey(contentId)
-    val translations = conceptCard.writtenTranslationMap
-      .getValue(contentId).translationMappingMap
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    val contentId = ephemeralConceptCard.conceptCard.explanation.contentId
+    val translationsMap = ephemeralConceptCard.conceptCard.writtenTranslationMap
+    assertThat(translationsMap).containsKey(contentId)
+    val translations = translationsMap.getValue(contentId).translationMappingMap
     assertThat(translations).containsKey("es")
-    assertThat(translations.getValue("es").html).isEqualTo(
-      "Hola. Bienvenidos a Oppia."
-    )
+    assertThat(translations.getValue("es").html).isEqualTo("Hola. Bienvenidos a Oppia.")
   }
 
   @Test
   fun getConceptCard_validSkill_returnsCardWithSpanishTranslationForWorkedExample() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    val contentId = conceptCard.getWorkedExample(0).contentId
-    assertThat(conceptCard.writtenTranslationMap).containsKey(contentId)
-    val translations = conceptCard.writtenTranslationMap
-      .getValue(contentId).translationMappingMap
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    val contentId = ephemeralConceptCard.conceptCard.getWorkedExample(0).contentId
+    val translationsMap = ephemeralConceptCard.conceptCard.writtenTranslationMap
+    assertThat(translationsMap).containsKey(contentId)
+    val translations = translationsMap.getValue(contentId).translationMappingMap
     assertThat(translations).containsKey("es")
-    assertThat(translations.getValue("es").html)
-      .isEqualTo("Este es el primer ejemplo trabajado.")
+    assertThat(translations.getValue("es").html).isEqualTo("Este es el primer ejemplo trabajado.")
   }
 
   @Test
   fun getConceptCard_validSkill_returnsCardWithSpanishVoiceoverForExplanation() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    val contentId = conceptCard.explanation.contentId
-    assertThat(conceptCard.recordedVoiceoverMap).containsKey(contentId)
-    val voiceovers = conceptCard.recordedVoiceoverMap
-      .getValue(contentId).voiceoverMappingMap
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    val contentId = ephemeralConceptCard.conceptCard.explanation.contentId
+    val voiceoversMap = ephemeralConceptCard.conceptCard.recordedVoiceoverMap
+    assertThat(voiceoversMap).containsKey(contentId)
+    val voiceovers = voiceoversMap.getValue(contentId).voiceoverMappingMap
     assertThat(voiceovers).containsKey("es")
-    assertThat(voiceovers.getValue("es").fileName)
-      .isEqualTo("fake_spanish_xlated_explanation.mp3")
+    assertThat(voiceovers.getValue("es").fileName).isEqualTo("fake_spanish_xlated_explanation.mp3")
   }
 
   @Test
   fun getConceptCard_validSkill_returnsCardWithSpanishVoiceoverForWorkedExample() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    val contentId = conceptCard.getWorkedExample(0).contentId
-    assertThat(conceptCard.recordedVoiceoverMap).containsKey(contentId)
-    val voiceovers = conceptCard.recordedVoiceoverMap
-      .getValue(contentId).voiceoverMappingMap
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    val contentId = ephemeralConceptCard.conceptCard.getWorkedExample(0).contentId
+    val voiceoversMap = ephemeralConceptCard.conceptCard.recordedVoiceoverMap
+    assertThat(voiceoversMap).containsKey(contentId)
+    val voiceovers = voiceoversMap.getValue(contentId).voiceoverMappingMap
     assertThat(voiceovers).containsKey("es")
-    assertThat(voiceovers.getValue("es").fileName)
-      .isEqualTo("fake_spanish_xlated_example.mp3")
+    assertThat(voiceovers.getValue("es").fileName).isEqualTo("fake_spanish_xlated_example.mp3")
   }
 
   @Test
   fun testGetConceptCard_validSecondSkill_isSuccessful() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
-    val conceptCardResult = conceptCardLiveData.value
-    assertThat(conceptCardResult).isNotNull()
-    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
   }
 
   @Test
   fun testGetConceptCard_validSecondSkill_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_1)
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.skillId).isEqualTo(TEST_SKILL_ID_1)
   }
 
   @Test
   fun testGetConceptCard_validSecondSkill_returnsCardWithCorrectDescription() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillDescription).isEqualTo("Another important skill")
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.skillDescription)
+      .isEqualTo("Another important skill")
   }
 
   @Test
   fun testGetConceptCard_validSecondSkill_returnsCardWithRichTextExplanation() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.explanation.html).isEqualTo(
-      "Explanation with <b>rich text</b>."
-    )
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.explanation.html)
+      .isEqualTo("Explanation with <b>rich text</b>.")
   }
 
   @Test
   fun testGetConceptCard_validSecondSkill_returnsCardWithRichTextWorkedExample() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_1)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.workedExampleCount).isEqualTo(1)
-    assertThat(conceptCard.getWorkedExample(0).html)
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.workedExampleCount).isEqualTo(1)
+    assertThat(ephemeralConceptCard.conceptCard.getWorkedExample(0).html)
       .isEqualTo("Worked example with <i>rich text</i>.")
   }
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_isSuccessful() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_2)
 
-    val conceptCardResult = conceptCardLiveData.value
-    assertThat(conceptCardResult).isNotNull()
-    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
   }
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_2)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillId).isEqualTo(TEST_SKILL_ID_2)
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.skillId).isEqualTo(TEST_SKILL_ID_2)
   }
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithCorrectDescription() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_2)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillDescription).isEqualTo("A different skill in a different topic")
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.skillDescription)
+      .isEqualTo("A different skill in a different topic")
   }
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithCorrectExplanation() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_2)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.explanation.html).isEqualTo("Explanation without rich text.")
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.explanation.html)
+      .isEqualTo("Explanation without rich text.")
   }
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCardWithMultipleWorkedExamples() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(TEST_SKILL_ID_2)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_2)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.workedExampleCount).isEqualTo(2)
-    assertThat(conceptCard.getWorkedExample(0).html)
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.workedExampleCount).isEqualTo(2)
+    assertThat(ephemeralConceptCard.conceptCard.getWorkedExample(0).html)
       .isEqualTo("Worked example without rich text.")
-    assertThat(conceptCard.getWorkedExample(1).html)
+    assertThat(ephemeralConceptCard.conceptCard.getWorkedExample(1).html)
       .isEqualTo("Second worked example.")
   }
 
   @Test
   fun testGetConceptCard_fractionsSkill0_isSuccessful() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(FRACTIONS_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, FRACTIONS_SKILL_ID_0)
 
-    val conceptCardResult = conceptCardLiveData.value
-    assertThat(conceptCardResult).isNotNull()
-    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
   }
 
   @Test
   fun testGetConceptCard_fractionsSkill0_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(FRACTIONS_SKILL_ID_0)
+    val conceptCardProvider = topicController
+      .getConceptCard(profileId1, FRACTIONS_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillId).isEqualTo(FRACTIONS_SKILL_ID_0)
-    assertThat(conceptCard.skillDescription).isEqualTo(
-      "Given a picture divided into unequal parts, write the fraction."
-    )
-    assertThat(conceptCard.explanation.html).contains(
-      "<p>First, divide the picture into equal parts"
-    )
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.skillId).isEqualTo(FRACTIONS_SKILL_ID_0)
+    assertThat(ephemeralConceptCard.conceptCard.skillDescription)
+      .isEqualTo("Given a picture divided into unequal parts, write the fraction.")
+    assertThat(ephemeralConceptCard.conceptCard.explanation.html)
+      .contains("<p>First, divide the picture into equal parts")
   }
 
   @Test
   fun testGetConceptCard_ratiosSkill0_isSuccessful() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(RATIOS_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, RATIOS_SKILL_ID_0)
 
-    val conceptCardResult = conceptCardLiveData.value
-    assertThat(conceptCardResult).isNotNull()
-    assertThat(conceptCardResult!!.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
   }
 
   @Test
   fun testGetConceptCard_ratiosSkill0_returnsCorrectConceptCard() {
-    val conceptCardLiveData = topicController
-      .getConceptCard(RATIOS_SKILL_ID_0)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, RATIOS_SKILL_ID_0)
 
-    val conceptCard = conceptCardLiveData.value!!.getOrThrow()
-    assertThat(conceptCard.skillId).isEqualTo(RATIOS_SKILL_ID_0)
-    assertThat(conceptCard.skillDescription).isEqualTo(
-      "Derive a ratio from a description or a picture"
-    )
-    assertThat(conceptCard.explanation.html).contains(
-      "<p>A ratio represents a relative relationship between two or more amounts."
-    )
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
+    assertThat(ephemeralConceptCard.conceptCard.skillId).isEqualTo(RATIOS_SKILL_ID_0)
+    assertThat(ephemeralConceptCard.conceptCard.skillDescription)
+      .isEqualTo("Derive a ratio from a description or a picture")
+    assertThat(ephemeralConceptCard.conceptCard.explanation.html)
+      .contains("<p>A ratio represents a relative relationship between two or more amounts.")
   }
 
   @Test
   fun testGetConceptCard_invalidSkillId_returnsFailure() {
-    topicController.getConceptCard("invalid_skill_id")
+    val conceptCardProvider = topicController.getConceptCard(profileId1, "invalid_skill_id")
 
-    val exception = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    monitorFactory.waitForNextFailureResult(conceptCardProvider)
   }
 
   @Test
-  fun testGetReviewCard_fractionSubtopicId1_isSuccessful() {
-    val reviewCardLiveData = topicController
-      .getRevisionCard(FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID_2)
-    val reviewCardResult = reviewCardLiveData.value
-    assertThat(reviewCardResult).isNotNull()
-    assertThat(reviewCardResult!!.isSuccess()).isTrue()
-    assertThat(reviewCardResult.getOrThrow().pageContents.html)
+  fun testGetRevisionCard_fractionSubtopicId1_isSuccessful() {
+    val revisionCardProvider =
+      topicController.getRevisionCard(profileId1, FRACTIONS_TOPIC_ID, SUBTOPIC_TOPIC_ID_2)
+
+    val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardProvider)
+    assertThat(ephemeralRevisionCard.revisionCard.pageContents.html)
       .contains("Description of subtopic is here.")
+  }
+
+  @Test
+  fun testGetRevisionCard_noTopicAndSubtopicId_returnsFailure_logsException() {
+    val revisionCardProvider =
+      topicController.getRevisionCard(profileId1, "invalid_topic_id", subtopicId = 0)
+
+    monitorFactory.waitForNextFailureResult(revisionCardProvider)
   }
 
   @Test
@@ -1137,15 +1111,6 @@ class TopicControllerTest {
     assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
   }
 
-  @Test
-  fun testGetRevisionCard_noTopicAndSubtopicId_returnsFailure_logsException() {
-    topicController.getRevisionCard("", 0)
-
-    val exception = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -1280,7 +1245,7 @@ class TopicControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

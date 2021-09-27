@@ -2,8 +2,8 @@ package org.oppia.android.app.help
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import javax.inject.Inject
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 /** View model in [HelpFragment]. */
 class HelpListViewModel @Inject constructor(

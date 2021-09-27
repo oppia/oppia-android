@@ -148,7 +148,7 @@
         android:layout_marginEnd="@dimen/question_player_progress_bar_text_margin_end"
         android:layout_marginBottom="@dimen/question_player_progress_bar_text_margin_bottom"
         android:fontFamily="sans-serif"
-        android:text="@{viewModel.computeQuestionProgressText()}"
+        android:text="@{viewModel.questionProgressText}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="12sp"
         android:textStyle="italic"

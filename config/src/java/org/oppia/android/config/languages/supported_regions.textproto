@@ -3,6 +3,7 @@ region_definitions {
   region_id {
     ietf_region_tag: "BR"
   }
+  languages: PORTUGUESE
   languages: BRAZILIAN_PORTUGUESE
 }
 region_definitions {

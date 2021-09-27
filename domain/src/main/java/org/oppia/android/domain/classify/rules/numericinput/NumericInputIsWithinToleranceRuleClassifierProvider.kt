@@ -28,7 +28,9 @@ class NumericInputIsWithinToleranceRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-    answer: Double, firstInput: Double, secondInput: Double,
+    answer: Double,
+    firstInput: Double,
+    secondInput: Double,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean = answer in (firstInput - secondInput)..(firstInput + secondInput)
 }

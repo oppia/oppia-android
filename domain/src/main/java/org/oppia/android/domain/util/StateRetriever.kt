@@ -7,6 +7,7 @@ import org.oppia.android.app.model.CorrectAnswer
 import org.oppia.android.app.model.CustomSchemaValue
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion.Region.NormalizedRectangle2d
@@ -30,12 +31,11 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
 import javax.inject.Inject
-import org.oppia.android.app.model.HtmlTranslationList
-import org.oppia.android.app.model.Translation
-import org.oppia.android.app.model.TranslationMapping
 
 /** Utility that helps create a [State] object given its JSON representation. */
 class StateRetriever @Inject constructor() {

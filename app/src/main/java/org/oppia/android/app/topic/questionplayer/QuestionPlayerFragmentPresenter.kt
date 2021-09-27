@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
@@ -36,7 +37,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -69,7 +69,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var helpIndex: HelpIndex
 
   fun handleCreateView(
-    inflater: LayoutInflater, container: ViewGroup?, profileId: ProfileId
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    profileId: ProfileId
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
       inflater,
@@ -235,12 +237,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
-    questionViewModel.currentQuestion.set(currentQuestionIndex + 1)
-    questionViewModel.questionCount.set(questionCount)
-    questionViewModel.progressPercentage.set(
-      (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt()
+    questionViewModel.updateQuestionProgress(
+      currentQuestion = currentQuestionIndex + 1,
+      questionCount = questionCount,
+      progressPercentage = (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt(),
+      isAtEndOfSession = currentQuestionIndex == questionCount
     )
-    questionViewModel.isAtEndOfSession.set(currentQuestionIndex == questionCount)
   }
 
   private fun updateEndSessionMessage(ephemeralState: EphemeralState) {

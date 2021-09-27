@@ -32,9 +32,9 @@ class DragDropSortInputIsEqualToOrderingClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-          answer: ListOfSetsOfTranslatableHtmlContentIds,
-          input: ListOfSetsOfTranslatableHtmlContentIds,
-          writtenTranslationContext: WrittenTranslationContext
+    answer: ListOfSetsOfTranslatableHtmlContentIds,
+    input: ListOfSetsOfTranslatableHtmlContentIds,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean = areListOfSetsOfHtmlStringsEqual(answer, input)
 
   /**

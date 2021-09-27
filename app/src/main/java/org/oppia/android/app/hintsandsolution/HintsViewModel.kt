@@ -7,12 +7,12 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Solution
-import org.oppia.android.domain.hintsandsolution.isHintRevealed
-import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
-import javax.inject.Inject
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.hintsandsolution.isHintRevealed
+import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
+import javax.inject.Inject
 
 /**
  * RecyclerView items are 2 times of (No. of Hints + Solution),
@@ -96,7 +96,7 @@ class HintsViewModel @Inject constructor(
   }
 
   fun computeHintListDropDownIconContentDescription(): String {
-    return resourceHandler.getStringInLocale(
+    return resourceHandler.getStringInLocaleWithWrapping(
       R.string.show_hide_hint_list,
       hintsAndSolutionSummary.get() ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY
     )

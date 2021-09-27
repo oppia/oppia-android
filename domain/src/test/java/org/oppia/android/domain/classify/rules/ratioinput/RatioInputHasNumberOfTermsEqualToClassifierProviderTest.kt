@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -56,7 +57,8 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
     val matches =
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -69,7 +71,8 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
     val matches =
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -82,7 +85,8 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -100,7 +104,8 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

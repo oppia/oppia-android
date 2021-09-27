@@ -16,6 +16,8 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.databinding.AllTopicsBinding
 import org.oppia.android.databinding.ComingSoonTopicListBinding
 import org.oppia.android.databinding.HomeFragmentBinding
@@ -29,8 +31,6 @@ import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.datetime.DateTimeUtil
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope

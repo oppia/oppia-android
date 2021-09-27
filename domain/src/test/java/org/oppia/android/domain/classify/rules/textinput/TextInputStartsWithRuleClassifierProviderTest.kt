@@ -1,18 +1,32 @@
 package org.oppia.android.domain.classify.rules.textinput
 
 import android.app.Application
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -64,6 +78,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   @Before
   fun setUp() {
+    FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
 
@@ -73,7 +88,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -85,7 +101,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -97,7 +114,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_LOWERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -109,7 +127,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     // The check should be case-insensitive.
@@ -122,7 +141,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -134,7 +154,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     // The check should be case-insensitive.
@@ -147,7 +168,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -159,7 +181,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_UPPERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -171,7 +194,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_UPPERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -183,7 +207,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_STRING_UPPERCASE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -195,7 +220,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_NULL,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -207,7 +233,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_TEST_NULL,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -219,7 +246,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_ANTIDERIVATIVE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -231,7 +259,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_PREFIX,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -243,7 +272,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
     val matches = inputStartsWithRuleClassifier.matches(
       answer = STRING_VALUE_SOMETHING_ELSE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -256,7 +286,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       inputStartsWithRuleClassifier.matches(
         answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -272,7 +303,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       inputStartsWithRuleClassifier.matches(
         answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -288,9 +320,24 @@ class TextInputStartsWithRuleClassifierProviderTest {
       .inject(this)
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [])
+  @Component(
+    modules = [
+      LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
+      TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
+      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class, TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

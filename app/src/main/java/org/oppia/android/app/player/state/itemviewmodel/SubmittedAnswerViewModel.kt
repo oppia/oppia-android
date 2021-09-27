@@ -18,9 +18,11 @@ class SubmittedAnswerViewModel(
   val submittedAnswer: ObservableField<CharSequence> = ObservableField(DEFAULT_SUBMITTED_ANSWER)
   val isExtraInteractionAnswerCorrect = ObservableField(DEFAULT_IS_CORRECT_ANSWER)
   val submittedAnswerContentDescription: ObservableField<String> =
-    ObservableField(computeSubmittedAnswerContentDescription(
-      DEFAULT_IS_CORRECT_ANSWER, DEFAULT_SUBMITTED_ANSWER, DEFAULT_ACCESSIBLE_ANSWER
-    ))
+    ObservableField(
+      computeSubmittedAnswerContentDescription(
+        DEFAULT_IS_CORRECT_ANSWER, DEFAULT_SUBMITTED_ANSWER, DEFAULT_ACCESSIBLE_ANSWER
+      )
+    )
   private var accessibleAnswer: String? = DEFAULT_ACCESSIBLE_ANSWER
 
   fun setSubmittedAnswer(submittedAnswer: CharSequence, accessibleAnswer: String? = null) {
@@ -45,13 +47,19 @@ class SubmittedAnswerViewModel(
   }
 
   private fun computeSubmittedAnswerContentDescription(
-    isCorrectAnswer: Boolean, submittedAnswer: CharSequence, accessibleAnswer: String?
+    isCorrectAnswer: Boolean,
+    submittedAnswer: CharSequence,
+    accessibleAnswer: String?
   ): String {
-    val answer = accessibleAnswer ?: submittedAnswer
+    val answer = if (accessibleAnswer.isNullOrBlank()) submittedAnswer else accessibleAnswer
     return if (isCorrectAnswer) {
-      resourceHandler.getStringInLocale(R.string.correct_submitted_answer_with_append, answer)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.correct_submitted_answer_with_append, answer
+      )
     } else {
-      resourceHandler.getStringInLocale(R.string.incorrect_submitted_answer_with_append, answer)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.incorrect_submitted_answer_with_append, answer
+      )
     }
   }
 

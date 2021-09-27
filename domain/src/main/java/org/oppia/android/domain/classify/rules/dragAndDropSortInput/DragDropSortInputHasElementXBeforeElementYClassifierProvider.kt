@@ -41,10 +41,10 @@ class DragDropSortInputHasElementXBeforeElementYClassifierProvider @Inject const
   }
 
   override fun matches(
-          answer: ListOfContentIdSets2,
-          firstInput: ContentId2,
-          secondInput: ContentId2,
-          writtenTranslationContext: WrittenTranslationContext
+    answer: ListOfContentIdSets2,
+    firstInput: ContentId2,
+    secondInput: ContentId2,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     val answerSets = answer.contentIdListsList.map { it.getContentIdSet() }
     return answerSets.indexOfFirst {

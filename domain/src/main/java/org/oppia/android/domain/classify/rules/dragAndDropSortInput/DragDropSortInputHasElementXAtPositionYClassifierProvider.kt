@@ -42,10 +42,10 @@ class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject construc
   }
 
   override fun matches(
-          answer: ListOfContentIdSets1,
-          firstInput: ContentId1,
-          secondInput: Int,
-          writtenTranslationContext: WrittenTranslationContext
+    answer: ListOfContentIdSets1,
+    firstInput: ContentId1,
+    secondInput: Int,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     // Note that the '1' returned here is to have consistency with the web platform: matched indexes
     // start at 1 rather than 0 to make the indexes more human friendly.

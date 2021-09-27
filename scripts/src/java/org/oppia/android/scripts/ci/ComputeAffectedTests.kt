@@ -146,13 +146,23 @@ class ComputeAffectedTests(
     // can't handle these well).
     val changedFiles = gitClient.changedFiles.filter { filepath ->
       File(rootDirectory, filepath).exists()
-    }
+    }.toSet()
     println("Changed files (per Git): $changedFiles")
 
-    val changedFileTargets = bazelClient.retrieveBazelTargets(changedFiles).toSet()
+    // Compute the changed targets 100 files at a time to avoid unnecessarily long-running Bazel
+    // commands.
+    val changedFileTargets =
+      changedFiles.chunked(size = 100).fold(initial = setOf<String>()) { allTargets, filesChunk ->
+        allTargets + bazelClient.retrieveBazelTargets(filesChunk).toSet()
+      }
     println("Changed Bazel file targets: $changedFileTargets")
 
-    val affectedTestTargets = bazelClient.retrieveRelatedTestTargets(changedFileTargets).toSet()
+    // Similarly, compute the affect test targets list 100 file targets at a time.
+    val affectedTestTargets =
+      changedFileTargets.chunked(size = 100)
+        .fold(initial = setOf<String>()) { allTargets, targetChunk ->
+          allTargets + bazelClient.retrieveRelatedTestTargets(targetChunk).toSet()
+        }
     println("Affected Bazel test targets: $affectedTestTargets")
 
     // Compute the list of Bazel files that were changed.

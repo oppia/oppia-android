@@ -29,7 +29,9 @@ class ImageClickInputIsInRegionRuleClassifierProvider @Inject constructor(
   }
 
   override fun matches(
-    answer: ClickOnImage, input: String, writtenTranslationContext: WrittenTranslationContext
+    answer: ClickOnImage,
+    input: String,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     return answer.clickedRegionsList.indexOf(input) != -1
   }

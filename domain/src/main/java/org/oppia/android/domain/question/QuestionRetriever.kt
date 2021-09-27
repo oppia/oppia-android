@@ -4,10 +4,10 @@ import org.json.JSONObject
 import org.oppia.android.app.model.Question
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.StateRetriever
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import javax.inject.Inject
 import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
 /** Retriever for [Question] objects from the filesystem. */

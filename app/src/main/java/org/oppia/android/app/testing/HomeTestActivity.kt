@@ -1,9 +1,9 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
-import org.oppia.android.app.activity.ActivityComponentImpl
 
 /** The activity for testing [HomeFragment]. */
 class HomeTestActivity : InjectableAppCompatActivity() {

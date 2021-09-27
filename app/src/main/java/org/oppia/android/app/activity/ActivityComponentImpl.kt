@@ -18,7 +18,8 @@ import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCo
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
-import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
+import org.oppia.android.app.fragment.FragmentComponentBuilderModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
@@ -59,6 +60,7 @@ import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeTestActivity
 import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
+import org.oppia.android.app.testing.InputInteractionViewTestActivity
 import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
@@ -70,23 +72,24 @@ import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
 import org.oppia.android.app.testing.TopicTestActivityForStory
 import org.oppia.android.app.testing.ViewBindingAdaptersTestActivity
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.app.walkthrough.WalkthroughActivity
-import javax.inject.Provider
-import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
-import org.oppia.android.app.fragment.FragmentComponentBuilderModule
-import org.oppia.android.app.testing.InputInteractionViewTestActivity
 
 // TODO(#59): Restrict access to this implementation by introducing injectors in each activity.
 
-/** Root subcomponent for all activities. */
-@Subcomponent(modules = [
-  ActivityModule::class, FragmentComponentBuilderModule::class, ActivityIntentFactoriesModule::class
-])
+/** Implementation of [ActivityComponent]. */
+@Subcomponent(
+  modules = [
+    ActivityModule::class, FragmentComponentBuilderModule::class,
+    ActivityIntentFactoriesModule::class
+  ]
+)
 @ActivityScope
-interface ActivityComponentImpl: ActivityComponent, FragmentComponentBuilderInjector {
+interface ActivityComponentImpl :
+  ActivityComponent, FragmentComponentBuilderInjector, TestActivity.Injector {
   @Subcomponent.Builder
   interface Builder {
     @BindsInstance

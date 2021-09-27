@@ -30,9 +30,9 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProvider @Inject construct
   }
 
   override fun matches(
-          answer: SetOfTranslatableHtmlContentIds,
-          input: SetOfTranslatableHtmlContentIds,
-          writtenTranslationContext: WrittenTranslationContext
+    answer: SetOfTranslatableHtmlContentIds,
+    input: SetOfTranslatableHtmlContentIds,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     val answerSet = answer.getContentIdSet()
     val inputSet = input.getContentIdSet()

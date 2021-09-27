@@ -27,7 +27,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -35,10 +35,18 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage.ARABIC
+import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
+import org.oppia.android.app.model.OppiaLanguage.ENGLISH
+import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -65,14 +73,20 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -82,6 +96,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
@@ -101,15 +116,21 @@ class SplashActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
 
-  // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
-  //  package to generate these strings).
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
   @Before
@@ -243,6 +264,123 @@ class SplashActivityTest {
       .check(matches(isDisplayed()))
   }
 
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testSplashActivity_englishLocale_initializesLocaleHandlerWithEnglishContext() {
+    initializeTestApplication()
+    forceDefaultLocale(Locale.ENGLISH)
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
+    // that the correct display locale is defined per the system locale.
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val context = displayLocale.localeContext
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    assertThat(context.languageDefinition.minAndroidSdkVersion).isEqualTo(1)
+    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("en")
+    assertThat(context.hasFallbackLanguageDefinition()).isFalse()
+    assertThat(context.regionDefinition.region).isEqualTo(OppiaRegion.REGION_UNSPECIFIED)
+    assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("")
+    assertThat(context.usageMode).isEqualTo(OppiaLocaleContext.LanguageUsageMode.APP_STRINGS)
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testSplashActivity_arabicLocale_initializesLocaleHandlerWithArabicContext() {
+    initializeTestApplication()
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
+    // that the correct display locale is defined per the system locale.
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val context = displayLocale.localeContext
+    assertThat(context.languageDefinition.language).isEqualTo(ARABIC)
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testSplashActivity_brazilianPortugueseLocale_initializesLocaleHandlerPortugueseContext() {
+    initializeTestApplication()
+    forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
+    // that the correct display locale is defined per the system locale.
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val context = displayLocale.localeContext
+    assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+  }
+
+  @Test
+  fun testSplashActivity_unsupportedLocale_initializesLocaleHandlerWithUnspecifiedLanguage() {
+    initializeTestApplication()
+    forceDefaultLocale(TURKEY_TURKISH_LOCALE)
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Verify that the context is the default state (due to the unsupported locale).
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val languageDefinition = displayLocale.localeContext.languageDefinition
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.minAndroidSdkVersion).isEqualTo(1)
+    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("tr")
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_initializationFailure_initializesLocaleHandlerWithDefaultContext() {
+    corruptCacheFile()
+    initializeTestApplication()
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Verify that the context is the default state (due to the unsupported locale).
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val context = displayLocale.localeContext
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    assertThat(context.languageDefinition.minAndroidSdkVersion).isEqualTo(1)
+    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("en")
+    assertThat(context.hasFallbackLanguageDefinition()).isFalse()
+    assertThat(context.regionDefinition.region).isEqualTo(OppiaRegion.UNITED_STATES)
+    assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("US")
+    assertThat(context.usageMode).isEqualTo(OppiaLocaleContext.LanguageUsageMode.APP_STRINGS)
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_initializationFailure_logsError() {
+    // Simulate a corrupted cache file to trigger an initialization failure.
+    corruptCacheFile()
+    initializeTestApplication()
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val logs = getShadowLogsOnRobolectric()
+    assertThat(logs.any { it.contains("Failed to compute initial state") }).isTrue()
+  }
+
+  @Test
+  fun testSplashActivity_initializationFailure_routesToOnboardingActivity() {
+    corruptCacheFile()
+    initializeTestApplication()
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Verify that an initialization failure leads to the onboarding activity by default.
+    intended(hasComponent(OnboardingActivity::class.java.name))
+  }
+
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
@@ -289,6 +427,27 @@ class SplashActivityTest {
     return expirationDateFormat.format(date)
   }
 
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
+  private fun getShadowLogsOnRobolectric(): List<String> {
+    val shadowLogClass = Class.forName("org.robolectric.shadows.ShadowLog")
+    val shadowLogItem = Class.forName("org.robolectric.shadows.ShadowLog\$LogItem")
+    val msgField = shadowLogItem.getDeclaredField("msg")
+    val logItems = shadowLogClass.getDeclaredMethod("getLogs").invoke(/* obj= */ null) as? List<*>
+    return logItems?.map { logItem ->
+      msgField.get(logItem) as String
+    } ?: listOf()
+  }
+
+  private fun corruptCacheFile() {
+    // Statically retrieve the application context since injection may not have yet occurred.
+    val applicationContext = ApplicationProvider.getApplicationContext<Context>()
+    File(applicationContext.filesDir, "on_boarding_flow.cache").writeText("broken")
+  }
+
   @Singleton
   @Component(
     modules = [
@@ -308,7 +467,8 @@ class SplashActivityTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -347,5 +507,11 @@ class SplashActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
+    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
   }
 }
