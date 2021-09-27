@@ -6,6 +6,7 @@ import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
+import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
@@ -23,7 +24,7 @@ class OppiaApplication :
       .build()
   }
 
-  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponentImpl {
+  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
     return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
   }
 

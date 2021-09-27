@@ -506,11 +506,6 @@ class StateFragmentTest {
       typeFractionText("1/4")
       clickSubmitAnswerButton()
 
-      scenario.onActivity { activity ->
-        val view = activity.findViewById<android.view.View>(R.id.submitted_answer_text_view)
-        println(view.contentDescription)
-      }
-
       scrollToViewType(SUBMITTED_ANSWER)
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
