@@ -58,6 +58,12 @@ class RegexPatternValidationCheckTest {
     "Untranslatable strings should go in untranslated_strings.xml, instead."
   private val translatableStringsGoInMainFileErrorMessage =
     "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
+  private val translatablePluralsGoInMainFileErrorMessage =
+    "All plurals outside strings.xml must be marked as not translatable, or moved to strings.xml."
+  private val importingAndroidBidiFormatterErrorMessage =
+    "Do not use Android's BidiFormatter directly. Instead, use the wrapper utility" +
+      " OppiaBidiFormatter so that tests can verify that formatting actually occurs on select" +
+      " strings."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -866,6 +872,48 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $translatableStringsGoInMainFileErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_translatablePlural_outsidePrimaryStringsFile_fileContentIsNotCorrect() {
+    val prohibitedContent = "<plurals name=\"test\">"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/untranslated_strings.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $translatablePluralsGoInMainFileErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_bidiFormatterImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import android.text.BidiFormatter"
+    tempFolder.newFolder("testfiles", "data", "src", "main")
+    val stringFilePath = "data/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $importingAndroidBidiFormatterErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )

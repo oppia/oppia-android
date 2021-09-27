@@ -1,0 +1,62 @@
+"""
+Package for providing log uploading functionality.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "initializer",
+    srcs = [
+        "LogUploadWorkManagerInitializer.kt",
+    ],
+    deps = [
+        ":worker",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+    ],
+)
+
+kt_android_library(
+    name = "worker",
+    srcs = [
+        "LogUploadWorker.kt",
+    ],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+kt_android_library(
+    name = "worker_factory",
+    srcs = [
+        "LogUploadWorkerFactory.kt",
+    ],
+    visibility = ["//domain:__pkg__"],
+    deps = [
+        ":worker",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+kt_android_library(
+    name = "worker_module",
+    srcs = [
+        "LogUploadWorkerModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":initializer",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+    ],
+)
+
+dagger_rules()
