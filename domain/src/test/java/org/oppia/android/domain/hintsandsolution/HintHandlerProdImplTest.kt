@@ -30,6 +30,7 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -1970,7 +1971,7 @@ class HintHandlerProdImplTest {
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class
+      LoggerModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
