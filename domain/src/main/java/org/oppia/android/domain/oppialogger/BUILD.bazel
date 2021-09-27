@@ -1,5 +1,5 @@
 """
-Library for providing logging to the Oppia android app.
+Package for providing logging support.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
