@@ -88,6 +88,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestPlatform
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -119,7 +121,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -141,7 +143,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -179,7 +181,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -201,7 +203,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @RunOn(TestPlatform.ESPRESSO)
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -238,7 +240,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -283,7 +285,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_rtl_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -306,7 +308,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_rtl_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
