@@ -59,6 +59,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
@@ -73,7 +74,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -227,8 +227,8 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
     val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-    assertThat(exception).hasMessageThat().contains("NON_EXISTENT_TEST")
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Asset doesn't exist: NON_EXISTENT_TEST")
   }
 
   @Test
@@ -241,8 +241,8 @@ class ExplorationDataControllerTest {
     verify(mockExplorationObserver).onChanged(explorationResultCaptor.capture())
     assertThat(explorationResultCaptor.value.isFailure()).isTrue()
     val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(FileNotFoundException::class.java)
-    assertThat(exception).hasMessageThat().contains("NON_EXISTENT_TEST")
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().contains("Asset doesn't exist: NON_EXISTENT_TEST")
   }
 
   @Test
@@ -349,7 +349,7 @@ class ExplorationDataControllerTest {
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class
+      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

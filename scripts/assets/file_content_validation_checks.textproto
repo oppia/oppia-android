@@ -87,11 +87,25 @@ file_content_checks {
   file_path_regex: "app/src/main/res/values/strings.xml"
   prohibited_content_regex: "translatable=\"false\""
   failure_message: "Untranslatable strings should go in untranslated_strings.xml, instead."
-  exempted_file_name: "app/src/main/res/values/untranslated_strings.xml"
 }
 file_content_checks {
   file_path_regex: ".+?.xml"
   prohibited_content_regex: "<string name=\"[^\"]+\">"
   failure_message: "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
   exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
+}
+file_content_checks {
+  file_path_regex: ".+?.xml"
+  prohibited_content_regex: "<plurals name=\"[^\"]+\">"
+  failure_message: "All plurals outside strings.xml must be marked as not translatable, or moved to strings.xml."
+  exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "android.text.BidiFormatter"
+  failure_message: "Do not use Android's BidiFormatter directly. Instead, use the wrapper utility OppiaBidiFormatter so that tests can verify that formatting actually occurs on select strings."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/robolectric/ShadowBidiFormatter.kt"
+  exempted_file_name: "testing/src/test/java/org/oppia/android/testing/robolectric/ShadowBidiFormatterTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatterImpl.kt"
 }
