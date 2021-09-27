@@ -497,7 +497,7 @@
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">8dp</dimen>
 
-  <!--Topic Practice-->
+  <!-- Topic Practice -->
   <dimen name="topic_practice_subtopic_layout_margin_start">40dp</dimen>
   <dimen name="topic_practice_subtopic_layout_margin_end">48dp</dimen>
 
