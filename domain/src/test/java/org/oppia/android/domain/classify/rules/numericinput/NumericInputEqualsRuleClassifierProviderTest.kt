@@ -57,90 +57,116 @@ class NumericInputEqualsRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-    @Test
-    fun testPositiveRealAnswer_positiveRealInput_sameExactValue_bothValuesMatch() {
-        val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
+  @Test
+  fun testPositiveRealAnswer_positiveRealInput_sameExactValue_bothValuesMatch() {
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
-        val matches =
-                inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testNegativeRealAnswer_negativeRealInput_sameExactValue_bothValuesMatch() {
-        val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+  @Test
+  fun testNegativeRealAnswer_negativeRealInput_sameExactValue_bothValuesMatch() {
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
-        val matches =
-                inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifier.matches(
+        answer = NEGATIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
-        val inputs = mapOf(
-                "x" to FIVE_TIMES_FLOAT_EQUALITY_INTERVAL
-        )
+  @Test
+  fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
+    val inputs = mapOf(
+      "x" to FIVE_TIMES_FLOAT_EQUALITY_INTERVAL
+    )
 
-        val matches = inputEqualsRuleClassifier.matches(
-                answer = FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testPositiveRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
-        val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
+  @Test
+  fun testPositiveRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_1_5)
 
-        val matches =
-                inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_3_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_3_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testNegativeRealAnswer_negativeRealInput_valueOutOfRange_valuesDoNotMatch() {
-        val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
+  @Test
+  fun testNegativeRealAnswer_negativeRealInput_valueOutOfRange_valuesDoNotMatch() {
+    val inputs = mapOf("x" to NEGATIVE_REAL_VALUE_1_5)
 
-        val matches =
-                inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifier.matches(
+        answer = NEGATIVE_REAL_VALUE_3_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testNegativeRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
-        val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
+  @Test
+  fun testNegativeRealAnswer_positiveRealInput_valueOutOfRange_valuesDoNotMatch() {
+    val inputs = mapOf("x" to POSITIVE_REAL_VALUE_3_5)
 
-        val matches =
-                inputEqualsRuleClassifier.matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifier.matches(
+        answer = NEGATIVE_REAL_VALUE_3_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
-        val inputs = mapOf(
-                "x" to FIVE_TIMES_FLOAT_EQUALITY_INTERVAL
-        )
+  @Test
+  fun testPositiveRealAnswer_positiveRealInput_valueAtRange_valuesDoNotMatch() {
+    val inputs = mapOf(
+      "x" to FIVE_TIMES_FLOAT_EQUALITY_INTERVAL
+    )
 
-        val matches = inputEqualsRuleClassifier.matches(
-                answer = SIX_TIMES_FLOAT_EQUALITY_INTERVAL,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = SIX_TIMES_FLOAT_EQUALITY_INTERVAL,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputEqualsRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -153,7 +179,11 @@ class NumericInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputEqualsRuleClassifier.matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputEqualsRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

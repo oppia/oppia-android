@@ -93,303 +93,329 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-    @Test
-    fun testPositiveFractionalAnswer_positiveFractionalInput_exactSameValue_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_1_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testPositiveFractionalAnswer_positiveFractionalInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testPositiveFractionalAnswer_positiveFractionalInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_1_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testPositiveFractionalAnswer_negativeFractionalInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_1_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testPositiveFractionalAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testPositiveFractionalAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testNegativeFractionalAnswer_negativeFractionalInput_exactSameValue_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testNegativeFractionalAnswer_positiveFractionalInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testNegativeFractionalAnswer_negativeFractionalInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testNegativeFractionalAnswer_negativeFractionalInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testNegativeFractionalAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testNegativeFractionalAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testPositiveMixedAnswer_positiveMixedInput_exactSameValue_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testPositiveMixedAnswer_positiveMixedInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testPositiveMixedAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testPositiveMixedAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testPositiveMixedAnswer_positiveFractionalInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testPositiveMixedAnswer_negativeFractionalInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testNegativeMixedAnswer_negativeMixedInput_exactSameValue_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testNegativeMixedAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isTrue()
-    }
-
-    @Test
-    fun testNegativeMixedAnswer_negativeMixedInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testNegativeMixedAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testNegativeMixedAnswer_negativeFractionalInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
-
-    @Test
-    fun testNegativeMixedAnswer_positiveFractionalInput_answerSmaller_verifyAnswerNotGreater() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
-
-        val matches = inputGreaterThanRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
-
-        assertThat(matches).isFalse()
-    }
+  @Test
+  fun testPositiveFractionalAnswer_positiveFractionalInput_exactSameValue_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_1_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testPositiveFractionalAnswer_positiveFractionalInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testPositiveFractionalAnswer_positiveFractionalInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_1_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testPositiveFractionalAnswer_negativeFractionalInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_1_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testPositiveFractionalAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testPositiveFractionalAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNegativeFractionalAnswer_negativeFractionalInput_exactSameValue_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNegativeFractionalAnswer_positiveFractionalInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNegativeFractionalAnswer_negativeFractionalInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNegativeFractionalAnswer_negativeFractionalInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNegativeFractionalAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNegativeFractionalAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testPositiveMixedAnswer_positiveMixedInput_exactSameValue_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testPositiveMixedAnswer_positiveMixedInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testPositiveMixedAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testPositiveMixedAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testPositiveMixedAnswer_positiveFractionalInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testPositiveMixedAnswer_negativeFractionalInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNegativeMixedAnswer_negativeMixedInput_exactSameValue_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNegativeMixedAnswer_negativeMixedInput_answerGreater_verifyAnswerGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testNegativeMixedAnswer_negativeMixedInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNegativeMixedAnswer_positiveMixedInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_123_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNegativeMixedAnswer_negativeFractionalInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_NEGATIVE_1_OVER_3)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testNegativeMixedAnswer_positiveFractionalInput_answerSmaller_verifyAnswerNotGreater() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
+
+    val matches = inputGreaterThanRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testFractionalAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_1_OVER_2)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputGreaterThanRuleClassifier
-                .matches(answer = FRACTION_VALUE_TEST_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputGreaterThanRuleClassifier
+        .matches(
+          answer = FRACTION_VALUE_TEST_1_OVER_2,
+          inputs = inputs,
+          writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        )
     }
 
     assertThat(exception)
@@ -402,10 +428,12 @@ class FractionInputIsGreaterThanRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputGreaterThanRuleClassifier
-                .matches(answer = FRACTION_VALUE_TEST_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputGreaterThanRuleClassifier
+        .matches(
+          answer = FRACTION_VALUE_TEST_1_OVER_2,
+          inputs = inputs,
+          writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        )
     }
 
     assertThat(exception)

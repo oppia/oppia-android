@@ -63,62 +63,86 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-    @Test
-    fun testAnswer_testLisOfSetsOfHtmlString_sameValue_bothValuesMatch() {
-        val inputs = mapOf("x" to LIST_OF_SETS_12_3_4)
+  @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_sameValue_bothValuesMatch() {
+    val inputs = mapOf("x" to LIST_OF_SETS_12_3_4)
 
-        val matches =
-                isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswer_testLisOfSetsOfHtmlString_differentOrder_bothValuesDoNotMatch() {
-        val inputs = mapOf("x" to LIST_OF_SETS_3_12_4)
+  @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_differentOrder_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to LIST_OF_SETS_3_12_4)
 
-        val matches =
-                isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer_testLisOfSetsOfHtmlString_differentList_bothValuesDoNotMatch() {
-        val inputs = mapOf("x" to LIST_OF_SETS_3_INVALID12_4)
+  @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_differentList_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to LIST_OF_SETS_3_INVALID12_4)
 
-        val matches =
-                isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer_testLisOfSetsOfHtmlString_differentLength_bothValuesDoNotMatch() {
-        val inputs = mapOf("x" to LIST_OF_SETS_3_12)
+  @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_differentLength_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to LIST_OF_SETS_3_12)
 
-        val matches =
-                isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer_testLisOfSetsOfHtmlString_elementDifferentLength_bothValuesDoNotMatch() {
-        val inputs = mapOf("x" to LIST_OF_SETS_1_3_4)
+  @Test
+  fun testAnswer_testLisOfSetsOfHtmlString_elementDifferentLength_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to LIST_OF_SETS_1_3_4)
 
-        val matches =
-                isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
     val inputs = mapOf("y" to LIST_OF_SETS_12_3_4)
 
     val exception = assertThrows(IllegalStateException::class) {
-        isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

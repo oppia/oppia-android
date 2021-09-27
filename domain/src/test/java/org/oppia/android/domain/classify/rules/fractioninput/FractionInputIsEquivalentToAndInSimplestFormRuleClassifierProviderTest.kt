@@ -102,138 +102,186 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-    @Test
-    fun testEquivalentAndSimplest_wholeNumber5Answer_wholeNumber5Input_matches() {
-        val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_5)
-        val answer = WHOLE_NUMBER_VALUE_TEST_5
+  @Test
+  fun testEquivalentAndSimplest_wholeNumber5Answer_wholeNumber5Input_matches() {
+    val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_5)
+    val answer = WHOLE_NUMBER_VALUE_TEST_5
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_wholeNumber5Answer_wholeNumber2Input_doesNotMatch() {
-        val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_5)
-        val answer = WHOLE_NUMBER_VALUE_TEST_2
+  @Test
+  fun testEquivalentAndSimplest_wholeNumber5Answer_wholeNumber2Input_doesNotMatch() {
+    val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_5)
+    val answer = WHOLE_NUMBER_VALUE_TEST_2
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_wholeNumber2Answer_negativeWholeNumber2Input_doesNotMatch() {
-        val inputs = mapOf("f" to NEGATIVE_WHOLE_NUMBER_VALUE_TEST_2)
-        val answer = WHOLE_NUMBER_VALUE_TEST_2
+  @Test
+  fun testEquivalentAndSimplest_wholeNumber2Answer_negativeWholeNumber2Input_doesNotMatch() {
+    val inputs = mapOf("f" to NEGATIVE_WHOLE_NUMBER_VALUE_TEST_2)
+    val answer = WHOLE_NUMBER_VALUE_TEST_2
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_fraction1Over2Answer_fraction1Over2Input_matches() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
-        val answer = FRACTION_VALUE_TEST_1_OVER_2
+  @Test
+  fun testEquivalentAndSimplest_fraction1Over2Answer_fraction1Over2Input_matches() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
+    val answer = FRACTION_VALUE_TEST_1_OVER_2
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_fraction4Over8Answer_fraction1Over2Input_doesNotMatch() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
-        val answer = FRACTION_VALUE_TEST_4_OVER_8
+  @Test
+  fun testEquivalentAndSimplest_fraction4Over8Answer_fraction1Over2Input_doesNotMatch() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
+    val answer = FRACTION_VALUE_TEST_4_OVER_8
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_fraction1Over2Answer_fraction4Over8Input_matches() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_4_OVER_8)
-        val answer = FRACTION_VALUE_TEST_1_OVER_2
+  @Test
+  fun testEquivalentAndSimplest_fraction1Over2Answer_fraction4Over8Input_matches() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_4_OVER_8)
+    val answer = FRACTION_VALUE_TEST_1_OVER_2
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        // Even if creator does not input simplest form, learner's answer must still be in simplest form
-        assertThat(matches).isTrue()
-    }
+    // Even if creator does not input simplest form, learner's answer must still be in simplest form
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_fraction4Over8Answer_fraction4Over8Input_doesNotMatch() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_4_OVER_8)
-        val answer = FRACTION_VALUE_TEST_4_OVER_8
+  @Test
+  fun testEquivalentAndSimplest_fraction4Over8Answer_fraction4Over8Input_doesNotMatch() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_4_OVER_8)
+    val answer = FRACTION_VALUE_TEST_4_OVER_8
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_fraction1Over2Answer_negativeFraction1Over2Input_doesNotMatch() {
-        val inputs = mapOf("f" to NEGATIVE_FRACTION_VALUE_TEST_1_OVER_2)
-        val answer = FRACTION_VALUE_TEST_1_OVER_2
+  @Test
+  fun testEquivalentAndSimplest_fraction1Over2Answer_negativeFraction1Over2Input_doesNotMatch() {
+    val inputs = mapOf("f" to NEGATIVE_FRACTION_VALUE_TEST_1_OVER_2)
+    val answer = FRACTION_VALUE_TEST_1_OVER_2
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_mixedNum16And1Over2Answer_mixedNum6And1Over2Input_matches() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2)
-        val answer = MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2
+  @Test
+  fun testEquivalentAndSimplest_mixedNum16And1Over2Answer_mixedNum6And1Over2Input_matches() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2)
+    val answer = MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_mixedNum16And1Over2Answer_mixedNum7And1Over7Input_doesNotMatch() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_7_AND_1_OVER_7)
-        val answer = MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2
+  @Test
+  fun testEquivalentAndSimplest_mixedNum16And1Over2Answer_mixedNum7And1Over7Input_doesNotMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_7_AND_1_OVER_7)
+    val answer = MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_mixedNum16And2Over4Answer_mixedNum6And1Over2Input_doesNotMatch() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2)
-        val answer = MIXED_NUMBER_VALUE_TEST_16_AND_2_OVER_4
+  @Test
+  fun testEquivalentAndSimplest_mixedNum16And2Over4Answer_mixedNum6And1Over2Input_doesNotMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2)
+    val answer = MIXED_NUMBER_VALUE_TEST_16_AND_2_OVER_4
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalentAndSimplest_mixedNum16And1Over2Ans_negMixedNum16And1Over2Input_doesNotMatch() {
-        val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2)
-        val answer = MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2
+  @Test
+  fun testEquivalentAndSimplest_mixedNum16And1Over2Ans_negMixedNum16And1Over2Input_doesNotMatch() {
+    val inputs = mapOf("f" to NEGATIVE_MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2)
+    val answer = MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2
 
-        val matches =
-                inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testEquivalentAndSimplest_missingInputF_throwsException() {
@@ -241,10 +289,11 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val answer = FRACTION_VALUE_TEST_1_OVER_2
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
-                answer = answer,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -258,10 +307,11 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val answer = STRING_VALUE_TEST
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
-                answer = answer,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -275,10 +325,11 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val answer = FRACTION_VALUE_TEST_1_OVER_2
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
-                answer = answer,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

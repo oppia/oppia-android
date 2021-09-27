@@ -91,156 +91,171 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-    @Test
-    fun testEquivalence_wholeNumber123Answer_withWholeNumber123Input_bothValuesEquivalent() {
-        val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_123)
-        val answer = WHOLE_NUMBER_VALUE_TEST_123
+  @Test
+  fun testEquivalence_wholeNumber123Answer_withWholeNumber123Input_bothValuesEquivalent() {
+    val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_123)
+    val answer = WHOLE_NUMBER_VALUE_TEST_123
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(answer = answer, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = answer,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
   @Test
   fun testEquivalence_wholeNumber123Answer_withWholeNumber254Input_bothValuesNotEquivalent() {
     val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_TEST_254)
 
     val matches =
-            inputIsEquivalentToRuleClassifier.matches(
-                    answer = WHOLE_NUMBER_VALUE_TEST_123,
-                    inputs = inputs,
-                    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = WHOLE_NUMBER_VALUE_TEST_123,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
 
-    @Test
-    fun testEquivalence_fraction2Over8Answer_withFraction2Over8Input_bothValuesEquivalent() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_2_OVER_8)
+  @Test
+  fun testEquivalence_fraction2Over8Answer_withFraction2Over8Input_bothValuesEquivalent() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_2_OVER_8)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = FRACTION_VALUE_TEST_2_OVER_8,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_2_OVER_8,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquivalence_fraction2Over8Answer_withFraction1Over5Input_bothValuesNotEquivalent() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_5)
+  @Test
+  fun testEquivalence_fraction2Over8Answer_withFraction1Over5Input_bothValuesNotEquivalent() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_5)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = FRACTION_VALUE_TEST_2_OVER_8,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_2_OVER_8,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalence_fraction1Over4Answer_withFraction2Over8Input_bothValuesEquivalent() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_2_OVER_8)
+  @Test
+  fun testEquivalence_fraction1Over4Answer_withFraction2Over8Input_bothValuesEquivalent() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_2_OVER_8)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = FRACTION_VALUE_TEST_1_OVER_4,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_1_OVER_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquivalence_mixedNumber6And1Over2Answer_withMixedNumber6And1Over2Input_bothValuesMatch() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
+  @Test
+  fun testEquivalence_mixedNumber6And1Over2Answer_withMixedNumber6And1Over2Input_bothValuesMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = MIXED_NUMBER_VALUE_TEST_6_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_6_1_OVER_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquivalence_mixedNum55And1Over4Answer_withMixedNum6And1Over2Input_bothValuesDoNotMatch() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
+  @Test
+  fun testEquivalence_mixedNum55And1Over4Answer_withMixedNum6And1Over2Input_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = MIXED_NUMBER_VALUE_TEST_55_1_OVER_4,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_55_1_OVER_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalence_mixedNum6And1Over2Answer_withFraction13Over2Input_bothValuesMatch() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
+  @Test
+  fun testEquivalence_mixedNum6And1Over2Answer_withFraction13Over2Input_bothValuesMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = FRACTION_VALUE_TEST_13_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_13_OVER_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquivalence_wholeNumberAnswer_withMixedNumberInput_bothValuesDoNotMatch() {
-        val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
+  @Test
+  fun testEquivalence_wholeNumberAnswer_withMixedNumberInput_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to MIXED_NUMBER_VALUE_TEST_6_1_OVER_2)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = WHOLE_NUMBER_VALUE_TEST_254,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = WHOLE_NUMBER_VALUE_TEST_254,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalence_negativeMixedNumberAnswer_withPositiveMixedNumberInput_valuesDoNotMatch() {
-        val inputs = mapOf("f" to NEGATIVE_VALUE_TEST_679_2_OVER_3)
+  @Test
+  fun testEquivalence_negativeMixedNumberAnswer_withPositiveMixedNumberInput_valuesDoNotMatch() {
+    val inputs = mapOf("f" to NEGATIVE_VALUE_TEST_679_2_OVER_3)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = MIXED_NUMBER_VALUE_TEST_55_1_OVER_4,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_55_1_OVER_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquivalenceOf_mixedNumberAnswer_withFractionInput_bothValuesDoNotMatch() {
-        val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_5)
+  @Test
+  fun testEquivalenceOf_mixedNumberAnswer_withFractionInput_bothValuesDoNotMatch() {
+    val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_5)
 
-        val matches =
-                inputIsEquivalentToRuleClassifier.matches(
-                        answer = MIXED_NUMBER_VALUE_TEST_6_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_6_1_OVER_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testEquivalence_missingInput_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_8)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputIsEquivalentToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_2_OVER_8,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputIsEquivalentToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_2_OVER_8,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

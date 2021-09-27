@@ -35,6 +35,7 @@ import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILA
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -47,6 +48,7 @@ import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -59,8 +61,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
@@ -474,7 +474,8 @@ class TopicControllerTest {
     val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_0)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
-    assertThat(ephemeralConceptCard.conceptCard.explanation.html).isEqualTo("Hello. Welcome to Oppia.")
+    assertThat(ephemeralConceptCard.conceptCard.explanation.html)
+      .isEqualTo("Hello. Welcome to Oppia.")
   }
 
   @Test
@@ -591,7 +592,7 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_validThirdSkillDifferentTopic_returnsCorrectConceptCard() {
-    val conceptCardProvider = topicController .getConceptCard(profileId1, TEST_SKILL_ID_2)
+    val conceptCardProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_2)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
     assertThat(ephemeralConceptCard.conceptCard.skillId).isEqualTo(TEST_SKILL_ID_2)

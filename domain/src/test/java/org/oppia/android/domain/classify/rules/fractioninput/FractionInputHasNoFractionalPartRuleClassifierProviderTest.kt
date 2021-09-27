@@ -94,104 +94,112 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
     val inputs: Map<String, InteractionObject> = mapOf()
 
     val matches =
-            hasNoFractionalPartClassifierProvider.matches(
-                    answer = WHOLE_NUMBER_VALUE_TEST_123,
-                    inputs = inputs,
-                    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = WHOLE_NUMBER_VALUE_TEST_123,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
 
-    @Test
-    fun testNoFractionPart_fraction2Over4Answer_hasFractionalPart() {
-        val inputs: Map<String, InteractionObject> = mapOf()
+  @Test
+  fun testNoFractionPart_fraction2Over4Answer_hasFractionalPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
 
-        val matches =
-                hasNoFractionalPartClassifierProvider.matches(
-                        answer = FRACTION_VALUE_TEST_2_OVER_4,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = FRACTION_VALUE_TEST_2_OVER_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testNoFractionPart_mixedNumber123And1Over2Answer_hasFractionPart() {
-        val inputs: Map<String, InteractionObject> = mapOf()
+  @Test
+  fun testNoFractionPart_mixedNumber123And1Over2Answer_hasFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
 
-        val matches =
-                hasNoFractionalPartClassifierProvider.matches(
-                        answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testNoFractionPart_mixedNumber123And0Over3Answer_hasNoFractionPart() {
-        val inputs: Map<String, InteractionObject> = mapOf()
+  @Test
+  fun testNoFractionPart_mixedNumber123And0Over3Answer_hasNoFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
 
-        val matches =
-                hasNoFractionalPartClassifierProvider.matches(
-                        answer = MIXED_NUMBER_VALUE_TEST_123_0_OVER_3,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_123_0_OVER_3,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testNoFractionPart_mixedNumberNegative123And1Over2Answer_hasFractionPart() {
-        val inputs: Map<String, InteractionObject> = mapOf()
+  @Test
+  fun testNoFractionPart_mixedNumberNegative123And1Over2Answer_hasFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
 
-        val matches =
-                hasNoFractionalPartClassifierProvider.matches(
-                        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testNoFractionPart_mixedNumberNegative123And0Over3Answer_hasNoFractionPart() {
-        val inputs: Map<String, InteractionObject> = mapOf()
+  @Test
+  fun testNoFractionPart_mixedNumberNegative123And0Over3Answer_hasNoFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
 
-        val matches =
-                hasNoFractionalPartClassifierProvider.matches(
-                        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_0_OVER_3,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_0_OVER_3,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testNoFractionPart_fraction1Over2Answer_hasFractionPart() {
-        val inputs: Map<String, InteractionObject> = mapOf()
+  @Test
+  fun testNoFractionPart_fraction1Over2Answer_hasFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
 
-        val matches =
-                hasNoFractionalPartClassifierProvider.matches(
-                        answer = FRACTION_VALUE_TEST_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = FRACTION_VALUE_TEST_1_OVER_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testNoFractionPart_fraction20Over5Answer_hasNoFractionPart() {
-        val inputs: Map<String, InteractionObject> = mapOf()
+  @Test
+  fun testNoFractionPart_fraction20Over5Answer_hasNoFractionPart() {
+    val inputs: Map<String, InteractionObject> = mapOf()
 
-        val matches =
-                hasNoFractionalPartClassifierProvider.matches(
-                        answer = FRACTION_VALUE_TEST_20_OVER_5,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      hasNoFractionalPartClassifierProvider.matches(
+        answer = FRACTION_VALUE_TEST_20_OVER_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerFractionInputHasNoFractionalPartRuleClassifierProviderTest_TestApplicationComponent

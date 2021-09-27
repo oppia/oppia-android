@@ -59,49 +59,53 @@ class RatioInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to RATIO_VALUE_TEST_1_2_3)
 
     val matches =
-            equalsClassifierProvider.matches(
-                    answer = RATIO_VALUE_TEST_1_2_3,
-                    inputs = inputs,
-                    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      equalsClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
 
-    @Test
-    fun testAnswer_testRatio_ratioNonSimplified_ratioSimplified_bothValuesDoNoMatch() {
-        val inputs = mapOf("x" to RATIO_VALUE_TEST_2_4_6)
+  @Test
+  fun testAnswer_testRatio_ratioNonSimplified_ratioSimplified_bothValuesDoNoMatch() {
+    val inputs = mapOf("x" to RATIO_VALUE_TEST_2_4_6)
 
-        val matches =
-                equalsClassifierProvider.matches(
-                        answer = RATIO_VALUE_TEST_1_2_3,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      equalsClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer_testRatio_ratio4Terms_ratio3Terms_bothValuesDoNoMatch() {
-        val inputs = mapOf("x" to RATIO_VALUE_TEST_2_4_6_8)
+  @Test
+  fun testAnswer_testRatio_ratio4Terms_ratio3Terms_bothValuesDoNoMatch() {
+    val inputs = mapOf("x" to RATIO_VALUE_TEST_2_4_6_8)
 
-        val matches =
-                equalsClassifierProvider.matches(
-                        answer = RATIO_VALUE_TEST_1_2_3,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      equalsClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-        equalsClassifierProvider.matches(
-                answer = RATIO_VALUE_TEST_1_2_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      equalsClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -116,10 +120,11 @@ class RatioInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("y" to RATIO_VALUE_TEST_1_2_3)
 
     val exception = assertThrows(IllegalStateException::class) {
-        equalsClassifierProvider.matches(
-                answer = RATIO_VALUE_TEST_1_2_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      equalsClassifierProvider.matches(
+        answer = RATIO_VALUE_TEST_1_2_3,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

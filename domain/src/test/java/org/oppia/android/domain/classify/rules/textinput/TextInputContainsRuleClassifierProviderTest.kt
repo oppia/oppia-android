@@ -13,24 +13,24 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 
 /** Tests for [TextInputContainsRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -85,7 +85,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isTrue()
   }
@@ -95,7 +96,11 @@ class TextInputContainsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_NULL_INPUT_SET)
 
     val matches =
-      inputContainsRuleClassifier.matches(answer = STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputContainsRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_ANSWER_NULL,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
@@ -107,7 +112,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isTrue()
   }
@@ -119,7 +125,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_IS_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isTrue()
   }
@@ -131,7 +138,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_NOT_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isFalse()
   }
@@ -143,7 +151,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isTrue()
   }
@@ -155,7 +164,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isTrue()
   }
@@ -167,7 +177,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isTrue()
   }
@@ -179,7 +190,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isTrue()
   }
@@ -191,7 +203,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isFalse()
   }
@@ -201,7 +214,11 @@ class TextInputContainsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_ANSWER_INPUT_SET)
 
     val matches =
-      inputContainsRuleClassifier.matches(answer = STRING_VALUE_TEST_ANSWER_NULL, inputs = inputs, writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputContainsRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_ANSWER_NULL,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -213,7 +230,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isFalse()
   }
@@ -225,7 +243,8 @@ class TextInputContainsRuleClassifierProviderTest {
     val matches = inputContainsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
     assertThat(matches).isFalse()
   }
@@ -238,7 +257,8 @@ class TextInputContainsRuleClassifierProviderTest {
       inputContainsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -254,7 +274,8 @@ class TextInputContainsRuleClassifierProviderTest {
       inputContainsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -280,11 +301,13 @@ class TextInputContainsRuleClassifierProviderTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
-    TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-    TestLogReportingModule::class, AssetModule::class, RobolectricModule::class, TestModule::class
-  ])
+  @Component(
+    modules = [
+      LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
+      TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
+      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class, TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

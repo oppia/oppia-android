@@ -139,242 +139,263 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-    @Test
-    fun testAnswer1Over2_input0_HasIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
+  @Test
+  fun testAnswer1Over2_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswer5Over2_input0_HasIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
+  @Test
+  fun testAnswer5Over2_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_5_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_5_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswer5Over2_input2_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
+  @Test
+  fun testAnswer5Over2_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_5_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_5_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer3Over2_input2_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
+  @Test
+  fun testAnswer3Over2_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_3_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_3_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer3Over2_input3_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
+  @Test
+  fun testAnswer3Over2_input3_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_3_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_3_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer1Over2_input1_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_1)
+  @Test
+  fun testAnswer1Over2_input1_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_1)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer123_1Over2_input123_HasIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_123)
+  @Test
+  fun testAnswer123_1Over2_input123_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_123)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswer0_2Over3_input0_HasIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
+  @Test
+  fun testAnswer0_2Over3_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_0_2_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_0_2_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswer1_2Over3_input2_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
+  @Test
+  fun testAnswer1_2Over3_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswer1_2Over3_input3_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
+  @Test
+  fun testAnswer1_2Over3_input3_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswerNegative123_1Over2_input123_HasIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_123)
+  @Test
+  fun testAnswerNegative123_1Over2_input123_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_123)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswerNegative0_2Over3_input0_HasIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
+  @Test
+  fun testAnswerNegative0_2Over3_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_0_2_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_0_2_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswerNegative1Over2_input0_HasIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
+  @Test
+  fun testAnswerNegative1Over2_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswerNegative5Over2_input0_HasIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
+  @Test
+  fun testAnswerNegative5Over2_input0_HasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testAnswerNegative5Over2_input2_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
+  @Test
+  fun testAnswerNegative5Over2_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswerNegative3Over2_input2_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
+  @Test
+  fun testAnswerNegative3Over2_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswerNegative3Over2_input3_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
+  @Test
+  fun testAnswerNegative3Over2_input3_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    fun testAnswerNegative1_2Over3_input2_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
+  fun testAnswerNegative1_2Over3_input2_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testAnswerNegative1_2Over3_input3_HasNotIntegerPartEqual() {
-        val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
+  @Test
+  fun testAnswerNegative1_2Over3_input3_HasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
 
-        val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-                answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testAnswer1Over2_inputMissing_throwsException() {
     val inputs = mapOf("y" to WHOLE_NUMBER_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputHasIntegerPartEqualToRuleClassifier
-                .matches(answer = FRACTION_VALUE_TEST_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputHasIntegerPartEqualToRuleClassifier
+        .matches(
+          answer = FRACTION_VALUE_TEST_1_OVER_2,
+          inputs = inputs,
+          writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        )
     }
 
     assertThat(exception)
@@ -387,10 +408,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputHasIntegerPartEqualToRuleClassifier
-                .matches(answer = FRACTION_VALUE_TEST_1_OVER_2,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputHasIntegerPartEqualToRuleClassifier
+        .matches(
+          answer = FRACTION_VALUE_TEST_1_OVER_2,
+          inputs = inputs,
+          writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        )
     }
 
     assertThat(exception)

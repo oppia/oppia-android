@@ -51,114 +51,123 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to TEST_HTML_STRING_SET_LOWERCASE)
 
     val matches =
-            inputEqualsRuleClassifierProvider.matches(
-                    answer = TEST_HTML_STRING_SET_LOWERCASE,
-                    inputs = inputs,
-                    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
 
-    @Test
-    fun testEquals_lowercaseAnswer_withLowercaseAnswerInput_bothValuesMatch() {
-        val inputs = mapOf("x" to TEST_HTML_STRING_SET_LOWERCASE)
+  @Test
+  fun testEquals_lowercaseAnswer_withLowercaseAnswerInput_bothValuesMatch() {
+    val inputs = mapOf("x" to TEST_HTML_STRING_SET_LOWERCASE)
 
-        val matches =
-                inputEqualsRuleClassifierProvider.matches(
-                        answer = TEST_HTML_STRING_SET_LOWERCASE,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquals_lowercaseAnswer_withUppercaseAnswerInput_bothValuesNotMatch() {
-        val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
+  @Test
+  fun testEquals_lowercaseAnswer_withUppercaseAnswerInput_bothValuesNotMatch() {
+    val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
 
-        val matches =
-                inputEqualsRuleClassifierProvider.matches(
-                        answer = TEST_HTML_STRING_SET_LOWERCASE,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquals_uppercaseAnswer_withLowercaseAnswerInput_bothValuesNotMatch() {
-        val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
+  @Test
+  fun testEquals_uppercaseAnswer_withLowercaseAnswerInput_bothValuesNotMatch() {
+    val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
 
-        val matches =
-                inputEqualsRuleClassifierProvider.matches(
-                        answer = TEST_HTML_STRING_SET_LOWERCASE,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquals_uppercaseAnswer_withUppercaseAnswerInput_bothValuesMatch() {
-        val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
+  @Test
+  fun testEquals_uppercaseAnswer_withUppercaseAnswerInput_bothValuesMatch() {
+    val inputs = mapOf("x" to TEST_HTML_STRING_SET_UPPERCASE)
 
-        val matches =
-                inputEqualsRuleClassifierProvider.matches(
-                        answer = TEST_HTML_STRING_SET_UPPERCASE,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_UPPERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testEquals_mixedLowercaseAnswer_withMixedUppercaseAnswerInput_bothValuesNotMatch() {
-        val inputs = mapOf("x" to TEST_HTML_STRING_SET_MIXED_LOWERCASE)
+  @Test
+  fun testEquals_mixedLowercaseAnswer_withMixedUppercaseAnswerInput_bothValuesNotMatch() {
+    val inputs = mapOf("x" to TEST_HTML_STRING_SET_MIXED_LOWERCASE)
 
-        val matches =
-                inputEqualsRuleClassifierProvider.matches(
-                        answer = TEST_HTML_STRING_SET_MIXED_UPPERCASE,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_MIXED_UPPERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquals_nonNegativeAnswer_withUppercaseAnswerInput_bothValuesMatch() {
-        val inputs = mapOf("x" to NON_NEGATIVE_VALUE_3)
+  @Test
+  fun testEquals_nonNegativeAnswer_withUppercaseAnswerInput_bothValuesMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_3)
 
-        val matches =
-                inputEqualsRuleClassifierProvider.matches(
-                        answer = TEST_HTML_STRING_SET_UPPERCASE,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_UPPERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testEquals_nonNegativeAnswer_withLowercaseAnswerInput_bothValuesNotMatch() {
-        val inputs = mapOf("x" to NON_NEGATIVE_VALUE_3)
+  @Test
+  fun testEquals_nonNegativeAnswer_withLowercaseAnswerInput_bothValuesNotMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_3)
 
-        val matches =
-                inputEqualsRuleClassifierProvider.matches(
-                        answer = TEST_HTML_STRING_SET_LOWERCASE,
-                        inputs = inputs,
-                        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches =
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testLowercaseAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to TEST_HTML_STRING_SET_LOWERCASE)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputEqualsRuleClassifierProvider.matches(
-                answer = TEST_HTML_STRING_SET_LOWERCASE,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputEqualsRuleClassifierProvider.matches(
+        answer = TEST_HTML_STRING_SET_LOWERCASE,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

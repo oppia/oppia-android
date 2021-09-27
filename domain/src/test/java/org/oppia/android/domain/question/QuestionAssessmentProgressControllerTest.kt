@@ -11,6 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,12 +24,14 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnsweredQuestionOutcome
+import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.domain.classify.InteractionsModule
@@ -52,6 +55,8 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.topic.TEST_SKILL_ID_2
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -73,11 +78,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Before
-import org.oppia.android.app.model.EphemeralQuestion
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.testing.assertThrows
-import org.oppia.android.testing.data.DataProviderTestMonitor
 
 private const val TOLERANCE = 1e-5
 
@@ -1471,7 +1471,9 @@ class QuestionAssessmentProgressControllerTest {
     return moveToNextQuestion()
   }
 
-  private fun submitNumericInputAnswerAndMoveToNextQuestion(numericAnswer: Double): EphemeralQuestion {
+  private fun submitNumericInputAnswerAndMoveToNextQuestion(
+    numericAnswer: Double
+  ): EphemeralQuestion {
     submitNumericInputAnswer(numericAnswer)
     return moveToNextQuestion()
   }

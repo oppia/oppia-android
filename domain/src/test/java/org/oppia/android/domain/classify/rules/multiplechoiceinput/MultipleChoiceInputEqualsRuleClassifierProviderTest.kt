@@ -42,39 +42,42 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     setUpTestApplicationComponent()
   }
 
-    @Test
-    fun testNonNegativeAnswer_nonNegativeInput_sameValue_bothValuesMatch() {
-        val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
+  @Test
+  fun testNonNegativeAnswer_nonNegativeInput_sameValue_bothValuesMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
-        val matches = inputEqualsRuleClassifier.matches(
-                answer = NON_NEGATIVE_VALUE_TEST_0,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = NON_NEGATIVE_VALUE_TEST_0,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testNonNegativeAnswer_nonNegativeInput_differentValue_bothValuesDoNotMatch() {
-        val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
+  @Test
+  fun testNonNegativeAnswer_nonNegativeInput_differentValue_bothValuesDoNotMatch() {
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
-        val matches = inputEqualsRuleClassifier.matches(
-                answer = NON_NEGATIVE_VALUE_TEST_1,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputEqualsRuleClassifier.matches(
+      answer = NON_NEGATIVE_VALUE_TEST_1,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testNonNegativeAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputEqualsRuleClassifier.matches(
-                answer = NON_NEGATIVE_VALUE_TEST_0,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputEqualsRuleClassifier.matches(
+        answer = NON_NEGATIVE_VALUE_TEST_0,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -87,10 +90,11 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputEqualsRuleClassifier.matches(
-                answer = STRING_VALUE_TEST,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputEqualsRuleClassifier.matches(
+        answer = STRING_VALUE_TEST,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -103,10 +107,11 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val inputs = mapOf("x" to STRING_VALUE_TEST)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputEqualsRuleClassifier.matches(
-                answer = NON_NEGATIVE_VALUE_TEST_0,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputEqualsRuleClassifier.matches(
+        answer = NON_NEGATIVE_VALUE_TEST_0,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

@@ -48,123 +48,133 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     setUpTestApplicationComponent()
   }
 
-    @Test
-    fun testIsProperSubset_withInput1_forAnswer12345_returnsFalse() {
-        val inputs = mapOf("x" to ITEM_SELECTION_1)
+  @Test
+  fun testIsProperSubset_withInput1_forAnswer12345_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_1)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_12345,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_12345,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testIsProperSubset_withInput16_forAnswer12345_returnsFalse() {
-        val inputs = mapOf("x" to ITEM_SELECTION_16)
+  @Test
+  fun testIsProperSubset_withInput16_forAnswer12345_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_16)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_12345,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_12345,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testIsProperSubset_withInput12345_forAnswer12_returnsTrue() {
-        val inputs = mapOf("x" to ITEM_SELECTION_12345)
+  @Test
+  fun testIsProperSubset_withInput12345_forAnswer12_returnsTrue() {
+    val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_12,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_12,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testIsProperSubset_withInput12345_forAnswer126_returnsFalse() {
-        val inputs = mapOf("x" to ITEM_SELECTION_12345)
+  @Test
+  fun testIsProperSubset_withInput12345_forAnswer126_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_126,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_126,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testIsProperSubset_withEmptyInput_forAnswer16_returnsFalse() {
-        val inputs = mapOf("x" to ITEM_SELECTION_NONE)
+  @Test
+  fun testIsProperSubset_withEmptyInput_forAnswer16_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_NONE)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_16,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_16,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testIsProperSubset_withInput1_forEmptyAnswer_returnsTrue() {
-        val inputs = mapOf("x" to ITEM_SELECTION_1)
+  @Test
+  fun testIsProperSubset_withInput1_forEmptyAnswer_returnsTrue() {
+    val inputs = mapOf("x" to ITEM_SELECTION_1)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_NONE,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_NONE,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isTrue()
-    }
+    assertThat(matches).isTrue()
+  }
 
-    @Test
-    fun testIsProperSubset_withEmptyInput_forEmptyAnswer_returnsFalse() {
-        val inputs = mapOf("x" to ITEM_SELECTION_NONE)
+  @Test
+  fun testIsProperSubset_withEmptyInput_forEmptyAnswer_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_NONE)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_NONE,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_NONE,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testIsProperSubset_withInput1_forAnswer6_returnsFalse() {
-        val inputs = mapOf("x" to ITEM_SELECTION_1)
+  @Test
+  fun testIsProperSubset_withInput1_forAnswer6_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_1)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_6,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_6,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
-    @Test
-    fun testIsProperSubset_withInput12345_forAnswer12345_returnsFalse() {
-        val inputs = mapOf("x" to ITEM_SELECTION_12345)
+  @Test
+  fun testIsProperSubset_withInput12345_forAnswer12345_returnsFalse() {
+    val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
-        val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_12345,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
+      answer = ITEM_SELECTION_12345,
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
 
-        assertThat(matches).isFalse()
-    }
+    assertThat(matches).isFalse()
+  }
 
   @Test
   fun testIsProperSubset_withInvalidInput_forAnswer12345_throwsException() {
     val inputs = mapOf("x" to ITEM_SELECTION_INVAILD)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_12345,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -177,10 +187,11 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     val inputs = mapOf("x" to ITEM_SELECTION_12345)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_INVAILD,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_INVAILD,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -193,10 +204,11 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     val inputs = mapOf("a" to ITEM_SELECTION_12345)
 
     val exception = assertThrows(IllegalStateException::class) {
-        inputContainsAtLeastOneOfRuleClassifier.matches(
-                answer = ITEM_SELECTION_12345,
-                inputs = inputs,
-                writtenTranslationContext = WrittenTranslationContext.getDefaultInstance())
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
