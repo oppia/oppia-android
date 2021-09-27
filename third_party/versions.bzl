@@ -21,7 +21,7 @@ https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 # This list should contain only production (non-test) dependencies.
 MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.annotation:annotation": "1.1.0",
-    "androidx.appcompat:appcompat": "1.0.2",
+    "androidx.appcompat:appcompat": "1.2.0",
     "androidx.constraintlayout:constraintlayout": "1.1.3",
     "androidx.core:core": "1.0.1",
     "androidx.core:core-ktx": "1.0.1",
@@ -65,7 +65,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
     "io.fabric.sdk.android:fabric": "1.4.7",
-    "io.github.chaosleung:pinview": "1.4.4",
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
@@ -132,7 +131,7 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "v1.5.0-alpha-2",
     },
     "rules_proto": {
-        "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
+        "sha": "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
     },
 }
