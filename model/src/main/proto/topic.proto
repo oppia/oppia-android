@@ -447,7 +447,7 @@ message ChapterRecord {
   string title = 3;
 
   // The outline/description that is used to provide an initial summary of the chapter's contents.
-  string outline = 4;
+  string description = 4;
 }
 
 // Corresponds to a record of a subtopic/revision card available to be loaded from the local
