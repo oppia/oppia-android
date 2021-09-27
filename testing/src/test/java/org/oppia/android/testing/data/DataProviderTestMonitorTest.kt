@@ -136,7 +136,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     // Update the provider, then wait for the result.
     asyncDataSubscriptionManager.notifyChangeAsync("test")
@@ -207,7 +207,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     val result = monitor.waitForNextSuccessResult()
@@ -222,7 +222,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     val failure = assertThrows(IllegalStateException::class) { monitor.waitForNextSuccessResult() }
@@ -237,7 +237,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("first"), AsyncResult.success("second")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     val result = monitor.waitForNextSuccessResult()
@@ -304,7 +304,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
@@ -319,7 +319,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
@@ -335,7 +335,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
@@ -351,7 +351,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("first"), AsyncResult.success("second")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
@@ -405,7 +405,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     val result = monitor.waitForNextFailingResult()
@@ -420,7 +420,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     val failure = assertThrows(IllegalStateException::class) { monitor.waitForNextFailingResult() }
@@ -435,7 +435,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("First")), AsyncResult.failed(Exception("Second"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     val result = monitor.waitForNextFailingResult()
@@ -502,7 +502,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     // Internal expectation failure since the operation hasn't completed.
@@ -516,7 +516,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
@@ -532,7 +532,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
@@ -548,7 +548,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("First")), AsyncResult.failed(Exception("Second"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     testCoroutineDispatchers.runCurrent() // Ensure the subscription is updated.
@@ -599,7 +599,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     // Verify that the method wsa actually called despite not being expected to have been.
@@ -613,7 +613,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     // Update the provider, then wait for the result.
     asyncDataSubscriptionManager.notifyChangeAsync("test")
@@ -629,7 +629,7 @@ class DataProviderTestMonitorTest {
         "test", AsyncResult.success("first"), AsyncResult.success("second")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
-    monitor.waitForNextResult()  // Wait for the first result.
+    monitor.waitForNextResult() // Wait for the first result.
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
 
