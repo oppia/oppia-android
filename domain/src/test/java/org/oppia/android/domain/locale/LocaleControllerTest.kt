@@ -230,9 +230,10 @@ class LocaleControllerTest {
     // app.
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
-    assertThat(context.languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(context.languageDefinition.fallbackMacroLanguage).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("fr")
+    val languageDefinition = context.languageDefinition
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.fallbackMacroLanguage).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("fr-MC")
     assertThat(context.hasFallbackLanguageDefinition()).isFalse()
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
     assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("MC")
@@ -326,8 +327,9 @@ class LocaleControllerTest {
     // Changing to an unmatched language should update the provider.
     val locale = monitor.waitForNextSuccessResult()
     val context = locale.localeContext
-    assertThat(context.languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("fr")
+    val languageDefinition = context.languageDefinition
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("fr-MC")
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
     assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("MC")
   }

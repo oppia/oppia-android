@@ -105,6 +105,10 @@ class QuestionAssessmentProgressControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  // TODO(#3813): Migrate all tests in this suite to use this factory.
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Mock
   lateinit var mockScoreAndMasteryLiveDataObserver:
     Observer<AsyncResult<UserAssessmentPerformance>>
@@ -129,10 +133,6 @@ class QuestionAssessmentProgressControllerTest {
 
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
-
-  // TODO(#3813): Migrate all tests in this suite to use this factory.
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId1: ProfileId
 
@@ -1417,12 +1417,6 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun waitForGetCurrentQuestionSuccessfulLoad(): EphemeralQuestion {
     return monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.getCurrentQuestion()
-    )
-  }
-
-  private fun waitForGetCurrentQuestionFailureLoad(): Throwable {
-    return monitorFactory.waitForNextFailureResult(
       questionAssessmentProgressController.getCurrentQuestion()
     )
   }

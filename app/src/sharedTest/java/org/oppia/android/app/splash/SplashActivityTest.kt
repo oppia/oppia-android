@@ -331,7 +331,7 @@ class SplashActivityTest {
     val languageDefinition = displayLocale.localeContext.languageDefinition
     assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
     assertThat(languageDefinition.minAndroidSdkVersion).isEqualTo(1)
-    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("tr")
+    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("tr-TR")
   }
 
   @Test
