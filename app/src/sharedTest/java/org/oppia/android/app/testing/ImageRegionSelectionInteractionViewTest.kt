@@ -3,6 +3,7 @@ package org.oppia.android.app.testing
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -70,7 +71,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -113,6 +117,9 @@ class ImageRegionSelectionInteractionViewTest {
   @Captor
   lateinit var regionClickedEvent: ArgumentCaptor<RegionClickedEvent>
 
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -125,7 +132,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -147,7 +154,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -185,7 +192,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -207,7 +214,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @RunOn(TestPlatform.ESPRESSO)
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -244,7 +251,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -284,6 +291,68 @@ class ImageRegionSelectionInteractionViewTest {
       )
 
       assertThat(regionClickedEvent.value).isInstanceOf(DefaultRegionClickedEvent::class.java)
+    }
+  }
+
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_rtl_clickRegion3_region3Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
+      }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
+      )
+
+      verify(onClickableAreaClickedListener)
+        .onClickableAreaTouched(
+          capture(regionClickedEvent)
+        )
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+    }
+  }
+
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_rtl_clickRegion3_clickRegion2_region2Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
+      }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 2"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      verify(
+        onClickableAreaClickedListener,
+        times(2)
+      ).onClickableAreaTouched(
+        capture(
+          regionClickedEvent
+        )
+      )
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
     }
   }
 
