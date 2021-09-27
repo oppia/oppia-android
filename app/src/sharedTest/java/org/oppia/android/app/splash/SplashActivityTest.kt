@@ -335,6 +335,7 @@ class SplashActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testSplashActivity_initializationFailure_initializesLocaleHandlerWithDefaultContext() {
     corruptCacheFile()
     initializeTestApplication()
