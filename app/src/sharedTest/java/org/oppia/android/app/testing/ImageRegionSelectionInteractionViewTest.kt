@@ -69,7 +69,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -88,8 +90,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestPlatform
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
