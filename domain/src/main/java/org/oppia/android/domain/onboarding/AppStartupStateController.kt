@@ -1,7 +1,5 @@
 package org.oppia.android.domain.onboarding
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.OnboardingState
@@ -11,10 +9,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 

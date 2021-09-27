@@ -5,11 +5,11 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.locale.OppiaLocale
 
 /** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton

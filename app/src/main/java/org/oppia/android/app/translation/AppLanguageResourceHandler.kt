@@ -123,6 +123,7 @@ class AppLanguageResourceHandler @Inject constructor(
   fun computeDateTimeString(timestampMillis: Long): String =
     getDisplayLocale().computeDateTimeString(timestampMillis)
 
+  /** See [OppiaLocale.DisplayLocale.getLayoutDirection]. */
   fun getLayoutDirection(): Int = getDisplayLocale().getLayoutDirection()
 
   private fun getDisplayLocale(): OppiaLocale.DisplayLocale =
