@@ -103,7 +103,7 @@
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:textColor">@color/white</item>
-    <item name="android:textSize">14sp</item>
+    <item name="android:textSize">16sp</item>
   </style>
   <!-- PREVIOUS BUTTON STYLE -->
   <style name="PreviousButton" parent="TextAppearance.AppCompat.Widget.Button">
