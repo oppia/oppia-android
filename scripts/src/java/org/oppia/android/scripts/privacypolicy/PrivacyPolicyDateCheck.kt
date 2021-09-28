@@ -24,4 +24,3 @@ fun main(args: Array<String>) {
 
   println("Privacy Policy date Check Passed")
 }
-
