@@ -330,9 +330,10 @@
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">4dp</dimen>
 
-  <!-- Topic Revision Fragment -->
-  <dimen name="topic_revision_fragment_paddingStart">96dp</dimen>
-  <dimen name="topic_revision_fragment_paddingTop">8dp</dimen>
-  <dimen name="topic_revision_fragment_paddingEnd">96dp</dimen>
-  <dimen name="topic_revision_fragment_paddingBottom">112dp</dimen>
+  <!-- TopicRevisionFragment -->
+  <dimen name="topic_revision_fragment_padding_start">96dp</dimen>
+  <dimen name="topic_revision_fragment_padding_top">8dp</dimen>
+  <dimen name="topic_revision_fragment_padding_end">96dp</dimen>
+  <dimen name="topic_revision_fragment_padding_bottom">112dp</dimen>
+
 </resources>
