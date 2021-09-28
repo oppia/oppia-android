@@ -494,6 +494,14 @@ class AndroidLocaleProfileTest {
     assertThat(matches).isTrue()
   }
 
+  /* Tests for computeIetfLanguageTag */
+
+  // TODO: finish
+  // testComputeIetfLanguageTag_noLanguageCode_noRegionCode_returnsEmptyString
+  // testComputeIetfLanguageTag_languageCode_noRegionCode_returnsLanguageCode
+  // testComputeIetfLanguageTag_noLanguageCode_regionCode_returnsRegionCode
+  // testComputeIetfLanguageTag_languageCode_regionCode_returnsIetfBcp47CombinedLanguageTag
+
   private fun createProfileWithWildcard(languageCode: String): AndroidLocaleProfile =
     AndroidLocaleProfile(languageCode, regionCode = AndroidLocaleProfile.REGION_WILDCARD)
 

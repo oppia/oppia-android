@@ -352,6 +352,12 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  // TODO: finish
+  // testQuestionPlayer_englishContentLang_contentIsInEnglish
+  // testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic
+  // testQuestionPlayer_englishContentLang_showHint_explanationInEnglish
+  // testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }

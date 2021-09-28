@@ -1583,6 +1583,12 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO: finish
+  // testExpActivity_englishContentLang_contentIsInEnglish
+  // testExpActivity_profileWithArabicContentLang_contentIsInArabic
+  // testExpActivity_englishContentLang_showHint_explanationInEnglish
+  // testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic
+
   private fun createExplorationActivityIntent(
     internalProfileId: Int,
     topicId: String,
@@ -1662,12 +1668,12 @@ class ExplorationActivityTest {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
-// TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-//  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-//  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-//  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-//  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-//  thread helps to counter that.
+  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
+  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
+  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
+  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
+  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
+  //  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.

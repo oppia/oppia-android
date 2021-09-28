@@ -229,6 +229,15 @@ class TextInputEqualsRuleClassifierProviderTest {
       .contains("Expected input value to be of type TRANSLATABLE_SET_OF_NORMALIZED_STRING")
   }
 
+  /* Localization-based tests. */
+
+  // TODO: finish
+  // testStringAnswer_inputsWithArabic_answerInEnglish_englishContext_answerMatches
+  // testStringAnswer_inputsWithArabic_answerInArabic_englishContext_answerDoesNotMatch
+  // testStringAnswer_inputsWithArabic_answerInEnglish_arabicContext_answerDoesNotMatch
+  // testStringAnswer_inputsWithArabic_answerInArabic_arabicContext_answerMatches
+  // testStringAnswer_inputsAndAnswerInArabic_differentAnswer_answerDoesNotMatch
+
   private fun setUpTestApplicationComponent() {
     DaggerTextInputEqualsRuleClassifierProviderTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())

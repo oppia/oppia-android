@@ -140,12 +140,12 @@ class LanguageConfigRetrieverTest {
   }
 
   @Test
-  fun testLoadSupportedLanguages_portuguese_hasNoTranslationSupport() {
+  fun testLoadSupportedLanguages_portuguese_hasOnlyContentStringSupport() {
     val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
 
     val definition = supportedLanguages.lookUpLanguage(OppiaLanguage.PORTUGUESE)
     assertThat(definition.hasAppStringId()).isFalse()
-    assertThat(definition.hasContentStringId()).isFalse()
+    assertThat(definition.hasContentStringId()).isTrue()
     assertThat(definition.hasAudioTranslationId()).isFalse()
     assertThat(definition.fallbackMacroLanguage).isEqualTo(OppiaLanguage.LANGUAGE_UNSPECIFIED)
   }

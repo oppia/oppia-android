@@ -105,6 +105,10 @@ class QuestionAssessmentProgressControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  // TODO(#3813): Migrate all tests in this suite to use this factory.
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Mock
   lateinit var mockScoreAndMasteryLiveDataObserver:
     Observer<AsyncResult<UserAssessmentPerformance>>
@@ -129,10 +133,6 @@ class QuestionAssessmentProgressControllerTest {
 
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
-
-  // TODO(#3813): Migrate all tests in this suite to use this factory.
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId1: ProfileId
 
@@ -1410,6 +1410,14 @@ class QuestionAssessmentProgressControllerTest {
       .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
+  // TODO: finish
+  // testGetCurrentQuestion_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
+  // testGetCurrentQuestion_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
+  // testGetCurrentQuestion_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
+  // testGetCurrentQuestion_englishLangProfile_includesTranslationContextForEnglish
+  // testGetCurrentQuestion_englishLangProfile_switchToArabic_includesTranslationContextForArabic
+  // testGetCurrentQuestion_arabicLangProfile_includesTranslationContextForArabic
+
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -1417,12 +1425,6 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun waitForGetCurrentQuestionSuccessfulLoad(): EphemeralQuestion {
     return monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.getCurrentQuestion()
-    )
-  }
-
-  private fun waitForGetCurrentQuestionFailureLoad(): Throwable {
-    return monitorFactory.waitForNextFailureResult(
       questionAssessmentProgressController.getCurrentQuestion()
     )
   }

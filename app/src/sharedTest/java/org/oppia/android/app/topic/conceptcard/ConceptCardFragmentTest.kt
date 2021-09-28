@@ -73,6 +73,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -112,14 +113,19 @@ class ConceptCardFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -130,10 +136,15 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_clickOnToolbarNavigationButton_closeActivity() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withContentDescription(R.string.concept_card_close_icon_description))
         .inRoot(isDialog())
         .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
     }
   }
@@ -141,7 +152,11 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_toolbarTitle_isDisplayedSuccessfully() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       onView(
         allOf(
           instanceOf(TextView::class.java),
@@ -154,8 +169,12 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           instanceOf(TextView::class.java),
@@ -168,8 +187,13 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_configurationChange_conceptCardIsDisplayedCorrectly() {
     launch(ConceptCardFragmentTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.concept_card_explanation_text))
         .inRoot(isDialog())
         .check(
@@ -188,7 +212,11 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() { // ktlint-disable max-line-length
     launch(ConceptCardFragmentTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
         .check(
@@ -216,7 +244,11 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() { // ktlint-disable max-line-length
     launch(ConceptCardFragmentTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.open_dialog_1)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
         .check(
@@ -244,8 +276,13 @@ class ConceptCardFragmentTest {
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() { // ktlint-disable max-line-length
     launch(ConceptCardFragmentTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.open_dialog_1)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
         .check(
@@ -269,6 +306,11 @@ class ConceptCardFragmentTest {
         .check(matches(containsRichText()))
     }
   }
+
+  // TODO: finish
+  // testConceptCardFragment_englishContentLang_explanationIsInEnglish
+  // testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic
+  // testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic
 
   @Module
   class TestModule {

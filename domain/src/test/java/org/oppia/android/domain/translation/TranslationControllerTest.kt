@@ -351,13 +351,13 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLang_uninitialized_rootLocale_returnsFailure() {
+  fun testGetWrittenContentLang_uninitialized_rootLocale_returnsUnspecifiedLanguage() {
     forceDefaultLocale(Locale.ROOT)
 
     val languageProvider = translationController.getWrittenTranslationContentLanguage(PROFILE_ID_0)
 
-    val error = monitorFactory.waitForNextFailureResult(languageProvider)
-    assertThat(error).hasMessageThat().contains("doesn't match supported language definitions")
+    val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
+    assertThat(language).isEqualTo(LANGUAGE_UNSPECIFIED)
   }
 
   @Test
@@ -450,13 +450,18 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLocale_uninitialized_rootLocale_returnsFailure() {
+  fun testGetWrittenContentLocale_uninitialized_rootLocale_returnsBuiltinLocale() {
     forceDefaultLocale(Locale.ROOT)
 
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
 
-    val error = monitorFactory.waitForNextFailureResult(localeProvider)
-    assertThat(error).hasMessageThat().contains("doesn't match supported language definitions")
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    val languageDefinition = context.languageDefinition
+    assertThat(context.usageMode).isEqualTo(CONTENT_STRINGS)
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("builtin")
+    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 
   @Test
@@ -985,6 +990,24 @@ class TranslationControllerTest {
     // The context ID does match, so the matching string is extracted.
     assertThat(extracted).isEqualTo("Translated string")
   }
+
+  // TODO: finish
+
+  // testExtractStringList_defaultSet_defaultContext_returnsEmptyList
+  // testExtractStringList_defaultSet_validContext_returnsEmptyList
+  // testExtractStringList_defaultContext_returnsUntranslatedList
+  // testExtractStringList_validContext_emptyList_returnsEmptyList
+  // testExtractStringList_validContext_matchesNoContentIds_returnsUntranslatedList
+  // testExtractStringList_validContext_includesOneContentId_returnsPartiallyTranslatedList
+  // testExtractStringList_validContext_includesAllContentIds_returnsTranslatedList
+
+  // testComputeTranslationContext_englishLocale_emptyMap_returnsEmptyContext
+  // testComputeTranslationContext_englishLocale_returnsEmptyContext
+  // testComputeTranslationContext_defaultMismatchedLocale_returnsEmptyContext
+  // testComputeTranslationContext_arabicLocale_noArabicTranslationsInMap_returnsEmptyContext
+  // testComputeTranslationContext_arabicLocale_withXlations_returnsContextWithXlations
+  // testComputeTranslationContext_portugueseLocale_withXlations_returnsContextWithXlations
+  // testComputeTranslationContext_brazilianPortugueseLocale_withXlations_returnsXlatedContext
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

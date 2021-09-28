@@ -42,22 +42,26 @@ class InputInteractionViewTestActivity :
   @Inject
   lateinit var translationController: TranslationController
 
-  val numericInputViewModel = NumericInputViewModel(
-    hasConversationView = false,
-    interactionAnswerErrorOrAvailabilityCheckReceiver = this,
-    isSplitView = false,
-    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
-    resourceHandler = resourceHandler
-  )
+  val numericInputViewModel by lazy {
+    NumericInputViewModel(
+      hasConversationView = false,
+      interactionAnswerErrorOrAvailabilityCheckReceiver = this,
+      isSplitView = false,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
+      resourceHandler = resourceHandler
+    )
+  }
 
-  val textInputViewModel = TextInputViewModel(
-    interaction = Interaction.getDefaultInstance(),
-    hasConversationView = false,
-    interactionAnswerErrorOrAvailabilityCheckReceiver = this,
-    isSplitView = false,
-    writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
-    translationController = translationController
-  )
+  val textInputViewModel by lazy {
+    TextInputViewModel(
+      interaction = Interaction.getDefaultInstance(),
+      hasConversationView = false,
+      interactionAnswerErrorOrAvailabilityCheckReceiver = this,
+      isSplitView = false,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
+      translationController = translationController
+    )
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

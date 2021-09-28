@@ -506,11 +506,6 @@ class StateFragmentTest {
       typeFractionText("1/4")
       clickSubmitAnswerButton()
 
-      scenario.onActivity { activity ->
-        val view = activity.findViewById<android.view.View>(R.id.submitted_answer_text_view)
-        println(view.contentDescription)
-      }
-
       scrollToViewType(SUBMITTED_ANSWER)
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
@@ -1502,6 +1497,53 @@ class StateFragmentTest {
         TEST_EXPLORATION_ID_2
       )
   }
+
+  /* Multi-language & localization tests. */
+
+  // TODO: finish
+  // TODO: add TODO for adding these tests for QuestionFragmentTest (which doesn't yet exist)
+  // testStateFragment_englishContentLang_content_isInEnglish
+  // testStateFragment_arabicContentLang_content_isInArabic
+  // testStateFragment_arabicContentLang_thenEnglish_content_isInArabic
+  // testStateFragment_englishContentLang_feedback_isInEnglish
+  // testStateFragment_arabicContentLang_feedback_isInArabic
+  // testStateFragment_arabicContentLang_thenEnglish_feedback_isInArabic
+  // testStateFragment_english_multipleChoice_optionsAreInEnglish
+  // testStateFragment_english_multipleChoice_submittedAnswer_answerIsInEnglish
+  // testStateFragment_arabic_multipleChoice_optionsAreInArabic
+  // testStateFragment_arabic_multipleChoice_submittedAnswer_answerIsInArabic
+  // testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInArabic
+  // testStateFragment_english_itemSelection_optionsAreInEnglish
+  // testStateFragment_english_itemSelection_submittedAnswer_answerIsInEnglish
+  // testStateFragment_arabic_itemSelection_optionsAreInArabic
+  // testStateFragment_arabic_itemSelection_submittedAnswer_answerIsInArabic
+  // testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInArabic
+  // testStateFragment_english_continueInteraction_buttonIsInEnglish
+  // testStateFragment_english_continueInteraction_submitted_answerIsInEnglish
+  // testStateFragment_arabic_continueInteraction_buttonIsInArabic
+  // testStateFragment_arabic_continueInteraction_submitted_answerIsInEnglish
+  // testStateFragment_english_dragAndDrop_optionsAreInEnglish
+  // testStateFragment_english_dragAndDrop_submittedAnswer_answerIsInEnglish
+  // testStateFragment_arabic_dragAndDrop_optionsAreInArabic
+  // testStateFragment_arabic_dragAndDrop_submittedAnswer_answerIsInArabic
+  // testStateFragment_arabic_dragAndDrop_submittedAnswer_switchToEnglish_answerIsInArabic
+  // testStateFragment_english_fractionInput_placeholderIsInEnglish
+  // testStateFragment_english_fractionInput_submitAnswer_answerMatchesSubmission
+  // testStateFragment_arabic_fractionInput_placeholderIsInArabic
+  // testStateFragment_arabic_fractionInput_submitAnswer_answerMatchesSubmission
+  // testStateFragment_english_imageRegionSelection_submitAnswer_answerSubmits
+  // testStateFragment_arabic_imageRegionSelection_submitAnswer_answerSubmits
+  // testStateFragment_english_numericInput_submitAnswer_answerMatchesSubmission
+  // testStateFragment_arabic_numericnput_submitAnswer_answerMatchesSubmission
+  // testStateFragment_english_ratioInput_placeholderIsInEnglish
+  // testStateFragment_english_ratioInput_submitAnswer_answerMatchesSubmission
+  // testStateFragment_arabic_ratioInput_placeholderIsInArabic
+  // testStateFragment_arabic_ratioInput_submitAnswer_answerMatchesSubmission
+  // testStateFragment_english_textInput_placeholderIsInEnglish
+  // testStateFragment_english_textInput_submitAnswer_answerMatchesSubmission
+  // testStateFragment_arabic_textInput_placeholderIsInArabic
+  // testStateFragment_arabic_textInput_submitAnswer_answerMatchesSubmission
+  // testStateFragment_arabic_textInput_submitAnswer_switchToEnglish_answerDoesNotChange
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!

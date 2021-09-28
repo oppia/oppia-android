@@ -1111,6 +1111,23 @@ class TopicControllerTest {
     assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
   }
 
+  /* Localization-based tests. */
+
+  // TODO: finish
+  // testGetConceptCard_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
+  // testGetConceptCard_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
+  // testGetConceptCard_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
+  // testGetConceptCard_englishLangProfile_includesTranslationContextForEnglish
+  // testGetConceptCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic
+  // testGetConceptCard_arabicLangProfile_includesTranslationContextForArabic
+
+  // testGetRevisionCard_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
+  // testGetRevisionCard_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
+  // testGetRevisionCard_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
+  // testGetRevisionCard_englishLangProfile_includesTranslationContextForEnglish
+  // testGetRevisionCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic
+  // testGetRevisionCard_arabicLangProfile_includesTranslationContextForArabic
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }

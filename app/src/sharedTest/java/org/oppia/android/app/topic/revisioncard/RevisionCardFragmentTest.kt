@@ -86,6 +86,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -127,10 +128,20 @@ class RevisionCardFragmentTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     Intents.init()
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   @Test
@@ -143,7 +154,11 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       openActionBarOverflowOrOptionsMenu(context)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.menu_help)))
         .check(matches(isDisplayed()))
@@ -160,8 +175,13 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       openActionBarOverflowOrOptionsMenu(context)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText(context.getString(R.string.menu_help))).perform(ViewActions.click())
+      testCoroutineDispatchers.runCurrent()
+
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasExtra(
@@ -182,8 +202,13 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       openActionBarOverflowOrOptionsMenu(context)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText(context.getString(R.string.menu_options))).perform(ViewActions.click())
+      testCoroutineDispatchers.runCurrent()
+
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
         hasExtra(
@@ -204,6 +229,8 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_toolbar_title))
         .check(matches(withText("What is a Fraction?")))
     }
@@ -219,6 +246,8 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID_2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("Description of subtopic is here."))))
     }
@@ -234,6 +263,8 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_return_button))
         .check(matches(withText(R.string.return_to_topic)))
     }
@@ -249,7 +280,11 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_toolbar_title))
         .check(matches(withText("What is a Fraction?")))
     }
@@ -265,7 +300,11 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID_2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("Description of subtopic is here."))))
     }
@@ -281,7 +320,11 @@ class RevisionCardFragmentTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_return_button))
         .check(matches(withText(R.string.return_to_topic)))
     }
@@ -297,6 +340,8 @@ class RevisionCardFragmentTest {
         subtopicId = 2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(withText(containsString("Learn more")))
       )
@@ -313,7 +358,11 @@ class RevisionCardFragmentTest {
         subtopicId = 2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(withText(containsString("Learn more")))
       )
@@ -330,7 +379,11 @@ class RevisionCardFragmentTest {
         subtopicId = 2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
@@ -348,8 +401,13 @@ class RevisionCardFragmentTest {
         subtopicId = 2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
@@ -357,10 +415,10 @@ class RevisionCardFragmentTest {
     }
   }
 
-  @After
-  fun tearDown() {
-    Intents.release()
-  }
+  // TODO: finish
+  // testRevisionCard_englishContentLang_pageContentsAreInEnglish
+  // testRevisionCard_englishContentLang_switchToArabic_pageContentsAreInArabic
+  // testRevisionCard_withArabicContentLang_pageContentsAreInArabic
 
   /** See the version in StateFragmentTest for documentation details. */
   @Suppress("SameParameterValue")

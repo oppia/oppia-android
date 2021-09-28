@@ -44,15 +44,6 @@ private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 
 /**
- * Represents the Oppia language code corresponding to the default language to use for written
- * translations if the user-selected language is unavailable. Note that while this is English, it's
- * unexpected to be used since most lessons supported by the app are in English by default (which
- * means their English translations are the default content strings). This is defined here so that
- * future non-English based lessons properly support language fail-over.
- */
-private const val DEFAULT_WRITTEN_TRANSLATION_LANGUAGE_CODE = "en"
-
-/**
  * Domain controller for performing operations corresponding to translations.
  *
  * This controller is often used instead of [LocaleController] since it provides additional
@@ -395,7 +386,6 @@ class TranslationController @Inject constructor(
   ): Translation? {
     return languageCode?.let { translationMappingMap[it] }
       ?: fallbackLanguageCode?.let { translationMappingMap[it] }
-      ?: translationMappingMap[DEFAULT_WRITTEN_TRANSLATION_LANGUAGE_CODE]
   }
 
   private fun LanguageSupportDefinition.LanguageId.getOppiaLanguageCode(): String? {

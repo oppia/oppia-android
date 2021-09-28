@@ -42,6 +42,14 @@ private const val WRITTEN_TRANSLATION_LOCALE_BASE_DATA_PROVIDER_ID = "written_tr
 private const val AUDIO_TRANSLATIONS_LOCALE_BASE_DATA_PROVIDER_ID = "audio_translations_locale"
 private const val SYSTEM_LANGUAGE_DATA_PROVIDER_ID = "system_language"
 
+/**
+ * Represents the Oppia language code corresponding to the default language to use for written
+ * translations if the user-selected language is unavailable. Note that this is intentionally an
+ * invalid language code to force translation selection to fall back to the built-in strings (which
+ * is a guaranteed fallback for written translations).
+ */
+private const val DEFAULT_WRITTEN_TRANSLATION_LANGUAGE_CODE = "builtin"
+
 /** Controller for creating & retrieving user-specified [OppiaLocale]s. */
 @Singleton
 class LocaleController @Inject constructor(
@@ -349,18 +357,26 @@ class LocaleController @Inject constructor(
     systemLocaleProfile: AndroidLocaleProfile,
     usageMode: LanguageUsageMode
   ): LanguageSupportDefinition? {
-    // Matching behaves as follows (for app strings):
-    // 1. Try to find a matching definition directly for the language.
-    // 2. If that fails, try falling back to the current system language.
-    // 3. If that fails, create a basic definition to represent the system language.
     // Content strings & audio translations only perform step 1 since there's no reasonable
     // fallback.
     val matchedDefinition = retrieveLanguageDefinition(language)
-    return if (usageMode == APP_STRINGS) {
-      matchedDefinition
-        ?: retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)
-        ?: computeDefaultLanguageDefinitionForSystemLanguage(systemLocaleProfile)
-    } else matchedDefinition
+    return when (usageMode) {
+      APP_STRINGS -> {
+        // Matching behaves as follows:
+        // 1. Try to find a matching definition directly for the language.
+        // 2. If that fails, try falling back to the current system language.
+        // 3. If that fails, create a basic definition to represent the system language.
+        matchedDefinition
+          ?: retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)
+          ?: computeDefaultLanguageDefinitionForSystemLanguage(systemLocaleProfile)
+      }
+      // Content strings can always fall back to default built-in content strings.
+      CONTENT_STRINGS -> matchedDefinition ?: computeDefaultLanguageDefinitionForContentStrings()
+      // Audio translations have no possible fallback since the corresponding audio subtitles aren't
+      // guaranteed to exist.
+      AUDIO_TRANSLATIONS -> matchedDefinition
+      USAGE_MODE_UNSPECIFIED, UNRECOGNIZED -> null
+    }
   }
 
   /**
@@ -464,4 +480,20 @@ class LocaleController @Inject constructor(
       }.build()
     }.build()
   }.build()
+
+  private fun computeDefaultLanguageDefinitionForContentStrings(): LanguageSupportDefinition {
+    oppiaLogger.w(
+      "LocaleController",
+      "Falling back to the built-in content type due to mismatched configuration"
+    )
+    return LanguageSupportDefinition.newBuilder().apply {
+      language = OppiaLanguage.LANGUAGE_UNSPECIFIED
+      minAndroidSdkVersion = 1 // Assume it's supported on the current version.
+      contentStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+        ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+          ietfLanguageTag = DEFAULT_WRITTEN_TRANSLATION_LANGUAGE_CODE
+        }.build()
+      }.build()
+    }.build()
+  }
 }

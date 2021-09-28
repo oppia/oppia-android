@@ -122,6 +122,10 @@ class RevisionCardActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.revision_card_activity_title))
   }
 
+  // TODO: finish
+  // testRevisionCardActivity_englishContentLang_pageContentsAreInEnglish
+  // testRevisionCardActivity_profileWithArabicContentLang_pageContentsAreInArabic
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
