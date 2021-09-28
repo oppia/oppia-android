@@ -1,38 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <data>
-
-    <import type="org.oppia.android.app.model.ChapterPlayState" />
-
-  </data>
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
     <ImageView
-      android:id="@+id/completed_image_view_for_data_binding"
+      android:id="@+id/image_view_for_data_binding"
       android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:src="@{ChapterPlayState.COMPLETED}" />
+      android:layout_height="32dp"/>
 
-    <ImageView
-      android:id="@+id/not_started_image_view_for_data_binding"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:src="@{ChapterPlayState.NOT_STARTED}" />
-
-    <ImageView
-      android:id="@+id/started_not_completed_image_view_for_data_binding"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:src="@{ChapterPlayState.STARTED_NOT_COMPLETED}" />
-
-    <ImageView
-      android:id="@+id/not_playable_missing_prerequisites_image_view_for_data_binding"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:src="@{ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}" />
-  </LinearLayout>
 </layout>

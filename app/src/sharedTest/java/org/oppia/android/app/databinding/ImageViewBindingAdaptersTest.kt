@@ -1,15 +1,24 @@
 package org.oppia.android.app.databinding
 
+import android.app.Activity
 import android.app.Application
+import android.content.Intent
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -18,8 +27,10 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setImageDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -76,14 +87,70 @@ class ImageViewBindingAdaptersTest {
 
   // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
 
+  @get:Rule
+  var activityRule: ActivityScenarioRule<ImageViewBindingAdaptersTestActivity> =
+    ActivityScenarioRule(
+      Intent(
+        ApplicationProvider.getApplicationContext(),
+        ImageViewBindingAdaptersTestActivity::class.java
+      )
+    )
+
   @Config(qualifiers = "port")
   @Test
   fun testSetImageDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
-    launch(ImageViewBindingAdaptersTestActivity::class.java).use {
-      onView(withId(R.id.completed_image_view_for_data_binding)).check(
+    activityRule.scenario.runWithActivity {
+      val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
+      setImageDrawable(imageView, ChapterPlayState.COMPLETED)
+      onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_solid_color_primary_32dp))
       )
     }
+  }
+
+  @Test
+  fun testSetImageDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
+    activityRule.scenario.runWithActivity {
+      val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
+      setImageDrawable(imageView, ChapterPlayState.NOT_STARTED)
+      onView(withId(R.id.image_view_for_data_binding)).check(
+        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
+      )
+    }
+  }
+
+  @Test
+  fun testSetImageDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
+    activityRule.scenario.runWithActivity {
+      val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
+      setImageDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
+      onView(withId(R.id.image_view_for_data_binding)).check(
+        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
+      )
+    }
+  }
+
+  @Test
+  fun testSetImageDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
+    activityRule.scenario.runWithActivity {
+      val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
+      setImageDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      onView(withId(R.id.image_view_for_data_binding)).check(
+        matches(withDrawable(R.drawable.circular_stroke_1dp_grey_32dp))
+      )
+    }
+  }
+
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
+    crossinline action: (A) -> V
+  ): V {
+    // Use Mockito to ensure the routine is actually executed before returning the result.
+    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
+    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
+    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
+    onActivity { fakeMock.consume(action(it)) }
+    verify(fakeMock).consume(valueCaptor.capture())
+    return valueCaptor.value
   }
 
   @Singleton
@@ -132,5 +199,10 @@ class ImageViewBindingAdaptersTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private interface Consumer<T> {
+    /** Represents an operation that accepts a single input argument and returns no result. */
+    fun consume(value: T)
   }
 }
