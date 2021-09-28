@@ -41,6 +41,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
@@ -527,7 +528,7 @@ class ExplorationCheckpointControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class,
       TestExplorationStorageModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LogStorageModule::class, NetworkConnectionUtilDebugModule::class
+      LogStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

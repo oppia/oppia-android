@@ -132,7 +132,7 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "v1.5.0-alpha-2",
     },
     "rules_proto": {
-        "sha": "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
+        "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
     },
 }
