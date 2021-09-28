@@ -137,49 +137,49 @@
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
     <item quantity="two">فصلان</item>
-    <item quantity="few">%d من الفصول</item>
-    <item quantity="many">%d من الفصول</item>
-    <item quantity="other">%d من الفصول</item>
+    <item quantity="few">%s من الفصول</item>
+    <item quantity="many">%s من الفصول</item>
+    <item quantity="other">%s من الفصول</item>
   </plurals>
   <plurals name="story_count">
     <item quantity="zero">و لا قصة</item>
     <item quantity="one">قصة واحدة</item>
     <item quantity="two">قصتان</item>
-    <item quantity="few">%d من القصص</item>
-    <item quantity="many">%d من القصص</item>
-    <item quantity="other">%d من القصص</item>
+    <item quantity="few">%s من القصص</item>
+    <item quantity="many">%s من القصص</item>
+    <item quantity="other">%s من القصص</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="zero">و لا فصل مكتمل</item>
-    <item quantity="one">فصل %d مكتمل من %d</item>
-    <item quantity="two">فصلان %d مكتملان من %d</item>
-    <item quantity="few">%dفصول مكتملة من %d</item>
-    <item quantity="many">%d فصول مكتملة من %d</item>
-    <item quantity="other">%d فصول مكتملة من %d</item>
+    <item quantity="one">فصل %s مكتمل من %s</item>
+    <item quantity="two">فصلان %s مكتملان من %s</item>
+    <item quantity="few">%sفصول مكتملة من %s</item>
+    <item quantity="many">%s فصول مكتملة من %s</item>
+    <item quantity="other">%s فصول مكتملة من %s</item>
   </plurals>
   <plurals name="lesson_count">
     <item quantity="zero">و لا درس</item>
     <item quantity="one">درسًا واحدًا</item>
     <item quantity="two">درسان</item>
-    <item quantity="few">%d درس</item>
-    <item quantity="many">%d درس</item>
-    <item quantity="other">%d درس</item>
+    <item quantity="few">%s درس</item>
+    <item quantity="many">%s درس</item>
+    <item quantity="other">%s درس</item>
   </plurals>
   <plurals name="completed_story_count">
     <item quantity="zero">و لا قصة مكتملة</item>
     <item quantity="one">قصة واحدة مكتملة</item>
     <item quantity="two">قصتان مكتملتان</item>
-    <item quantity="few">%d قصة مكتملة</item>
-    <item quantity="many">%d قصة مكتملة</item>
-    <item quantity="other">%d قصة مكتملة</item>
+    <item quantity="few">%s قصة مكتملة</item>
+    <item quantity="many">%s قصة مكتملة</item>
+    <item quantity="other">%s قصة مكتملة</item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="zero">و لا موضوع في تقدم</item>
     <item quantity="one">موضوع واحد في تقدم</item>
     <item quantity="two">موضوعان في تقدم</item>
-    <item quantity="few">%d موضوع في تقدم</item>
-    <item quantity="many">%d موضوع في تقدم</item>
-    <item quantity="other">%d موضوع في تقدم</item>
+    <item quantity="few">%s موضوع في تقدم</item>
+    <item quantity="many">%s موضوع في تقدم</item>
+    <item quantity="other">%s موضوع في تقدم</item>
   </plurals>
   <string name="profile_chooser_activity_label">صفحة اختيار الملف الشخصي</string>
   <string name="profile_chooser_admin">المشرف</string>
@@ -379,25 +379,25 @@
     <item quantity="zero">و لا دقيقة</item>
     <item quantity="one">دقيقة واحدة</item>
     <item quantity="two">دقيقتان</item>
-    <item quantity="few">%d دقيقة</item>
-    <item quantity="many">%d دقيقة</item>
-    <item quantity="other">%d دقيقة</item>
+    <item quantity="few">%s دقيقة</item>
+    <item quantity="many">%s دقيقة</item>
+    <item quantity="other">%s دقيقة</item>
   </plurals>
   <plurals name="hours">
     <item quantity="zero">و لا ساعة</item>
     <item quantity="one">ساعة واحدة</item>
     <item quantity="two">ساعتان</item>
-    <item quantity="few">%d ساعة</item>
-    <item quantity="many">%d ساعة</item>
-    <item quantity="other">%d ساعة</item>
+    <item quantity="few">%s ساعة</item>
+    <item quantity="many">%s ساعة</item>
+    <item quantity="other">%s ساعة</item>
   </plurals>
   <plurals name="days">
     <item quantity="zero">و لا يوم</item>
     <item quantity="one">يوم واحدة</item>
     <item quantity="two">يومان</item>
-    <item quantity="few">%d يوم</item>
-    <item quantity="many">%d يوم</item>
-    <item quantity="other">%d يوم</item>
+    <item quantity="few">%s يوم</item>
+    <item quantity="many">%s يوم</item>
+    <item quantity="other">%s يوم</item>
   </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
