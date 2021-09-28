@@ -415,6 +415,11 @@ class RevisionCardFragmentTest {
     }
   }
 
+  // TODO: finish
+  // testRevisionCard_englishContentLang_pageContentsAreInEnglish
+  // testRevisionCard_englishContentLang_switchToArabic_pageContentsAreInArabic
+  // testRevisionCard_withArabicContentLang_pageContentsAreInArabic
+
   /** See the version in StateFragmentTest for documentation details. */
   @Suppress("SameParameterValue")
   private fun openClickableSpan(text: String): ViewAction {

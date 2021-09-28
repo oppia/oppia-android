@@ -120,6 +120,9 @@ class TopicActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.topic_page))
   }
 
+  // TODO: finish
+  // testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(), internalProfileId, topicId

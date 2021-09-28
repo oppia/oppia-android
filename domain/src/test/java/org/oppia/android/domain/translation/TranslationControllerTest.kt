@@ -986,6 +986,24 @@ class TranslationControllerTest {
     assertThat(extracted).isEqualTo("Translated string")
   }
 
+  // TODO: finish
+
+  // testExtractStringList_defaultSet_defaultContext_returnsEmptyList
+  // testExtractStringList_defaultSet_validContext_returnsEmptyList
+  // testExtractStringList_defaultContext_returnsUntranslatedList
+  // testExtractStringList_validContext_emptyList_returnsEmptyList
+  // testExtractStringList_validContext_matchesNoContentIds_returnsUntranslatedList
+  // testExtractStringList_validContext_includesOneContentId_returnsPartiallyTranslatedList
+  // testExtractStringList_validContext_includesAllContentIds_returnsTranslatedList
+
+  // testComputeTranslationContext_englishLocale_emptyMap_returnsEmptyContext
+  // testComputeTranslationContext_englishLocale_returnsEmptyContext
+  // testComputeTranslationContext_defaultMismatchedLocale_returnsEmptyContext
+  // testComputeTranslationContext_arabicLocale_noArabicTranslationsInMap_returnsEmptyContext
+  // testComputeTranslationContext_arabicLocale_withXlations_returnsContextWithXlations
+  // testComputeTranslationContext_portugueseLocale_withXlations_returnsContextWithXlations
+  // testComputeTranslationContext_brazilianPortugueseLocale_withXlations_returnsXlatedContext
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }

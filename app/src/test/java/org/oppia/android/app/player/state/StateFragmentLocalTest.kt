@@ -1113,6 +1113,14 @@ class StateFragmentLocalTest {
     }
   }
 
+  // TODO: finish
+  // testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish
+  // testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish
+  // testStateFragment_arabicLocale_defaultContentLang_hint_labelsAreInArabic
+  // testStateFragment_arabicLocale_defaultContentLang_hint_explanationIsInArabic
+  // testStateFragment_englishLocale_arabicContentLang_hint_labelsAreInEnglish
+  // testStateFragment_englishLocale_arabicContentLang_hint_explanationIsInArabic
+
   @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_mobilePortrait_finishExploration_endOfSessionConfettiIsDisplayed() {

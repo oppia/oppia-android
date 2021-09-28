@@ -355,6 +355,9 @@ class StateRetrieverTest {
     assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(expectedInputInteractionObject)
   }
 
+  // TODO: finish
+  // testParseState_withWrittenTranslations_containingFourDataFormats_parsesTranslations
+
   /**
    * Return the first [RuleSpec] in the specified [State] matching the specified rule type, or fails
    * if one cannot be found.

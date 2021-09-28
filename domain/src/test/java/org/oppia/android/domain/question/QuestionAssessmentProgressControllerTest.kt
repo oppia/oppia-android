@@ -1410,6 +1410,14 @@ class QuestionAssessmentProgressControllerTest {
       .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
+  // TODO: finish
+  // testGetCurrentQuestion_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
+  // testGetCurrentQuestion_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
+  // testGetCurrentQuestion_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
+  // testGetCurrentQuestion_englishLangProfile_includesTranslationContextForEnglish
+  // testGetCurrentQuestion_englishLangProfile_switchToArabic_includesTranslationContextForArabic
+  // testGetCurrentQuestion_arabicLangProfile_includesTranslationContextForArabic
+
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

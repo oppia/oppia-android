@@ -307,6 +307,11 @@ class ConceptCardFragmentTest {
     }
   }
 
+  // TODO: finish
+  // testConceptCardFragment_englishContentLang_explanationIsInEnglish
+  // testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic
+  // testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic
+
   @Module
   class TestModule {
     @Provides

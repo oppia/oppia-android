@@ -2893,6 +2893,14 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
   }
 
+  // TODO: finish
+  // testGetCurrentState_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
+  // testGetCurrentState_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
+  // testGetCurrentState_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
+  // testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish
+  // testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic
+  // testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
