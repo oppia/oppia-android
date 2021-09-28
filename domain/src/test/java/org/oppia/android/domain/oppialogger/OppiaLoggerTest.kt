@@ -199,7 +199,7 @@ class OppiaLoggerTest {
     )
     assertThat(eventContext.questionContext.questionId).matches(TEST_QUESTION_ID)
     assertThat(eventContext.questionContext.skillIdList)
-      .containsAllIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
+      .containsAtLeastElementsIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
   }
 
   @Test

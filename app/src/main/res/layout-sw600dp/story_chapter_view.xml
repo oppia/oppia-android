@@ -94,7 +94,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
-            android:text="@{String.format(@string/chapter_name, (viewModel.index + 1), viewModel.name)}"
+            android:text="@{viewModel.computeChapterTitleText()}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"

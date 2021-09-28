@@ -78,7 +78,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif-light"
           android:lines="1"
-          android:text="@{@plurals/lesson_count(viewModel.totalChapterCount, viewModel.totalChapterCount)}"
+          android:text="@{viewModel.computeWalkthroughLessonCountText()}"
           android:textColor="@color/white_80"
           android:textSize="14sp"
           android:textStyle="italic"

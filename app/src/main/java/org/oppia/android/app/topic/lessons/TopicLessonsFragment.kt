@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.STORY_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
@@ -50,7 +52,7 @@ class TopicLessonsFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(
@@ -66,10 +68,10 @@ class TopicLessonsFragment :
       }
     }
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+    val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }
-    val storyId = arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+    val storyId = arguments?.getStringFromBundle(STORY_ID_ARGUMENT_KEY) ?: ""
 
     return topicLessonsFragmentPresenter.handleCreateView(
       inflater,

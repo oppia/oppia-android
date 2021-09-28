@@ -1,17 +1,18 @@
 package org.oppia.android.app.parser
 
 import android.app.Application
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -21,7 +22,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -47,6 +50,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -54,6 +58,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -63,7 +68,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [StringToFractionParser]. */
@@ -71,9 +75,14 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StringToFractionParserTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StringToFractionParserTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var context: Context
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TestActivity>(
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
 
   private lateinit var stringToFractionParser: StringToFractionParser
 
@@ -121,9 +130,11 @@ class StringToFractionParserTest {
 
   @Test
   fun testSubmitTimeError_validMixedNumber_noErrorMessage() {
-    val errorMessage = stringToFractionParser.getSubmitTimeError("11 22/33")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage).isNull()
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getSubmitTimeError("11 22/33")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage).isNull()
+    }
   }
 
   @Test
@@ -134,10 +145,12 @@ class StringToFractionParserTest {
 
   @Test
   fun testSubmitTimeError_tenDigitNumber_numberTooLong_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getSubmitTimeError("0123456789")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage)
-      .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getSubmitTimeError("0123456789")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+    }
   }
 
   @Test
@@ -148,10 +161,12 @@ class StringToFractionParserTest {
 
   @Test
   fun testSubmitTimeError_nonDigits_invalidFormat_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getSubmitTimeError("jdhfc")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage)
-      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getSubmitTimeError("jdhfc")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
   }
 
   @Test
@@ -162,9 +177,11 @@ class StringToFractionParserTest {
 
   @Test
   fun testSubmitTimeError_divisionByZero_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getSubmitTimeError("123/0")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage).isEqualTo("Please do not put 0 in the denominator")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getSubmitTimeError("123/0")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage).isEqualTo("Please do not put 0 in the denominator")
+    }
   }
 
   @Test
@@ -175,10 +192,12 @@ class StringToFractionParserTest {
 
   @Test
   fun testSubmitTimeError_ambiguousSpacing_invalidFormat_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getSubmitTimeError("1 2 3/4")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage)
-      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getSubmitTimeError("1 2 3/4")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
   }
 
   @Test
@@ -189,10 +208,12 @@ class StringToFractionParserTest {
 
   @Test
   fun testSubmitTimeError_emptyString_invalidFormat_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getSubmitTimeError("")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage)
-      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getSubmitTimeError("")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
   }
 
   @Test
@@ -233,9 +254,11 @@ class StringToFractionParserTest {
 
   @Test
   fun testRealTimeError_validRegularFraction_noErrorMessage() {
-    val errorMessage = stringToFractionParser.getRealTimeAnswerError("2/3")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage).isNull()
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getRealTimeAnswerError("2/3")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage).isNull()
+    }
   }
 
   @Test
@@ -246,10 +269,12 @@ class StringToFractionParserTest {
 
   @Test
   fun testRealTimeError_nonDigits_invalidChars_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getRealTimeAnswerError("abc")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage)
-      .isEqualTo("Please only use numerical digits, spaces or forward slashes (/)")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getRealTimeAnswerError("abc")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please only use numerical digits, spaces or forward slashes (/)")
+    }
   }
 
   @Test
@@ -260,10 +285,12 @@ class StringToFractionParserTest {
 
   @Test
   fun testRealTimeError_noNumerator_invalidFormat_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getRealTimeAnswerError("/3")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage)
-      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getRealTimeAnswerError("/3")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
   }
 
   @Test
@@ -274,10 +301,12 @@ class StringToFractionParserTest {
 
   @Test
   fun testRealTimeError_severalSlashes_invalidFormat_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getRealTimeAnswerError("1/3/8")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage)
-      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getRealTimeAnswerError("1/3/8")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
   }
 
   @Test
@@ -288,10 +317,12 @@ class StringToFractionParserTest {
 
   @Test
   fun testRealTimeError_severalDashes_invalidFormat_hasRelevantErrorMessage() {
-    val errorMessage = stringToFractionParser.getRealTimeAnswerError("-1/-3")
-      .getErrorMessageFromStringRes(context)
-    assertThat(errorMessage)
-      .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getRealTimeAnswerError("-1/-3")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
   }
 
   @Test
@@ -447,7 +478,7 @@ class StringToFractionParserTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

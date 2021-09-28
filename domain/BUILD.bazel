@@ -112,6 +112,7 @@ kt_android_library(
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
@@ -136,7 +137,10 @@ android_library(
     custom_package = "org.oppia.android.domain",
     manifest = ":test_manifest",
     resource_files = glob(["src/test/res/**"]),
-    visibility = [":domain_testing_visibility"],
+    visibility = [
+        ":domain_testing_visibility",
+        "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
+    ],
 )
 
 # TODO(#2143): Move InteractionObjectTestBuilder to a testing package outside the test folder.
@@ -183,6 +187,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+    "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
 ]

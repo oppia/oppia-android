@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LicenseTextViewerFragmentBinding
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class LicenseTextViewerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: LicenseTextViewerFragmentBinding
 
@@ -47,6 +49,6 @@ class LicenseTextViewerFragmentPresenter @Inject constructor(
     dependencyIndex: Int,
     licenseIndex: Int
   ): LicenseTextViewModel {
-    return LicenseTextViewModel(activity, dependencyIndex, licenseIndex)
+    return LicenseTextViewModel(activity, dependencyIndex, licenseIndex, resourceHandler)
   }
 }

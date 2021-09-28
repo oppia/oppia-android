@@ -3,6 +3,7 @@ package org.oppia.android.app.testing
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -18,6 +19,7 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
@@ -28,7 +30,7 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -40,6 +42,7 @@ import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
@@ -68,7 +71,11 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -77,6 +84,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -97,6 +105,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ImageRegionSelectionInteractionViewTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
   lateinit var context: Context
@@ -106,6 +116,9 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Captor
   lateinit var regionClickedEvent: ArgumentCaptor<RegionClickedEvent>
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Before
   fun setUp() {
@@ -119,7 +132,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -141,7 +154,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -179,7 +192,7 @@ class ImageRegionSelectionInteractionViewTest {
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
-  @Ignore
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -201,7 +214,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @RunOn(TestPlatform.ESPRESSO)
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -238,7 +251,7 @@ class ImageRegionSelectionInteractionViewTest {
   }
 
   @Test
-  @Ignore("Move to Robolectric")
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
       it.onActivity {
@@ -281,6 +294,68 @@ class ImageRegionSelectionInteractionViewTest {
     }
   }
 
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_rtl_clickRegion3_region3Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
+      }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
+      )
+
+      verify(onClickableAreaClickedListener)
+        .onClickableAreaTouched(
+          capture(regionClickedEvent)
+        )
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+    }
+  }
+
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_rtl_clickRegion3_clickRegion2_region2Clicked() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      it.onActivity {
+        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
+          .setListener(onClickableAreaClickedListener)
+      }
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.3f, pointY = 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      onView(withId(R.id.clickable_image_view)).perform(
+        clickPoint(pointX = 0.7f, pointY = 0.3f)
+      )
+      onView(allOf(withTagValue(`is`("Region 2"))))
+        .check(
+          matches(isDisplayed())
+        )
+
+      verify(
+        onClickableAreaClickedListener,
+        times(2)
+      ).onClickableAreaTouched(
+        capture(
+          regionClickedEvent
+        )
+      )
+      assertThat(regionClickedEvent.value)
+        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -303,7 +378,7 @@ class ImageRegionSelectionInteractionViewTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
