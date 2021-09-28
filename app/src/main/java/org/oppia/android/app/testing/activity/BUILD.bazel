@@ -1,0 +1,22 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Package for test-only utilities to simplify accessing the activity & fragment parts of the Dagger
+graph, and to simplify UI arrangement for tests that require an activity (such as fragments) or
+fragments (such as views).
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+# TODO(#2747): Move this to the testing package once Gradle doesn't force this into the app module.
+# Also, re-add testonly attribute when this TODO can be addressed.
+kt_android_library(
+    name = "test_activity",
+    srcs = [
+        "TestActivity.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+    ],
+)

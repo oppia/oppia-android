@@ -4,15 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
+import org.oppia.android.app.testing.activity.TestActivity
 
 /** Activity for testing [ViewEventLogsFragment]. */
-class ViewEventLogsTestActivity : InjectableAppCompatActivity() {
+class ViewEventLogsTestActivity : TestActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.view_event_logs_activity)

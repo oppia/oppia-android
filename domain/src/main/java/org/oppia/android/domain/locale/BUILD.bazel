@@ -86,4 +86,32 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "locale_application_injector",
+    srcs = [
+        "LocaleApplicationInjector.kt",
+    ],
+    visibility = [
+        "//app:__pkg__",
+        "//testing/src/main/java/org/oppia/android/testing/junit:__pkg__",
+    ],
+    deps = [
+        ":locale_controller",
+    ],
+)
+
+kt_android_library(
+    name = "locale_application_injector_provider",
+    srcs = [
+        "LocaleApplicationInjectorProvider.kt",
+    ],
+    visibility = [
+        "//app:__pkg__",
+        "//testing/src/main/java/org/oppia/android/testing/junit:__pkg__",
+    ],
+    deps = [
+        ":locale_application_injector",
+    ],
+)
+
 dagger_rules()

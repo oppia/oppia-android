@@ -53,11 +53,11 @@ class StateRetriever @Inject constructor() {
   // Creates an interaction from JSON
   private fun createInteractionFromJson(interactionJson: JSONObject): Interaction {
     return Interaction.newBuilder()
-      .setId(interactionJson.getString("id"))
+      .setId(interactionJson.getStringFromObject("id"))
       .addAllAnswerGroups(
         createAnswerGroupsFromJson(
           interactionJson.getJSONArray("answer_groups"),
-          interactionJson.getString("id")
+          interactionJson.getStringFromObject("id")
         )
       )
       .setDefaultOutcome(
@@ -68,7 +68,7 @@ class StateRetriever @Inject constructor() {
       .putAllCustomizationArgs(
         createCustomizationArgsMapFromJson(
           interactionJson.getJSONObject("customization_args"),
-          interactionJson.getString("id")
+          interactionJson.getStringFromObject("id")
         )
       )
       .addAllHint(
@@ -127,7 +127,7 @@ class StateRetriever @Inject constructor() {
     addAllRuleSpecs(ruleSpecsJson.map { convertToRuleSpec(it, interactionId) })
     val misconceptionJson =
       if (answerGroupJson.isNull("tagged_skill_misconception_id")) null
-      else answerGroupJson.getString("tagged_skill_misconception_id")
+      else answerGroupJson.getStringFromObject("tagged_skill_misconception_id")
     if (!misconceptionJson.isNullOrEmpty()) {
       val misconceptionParts = misconceptionJson.split("-")
       taggedSkillMisconception =
@@ -144,7 +144,7 @@ class StateRetriever @Inject constructor() {
       return Outcome.getDefaultInstance()
     }
     return Outcome.newBuilder()
-      .setDestStateName(outcomeJson.getString("dest"))
+      .setDestStateName(outcomeJson.getStringFromObject("dest"))
       .setFeedback(createFeedbackSubtitledHtml(outcomeJson))
       .setLabelledAsCorrect(outcomeJson.getBoolean("labelled_as_correct"))
       .build()
@@ -173,7 +173,7 @@ class StateRetriever @Inject constructor() {
         .build()
     } else {
       CorrectAnswer.newBuilder()
-        .setCorrectAnswer(containerObject.getString("correct_answer"))
+        .setCorrectAnswer(containerObject.getStringFromObject("correct_answer"))
         .build()
     }
   }
@@ -185,8 +185,8 @@ class StateRetriever @Inject constructor() {
   private fun createFeedbackSubtitledHtml(containerObject: JSONObject): SubtitledHtml {
     val feedbackObject = containerObject.getJSONObject("feedback")
     return SubtitledHtml.newBuilder()
-      .setContentId(feedbackObject.getString("content_id"))
-      .setHtml(feedbackObject.getString("html"))
+      .setContentId(feedbackObject.getStringFromObject("content_id"))
+      .setHtml(feedbackObject.getStringFromObject("html"))
       .build()
   }
 
@@ -212,14 +212,14 @@ class StateRetriever @Inject constructor() {
   private fun createVoiceoverFromJson(voiceoverJson: JSONObject): Voiceover =
     Voiceover.newBuilder().apply {
       needsUpdate = voiceoverJson.getBoolean("needs_update")
-      fileName = voiceoverJson.getString("filename")
+      fileName = voiceoverJson.getStringFromObject("filename")
     }.build()
 
   // Creates the list of rule spec objects from JSON
   private fun convertToRuleSpec(ruleSpecJson: JSONObject, interactionId: String): RuleSpec {
     val inputJsonObject = ruleSpecJson.getJSONObject("inputs")
     return RuleSpec.newBuilder().apply {
-      ruleType = ruleSpecJson.getString("rule_type")
+      ruleType = ruleSpecJson.getStringFromObject("rule_type")
       putAllInput(
         inputJsonObject.keys().asSequence().associateWith { inputName ->
           createExactInputFromJson(inputJsonObject, inputName, interactionId, ruleType)
@@ -264,7 +264,7 @@ class StateRetriever @Inject constructor() {
       "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
       "ImageClickInput" ->
         InteractionObject.newBuilder()
-          .setNormalizedString(inputJson.getString(keyName))
+          .setNormalizedString(inputJson.getStringFromObject(keyName))
           .build()
       "RatioExpressionInput" ->
         createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
@@ -308,7 +308,7 @@ class StateRetriever @Inject constructor() {
         "x" ->
           InteractionObject.newBuilder()
             .setTranslatableHtmlContentId(
-              parseTranslatableContentId(inputJson.getString(keyName))
+              parseTranslatableContentId(inputJson.getStringFromObject(keyName))
             )
             .build()
         "y" ->
@@ -320,7 +320,7 @@ class StateRetriever @Inject constructor() {
       "HasElementXBeforeElementY" ->
         InteractionObject.newBuilder()
           .setTranslatableHtmlContentId(
-            parseTranslatableContentId(inputJson.getString(keyName))
+            parseTranslatableContentId(inputJson.getStringFromObject(keyName))
           )
           .build()
       else ->
@@ -357,10 +357,10 @@ class StateRetriever @Inject constructor() {
   private fun parseTranslatableSetOfNormalizedString(
     translatableSetOfStringsJson: JSONObject
   ): TranslatableSetOfNormalizedString = TranslatableSetOfNormalizedString.newBuilder().apply {
-    contentId = translatableSetOfStringsJson.getString("contentId")
+    contentId = translatableSetOfStringsJson.getStringFromObject("contentId")
     val strSet = translatableSetOfStringsJson.getJSONArray("normalizedStrSet")
     for (i in 0 until strSet.length()) {
-      addNormalizedStrings(strSet.getString(i))
+      addNormalizedStrings(strSet.getStringFromArray(i))
     }
   }.build()
 
@@ -382,7 +382,7 @@ class StateRetriever @Inject constructor() {
     val setOfContentIdsBuilder = SetOfTranslatableHtmlContentIds.newBuilder()
     for (i in 0 until setOfContentIdsJson.length()) {
       setOfContentIdsBuilder.addContentIds(
-        parseTranslatableContentId(setOfContentIdsJson.getString(i))
+        parseTranslatableContentId(setOfContentIdsJson.getStringFromArray(i))
       )
     }
     return setOfContentIdsBuilder.build()
@@ -393,7 +393,7 @@ class StateRetriever @Inject constructor() {
 
   private fun parseNumberWithUnitsObject(numberWithUnitsAnswer: JSONObject): NumberWithUnits {
     val numberWithUnitsBuilder = NumberWithUnits.newBuilder()
-    when (numberWithUnitsAnswer.getString("type")) {
+    when (numberWithUnitsAnswer.getStringFromObject("type")) {
       "real" -> numberWithUnitsBuilder.real = numberWithUnitsAnswer.getDouble("real")
       "fraction" ->
         numberWithUnitsBuilder.fraction =
@@ -404,7 +404,7 @@ class StateRetriever @Inject constructor() {
       val unit = unitsArray.getJSONObject(i)
       numberWithUnitsBuilder.addUnit(
         NumberUnit.newBuilder()
-          .setUnit(unit.getString("unit"))
+          .setUnit(unit.getStringFromObject("unit"))
           .setExponent(unit.getInt("exponent"))
       )
     }
@@ -577,8 +577,8 @@ class StateRetriever @Inject constructor() {
 
   private fun parseSubtitledHtml(subtitledHtmlJson: JSONObject): SubtitledHtml =
     SubtitledHtml.newBuilder().apply {
-      contentId = subtitledHtmlJson.getString("content_id")
-      html = subtitledHtmlJson.getString("html")
+      contentId = subtitledHtmlJson.getStringFromObject("content_id")
+      html = subtitledHtmlJson.getStringFromObject("html")
     }.build()
 
   private fun parseIntegerSchemaObject(value: Int): SchemaObject {
@@ -607,8 +607,8 @@ class StateRetriever @Inject constructor() {
 
   private fun parseSubtitledUnicode(jsonObject: JSONObject): SchemaObject {
     val subtitledUnicodeBuilder = SubtitledUnicode.newBuilder()
-    subtitledUnicodeBuilder.contentId = jsonObject.getString("content_id")
-    subtitledUnicodeBuilder.unicodeStr = jsonObject.getString("unicode_str")
+    subtitledUnicodeBuilder.contentId = jsonObject.getStringFromObject("content_id")
+    subtitledUnicodeBuilder.unicodeStr = jsonObject.getStringFromObject("unicode_str")
     val schemaObjectBuilder = SchemaObject.newBuilder()
     schemaObjectBuilder.setSubtitledUnicode(subtitledUnicodeBuilder)
     return schemaObjectBuilder.build()
@@ -617,7 +617,7 @@ class StateRetriever @Inject constructor() {
   private fun parseImageWithRegions(jsonObject: JSONObject): SchemaObject {
     val imageWithRegions = ImageWithRegions.newBuilder()
       .addAllLabelRegions(parseJsonToLabeledRegionsList(jsonObject.getJSONArray("labeledRegions")))
-      .setImagePath(jsonObject.getString("imagePath"))
+      .setImagePath(jsonObject.getStringFromObject("imagePath"))
       .build()
 
     return SchemaObject.newBuilder().setCustomSchemaValue(
@@ -635,7 +635,7 @@ class StateRetriever @Inject constructor() {
 
   private fun parseLabeledRegion(jsonObject: JSONObject): LabeledRegion {
     return LabeledRegion.newBuilder()
-      .setLabel(jsonObject.getString("label"))
+      .setLabel(jsonObject.getStringFromObject("label"))
       .setRegion(parseRegion(jsonObject.getJSONObject("region")))
       .build()
   }

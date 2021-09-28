@@ -7,6 +7,7 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.extensions.getStringFromBundle
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -86,7 +87,7 @@ class AppStartupStateController @Inject constructor(
         "automatic_app_expiration_enabled", /* defaultValue= */ true
       ) ?: true
     return if (isAppExpirationEnabled) {
-      val expirationDateString = applicationMetadata?.getString("expiration_date")
+      val expirationDateString = applicationMetadata?.getStringFromBundle("expiration_date")
       val expirationDate = expirationDateString?.let { parseDate(it) }
       // Assume the app is in an expired state if something fails when comparing the date.
       expirationDate?.before(Date()) ?: true
