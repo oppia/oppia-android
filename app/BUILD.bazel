@@ -21,6 +21,28 @@ package(default_visibility = ["//utility:__subpackages__"])
 
 exports_files(["src/main/AndroidManifest.xml"])
 
+# Corresponds to being accessible to all app layer targets.
+package_group(
+    name = "app_visibility",
+    packages = [
+        "//app/...",
+    ],
+)
+
+# Visibility for migrated app tests.
+package_group(
+    name = "app_testing_visibility",
+    packages = [
+        "//app/src/test/...",
+    ],
+)
+
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
 # Source files for the migrated source files library. The files inside the migrated source files
 # library are dependencies in app module that have their own libraries.
 # Place your files here if:
@@ -28,7 +50,11 @@ exports_files(["src/main/AndroidManifest.xml"])
 # NOTE: if the file is added here make sure to remove this from the other sub lists
 # of EXCLUDED_APP_LIB_FILES.
 # keep sorted
-MIGRATED_SOURCE_FILES = [
+MIGRATED_SOURCE_FILES = glob([
+    "src/main/java/org/oppia/android/app/activity/*.kt",
+    "src/main/java/org/oppia/android/app/fragment/*.kt",
+    "src/main/java/org/oppia/android/app/utility/datetime/*.kt",
+]) + [
     "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
     "src/main/java/org/oppia/android/app/viewmodel/ObservableViewModel.kt",
 ]
@@ -43,8 +69,6 @@ MIGRATED_SOURCE_FILES = [
 
 # keep sorted
 ANNOTATIONS = [
-    "src/main/java/org/oppia/android/app/activity/ActivityScope.kt",
-    "src/main/java/org/oppia/android/app/fragment/FragmentScope.kt",
     "src/main/java/org/oppia/android/app/utility/KeyboardHelper.kt",
 ]
 
@@ -140,7 +164,9 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
+    "src/main/java/org/oppia/android/app/administratorcontrols/appversion/AppVersionViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
+    "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpViewModel.kt",
@@ -148,7 +174,9 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/help/thirdparty/LicenseListViewModel.kt",
     "src/main/java/org/oppia/android/app/help/thirdparty/LicenseTextViewModel.kt",
     "src/main/java/org/oppia/android/app/help/thirdparty/ThirdPartyDependencyListViewModel.kt",
+    "src/main/java/org/oppia/android/app/hintsandsolution/HintsViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeViewModel.kt",
+    "src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicsViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryViewModel.kt",
@@ -156,16 +184,30 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt",
+    "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/options/TextSizeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/parser/StringToFractionParser.kt",
     "src/main/java/org/oppia/android/app/parser/StringToNumberParser.kt",
     "src/main/java/org/oppia/android/app/parser/StringToRatioParser.kt",
+    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragDropInteractionContentViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/PreviousResponsesHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/RatioExpressionInputInteractionViewModel.kt",
+    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt",
+    "src/main/java/org/oppia/android/app/profile/PinPasswordViewModel.kt",
+    "src/main/java/org/oppia/android/app/profile/ResetPinViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressViewModel.kt",
+    "src/main/java/org/oppia/android/app/profileprogress/RecentlyPlayedStorySummaryViewModel.kt",
+    "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt",
+    "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryHeaderViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/TopicViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/info/TopicInfoViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummaryViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt",
+    "src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerViewModel.kt",
     "src/main/java/org/oppia/android/app/utility/RatioExtensions.kt",
+    "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicSummaryViewModel.kt",
 ]
 
 # Source files for the view_models library that DO NOT import resources.
@@ -182,7 +224,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsItemViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsProfileViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsViewModel.kt",
-    "src/main/java/org/oppia/android/app/administratorcontrols/appversion/AppVersionViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicViewModel.kt",
     "src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryItemViewModel.kt",
     "src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryListViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsItemViewModel.kt",
@@ -198,11 +240,9 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/StorySummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedViewModel.kt",
-    "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/vieweventlogs/EventLogItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/vieweventlogs/ViewEventLogsViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerFooterViewModel.kt",
-    "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQContentViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/faq/faqItemViewModel/FAQItemViewModel.kt",
@@ -211,7 +251,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/help/thirdparty/ThirdPartyDependencyItemViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionItemViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/HintsDividerViewModel.kt",
-    "src/main/java/org/oppia/android/app/hintsandsolution/HintsViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicListViewModel.kt",
@@ -219,11 +258,9 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/home/recentlyplayed/SectionTitleViewModel.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/AllTopicsViewModel.kt",
     "src/main/java/org/oppia/android/app/home/UserAppHistoryViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingSlideFinalViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewPagerViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/ViewPagerSlide.kt",
-    "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListViewModel.kt",
     "src/main/java/org/oppia/android/app/options/LanguageItemViewModel.kt",
     "src/main/java/org/oppia/android/app/options/LanguageSelectionViewModel.kt",
@@ -239,19 +276,16 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ContinueInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ContinueNavigationButtonViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragAndDropSortInteractionViewModel.kt",
-    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragDropInteractionContentViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/FeedbackViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NextButtonViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumericInputViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/PreviousButtonViewModel.kt",
-    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/PreviousResponsesHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ReplayButtonViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ReturnToTopicButtonViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionInteractionContentViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/StateItemViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmitButtonViewModel.kt",
-    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/TextInputViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/StateViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/testing/StateFragmentTestViewModel.kt",
@@ -259,13 +293,10 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/profile/AdminAuthViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/AdminPinViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/AdminSettingsViewModel.kt",
-    "src/main/java/org/oppia/android/app/profile/PinPasswordViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/ProfileChooserViewModel.kt",
-    "src/main/java/org/oppia/android/app/profile/ResetPinViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfilePictureActivityViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressItemViewModel.kt",
-    "src/main/java/org/oppia/android/app/profileprogress/RecentlyPlayedStorySummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt",
     "src/main/java/org/oppia/android/app/recyclerview/DividerItemDecorator.kt",
     "src/main/java/org/oppia/android/app/recyclerview/DragAndDropItemFacilitator.kt",
@@ -274,18 +305,13 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/settings/profile/ProfileListViewModel.kt",
     "src/main/java/org/oppia/android/app/settings/profile/ProfileRenameViewModel.kt",
     "src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinViewModel.kt",
-    "src/main/java/org/oppia/android/app/shim/IntentFactoryShim.kt",
     "src/main/java/org/oppia/android/app/story/ExplorationSelectionListener.kt",
     "src/main/java/org/oppia/android/app/story/StoryFragmentScroller.kt",
-    "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt",
-    "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryItemViewModel.kt",
     "src/main/java/org/oppia/android/app/story/StoryViewModel.kt",
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestDataModel.kt",
     "src/main/java/org/oppia/android/app/testing/BindableAdapterTestViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/conceptcard/ConceptCardViewModel.kt",
-    "src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt",
-    "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/TopicLessonViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsTitleViewModel.kt",
@@ -294,14 +320,11 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/topic/practice/practiceitemviewmodel/TopicPracticeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/practice/practiceitemviewmodel/TopicPracticeSubtopicViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/practice/TopicPracticeViewModel.kt",
-    "src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revision/revisionitemviewmodel/TopicRevisionItemViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revision/TopicRevisionViewModel.kt",
     "src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt",
-    "src/main/java/org/oppia/android/app/topic/TopicViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/end/WalkthroughFinalViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicHeaderViewModel.kt",
-    "src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicSummaryViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/WalkthroughTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/topiclist/WalkthroughTopicViewModel.kt",
     "src/main/java/org/oppia/android/app/walkthrough/WalkthroughViewModel.kt",
@@ -353,8 +376,6 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 
 # keep sorted
 VIEWS = [
-    "src/main/java/org/oppia/android/app/application/ApplicationInjector.kt",
-    "src/main/java/org/oppia/android/app/application/ApplicationInjectorProvider.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
@@ -364,10 +385,7 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/SelectionInteractionView.kt",
-    "src/main/java/org/oppia/android/app/shim/ViewBindingShim.kt",
-    "src/main/java/org/oppia/android/app/shim/ViewComponentFactory.kt",
-    "src/main/java/org/oppia/android/app/view/ViewComponent.kt",
-    "src/main/java/org/oppia/android/app/view/ViewScope.kt",
+    "//app/src/main/java/org/oppia/android/app/view:ViewComponentImpl.kt",
 ] + [
     "update_" + views_with_resource_imports[0:-3]
     for views_with_resource_imports in VIEWS_WITH_RESOURCE_IMPORTS
@@ -502,7 +520,7 @@ android_library(
         ["src/main/res/**"],
         exclude = DATABINDING_LAYOUTS,
     ),
-    visibility = ["//visibility:private"],
+    visibility = ["//app:__subpackages__"],
     deps = ["//third_party:com_google_android_material_material"],
 )
 
@@ -515,12 +533,17 @@ android_library(
     exports_manifest = True,
     manifest = "src/main/DatabindingResourcesManifest.xml",
     resource_files = glob(DATABINDING_LAYOUTS),
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+    ],
     deps = [
         ":annotations",
         ":binding_adapters",
         ":resources",
         ":view_models",
         ":views",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//model:interaction_object_java_proto_lite",
         "//model:thumbnail_java_proto_lite",
         "//third_party:androidx_annotation_annotation",
@@ -541,6 +564,8 @@ android_library(
         "//third_party:io_github_chaosleung_pinview",
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//third_party:nl_dionsegijn_konfetti",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector_provider",
     ],
 )
 
@@ -569,13 +594,16 @@ kt_android_library(
         ":resources",
         ":snap_helper",
         ":view_models",
+        "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//app/src/main/java/org/oppia/android/app/view:view_scope",
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_core_core-ktx",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
         "//third_party:circularimageview_circular_image_view",
         "//utility/src/main/java/org/oppia/android/util/accessibility",
-        "//utility/src/main/java/org/oppia/android/util/caching:caching_module",
+        "//utility/src/main/java/org/oppia/android/util/caching:caching_prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
     ],
@@ -588,6 +616,8 @@ kt_android_library(
     custom_package = "org.oppia.android.app",
     deps = [
         ":dagger",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_scope",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
     ],
 )
 
@@ -598,14 +628,19 @@ kt_android_library(
     custom_package = "org.oppia.android.app.view.models",
     enable_data_binding = True,
     manifest = "src/main/ViewModelsManifest.xml",
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+    ],
     deps = [
         ":annotations",
         ":dagger",
         ":listeners",
         ":resources",
+        "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
+        "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
         "//domain",
         "//third_party:androidx_core_core",
         "//third_party:androidx_databinding_databinding-common",
@@ -639,6 +674,8 @@ android_library(
         ":dagger",
         ":resources",
         ":view_models",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//model:thumbnail_java_proto_lite",
         "//third_party:androidx_annotation_annotation",
         "//third_party:androidx_constraintlayout_constraintlayout",
@@ -648,13 +685,23 @@ android_library(
         "//third_party:com_google_android_material_material",
         "//third_party:io_github_chaosleung_pinview",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector_provider",
     ],
 )
 
 # Library containing all activity, fragment, and view-based UI flows in the app.
 kt_android_library(
     name = "app",
-    srcs = APP_FILES,
+    srcs = APP_FILES + [
+        "//app/src/main/java/org/oppia/android/app/activity:ActivityComponentImpl.kt",
+        "//app/src/main/java/org/oppia/android/app/activity:ActivityIntentFactoriesModule.kt",
+        "//app/src/main/java/org/oppia/android/app/activity:ActivityModule.kt",
+        "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentBuilderModule.kt",
+        "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentImpl.kt",
+        "//app/src/main/java/org/oppia/android/app/fragment:FragmentModule.kt",
+        "//app/src/main/java/org/oppia/android/app/view:ViewComponentBuilderModule.kt",
+    ],
     custom_package = "org.oppia.android.app.ui",
     enable_data_binding = 1,
     manifest = "src/main/AppAndroidManifest.xml",
@@ -666,9 +713,21 @@ kt_android_library(
         ":resources",
         ":view_models",
         ":views",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
+        "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
+        "//app/src/main/java/org/oppia/android/app/translation:prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector_provider",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//model:arguments_java_proto_lite",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
@@ -684,7 +743,9 @@ kt_android_library(
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         # TODO(#2432): Replace debug_module with prod_module when building the app in prod mode.
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
@@ -728,12 +789,15 @@ TEST_DEPS = [
     ":dagger",
     ":resources",
     ":test_deps",
+    "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
+    "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//domain",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
     "//testing/src/main/java/org/oppia/android/testing/espresso:generic_view_matchers",
     "//testing/src/main/java/org/oppia/android/testing/espresso:image_view_matcher",
     "//testing/src/main/java/org/oppia/android/testing/espresso:konfetti_view_matcher",
+    "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
     "//testing/src/main/java/org/oppia/android/testing/mockito",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
@@ -767,6 +831,7 @@ TEST_DEPS = [
     "//utility",
     "//utility/src/main/java/org/oppia/android/util/accessibility",
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+    "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
 ]
 

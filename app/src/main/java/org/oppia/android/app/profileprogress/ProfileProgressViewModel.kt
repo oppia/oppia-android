@@ -14,6 +14,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -34,7 +35,8 @@ class ProfileProgressViewModel @Inject constructor(
   private val topicController: TopicController,
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
-  @StoryHtmlParserEntityType private val entityType: String
+  @StoryHtmlParserEntityType private val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -140,7 +142,7 @@ class ProfileProgressViewModel @Inject constructor(
       itemViewModelList.addAll(
         itemList.map { story ->
           RecentlyPlayedStorySummaryViewModel(
-            activity, internalProfileId, story, entityType, intentFactoryShim
+            activity, internalProfileId, story, entityType, intentFactoryShim, resourceHandler
           )
         }
       )

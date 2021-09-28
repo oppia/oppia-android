@@ -37,6 +37,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -99,20 +100,6 @@ class StoryProgressControllerTest {
   @Test
   fun testStoryProgressController_recordCompletedChapter_isSuccessful() {
     storyProgressController.recordCompletedChapter(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-  }
-
-  @Test
-  fun testStoryProgressController_recordChapterAsStartedNotCompleted_isSuccessful() {
-    storyProgressController.recordChapterAsStartedNotCompleted(
       profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
@@ -386,7 +373,7 @@ class StoryProgressControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

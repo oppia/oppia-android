@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 // TODO(#297): Add download status information to promoted-story-card.
 
@@ -14,7 +15,8 @@ class OngoingStoryViewModel(
   val ongoingStory: PromotedStory,
   val entityType: String,
   private val ongoingStoryClickListener: OngoingStoryClickListener,
-  private val position: Int
+  private val position: Int,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : RecentlyPlayedItemViewModel() {
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
     ongoingStoryClickListener.onOngoingStoryClicked(ongoingStory)
@@ -96,5 +98,11 @@ class OngoingStoryViewModel(
       }
       else -> 0
     }
+  }
+
+  fun computeLessonThumbnailContentDescription(): String {
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.lesson_thumbnail_content_description, ongoingStory.nextChapterName
+    )
   }
 }

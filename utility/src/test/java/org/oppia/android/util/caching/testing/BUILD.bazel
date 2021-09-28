@@ -1,0 +1,47 @@
+"""
+Tests for testing utilities corresponding asset caching utilities.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "AssetTestNoOpModuleTest",
+    srcs = ["AssetTestNoOpModuleTest.kt"],
+    custom_package = "org.oppia.android.util.caching.testing",
+    test_class = "org.oppia.android.util.caching.testing.AssetTestNoOpModuleTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:asset_test_no_op_module",
+    ],
+)
+
+oppia_android_test(
+    name = "TestNoOpAssetRepositoryTest",
+    srcs = ["TestNoOpAssetRepositoryTest.kt"],
+    custom_package = "org.oppia.android.util.caching.testing",
+    test_class = "org.oppia.android.util.caching.testing.TestNoOpAssetRepositoryTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//model:test_models",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:asset_test_no_op_module",
+    ],
+)
+
+dagger_rules()
