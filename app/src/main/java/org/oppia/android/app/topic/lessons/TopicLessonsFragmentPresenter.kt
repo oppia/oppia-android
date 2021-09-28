@@ -139,6 +139,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     if (storySummaryViewModel.storySummary.storyId == storyId) {
       val index = topicLessonViewModel.getIndexOfStory(storySummaryViewModel.storySummary)
       currentExpandedChapterListIndex = index + 1
+      //storyId = ""
     }
 
     var isChapterListVisible = false

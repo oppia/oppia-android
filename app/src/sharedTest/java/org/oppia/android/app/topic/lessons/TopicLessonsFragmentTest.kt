@@ -770,11 +770,49 @@ class TopicLessonsFragmentTest {
     }
   }
 
+  @Test
+  fun testLessonsPlayFragment_loadRecentStory_default_chapterListIsVisible() {
+    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_recycler_view
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_chapterListIsHidden() {
+    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_recycler_view
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       topicId
+    )
+  }
+
+  private fun createTopicPlayStoryActivityIntent(internalProfileId: Int, topicId: String, storyId: String): Intent {
+    return TopicActivity.createTopicPlayStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId,
+      storyId
     )
   }
 
