@@ -27,7 +27,6 @@ import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.AUDIO_TRANSLATIONS
-import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
 import org.oppia.android.app.model.OppiaRegion.INDIA
 import org.oppia.android.app.model.OppiaRegion.REGION_UNSPECIFIED
 import org.oppia.android.app.model.OppiaRegion.UNITED_STATES
@@ -400,19 +399,16 @@ class LocaleControllerTest {
   }
 
   @Test
-  fun testContentLocale_englishUsLocale_defaultLang_returnsFailure() {
+  fun testContentLocale_englishUsLocale_defaultLang_returnsDefaultBuiltin() {
     forceDefaultLocale(Locale.US)
 
     val localeProvider = localeController.retrieveWrittenTranslationsLocale(LANGUAGE_UNSPECIFIED)
 
-    // English should be matched per the system locale.
-    val error = monitorFactory.waitForNextFailureResult(localeProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains(
-        "Language $LANGUAGE_UNSPECIFIED for usage $CONTENT_STRINGS doesn't match supported" +
-          " language definitions"
-      )
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    val languageDefinition = context.languageDefinition
+    assertThat(languageDefinition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("builtin")
+    assertThat(context.regionDefinition.region).isEqualTo(UNITED_STATES)
   }
 
   @Test
@@ -426,6 +422,8 @@ class LocaleControllerTest {
 
     assertThat(retrieveLogcatLogs())
       .contains("Encountered unmatched language: $LANGUAGE_UNSPECIFIED")
+    assertThat(retrieveLogcatLogs())
+      .contains("Falling back to the built-in content type due to mismatched configuration")
   }
 
   @Test
