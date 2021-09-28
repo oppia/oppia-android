@@ -16,9 +16,8 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
-    name = "privacy_policy_check_lib",
+    name = "privacy_policy_date_check_lib",
     testonly = True,
-    srcs = ["PrivacyPolicyCheck.kt"],
+    srcs = ["PrivacyPolicyDateCheck.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
-
 )
