@@ -351,13 +351,13 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLang_uninitialized_rootLocale_returnsFailure() {
+  fun testGetWrittenContentLang_uninitialized_rootLocale_returnsUnspecifiedLanguage() {
     forceDefaultLocale(Locale.ROOT)
 
     val languageProvider = translationController.getWrittenTranslationContentLanguage(PROFILE_ID_0)
 
-    val error = monitorFactory.waitForNextFailureResult(languageProvider)
-    assertThat(error).hasMessageThat().contains("doesn't match supported language definitions")
+    val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
+    assertThat(language).isEqualTo(LANGUAGE_UNSPECIFIED)
   }
 
   @Test
@@ -450,13 +450,18 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLocale_uninitialized_rootLocale_returnsFailure() {
+  fun testGetWrittenContentLocale_uninitialized_rootLocale_returnsBuiltinLocale() {
     forceDefaultLocale(Locale.ROOT)
 
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
 
-    val error = monitorFactory.waitForNextFailureResult(localeProvider)
-    assertThat(error).hasMessageThat().contains("doesn't match supported language definitions")
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    val languageDefinition = context.languageDefinition
+    assertThat(context.usageMode).isEqualTo(CONTENT_STRINGS)
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("builtin")
+    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 
   @Test
