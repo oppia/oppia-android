@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** Activity for Mark Chapters Completed. */
@@ -13,14 +15,18 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
 
   @Inject
   lateinit var markChaptersCompletedActivityPresenter: MarkChaptersCompletedActivityPresenter
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_PROFILE_ID_KEY, -1)
     markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId)
-    title = getString(R.string.mark_chapters_completed_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

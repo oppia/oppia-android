@@ -46,6 +46,21 @@ android {
   }
 }
 
+// See notice for the excluded files in domain/build.gradle for an explanation. Note that these
+// tests can't be built in Gradle since they depend on app layer dependencies & Gradle doesn't allow
+// a dependency between this & the app module since the latter is an Android application rather than
+// a library.
+def filesToExclude = [
+    '**/*InitializeDefaultLocaleRuleCustomContextTest*.kt',
+    '**/*InitializeDefaultLocaleRuleOmissionTest*.kt',
+    '**/*InitializeDefaultLocaleRuleTest*.kt',
+]
+tasks.withType(SourceTask.class).configureEach {
+  it.exclude(filesToExclude)
+}
+android.sourceSets.test.java.exclude(filesToExclude)
+android.sourceSets.test.kotlin.exclude(filesToExclude)
+
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
@@ -58,7 +73,8 @@ dependencies {
       'androidx.test:runner:1.2.0',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
-      'com.google.truth:truth:0.43',
+      'com.google.protobuf:protobuf-javalite:3.17.3',
+      'com.google.truth:truth:1.1.3',
       'nl.dionsegijn:konfetti:1.2.5',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.robolectric:robolectric:4.4',
@@ -76,7 +92,7 @@ dependencies {
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.test.ext:junit:1.1.1',
       'com.google.android.material:material:1.2.0-alpha02',
-      'com.google.truth:truth:0.43',
+      'com.google.truth:truth:1.1.3',
       'junit:junit:4.12',
       "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
       'org.mockito:mockito-core:2.19.0',

@@ -3,6 +3,7 @@ package org.oppia.android.app.profileprogress
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
@@ -24,7 +25,7 @@ class ProfileProgressActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, -1)
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
   }

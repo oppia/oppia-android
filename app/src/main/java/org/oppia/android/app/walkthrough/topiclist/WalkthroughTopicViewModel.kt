@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicHeaderViewModel
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
@@ -20,7 +21,8 @@ class WalkthroughTopicViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
-  @TopicHtmlParserEntityType private val topicEntityType: String
+  @TopicHtmlParserEntityType private val topicEntityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
     Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
@@ -57,7 +59,8 @@ class WalkthroughTopicViewModel @Inject constructor(
         WalkthroughTopicSummaryViewModel(
           topicEntityType,
           topic,
-          fragment as TopicSummaryClickListener
+          fragment as TopicSummaryClickListener,
+          resourceHandler
         )
       }
     )
