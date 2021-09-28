@@ -12,15 +12,15 @@
 
   <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/topic_lessons_title_frame_margin_top">
     <TextView
       android:id="@+id/topic_play_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/topic_lessons_title_marginStart"
-      android:layout_marginTop="@dimen/topic_lessons_title_marginTop"
-      android:layout_marginEnd="@dimen/topic_lessons_title_marginEnd"
+      android:layout_marginStart="@dimen/topic_lessons_title_margin_start"
+      android:layout_marginTop="@dimen/topic_lessons_title_margin_top"
+      android:layout_marginEnd="@dimen/topic_lessons_title_margin_end"
       android:fontFamily="sans-serif-medium"
       android:text="@string/stories_you_can_play"
       android:textColor="@color/oppiaPrimaryText"

@@ -309,7 +309,7 @@
   <dimen name="promoted_story_card_margin_top">8dp</dimen>
 
   <!-- Topic Lessons Title -->
-  <dimen name="topic_lessons_title_marginStart">100dp</dimen>
-  <dimen name="topic_lessons_title_marginTop">32dp</dimen>
-  <dimen name="topic_lessons_title_marginEnd">100dp</dimen>
+  <dimen name="topic_lessons_title_margin_start">100dp</dimen>
+  <dimen name="topic_lessons_title_margin_top">32dp</dimen>
+  <dimen name="topic_lessons_title_margin_end">100dp</dimen>
 </resources>
