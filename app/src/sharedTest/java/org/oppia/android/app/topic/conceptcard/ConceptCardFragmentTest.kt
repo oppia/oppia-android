@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -21,6 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
@@ -39,6 +40,9 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -66,10 +70,15 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RichTextViewMatcher.Companion.containsRichText
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -110,11 +119,22 @@ class ConceptCardFragmentTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
@@ -135,8 +155,7 @@ class ConceptCardFragmentTest {
 
   @Test
   fun testConceptCardFragment_clickOnToolbarNavigationButton_closeActivity() {
-    launch(ConceptCardFragmentTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
+    launchTestActivity().use {
       onView(withId(R.id.open_dialog_0)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -151,9 +170,7 @@ class ConceptCardFragmentTest {
 
   @Test
   fun testConceptCardFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launch(ConceptCardFragmentTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    launchTestActivity().use {
       onView(withId(R.id.open_dialog_0)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -168,8 +185,7 @@ class ConceptCardFragmentTest {
 
   @Test
   fun testConceptCardFragment_configurationChange_toolbarTitle_isDisplayedSuccessfully() {
-    launch(ConceptCardFragmentTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
+    launchTestActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
@@ -186,8 +202,7 @@ class ConceptCardFragmentTest {
 
   @Test
   fun testConceptCardFragment_configurationChange_conceptCardIsDisplayedCorrectly() {
-    launch(ConceptCardFragmentTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
+    launchTestActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
@@ -211,9 +226,7 @@ class ConceptCardFragmentTest {
 
   @Test
   fun testConceptCardFragment_openDialogFragment0_checkSkillAndExplanationAreDisplayedWithoutRichText() { // ktlint-disable max-line-length
-    launch(ConceptCardFragmentTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    launchTestActivity().use {
       onView(withId(R.id.open_dialog_0)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -243,9 +256,7 @@ class ConceptCardFragmentTest {
 
   @Test
   fun testConceptCardFragment_openDialogFragment1_checkSkillAndExplanationAreDisplayedWithRichText() { // ktlint-disable max-line-length
-    launch(ConceptCardFragmentTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
+    launchTestActivity().use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -275,8 +286,7 @@ class ConceptCardFragmentTest {
 
   @Test
   fun testConceptCardFragment_openDialogFragmentWithSkill2_afterConfigurationChange_workedExamplesAreDisplayed() { // ktlint-disable max-line-length
-    launch(ConceptCardFragmentTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
+    launchTestActivity().use {
       onView(withId(R.id.open_dialog_1)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -307,10 +317,68 @@ class ConceptCardFragmentTest {
     }
   }
 
-  // TODO: finish
-  // testConceptCardFragment_englishContentLang_explanationIsInEnglish
-  // testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic
-  // testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic
+  @Test
+  fun testConceptCardFragment_englishContentLang_explanationIsInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchTestActivity().use {
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Welcome to Oppia"))))
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchTestActivity().use {
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Switch to Arabic after opening the card. It should trigger an update to the text with the
+      // correct translation shown.
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("مرحبا بكم في"))))
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchTestActivity().use {
+      onView(withId(R.id.open_dialog_0)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("مرحبا بكم في"))))
+    }
+  }
+
+  private fun launchTestActivity(): ActivityScenario<ConceptCardFragmentTestActivity> {
+    val scenario = ActivityScenario.launch<ConceptCardFragmentTestActivity>(
+      ConceptCardFragmentTestActivity.createIntent(context, profileId)
+    )
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
 
   @Module
   class TestModule {

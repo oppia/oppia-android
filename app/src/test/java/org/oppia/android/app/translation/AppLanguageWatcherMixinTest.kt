@@ -29,6 +29,7 @@ import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
+import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
@@ -93,7 +94,10 @@ import javax.inject.Singleton
 @DefineAppLanguageLocaleContext(
   oppiaLanguageEnumId = OppiaLanguage.ENGLISH_VALUE,
   appStringIetfTag = "en",
-  appStringAndroidLanguageId = "en"
+  appStringAndroidLanguageId = "en",
+  oppiaRegionEnumId = OppiaRegion.UNITED_STATES_VALUE,
+  regionLanguageEnumIds = [OppiaLanguage.ENGLISH_VALUE],
+  regionIetfTag = "US"
 )
 class AppLanguageWatcherMixinTest {
   // TODO(#1720): Add a test to verify that the mixin does nothing when a language change occurs

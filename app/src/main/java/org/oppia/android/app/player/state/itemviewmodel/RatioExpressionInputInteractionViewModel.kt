@@ -105,12 +105,22 @@ class RatioExpressionInputInteractionViewModel(
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
-    val placeholder =
-      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.let { unicode ->
+    // The subtitled unicode can apparently exist in the structure in two different formats.
+    val placeholderUnicodeOption1 =
+      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode
+    val placeholderUnicodeOption2 =
+      interaction.customizationArgsMap["placeholder"]?.customSchemaValue?.subtitledUnicode
+    val placeholder1 =
+      placeholderUnicodeOption1?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
+    val placeholder2 =
+      placeholderUnicodeOption2?.let { unicode ->
         translationController.extractString(unicode, writtenTranslationContext)
       } ?: ""
     return when {
-      placeholder.isNotEmpty() -> placeholder
+      placeholder1.isNotEmpty() -> placeholder1
+      placeholder2.isNotEmpty() -> placeholder2
       else -> resourceHandler.getStringInLocale(R.string.ratio_default_hint_text)
     }
   }

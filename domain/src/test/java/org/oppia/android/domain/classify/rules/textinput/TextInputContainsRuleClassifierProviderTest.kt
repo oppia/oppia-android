@@ -17,6 +17,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslationContext
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
@@ -45,24 +46,33 @@ class TextInputContainsRuleClassifierProviderTest {
   private val STRING_VALUE_TEST_ANSWER = createString(value = "this is a test")
   private val NON_NEGATIVE_VALUE_TEST_1 = createNonNegativeInt(value = 1)
 
+  private val TEST_STRING_CONTENT_ID = "test_content_id"
   private val STRING_VALUE_TEST_CONTAINS_ANSWER_INPUT_SET =
-    createTranslatableSetOfNormalizedString("this is a test i will break")
+    createTranslatableSetOfNormalizedString(
+      "this is a test i will break", contentId = TEST_STRING_CONTENT_ID
+    )
   private val STRING_VALUE_TEST_AN_ANSWER_INPUT_SET =
-    createTranslatableSetOfNormalizedString("an answer")
+    createTranslatableSetOfNormalizedString("an answer", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_A_TEST_INPUT_SET =
-    createTranslatableSetOfNormalizedString("a test")
-  private val STRING_VALUE_TEST_IS_A_INPUT_SET = createTranslatableSetOfNormalizedString("is a")
+    createTranslatableSetOfNormalizedString("a test", contentId = TEST_STRING_CONTENT_ID)
+  private val STRING_VALUE_TEST_IS_A_INPUT_SET =
+    createTranslatableSetOfNormalizedString("is a", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_THIS_IS_INPUT_SET =
-    createTranslatableSetOfNormalizedString("this is")
-  private val STRING_VALUE_TEST_NULL_INPUT_SET = createTranslatableSetOfNormalizedString("")
+    createTranslatableSetOfNormalizedString("this is", contentId = TEST_STRING_CONTENT_ID)
+  private val STRING_VALUE_TEST_NULL_INPUT_SET =
+    createTranslatableSetOfNormalizedString("", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_ANSWER_INPUT_SET =
-    createTranslatableSetOfNormalizedString("this is a test")
+    createTranslatableSetOfNormalizedString("this is a test", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_EXTRA_SPACE_INPUT_SET =
-    createTranslatableSetOfNormalizedString(" this   is  a  test ")
+    createTranslatableSetOfNormalizedString(
+      " this   is  a  test ", contentId = TEST_STRING_CONTENT_ID
+    )
   private val STRING_VALUE_TEST_NO_SPACE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("thisisatest")
+    createTranslatableSetOfNormalizedString("thisisatest", contentId = TEST_STRING_CONTENT_ID)
   private val MULTIPLE_STRING_VALUE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("this", "is", "a test")
+    createTranslatableSetOfNormalizedString(
+      "this", "is", "a test", contentId = TEST_STRING_CONTENT_ID
+    )
 
   @Inject
   internal lateinit var textInputContainsRuleClassifierProvider:
@@ -285,12 +295,75 @@ class TextInputContainsRuleClassifierProviderTest {
 
   /* Localization-based tests. */
 
-  // TODO: finish
-  // testString_inputsWithArabic_answerInEnglish_englishContext_answerMatches
-  // testString_inputsWithArabic_answerInArabic_englishContext_answerDoesNotMatch
-  // testString_inputsWithArabic_answerInEnglish_arabicContext_answerDoesNotMatch
-  // testString_inputsWithArabic_answerInArabic_arabicContext_answerMatches
-  // testString_inputsAndAnswerInArabic_answerNotContained_answerDoesNotMatch
+  @Test
+  fun testString_inputsWithPortuguese_answerInEnglish_englishContext_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputContainsRuleClassifier.matches(
+      answer = createString("an answer among many"),
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testString_inputsWithPortuguese_answerInPortuguese_englishContext_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputContainsRuleClassifier.matches(
+      answer = createString("uma resposta entre muitas"),
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    // A Portuguese answer isn't reocgnized with this translation context.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testString_inputsWithPortuguese_answerInEnglish_portugueseContext_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputContainsRuleClassifier.matches(
+      answer = createString("an answer among many"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // Even though the English string matches, the presence of the Portuguese context should trigger
+    // a failure for an English answer.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testString_inputsWithPortuguese_answerInPortuguese_portugueseContext_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputContainsRuleClassifier.matches(
+      answer = createString("uma resposta entre muitas"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // The translation context provides a bridge between Portuguese & English.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testString_inputsAndAnswerInPortuguese_answerNotContained_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputContainsRuleClassifier.matches(
+      answer = createString("de outros"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // The Portuguese answer doesn't match.
+    assertThat(matches).isFalse()
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerTextInputContainsRuleClassifierProviderTest_TestApplicationComponent.builder()

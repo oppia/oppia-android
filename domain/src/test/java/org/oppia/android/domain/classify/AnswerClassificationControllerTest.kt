@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AnswerGroup
+import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.Misconception
@@ -21,6 +22,7 @@ import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.Outcome
 import org.oppia.android.app.model.RuleSpec
 import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.Translation
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
@@ -69,9 +71,16 @@ class AnswerClassificationControllerTest {
     private val TEST_STRING_0 = createString(value = "Test string 0")
     private val TEST_STRING_1 = createString(value = "Test string 1")
     private val TEST_STRING_2 = createString(value = "Other string")
+    private const val TEST_STRING_3_ENGLISH = "other string 2"
+    private const val TEST_STRING_3_PORTUGUESE = "alguma corda 2"
+    private const val TEST_STRING_3_CONTENT_ID = "test_content_id"
     private val TEST_STRING_INPUT_SET_0 = createTranslatableSetOfNormalizedString("Test string 0")
     private val TEST_STRING_INPUT_SET_1 = createTranslatableSetOfNormalizedString("Test string 1")
     private val TEST_STRING_INPUT_SET_TEST = createTranslatableSetOfNormalizedString("Test")
+    private val TEST_STRING_INPUT_SET_2_WITH_CONTENT_ID =
+      createTranslatableSetOfNormalizedString(
+        TEST_STRING_3_ENGLISH, contentId = TEST_STRING_3_CONTENT_ID
+      )
 
     private val TEST_FRACTION_0 = createFraction(isNegative = false, numerator = 1, denominator = 2)
     private val TEST_FRACTION_1 =
@@ -609,9 +618,70 @@ class AnswerClassificationControllerTest {
     assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
   }
 
-  // TODO: finish
-  // testClassify_forTextInput_localizedRuleInput_matchingContext_returnsAnswerGroup
-  // testClassify_forTextInput_localizedRuleInput_mismatchingContext_returnsDefaultOutcome
+  @Test
+  fun testClassify_forTextInput_localizedRuleInput_matchingContext_returnsAnswerGroup() {
+    val interaction = Interaction.newBuilder()
+      .setId("TextInput")
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder()
+              .setRuleType("Equals")
+              .putInput("x", TEST_STRING_INPUT_SET_2_WITH_CONTENT_ID)
+          )
+          .setOutcome(OUTCOME_0)
+      )
+      .setDefaultOutcome(DEFAULT_OUTCOME)
+      .build()
+
+    val outcome =
+      answerClassificationController.classify(
+        interaction,
+        createString(TEST_STRING_3_PORTUGUESE),
+        writtenTranslationContext = WrittenTranslationContext.newBuilder().apply {
+          putTranslations(
+            TEST_STRING_3_CONTENT_ID,
+            Translation.newBuilder().apply {
+              htmlList = HtmlTranslationList.newBuilder().apply {
+                addHtml(TEST_STRING_3_PORTUGUESE)
+              }.build()
+            }.build()
+          )
+        }.build()
+      ).outcome
+
+    // The answer group should match since the translation context provides a mapping between
+    // Portuguese and the expected string.
+    assertThat(outcome).isEqualTo(OUTCOME_0)
+  }
+
+  @Test
+  fun testClassify_forTextInput_localizedRuleInput_mismatchingContext_returnsDefaultOutcome() {
+    val interaction = Interaction.newBuilder()
+      .setId("TextInput")
+      .addAnswerGroups(
+        AnswerGroup.newBuilder()
+          .addRuleSpecs(
+            RuleSpec.newBuilder()
+              .setRuleType("Equals")
+              .putInput("x", TEST_STRING_INPUT_SET_2_WITH_CONTENT_ID)
+          )
+          .setOutcome(OUTCOME_0)
+      )
+      .setDefaultOutcome(DEFAULT_OUTCOME)
+      .build()
+
+    val outcome =
+      answerClassificationController.classify(
+        interaction,
+        createString(TEST_STRING_3_PORTUGUESE),
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      ).outcome
+
+    // The mapping didn't include the needing association, so the Portuguese answer can't be matched
+    // to the expected string.
+    assertThat(outcome).isEqualTo(DEFAULT_OUTCOME)
+  }
 
   @Test
   fun testClassify_multipleAnswerGroups_matchesOneRuleSpec_returnsAnswerGroupOutcome() {

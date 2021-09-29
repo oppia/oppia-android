@@ -33,9 +33,11 @@ data class AndroidLocaleProfile(val languageCode: String, val regionCode: String
    * BCP 47 language tag.
    */
   fun computeIetfLanguageTag(): String {
-    return if (regionCode.isNotEmpty()) {
-      "$languageCode-$regionCode"
-    } else languageCode
+    return when {
+      languageCode.isNotEmpty() && regionCode.isNotEmptyOrWildcard() -> "$languageCode-$regionCode"
+      regionCode.isNotEmptyOrWildcard() -> regionCode
+      else -> languageCode
+    }
   }
 
   companion object {
@@ -119,5 +121,7 @@ data class AndroidLocaleProfile(val languageCode: String, val regionCode: String
         results[0] to results[1]
       } else null
     }
+
+    private fun String.isNotEmptyOrWildcard() = isNotEmpty() && this != REGION_WILDCARD
   }
 }

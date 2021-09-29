@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -31,9 +32,11 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -53,7 +56,11 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.topic.TEST_SKILL_ID_2
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -75,6 +82,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -93,6 +101,12 @@ class QuestionAssessmentProgressControllerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var context: Context
+
   @Inject
   lateinit var questionTrainingController: QuestionTrainingController
 
@@ -108,6 +122,9 @@ class QuestionAssessmentProgressControllerTest {
   // TODO(#3813): Migrate all tests in this suite to use this factory.
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var translationController: TranslationController
 
   @Mock
   lateinit var mockScoreAndMasteryLiveDataObserver:
@@ -1410,13 +1427,93 @@ class QuestionAssessmentProgressControllerTest {
       .isWithin(TOLERANCE).of(skill1Mastery)
   }
 
-  // TODO: finish
-  // testGetCurrentQuestion_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
-  // testGetCurrentQuestion_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
-  // testGetCurrentQuestion_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
-  // testGetCurrentQuestion_englishLangProfile_includesTranslationContextForEnglish
-  // testGetCurrentQuestion_englishLangProfile_switchToArabic_includesTranslationContextForArabic
-  // testGetCurrentQuestion_arabicLangProfile_includesTranslationContextForArabic
+  /* Localization-based tests. */
+
+  @Test
+  fun testGetCurrentState_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    forceDefaultLocale(Locale.US)
+    startSuccessfulTrainingSession(profileId1, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // The context should be the default instance for English since the default strings of the
+    // lesson are expected to be in English.
+    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testGetCurrentState_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    startSuccessfulTrainingSession(profileId1, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // Arabic translations should be included per the locale.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetCurrentState_turkishLocale_defaultContentLang_includesDefaultTranslationContext() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    forceDefaultLocale(TURKEY_TURKISH_LOCALE)
+    startSuccessfulTrainingSession(profileId1, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // No translations match to an unsupported language, so default to the built-in strings.
+    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    startSuccessfulTrainingSession(englishProfileId, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // English translations mean no context.
+    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    startSuccessfulTrainingSession(englishProfileId, TEST_SKILL_ID_LIST_01)
+    val monitor =
+      monitorFactory.createMonitor(questionAssessmentProgressController.getCurrentQuestion())
+    monitor.waitForNextSuccessResult()
+
+    // Update the content language & wait for the ephemeral state to update.
+    updateContentLanguage(englishProfileId, OppiaLanguage.ARABIC)
+    val ephemeralState = monitor.ensureNextResultIsSuccess().ephemeralState
+
+    // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 3 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
+    startSuccessfulTrainingSession(arabicProfileId, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
 
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
     TestQuestionModule.questionSeed = questionSeed
@@ -1435,8 +1532,12 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun startSuccessfulTrainingSession(skillIdList: List<String>) {
+    startSuccessfulTrainingSession(profileId1, skillIdList)
+  }
+
+  private fun startSuccessfulTrainingSession(profileId: ProfileId, skillIdList: List<String>) {
     monitorFactory.waitForNextSuccessfulResult(
-      questionTrainingController.startQuestionTrainingSession(profileId1, skillIdList)
+      questionTrainingController.startQuestionTrainingSession(profileId, skillIdList)
     )
   }
 
@@ -1591,6 +1692,21 @@ class QuestionAssessmentProgressControllerTest {
 
   private fun submitCorrectAnswerForQuestion5(): EphemeralQuestion {
     return submitNumericInputAnswerAndMoveToNextQuestion(5.0)
+  }
+
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   private fun EphemeralState.isHintRevealed(hintIndex: Int): Boolean {
@@ -1753,5 +1869,8 @@ class QuestionAssessmentProgressControllerTest {
     private val TEST_SKILL_ID_LIST_01 =
       listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
     private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 2, 4, 5
+
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
   }
 }

@@ -17,6 +17,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslationContext
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
@@ -50,16 +51,21 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   private val STRING_VALUE_TESTING = createString(value = "testing")
   private val NON_NEGATIVE_TEST_VALUE_1 = createNonNegativeInt(value = 1)
 
+  private val TEST_STRING_CONTENT_ID = "test_content_id"
+  private val STRING_VALUE_TEST_AN_ANSWER_INPUT_SET =
+    createTranslatableSetOfNormalizedString("an answer", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_UPPERCASE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("TEST")
+    createTranslatableSetOfNormalizedString("TEST", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_LOWERCASE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("test")
+    createTranslatableSetOfNormalizedString("test", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_DIFF_LOWERCASE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("diff")
+    createTranslatableSetOfNormalizedString("diff", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_FUZZY_INPUT_INPUT_SET =
-    createTranslatableSetOfNormalizedString("This Is a TesT")
+    createTranslatableSetOfNormalizedString("This Is a TesT", contentId = TEST_STRING_CONTENT_ID)
   private val MULTIPLE_STRING_VALUE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("Thiss", "Iis", "TesTt")
+    createTranslatableSetOfNormalizedString(
+      "Thiss", "Iis", "TesTt", contentId = TEST_STRING_CONTENT_ID
+    )
 
   @Inject
   internal lateinit var textInputFuzzyEqualsRuleClassifierProvider:
@@ -271,13 +277,117 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
 
   /* Localization-based tests. */
 
-  // TODO: finish
-  // testStringAnswer_inputsWithArabic_answerInEnglish_englishContext_answerMatches
-  // testStringAnswer_inputsWithArabic_answerInArabic_englishContext_answerDoesNotMatch
-  // testStringAnswer_inputsWithArabic_answerInEnglish_arabicContext_answerDoesNotMatch
-  // testStringAnswer_inputsWithArabic_answerInArabic_arabicContext_answerMatches
-  // testStringAnswer_inputsAndAnswerInArabic_slightlyMisspelled_answerMatches
-  // testStringAnswer_inputsAndAnswerInArabic_largelyMisspelled_answerDoesNotMatch
+  @Test
+  fun testStringAnswer_inputsWithPortuguese_answerInEnglish_englishContext_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString("an answer"),
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_inputsWithPortuguese_answerInPortuguese_englishContext_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString("uma resposta"),
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    // A Portuguese answer isn't reocgnized with this translation context.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testStringAnswer_inputsWithPortuguese_answerInEnglish_portugueseContext_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString("an answer"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // Even though the English string matches, the presence of the Portuguese context should trigger
+    // a failure for an English answer.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testStringAnswer_inputsWithPortuguese_answerInPortuguese_portugueseContext_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString("uma resposta"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // The translation context provides a bridge between Portuguese & English.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_inputsAndAnswerInPortuguese_slightlyMisspelled_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString("uma reposta"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // A single misspelled letter should still result in a match in the same way as English.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_inputsAndAnswerInPortuguese_largelyMisspelled_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString("reposta"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // A missing word & a misspelled word should result in no match.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testStringAnswer_inputsAndAnswerInArabic_slightlyMisspelled_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString("إجاب"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "إجابة")
+    )
+
+    // A single misspelled letter should still result in a match in the same way as English.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_inputsAndAnswerInArabic_largelyMisspelled_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputFuzzyEqualsRuleClassifier.matches(
+      answer = createString("إجا"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // Multiple missing letters should result in no match.
+    assertThat(matches).isFalse()
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerTextInputFuzzyEqualsRuleClassifierProviderTest_TestApplicationComponent.builder()

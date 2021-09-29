@@ -20,8 +20,8 @@ import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
 private const val QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
@@ -52,11 +52,9 @@ class QuestionPlayerActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val extras = checkNotNull(intent.extras) {
-      "Expected extras to be defined for QuestionPlayerActivity"
-    }
+    checkNotNull(intent.extras) { "Expected extras to be defined for QuestionPlayerActivity" }
     val profileId =
-      extras.getProto(
+      intent.getProtoExtra(
         QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance()
       )
     questionPlayerActivityPresenter.handleOnCreate(profileId)
@@ -93,7 +91,7 @@ class QuestionPlayerActivity :
       profileId: ProfileId
     ): Intent {
       return Intent(context, QuestionPlayerActivity::class.java).apply {
-        extras?.putProto(QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
+        putProtoExtra(QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
         putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
       }
     }
