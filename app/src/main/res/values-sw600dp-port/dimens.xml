@@ -318,6 +318,8 @@
   <!-- Pin Password -->
   <dimen name="pin_password_text_input_layout_width">304dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
+  <dimen name="pin_password_margin_start">204dp</dimen>
+  <dimen name="pin_password_margin_end">204dp</dimen>
 
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">360dp</dimen>
