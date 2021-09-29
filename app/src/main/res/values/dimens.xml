@@ -495,6 +495,10 @@
   <dimen name="home_fragment_padding_top">36dp</dimen>
   <dimen name="home_fragment_padding_bottom">148dp</dimen>
 
+  <!-- Recently Played -->
+  <dimen name="recently_played_fragment_padding_top">8dp</dimen>
+  <dimen name="recently_played_fragment_padding_bottom">168dp</dimen>
+
   <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
   <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
   <dimen name="promoted_story_card_layout_width">280dp</dimen>
