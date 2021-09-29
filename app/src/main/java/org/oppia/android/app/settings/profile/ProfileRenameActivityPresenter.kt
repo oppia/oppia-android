@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileRenameActivityBinding
@@ -24,7 +25,8 @@ import javax.inject.Inject
 class ProfileRenameActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ProfileRenameViewModel>
+  private val viewModelProvider: ViewModelProvider<ProfileRenameViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val renameViewModel: ProfileRenameViewModel by lazy {
     getProfileRenameViewModel()
@@ -59,7 +61,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
       val name = binding.profileRenameInputEditText.text.toString()
       if (name.isEmpty()) {
         renameViewModel.nameErrorMsg.set(
-          activity.resources.getString(
+          resourceHandler.getStringInLocale(
             R.string.add_profile_error_name_empty
           )
         )
@@ -109,13 +111,13 @@ class ProfileRenameActivityPresenter @Inject constructor(
       when (result.getErrorOrNull()) {
         is ProfileManagementController.ProfileNameNotUniqueException ->
           renameViewModel.nameErrorMsg.set(
-            activity.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.add_profile_error_name_not_unique
             )
           )
         is ProfileManagementController.ProfileNameOnlyLettersException ->
           renameViewModel.nameErrorMsg.set(
-            activity.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.add_profile_error_name_only_letters
             )
           )

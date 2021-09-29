@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
@@ -11,13 +10,14 @@ import org.oppia.android.app.parser.StringToNumberParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel(
-  private val context: Context,
   val hasConversationView: Boolean,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   private var pendingAnswerError: String? = null
@@ -45,10 +45,10 @@ class NumericInputViewModel(
       pendingAnswerError = when (category) {
         AnswerErrorCategory.REAL_TIME ->
           stringToNumberParser.getRealTimeAnswerError(answerText.toString())
-            .getErrorMessageFromStringRes(context)
+            .getErrorMessageFromStringRes(resourceHandler)
         AnswerErrorCategory.SUBMIT_TIME ->
           stringToNumberParser.getSubmitTimeError(answerText.toString())
-            .getErrorMessageFromStringRes(context)
+            .getErrorMessageFromStringRes(resourceHandler)
       }
     }
     errorMessage.set(pendingAnswerError)

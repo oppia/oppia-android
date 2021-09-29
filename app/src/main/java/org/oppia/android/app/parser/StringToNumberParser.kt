@@ -1,22 +1,25 @@
 package org.oppia.android.app.parser
 
-import android.content.Context
 import androidx.annotation.StringRes
 import org.oppia.android.R
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.util.normalizeWhitespace
 
-/** This class contains methods that help to parse string to number, check realtime and submit time errors. */
+/**
+ * This class contains methods that help to parse string to number, check realtime and submit time
+ * errors.
+ */
 class StringToNumberParser {
   private val validCharsRegex =
     """^[\d\s.-]+$""".toRegex()
 
   /**
-   * Returns a [NumericInputParsingError] for obvious incorrect number formatting issues for the specified raw text, or
-   * [NumericInputParsingError.VALID] if not such issues are found.
+   * Returns a [NumericInputParsingError] for obvious incorrect number formatting issues for the
+   * specified raw text, or [NumericInputParsingError.VALID] if not such issues are found.
    *
    * Note that this method returning a valid result does not guarantee the text is a valid number
-   * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
-   * general validity, not for definite correctness.
+   * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a
+   * quick sanity check for general validity, not for definite correctness.
    */
   fun getRealTimeAnswerError(text: String): NumericInputParsingError {
     val normalized = text.normalizeWhitespace()
@@ -31,11 +34,11 @@ class StringToNumberParser {
 
   /**
    * Returns a [NumericInputParsingError] for the specified text input if it's an invalid number, or
-   * [NumericInputParsingError.VALID] if no issues are found. Note that a valid number returned by this method is guaranteed
-   * to be parsed correctly.
+   * [NumericInputParsingError.VALID] if no issues are found. Note that a valid number returned by
+   * this method is guaranteed to be parsed correctly.
    *
-   * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
-   * using [getRealTimeAnswerError], instead.
+   * This method should only be used when a user tries submitting an answer. Real-time error
+   * detection should be done using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): NumericInputParsingError {
     if (text.length > 15) {
@@ -56,9 +59,10 @@ class StringToNumberParser {
     STARTING_WITH_FLOATING_POINT(error = R.string.number_error_starting_with_floating_point),
     NUMBER_TOO_LONG(error = R.string.number_error_larger_than_fifteen_characters);
 
-    /** Returns the string corresponding to this error's string resources, or null if there is none. */
-    fun getErrorMessageFromStringRes(context: Context): String? {
-      return error?.let(context::getString)
-    }
+    /**
+     * Returns the string corresponding to this error's string resources, or null if there is none.
+     */
+    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
+      error?.let(resourceHandler::getStringInLocale)
   }
 }
