@@ -1512,6 +1512,7 @@ class StateFragmentTest {
   /* Multi-language & localization tests. */
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_englishContentLang_content_isInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1521,8 +1522,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabicContentLang_content_isInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1532,8 +1534,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabicContentLang_thenEnglish_content_isInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1546,6 +1549,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_continueInteraction_buttonIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1555,8 +1559,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_continueInteraction_buttonIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1568,6 +1573,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_fractionInput_placeholderIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1581,6 +1587,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_fractionInput_submitAnswer_answerMatchesSubmission() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1595,8 +1602,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_fractionInput_placeholderIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1608,8 +1616,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_fractionInput_submitAnswer_answerMatchesSubmission() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1627,6 +1636,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_englishContentLang_feedback_isInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1641,8 +1651,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabicContentLang_feedback_isInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1658,8 +1669,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabicContentLang_thenEnglish_feedback_isInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1677,6 +1689,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_multipleChoice_optionsAreInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1697,6 +1710,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_multipleChoice_submittedAnswer_answerIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1710,8 +1724,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_multipleChoice_optionsAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1731,8 +1746,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_multipleChoice_submittedAnswer_answerIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1747,8 +1763,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1766,6 +1783,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_itemSelection_optionsAreInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1788,6 +1806,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_itemSelection_submittedAnswer_answerIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -1807,8 +1826,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_itemSelection_optionsAreInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1830,8 +1850,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_itemSelection_submittedAnswer_answerIsInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1851,8 +1872,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1875,6 +1897,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_numericInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1893,8 +1916,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_numericInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1915,6 +1939,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_ratioInput_placeholderIsInEnglish() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1932,6 +1957,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_ratioInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1951,8 +1977,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_ratioInput_placeholderIsInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1969,8 +1996,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_ratioInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1992,6 +2020,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_textInput_placeholderIsInEnglish() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2010,6 +2039,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_textInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2030,8 +2060,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_textInput_placeholderIsInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2049,8 +2080,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_textInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2071,8 +2103,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_arabic_textInput_submitAnswer_switchToEnglish_answerDoesNotChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2096,6 +2129,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testStateFragment_english_dragAndDrop_optionsAreInEnglish() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2150,8 +2184,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_portuguese_dragAndDrop_optionsAreInPortuguese() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()

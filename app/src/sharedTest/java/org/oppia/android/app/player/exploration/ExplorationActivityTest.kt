@@ -150,6 +150,7 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.TestPlatform
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -1606,6 +1607,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_contentIsInEnglish() {
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -1635,8 +1637,9 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testExpActivity_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -1667,6 +1670,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_showHint_explanationInEnglish() {
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -1706,8 +1710,9 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),

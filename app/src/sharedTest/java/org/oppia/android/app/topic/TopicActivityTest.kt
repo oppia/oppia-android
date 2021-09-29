@@ -86,6 +86,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestPlatform
 
 /** Tests for [TopicActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -137,6 +139,7 @@ class TopicActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
     launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
       // Open the practice tab and select a skill.

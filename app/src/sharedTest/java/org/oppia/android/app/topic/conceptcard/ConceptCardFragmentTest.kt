@@ -104,6 +104,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.TestPlatform
 
 /** Tests for [ConceptCardFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -318,6 +319,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testConceptCardFragment_englishContentLang_explanationIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchTestActivity().use {
@@ -330,8 +332,9 @@ class ConceptCardFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchTestActivity().use {
@@ -348,8 +351,9 @@ class ConceptCardFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchTestActivity().use {
