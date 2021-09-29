@@ -805,7 +805,7 @@ class LocaleControllerTest {
   }
 
   @Test
-  fun testSetAsDefault_englishDisplayLocale_triggersChangeInSystemLanguageProvider() {
+  fun testSetAsDefault_englishDisplayLocale_doesNotTriggerChangeInSystemLanguageProvider() {
     forceDefaultLocale(Locale.ROOT)
     val locale = retrieveAppStringDisplayLocale(ENGLISH)
     val monitor = monitorFactory.createMonitor(localeController.retrieveSystemLanguage())
@@ -814,7 +814,24 @@ class LocaleControllerTest {
 
     localeController.setAsDefault(locale, Configuration())
 
-    // Verify that the system language provider is notified with the language change.
+    // Verify that the system language provider isn't notified since the system locale didn't
+    // change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testSetAsDefault_englishDisplayLocale_withNewSystemLocale_triggersChangeInSysLangProvider() {
+    forceDefaultLocale(Locale.ROOT)
+    val locale = retrieveAppStringDisplayLocale(ENGLISH)
+    val monitor = monitorFactory.createMonitor(localeController.retrieveSystemLanguage())
+    // Sanity check (to validate the system language actually changes).
+    assertThat(monitor.waitForNextSuccessResult()).isNotEqualTo(ENGLISH)
+
+    forceDefaultLocale(Locale.ENGLISH)
+    localeController.setAsDefault(locale, Configuration())
+
+    // Verify that the system language provider did change & was notified as part of the call to
+    // setAsDefault.
     assertThat(monitor.waitForNextSuccessResult()).isEqualTo(ENGLISH)
   }
 

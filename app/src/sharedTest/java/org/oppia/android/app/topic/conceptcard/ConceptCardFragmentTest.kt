@@ -101,6 +101,9 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.model.ProfileId
 import org.hamcrest.CoreMatchers.containsString
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 
 /** Tests for [ConceptCardFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -115,6 +118,9 @@ class ConceptCardFragmentTest {
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -325,6 +331,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchTestActivity().use {
@@ -342,6 +349,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchTestActivity().use {

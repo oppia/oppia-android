@@ -101,6 +101,10 @@ import javax.inject.Singleton
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestPlatform
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -129,6 +133,9 @@ class ExplorationProgressControllerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -2925,6 +2932,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     playExploration(
@@ -2980,6 +2988,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
@@ -3003,6 +3012,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()

@@ -211,7 +211,8 @@ class LocaleController @Inject constructor(
    * written or audio content translations.
    *
    * The returned [DataProvider]'s subscribers may be notified upon calls to
-   * [notifyPotentialLocaleChange] if there's actually a change in the system locale.
+   * [notifyPotentialLocaleChange] if there's actually a change in the system locale, though note
+   * that this data provider aims to always represent the actual current system locale's language.
    */
   fun retrieveSystemLanguage(): DataProvider<OppiaLanguage> {
     val providerId = SYSTEM_LANGUAGE_DATA_PROVIDER_ID
@@ -228,8 +229,10 @@ class LocaleController @Inject constructor(
    * default locale for the current app process (which will affect string resource retrieval).
    *
    * Note that this may result in data providers returned by this class being notified of changes if
-   * any depend on the current system locale, and will likely change the result of the data provider
-   * returned by [retrieveSystemLanguage].
+   * any depend on the current system locale, but will likely not change the result of the data
+   * provider returned by [retrieveSystemLanguage] unless the system locale has been updated prior
+   * to this method being called (since it triggers a notification for potential changes on that
+   * data provider).
    */
   fun setAsDefault(displayLocale: DisplayLocale, configuration: Configuration) {
     (displayLocale as? DisplayLocaleImpl)?.let { locale ->
@@ -242,16 +245,11 @@ class LocaleController @Inject constructor(
       // there's no way to actually observe changes to it, so the controller aims to have eventual
       // consistency by always retrieving the latest state when requested. This does mean locale
       // changes can be missed if they aren't accompanied by a configuration change or activity
-      // recreation.
+      // recreation. Note that the app intentionally does not overwrite the application context's
+      // locale. Besides the fact that this seems unnecessary, it also makes it difficult to track
+      // the actual current system locale (which is necessary in order to determine when to recreate
+      // the app to apply a new language configuration).
       Locale.setDefault(locale.formattingLocale)
-
-      // Ensure that the application context is also using the new locale (which it should by
-      // default since Android's responsible for setting it, but this is done for assurance since
-      // other code in this controller relies on the application context's locale rather than the
-      // system default). Note also that this has the side effect of overriding user-selected
-      // locales for fallback languages (which is probably fine since the app relies on its own
-      // fallback mechanism when choosing the primary locale).
-      applicationContext.resources.configuration.setLocale(locale.formattingLocale)
 
       notifyPotentialLocaleChange()
     } ?: error("Invalid display locale type passed in: $displayLocale")

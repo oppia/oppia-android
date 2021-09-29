@@ -56,6 +56,7 @@ import javax.inject.Singleton
 import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
+import org.oppia.android.app.model.OppiaRegion.INDIA
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
 import org.oppia.android.app.model.TranslationMapping
 
@@ -117,7 +118,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetSystemLanguageLocale_updateLocaleToIndia_updatesProviderWithNewLocale() {
+  fun testGetSystemLanguageLocale_updateLocaleToIndia_doesNotUpdateProviderWithNewLocale() {
     forceDefaultLocale(Locale.US)
     val localeProvider = translationController.getSystemLanguageLocale()
     val monitor = monitorFactory.createMonitor(localeProvider)
@@ -125,12 +126,27 @@ class TranslationControllerTest {
 
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
 
-    // Verify that the provider has changed.
+    // Verify that the provider hasn't changed since simply calling setAsDefault isn't sufficient to
+    // trigger a system provider change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testGetSystemLanguageLocale_updateDisplayAndSysLocaleToIndia_updatesProviderWithNewLocale() {
+    forceDefaultLocale(Locale.US)
+    val localeProvider = translationController.getSystemLanguageLocale()
+    val monitor = monitorFactory.createMonitor(localeProvider)
+    monitor.waitForNextSuccessResult()
+
+    forceDefaultLocale(INDIA_HINDI_LOCALE)
+    localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
+
+    // Verify that the provider has changed since the system & display locales were updated.
     val locale = monitor.waitForNextSuccessResult()
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(APP_STRINGS)
     assertThat(context.languageDefinition.language).isEqualTo(HINDI)
-    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
+    assertThat(context.regionDefinition.region).isEqualTo(INDIA)
   }
 
   /* Tests for app language functions */
@@ -206,7 +222,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAppLanguage_useSystemLang_updateLocale_notifiesProviderWithNewLanguage() {
+  fun testGetAppLanguage_useSystemLang_updateLocale_doesNotNotifyProviderWithNewLanguage() {
     forceDefaultLocale(Locale.ENGLISH)
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     val languageProvider = translationController.getAppLanguage(PROFILE_ID_0)
@@ -215,9 +231,9 @@ class TranslationControllerTest {
 
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
 
-    // The language should be updated to English since the system language was changed.
-    val updatedLanguage = monitor.waitForNextSuccessResult()
-    assertThat(updatedLanguage).isEqualTo(HINDI)
+    // The data provider shouldn't be updated. English will continue to be reported for the data
+    // provider, but the actual app strings are allowed to use Hindi per the override.
+    monitor.verifyProviderIsNotUpdated()
   }
 
   @Test
@@ -293,7 +309,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAppLanguageLocale_useSystemLang_updateLocale_notifiesProviderWithNewLocale() {
+  fun testGetAppLanguageLocale_useSystemLang_updateLocale_doesNotNotifyProviderWithNewLocale() {
     forceDefaultLocale(Locale.ENGLISH)
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     val localeProvider = translationController.getAppLanguageLocale(PROFILE_ID_0)
@@ -302,11 +318,9 @@ class TranslationControllerTest {
 
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
 
-    // The language should be updated to English since the system language was changed.
-    val updateLocale = monitor.waitForNextSuccessResult()
-    val context = updateLocale.localeContext
-    assertThat(context.usageMode).isEqualTo(APP_STRINGS)
-    assertThat(context.languageDefinition.language).isEqualTo(HINDI)
+    // The data provider shouldn't be updated. English will continue to be reported for the data
+    // provider, but the actual app strings are allowed to use Hindi per the override.
+    monitor.verifyProviderIsNotUpdated()
   }
 
   @Test
@@ -429,7 +443,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLang_useSystemLangForApp_updateLocale_notifiesProviderWithNewLang() {
+  fun testGetWrittenContentLang_useSysLangForApp_updateLocale_doesNotNotifyProviderWithNewLang() {
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     forceDefaultLocale(Locale.US)
     ensureWrittenTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
@@ -437,10 +451,9 @@ class TranslationControllerTest {
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
     val languageProvider = translationController.getWrittenTranslationContentLanguage(PROFILE_ID_0)
 
-    // Changing the locale should change the language since this provider depends on the app strings
-    // language & app strings depend on the system locale.
+    // Changing the locale isn't sufficient unless the system locale also changes.
     val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
-    assertThat(language).isEqualTo(HINDI)
+    assertThat(language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -548,7 +561,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLocale_useSystemLangForApp_updateLocale_notifiesProviderWithNewLang() {
+  fun testGetWrittenContentLocale_useSysLangForApp_updateLocale_doesNotNotifyProviderWithNewLang() {
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     forceDefaultLocale(Locale.US)
     ensureWrittenTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
@@ -556,12 +569,11 @@ class TranslationControllerTest {
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
 
-    // Changing the locale should change the language since this provider depends on the app strings
-    // language & app strings depend on the system locale.
+    // Changing the locale isn't sufficient unless the system locale also changes.
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(CONTENT_STRINGS)
-    assertThat(context.languageDefinition.language).isEqualTo(HINDI)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -684,7 +696,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAudioLanguage_useSystemLangForApp_updateLocale_notifiesProviderWithNewLang() {
+  fun testGetAudioLanguage_useSystemLangForApp_updateLocale_doesNotNotifyProviderWithNewLang() {
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     forceDefaultLocale(Locale.US)
     ensureAudioTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
@@ -692,10 +704,9 @@ class TranslationControllerTest {
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
     val languageProvider = translationController.getAudioTranslationContentLanguage(PROFILE_ID_0)
 
-    // Changing the locale should change the language since this provider depends on the app strings
-    // language & app strings depend on the system locale.
+    // Changing the locale isn't sufficient unless the system locale also changes.
     val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
-    assertThat(language).isEqualTo(HINDI)
+    assertThat(language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -798,7 +809,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAudioLocale_useSystemLangForApp_updateLocale_notifiesProviderWithNewLang() {
+  fun testGetAudioLocale_useSystemLangForApp_updateLocale_doesNotNotifyProviderWithNewLang() {
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     forceDefaultLocale(Locale.US)
     ensureAudioTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
@@ -806,12 +817,11 @@ class TranslationControllerTest {
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
     val localeProvider = translationController.getAudioTranslationContentLocale(PROFILE_ID_0)
 
-    // Changing the locale should change the language since this provider depends on the app strings
-    // language & app strings depend on the system locale.
+    // Changing the locale isn't sufficient unless the system locale also changes.
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
-    assertThat(context.languageDefinition.language).isEqualTo(HINDI)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -1384,6 +1394,7 @@ class TranslationControllerTest {
 
   private companion object {
     private val BRAZIL_ENGLISH_LOCALE = Locale("en", "BR")
+    private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
 
     private val PROFILE_ID_0 = ProfileId.newBuilder().apply {
       internalId = 0

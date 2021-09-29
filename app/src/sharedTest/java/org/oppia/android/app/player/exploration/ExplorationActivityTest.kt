@@ -147,6 +147,9 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -161,6 +164,9 @@ class ExplorationActivityTest {
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
@@ -1630,6 +1636,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testExpActivity_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -1700,6 +1707,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),

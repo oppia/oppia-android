@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state
 
+import java.util.Locale
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
@@ -141,6 +142,9 @@ import javax.inject.Singleton
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -152,6 +156,9 @@ import org.oppia.android.app.model.ProfileId
 class StateFragmentLocalTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   private val AUDIO_URL_1 =
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
@@ -1136,6 +1143,8 @@ class StateFragmentLocalTest {
     appStringAndroidLanguageId = ""
   )
   fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueButton()
@@ -1159,6 +1168,8 @@ class StateFragmentLocalTest {
     appStringAndroidLanguageId = ""
   )
   fun testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueButton()
@@ -1170,7 +1181,10 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
-      // The hint explanation should be in English.
+      // The hint explanation should be in English. Note that an Arabic version of this test doesn't
+      // exist because while the corresponding situation should be true with Arabic, limitations in
+      // the testing framework prevent this from being tested (since activity recreation can't be
+      // done to trigger the
       onView(withId(R.id.hints_and_solution_summary))
         .check(matches(withText(containsString("Remember that two halves"))))
     }
@@ -1183,6 +1197,8 @@ class StateFragmentLocalTest {
     appStringAndroidLanguageId = "ar"
   )
   fun testStateFragment_arabicLocale_defaultContentLang_hint_labelsAreInArabic() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueButton()
@@ -1205,7 +1221,10 @@ class StateFragmentLocalTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_arabicLocale_defaultContentLang_hint_explanationIsInArabic() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       clickContinueButton()
@@ -1229,7 +1248,10 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_arabicContentLang_hint_labelsAreInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1254,7 +1276,10 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_arabicContentLang_hint_explanationIsInArabic() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -1788,6 +1813,11 @@ class StateFragmentLocalTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
   /**
    * Returns a [ViewAssertion] that can be used to check the specified matcher applies the specified
    * number of times for children against the view under test. If the count does not exactly match,
@@ -1890,5 +1920,9 @@ class StateFragmentLocalTest {
     override fun matches(item: Any?): Boolean {
       return (item as? ViewHolder)?.itemViewType == viewType.ordinal
     }
+  }
+
+  private companion object {
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
   }
 }

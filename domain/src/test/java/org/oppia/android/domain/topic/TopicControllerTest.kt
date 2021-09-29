@@ -40,7 +40,10 @@ import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILA
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -77,6 +80,12 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = TopicControllerTest.TestApplication::class)
 class TopicControllerTest {
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -92,10 +101,6 @@ class TopicControllerTest {
 
   @Inject
   lateinit var translationController: TranslationController
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock
   lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
@@ -1137,6 +1142,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
@@ -1170,6 +1176,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
     updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
@@ -1185,6 +1192,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_arabicLangProfile_includesTranslationContextForArabic() {
     updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
     updateContentLanguage(profileId2, OppiaLanguage.ARABIC)
@@ -1210,6 +1218,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     val revisionCardDataProvider =
@@ -1246,6 +1255,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
     updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
     val revisionCardDataProvider =
@@ -1262,6 +1272,7 @@ class TopicControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_arabicLangProfile_includesTranslationContextForArabic() {
     updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
     updateContentLanguage(profileId2, OppiaLanguage.ARABIC)

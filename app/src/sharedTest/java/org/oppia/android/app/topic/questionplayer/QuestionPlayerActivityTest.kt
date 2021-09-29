@@ -132,6 +132,7 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import org.hamcrest.CoreMatchers.allOf
+import org.oppia.android.testing.BuildEnvironment
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
@@ -370,6 +371,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -396,6 +398,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
