@@ -21,12 +21,14 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -133,6 +135,11 @@ class HomeActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<HomeActivity> = ActivityTestRule(
+    HomeActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -153,6 +160,7 @@ class HomeActivityTest {
   private val longNameInternalProfileId: Int = 3
   private lateinit var profileId: ProfileId
   private lateinit var profileId1: ProfileId
+  private val summaryValue = "Medium"
 
   @Before
   fun setUp() {
@@ -185,6 +193,17 @@ class HomeActivityTest {
         stringToMatch = "Admin!"
       )
     }
+  }
+
+  @Test
+  fun testHomeActivity_hasCorrectActivityLabel() {
+    activityTestRule.launchActivity(
+      createHomeActivityIntent(
+        internalProfileId
+      )
+    )
+    val title = activityTestRule.activity.title
+    assertThat(title).isEqualTo(context.getString(R.string.home_activity_title))
   }
 
   @Test
