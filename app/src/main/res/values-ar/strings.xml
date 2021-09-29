@@ -133,12 +133,54 @@
   <string name="correct">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
   <string name="chapter_count_with_story_name">%1$s في %2$s</string>
-  <string name="chapter_count">{{PLURAL|one=\nفصلًا واحدًا\n|\n%s من الفصول</string>
-  <string name="story_count">{{PLURAL|one=\nقصة واحدة\n|\n%s من القصص</string>
-  <string name="story_total_chapters">{{PLURAL|one=\n%s من %s فصل مكتمل\n|\n%s من %s من الفصول مكتملة</string>
-  <string name="lesson_count">{{PLURAL|one=\nدرسًا واحدًا\n|\n%s من الدروس</string>
-  <string name="completed_story_count">{{PLURAL|one=\nقصة واحدة مكتملة\n|zero=\n%s قصة مكتملة\n|\n%s من القصص مكتملة</string>
-  <string name="ongoing_topic_count">{{PLURAL|one=\nموضوع واحد في تقدم\n|zero=\n%s موضوع في تقدم\n|\n%s من المواضيع في تقدم</string>
+  <plurals name="chapter_count">
+    <item quantity="zero">و لا فصل</item>
+    <item quantity="one">فصلًا واحدًا</item>
+    <item quantity="two">فصلان</item>
+    <item quantity="few">%s من الفصول</item>
+    <item quantity="many">%s من الفصول</item>
+    <item quantity="other">%s من الفصول</item>
+  </plurals>
+  <plurals name="story_count">
+    <item quantity="zero">و لا قصة</item>
+    <item quantity="one">قصة واحدة</item>
+    <item quantity="two">قصتان</item>
+    <item quantity="few">%s من القصص</item>
+    <item quantity="many">%s من القصص</item>
+    <item quantity="other">%s من القصص</item>
+  </plurals>
+  <plurals name="story_total_chapters">
+    <item quantity="zero">و لا فصل مكتمل</item>
+    <item quantity="one">فصل %s مكتمل من %s</item>
+    <item quantity="two">فصلان %s مكتملان من %s</item>
+    <item quantity="few">%sفصول مكتملة من %s</item>
+    <item quantity="many">%s فصول مكتملة من %s</item>
+    <item quantity="other">%s فصول مكتملة من %s</item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="zero">و لا درس</item>
+    <item quantity="one">درسًا واحدًا</item>
+    <item quantity="two">درسان</item>
+    <item quantity="few">%s درس</item>
+    <item quantity="many">%s درس</item>
+    <item quantity="other">%s درس</item>
+  </plurals>
+  <plurals name="completed_story_count">
+    <item quantity="zero">و لا قصة مكتملة</item>
+    <item quantity="one">قصة واحدة مكتملة</item>
+    <item quantity="two">قصتان مكتملتان</item>
+    <item quantity="few">%s قصة مكتملة</item>
+    <item quantity="many">%s قصة مكتملة</item>
+    <item quantity="other">%s قصة مكتملة</item>
+  </plurals>
+  <plurals name="ongoing_topic_count">
+    <item quantity="zero">و لا موضوع في تقدم</item>
+    <item quantity="one">موضوع واحد في تقدم</item>
+    <item quantity="two">موضوعان في تقدم</item>
+    <item quantity="few">%s موضوع في تقدم</item>
+    <item quantity="many">%s موضوع في تقدم</item>
+    <item quantity="other">%s موضوع في تقدم</item>
+  </plurals>
   <string name="profile_chooser_activity_label">صفحة اختيار الملف الشخصي</string>
   <string name="profile_chooser_admin">المشرف</string>
   <string name="profile_chooser_select">اختر الملف الشخصي</string>
@@ -333,9 +375,30 @@
   <string name="up_button_disabled">أعلى</string>
   <string name="down_button_disabled">أسفل</string>
   <string name="profile_last_visited">%s %s</string>
-  <string name="minutes">{{PLURAL|one=\nدقيقة واحدة\n|\n%s من الدقائق</string>
-  <string name="hours">{{PLURAL|one=\nساعة واحدة\n|\n%s من الساعات</string>
-  <string name="days">{{PLURAL|one=\nيوم واحد\n|\n%s من الأيام</string>
+  <plurals name="minutes">
+    <item quantity="zero">و لا دقيقة</item>
+    <item quantity="one">دقيقة واحدة</item>
+    <item quantity="two">دقيقتان</item>
+    <item quantity="few">%s دقيقة</item>
+    <item quantity="many">%s دقيقة</item>
+    <item quantity="other">%s دقيقة</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="zero">و لا ساعة</item>
+    <item quantity="one">ساعة واحدة</item>
+    <item quantity="two">ساعتان</item>
+    <item quantity="few">%s ساعة</item>
+    <item quantity="many">%s ساعة</item>
+    <item quantity="other">%s ساعة</item>
+  </plurals>
+  <plurals name="days">
+    <item quantity="zero">و لا يوم</item>
+    <item quantity="one">يوم واحدة</item>
+    <item quantity="two">يومان</item>
+    <item quantity="few">%s يوم</item>
+    <item quantity="many">%s يوم</item>
+    <item quantity="other">%s يوم</item>
+  </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>
