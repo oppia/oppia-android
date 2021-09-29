@@ -3,9 +3,9 @@ package org.oppia.android.app.privacypolicytermsofservice
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.TermsOfServicetermsofservice.TermsOfServiceSingleActivityPresenter
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
-import org.oppia.android.app.TermsOfServicetermsofservice.TermsOfServiceSingleActivityPresenter
 
 /** The Terms of Service page activity for placement of single Terms_Of_Service. */
 class TermsOfServiceSingleActivity : InjectableAppCompatActivity() {
