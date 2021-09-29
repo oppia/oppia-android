@@ -1,7 +1,9 @@
 package org.oppia.android.app.onboarding
 
+import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Log
@@ -12,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
@@ -128,7 +131,6 @@ class OnboardingFragmentPresenter @Inject constructor(
   private fun setTermsAndCondition(binding: OnboardingSlideFinalBinding) {
     val termsOfService: String = activity.getString(R.string.terms_of_service)
     val privacyPolicy: String = activity.getString(R.string.privacy_policy)
-    Log.d("termsOfService", "" + termsOfService)
     val completeString: String =
       activity.getString(R.string.agree_to_terms) + termsOfService + " and " + privacyPolicy
 
@@ -139,14 +141,25 @@ class OnboardingFragmentPresenter @Inject constructor(
     val spannableStringBuilder = SpannableStringBuilder(completeString)
     val clickOnTerms = object : ClickableSpan() {
       override fun onClick(widget: View) {
-        Toast.makeText(activity, "click on terms of service", Toast.LENGTH_SHORT).show()
+        (activity as RouteToTermsOfServiceSingleListener).onRouteToTermsOfServiceSingle()
+      }
+      override fun updateDrawState(ds: TextPaint) {
+        super.updateDrawState(ds)
+        ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
+        ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
       }
     }
     val clickOnPrivacy = object : ClickableSpan() {
       override fun onClick(widget: View) {
         (activity as RouteToPrivacyPolicySingleListener).onRouteToPrivacyPolicySingle()
       }
+      override fun updateDrawState(ds: TextPaint) {
+        super.updateDrawState(ds)
+        ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
+        ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
+      }
     }
+
     if (startIndex > 0)
       spannableStringBuilder.setSpan(
         clickOnTerms,

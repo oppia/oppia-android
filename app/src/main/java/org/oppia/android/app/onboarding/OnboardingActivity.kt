@@ -7,12 +7,14 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import javax.inject.Inject
+import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceSingleActivity
 
 /** Activity that contains the onboarding flow for learners. */
 class OnboardingActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
-  RouteToPrivacyPolicySingleListener {
+  RouteToPrivacyPolicySingleListener,
+  RouteToTermsOfServiceSingleListener{
   @Inject
   lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
 
@@ -36,6 +38,14 @@ class OnboardingActivity :
   override fun onRouteToPrivacyPolicySingle() {
     startActivity(
       PrivacyPolicySingleActivity.createPrivacyPolicySingleActivityIntent(
+        this
+      )
+    )
+  }
+
+  override fun onRouteToTermsOfServiceSingle() {
+    startActivity(
+      TermsOfServiceSingleActivity.createTermsOfServiceSingleActivityIntent(
         this
       )
     )

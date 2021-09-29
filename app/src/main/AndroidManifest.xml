@@ -257,6 +257,9 @@
     <activity android:name=".app.privacypolicytermsofservice.PrivacyPolicySingleActivity"
       android:label="@string/privacy_policy_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".app.privacypolicytermsofservice.TermsOfServiceSingleActivity"
+      android:label="@string/privacy_policy_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.resumelesson.ResumeLessonActivity"
       android:label="@string/resume_lesson_activity_title"
