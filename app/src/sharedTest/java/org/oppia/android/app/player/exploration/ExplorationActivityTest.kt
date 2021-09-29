@@ -19,6 +19,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -41,7 +42,10 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -62,8 +66,12 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -103,9 +111,14 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
@@ -137,19 +150,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.hamcrest.CoreMatchers.containsString
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import org.hamcrest.BaseMatcher
-import org.hamcrest.Description
-import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -1832,7 +1832,8 @@ class ExplorationActivityTest {
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
-      }.build())
+      }.build()
+    )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 

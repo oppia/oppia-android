@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AnswerGroup
+import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.Misconception
@@ -21,6 +22,7 @@ import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.Outcome
 import org.oppia.android.app.model.RuleSpec
 import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.Translation
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createFraction
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createMixedNumber
@@ -53,9 +55,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.HtmlTranslationList
-import org.oppia.android.app.model.TranslatableSetOfNormalizedString
-import org.oppia.android.app.model.Translation
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.

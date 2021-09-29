@@ -13,12 +13,12 @@ import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.LanguageSupportDefinition.MacaronicLanguageId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
-import org.oppia.android.app.model.OppiaRegion
 
 // TODO(#2747): Update this to not need reflection, and instead depend on the necessary app layer
 //  packages directly. At the time of writing this utility, Gradle disallowed a dependency in

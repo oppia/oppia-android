@@ -1,10 +1,11 @@
 package org.oppia.android.util.extensions
 
-import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import android.content.Intent
 import android.os.Bundle
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.truth.content.IntentSubject.assertThat
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.IncompatibleTestMessage
@@ -12,7 +13,6 @@ import org.oppia.android.app.model.TestMessage
 import org.oppia.android.app.model.TestMessage2
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import androidx.test.ext.truth.content.IntentSubject.assertThat
 
 /** Tests for BundleExtensions. */
 @RunWith(AndroidJUnit4::class)

@@ -17,6 +17,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslationContext
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
@@ -31,8 +32,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslationContext
 
 /** Tests for [TextInputEqualsRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -62,7 +61,9 @@ class TextInputEqualsRuleClassifierProviderTest {
   private val STRING_VALUE_TEST_NO_SPACES_INPUT_SET =
     createTranslatableSetOfNormalizedString("testalot", contentId = TEST_STRING_CONTENT_ID)
   private val MULTIPLE_STRING_VALUE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("this", "is", "a test", contentId = TEST_STRING_CONTENT_ID)
+    createTranslatableSetOfNormalizedString(
+      "this", "is", "a test", contentId = TEST_STRING_CONTENT_ID
+    )
 
   @Inject
   internal lateinit var textInputEqualsRuleClassifierProvider:

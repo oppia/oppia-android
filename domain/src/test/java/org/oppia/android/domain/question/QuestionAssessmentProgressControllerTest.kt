@@ -12,10 +12,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -86,6 +82,10 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TOLERANCE = 1e-5
 
@@ -1704,7 +1704,8 @@ class QuestionAssessmentProgressControllerTest {
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
-      }.build())
+      }.build()
+    )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 

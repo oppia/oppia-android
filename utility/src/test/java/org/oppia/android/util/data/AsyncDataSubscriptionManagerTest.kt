@@ -9,9 +9,6 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import java.util.concurrent.Executors
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
@@ -32,6 +29,9 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.AsyncDataSubscriptionManagerTest.SubscriptionCallback.Companion.toAsyncChange
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.Executors
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [AsyncDataSubscriptionManager]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -325,7 +325,7 @@ class AsyncDataSubscriptionManagerTest {
   }
 
   @Test
-  fun testAssociateIds_repeatedChildRegistration_multipleCallbacks_notifyParent_notifiesChildOnce() {
+  fun testAssociateIds_repeatedChildRegs_multipleCallbacks_notifyParent_notifiesChildOnce() {
     asyncDataSubscriptionManager.subscribe("parent_id", mockSubscriptionCallback1.toAsyncChange())
     asyncDataSubscriptionManager.subscribe("child_id", mockSubscriptionCallback2.toAsyncChange())
     // Associate the child twice.

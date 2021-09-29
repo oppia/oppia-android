@@ -48,6 +48,9 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -80,9 +83,14 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -108,14 +116,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -538,7 +538,8 @@ class RevisionCardFragmentTest {
       profileId,
       WrittenTranslationLanguageSelection.newBuilder().apply {
         selectedLanguage = language
-      }.build())
+      }.build()
+    )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 

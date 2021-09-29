@@ -1,3 +1,4 @@
+
 package org.oppia.android.domain.classify
 
 import org.oppia.android.app.model.Fraction
@@ -27,7 +28,10 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
-  fun createTranslatableSetOfNormalizedString(vararg values: String, contentId: String = ""): InteractionObject =
+  fun createTranslatableSetOfNormalizedString(
+    vararg values: String,
+    contentId: String = ""
+  ): InteractionObject =
     InteractionObject.newBuilder().apply {
       translatableSetOfNormalizedString = TranslatableSetOfNormalizedString.newBuilder().apply {
         addAllNormalizedStrings(values.toList())
@@ -166,7 +170,8 @@ object InteractionObjectTestBuilder {
 
   // Not technically an interaction object, but used in conjunction with them.
   fun createTranslationContext(
-    contentId: String, vararg translationStrings: String
+    contentId: String,
+    vararg translationStrings: String
   ): WrittenTranslationContext = WrittenTranslationContext.newBuilder().apply {
     putTranslations(
       contentId,

@@ -1,12 +1,12 @@
 package org.oppia.android.domain.translation
 
-import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -16,22 +16,28 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.AUDIO_TRANSLATIONS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
 import org.oppia.android.app.model.OppiaRegion.BRAZIL
+import org.oppia.android.app.model.OppiaRegion.INDIA
 import org.oppia.android.app.model.OppiaRegion.REGION_UNSPECIFIED
 import org.oppia.android.app.model.OppiaRegion.UNITED_STATES
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
+import org.oppia.android.app.model.TranslatableSetOfNormalizedString
 import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.locale.LocaleController
@@ -53,12 +59,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.HtmlTranslationList
-import org.oppia.android.app.model.OppiaLanguage.ARABIC
-import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
-import org.oppia.android.app.model.OppiaRegion.INDIA
-import org.oppia.android.app.model.TranslatableSetOfNormalizedString
-import org.oppia.android.app.model.TranslationMapping
 
 /** Tests for [TranslationController]. */
 // FunctionName: test names are conventionally named with underscores.
