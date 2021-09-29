@@ -1406,10 +1406,6 @@ class StateFragmentTest {
       playThroughPrototypeState4()
 
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
-      // Verify that the attributes required for correct accessibility support are present.
-      verifyViewTypeIsPresent(SELECTION_INTERACTION)
-      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
-
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
       // Verify that the attributes required for correct accessibility support are present.
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
