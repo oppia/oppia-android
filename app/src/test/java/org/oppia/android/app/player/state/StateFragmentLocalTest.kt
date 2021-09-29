@@ -1,5 +1,8 @@
 package org.oppia.android.app.player.state
 
+import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
+import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import android.app.Application
 import android.content.Context
 import android.view.View
@@ -11,10 +14,13 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.ViewAction
+import org.hamcrest.Matchers.containsString
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -95,6 +101,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -131,6 +138,9 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.app.model.ProfileId
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -164,7 +174,13 @@ class StateFragmentLocalTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  private val internalProfileId: Int = 1
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
 
   @Before
@@ -1113,13 +1129,149 @@ class StateFragmentLocalTest {
     }
   }
 
-  // TODO: finish
-  // testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish
-  // testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish
-  // testStateFragment_arabicLocale_defaultContentLang_hint_labelsAreInArabic
-  // testStateFragment_arabicLocale_defaultContentLang_hint_explanationIsInArabic
-  // testStateFragment_englishLocale_arabicContentLang_hint_labelsAreInEnglish
-  // testStateFragment_englishLocale_arabicContentLang_hint_explanationIsInArabic
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint button label should be in English.
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  fun testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in English.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("Remember that two halves"))))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testStateFragment_arabicLocale_defaultContentLang_hint_labelsAreInArabic() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint button label should be in Arabic.
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("عرض الملاحظة")))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testStateFragment_arabicLocale_defaultContentLang_hint_explanationIsInArabic() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("واحدة كاملة"))))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  fun testStateFragment_englishLocale_arabicContentLang_hint_labelsAreInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint button label should be in English since the app string locale is unaffected by the
+      // content string setting.
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  fun testStateFragment_englishLocale_arabicContentLang_hint_explanationIsInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic per the content locale override.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("واحدة كاملة"))))
+    }
+  }
 
   @Test
   @Config(qualifiers = "+port")
@@ -1285,7 +1437,7 @@ class StateFragmentLocalTest {
     return ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
-        internalProfileId,
+        profileId.internalId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,
@@ -1625,6 +1777,15 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build())
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   /**

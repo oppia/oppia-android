@@ -496,11 +496,61 @@ class AndroidLocaleProfileTest {
 
   /* Tests for computeIetfLanguageTag */
 
-  // TODO: finish
-  // testComputeIetfLanguageTag_noLanguageCode_noRegionCode_returnsEmptyString
-  // testComputeIetfLanguageTag_languageCode_noRegionCode_returnsLanguageCode
-  // testComputeIetfLanguageTag_noLanguageCode_regionCode_returnsRegionCode
-  // testComputeIetfLanguageTag_languageCode_regionCode_returnsIetfBcp47CombinedLanguageTag
+  @Test
+  fun testComputeIetfLanguageTag_noLanguageCode_noRegionCode_returnsEmptyString() {
+    val emptyProfile = AndroidLocaleProfile(languageCode = "", regionCode = "")
+
+    val ietfLanguageTag = emptyProfile.computeIetfLanguageTag()
+
+    assertThat(ietfLanguageTag).isEmpty()
+  }
+
+  @Test
+  fun testComputeIetfLanguageTag_languageCode_noRegionCode_returnsLanguageCode() {
+    val portugueseProfile = AndroidLocaleProfile(languageCode = "pt", regionCode = "")
+
+    val ietfLanguageTag = portugueseProfile.computeIetfLanguageTag()
+
+    assertThat(ietfLanguageTag).isEqualTo("pt")
+  }
+
+  @Test
+  fun testComputeIetfLanguageTag_languageCode_wildcardRegionCode_returnsLanguageCode() {
+    val portugueseAndRegionProfile = createProfileWithWildcard(languageCode = "pt")
+
+    val ietfLanguageTag = portugueseAndRegionProfile.computeIetfLanguageTag()
+
+    // The wildcard shouldn't be part of the IETF BCP 47 tag since that standard doesn't define such
+    // a concept.
+    assertThat(ietfLanguageTag).isEqualTo("pt")
+  }
+
+  @Test
+  fun testComputeIetfLanguageTag_noLanguageCode_regionCode_returnsRegionCode() {
+    val brazilianProfile = AndroidLocaleProfile(languageCode = "", regionCode = "BR")
+
+    val ietfLanguageTag = brazilianProfile.computeIetfLanguageTag()
+
+    assertThat(ietfLanguageTag).isEqualTo("BR")
+  }
+
+  @Test
+  fun testComputeIetfLanguageTag_noLanguageCode_wildcardRegionCode_returnsEmptyString() {
+    val matchNothingProfile = createProfileWithWildcard(languageCode = "")
+
+    val ietfLanguageTag = matchNothingProfile.computeIetfLanguageTag()
+
+    assertThat(ietfLanguageTag).isEmpty()
+  }
+
+  @Test
+  fun testComputeIetfLanguageTag_languageCode_regionCode_returnsIetfBcp47CombinedLanguageTag() {
+    val brazilianPortugueseProfile = AndroidLocaleProfile(languageCode = "pt", regionCode = "BR")
+
+    val ietfLanguageTag = brazilianPortugueseProfile.computeIetfLanguageTag()
+
+    assertThat(ietfLanguageTag).isEqualTo("pt-BR")
+  }
 
   private fun createProfileWithWildcard(languageCode: String): AndroidLocaleProfile =
     AndroidLocaleProfile(languageCode, regionCode = AndroidLocaleProfile.REGION_WILDCARD)

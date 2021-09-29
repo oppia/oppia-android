@@ -384,8 +384,12 @@ class TranslationController @Inject constructor(
     languageCode: String?,
     fallbackLanguageCode: String?
   ): Translation? {
-    return languageCode?.let { translationMappingMap[it] }
-      ?: fallbackLanguageCode?.let { translationMappingMap[it] }
+    val mappingMapLowercaseKeys =
+      translationMappingMap.mapKeys { (key, _) ->
+        machineLocale.run { key.toMachineLowerCase() }
+      }
+    return languageCode?.let { mappingMapLowercaseKeys[it] }
+      ?: fallbackLanguageCode?.let { mappingMapLowercaseKeys[it] }
   }
 
   private fun LanguageSupportDefinition.LanguageId.getOppiaLanguageCode(): String? {

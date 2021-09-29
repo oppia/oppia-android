@@ -12,6 +12,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.Locale
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -97,6 +98,9 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.domain.translation.TranslationController
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -127,6 +131,9 @@ class ExplorationProgressControllerTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
+  lateinit var context: Context
+
+  @Inject
   lateinit var explorationDataController: ExplorationDataController
 
   @Inject
@@ -147,6 +154,9 @@ class ExplorationProgressControllerTest {
   // TODO(#3813): Migrate all tests in this suite to use this factory.
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var translationController: TranslationController
 
   @Mock
   lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<*>>
@@ -2893,13 +2903,125 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
   }
 
-  // TODO: finish
-  // testGetCurrentState_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
-  // testGetCurrentState_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
-  // testGetCurrentState_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
-  // testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish
-  // testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic
-  // testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic
+  /* Localization-based tests. */
+
+  @Test
+  fun testGetCurrentState_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
+    forceDefaultLocale(Locale.US)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // The context should be the default instance for English since the default strings of the
+    // lesson are expected to be in English.
+    assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetCurrentState_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // Arabic translations should be included per the locale.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetCurrentState_turkishLocale_defaultContentLang_includesDefaultTranslationContext() {
+    forceDefaultLocale(TURKEY_TURKISH_LOCALE)
+    playExploration(
+      profileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // No translations match to an unsupported language, so default to the built-in strings.
+    assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    playExploration(
+      englishProfileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // English translations mean no context.
+    assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    playExploration(
+      englishProfileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+    val monitor = monitorFactory.createMonitor(explorationProgressController.getCurrentState())
+    monitor.waitForNextSuccessResult()
+
+    // Update the content language & wait for the ephemeral state to update.
+    updateContentLanguage(englishProfileId, OppiaLanguage.ARABIC)
+    val ephemeralState = monitor.ensureNextResultIsSuccess()
+
+    // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
+    playExploration(
+      arabicProfileId.internalId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = true,
+      ExplorationCheckpoint.getDefaultInstance()
+    )
+
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -3291,6 +3413,20 @@ class ExplorationProgressControllerTest {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
   }
 
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build())
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
   private fun EphemeralState.isHintRevealed(hintIndex: Int): Boolean {
     return pendingState.helpIndex.isHintRevealed(hintIndex, state.interaction.hintList)
   }
@@ -3499,5 +3635,10 @@ class ExplorationProgressControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+  }
+
+  private companion object {
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
   }
 }

@@ -1,5 +1,7 @@
 package org.oppia.android.util.extensions
 
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
+import android.content.Intent
 import android.os.Bundle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -10,6 +12,7 @@ import org.oppia.android.app.model.TestMessage
 import org.oppia.android.app.model.TestMessage2
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import androidx.test.ext.truth.content.IntentSubject.assertThat
 
 /** Tests for BundleExtensions. */
 @RunWith(AndroidJUnit4::class)
@@ -135,7 +138,7 @@ class BundleExtensionsTest {
   }
 
   @Test
-  fun testGetProto_protoInBundle_incompatibleType_throws() {
+  fun testGetProto_protoInBundle_incompatibleType_returnsDefaultValue() {
     val bundle = Bundle()
     bundle.putProto("test_proto_key", TEST_MESSAGE_WITH_STR_AND_INT)
 
@@ -160,5 +163,88 @@ class BundleExtensionsTest {
 
     // Like other bundle retrieval functions, return the default if there's a type incompatibility.
     assertThat(testMessage).isEqualTo(TestMessage.getDefaultInstance())
+  }
+
+  @Test
+  fun testPutProtoExtra_intentWithoutExtras_initializesExtrasAndAddsProto() {
+    val intent = Intent()
+
+    intent.putProtoExtra("test_proto_key", TEST_MESSAGE_WITH_INT)
+
+    assertThat(intent).extras().hasSize(1)
+    assertThat(intent).extras().containsKey("test_proto_key")
+  }
+
+  @Test
+  fun testPutProtoExtra_intentWithExtras_addsProto() {
+    val intent = Intent()
+    intent.putExtra("other_extra", "with_value")
+
+    intent.putProtoExtra("test_proto_key", TEST_MESSAGE_WITH_INT)
+
+    assertThat(intent).extras().hasSize(2)
+    assertThat(intent).extras().containsKey("test_proto_key")
+  }
+
+  @Test
+  fun testPutProtoExtra_intentWithSameKey_overridesWithProto() {
+    val intent = Intent()
+    intent.putExtra("first_extra", "with_value")
+
+    intent.putProtoExtra("first_extra", TEST_MESSAGE_WITH_INT)
+
+    assertThat(intent).extras().hasSize(1)
+    assertThat(intent).extras().containsKey("first_extra")
+    assertThat(intent.getSerializableExtra("first_extra")).isNotInstanceOf(String::class.java)
+  }
+
+  @Test
+  fun testGetProtoExtra_intentWithoutExtras_returnsDefaultValue() {
+    val intent = Intent()
+
+    val message = intent.getProtoExtra("test_proto_key", TestMessage.getDefaultInstance())
+
+    assertThat(message).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetProtoExtra_intentWithoutExtras_nonDefaultValue_returnsProvidedDefaultValue() {
+    val intent = Intent()
+    val sampleDefault = TestMessage.newBuilder().apply { intValue = 12 }.build()
+
+    val message = intent.getProtoExtra("test_proto_key", sampleDefault)
+
+    assertThat(message).isEqualTo(sampleDefault)
+  }
+
+  @Test
+  fun testGetProtoExtra_intentWithExtras_withoutKey_returnsDefaultValue() {
+    val intent = Intent()
+    intent.putExtra("first_extra", "with_value")
+
+    val message = intent.getProtoExtra("test_proto_key", TestMessage.getDefaultInstance())
+
+    assertThat(message).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetProtoExtra_intentWithExtras_withMismatchedValue_returnsDefaultValue() {
+    val intent = Intent()
+    intent.putExtra("first_extra", "with_value")
+
+    val message = intent.getProtoExtra("first_extra", TestMessage.getDefaultInstance())
+
+    assertThat(message).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetProtoExtra_intentWithExtras_withCorrectValue_returnsProto() {
+    val intent = Intent()
+    intent.putExtra("other_extra", "with_value")
+    intent.putProtoExtra("test_proto_key", TEST_MESSAGE_WITH_STR_AND_INT)
+
+    val message = intent.getProtoExtra("test_proto_key", TestMessage.getDefaultInstance())
+
+    assertThat(message).isEqualTo(TEST_MESSAGE_WITH_STR_AND_INT)
   }
 }

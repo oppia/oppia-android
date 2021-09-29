@@ -592,11 +592,23 @@
       },
       "written_translations": {
         "translations_mapping": {
-          "content": {},
+          "content": {
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<p> أمير يقول أن الجزء الأسود المظلل من الصورة أدناه يمثل الكسر 1/3. </p>\n\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;مثلث قائم الزاوية متساوي الساقين به مربع منقوش عليه. المربع مظلل باللون الأسود.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_005807_mxdmul529r_height_121_width_116.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p> هل أمير محق؟ </p>"},
+              "needs_update": false
+            }
+          },
           "feedback_2": {},
           "feedback_3": {},
           "feedback_1": {},
-          "hint_1": {},
+          "hint_1": {
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<p> لكتابة كسر ، عليك معرفة مقامه ، وهو إجمالي عدد القطع في الكل. يجب أن تكون كل هذه القطع بنفس الحجم. </p>"},
+              "needs_update": false
+            }
+          },
           "feedback_4": {},
           "default_outcome": {}
         }
@@ -1860,7 +1872,13 @@
       },
       "written_translations": {
         "translations_mapping": {
-          "content": {},
+          "content": {
+            "ar": {
+              "data_format": "html",
+              "translation": { "translation": "<p> إذا تحدثنا عن الرغبة في 4/7 من الكعكة ، فماذا يمثل السبعة؟ </p>" },
+              "needs_update": false
+            }
+          },
           "solution": {},
           "feedback_1": {},
           "ca_choices_0": {},

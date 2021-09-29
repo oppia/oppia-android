@@ -6,10 +6,14 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -26,13 +30,16 @@ import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.OngoingTopicList
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -59,8 +66,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val INVALID_STORY_ID_1 = "INVALID_STORY_ID_1"
 private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
@@ -74,6 +79,9 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 class TopicControllerTest {
 
   @Inject
+  lateinit var context: Context
+
+  @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   @Inject
@@ -81,6 +89,9 @@ class TopicControllerTest {
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
+
+  @Inject
+  lateinit var translationController: TranslationController
 
   @Rule
   @JvmField
@@ -1113,20 +1124,155 @@ class TopicControllerTest {
 
   /* Localization-based tests. */
 
-  // TODO: finish
-  // testGetConceptCard_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
-  // testGetConceptCard_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
-  // testGetConceptCard_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
-  // testGetConceptCard_englishLangProfile_includesTranslationContextForEnglish
-  // testGetConceptCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic
-  // testGetConceptCard_arabicLangProfile_includesTranslationContextForArabic
+  @Test
+  fun testGetConceptCard_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
+    forceDefaultLocale(Locale.US)
+    val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
-  // testGetRevisionCard_englishLocale_defaultCotentLang_includesTranslationContextForEnglish
-  // testGetRevisionCard_arabicLocale_defaultCotentLang_includesTranslationContextForArabic
-  // testGetRevisionCard_turkishLocale_defaultCotentLang_includesDefaultTranslationContext
-  // testGetRevisionCard_englishLangProfile_includesTranslationContextForEnglish
-  // testGetRevisionCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic
-  // testGetRevisionCard_arabicLangProfile_includesTranslationContextForArabic
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
+
+    // The context should be the default instance for English since the default strings of the
+    // lesson are expected to be in English.
+    assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetConceptCard_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
+
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
+
+    // Arabic translations should be included per the locale.
+    assertThat(ephemeralConceptCard.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetConceptCard_turkishLocale_defaultContentLang_includesDefaultTranslationContext() {
+    forceDefaultLocale(TURKEY_TURKISH_LOCALE)
+    val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
+
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
+
+    // No translations match to an unsupported language, so default to the built-in strings.
+    assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetConceptCard_englishLangProfile_includesTranslationContextForEnglish() {
+    val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
+    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
+
+    // English translations mean no context.
+    assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetConceptCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
+    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+    val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
+    val monitor = monitorFactory.createMonitor(conceptCardDataProvider)
+    monitor.waitForNextSuccessResult()
+
+    // Update the content language & wait for the ephemeral state to update.
+    updateContentLanguage(profileId1, OppiaLanguage.ARABIC)
+    val ephemeralConceptCard = monitor.ensureNextResultIsSuccess()
+
+    // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralConceptCard.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetConceptCard_arabicLangProfile_includesTranslationContextForArabic() {
+    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+    updateContentLanguage(profileId2, OppiaLanguage.ARABIC)
+    val conceptCardDataProvider = topicController.getConceptCard(profileId2, TEST_SKILL_ID_1)
+
+    val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
+
+    // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralConceptCard.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetRevisionCard_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
+    forceDefaultLocale(Locale.US)
+    val revisionCardDataProvider =
+      topicController.getRevisionCard(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
+
+    // The context should be the default instance for English since the default strings of the
+    // lesson are expected to be in English.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetRevisionCard_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    val revisionCardDataProvider =
+      topicController.getRevisionCard(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
+
+    // Arabic translations should be included per the locale.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetRevisionCard_turkishLocale_defaultContentLang_includesDefaultTranslationContext() {
+    forceDefaultLocale(TURKEY_TURKISH_LOCALE)
+    val revisionCardDataProvider =
+      topicController.getRevisionCard(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
+
+    // No translations match to an unsupported language, so default to the built-in strings.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetRevisionCard_englishLangProfile_includesTranslationContextForEnglish() {
+    val revisionCardDataProvider =
+      topicController.getRevisionCard(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+
+    val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
+
+    // English translations mean no context.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetRevisionCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
+    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+    val revisionCardDataProvider =
+      topicController.getRevisionCard(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
+    val monitor = monitorFactory.createMonitor(revisionCardDataProvider)
+    monitor.waitForNextSuccessResult()
+
+    // Update the content language & wait for the ephemeral state to update.
+    updateContentLanguage(profileId1, OppiaLanguage.ARABIC)
+    val ephemeralRevisionCard = monitor.ensureNextResultIsSuccess()
+
+    // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetRevisionCard_arabicLangProfile_includesTranslationContextForArabic() {
+    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+    updateContentLanguage(profileId2, OppiaLanguage.ARABIC)
+    val revisionCardDataProvider =
+      topicController.getRevisionCard(profileId2, TEST_TOPIC_ID_0, subtopicId = 1)
+
+    val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
+
+    // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -1165,6 +1311,20 @@ class TopicControllerTest {
       profileId1,
       timestampOlderThanOneWeek = false
     )
+  }
+
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build())
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   private fun verifyGetTopicSucceeded() {
@@ -1289,5 +1449,10 @@ class TopicControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+  }
+
+  private companion object {
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
   }
 }

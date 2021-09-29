@@ -69,9 +69,19 @@ class TextInputViewModel(
   }.build()
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
-    // The default placeholder for text input is empty.
-    return interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.let { unicode ->
-      translationController.extractString(unicode, writtenTranslationContext)
-    } ?: ""
+    // The subtitled unicode can apparently exist in the structure in two different formats.
+    val placeholderUnicodeOption1 =
+      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode
+    val placeholderUnicodeOption2 =
+      interaction.customizationArgsMap["placeholder"]?.customSchemaValue?.subtitledUnicode
+    val placeholder1 =
+      placeholderUnicodeOption1?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
+    val placeholder2 =
+      placeholderUnicodeOption2?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: "" // The default placeholder for text input is empty.
+    return if (placeholder1.isNotEmpty()) placeholder1 else placeholder2
   }
 }

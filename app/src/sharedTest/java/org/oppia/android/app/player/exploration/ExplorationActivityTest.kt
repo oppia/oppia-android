@@ -137,6 +137,16 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.hamcrest.CoreMatchers.containsString
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -172,6 +182,12 @@ class ExplorationActivityTest {
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val internalProfileId: Int = 0
 
@@ -516,7 +532,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -546,7 +562,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -574,7 +590,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_configChange_opensCellularAudioDialog() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -603,7 +619,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_clickNegative_audioFragmentIsHidden() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -641,7 +657,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -688,7 +704,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -730,7 +746,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
@@ -1583,11 +1599,146 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO: finish
-  // testExpActivity_englishContentLang_contentIsInEnglish
-  // testExpActivity_profileWithArabicContentLang_contentIsInArabic
-  // testExpActivity_englishContentLang_showHint_explanationInEnglish
-  // testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic
+  @Test
+  fun testExpActivity_englishContentLang_contentIsInEnglish() {
+    updateContentLanguage(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      OppiaLanguage.ENGLISH
+    )
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      verifyContentContains("Test exploration with interactions")
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExpActivity_profileWithArabicContentLang_contentIsInArabic() {
+    updateContentLanguage(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      OppiaLanguage.ARABIC
+    )
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      verifyContentContains("التفاعلات")
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExpActivity_englishContentLang_showHint_explanationInEnglish() {
+    updateContentLanguage(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      OppiaLanguage.ENGLISH
+    )
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in English.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("Remember that two halves"))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
+    updateContentLanguage(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      OppiaLanguage.ARABIC
+    )
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic. This helps demonstrate that the activity is
+      // correctly piping the profile ID along to the hint dialog fragment.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("واحدة كاملة"))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
 
   private fun createExplorationActivityIntent(
     internalProfileId: Int,
@@ -1607,7 +1758,7 @@ class ExplorationActivityTest {
     )
   }
 
-  private fun setupAudio() {
+  private fun setUpAudio() {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
@@ -1668,6 +1819,66 @@ class ExplorationActivityTest {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build())
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  private fun clickContinueButton() {
+    scrollToViewType(StateItemViewModel.ViewType.CONTINUE_INTERACTION)
+    onView(withId(R.id.continue_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun submitFractionAnswer(answerText: String) {
+    scrollToViewType(StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION)
+    onView(withId(R.id.fraction_input_interaction_view)).perform(
+      editTextInputAction.appendText(answerText)
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun openHintsAndSolutionsDialog() {
+    onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun pressRevealHintButton(hintPosition: Int) {
+    onView(withId(R.id.hints_and_solution_recycler_view))
+      .inRoot(isDialog())
+      .perform(scrollToPosition<RecyclerView.ViewHolder>(hintPosition * 2))
+    onView(allOf(withId(R.id.reveal_hint_button), isDisplayed()))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyContentContains(expectedHtml: String) {
+    scrollToViewType(StateItemViewModel.ViewType.CONTENT)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.state_recycler_view,
+        position = 0,
+        targetViewId = R.id.content_text_view
+      )
+    ).check(matches(withText(containsString(expectedHtml))))
+  }
+
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToHolder(StateViewHolderTypeMatcher(viewType))
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
   // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
   //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
   //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
@@ -1708,6 +1919,22 @@ class ExplorationActivityTest {
           .withCause(TimeoutException())
           .build()
       }
+    }
+  }
+
+  /**
+   * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
+   * StateFragment's RecyclerView.
+   */
+  private class StateViewHolderTypeMatcher(
+    private val viewType: StateItemViewModel.ViewType
+  ) : BaseMatcher<RecyclerView.ViewHolder>() {
+    override fun describeTo(description: Description?) {
+      description?.appendText("item view type of $viewType")
+    }
+
+    override fun matches(item: Any?): Boolean {
+      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
     }
   }
 

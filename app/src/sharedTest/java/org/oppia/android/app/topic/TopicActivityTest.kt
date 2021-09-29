@@ -71,6 +71,23 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.core.app.ActivityScenario
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.Espresso.onView
+import org.junit.After
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
+import org.oppia.android.app.model.ProfileId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.recyclerview.widget.RecyclerView
 
 /** Tests for [TopicActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -86,19 +103,23 @@ class TopicActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
-  @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
   @Inject
   lateinit var context: Context
 
-  private val internalProfileId = 0
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val internalProfileId = 1
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -107,26 +128,48 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createTopicActivityIntent(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID
-      )
-    )
-    val title = activityTestRule.activity.title
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+      lateinit var title: CharSequence
+      scenario.onActivity { activity -> title = activity.title }
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.topic_page))
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(title).isEqualTo(context.getString(R.string.topic_page))
+    }
   }
 
-  // TODO: finish
-  // testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId
+  @Test
+  fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+      // Open the practice tab and select a skill.
+      onView(withText("Practice")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText("What is a Fraction?")).perform(click())
+      testCoroutineDispatchers.runCurrent()
 
-  private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
-    return TopicActivity.createTopicActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId
+      // Start the practice session.
+      onView(withId(R.id.topic_practice_skill_list))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(/* position= */ 5))
+      testCoroutineDispatchers.runCurrent()
+      onView(withText("Start")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the question activity is started with the correct profile ID.
+      val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      intended(hasComponent(QuestionPlayerActivity::class.java.name))
+      intended(hasExtra("QuestionPlayerActivity.profile_id", profileId.toByteString()))
+    }
+  }
+
+  private fun launchTopicActivity(
+    internalProfileId: Int, topicId: String
+  ): ActivityScenario<TopicActivity> {
+    val scenario = ActivityScenario.launch<TopicActivity>(
+      TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId)
     )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))
+    return scenario
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

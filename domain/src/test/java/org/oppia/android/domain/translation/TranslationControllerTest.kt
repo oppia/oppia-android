@@ -1,5 +1,6 @@
 package org.oppia.android.domain.translation
 
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
@@ -52,6 +53,11 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.HtmlTranslationList
+import org.oppia.android.app.model.OppiaLanguage.ARABIC
+import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
+import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.app.model.TranslationMapping
 
 /** Tests for [TranslationController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -991,23 +997,258 @@ class TranslationControllerTest {
     assertThat(extracted).isEqualTo("Translated string")
   }
 
-  // TODO: finish
+  @Test
+  fun testExtractStringList_defaultSet_defaultContext_returnsEmptyList() {
+    val stringList = TranslatableSetOfNormalizedString.getDefaultInstance()
+    val context = WrittenTranslationContext.getDefaultInstance()
 
-  // testExtractStringList_defaultSet_defaultContext_returnsEmptyList
-  // testExtractStringList_defaultSet_validContext_returnsEmptyList
-  // testExtractStringList_defaultContext_returnsUntranslatedList
-  // testExtractStringList_validContext_emptyList_returnsEmptyList
-  // testExtractStringList_validContext_matchesNoContentIds_returnsUntranslatedList
-  // testExtractStringList_validContext_includesOneContentId_returnsPartiallyTranslatedList
-  // testExtractStringList_validContext_includesAllContentIds_returnsTranslatedList
+    val extracted = translationController.extractStringList(stringList, context)
 
-  // testComputeTranslationContext_englishLocale_emptyMap_returnsEmptyContext
-  // testComputeTranslationContext_englishLocale_returnsEmptyContext
-  // testComputeTranslationContext_defaultMismatchedLocale_returnsEmptyContext
-  // testComputeTranslationContext_arabicLocale_noArabicTranslationsInMap_returnsEmptyContext
-  // testComputeTranslationContext_arabicLocale_withXlations_returnsContextWithXlations
-  // testComputeTranslationContext_portugueseLocale_withXlations_returnsContextWithXlations
-  // testComputeTranslationContext_brazilianPortugueseLocale_withXlations_returnsXlatedContext
+    assertThat(extracted).isEmpty()
+  }
+
+  @Test
+  fun testExtractStringList_defaultSet_validContext_returnsEmptyList() {
+    val stringList = TranslatableSetOfNormalizedString.getDefaultInstance()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            addHtml("First translated string")
+            addHtml("Second translated string")
+          }.build()
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).isEmpty()
+  }
+
+  @Test
+  fun testExtractStringList_defaultContext_returnsUntranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+      addAllNormalizedStrings(listOf("First string", "Second string"))
+    }.build()
+    val context = WrittenTranslationContext.getDefaultInstance()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).containsExactly("First string", "Second string")
+  }
+
+  @Test
+  fun testExtractStringList_validContext_emptyList_returnsTranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+    }.build()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            addHtml("First translated string")
+            addHtml("Second translated string")
+          }.build()
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    // The translated strings are returned since there's a match, even though the original list is
+    // empty.
+    assertThat(extracted).containsExactly("First translated string", "Second translated string")
+  }
+
+  @Test
+  fun testExtractStringList_validContext_doesNotMatchContentId_returnsUntranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+      addAllNormalizedStrings(listOf("First string", "Second string"))
+    }.build()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "different_content_id",
+        Translation.newBuilder().apply {
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            addHtml("First translated string")
+            addHtml("Second translated string")
+          }.build()
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).containsExactly("First string", "Second string")
+  }
+
+  @Test
+  fun testExtractStringList_validContext_matchesContentId_returnsTranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+      addAllNormalizedStrings(listOf("First string", "Second string"))
+    }.build()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            addHtml("First translated string")
+            addHtml("Second translated string")
+          }.build()
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).containsExactly("First translated string", "Second translated string")
+  }
+
+  @Test
+  fun testExtractStringList_validContextWithoutList_matchesContentId_returnsUntranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+      addNormalizedStrings("First string")
+    }.build()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          html = "First translated string"
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    // Even though the translation matches, a single HTML entry can't be matched against an expected
+    // list.
+    assertThat(extracted).containsExactly("First string")
+  }
+
+  @Test
+  fun testComputeTranslationContext_englishLocale_emptyMap_returnsEmptyContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
+    val writtenTranslationsMap = mapOf<String, TranslationMapping>()
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    assertThat(translationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testComputeTranslationContext_englishLocale_returnsEmptyContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    assertThat(translationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testComputeTranslationContext_defaultMismatchedLocale_returnsEmptyContext() {
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    assertThat(translationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testComputeTranslationContext_arabicLocale_noArabicTranslationsInMap_returnsEmptyContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ARABIC)
+    val writtenTranslationsWithoutArabicMap = createTranslationMappingWithout("ar")
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(
+        writtenTranslationsWithoutArabicMap, contentLocale
+      )
+
+    assertThat(translationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testComputeTranslationContext_arabicLocale_withXlations_returnsContextWithXlations() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ARABIC)
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    val extractedTranslationMap = translationContext.translationsMap
+    assertThat(extractedTranslationMap).containsKey(TEST_CONTENT_ID)
+    assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_AR_TRANSLATION)
+  }
+
+  @Test
+  fun testComputeTranslationContext_portugueseLocale_withXlations_returnsContextWithXlations() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, PORTUGUESE)
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    val extractedTranslationMap = translationContext.translationsMap
+    assertThat(extractedTranslationMap).containsKey(TEST_CONTENT_ID)
+    assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_PT_TRANSLATION)
+  }
+
+  @Test
+  fun testComputeTranslationContext_brazilianPortugueseLocale_withXlations_returnsXlatedContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, BRAZILIAN_PORTUGUESE)
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    val extractedTranslationMap = translationContext.translationsMap
+    assertThat(extractedTranslationMap).containsKey(TEST_CONTENT_ID)
+    assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_PT_BR_TRANSLATION)
+  }
+
+  @Test
+  fun testComputeTranslationContext_brazilianPortugueseLocale_ptXlations_returnsCorrectContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, BRAZILIAN_PORTUGUESE)
+    val writtenTranslationsWithoutBrazilianPortugueseMap = createTranslationMappingWithout("pt-BR")
+
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(
+        writtenTranslationsWithoutBrazilianPortugueseMap, contentLocale
+      )
+
+    // Without Brazilian Portuguese translations, the context should fall back to Portuguese.
+    val extractedTranslationMap = translationContext.translationsMap
+    assertThat(extractedTranslationMap).containsKey(TEST_CONTENT_ID)
+    assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_PT_TRANSLATION)
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -1165,5 +1406,34 @@ class TranslationControllerTest {
       AudioTranslationLanguageSelection.newBuilder().apply {
         useAppLanguage = true
       }.build()
+
+    private const val TEST_CONTENT_ID = "content_id"
+    private const val TEST_AR_TRANSLATION = "test ar translation string"
+    private const val TEST_PT_TRANSLATION = "test pt translation string"
+    private const val TEST_PT_BR_TRANSLATION = "test pt-BR translation string"
+    private val TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES =
+      mapOf(
+        TEST_CONTENT_ID to TranslationMapping.newBuilder().apply {
+          putTranslationMapping("ar", createSingleTranslation(TEST_AR_TRANSLATION))
+          // Note that this language code is intentionally capitalized to help ensure that the
+          // controller can perform case-insensitive matching.
+          putTranslationMapping("PT", createSingleTranslation(TEST_PT_TRANSLATION))
+          putTranslationMapping("pt-BR", createSingleTranslation(TEST_PT_BR_TRANSLATION))
+        }.build()
+      )
+
+    private fun createSingleTranslation(translation: String) = Translation.newBuilder().apply {
+      html = translation
+    }.build()
+
+    private fun createTranslationMappingWithout(
+      languageCode: String
+    ): Map<String, TranslationMapping> {
+      return TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES.toMutableMap().also {
+        it[TEST_CONTENT_ID] = it[TEST_CONTENT_ID]?.toBuilder().apply {
+          this?.removeTranslationMapping(languageCode)
+        }?.build()
+      }
+    }
   }
 }

@@ -97,14 +97,24 @@ class FractionInteractionViewModel(
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
-    val customPlaceholder =
-      interaction.customizationArgsMap["customPlaceholder"]?.subtitledUnicode?.let { unicode ->
+    // The subtitled unicode can apparently exist in the structure in two different formats.
+    val placeholderUnicodeOption1 =
+      interaction.customizationArgsMap["customPlaceholder"]?.subtitledUnicode
+    val placeholderUnicodeOption2 =
+      interaction.customizationArgsMap["customPlaceholder"]?.customSchemaValue?.subtitledUnicode
+    val customPlaceholder1 =
+      placeholderUnicodeOption1?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
+    val customPlaceholder2 =
+      placeholderUnicodeOption2?.let { unicode ->
         translationController.extractString(unicode, writtenTranslationContext)
       } ?: ""
     val allowNonzeroIntegerPart =
       interaction.customizationArgsMap["allowNonzeroIntegerPart"]?.boolValue ?: true
     return when {
-      customPlaceholder.isNotEmpty() -> customPlaceholder
+      customPlaceholder1.isNotEmpty() -> customPlaceholder1
+      customPlaceholder2.isNotEmpty() -> customPlaceholder2
       !allowNonzeroIntegerPart ->
         resourceHandler.getStringInLocale(R.string.fractions_default_hint_text_no_integer)
       else -> resourceHandler.getStringInLocale(R.string.fractions_default_hint_text)

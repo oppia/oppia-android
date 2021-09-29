@@ -108,25 +108,41 @@ class AsyncDataSubscriptionManager @Inject constructor(
    */
   private fun verifyNoCyclesInClosure(parentId: Any, newChildId: Any): Any? {
     val currentChildren = associatedIds[parentId] ?: listOf()
-    return verifyNoCyclesInClosureAux(parentId, mutableSetOf(), currentChildren + newChildId)
+    return verifyNoCyclesInClosureAux(
+      parentId, mutableSetOf(), mutableSetOf(), currentChildren + newChildId
+    )
   }
 
   private fun verifyNoCyclesInClosureAux(
-    nextParentId: Any,
-    usedParentIds: MutableSet<Any>,
+    nextId: Any,
+    currentBranch: MutableSet<Any>,
+    visitedIds: MutableSet<Any>,
     children: Iterable<Any>
   ): Any? {
-    if (nextParentId in usedParentIds) {
-      return nextParentId
+    if (nextId in currentBranch) {
+      // This ID has already been encountered in the current branch, so a cycle must exist.
+      return nextId
     }
-    usedParentIds += nextParentId
+    currentBranch += nextId
+
+    if (nextId in visitedIds) {
+      // This ID has already been traversed (& determined to not have a cycle).
+      return null
+    }
+    visitedIds += nextId
+
+    // Check this ID's children for cycles.
     for (childId in children) {
-      val failure =
-        verifyNoCyclesInClosureAux(childId, usedParentIds, associatedIds[childId] ?: listOf())
+      val newChildIds = associatedIds[childId] ?: listOf()
+      val failure = verifyNoCyclesInClosureAux(childId, currentBranch, visitedIds, newChildIds)
       if (failure != null) {
         return failure
       }
     }
+
+    // Remove the ID from the current branch since it's been fully explored.
+    currentBranch -= nextId
+
     return null
   }
 

@@ -72,6 +72,19 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.junit.After
+import org.oppia.android.app.model.ProfileId
+import androidx.test.core.app.ActivityScenario
+import org.hamcrest.CoreMatchers.containsString
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.Espresso.onView
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -87,60 +100,102 @@ class RevisionCardActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
-  @get:Rule
-  val activityTestRule: ActivityTestRule<RevisionCardActivity> = ActivityTestRule(
-    RevisionCardActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
   @Inject
   lateinit var context: Context
 
-  private val internalProfileId = 0
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val subtopicId = 1
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   @Test
   fun testRevisionCardActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createRevisionCardActivityIntent(
-        internalProfileId = internalProfileId,
-        topicId = FRACTIONS_TOPIC_ID,
-        subtopicId = subtopicId
-      )
-    )
-    val title = activityTestRule.activity.title
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      lateinit var title: CharSequence
+      scenario.onActivity { activity -> title = activity.title }
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.revision_card_activity_title))
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(title).isEqualTo(context.getString(R.string.revision_card_activity_title))
+    }
   }
 
-  // TODO: finish
-  // testRevisionCardActivity_englishContentLang_pageContentsAreInEnglish
-  // testRevisionCardActivity_profileWithArabicContentLang_pageContentsAreInArabic
+  @Test
+  fun testRevisionCardActivity_englishContentLang_pageContentsAreInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = "test_topic_id_0",
+      subtopicId = 1
+    ).use { scenario ->
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(matches(withText(containsString("sample subtopic with dummy content"))))
+    }
+  }
+
+  @Test
+  fun testRevisionCardActivity_profileWithArabicContentLang_pageContentsAreInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = "test_topic_id_0",
+      subtopicId = 1
+    ).use { scenario ->
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
+    }
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun launchRevisionCardActivity(
+    profileId: ProfileId, topicId: String, subtopicId: Int
+  ): ActivityScenario<RevisionCardActivity> {
+    val scenario = ActivityScenario.launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(profileId.internalId, topicId, subtopicId)
+    )
+    testCoroutineDispatchers.runCurrent()
+    return scenario
   }
 
   private fun createRevisionCardActivityIntent(
     internalProfileId: Int,
     topicId: String,
     subtopicId: Int
-  ): Intent {
-    return RevisionCardActivity.createRevisionCardActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      topicId,
-      subtopicId
-    )
+  ) = RevisionCardActivity.createRevisionCardActivityIntent(
+    context, internalProfileId, topicId, subtopicId
+  )
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build())
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

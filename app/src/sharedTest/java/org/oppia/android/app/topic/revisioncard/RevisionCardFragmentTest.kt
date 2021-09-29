@@ -108,6 +108,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.app.model.ProfileId
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -123,13 +128,19 @@ class RevisionCardFragmentTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
-  private val internalProfileId = 1
-
   @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
@@ -148,8 +159,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTest_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
@@ -169,8 +180,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTest_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
@@ -196,8 +207,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTest_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
@@ -223,8 +234,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
@@ -240,8 +251,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID_2
       )
@@ -257,8 +268,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
@@ -274,8 +285,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
@@ -294,8 +305,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID_2
       )
@@ -314,8 +325,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
@@ -334,8 +345,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_showsLinkTextForConceptCard() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2
       )
@@ -352,8 +363,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_landscape_showsLinkTextForConceptCard() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2
       )
@@ -373,8 +384,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_clickConceptCardLinkText_opensConceptCard() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2
       )
@@ -395,8 +406,8 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_landscape_clickConceptCardLinkText_opensConceptCard() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2
       )
@@ -415,10 +426,63 @@ class RevisionCardFragmentTest {
     }
   }
 
-  // TODO: finish
-  // testRevisionCard_englishContentLang_pageContentsAreInEnglish
-  // testRevisionCard_englishContentLang_switchToArabic_pageContentsAreInArabic
-  // testRevisionCard_withArabicContentLang_pageContentsAreInArabic
+  @Test
+  fun testRevisionCard_englishContentLang_pageContentsAreInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        "test_topic_id_0",
+        subtopicId = 1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(matches(withText(containsString("sample subtopic with dummy content"))))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_englishContentLang_switchToArabic_pageContentsAreInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        "test_topic_id_0",
+        subtopicId = 1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Switch to Arabic after opening the card. It should trigger an update to the text with the
+      // correct translation shown.
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_withArabicContentLang_pageContentsAreInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        "test_topic_id_0",
+        subtopicId = 1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
+    }
+  }
 
   /** See the version in StateFragmentTest for documentation details. */
   @Suppress("SameParameterValue")
@@ -460,6 +524,15 @@ class RevisionCardFragmentTest {
   private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
     text: String
   ): ClickableSpan? = find { text in it.first }?.second
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build())
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
 
   @Module
   class TestModule {

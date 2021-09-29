@@ -31,6 +31,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslationContext
 
 /** Tests for [TextInputStartsWithRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -49,24 +51,27 @@ class TextInputStartsWithRuleClassifierProviderTest {
   private val STRING_VALUE_SOMETHING_ELSE = createString(value = "something else")
   private val NON_NEGATIVE_TEST_VALUE_1 = createNonNegativeInt(value = 1)
 
+  private val TEST_STRING_CONTENT_ID = "test_content_id"
+  private val STRING_VALUE_TEST_AN_ANSWER_INPUT_SET =
+    createTranslatableSetOfNormalizedString("an answer", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_STRING_LOWERCASE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("test string")
+    createTranslatableSetOfNormalizedString("test string", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_STRING_LOWERCASE_EXTRA_SPACES_INPUT_SET =
-    createTranslatableSetOfNormalizedString("test  string")
+    createTranslatableSetOfNormalizedString("test  string", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_LOWERCASE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("test")
+    createTranslatableSetOfNormalizedString("test", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_STRING_LOWERCASE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("string")
+    createTranslatableSetOfNormalizedString("string", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_STRING_UPPERCASE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("TEST STRING")
+    createTranslatableSetOfNormalizedString("TEST STRING", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_STRING_UPPERCASE_NO_SPACES_INPUT_SET =
-    createTranslatableSetOfNormalizedString("TESTSTRING")
+    createTranslatableSetOfNormalizedString("TESTSTRING", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_UPPERCASE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("TEST")
+    createTranslatableSetOfNormalizedString("TEST", contentId = TEST_STRING_CONTENT_ID)
   private val STRING_VALUE_TEST_NULL_INPUT_SET =
-    createTranslatableSetOfNormalizedString("")
+    createTranslatableSetOfNormalizedString("", contentId = TEST_STRING_CONTENT_ID)
   private val MULTIPLE_STRING_VALUE_INPUT_SET =
-    createTranslatableSetOfNormalizedString("anti", "pre")
+    createTranslatableSetOfNormalizedString("anti", "pre", contentId = TEST_STRING_CONTENT_ID)
 
   @Inject
   internal lateinit var textInputStartsWithRuleClassifierProvider:
@@ -315,12 +320,75 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   /* Localization-based tests. */
 
-  // TODO: finish
-  // testStringAnswer_inputsWithArabic_answerInEnglish_englishContext_answerMatches
-  // testStringAnswer_inputsWithArabic_answerInArabic_englishContext_answerDoesNotMatch
-  // testStringAnswer_inputsWithArabic_answerInEnglish_arabicContext_answerDoesNotMatch
-  // testStringAnswer_inputsWithArabic_answerInArabic_arabicContext_answerMatches
-  // testStringAnswer_inputsAndAnswerInArabic_nonPrefixedAnswer_answerDoesNotMatch
+  @Test
+  fun testStringAnswer_inputsWithPortuguese_answerInEnglish_englishContext_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputStartsWithRuleClassifier.matches(
+      answer = createString("an answer is my choice"),
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_inputsWithPortuguese_answerInPortuguese_englishContext_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputStartsWithRuleClassifier.matches(
+      answer = createString("uma resposta é minha escolha"),
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    )
+
+    // A Portuguese answer isn't reocgnized with this translation context.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testStringAnswer_inputsWithPortuguese_answerInEnglish_portugueseContext_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputStartsWithRuleClassifier.matches(
+      answer = createString("an answer is my choice"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // Even though the English string matches, the presence of the Portuguese context should trigger
+    // a failure for an English answer.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testStringAnswer_inputsWithPortuguese_answerInPortuguese_portugueseContext_answerMatches() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputStartsWithRuleClassifier.matches(
+      answer = createString("uma resposta é minha escolha"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // The translation context provides a bridge between Portuguese & English.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testStringAnswer_inputsAndAnswerInPortuguese_nonPrefixedAnswer_answerDoesNotMatch() {
+    val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
+
+    val matches = inputStartsWithRuleClassifier.matches(
+      answer = createString("diferente"),
+      inputs = inputs,
+      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    )
+
+    // The Portuguese answer doesn't match.
+    assertThat(matches).isFalse()
+  }
 
   private fun setUpTestApplicationComponent() {
     DaggerTextInputStartsWithRuleClassifierProviderTest_TestApplicationComponent.builder()

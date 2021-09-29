@@ -57,6 +57,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -125,6 +126,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import org.hamcrest.CoreMatchers.allOf
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
@@ -165,6 +172,14 @@ class QuestionPlayerActivityTest {
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -191,20 +206,14 @@ class QuestionPlayerActivityTest {
 
   @Test
   fun testQuestionPlayer_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createQuestionPlayerActivityIntent())
-    val title = activityTestRule.activity.title
+    launchForSkillList(SKILL_ID_LIST).use { scenario ->
+      lateinit var title: CharSequence
+      scenario.onActivity { activity -> title = activity.title }
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.question_player_activity_title))
-  }
-
-  private fun createQuestionPlayerActivityIntent(): Intent {
-    return QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-      context,
-      ArrayList(SKILL_ID_LIST),
-      ProfileId.getDefaultInstance()
-    )
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(title).isEqualTo(context.getString(R.string.question_player_activity_title))
+    }
   }
 
   @Test
@@ -352,11 +361,58 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  // TODO: finish
-  // testQuestionPlayer_englishContentLang_contentIsInEnglish
-  // testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic
-  // testQuestionPlayer_englishContentLang_showHint_explanationInEnglish
-  // testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic
+  @Test
+  fun testQuestionPlayer_englishContentLang_contentIsInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      verifyContentContains("picture below represents the fraction")
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForSkillList(SKILL_ID_LIST).use {
+      verifyContentContains("أدناه يمثل الكسر")
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_englishContentLang_showHint_explanationInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in English.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("number of pieces in the whole"))))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic. This helps demonstrate that the activity is
+      // correctly piping the profile ID along to the hint dialog fragment.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("القطع بنفس الحجم"))))
+    }
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -367,7 +423,7 @@ class QuestionPlayerActivityTest {
   ): ActivityScenario<QuestionPlayerActivity> {
     val scenario = ActivityScenario.launch<QuestionPlayerActivity>(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, ArrayList(skillIdList), ProfileId.getDefaultInstance()
+        context, ArrayList(skillIdList), profileId
       )
     )
     testCoroutineDispatchers.runCurrent()
@@ -398,6 +454,41 @@ class QuestionPlayerActivityTest {
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build())
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  private fun openHintsAndSolutionsDialog() {
+    onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun pressRevealHintButton(hintPosition: Int) {
+    onView(withId(R.id.hints_and_solution_recycler_view))
+      .inRoot(isDialog())
+      .perform(scrollToPosition<RecyclerView.ViewHolder>(hintPosition * 2))
+    onView(allOf(withId(R.id.reveal_hint_button), isDisplayed()))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyContentContains(expectedHtml: String) {
+    scrollToViewType(CONTENT)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.question_recycler_view,
+        position = 0,
+        targetViewId = R.id.content_text_view
+      )
+    ).check(matches(withText(containsString(expectedHtml))))
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
