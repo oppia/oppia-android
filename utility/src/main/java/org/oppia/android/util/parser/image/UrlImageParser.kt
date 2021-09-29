@@ -16,6 +16,7 @@ import android.widget.TextView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
@@ -36,7 +37,8 @@ class UrlImageParser private constructor(
   private val entityId: String,
   private val imageCenterAlign: Boolean,
   private val imageLoader: ImageLoader,
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever {
   override fun getDrawable(urlString: String): Drawable {
     // Only block images can be loaded through the standard ImageGetter.
@@ -44,11 +46,13 @@ class UrlImageParser private constructor(
   }
 
   override fun loadDrawable(filename: String, type: ImageRetriever.Type): Drawable {
-    val imagePath = String.format(imageDownloadUrlTemplate, entityType, entityId, filename)
+    val imagePath = machineLocale.run {
+      imageDownloadUrlTemplate.formatForMachines(entityType, entityId, filename)
+    }
     val imageUrl = "$gcsPrefix/$gcsResourceName/$imagePath"
     val proxyDrawable = ProxyDrawable()
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
-    val isSvg = imageUrl.endsWith("svg", ignoreCase = true)
+    val isSvg = machineLocale.run { imageUrl.endsWithIgnoreCase("svg") }
     val adjustedType = if (type == ImageRetriever.Type.INLINE_TEXT_IMAGE && !isSvg) {
       // Treat non-svg in-line images as block, instead, since only SVG is supported.
       consoleLogger.w("UrlImageParser", "Forcing image $filename to block image")
@@ -315,7 +319,8 @@ class UrlImageParser private constructor(
     @DefaultGcsPrefix private val gcsPrefix: String,
     @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
     private val imageLoader: ImageLoader,
-    private val consoleLogger: ConsoleLogger
+    private val consoleLogger: ConsoleLogger,
+    private val machineLocale: OppiaLocale.MachineLocale
   ) {
     /**
      * Creates a new [UrlImageParser] based on the specified settings.
@@ -348,7 +353,8 @@ class UrlImageParser private constructor(
         entityId,
         imageCenterAlign,
         imageLoader,
-        consoleLogger
+        consoleLogger,
+        machineLocale
       )
     }
   }

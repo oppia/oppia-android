@@ -4,13 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.LicenseTextViewerActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [LicenseTextViewerActivity]. */
 @ActivityScope
 class LicenseTextViewerActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   /** Handles onCreate() method of the [LicenseTextViewerActivity]. */
@@ -29,7 +31,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       dependencyIndex,
       0
     )
-    val licenseNames = activity.resources.getStringArray(licenseNamesArrayResId)
+    val licenseNames = resourceHandler.getStringArrayInLocale(licenseNamesArrayResId)
     val licenseTextViewerActivityToolbar = binding.licenseTextViewerActivityToolbar
     binding.licenseTextViewerActivityToolbarTitle.text = licenseNames[licenseIndex]
     activity.title = licenseNames[licenseIndex]
