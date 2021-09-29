@@ -294,7 +294,7 @@
   <string name="home_activity_back_dialog_cancel">Cancel</string>
   <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- HomeActivity -->
-  <string name="home_activity_title" translatable="false">Home</string>
+  <string name="home_activity_title">Home</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
