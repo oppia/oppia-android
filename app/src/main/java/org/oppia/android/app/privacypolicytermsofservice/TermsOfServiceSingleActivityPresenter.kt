@@ -6,11 +6,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceSingleActivity
 import org.oppia.android.databinding.TermsOfServiceSingleActivityBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
-import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceSingleActivity
 
 /** The presenter for [TermsOfServiceSingleActivity]. */
 @ActivityScope
