@@ -39,6 +39,8 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -657,7 +659,8 @@ class AnswerClassificationControllerTest {
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class,
-      ImageClickInputModule::class, RatioInputModule::class
+      ImageClickInputModule::class, RatioInputModule::class, LocaleProdModule::class,
+      FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -57,7 +57,7 @@
   <string name="state_submit_button">Enviar</string>
   <string name="lesson_replay_button_text">Repetir</string>
   <string name="state_end_exploration_button">Retornar ao Tópico</string>
-  <string name="previous_responses_header">Respostas Anteriores (%d)</string>
+  <string name="previous_responses_header">Respostas Anteriores (%s)</string>
   <string name="image_interaction_answer_text">Cliques em %s</string>
   <string name="state_learn_again_button">Aprender Novamente</string>
   <string name="see_more">Veja Mais</string>
@@ -102,7 +102,7 @@
   <string name="topic_downloaded">Tópico Baixado</string>
   <string name="downloaded">Baixado</string>
   <string name="question_player_title">Modo de Prática</string>
-  <string name="question_training_session_progress">Pergunta %d de %d</string>
+  <string name="question_training_session_progress">Pergunta %s de %s</string>
   <string name="question_training_session_progress_finished">Concluído</string>
   <string name="question_training_session_finished_header">Concluído</string>
   <string name="question_training_session_finished_message">Você concluiu todas as perguntas! Você pode escolher reproduzir outro conjunto de perguntas ou retornar ao tópico.</string>
@@ -127,38 +127,38 @@
   <string name="ratio_error_invalid_size">O número de termos não é igual ao exigido.</string>
   <string name="ratio_error_includes_zero">Proporções não podem ter 0 como elemento.</string>
   <string name="unknown_size">Tamanho desconhecido</string>
-  <string name="size_bytes">%d Bytes</string>
-  <string name="size_kb">%d KB</string>
-  <string name="size_mb">%d MB</string>
-  <string name="size_gb">%d GB</string>
+  <string name="size_bytes">%s Bytes</string>
+  <string name="size_kb">%s KB</string>
+  <string name="size_mb">%s MB</string>
+  <string name="size_gb">%s GB</string>
   <string name="correct">Correto!</string>
   <string name="topic_prefix">Tópico: %s</string>
   <string name="chapter_count_with_story_name">%1$s em %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Capítulo\n    </item>
-    <item quantity="other">\n      %d Capítulos\n    </item>
+    <item quantity="other">\n      %s Capítulos\n    </item>
   </plurals>
   <plurals name="story_count">
     <item quantity="one">1 História\n    </item>
-    <item quantity="other">\n      %d Histórias\n    </item>
+    <item quantity="other">\n      %s Histórias\n    </item>
   </plurals>
   <plurals name="story_total_chapters">
-    <item quantity="one">%d de %d Capítulo Concluído</item>
-    <item quantity="other">%d de %d Capítulos Concluídos</item>
+    <item quantity="one">%s de %s Capítulo Concluído</item>
+    <item quantity="other">%s de %s Capítulos Concluídos</item>
   </plurals>
   <plurals name="lesson_count">
     <item quantity="one">1 Lição\n    </item>
-    <item quantity="other">\n      %d Lições\n    </item>
+    <item quantity="other">\n      %s Lições\n    </item>
   </plurals>
   <plurals name="completed_story_count">
     <item quantity="one">1 História Concluída\n    </item>
-    <item quantity="zero">%d Histórias Concluídas\n    </item>
-    <item quantity="other">\n      %d Histórias Concluídas\n    </item>
+    <item quantity="zero">%s Histórias Concluídas\n    </item>
+    <item quantity="other">\n      %s Histórias Concluídas\n    </item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="one">1 Tópico em Andamento\n    </item>
-    <item quantity="zero">%d Tópicos em Andamento\n    </item>
-    <item quantity="other">\n      %d Tópicos em Andamento\n    </item>
+    <item quantity="zero">%s Tópicos em Andamento\n    </item>
+    <item quantity="other">\n      %s Tópicos em Andamento\n    </item>
   </plurals>
   <string name="profile_chooser_activity_label">Página de seleção de perfil</string>
   <string name="profile_chooser_admin">Administrador</string>
@@ -218,7 +218,7 @@
   <string name="skip">Pular</string>
   <string name="next_arrow">Próximo</string>
   <string name="get_started">Começar</string>
-  <string name="onboarding_slide_dots_content_description">Slide %d de %d</string>
+  <string name="onboarding_slide_dots_content_description">Slide %s de %s</string>
   <string name="pin_password_hello">Olá, %s!</string>
   <string name="pin_password_admin_enter">Por favor, insira o PIN do Administrador.</string>
   <string name="pin_password_user_enter">Por favor, insira seu PIN.</string>
@@ -347,24 +347,24 @@
   <string name="return_to_topic">Voltar ao tópico</string>
   <string name="explanation">Explicação:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">Se dois itens forem iguais, junte-os.</string>
-  <string name="link_to_item_below">Vincular para o item %d</string>
-  <string name="unlink_items">Desvincular itens em %d</string>
-  <string name="move_item_down_content_description">Mover o item para baixo para %d</string>
-  <string name="move_item_up_content_description">Mover o item para cima para %d</string>
+  <string name="link_to_item_below">Vincular para o item %s</string>
+  <string name="unlink_items">Desvincular itens em %s</string>
+  <string name="move_item_down_content_description">Mover o item para baixo para %s</string>
+  <string name="move_item_up_content_description">Mover o item para cima para %s</string>
   <string name="up_button_disabled">Para cima</string>
   <string name="down_button_disabled">Para baixo</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes">
     <item quantity="one">um minuto</item>
-    <item quantity="other">%d minutos</item>
+    <item quantity="other">%s minutos</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">uma hora</item>
-    <item quantity="other">%d horas</item>
+    <item quantity="other">%s horas</item>
   </plurals>
   <plurals name="days">
     <item quantity="one">um dia</item>
-    <item quantity="other">%d dias</item>
+    <item quantity="other">%s dias</item>
   </plurals>
   <string name="item_selection_text">Por favor, selecione pelo menos uma opção.</string>
   <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>

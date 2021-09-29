@@ -4,9 +4,13 @@
         "__INPUT_ARTIFACTS_HASH": -1877396249,
         "__RESOLVED_ARTIFACTS_HASH": -1377790631,
         "conflict_resolution": {
+            "androidx.appcompat:appcompat:1.0.2": "androidx.appcompat:appcompat:1.2.0",
             "androidx.core:core:1.0.1": "androidx.core:core:1.3.0",
             "androidx.recyclerview:recyclerview:1.0.0": "androidx.recyclerview:recyclerview:1.1.0",
-            "androidx.test:core:1.0.0": "androidx.test:core:1.2.0",
+            "androidx.test:core:1.0.0": "androidx.test:core:1.4.0",
+            "com.google.guava:guava:28.1-android": "com.google.guava:guava:30.1.1-android",
+            "com.google.truth:truth:0.43": "com.google.truth:truth:1.1.3",
+            "junit:junit:4.12": "junit:junit:4.13.2",
             "org.jetbrains.kotlin:kotlin-reflect:1.3.41": "org.jetbrains.kotlin:kotlin-reflect:1.5.0",
             "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72": "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10",
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2": "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4",
@@ -55,17 +59,17 @@
             {
                 "coord": "android.arch.core:core-testing:1.1.1",
                 "dependencies": [
-                    "junit:junit:4.12",
                     "org.hamcrest:hamcrest-core:1.3",
                     "org.mockito:mockito-core:3.9.0",
                     "com.android.support:support-annotations:28.0.0",
                     "android.arch.core:runtime:aar:1.1.1",
+                    "junit:junit:4.13.2",
                     "android.arch.core:common:1.1.1"
                 ],
                 "directDependencies": [
                     "android.arch.core:runtime:aar:1.1.1",
                     "com.android.support:support-annotations:28.0.0",
-                    "junit:junit:4.12",
+                    "junit:junit:4.13.2",
                     "org.mockito:mockito-core:3.9.0"
                 ],
                 "file": "v1/https/maven.google.com/android/arch/core/core-testing/1.1.1/core-testing-1.1.1.aar",
@@ -84,15 +88,15 @@
                 "dependencies": [
                     "com.android.support:support-annotations:jar:sources:28.0.0",
                     "android.arch.core:runtime:aar:sources:1.1.1",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.mockito:mockito-core:jar:sources:3.9.0",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
-                    "junit:junit:jar:sources:4.12",
                     "android.arch.core:common:jar:sources:1.1.1"
                 ],
                 "directDependencies": [
                     "android.arch.core:runtime:aar:sources:1.1.1",
                     "com.android.support:support-annotations:jar:sources:28.0.0",
-                    "junit:junit:jar:sources:4.12",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.mockito:mockito-core:jar:sources:3.9.0"
                 ],
                 "file": "v1/https/maven.google.com/android/arch/core/core-testing/1.1.1/core-testing-1.1.1-sources.jar",
@@ -461,15 +465,15 @@
                 "dependencies": [
                     "androidx.annotation:annotation:1.1.0",
                     "org.objenesis:objenesis:3.2",
-                    "junit:junit:4.12",
                     "org.hamcrest:hamcrest-core:1.3",
                     "org.mockito:mockito-core:3.9.0",
+                    "junit:junit:4.13.2",
                     "androidx.arch.core:core-runtime:aar:2.1.0"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:1.1.0",
                     "androidx.arch.core:core-runtime:aar:2.1.0",
-                    "junit:junit:4.12",
+                    "junit:junit:4.13.2",
                     "org.mockito:mockito-core:3.9.0"
                 ],
                 "file": "v1/https/maven.google.com/androidx/arch/core/core-testing/2.1.0/core-testing-2.1.0.aar",
@@ -487,16 +491,16 @@
                 "coord": "androidx.arch.core:core-testing:jar:sources:2.1.0",
                 "dependencies": [
                     "androidx.arch.core:core-runtime:aar:sources:2.1.0",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.mockito:mockito-core:jar:sources:3.9.0",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
-                    "org.objenesis:objenesis:jar:sources:3.2",
-                    "junit:junit:jar:sources:4.12"
+                    "org.objenesis:objenesis:jar:sources:3.2"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "androidx.arch.core:core-runtime:aar:sources:2.1.0",
-                    "junit:junit:jar:sources:4.12",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.mockito:mockito-core:jar:sources:3.9.0"
                 ],
                 "file": "v1/https/maven.google.com/androidx/arch/core/core-testing/2.1.0/core-testing-2.1.0-sources.jar",
@@ -933,13 +937,13 @@
             {
                 "coord": "androidx.databinding:databinding-compiler-common:3.4.2",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "com.android.tools.build.jetifier:jetifier-core:1.0.0-beta04",
                     "com.android.tools:annotations:26.4.2",
                     "androidx.databinding:databinding-common:3.4.2",
                     "com.android.databinding:baseLibrary:3.4.2",
                     "org.antlr:antlr4:4.5.3",
                     "commons-io:commons-io:2.4",
+                    "com.google.guava:guava:30.1.1-android",
                     "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10",
                     "com.squareup:javapoet:1.11.1",
@@ -947,13 +951,13 @@
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "com.android.tools.build.jetifier:jetifier-core:1.0.0-beta04",
                     "com.android.tools:annotations:26.4.2",
                     "androidx.databinding:databinding-common:3.4.2",
                     "com.android.databinding:baseLibrary:3.4.2",
                     "org.antlr:antlr4:4.5.3",
                     "commons-io:commons-io:2.4",
+                    "com.google.guava:guava:30.1.1-android",
                     "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10",
                     "com.squareup:javapoet:1.11.1",
@@ -973,6 +977,7 @@
             {
                 "coord": "androidx.databinding:databinding-compiler-common:jar:sources:3.4.2",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
                     "com.android.tools:annotations:jar:sources:26.4.2",
                     "com.android.tools.build.jetifier:jetifier-core:jar:sources:1.0.0-beta04",
@@ -983,10 +988,10 @@
                     "com.squareup:javapoet:jar:sources:1.11.1",
                     "commons-io:commons-io:jar:sources:2.4",
                     "com.google.code.gson:gson:jar:sources:2.8.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.googlecode.juniversalchardet:juniversalchardet:jar:sources:1.0.3"
                 ],
                 "directDependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "com.android.tools:annotations:jar:sources:26.4.2",
                     "com.android.tools.build.jetifier:jetifier-core:jar:sources:1.0.0-beta04",
                     "com.android.databinding:baseLibrary:jar:sources:3.4.2",
@@ -996,7 +1001,6 @@
                     "com.squareup:javapoet:jar:sources:1.11.1",
                     "commons-io:commons-io:jar:sources:2.4",
                     "com.google.code.gson:gson:jar:sources:2.8.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.googlecode.juniversalchardet:juniversalchardet:jar:sources:1.0.3"
                 ],
                 "file": "v1/https/maven.google.com/androidx/databinding/databinding-compiler-common/3.4.2/databinding-compiler-common-3.4.2-sources.jar",
@@ -1013,13 +1017,13 @@
             {
                 "coord": "androidx.databinding:databinding-compiler:3.4.2",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "com.android.tools.build.jetifier:jetifier-core:1.0.0-beta04",
                     "com.android.tools:annotations:26.4.2",
                     "androidx.databinding:databinding-common:3.4.2",
                     "com.android.databinding:baseLibrary:3.4.2",
                     "org.antlr:antlr4:4.5.3",
                     "commons-io:commons-io:2.4",
+                    "com.google.guava:guava:30.1.1-android",
                     "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
                     "androidx.databinding:databinding-compiler-common:3.4.2",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10",
@@ -1051,6 +1055,7 @@
             {
                 "coord": "androidx.databinding:databinding-compiler:jar:sources:3.4.2",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
                     "commons-codec:commons-codec:jar:sources:1.10",
                     "com.android.tools:annotations:jar:sources:26.4.2",
@@ -1063,7 +1068,6 @@
                     "com.squareup:javapoet:jar:sources:1.11.1",
                     "commons-io:commons-io:jar:sources:2.4",
                     "com.google.code.gson:gson:jar:sources:2.8.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.googlecode.juniversalchardet:juniversalchardet:jar:sources:1.0.3"
                 ],
                 "directDependencies": [
@@ -3141,16 +3145,16 @@
                 "coord": "androidx.test.espresso:espresso-core:3.2.0",
                 "dependencies": [
                     "androidx.annotation:annotation:1.1.0",
+                    "androidx.test:monitor:1.4.0",
                     "com.google.code.findbugs:jsr305:3.0.2",
-                    "androidx.test:monitor:1.3.0-rc03",
                     "org.hamcrest:hamcrest-library:1.3",
                     "androidx.test:runner:1.2.0",
                     "org.hamcrest:hamcrest-integration:1.3",
-                    "junit:junit:4.12",
                     "org.hamcrest:hamcrest-core:1.3",
                     "androidx.test.espresso:espresso-idling-resource:3.2.0",
                     "com.squareup:javawriter:2.1.1",
                     "javax.inject:javax.inject:1",
+                    "junit:junit:4.13.2",
                     "net.sf.kxml:kxml2:2.3.0"
                 ],
                 "directDependencies": [
@@ -3177,8 +3181,9 @@
                 "coord": "androidx.test.espresso:espresso-core:jar:sources:3.2.0",
                 "dependencies": [
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
+                    "androidx.test:monitor:jar:sources:1.4.0",
                     "org.hamcrest:hamcrest-integration:jar:sources:1.3",
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03",
+                    "junit:junit:jar:sources:4.13.2",
                     "com.squareup:javawriter:jar:sources:2.1.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
@@ -3186,8 +3191,7 @@
                     "org.hamcrest:hamcrest-library:jar:sources:1.3",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "androidx.test:runner:jar:sources:1.2.0",
-                    "net.sf.kxml:kxml2:jar:sources:2.3.0",
-                    "junit:junit:jar:sources:4.12"
+                    "net.sf.kxml:kxml2:jar:sources:2.3.0"
                 ],
                 "directDependencies": [
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
@@ -3286,18 +3290,17 @@
             {
                 "coord": "androidx.test.ext:junit:1.1.1",
                 "dependencies": [
-                    "androidx.lifecycle:lifecycle-common:2.2.0",
                     "androidx.annotation:annotation:1.1.0",
-                    "androidx.test:monitor:1.3.0-rc03",
-                    "junit:junit:4.12",
+                    "androidx.test:monitor:1.4.0",
                     "org.hamcrest:hamcrest-core:1.3",
-                    "androidx.test:core:1.2.0"
+                    "androidx.test:core:1.4.0",
+                    "junit:junit:4.13.2"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:1.1.0",
-                    "androidx.test:core:1.2.0",
-                    "androidx.test:monitor:1.3.0-rc03",
-                    "junit:junit:4.12"
+                    "androidx.test:core:1.4.0",
+                    "androidx.test:monitor:1.4.0",
+                    "junit:junit:4.13.2"
                 ],
                 "file": "v1/https/maven.google.com/androidx/test/ext/junit/1.1.1/junit-1.1.1.aar",
                 "mirror_urls": [
@@ -3313,18 +3316,17 @@
             {
                 "coord": "androidx.test.ext:junit:jar:sources:1.1.1",
                 "dependencies": [
-                    "androidx.test:core:jar:sources:1.2.0",
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03",
+                    "androidx.test:monitor:jar:sources:1.4.0",
+                    "androidx.test:core:jar:sources:1.4.0",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
-                    "androidx.annotation:annotation:jar:sources:1.1.0",
-                    "androidx.lifecycle:lifecycle-common:jar:sources:2.2.0",
-                    "junit:junit:jar:sources:4.12"
+                    "androidx.annotation:annotation:jar:sources:1.1.0"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:jar:sources:1.1.0",
-                    "androidx.test:core:jar:sources:1.2.0",
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03",
-                    "junit:junit:jar:sources:4.12"
+                    "androidx.test:core:jar:sources:1.4.0",
+                    "androidx.test:monitor:jar:sources:1.4.0",
+                    "junit:junit:jar:sources:4.13.2"
                 ],
                 "file": "v1/https/maven.google.com/androidx/test/ext/junit/1.1.1/junit-1.1.1-sources.jar",
                 "mirror_urls": [
@@ -3336,6 +3338,60 @@
                 ],
                 "sha256": "e8abb0752a123d337be4cced50298067a8340135e64f0a24ff52345ed20cd292",
                 "url": "https://maven.google.com/androidx/test/ext/junit/1.1.1/junit-1.1.1-sources.jar"
+            },
+            {
+                "coord": "androidx.test.ext:truth:1.4.0",
+                "dependencies": [
+                    "androidx.lifecycle:lifecycle-common:2.2.0",
+                    "androidx.annotation:annotation:1.1.0",
+                    "com.google.truth:truth:1.1.3",
+                    "androidx.test:monitor:1.4.0",
+                    "com.google.guava:guava:30.1.1-android",
+                    "androidx.test:core:1.4.0"
+                ],
+                "directDependencies": [
+                    "androidx.annotation:annotation:1.1.0",
+                    "androidx.test:core:1.4.0",
+                    "com.google.guava:guava:30.1.1-android",
+                    "com.google.truth:truth:1.1.3"
+                ],
+                "file": "v1/https/maven.google.com/androidx/test/ext/truth/1.4.0/truth-1.4.0.aar",
+                "mirror_urls": [
+                    "https://maven.google.com/androidx/test/ext/truth/1.4.0/truth-1.4.0.aar",
+                    "https://repo1.maven.org/maven2/androidx/test/ext/truth/1.4.0/truth-1.4.0.aar",
+                    "https://maven.fabric.io/public/androidx/test/ext/truth/1.4.0/truth-1.4.0.aar",
+                    "https://maven.google.com/androidx/test/ext/truth/1.4.0/truth-1.4.0.aar",
+                    "https://repo1.maven.org/maven2/androidx/test/ext/truth/1.4.0/truth-1.4.0.aar"
+                ],
+                "sha256": "d067a9bdd009b08d4230f8283cb4579a1183ef45bbfa169fd6d0f112d6c324f6",
+                "url": "https://maven.google.com/androidx/test/ext/truth/1.4.0/truth-1.4.0.aar"
+            },
+            {
+                "coord": "androidx.test.ext:truth:jar:sources:1.4.0",
+                "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
+                    "androidx.test:monitor:jar:sources:1.4.0",
+                    "androidx.test:core:jar:sources:1.4.0",
+                    "com.google.truth:truth:jar:sources:1.1.3",
+                    "androidx.annotation:annotation:jar:sources:1.1.0",
+                    "androidx.lifecycle:lifecycle-common:jar:sources:2.2.0"
+                ],
+                "directDependencies": [
+                    "androidx.annotation:annotation:jar:sources:1.1.0",
+                    "androidx.test:core:jar:sources:1.4.0",
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
+                    "com.google.truth:truth:jar:sources:1.1.3"
+                ],
+                "file": "v1/https/maven.google.com/androidx/test/ext/truth/1.4.0/truth-1.4.0-sources.jar",
+                "mirror_urls": [
+                    "https://maven.google.com/androidx/test/ext/truth/1.4.0/truth-1.4.0-sources.jar",
+                    "https://repo1.maven.org/maven2/androidx/test/ext/truth/1.4.0/truth-1.4.0-sources.jar",
+                    "https://maven.fabric.io/public/androidx/test/ext/truth/1.4.0/truth-1.4.0-sources.jar",
+                    "https://maven.google.com/androidx/test/ext/truth/1.4.0/truth-1.4.0-sources.jar",
+                    "https://repo1.maven.org/maven2/androidx/test/ext/truth/1.4.0/truth-1.4.0-sources.jar"
+                ],
+                "sha256": "7c7d5f0b67046f2da28ad2b99e6af9fe7b228a4420dc5863e7428be3b8f928df",
+                "url": "https://maven.google.com/androidx/test/ext/truth/1.4.0/truth-1.4.0-sources.jar"
             },
             {
                 "coord": "androidx.test.uiautomator:uiautomator:2.2.0",
@@ -3368,87 +3424,87 @@
                 "url": "https://maven.google.com/androidx/test/uiautomator/uiautomator/2.2.0/uiautomator-2.2.0-sources.jar"
             },
             {
-                "coord": "androidx.test:core:1.2.0",
+                "coord": "androidx.test:core:1.4.0",
                 "dependencies": [
                     "androidx.annotation:annotation:1.1.0",
-                    "androidx.lifecycle:lifecycle-common:2.2.0",
-                    "androidx.test:monitor:1.3.0-rc03"
+                    "androidx.test:monitor:1.4.0",
+                    "androidx.lifecycle:lifecycle-common:2.2.0"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:1.1.0",
                     "androidx.lifecycle:lifecycle-common:2.2.0",
-                    "androidx.test:monitor:1.3.0-rc03"
+                    "androidx.test:monitor:1.4.0"
                 ],
-                "file": "v1/https/maven.google.com/androidx/test/core/1.2.0/core-1.2.0.aar",
+                "file": "v1/https/maven.google.com/androidx/test/core/1.4.0/core-1.4.0.aar",
                 "mirror_urls": [
-                    "https://maven.google.com/androidx/test/core/1.2.0/core-1.2.0.aar",
-                    "https://repo1.maven.org/maven2/androidx/test/core/1.2.0/core-1.2.0.aar",
-                    "https://maven.fabric.io/public/androidx/test/core/1.2.0/core-1.2.0.aar",
-                    "https://maven.google.com/androidx/test/core/1.2.0/core-1.2.0.aar",
-                    "https://repo1.maven.org/maven2/androidx/test/core/1.2.0/core-1.2.0.aar"
+                    "https://maven.google.com/androidx/test/core/1.4.0/core-1.4.0.aar",
+                    "https://repo1.maven.org/maven2/androidx/test/core/1.4.0/core-1.4.0.aar",
+                    "https://maven.fabric.io/public/androidx/test/core/1.4.0/core-1.4.0.aar",
+                    "https://maven.google.com/androidx/test/core/1.4.0/core-1.4.0.aar",
+                    "https://repo1.maven.org/maven2/androidx/test/core/1.4.0/core-1.4.0.aar"
                 ],
-                "sha256": "c88b739b1c499afb792374be19b9cf829e89567f26441a74f664c0cf8de158a4",
-                "url": "https://maven.google.com/androidx/test/core/1.2.0/core-1.2.0.aar"
+                "sha256": "671284e62e393f16ceae1a99a3a9a07bf1aacda29f8fe7b6b884355ef34c09cf",
+                "url": "https://maven.google.com/androidx/test/core/1.4.0/core-1.4.0.aar"
             },
             {
-                "coord": "androidx.test:core:jar:sources:1.2.0",
+                "coord": "androidx.test:core:jar:sources:1.4.0",
                 "dependencies": [
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03",
+                    "androidx.test:monitor:jar:sources:1.4.0",
                     "androidx.lifecycle:lifecycle-common:jar:sources:2.2.0",
                     "androidx.annotation:annotation:jar:sources:1.1.0"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "androidx.lifecycle:lifecycle-common:jar:sources:2.2.0",
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03"
+                    "androidx.test:monitor:jar:sources:1.4.0"
                 ],
-                "file": "v1/https/maven.google.com/androidx/test/core/1.2.0/core-1.2.0-sources.jar",
+                "file": "v1/https/maven.google.com/androidx/test/core/1.4.0/core-1.4.0-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/androidx/test/core/1.2.0/core-1.2.0-sources.jar",
-                    "https://repo1.maven.org/maven2/androidx/test/core/1.2.0/core-1.2.0-sources.jar",
-                    "https://maven.fabric.io/public/androidx/test/core/1.2.0/core-1.2.0-sources.jar",
-                    "https://maven.google.com/androidx/test/core/1.2.0/core-1.2.0-sources.jar",
-                    "https://repo1.maven.org/maven2/androidx/test/core/1.2.0/core-1.2.0-sources.jar"
+                    "https://maven.google.com/androidx/test/core/1.4.0/core-1.4.0-sources.jar",
+                    "https://repo1.maven.org/maven2/androidx/test/core/1.4.0/core-1.4.0-sources.jar",
+                    "https://maven.fabric.io/public/androidx/test/core/1.4.0/core-1.4.0-sources.jar",
+                    "https://maven.google.com/androidx/test/core/1.4.0/core-1.4.0-sources.jar",
+                    "https://repo1.maven.org/maven2/androidx/test/core/1.4.0/core-1.4.0-sources.jar"
                 ],
-                "sha256": "19d087a01ae8741a62b661c07929897eb475af64198a9bd7e89d97e7ee88a89a",
-                "url": "https://maven.google.com/androidx/test/core/1.2.0/core-1.2.0-sources.jar"
+                "sha256": "b3125d546acfea278b82250344c83826e872e3f461109daf0948806382603b30",
+                "url": "https://maven.google.com/androidx/test/core/1.4.0/core-1.4.0-sources.jar"
             },
             {
-                "coord": "androidx.test:monitor:1.3.0-rc03",
+                "coord": "androidx.test:monitor:1.4.0",
                 "dependencies": [
                     "androidx.annotation:annotation:1.1.0"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:1.1.0"
                 ],
-                "file": "v1/https/maven.google.com/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03.aar",
+                "file": "v1/https/maven.google.com/androidx/test/monitor/1.4.0/monitor-1.4.0.aar",
                 "mirror_urls": [
-                    "https://maven.google.com/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03.aar",
-                    "https://repo1.maven.org/maven2/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03.aar",
-                    "https://maven.fabric.io/public/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03.aar",
-                    "https://maven.google.com/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03.aar",
-                    "https://repo1.maven.org/maven2/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03.aar"
+                    "https://maven.google.com/androidx/test/monitor/1.4.0/monitor-1.4.0.aar",
+                    "https://repo1.maven.org/maven2/androidx/test/monitor/1.4.0/monitor-1.4.0.aar",
+                    "https://maven.fabric.io/public/androidx/test/monitor/1.4.0/monitor-1.4.0.aar",
+                    "https://maven.google.com/androidx/test/monitor/1.4.0/monitor-1.4.0.aar",
+                    "https://repo1.maven.org/maven2/androidx/test/monitor/1.4.0/monitor-1.4.0.aar"
                 ],
-                "sha256": "7c67b438deec7c14cf62ab54223ce19d5981f53477a15359347d7b59018419d0",
-                "url": "https://maven.google.com/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03.aar"
+                "sha256": "46a912a1e175f27a97521af3f50e5af87c22c49275dd2c57c043740012806325",
+                "url": "https://maven.google.com/androidx/test/monitor/1.4.0/monitor-1.4.0.aar"
             },
             {
-                "coord": "androidx.test:monitor:aar:sources:1.3.0-rc03",
+                "coord": "androidx.test:monitor:aar:sources:1.4.0",
                 "dependencies": [],
                 "directDependencies": [],
                 "exclusions": [
                     "*:*"
                 ],
-                "file": "v1/https/maven.google.com/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03-sources.jar",
+                "file": "v1/https/maven.google.com/androidx/test/monitor/1.4.0/monitor-1.4.0-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03-sources.jar",
-                    "https://repo1.maven.org/maven2/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03-sources.jar",
-                    "https://maven.fabric.io/public/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03-sources.jar",
-                    "https://maven.google.com/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03-sources.jar",
-                    "https://repo1.maven.org/maven2/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03-sources.jar"
+                    "https://maven.google.com/androidx/test/monitor/1.4.0/monitor-1.4.0-sources.jar",
+                    "https://repo1.maven.org/maven2/androidx/test/monitor/1.4.0/monitor-1.4.0-sources.jar",
+                    "https://maven.fabric.io/public/androidx/test/monitor/1.4.0/monitor-1.4.0-sources.jar",
+                    "https://maven.google.com/androidx/test/monitor/1.4.0/monitor-1.4.0-sources.jar",
+                    "https://repo1.maven.org/maven2/androidx/test/monitor/1.4.0/monitor-1.4.0-sources.jar"
                 ],
-                "sha256": "08da381299ef3ecc345bd2ce7db2006fe21e054e928026a38104e9eeb9121761",
-                "url": "https://maven.google.com/androidx/test/monitor/1.3.0-rc03/monitor-1.3.0-rc03-sources.jar"
+                "sha256": "a03ea6019c1ee7cc285afdbee98137ec463b891e6fc9176c121c5a70ec727f48",
+                "url": "https://maven.google.com/androidx/test/monitor/1.4.0/monitor-1.4.0-sources.jar"
             },
             {
                 "coord": "androidx.test:rules:1.1.0",
@@ -3492,15 +3548,15 @@
                 "coord": "androidx.test:runner:1.2.0",
                 "dependencies": [
                     "androidx.annotation:annotation:1.1.0",
-                    "androidx.test:monitor:1.3.0-rc03",
-                    "junit:junit:4.12",
+                    "androidx.test:monitor:1.4.0",
                     "org.hamcrest:hamcrest-core:1.3",
+                    "junit:junit:4.13.2",
                     "net.sf.kxml:kxml2:2.3.0"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:1.1.0",
-                    "androidx.test:monitor:1.3.0-rc03",
-                    "junit:junit:4.12",
+                    "androidx.test:monitor:1.4.0",
+                    "junit:junit:4.13.2",
                     "net.sf.kxml:kxml2:2.3.0"
                 ],
                 "file": "v1/https/maven.google.com/androidx/test/runner/1.2.0/runner-1.2.0.aar",
@@ -3517,16 +3573,16 @@
             {
                 "coord": "androidx.test:runner:jar:sources:1.2.0",
                 "dependencies": [
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03",
+                    "androidx.test:monitor:jar:sources:1.4.0",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
-                    "net.sf.kxml:kxml2:jar:sources:2.3.0",
-                    "junit:junit:jar:sources:4.12"
+                    "net.sf.kxml:kxml2:jar:sources:2.3.0"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:jar:sources:1.1.0",
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03",
-                    "junit:junit:jar:sources:4.12",
+                    "androidx.test:monitor:jar:sources:1.4.0",
+                    "junit:junit:jar:sources:4.13.2",
                     "net.sf.kxml:kxml2:jar:sources:2.3.0"
                 ],
                 "file": "v1/https/maven.google.com/androidx/test/runner/1.2.0/runner-1.2.0-sources.jar",
@@ -4474,7 +4530,6 @@
                 "coord": "com.github.bumptech.glide:mocks:4.11.0",
                 "dependencies": [
                     "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
-                    "com.google.guava:guava:28.1-android",
                     "com.github.bumptech.glide:annotations:4.11.0",
                     "androidx.interpolator:interpolator:aar:1.0.0",
                     "org.codehaus.mojo:animal-sniffer-annotations:1.18",
@@ -4486,7 +4541,9 @@
                     "androidx.localbroadcastmanager:localbroadcastmanager:aar:1.0.0",
                     "androidx.core:core:aar:1.3.0",
                     "androidx.legacy:legacy-support-core-utils:aar:1.0.0",
+                    "com.google.guava:guava:30.1.1-android",
                     "androidx.slidingpanelayout:slidingpanelayout:aar:1.0.0",
+                    "com.google.errorprone:error_prone_annotations:2.7.1",
                     "androidx.lifecycle:lifecycle-livedata:aar:2.2.0",
                     "androidx.vectordrawable:vectordrawable:aar:1.1.0",
                     "androidx.cursoradapter:cursoradapter:aar:1.0.0",
@@ -4503,7 +4560,6 @@
                     "androidx.fragment:fragment:1.2.0",
                     "androidx.coordinatorlayout:coordinatorlayout:aar:1.1.0-rc01",
                     "com.github.bumptech.glide:glide:4.11.0",
-                    "com.google.errorprone:error_prone_annotations:2.3.2",
                     "androidx.swiperefreshlayout:swiperefreshlayout:aar:1.0.0",
                     "androidx.loader:loader:aar:1.0.0",
                     "androidx.customview:customview:aar:1.1.0",
@@ -4512,7 +4568,7 @@
                 "directDependencies": [
                     "androidx.annotation:annotation:1.1.0",
                     "com.github.bumptech.glide:glide:4.11.0",
-                    "com.google.guava:guava:28.1-android"
+                    "com.google.guava:guava:30.1.1-android"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/com/github/bumptech/glide/mocks/4.11.0/mocks-4.11.0.aar",
                 "mirror_urls": [
@@ -4530,6 +4586,7 @@
                 "dependencies": [
                     "androidx.documentfile:documentfile:aar:sources:1.0.0",
                     "androidx.coordinatorlayout:coordinatorlayout:aar:sources:1.1.0-rc01",
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.codehaus.mojo:animal-sniffer-annotations:jar:sources:1.18",
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
                     "androidx.print:print:aar:sources:1.0.0",
@@ -4558,16 +4615,15 @@
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
                     "com.google.guava:listenablefuture:jar:sources:9999.0-empty-to-avoid-conflict-with-guava",
                     "androidx.customview:customview:aar:sources:1.1.0",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.google.guava:failureaccess:jar:sources:1.0.1",
+                    "com.google.errorprone:error_prone_annotations:jar:sources:2.7.1",
                     "androidx.loader:loader:aar:sources:1.0.0",
-                    "com.google.errorprone:error_prone_annotations:jar:sources:2.3.2",
                     "androidx.vectordrawable:vectordrawable:aar:sources:1.1.0"
                 ],
                 "directDependencies": [
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "com.github.bumptech.glide:glide:jar:sources:4.11.0",
-                    "com.google.guava:guava:jar:sources:28.1-android"
+                    "com.google.guava:guava:jar:sources:30.1.1-android"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/com/github/bumptech/glide/mocks/4.11.0/mocks-4.11.0-sources.jar",
                 "mirror_urls": [
@@ -4809,7 +4865,6 @@
                     "com.google.firebase:firebase-components:aar:16.0.0",
                     "com.google.android.gms:play-services-measurement-impl:aar:17.5.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:2.2.0",
-                    "com.google.auto.value:auto-value-annotations:jar:1.6.5",
                     "androidx.fragment:fragment:aar:1.2.0",
                     "com.google.android.gms:play-services-ads-identifier:aar:17.0.0",
                     "androidx.print:print:aar:1.0.0",
@@ -4817,6 +4872,7 @@
                     "androidx.lifecycle:lifecycle-viewmodel:aar:2.2.0",
                     "androidx.documentfile:documentfile:aar:1.0.0",
                     "com.google.android.gms:play-services-basement:aar:17.0.0",
+                    "com.google.auto.value:auto-value-annotations:jar:1.8.1",
                     "com.google.firebase:firebase-installations-interop:aar:16.0.0",
                     "com.google.android.gms:play-services-measurement-base:aar:17.5.0",
                     "androidx.loader:loader:aar:1.0.0"
@@ -5062,13 +5118,13 @@
             {
                 "coord": "com.google.android.gms:strict-version-matcher-plugin:1.2.1",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10",
                     "com.google.code.findbugs:jsr305:3.0.2"
                 ],
                 "directDependencies": [
                     "com.google.code.findbugs:jsr305:3.0.2",
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
                 ],
                 "file": "v1/https/maven.google.com/com/google/android/gms/strict-version-matcher-plugin/1.2.1/strict-version-matcher-plugin-1.2.1.jar",
@@ -5227,34 +5283,34 @@
                 "url": "https://repo1.maven.org/maven2/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7-sources.jar"
             },
             {
-                "coord": "com.google.auto.value:auto-value-annotations:1.6.5",
+                "coord": "com.google.auto.value:auto-value-annotations:1.8.1",
                 "dependencies": [],
                 "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5.jar",
-                    "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5.jar",
-                    "https://maven.fabric.io/public/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5.jar",
-                    "https://maven.google.com/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5.jar",
-                    "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5.jar"
+                    "https://maven.google.com/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1.jar",
+                    "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1.jar",
+                    "https://maven.fabric.io/public/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1.jar",
+                    "https://maven.google.com/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1.jar",
+                    "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1.jar"
                 ],
-                "sha256": "3677f725f5b1b6cd6a4cc8aa8cf8f5fd2b76d170205cbdc3e9bfd9b58f934b3b",
-                "url": "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5.jar"
+                "sha256": "37ec09b47d7ed35a99d13927db5c86fc9071f620f943ead5d757144698310852",
+                "url": "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1.jar"
             },
             {
-                "coord": "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
+                "coord": "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                 "dependencies": [],
                 "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5-sources.jar",
-                    "https://maven.fabric.io/public/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5-sources.jar",
-                    "https://maven.google.com/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5-sources.jar"
+                    "https://maven.google.com/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1-sources.jar",
+                    "https://maven.fabric.io/public/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1-sources.jar",
+                    "https://maven.google.com/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1-sources.jar"
                 ],
-                "sha256": "f55b4c071128b6887ca1aaccc3946c84ca27cea29d2df71ed333744451fbc7dc",
-                "url": "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.6.5/auto-value-annotations-1.6.5-sources.jar"
+                "sha256": "0fc83f827602d4378b97a8dec07ce22e364e4b8bb352db213801a6a8c654a330",
+                "url": "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.8.1/auto-value-annotations-1.8.1-sources.jar"
             },
             {
                 "coord": "com.google.code.findbugs:jsr305:3.0.2",
@@ -5319,9 +5375,9 @@
             {
                 "coord": "com.google.dagger:dagger-compiler:2.28.1",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0",
                     "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.guava:guava:30.1.1-android",
                     "net.ltgt.gradle.incap:incap:0.3",
                     "com.google.errorprone:javac-shaded:9-dev-r4023-3",
                     "com.google.dagger:dagger-spi:2.28.1",
@@ -5336,9 +5392,9 @@
                     "org.checkerframework:checker-compat-qual:2.5.5"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0",
                     "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.guava:guava:30.1.1-android",
                     "net.ltgt.gradle.incap:incap:0.3",
                     "com.google.dagger:dagger-spi:2.28.1",
                     "com.squareup:javapoet:1.11.1",
@@ -5365,6 +5421,7 @@
             {
                 "coord": "com.google.dagger:dagger-compiler:jar:sources:2.28.1",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
                     "org.jetbrains.kotlinx:kotlinx-metadata-jvm:jar:sources:0.1.0",
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
@@ -5375,13 +5432,13 @@
                     "com.squareup:javapoet:jar:sources:1.11.1",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
                     "com.google.dagger:dagger-spi:jar:sources:2.28.1",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.google.guava:failureaccess:jar:sources:1.0.1",
                     "com.google.dagger:dagger-producers:jar:sources:2.28.1",
                     "net.ltgt.gradle.incap:incap:jar:sources:0.3",
                     "javax.annotation:jsr250-api:jar:sources:1.0"
                 ],
                 "directDependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
                     "org.jetbrains.kotlinx:kotlinx-metadata-jvm:jar:sources:0.1.0",
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
@@ -5391,7 +5448,6 @@
                     "com.squareup:javapoet:jar:sources:1.11.1",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
                     "com.google.dagger:dagger-spi:jar:sources:2.28.1",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.google.guava:failureaccess:jar:sources:1.0.1",
                     "com.google.dagger:dagger-producers:jar:sources:2.28.1",
                     "net.ltgt.gradle.incap:incap:jar:sources:0.3",
@@ -5411,14 +5467,14 @@
             {
                 "coord": "com.google.dagger:dagger-producers:2.28.1",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "com.google.guava:failureaccess:1.0.1",
                     "javax.inject:javax.inject:1",
                     "com.google.dagger:dagger:2.28.1",
                     "org.checkerframework:checker-compat-qual:2.5.5"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "com.google.guava:failureaccess:1.0.1",
                     "javax.inject:javax.inject:1",
                     "com.google.dagger:dagger:2.28.1",
@@ -5438,17 +5494,17 @@
             {
                 "coord": "com.google.dagger:dagger-producers:jar:sources:2.28.1",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "com.google.dagger:dagger:jar:sources:2.28.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.google.guava:failureaccess:jar:sources:1.0.1"
                 ],
                 "directDependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "com.google.dagger:dagger:jar:sources:2.28.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.google.guava:failureaccess:jar:sources:1.0.1"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/com/google/dagger/dagger-producers/2.28.1/dagger-producers-2.28.1-sources.jar",
@@ -5465,8 +5521,8 @@
             {
                 "coord": "com.google.dagger:dagger-spi:2.28.1",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.guava:guava:30.1.1-android",
                     "com.squareup:javapoet:1.11.1",
                     "com.google.dagger:dagger-producers:2.28.1",
                     "com.google.guava:failureaccess:1.0.1",
@@ -5475,8 +5531,8 @@
                     "org.checkerframework:checker-compat-qual:2.5.5"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.guava:guava:30.1.1-android",
                     "com.squareup:javapoet:1.11.1",
                     "com.google.dagger:dagger-producers:2.28.1",
                     "com.google.guava:failureaccess:1.0.1",
@@ -5497,21 +5553,21 @@
             {
                 "coord": "com.google.dagger:dagger-spi:jar:sources:2.28.1",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
                     "com.google.dagger:dagger:jar:sources:2.28.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "com.squareup:javapoet:jar:sources:1.11.1",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.google.guava:failureaccess:jar:sources:1.0.1",
                     "com.google.dagger:dagger-producers:jar:sources:2.28.1"
                 ],
                 "directDependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
                     "com.google.dagger:dagger:jar:sources:2.28.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "com.squareup:javapoet:jar:sources:1.11.1",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.google.guava:failureaccess:jar:sources:1.0.1",
                     "com.google.dagger:dagger-producers:jar:sources:2.28.1"
                 ],
@@ -5565,34 +5621,34 @@
                 "url": "https://repo1.maven.org/maven2/com/google/dagger/dagger/2.28.1/dagger-2.28.1-sources.jar"
             },
             {
-                "coord": "com.google.errorprone:error_prone_annotations:2.3.2",
+                "coord": "com.google.errorprone:error_prone_annotations:2.7.1",
                 "dependencies": [],
                 "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2.jar",
-                    "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2.jar",
-                    "https://maven.fabric.io/public/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2.jar",
-                    "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2.jar",
-                    "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2.jar"
+                    "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar",
+                    "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar",
+                    "https://maven.fabric.io/public/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar",
+                    "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar",
+                    "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar"
                 ],
-                "sha256": "357cd6cfb067c969226c442451502aee13800a24e950fdfde77bcdb4565a668d",
-                "url": "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2.jar"
+                "sha256": "cd5257c08a246cf8628817ae71cb822be192ef91f6881ca4a3fcff4f1de1cff3",
+                "url": "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar"
             },
             {
-                "coord": "com.google.errorprone:error_prone_annotations:jar:sources:2.3.2",
+                "coord": "com.google.errorprone:error_prone_annotations:jar:sources:2.7.1",
                 "dependencies": [],
                 "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2-sources.jar",
-                    "https://maven.fabric.io/public/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2-sources.jar",
-                    "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2-sources.jar"
+                    "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1-sources.jar",
+                    "https://maven.fabric.io/public/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1-sources.jar",
+                    "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1-sources.jar"
                 ],
-                "sha256": "7ce688ed1582a67097228c050192b7cfd00479a81d2b921f7cd5116994f1402d",
-                "url": "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.2/error_prone_annotations-2.3.2-sources.jar"
+                "sha256": "e38921f918b8ad8eabd12bc61de426fa96c72de077054e9147d2f9fe7c648923",
+                "url": "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1-sources.jar"
             },
             {
                 "coord": "com.google.errorprone:javac-shaded:9-dev-r4023-3",
@@ -5641,7 +5697,6 @@
                     "com.google.firebase:firebase-components:aar:16.0.0",
                     "com.google.android.gms:play-services-measurement-impl:aar:17.5.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:2.2.0",
-                    "com.google.auto.value:auto-value-annotations:jar:1.6.5",
                     "androidx.fragment:fragment:aar:1.2.0",
                     "com.google.android.gms:play-services-measurement:aar:17.5.0",
                     "com.google.android.gms:play-services-ads-identifier:aar:17.0.0",
@@ -5652,6 +5707,7 @@
                     "androidx.lifecycle:lifecycle-viewmodel:aar:2.2.0",
                     "androidx.documentfile:documentfile:aar:1.0.0",
                     "com.google.android.gms:play-services-basement:aar:17.0.0",
+                    "com.google.auto.value:auto-value-annotations:jar:1.8.1",
                     "com.google.firebase:firebase-installations-interop:aar:16.0.0",
                     "com.google.android.gms:play-services-measurement-base:aar:17.5.0",
                     "androidx.loader:loader:aar:1.0.0"
@@ -5679,15 +5735,15 @@
                     "androidx.core:core:aar:1.3.0",
                     "com.google.android.gms:play-services-tasks:aar:17.0.0",
                     "com.google.firebase:firebase-components:aar:16.0.0",
-                    "com.google.auto.value:auto-value-annotations:jar:1.6.5",
                     "androidx.fragment:fragment:aar:1.2.0",
                     "androidx.annotation:annotation:jar:1.1.0",
-                    "com.google.android.gms:play-services-basement:aar:17.0.0"
+                    "com.google.android.gms:play-services-basement:aar:17.0.0",
+                    "com.google.auto.value:auto-value-annotations:jar:1.8.1"
                 ],
                 "directDependencies": [
                     "com.google.android.gms:play-services-basement:aar:17.0.0",
                     "com.google.android.gms:play-services-tasks:aar:17.0.0",
-                    "com.google.auto.value:auto-value-annotations:jar:1.6.5",
+                    "com.google.auto.value:auto-value-annotations:jar:1.8.1",
                     "com.google.firebase:firebase-components:aar:16.0.0"
                 ],
                 "file": "v1/https/maven.google.com/com/google/firebase/firebase-common/19.3.0/firebase-common-19.3.0.aar",
@@ -5708,15 +5764,15 @@
                     "androidx.fragment:fragment:aar:sources:1.2.0",
                     "androidx.collection:collection:jar:sources:1.1.0",
                     "androidx.core:core:aar:sources:1.3.0",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "com.google.android.gms:play-services-tasks:aar:sources:17.0.0",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "com.google.android.gms:play-services-basement:aar:sources:17.0.0"
                 ],
                 "directDependencies": [
                     "com.google.android.gms:play-services-basement:aar:sources:17.0.0",
                     "com.google.android.gms:play-services-tasks:aar:sources:17.0.0",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "com.google.firebase:firebase-components:aar:sources:16.0.0"
                 ],
                 "file": "v1/https/maven.google.com/com/google/firebase/firebase-common/19.3.0/firebase-common-19.3.0-sources.jar",
@@ -5787,7 +5843,6 @@
                     "com.google.android.datatransport:transport-api:aar:2.2.0",
                     "com.google.firebase:firebase-components:aar:16.0.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:2.2.0",
-                    "com.google.auto.value:auto-value-annotations:jar:1.6.5",
                     "androidx.fragment:fragment:aar:1.2.0",
                     "com.google.dagger:dagger:jar:2.28.1",
                     "com.google.firebase:firebase-encoders-json:aar:16.1.0",
@@ -5799,6 +5854,7 @@
                     "com.google.android.gms:play-services-basement:aar:17.0.0",
                     "com.google.firebase:firebase-iid-interop:aar:17.0.0",
                     "com.google.android.datatransport:transport-runtime:aar:2.2.3",
+                    "com.google.auto.value:auto-value-annotations:jar:1.8.1",
                     "com.google.firebase:firebase-installations-interop:aar:16.0.0",
                     "androidx.loader:loader:aar:1.0.0"
                 ],
@@ -5904,7 +5960,6 @@
                     "com.google.android.gms:play-services-tasks:aar:17.0.0",
                     "com.google.firebase:firebase-components:aar:16.0.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:2.2.0",
-                    "com.google.auto.value:auto-value-annotations:jar:1.6.5",
                     "androidx.fragment:fragment:aar:1.2.0",
                     "androidx.print:print:aar:1.0.0",
                     "androidx.annotation:annotation:jar:1.1.0",
@@ -5912,6 +5967,7 @@
                     "androidx.documentfile:documentfile:aar:1.0.0",
                     "com.google.android.gms:play-services-basement:aar:17.0.0",
                     "com.google.firebase:firebase-iid-interop:aar:17.0.0",
+                    "com.google.auto.value:auto-value-annotations:jar:1.8.1",
                     "com.google.firebase:firebase-installations-interop:aar:16.0.0",
                     "androidx.loader:loader:aar:1.0.0"
                 ],
@@ -5970,10 +6026,10 @@
                     "androidx.core:core:aar:1.3.0",
                     "com.google.android.gms:play-services-tasks:aar:17.0.0",
                     "com.google.firebase:firebase-components:aar:16.0.0",
-                    "com.google.auto.value:auto-value-annotations:jar:1.6.5",
                     "androidx.fragment:fragment:aar:1.2.0",
                     "androidx.annotation:annotation:jar:1.1.0",
                     "com.google.android.gms:play-services-basement:aar:17.0.0",
+                    "com.google.auto.value:auto-value-annotations:jar:1.8.1",
                     "com.google.firebase:firebase-installations-interop:aar:16.0.0"
                 ],
                 "directDependencies": [
@@ -6018,8 +6074,8 @@
             {
                 "coord": "com.google.gms:google-services:4.3.3",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10",
                     "com.google.code.gson:gson:2.8.5",
                     "com.google.android.gms:strict-version-matcher-plugin:1.2.1"
@@ -6027,7 +6083,7 @@
                 "directDependencies": [
                     "com.google.android.gms:strict-version-matcher-plugin:1.2.1",
                     "com.google.code.gson:gson:2.8.5",
-                    "com.google.guava:guava:28.1-android"
+                    "com.google.guava:guava:30.1.1-android"
                 ],
                 "file": "v1/https/maven.google.com/com/google/gms/google-services/4.3.3/google-services-4.3.3.jar",
                 "mirror_urls": [
@@ -6043,16 +6099,16 @@
             {
                 "coord": "com.google.gms:google-services:jar:sources:4.3.3",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:sources:1.4.10",
                     "com.google.code.gson:gson:jar:sources:2.8.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "com.google.android.gms:strict-version-matcher-plugin:jar:sources:1.2.1"
                 ],
                 "directDependencies": [
                     "com.google.android.gms:strict-version-matcher-plugin:jar:sources:1.2.1",
                     "com.google.code.gson:gson:jar:sources:2.8.5",
-                    "com.google.guava:guava:jar:sources:28.1-android"
+                    "com.google.guava:guava:jar:sources:30.1.1-android"
                 ],
                 "file": "v1/https/maven.google.com/com/google/gms/google-services/4.3.3/google-services-4.3.3-sources.jar",
                 "mirror_urls": [
@@ -6068,12 +6124,12 @@
             {
                 "coord": "com.google.googlejavaformat:google-java-format:1.5",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "com.google.errorprone:javac-shaded:9-dev-r4023-3"
                 ],
                 "directDependencies": [
                     "com.google.errorprone:javac-shaded:9-dev-r4023-3",
-                    "com.google.guava:guava:28.1-android"
+                    "com.google.guava:guava:30.1.1-android"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/1.5/google-java-format-1.5.jar",
                 "mirror_urls": [
@@ -6089,12 +6145,12 @@
             {
                 "coord": "com.google.googlejavaformat:google-java-format:jar:sources:1.5",
                 "dependencies": [
-                    "com.google.guava:guava:jar:sources:28.1-android",
-                    "com.google.errorprone:javac-shaded:jar:sources:9-dev-r4023-3"
+                    "com.google.errorprone:javac-shaded:jar:sources:9-dev-r4023-3",
+                    "com.google.guava:guava:jar:sources:30.1.1-android"
                 ],
                 "directDependencies": [
                     "com.google.errorprone:javac-shaded:jar:sources:9-dev-r4023-3",
-                    "com.google.guava:guava:jar:sources:28.1-android"
+                    "com.google.guava:guava:jar:sources:30.1.1-android"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/1.5/google-java-format-1.5-sources.jar",
                 "mirror_urls": [
@@ -6138,66 +6194,62 @@
                 "url": "https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar"
             },
             {
-                "coord": "com.google.guava:guava:28.1-android",
+                "coord": "com.google.guava:guava:30.1.1-android",
                 "dependencies": [
                     "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
-                    "org.codehaus.mojo:animal-sniffer-annotations:1.18",
                     "com.google.j2objc:j2objc-annotations:1.3",
                     "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.errorprone:error_prone_annotations:2.7.1",
                     "com.google.guava:failureaccess:1.0.1",
-                    "com.google.errorprone:error_prone_annotations:2.3.2",
                     "org.checkerframework:checker-compat-qual:2.5.5"
                 ],
                 "directDependencies": [
                     "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
-                    "org.codehaus.mojo:animal-sniffer-annotations:1.18",
                     "com.google.j2objc:j2objc-annotations:1.3",
                     "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.errorprone:error_prone_annotations:2.7.1",
                     "com.google.guava:failureaccess:1.0.1",
-                    "com.google.errorprone:error_prone_annotations:2.3.2",
                     "org.checkerframework:checker-compat-qual:2.5.5"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/guava/guava/28.1-android/guava-28.1-android.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/guava/guava/30.1.1-android/guava-30.1.1-android.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/guava/guava/28.1-android/guava-28.1-android.jar",
-                    "https://repo1.maven.org/maven2/com/google/guava/guava/28.1-android/guava-28.1-android.jar",
-                    "https://maven.fabric.io/public/com/google/guava/guava/28.1-android/guava-28.1-android.jar",
-                    "https://maven.google.com/com/google/guava/guava/28.1-android/guava-28.1-android.jar",
-                    "https://repo1.maven.org/maven2/com/google/guava/guava/28.1-android/guava-28.1-android.jar"
+                    "https://maven.google.com/com/google/guava/guava/30.1.1-android/guava-30.1.1-android.jar",
+                    "https://repo1.maven.org/maven2/com/google/guava/guava/30.1.1-android/guava-30.1.1-android.jar",
+                    "https://maven.fabric.io/public/com/google/guava/guava/30.1.1-android/guava-30.1.1-android.jar",
+                    "https://maven.google.com/com/google/guava/guava/30.1.1-android/guava-30.1.1-android.jar",
+                    "https://repo1.maven.org/maven2/com/google/guava/guava/30.1.1-android/guava-30.1.1-android.jar"
                 ],
-                "sha256": "e112ce92c0f0733965eede73d94589c59a72128b06b08bba5ebe2f9ea672ef60",
-                "url": "https://repo1.maven.org/maven2/com/google/guava/guava/28.1-android/guava-28.1-android.jar"
+                "sha256": "355f79352f8c252f2bdaa06c687c4836a38016caccfc4c28d16ae77ecfdffa2f",
+                "url": "https://repo1.maven.org/maven2/com/google/guava/guava/30.1.1-android/guava-30.1.1-android.jar"
             },
             {
-                "coord": "com.google.guava:guava:jar:sources:28.1-android",
+                "coord": "com.google.guava:guava:jar:sources:30.1.1-android",
                 "dependencies": [
-                    "org.codehaus.mojo:animal-sniffer-annotations:jar:sources:1.18",
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
                     "com.google.j2objc:j2objc-annotations:jar:sources:1.3",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
                     "com.google.guava:listenablefuture:jar:sources:9999.0-empty-to-avoid-conflict-with-guava",
                     "com.google.guava:failureaccess:jar:sources:1.0.1",
-                    "com.google.errorprone:error_prone_annotations:jar:sources:2.3.2"
+                    "com.google.errorprone:error_prone_annotations:jar:sources:2.7.1"
                 ],
                 "directDependencies": [
-                    "org.codehaus.mojo:animal-sniffer-annotations:jar:sources:1.18",
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
                     "com.google.j2objc:j2objc-annotations:jar:sources:1.3",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
                     "com.google.guava:listenablefuture:jar:sources:9999.0-empty-to-avoid-conflict-with-guava",
                     "com.google.guava:failureaccess:jar:sources:1.0.1",
-                    "com.google.errorprone:error_prone_annotations:jar:sources:2.3.2"
+                    "com.google.errorprone:error_prone_annotations:jar:sources:2.7.1"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/guava/guava/28.1-android/guava-28.1-android-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/guava/guava/30.1.1-android/guava-30.1.1-android-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/guava/guava/28.1-android/guava-28.1-android-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/guava/guava/28.1-android/guava-28.1-android-sources.jar",
-                    "https://maven.fabric.io/public/com/google/guava/guava/28.1-android/guava-28.1-android-sources.jar",
-                    "https://maven.google.com/com/google/guava/guava/28.1-android/guava-28.1-android-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/guava/guava/28.1-android/guava-28.1-android-sources.jar"
+                    "https://maven.google.com/com/google/guava/guava/30.1.1-android/guava-30.1.1-android-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/guava/guava/30.1.1-android/guava-30.1.1-android-sources.jar",
+                    "https://maven.fabric.io/public/com/google/guava/guava/30.1.1-android/guava-30.1.1-android-sources.jar",
+                    "https://maven.google.com/com/google/guava/guava/30.1.1-android/guava-30.1.1-android-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/guava/guava/30.1.1-android/guava-30.1.1-android-sources.jar"
                 ],
-                "sha256": "7048029c5488142e8697eab2f7cd6ddcd1c5098843d6a6818e9c58db86b5549d",
-                "url": "https://repo1.maven.org/maven2/com/google/guava/guava/28.1-android/guava-28.1-android-sources.jar"
+                "sha256": "dac52416371d86baea1ffe6ef7b54b2730b52fcea19091ae32942cb5cd9f868c",
+                "url": "https://repo1.maven.org/maven2/com/google/guava/guava/30.1.1-android/guava-30.1.1-android-sources.jar"
             },
             {
                 "coord": "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
@@ -6305,154 +6357,144 @@
                 "url": "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-javalite/3.17.3/protobuf-javalite-3.17.3-sources.jar"
             },
             {
-                "coord": "com.google.truth.extensions:truth-liteproto-extension:0.43",
+                "coord": "com.google.truth.extensions:truth-liteproto-extension:1.1.3",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
-                    "com.google.auto.value:auto-value-annotations:1.6.5",
-                    "junit:junit:4.12",
+                    "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
+                    "com.google.j2objc:j2objc-annotations:1.3",
+                    "com.google.truth:truth:1.1.3",
+                    "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.guava:guava:30.1.1-android",
+                    "com.google.errorprone:error_prone_annotations:2.7.1",
                     "org.hamcrest:hamcrest-core:1.3",
-                    "com.google.truth:truth:0.43",
-                    "com.googlecode.java-diff-utils:diffutils:1.3.0",
-                    "com.google.errorprone:error_prone_annotations:2.3.2",
+                    "org.checkerframework:checker-qual:3.13.0",
+                    "com.google.auto.value:auto-value-annotations:1.8.1",
+                    "com.google.guava:failureaccess:1.0.1",
+                    "org.ow2.asm:asm:9.1",
+                    "junit:junit:4.13.2",
                     "org.checkerframework:checker-compat-qual:2.5.5"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
-                    "com.google.auto.value:auto-value-annotations:1.6.5",
-                    "com.google.truth:truth:0.43",
-                    "com.google.errorprone:error_prone_annotations:2.3.2",
-                    "org.checkerframework:checker-compat-qual:2.5.5"
+                    "com.google.truth:truth:1.1.3",
+                    "com.google.guava:guava:30.1.1-android",
+                    "com.google.errorprone:error_prone_annotations:2.7.1",
+                    "org.checkerframework:checker-qual:3.13.0",
+                    "com.google.auto.value:auto-value-annotations:1.8.1"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43.jar",
-                    "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43.jar",
-                    "https://maven.fabric.io/public/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43.jar",
-                    "https://maven.google.com/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43.jar",
-                    "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43.jar"
+                    "https://maven.google.com/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3.jar",
+                    "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3.jar",
+                    "https://maven.fabric.io/public/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3.jar",
+                    "https://maven.google.com/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3.jar",
+                    "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3.jar"
                 ],
-                "sha256": "30cc23160edb203e82cccfc429839f056fb79c426b9e0234575f929561cc8e71",
-                "url": "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43.jar"
+                "sha256": "71cce6284554e546d1b5ba48e310ee4b4050676f09fb0eced136d779284ff78d",
+                "url": "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3.jar"
             },
             {
-                "coord": "com.google.truth.extensions:truth-liteproto-extension:jar:sources:0.43",
+                "coord": "com.google.truth.extensions:truth-liteproto-extension:jar:sources:1.1.3",
                 "dependencies": [
-                    "com.googlecode.java-diff-utils:diffutils:jar:sources:1.3.0",
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
+                    "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
+                    "com.google.j2objc:j2objc-annotations:jar:sources:1.3",
+                    "org.ow2.asm:asm:jar:sources:9.1",
+                    "org.checkerframework:checker-qual:jar:sources:3.13.0",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
-                    "com.google.truth:truth:jar:sources:0.43",
+                    "com.google.truth:truth:jar:sources:1.1.3",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
-                    "junit:junit:jar:sources:4.12",
-                    "com.google.errorprone:error_prone_annotations:jar:sources:2.3.2"
+                    "com.google.guava:listenablefuture:jar:sources:9999.0-empty-to-avoid-conflict-with-guava",
+                    "com.google.guava:failureaccess:jar:sources:1.0.1",
+                    "com.google.errorprone:error_prone_annotations:jar:sources:2.7.1",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1"
                 ],
                 "directDependencies": [
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
-                    "com.google.truth:truth:jar:sources:0.43",
-                    "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
-                    "com.google.errorprone:error_prone_annotations:jar:sources:2.3.2"
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
+                    "org.checkerframework:checker-qual:jar:sources:3.13.0",
+                    "com.google.truth:truth:jar:sources:1.1.3",
+                    "com.google.errorprone:error_prone_annotations:jar:sources:2.7.1",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43-sources.jar",
-                    "https://maven.fabric.io/public/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43-sources.jar",
-                    "https://maven.google.com/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43-sources.jar"
+                    "https://maven.google.com/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3-sources.jar",
+                    "https://maven.fabric.io/public/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3-sources.jar",
+                    "https://maven.google.com/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3-sources.jar"
                 ],
-                "sha256": "c98e475ab4b321d60407ed5ebfa3a2107c23c8bf89c61c66d17d9a72e04fa8e7",
-                "url": "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/0.43/truth-liteproto-extension-0.43-sources.jar"
+                "sha256": "fd3c26b2232966a3ff25e5b9c642f9ae9f19c86b29dfeb6e72aeb67e45e36130",
+                "url": "https://repo1.maven.org/maven2/com/google/truth/extensions/truth-liteproto-extension/1.1.3/truth-liteproto-extension-1.1.3-sources.jar"
             },
             {
-                "coord": "com.google.truth:truth:0.43",
+                "coord": "com.google.truth:truth:1.1.3",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
-                    "com.google.auto.value:auto-value-annotations:1.6.5",
-                    "junit:junit:4.12",
+                    "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
+                    "com.google.j2objc:j2objc-annotations:1.3",
+                    "com.google.code.findbugs:jsr305:3.0.2",
+                    "com.google.guava:guava:30.1.1-android",
+                    "com.google.errorprone:error_prone_annotations:2.7.1",
                     "org.hamcrest:hamcrest-core:1.3",
-                    "com.googlecode.java-diff-utils:diffutils:1.3.0",
-                    "com.google.errorprone:error_prone_annotations:2.3.2",
+                    "org.checkerframework:checker-qual:3.13.0",
+                    "com.google.auto.value:auto-value-annotations:1.8.1",
+                    "com.google.guava:failureaccess:1.0.1",
+                    "org.ow2.asm:asm:9.1",
+                    "junit:junit:4.13.2",
                     "org.checkerframework:checker-compat-qual:2.5.5"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
-                    "com.google.auto.value:auto-value-annotations:1.6.5",
-                    "junit:junit:4.12",
-                    "com.googlecode.java-diff-utils:diffutils:1.3.0",
-                    "com.google.errorprone:error_prone_annotations:2.3.2",
-                    "org.checkerframework:checker-compat-qual:2.5.5"
+                    "com.google.guava:guava:30.1.1-android",
+                    "com.google.errorprone:error_prone_annotations:2.7.1",
+                    "org.checkerframework:checker-qual:3.13.0",
+                    "com.google.auto.value:auto-value-annotations:1.8.1",
+                    "org.ow2.asm:asm:9.1",
+                    "junit:junit:4.13.2"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/truth/truth/0.43/truth-0.43.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/truth/truth/1.1.3/truth-1.1.3.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/truth/truth/0.43/truth-0.43.jar",
-                    "https://repo1.maven.org/maven2/com/google/truth/truth/0.43/truth-0.43.jar",
-                    "https://maven.fabric.io/public/com/google/truth/truth/0.43/truth-0.43.jar",
-                    "https://maven.google.com/com/google/truth/truth/0.43/truth-0.43.jar",
-                    "https://repo1.maven.org/maven2/com/google/truth/truth/0.43/truth-0.43.jar"
+                    "https://maven.google.com/com/google/truth/truth/1.1.3/truth-1.1.3.jar",
+                    "https://repo1.maven.org/maven2/com/google/truth/truth/1.1.3/truth-1.1.3.jar",
+                    "https://maven.fabric.io/public/com/google/truth/truth/1.1.3/truth-1.1.3.jar",
+                    "https://maven.google.com/com/google/truth/truth/1.1.3/truth-1.1.3.jar",
+                    "https://repo1.maven.org/maven2/com/google/truth/truth/1.1.3/truth-1.1.3.jar"
                 ],
-                "sha256": "dd91316ff74e21e05d6524d45e40f170fe0bdf340cb8fb917bce7ad466626423",
-                "url": "https://repo1.maven.org/maven2/com/google/truth/truth/0.43/truth-0.43.jar"
+                "sha256": "fc0b67782289a2aabfddfdf99eff1dcd5edc890d49143fcd489214b107b8f4f3",
+                "url": "https://repo1.maven.org/maven2/com/google/truth/truth/1.1.3/truth-1.1.3.jar"
             },
             {
-                "coord": "com.google.truth:truth:jar:sources:0.43",
+                "coord": "com.google.truth:truth:jar:sources:1.1.3",
                 "dependencies": [
-                    "com.googlecode.java-diff-utils:diffutils:jar:sources:1.3.0",
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
+                    "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
+                    "com.google.j2objc:j2objc-annotations:jar:sources:1.3",
+                    "org.ow2.asm:asm:jar:sources:9.1",
+                    "org.checkerframework:checker-qual:jar:sources:3.13.0",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
-                    "junit:junit:jar:sources:4.12",
-                    "com.google.errorprone:error_prone_annotations:jar:sources:2.3.2"
+                    "com.google.guava:listenablefuture:jar:sources:9999.0-empty-to-avoid-conflict-with-guava",
+                    "com.google.guava:failureaccess:jar:sources:1.0.1",
+                    "com.google.errorprone:error_prone_annotations:jar:sources:2.7.1",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1"
                 ],
                 "directDependencies": [
-                    "com.googlecode.java-diff-utils:diffutils:jar:sources:1.3.0",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
-                    "org.checkerframework:checker-compat-qual:jar:sources:2.5.5",
-                    "com.google.guava:guava:jar:sources:28.1-android",
-                    "junit:junit:jar:sources:4.12",
-                    "com.google.errorprone:error_prone_annotations:jar:sources:2.3.2"
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
+                    "org.ow2.asm:asm:jar:sources:9.1",
+                    "org.checkerframework:checker-qual:jar:sources:3.13.0",
+                    "junit:junit:jar:sources:4.13.2",
+                    "com.google.errorprone:error_prone_annotations:jar:sources:2.7.1",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/com/google/truth/truth/0.43/truth-0.43-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/com/google/truth/truth/1.1.3/truth-1.1.3-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/com/google/truth/truth/0.43/truth-0.43-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/truth/truth/0.43/truth-0.43-sources.jar",
-                    "https://maven.fabric.io/public/com/google/truth/truth/0.43/truth-0.43-sources.jar",
-                    "https://maven.google.com/com/google/truth/truth/0.43/truth-0.43-sources.jar",
-                    "https://repo1.maven.org/maven2/com/google/truth/truth/0.43/truth-0.43-sources.jar"
+                    "https://maven.google.com/com/google/truth/truth/1.1.3/truth-1.1.3-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/truth/truth/1.1.3/truth-1.1.3-sources.jar",
+                    "https://maven.fabric.io/public/com/google/truth/truth/1.1.3/truth-1.1.3-sources.jar",
+                    "https://maven.google.com/com/google/truth/truth/1.1.3/truth-1.1.3-sources.jar",
+                    "https://repo1.maven.org/maven2/com/google/truth/truth/1.1.3/truth-1.1.3-sources.jar"
                 ],
-                "sha256": "b5418805ae558dda429c06284d460ab13ebff0855c6911777273226de4e92199",
-                "url": "https://repo1.maven.org/maven2/com/google/truth/truth/0.43/truth-0.43-sources.jar"
-            },
-            {
-                "coord": "com.googlecode.java-diff-utils:diffutils:1.3.0",
-                "dependencies": [],
-                "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0.jar",
-                "mirror_urls": [
-                    "https://maven.google.com/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0.jar",
-                    "https://repo1.maven.org/maven2/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0.jar",
-                    "https://maven.fabric.io/public/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0.jar",
-                    "https://maven.google.com/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0.jar",
-                    "https://repo1.maven.org/maven2/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0.jar"
-                ],
-                "sha256": "61ba4dc49adca95243beaa0569adc2a23aedb5292ae78aa01186fa782ebdc5c2",
-                "url": "https://repo1.maven.org/maven2/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0.jar"
-            },
-            {
-                "coord": "com.googlecode.java-diff-utils:diffutils:jar:sources:1.3.0",
-                "dependencies": [],
-                "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0-sources.jar",
-                "mirror_urls": [
-                    "https://maven.google.com/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0-sources.jar",
-                    "https://repo1.maven.org/maven2/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0-sources.jar",
-                    "https://maven.fabric.io/public/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0-sources.jar",
-                    "https://maven.google.com/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0-sources.jar",
-                    "https://repo1.maven.org/maven2/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0-sources.jar"
-                ],
-                "sha256": "7f4d40e97827f8a3285c3e47e8d28797ecfd45fb2ff94bd12cb6a83760a5f427",
-                "url": "https://repo1.maven.org/maven2/com/googlecode/java-diff-utils/diffutils/1.3.0/diffutils-1.3.0-sources.jar"
+                "sha256": "6c35e3d7087cd222938b41bbdb54041239b79dda07cf96c4027c118d566df545",
+                "url": "https://repo1.maven.org/maven2/com/google/truth/truth/1.1.3/truth-1.1.3-sources.jar"
             },
             {
                 "coord": "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
@@ -6518,7 +6560,6 @@
                 "coord": "com.squareup.moshi:moshi-kotlin-codegen:1.11.0",
                 "dependencies": [
                     "com.squareup.okio:okio:2.2.2",
-                    "org.ow2.asm:asm:7.2",
                     "com.squareup:kotlinpoet:1.6.0",
                     "com.squareup.moshi:moshi:1.11.0",
                     "com.google.auto.service:auto-service-annotations:1.0-rc7",
@@ -6526,15 +6567,16 @@
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10",
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
+                    "org.ow2.asm:asm:9.1",
                     "org.jetbrains.kotlin:kotlin-reflect:1.5.0"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:7.2",
                     "com.squareup:kotlinpoet:1.6.0",
                     "com.squareup.moshi:moshi:1.11.0",
                     "com.google.auto.service:auto-service-annotations:1.0-rc7",
                     "net.ltgt.gradle.incap:incap:0.3",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10",
+                    "org.ow2.asm:asm:9.1",
                     "org.jetbrains.kotlin:kotlin-reflect:1.5.0"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/com/squareup/moshi/moshi-kotlin-codegen/1.11.0/moshi-kotlin-codegen-1.11.0.jar",
@@ -6553,8 +6595,8 @@
                 "dependencies": [
                     "com.google.auto.service:auto-service-annotations:jar:sources:1.0-rc7",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "org.jetbrains.kotlin:kotlin-reflect:jar:sources:1.5.0",
-                    "org.ow2.asm:asm:jar:sources:7.2",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:sources:1.4.10",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:sources:1.4.10",
                     "com.squareup.okio:okio:jar:sources:2.2.2",
@@ -6564,8 +6606,8 @@
                 ],
                 "directDependencies": [
                     "com.google.auto.service:auto-service-annotations:jar:sources:1.0-rc7",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "org.jetbrains.kotlin:kotlin-reflect:jar:sources:1.5.0",
-                    "org.ow2.asm:asm:jar:sources:7.2",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:sources:1.4.10",
                     "com.squareup:kotlinpoet:jar:sources:1.6.0",
                     "com.squareup.moshi:moshi:jar:sources:1.11.0",
@@ -6673,13 +6715,13 @@
                 "dependencies": [
                     "com.squareup.okio:okio:2.2.2",
                     "com.squareup.okhttp3:okhttp:4.1.0",
-                    "junit:junit:4.12",
                     "org.hamcrest:hamcrest-core:1.3",
-                    "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
+                    "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
+                    "junit:junit:4.13.2"
                 ],
                 "directDependencies": [
                     "com.squareup.okhttp3:okhttp:4.1.0",
-                    "junit:junit:4.12"
+                    "junit:junit:4.13.2"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/mockwebserver/4.1.0/mockwebserver-4.1.0.jar",
                 "mirror_urls": [
@@ -6696,14 +6738,14 @@
                 "coord": "com.squareup.okhttp3:mockwebserver:jar:sources:4.1.0",
                 "dependencies": [
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
+                    "junit:junit:jar:sources:4.13.2",
                     "com.squareup.okio:okio:jar:sources:2.2.2",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
-                    "junit:junit:jar:sources:4.12",
                     "com.squareup.okhttp3:okhttp:jar:sources:4.1.0"
                 ],
                 "directDependencies": [
                     "com.squareup.okhttp3:okhttp:jar:sources:4.1.0",
-                    "junit:junit:jar:sources:4.12"
+                    "junit:junit:jar:sources:4.13.2"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/mockwebserver/4.1.0/mockwebserver-4.1.0-sources.jar",
                 "mirror_urls": [
@@ -7216,42 +7258,42 @@
                 "url": "https://repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1-sources.jar"
             },
             {
-                "coord": "junit:junit:4.12",
+                "coord": "junit:junit:4.13.2",
                 "dependencies": [
                     "org.hamcrest:hamcrest-core:1.3"
                 ],
                 "directDependencies": [
                     "org.hamcrest:hamcrest-core:1.3"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar",
+                "file": "v1/https/repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/junit/junit/4.12/junit-4.12.jar",
-                    "https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar",
-                    "https://maven.fabric.io/public/junit/junit/4.12/junit-4.12.jar",
-                    "https://maven.google.com/junit/junit/4.12/junit-4.12.jar",
-                    "https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar"
+                    "https://maven.google.com/junit/junit/4.13.2/junit-4.13.2.jar",
+                    "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar",
+                    "https://maven.fabric.io/public/junit/junit/4.13.2/junit-4.13.2.jar",
+                    "https://maven.google.com/junit/junit/4.13.2/junit-4.13.2.jar",
+                    "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar"
                 ],
-                "sha256": "59721f0805e223d84b90677887d9ff567dc534d7c502ca903c0c2b17f05c116a",
-                "url": "https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12.jar"
+                "sha256": "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3",
+                "url": "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar"
             },
             {
-                "coord": "junit:junit:jar:sources:4.12",
+                "coord": "junit:junit:jar:sources:4.13.2",
                 "dependencies": [
                     "org.hamcrest:hamcrest-core:jar:sources:1.3"
                 ],
                 "directDependencies": [
                     "org.hamcrest:hamcrest-core:jar:sources:1.3"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/junit/junit/4.12/junit-4.12-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/junit/junit/4.12/junit-4.12-sources.jar",
-                    "https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12-sources.jar",
-                    "https://maven.fabric.io/public/junit/junit/4.12/junit-4.12-sources.jar",
-                    "https://maven.google.com/junit/junit/4.12/junit-4.12-sources.jar",
-                    "https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12-sources.jar"
+                    "https://maven.google.com/junit/junit/4.13.2/junit-4.13.2-sources.jar",
+                    "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2-sources.jar",
+                    "https://maven.fabric.io/public/junit/junit/4.13.2/junit-4.13.2-sources.jar",
+                    "https://maven.google.com/junit/junit/4.13.2/junit-4.13.2-sources.jar",
+                    "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2-sources.jar"
                 ],
-                "sha256": "9f43fea92033ad82bcad2ae44cec5c82abc9d6ee4b095cab921d11ead98bf2ff",
-                "url": "https://repo1.maven.org/maven2/junit/junit/4.12/junit-4.12-sources.jar"
+                "sha256": "34181df6482d40ea4c046b063cb53c7ffae94bdf1b1d62695bdf3adf9dea7e3a",
+                "url": "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2-sources.jar"
             },
             {
                 "coord": "net.bytebuddy:byte-buddy-agent:1.10.20",
@@ -7502,34 +7544,34 @@
                 "url": "https://repo1.maven.org/maven2/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5-sources.jar"
             },
             {
-                "coord": "org.codehaus.mojo:animal-sniffer-annotations:1.18",
+                "coord": "org.checkerframework:checker-qual:3.13.0",
                 "dependencies": [],
                 "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18.jar",
+                "file": "v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18.jar",
-                    "https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18.jar",
-                    "https://maven.fabric.io/public/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18.jar",
-                    "https://maven.google.com/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18.jar",
-                    "https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18.jar"
+                    "https://maven.google.com/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0.jar",
+                    "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0.jar",
+                    "https://maven.fabric.io/public/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0.jar",
+                    "https://maven.google.com/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0.jar",
+                    "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0.jar"
                 ],
-                "sha256": "47f05852b48ee9baefef80fa3d8cea60efa4753c0013121dd7fe5eef2e5c729d",
-                "url": "https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18.jar"
+                "sha256": "3ea0dcd73b4d6cb2fb34bd7ed4dad6db327a01ebad7db05eb7894076b3d64491",
+                "url": "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0.jar"
             },
             {
-                "coord": "org.codehaus.mojo:animal-sniffer-annotations:jar:sources:1.18",
+                "coord": "org.checkerframework:checker-qual:jar:sources:3.13.0",
                 "dependencies": [],
                 "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18-sources.jar",
-                    "https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18-sources.jar",
-                    "https://maven.fabric.io/public/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18-sources.jar",
-                    "https://maven.google.com/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18-sources.jar",
-                    "https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18-sources.jar"
+                    "https://maven.google.com/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0-sources.jar",
+                    "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0-sources.jar",
+                    "https://maven.fabric.io/public/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0-sources.jar",
+                    "https://maven.google.com/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0-sources.jar",
+                    "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0-sources.jar"
                 ],
-                "sha256": "ee078a91bf7136ee1961abd612b54d1cd9877352b960a7e1e7e3e4c17ceafcf1",
-                "url": "https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.18/animal-sniffer-annotations-1.18-sources.jar"
+                "sha256": "52fd5b908ed38b2c543fac371c2192ff2896fec0f3ddea29f23b5db117a7ea6e",
+                "url": "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.13.0/checker-qual-3.13.0-sources.jar"
             },
             {
                 "coord": "org.hamcrest:hamcrest-core:1.3",
@@ -8060,16 +8102,16 @@
             {
                 "coord": "org.jetbrains.kotlin:kotlin-test-junit:1.3.72",
                 "dependencies": [
-                    "junit:junit:4.12",
                     "org.jetbrains.kotlin:kotlin-test:1.3.72",
                     "org.hamcrest:hamcrest-core:1.3",
                     "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0",
                     "org.jetbrains.kotlin:kotlin-test-common:1.3.72",
                     "org.jetbrains.kotlin:kotlin-test-annotations-common:1.3.72",
-                    "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
+                    "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
+                    "junit:junit:4.13.2"
                 ],
                 "directDependencies": [
-                    "junit:junit:4.12",
+                    "junit:junit:4.13.2",
                     "org.jetbrains.kotlin:kotlin-test:1.3.72",
                     "org.jetbrains.kotlin:kotlin-test-annotations-common:1.3.72"
                 ],
@@ -8089,14 +8131,14 @@
                 "dependencies": [
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
                     "org.jetbrains.kotlin:kotlin-stdlib-common:jar:sources:1.5.0",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.hamcrest:hamcrest-core:jar:sources:1.3",
                     "org.jetbrains.kotlin:kotlin-test:jar:sources:1.3.72",
                     "org.jetbrains.kotlin:kotlin-test-common:jar:sources:1.3.72",
-                    "junit:junit:jar:sources:4.12",
                     "org.jetbrains.kotlin:kotlin-test-annotations-common:jar:sources:1.3.72"
                 ],
                 "directDependencies": [
-                    "junit:junit:jar:sources:4.12",
+                    "junit:junit:jar:sources:4.13.2",
                     "org.jetbrains.kotlin:kotlin-test:jar:sources:1.3.72",
                     "org.jetbrains.kotlin:kotlin-test-annotations-common:jar:sources:1.3.72"
                 ],
@@ -8509,7 +8551,7 @@
                 "coord": "org.ow2.asm:asm-analysis:7.2",
                 "dependencies": [
                     "org.ow2.asm:asm-tree:7.2",
-                    "org.ow2.asm:asm:7.2"
+                    "org.ow2.asm:asm:9.1"
                 ],
                 "directDependencies": [
                     "org.ow2.asm:asm-tree:7.2"
@@ -8528,8 +8570,8 @@
             {
                 "coord": "org.ow2.asm:asm-analysis:jar:sources:7.2",
                 "dependencies": [
-                    "org.ow2.asm:asm:jar:sources:7.2",
-                    "org.ow2.asm:asm-tree:jar:sources:7.2"
+                    "org.ow2.asm:asm-tree:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1"
                 ],
                 "directDependencies": [
                     "org.ow2.asm:asm-tree:jar:sources:7.2"
@@ -8550,10 +8592,10 @@
                 "dependencies": [
                     "org.ow2.asm:asm-tree:7.2",
                     "org.ow2.asm:asm-analysis:7.2",
-                    "org.ow2.asm:asm:7.2"
+                    "org.ow2.asm:asm:9.1"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:7.2",
+                    "org.ow2.asm:asm:9.1",
                     "org.ow2.asm:asm-analysis:7.2",
                     "org.ow2.asm:asm-tree:7.2"
                 ],
@@ -8571,12 +8613,12 @@
             {
                 "coord": "org.ow2.asm:asm-commons:jar:sources:7.2",
                 "dependencies": [
-                    "org.ow2.asm:asm:jar:sources:7.2",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
-                    "org.ow2.asm:asm-tree:jar:sources:7.2"
+                    "org.ow2.asm:asm-tree:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
                     "org.ow2.asm:asm-tree:jar:sources:7.2"
                 ],
@@ -8594,10 +8636,10 @@
             {
                 "coord": "org.ow2.asm:asm-tree:7.2",
                 "dependencies": [
-                    "org.ow2.asm:asm:7.2"
+                    "org.ow2.asm:asm:9.1"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:7.2"
+                    "org.ow2.asm:asm:9.1"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-tree/7.2/asm-tree-7.2.jar",
                 "mirror_urls": [
@@ -8613,10 +8655,10 @@
             {
                 "coord": "org.ow2.asm:asm-tree:jar:sources:7.2",
                 "dependencies": [
-                    "org.ow2.asm:asm:jar:sources:7.2"
+                    "org.ow2.asm:asm:jar:sources:9.1"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:jar:sources:7.2"
+                    "org.ow2.asm:asm:jar:sources:9.1"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-tree/7.2/asm-tree-7.2-sources.jar",
                 "mirror_urls": [
@@ -8634,10 +8676,10 @@
                 "dependencies": [
                     "org.ow2.asm:asm-tree:7.2",
                     "org.ow2.asm:asm-analysis:7.2",
-                    "org.ow2.asm:asm:7.2"
+                    "org.ow2.asm:asm:9.1"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:7.2",
+                    "org.ow2.asm:asm:9.1",
                     "org.ow2.asm:asm-analysis:7.2",
                     "org.ow2.asm:asm-tree:7.2"
                 ],
@@ -8655,12 +8697,12 @@
             {
                 "coord": "org.ow2.asm:asm-util:jar:sources:7.2",
                 "dependencies": [
-                    "org.ow2.asm:asm:jar:sources:7.2",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
-                    "org.ow2.asm:asm-tree:jar:sources:7.2"
+                    "org.ow2.asm:asm-tree:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
                     "org.ow2.asm:asm-tree:jar:sources:7.2"
                 ],
@@ -8676,34 +8718,34 @@
                 "url": "https://repo1.maven.org/maven2/org/ow2/asm/asm-util/7.2/asm-util-7.2-sources.jar"
             },
             {
-                "coord": "org.ow2.asm:asm:7.2",
+                "coord": "org.ow2.asm:asm:9.1",
                 "dependencies": [],
                 "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm/7.2/asm-7.2.jar",
+                "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm/9.1/asm-9.1.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/org/ow2/asm/asm/7.2/asm-7.2.jar",
-                    "https://repo1.maven.org/maven2/org/ow2/asm/asm/7.2/asm-7.2.jar",
-                    "https://maven.fabric.io/public/org/ow2/asm/asm/7.2/asm-7.2.jar",
-                    "https://maven.google.com/org/ow2/asm/asm/7.2/asm-7.2.jar",
-                    "https://repo1.maven.org/maven2/org/ow2/asm/asm/7.2/asm-7.2.jar"
+                    "https://maven.google.com/org/ow2/asm/asm/9.1/asm-9.1.jar",
+                    "https://repo1.maven.org/maven2/org/ow2/asm/asm/9.1/asm-9.1.jar",
+                    "https://maven.fabric.io/public/org/ow2/asm/asm/9.1/asm-9.1.jar",
+                    "https://maven.google.com/org/ow2/asm/asm/9.1/asm-9.1.jar",
+                    "https://repo1.maven.org/maven2/org/ow2/asm/asm/9.1/asm-9.1.jar"
                 ],
-                "sha256": "7e6cc9e92eb94d04e39356c6d8144ca058cda961c344a7f62166a405f3206672",
-                "url": "https://repo1.maven.org/maven2/org/ow2/asm/asm/7.2/asm-7.2.jar"
+                "sha256": "cda4de455fab48ff0bcb7c48b4639447d4de859a7afc30a094a986f0936beba2",
+                "url": "https://repo1.maven.org/maven2/org/ow2/asm/asm/9.1/asm-9.1.jar"
             },
             {
-                "coord": "org.ow2.asm:asm:jar:sources:7.2",
+                "coord": "org.ow2.asm:asm:jar:sources:9.1",
                 "dependencies": [],
                 "directDependencies": [],
-                "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm/7.2/asm-7.2-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm/9.1/asm-9.1-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/org/ow2/asm/asm/7.2/asm-7.2-sources.jar",
-                    "https://repo1.maven.org/maven2/org/ow2/asm/asm/7.2/asm-7.2-sources.jar",
-                    "https://maven.fabric.io/public/org/ow2/asm/asm/7.2/asm-7.2-sources.jar",
-                    "https://maven.google.com/org/ow2/asm/asm/7.2/asm-7.2-sources.jar",
-                    "https://repo1.maven.org/maven2/org/ow2/asm/asm/7.2/asm-7.2-sources.jar"
+                    "https://maven.google.com/org/ow2/asm/asm/9.1/asm-9.1-sources.jar",
+                    "https://repo1.maven.org/maven2/org/ow2/asm/asm/9.1/asm-9.1-sources.jar",
+                    "https://maven.fabric.io/public/org/ow2/asm/asm/9.1/asm-9.1-sources.jar",
+                    "https://maven.google.com/org/ow2/asm/asm/9.1/asm-9.1-sources.jar",
+                    "https://repo1.maven.org/maven2/org/ow2/asm/asm/9.1/asm-9.1-sources.jar"
                 ],
-                "sha256": "c3a8a6b0dbcca1f14a2c395805b24fadd2f639a5f478bd61f9da766c7e1c0ffe",
-                "url": "https://repo1.maven.org/maven2/org/ow2/asm/asm/7.2/asm-7.2-sources.jar"
+                "sha256": "64a1059b152dee08e203b4e1117b7979fff1578c545573f05329fb6d9090bb41",
+                "url": "https://repo1.maven.org/maven2/org/ow2/asm/asm/9.1/asm-9.1-sources.jar"
             },
             {
                 "coord": "org.robolectric:annotations:4.4",
@@ -8738,10 +8780,9 @@
             {
                 "coord": "org.robolectric:junit:4.4",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.robolectric:utils:4.4",
-                    "org.ow2.asm:asm:7.2",
                     "org.robolectric:sandbox:4.4",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:pluginapi:4.4",
                     "org.ow2.asm:asm-commons:7.2",
                     "org.ow2.asm:asm-analysis:7.2",
@@ -8751,6 +8792,7 @@
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "org.ow2.asm:asm-tree:7.2",
                     "javax.inject:javax.inject:1",
+                    "org.ow2.asm:asm:9.1",
                     "org.robolectric:annotations:4.4"
                 ],
                 "directDependencies": [
@@ -8774,16 +8816,16 @@
             {
                 "coord": "org.robolectric:junit:jar:sources:4.4",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.ow2.asm:asm-commons:jar:sources:7.2",
                     "org.robolectric:annotations:jar:sources:4.4",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:utils:jar:sources:4.4",
                     "org.robolectric:pluginapi:jar:sources:4.4",
                     "org.ow2.asm:asm-tree:jar:sources:7.2",
                     "org.robolectric:sandbox:jar:sources:4.4",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "org.robolectric:utils-reflector:jar:sources:4.4",
                     "org.robolectric:shadowapi:jar:sources:4.4",
                     "org.ow2.asm:asm-util:jar:sources:7.2",
@@ -8848,15 +8890,15 @@
             {
                 "coord": "org.robolectric:plugins-maven-dependency-resolver:4.4",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.robolectric:utils:4.4",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:pluginapi:4.4",
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "javax.inject:javax.inject:1",
                     "org.robolectric:annotations:4.4"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:pluginapi:4.4",
                     "org.robolectric:utils:4.4"
                 ],
@@ -8874,15 +8916,15 @@
             {
                 "coord": "org.robolectric:plugins-maven-dependency-resolver:jar:sources:4.4",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.robolectric:annotations:jar:sources:4.4",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:utils:jar:sources:4.4",
                     "org.robolectric:pluginapi:jar:sources:4.4",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:jar:sources:28.1-android",
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.robolectric:pluginapi:jar:sources:4.4",
                     "org.robolectric:utils:jar:sources:4.4"
                 ],
@@ -8900,15 +8942,15 @@
             {
                 "coord": "org.robolectric:resources:4.4",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.robolectric:utils:4.4",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:pluginapi:4.4",
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "javax.inject:javax.inject:1",
                     "org.robolectric:annotations:4.4"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:annotations:4.4",
                     "org.robolectric:pluginapi:4.4",
                     "org.robolectric:utils:4.4"
@@ -8927,15 +8969,15 @@
             {
                 "coord": "org.robolectric:resources:jar:sources:4.4",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.robolectric:annotations:jar:sources:4.4",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:utils:jar:sources:4.4",
                     "org.robolectric:pluginapi:jar:sources:4.4",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:jar:sources:28.1-android",
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.robolectric:annotations:jar:sources:4.4",
                     "org.robolectric:pluginapi:jar:sources:4.4",
                     "org.robolectric:utils:jar:sources:4.4"
@@ -8954,18 +8996,17 @@
             {
                 "coord": "org.robolectric:robolectric:4.4",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.robolectric:utils:4.4",
-                    "com.google.auto.value:auto-value-annotations:1.6.5",
                     "org.robolectric:resources:4.4",
                     "androidx.annotation:annotation:1.1.0",
-                    "org.ow2.asm:asm:7.2",
-                    "androidx.test:monitor:1.3.0-rc03",
+                    "androidx.test:monitor:1.4.0",
                     "org.robolectric:shadows-framework:4.4",
                     "org.robolectric:sandbox:4.4",
+                    "com.google.guava:guava:30.1.1-android",
+                    "androidx.test:monitor:aar:1.4.0",
                     "org.robolectric:pluginapi:4.4",
                     "org.ow2.asm:asm-commons:7.2",
-                    "androidx.test:monitor:aar:1.3.0-rc03",
+                    "com.google.auto.value:auto-value-annotations:1.8.1",
                     "org.ow2.asm:asm-analysis:7.2",
                     "org.robolectric:plugins-maven-dependency-resolver:4.4",
                     "org.bouncycastle:bcprov-jdk15on:1.65",
@@ -8976,6 +9017,7 @@
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "org.ow2.asm:asm-tree:7.2",
                     "javax.inject:javax.inject:1",
+                    "org.ow2.asm:asm:9.1",
                     "com.ibm.icu:icu4j:53.1",
                     "org.robolectric:junit:4.4",
                     "org.robolectric:annotations:4.4"
@@ -8983,7 +9025,7 @@
                 "directDependencies": [
                     "org.robolectric:utils:4.4",
                     "org.robolectric:resources:4.4",
-                    "androidx.test:monitor:1.3.0-rc03",
+                    "androidx.test:monitor:1.4.0",
                     "org.robolectric:shadows-framework:4.4",
                     "org.robolectric:sandbox:4.4",
                     "org.robolectric:pluginapi:4.4",
@@ -9009,16 +9051,16 @@
             {
                 "coord": "org.robolectric:robolectric:jar:sources:4.4",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.ow2.asm:asm-commons:jar:sources:7.2",
                     "org.robolectric:annotations:jar:sources:4.4",
-                    "androidx.test:monitor:aar:sources:1.3.0-rc03",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
+                    "androidx.test:monitor:jar:sources:1.4.0",
                     "org.robolectric:junit:jar:sources:4.4",
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03",
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
+                    "androidx.test:monitor:aar:sources:1.4.0",
                     "javax.inject:javax.inject:jar:sources:1",
                     "com.almworks.sqlite4java:sqlite4java:jar:sources:0.282",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "org.robolectric:utils:jar:sources:4.4",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "com.ibm.icu:icu4j:jar:sources:53.1",
@@ -9028,17 +9070,17 @@
                     "org.bouncycastle:bcprov-jdk15on:jar:sources:1.65",
                     "org.robolectric:sandbox:jar:sources:4.4",
                     "org.robolectric:resources:jar:sources:4.4",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "org.robolectric:utils-reflector:jar:sources:4.4",
                     "org.robolectric:shadows-framework:jar:sources:4.4",
                     "org.robolectric:shadowapi:jar:sources:4.4",
                     "org.ow2.asm:asm-util:jar:sources:7.2",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
                 ],
                 "directDependencies": [
                     "org.robolectric:annotations:jar:sources:4.4",
+                    "androidx.test:monitor:jar:sources:1.4.0",
                     "org.robolectric:junit:jar:sources:4.4",
-                    "androidx.test:monitor:jar:sources:1.3.0-rc03",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:utils:jar:sources:4.4",
                     "org.robolectric:pluginapi:jar:sources:4.4",
@@ -9064,9 +9106,8 @@
             {
                 "coord": "org.robolectric:sandbox:4.4",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.robolectric:utils:4.4",
-                    "org.ow2.asm:asm:7.2",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:pluginapi:4.4",
                     "org.ow2.asm:asm-commons:7.2",
                     "org.ow2.asm:asm-analysis:7.2",
@@ -9076,17 +9117,18 @@
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "org.ow2.asm:asm-tree:7.2",
                     "javax.inject:javax.inject:1",
+                    "org.ow2.asm:asm:9.1",
                     "org.robolectric:annotations:4.4"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.robolectric:utils:4.4",
-                    "org.ow2.asm:asm:7.2",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.ow2.asm:asm-commons:7.2",
                     "org.robolectric:utils-reflector:4.4",
                     "org.robolectric:shadowapi:4.4",
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "javax.inject:javax.inject:1",
+                    "org.ow2.asm:asm:9.1",
                     "org.robolectric:annotations:4.4"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/org/robolectric/sandbox/4.4/sandbox-4.4.jar",
@@ -9103,27 +9145,27 @@
             {
                 "coord": "org.robolectric:sandbox:jar:sources:4.4",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.ow2.asm:asm-commons:jar:sources:7.2",
                     "org.robolectric:annotations:jar:sources:4.4",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:utils:jar:sources:4.4",
                     "org.robolectric:pluginapi:jar:sources:4.4",
                     "org.ow2.asm:asm-tree:jar:sources:7.2",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "org.robolectric:utils-reflector:jar:sources:4.4",
                     "org.robolectric:shadowapi:jar:sources:4.4",
                     "org.ow2.asm:asm-util:jar:sources:7.2",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
                 ],
                 "directDependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.ow2.asm:asm-commons:jar:sources:7.2",
                     "org.robolectric:annotations:jar:sources:4.4",
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:utils:jar:sources:4.4",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "org.robolectric:utils-reflector:jar:sources:4.4",
                     "org.robolectric:shadowapi:jar:sources:4.4",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
@@ -9180,15 +9222,14 @@
             {
                 "coord": "org.robolectric:shadows-framework:4.4",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.robolectric:utils:4.4",
-                    "com.google.auto.value:auto-value-annotations:1.6.5",
                     "org.robolectric:resources:4.4",
                     "androidx.annotation:annotation:1.1.0",
-                    "org.ow2.asm:asm:7.2",
+                    "com.google.guava:guava:30.1.1-android",
+                    "androidx.test:monitor:aar:1.4.0",
                     "org.robolectric:pluginapi:4.4",
                     "org.ow2.asm:asm-commons:7.2",
-                    "androidx.test:monitor:aar:1.3.0-rc03",
+                    "com.google.auto.value:auto-value-annotations:1.8.1",
                     "org.ow2.asm:asm-analysis:7.2",
                     "org.ow2.asm:asm-util:7.2",
                     "com.almworks.sqlite4java:sqlite4java:0.282",
@@ -9197,16 +9238,17 @@
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "org.ow2.asm:asm-tree:7.2",
                     "javax.inject:javax.inject:1",
+                    "org.ow2.asm:asm:9.1",
                     "com.ibm.icu:icu4j:53.1",
                     "org.robolectric:annotations:4.4"
                 ],
                 "directDependencies": [
                     "org.robolectric:utils:4.4",
-                    "com.google.auto.value:auto-value-annotations:1.6.5",
                     "org.robolectric:resources:4.4",
                     "androidx.annotation:annotation:1.1.0",
+                    "androidx.test:monitor:aar:1.4.0",
                     "org.robolectric:pluginapi:4.4",
-                    "androidx.test:monitor:aar:1.3.0-rc03",
+                    "com.google.auto.value:auto-value-annotations:1.8.1",
                     "com.almworks.sqlite4java:sqlite4java:0.282",
                     "org.robolectric:utils-reflector:4.4",
                     "org.robolectric:shadowapi:4.4",
@@ -9227,38 +9269,38 @@
             {
                 "coord": "org.robolectric:shadows-framework:jar:sources:4.4",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.ow2.asm:asm-commons:jar:sources:7.2",
                     "org.robolectric:annotations:jar:sources:4.4",
-                    "androidx.test:monitor:aar:sources:1.3.0-rc03",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
+                    "androidx.test:monitor:aar:sources:1.4.0",
                     "javax.inject:javax.inject:jar:sources:1",
                     "com.almworks.sqlite4java:sqlite4java:jar:sources:0.282",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "org.robolectric:utils:jar:sources:4.4",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "com.ibm.icu:icu4j:jar:sources:53.1",
                     "org.robolectric:pluginapi:jar:sources:4.4",
                     "org.ow2.asm:asm-tree:jar:sources:7.2",
                     "org.robolectric:resources:jar:sources:4.4",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "org.robolectric:utils-reflector:jar:sources:4.4",
                     "org.robolectric:shadowapi:jar:sources:4.4",
                     "org.ow2.asm:asm-util:jar:sources:7.2",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
                 ],
                 "directDependencies": [
                     "org.robolectric:annotations:jar:sources:4.4",
-                    "androidx.test:monitor:aar:sources:1.3.0-rc03",
+                    "androidx.test:monitor:aar:sources:1.4.0",
                     "com.almworks.sqlite4java:sqlite4java:jar:sources:0.282",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "org.robolectric:utils:jar:sources:4.4",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "com.ibm.icu:icu4j:jar:sources:53.1",
                     "org.robolectric:pluginapi:jar:sources:4.4",
                     "org.robolectric:resources:jar:sources:4.4",
                     "org.robolectric:utils-reflector:jar:sources:4.4",
-                    "org.robolectric:shadowapi:jar:sources:4.4"
+                    "org.robolectric:shadowapi:jar:sources:4.4",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/org/robolectric/shadows-framework/4.4/shadows-framework-4.4-sources.jar",
                 "mirror_urls": [
@@ -9274,9 +9316,8 @@
             {
                 "coord": "org.robolectric:utils-reflector:4.4",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
                     "org.robolectric:utils:4.4",
-                    "org.ow2.asm:asm:7.2",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:pluginapi:4.4",
                     "org.ow2.asm:asm-commons:7.2",
                     "org.ow2.asm:asm-analysis:7.2",
@@ -9284,10 +9325,11 @@
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "org.ow2.asm:asm-tree:7.2",
                     "javax.inject:javax.inject:1",
+                    "org.ow2.asm:asm:9.1",
                     "org.robolectric:annotations:4.4"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:7.2",
+                    "org.ow2.asm:asm:9.1",
                     "org.ow2.asm:asm-commons:7.2",
                     "org.ow2.asm:asm-util:7.2",
                     "org.robolectric:utils:4.4"
@@ -9306,20 +9348,20 @@
             {
                 "coord": "org.robolectric:utils-reflector:jar:sources:4.4",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.ow2.asm:asm-commons:jar:sources:7.2",
                     "org.robolectric:annotations:jar:sources:4.4",
                     "org.ow2.asm:asm-analysis:jar:sources:7.2",
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:utils:jar:sources:4.4",
                     "org.robolectric:pluginapi:jar:sources:4.4",
                     "org.ow2.asm:asm-tree:jar:sources:7.2",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "org.ow2.asm:asm-util:jar:sources:7.2",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
                 ],
                 "directDependencies": [
-                    "org.ow2.asm:asm:jar:sources:7.2",
+                    "org.ow2.asm:asm:jar:sources:9.1",
                     "org.ow2.asm:asm-commons:jar:sources:7.2",
                     "org.ow2.asm:asm-util:jar:sources:7.2",
                     "org.robolectric:utils:jar:sources:4.4"
@@ -9338,14 +9380,14 @@
             {
                 "coord": "org.robolectric:utils:4.4",
                 "dependencies": [
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:pluginapi:4.4",
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "javax.inject:javax.inject:1",
                     "org.robolectric:annotations:4.4"
                 ],
                 "directDependencies": [
-                    "com.google.guava:guava:28.1-android",
+                    "com.google.guava:guava:30.1.1-android",
                     "org.robolectric:pluginapi:4.4",
                     "javax.annotation:javax.annotation-api:1.3.2",
                     "javax.inject:javax.inject:1",
@@ -9365,17 +9407,17 @@
             {
                 "coord": "org.robolectric:utils:jar:sources:4.4",
                 "dependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.robolectric:annotations:jar:sources:4.4",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:pluginapi:jar:sources:4.4",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
                 ],
                 "directDependencies": [
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.robolectric:annotations:jar:sources:4.4",
                     "javax.inject:javax.inject:jar:sources:1",
                     "org.robolectric:pluginapi:jar:sources:4.4",
-                    "com.google.guava:guava:jar:sources:28.1-android",
                     "javax.annotation:javax.annotation-api:jar:sources:1.3.2"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/org/robolectric/utils/4.4/utils-4.4-sources.jar",
@@ -9567,7 +9609,6 @@
                     "com.google.android.gms:play-services-ads-identifier:aar:sources:17.0.0",
                     "androidx.core:core:aar:sources:1.3.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:sources:2.2.0",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "com.google.android.gms:play-services-measurement-sdk-api:aar:sources:17.5.0",
                     "com.google.android.gms:play-services-measurement-base:aar:sources:17.5.0",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
@@ -9575,6 +9616,7 @@
                     "com.google.firebase:firebase-common:aar:sources:19.3.0",
                     "com.google.android.gms:play-services-tasks:aar:sources:17.0.0",
                     "com.google.firebase:firebase-installations:aar:sources:16.3.2",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "androidx.loader:loader:aar:sources:1.0.0",
                     "com.google.android.gms:play-services-basement:aar:sources:17.0.0",
                     "com.google.android.gms:play-services-stats:aar:sources:17.0.0",
@@ -9751,11 +9793,11 @@
                 "dependencies": [
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:sources:1.4.10",
-                    "com.google.guava:guava:jar:sources:28.1-android"
+                    "com.google.guava:guava:jar:sources:30.1.1-android"
                 ],
                 "directDependencies": [
                     "com.google.code.findbugs:jsr305:jar:sources:3.0.2",
-                    "com.google.guava:guava:jar:sources:28.1-android",
+                    "com.google.guava:guava:jar:sources:30.1.1-android",
                     "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:sources:1.4.10"
                 ],
                 "file": null
@@ -9777,7 +9819,6 @@
                     "androidx.core:core:aar:sources:1.3.0",
                     "com.google.android.gms:play-services-measurement-sdk:aar:sources:17.5.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:sources:2.2.0",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "com.google.android.gms:play-services-measurement-sdk-api:aar:sources:17.5.0",
                     "com.google.android.gms:play-services-measurement-base:aar:sources:17.5.0",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
@@ -9786,6 +9827,7 @@
                     "com.google.firebase:firebase-common:aar:sources:19.3.0",
                     "com.google.android.gms:play-services-tasks:aar:sources:17.0.0",
                     "com.google.firebase:firebase-installations:aar:sources:16.3.2",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "androidx.loader:loader:aar:sources:1.0.0",
                     "com.google.android.gms:play-services-basement:aar:sources:17.0.0",
                     "com.google.android.gms:play-services-stats:aar:sources:17.0.0",
@@ -9816,7 +9858,6 @@
                     "com.google.dagger:dagger:jar:sources:2.28.1",
                     "androidx.core:core:aar:sources:1.3.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:sources:2.2.0",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "com.google.android.datatransport:transport-api:aar:sources:2.2.0",
                     "com.google.android.datatransport:transport-backend-cct:aar:sources:2.3.0",
                     "com.google.firebase:firebase-encoders-json:aar:sources:16.1.0",
@@ -9824,6 +9865,7 @@
                     "com.google.firebase:firebase-common:aar:sources:19.3.0",
                     "com.google.android.gms:play-services-tasks:aar:sources:17.0.0",
                     "com.google.firebase:firebase-installations:aar:sources:16.3.2",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "androidx.loader:loader:aar:sources:1.0.0",
                     "com.google.firebase:firebase-iid-interop:aar:sources:17.0.0",
                     "com.google.android.gms:play-services-basement:aar:sources:17.0.0",
@@ -9876,11 +9918,11 @@
                     "androidx.collection:collection:jar:sources:1.1.0",
                     "androidx.core:core:aar:sources:1.3.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:sources:2.2.0",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "com.google.firebase:firebase-common:aar:sources:19.3.0",
                     "com.google.android.gms:play-services-tasks:aar:sources:17.0.0",
                     "com.google.firebase:firebase-installations:aar:sources:16.3.2",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "androidx.loader:loader:aar:sources:1.0.0",
                     "com.google.firebase:firebase-iid-interop:aar:sources:17.0.0",
                     "com.google.android.gms:play-services-basement:aar:sources:17.0.0",
@@ -9923,10 +9965,10 @@
                     "androidx.fragment:fragment:aar:sources:1.2.0",
                     "androidx.collection:collection:jar:sources:1.1.0",
                     "androidx.core:core:aar:sources:1.3.0",
-                    "com.google.auto.value:auto-value-annotations:jar:sources:1.6.5",
                     "androidx.annotation:annotation:jar:sources:1.1.0",
                     "com.google.firebase:firebase-common:aar:sources:19.3.0",
                     "com.google.android.gms:play-services-tasks:aar:sources:17.0.0",
+                    "com.google.auto.value:auto-value-annotations:jar:sources:1.8.1",
                     "com.google.android.gms:play-services-basement:aar:sources:17.0.0",
                     "com.google.firebase:firebase-installations-interop:aar:sources:16.0.0"
                 ],
