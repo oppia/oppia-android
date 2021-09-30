@@ -35,7 +35,6 @@ class AppLanguageWatcherMixin @Inject constructor(
    * situations.
    */
   fun initialize() {
-    // TODO: tests.
     if (!appLanguageLocaleHandler.isInitialized()) {
       /* The handler might have been de-initialized since bootstrapping. This can generally happen
        * in two cases:
