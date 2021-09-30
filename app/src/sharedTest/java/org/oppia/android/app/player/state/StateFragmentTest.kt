@@ -1282,6 +1282,21 @@ class StateFragmentTest {
     }
   }
 
+
+  @Test
+  fun testStateFragment_interactions_radioItemSelection_selectionTextIsNotDisplayed(){
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      // Verify that the user is now on the fourth state.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+    }
+  }
+
   @Test
   fun testStateFragment_interactions_checkboxItemSelection_hasCorrectAccessibilityAttributes() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -1397,6 +1412,23 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_interactions_selectUnselectCheckbox_selectionTextIsDisplayedCorrectly() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      // Verify that the attributes required for correct accessibility support are present.
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_changeConfiguration_selectUnselectCheckbox_selectionTextIsDisplayedCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
