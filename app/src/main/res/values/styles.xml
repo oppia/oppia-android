@@ -138,7 +138,7 @@
     <item name="android:textAllCaps">true</item>
   </style>
   <!-- TOPIC TABLAYOUT STYLE -->
-  <style name="AppTabLayout" parent="Widget.Design.TabLayout">
+<style name="AppTabLayout" parent="Widget.Design.TabLayout">
   <item name="tabIndicatorColor">@color/white</item>
   <item name="tabIndicatorHeight">4dp</item>
   <item name="tabPaddingStart">8dp</item>
