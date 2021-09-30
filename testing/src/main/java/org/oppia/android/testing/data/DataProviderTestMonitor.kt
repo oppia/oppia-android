@@ -2,6 +2,7 @@ package org.oppia.android.testing.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.test.platform.app.InstrumentationRegistry
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
@@ -91,11 +92,15 @@ class DataProviderTestMonitor<T> private constructor(
   }
 
   private fun startObservingDataProvider() {
-    liveData.observeForever(mockObserver)
+    InstrumentationRegistry.getInstrumentation().runOnMainSync {
+      liveData.observeForever(mockObserver)
+    }
   }
 
   private fun stopObservingDataProvider() {
-    liveData.removeObserver(mockObserver)
+    InstrumentationRegistry.getInstrumentation().runOnMainSync {
+      liveData.removeObserver(mockObserver)
+    }
   }
 
   private fun ensureNextResultIsPresent(): AsyncResult<T> {

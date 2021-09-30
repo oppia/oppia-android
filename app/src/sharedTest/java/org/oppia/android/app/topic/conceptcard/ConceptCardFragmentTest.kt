@@ -79,6 +79,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -319,6 +320,7 @@ class ConceptCardFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testConceptCardFragment_englishContentLang_explanationIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchTestActivity().use {
@@ -331,8 +333,9 @@ class ConceptCardFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchTestActivity().use {
@@ -349,8 +352,9 @@ class ConceptCardFragmentTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchTestActivity().use {

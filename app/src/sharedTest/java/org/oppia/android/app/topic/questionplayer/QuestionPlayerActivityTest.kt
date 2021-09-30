@@ -363,6 +363,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testQuestionPlayer_englishContentLang_contentIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -370,8 +371,9 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -380,6 +382,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testQuestionPlayer_englishContentLang_showHint_explanationInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -397,8 +400,9 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
