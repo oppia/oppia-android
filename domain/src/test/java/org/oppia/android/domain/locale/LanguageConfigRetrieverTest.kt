@@ -21,7 +21,9 @@ import org.oppia.android.app.model.SupportedLanguages
 import org.oppia.android.app.model.SupportedRegions
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -250,7 +252,7 @@ class LanguageConfigRetrieverTest {
   @Component(
     modules = [
       TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      AssetModule::class
+      AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {
