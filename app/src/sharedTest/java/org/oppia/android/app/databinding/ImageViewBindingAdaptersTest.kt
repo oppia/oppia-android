@@ -84,7 +84,10 @@ import javax.inject.Singleton
 /** Tests for [ImageViewBindingAdaptersTest]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ImageViewBindingAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@Config(
+  application = ImageViewBindingAdaptersTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class ImageViewBindingAdaptersTest {
 
   // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
@@ -156,7 +159,8 @@ class ImageViewBindingAdaptersTest {
     // Use Mockito to ensure the routine is actually executed before returning the result.
     @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
     val fakeMock: ImageViewBindingAdaptersTest.Consumer<V> =
-      mock(ImageViewBindingAdaptersTest.Consumer::class.java) as ImageViewBindingAdaptersTest.Consumer<V>
+      mock(ImageViewBindingAdaptersTest.Consumer::class.java)
+        as ImageViewBindingAdaptersTest.Consumer<V>
     val valueCaptor = ArgumentCaptor.forClass(V::class.java)
     onActivity { fakeMock.consume(action(it)) }
     verify(fakeMock).consume(valueCaptor.capture())
@@ -164,7 +168,8 @@ class ImageViewBindingAdaptersTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<ImageViewBindingAdaptersTest.TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<ImageViewBindingAdaptersTest.TestApplication>()
+      .inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
