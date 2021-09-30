@@ -110,6 +110,9 @@ class AppLanguageWatcherMixinTest {
   // TODO(#1720): Similar to the above, also add a test to verify that multiple language changes
   //  does not result in multiple recreations for the same activity. It currently will in the test
   //  since two mixins are active, but that won't happen in reality.
+  // TODO(#1720): Similar to the above, also add 2 tests to verify that mixin initialization in
+  //  cases when the locale isn't initialized (such as process death) prints an error & default
+  //  initializes the locale handler.
 
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
