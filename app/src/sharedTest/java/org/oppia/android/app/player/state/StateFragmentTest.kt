@@ -2155,8 +2155,9 @@ class StateFragmentTest {
     }
   }
 
+  // TODO(#1612): Enable for Robolectric.
   @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testStateFragment_english_dragAndDrop_submittedAnswer_answerIsInEnglish() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
