@@ -303,6 +303,10 @@
   <dimen name="home_fragment_padding_top">40dp</dimen>
   <dimen name="home_fragment_padding_bottom">96dp</dimen>
 
+  <!-- Recently Played -->
+  <dimen name="recently_played_fragment_padding_top">8dp</dimen>
+  <dimen name="recently_played_fragment_padding_bottom">108dp</dimen>
+
   <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
   <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
   <dimen name="promoted_story_card_text_size">14sp</dimen>
@@ -311,5 +315,8 @@
   <!-- Topic Practice -->
   <dimen name="topic_practice_subtopic_layout_margin_start">104dp</dimen>
   <dimen name="topic_practice_subtopic_layout_margin_end">96dp</dimen>
+
+  <!-- Topic Lessons Fragment -->
+  <dimen name="topic_lessons_fragment_layout_padding_bottom">80dp</dimen>
 
 </resources>

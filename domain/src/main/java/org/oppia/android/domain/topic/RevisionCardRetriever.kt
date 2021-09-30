@@ -4,6 +4,7 @@ import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtopicRecord
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
@@ -38,14 +39,14 @@ class RevisionCardRetriever @Inject constructor(
       jsonAssetRetriever.loadJsonFromAsset(topicId + "_" + subtopicId + ".json")
         ?: return RevisionCard.getDefaultInstance()
     val subtopicData = subtopicJsonObject.getJSONObject("page_contents")!!
-    val subtopicTitle = subtopicJsonObject.getString("subtopic_title")!!
+    val subtopicTitle = subtopicJsonObject.getStringFromObject("subtopic_title")!!
     return RevisionCard.newBuilder()
       .setSubtopicTitle(subtopicTitle)
       .setPageContents(
         SubtitledHtml.newBuilder()
-          .setHtml(subtopicData.getJSONObject("subtitled_html").getString("html"))
+          .setHtml(subtopicData.getJSONObject("subtitled_html").getStringFromObject("html"))
           .setContentId(
-            subtopicData.getJSONObject("subtitled_html").getString(
+            subtopicData.getJSONObject("subtitled_html").getStringFromObject(
               "content_id"
             )
           )

@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
@@ -13,14 +12,15 @@ import org.oppia.android.app.parser.StringToFractionParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
   interaction: Interaction,
-  private val context: Context,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver // ktlint-disable max-line-length
+  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
@@ -34,7 +34,7 @@ class FractionInteractionViewModel(
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-          interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
+          errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
             answerText.isNotEmpty()
           )
@@ -63,15 +63,11 @@ class FractionInteractionViewModel(
         AnswerErrorCategory.REAL_TIME ->
           pendingAnswerError =
             stringToFractionParser.getRealTimeAnswerError(answerText.toString())
-              .getErrorMessageFromStringRes(
-                context
-              )
+              .getErrorMessageFromStringRes(resourceHandler)
         AnswerErrorCategory.SUBMIT_TIME ->
           pendingAnswerError =
             stringToFractionParser.getSubmitTimeError(answerText.toString())
-              .getErrorMessageFromStringRes(
-                context
-              )
+              .getErrorMessageFromStringRes(resourceHandler)
       }
       errorMessage.set(pendingAnswerError)
     }
@@ -104,8 +100,9 @@ class FractionInteractionViewModel(
       interaction.customizationArgsMap["allowNonzeroIntegerPart"]?.boolValue ?: true
     return when {
       customPlaceholder.isNotEmpty() -> customPlaceholder
-      !allowNonzeroIntegerPart -> context.getString(R.string.fractions_default_hint_text_no_integer)
-      else -> context.getString(R.string.fractions_default_hint_text)
+      !allowNonzeroIntegerPart ->
+        resourceHandler.getStringInLocale(R.string.fractions_default_hint_text_no_integer)
+      else -> resourceHandler.getStringInLocale(R.string.fractions_default_hint_text)
     }
   }
 }

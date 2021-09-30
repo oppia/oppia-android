@@ -9,9 +9,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
 
 /** [DialogFragment] that gives option to either view the profile picture or change the current profile picture. */
-class ProfilePictureEditDialogFragment : DialogFragment() {
+class ProfilePictureEditDialogFragment : InjectableDialogFragment() {
   companion object {
     /**
      * This function is responsible for displaying content in DialogFragment.
@@ -21,6 +23,11 @@ class ProfilePictureEditDialogFragment : DialogFragment() {
     fun newInstance(): ProfilePictureEditDialogFragment {
       return ProfilePictureEditDialogFragment()
     }
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

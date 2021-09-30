@@ -8,9 +8,11 @@ import androidx.fragment.app.FragmentManager
 import org.oppia.android.R
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
-import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageTransformation
@@ -50,6 +52,9 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 
   @Inject
   lateinit var oppiaLogger: OppiaLogger
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
 
   fun setEntityId(entityId: String) {
     this.entityId = entityId
@@ -107,14 +112,15 @@ class LessonThumbnailImageView @JvmOverloads constructor(
 
   /** Loads an image using Glide from [filename]. */
   private fun loadImage(filename: String, transformations: List<ImageTransformation>) {
-    val imageName = String.format(
-      thumbnailDownloadUrlTemplate,
-      entityType,
-      entityId,
-      filename
-    )
+    val imageName = machineLocale.run {
+      thumbnailDownloadUrlTemplate.formatForMachines(
+        entityType,
+        entityId,
+        filename
+      )
+    }
     val imageUrl = "$gcsPrefix/$resourceBucketName/$imageName"
-    if (imageUrl.endsWith("svg", ignoreCase = true)) {
+    if (machineLocale.run { imageUrl.endsWithIgnoreCase("svg") }) {
       imageLoader.loadBlockSvg(imageUrl, ImageViewTarget(this), transformations)
     } else {
       imageLoader.loadBitmap(imageUrl, ImageViewTarget(this), transformations)
@@ -124,8 +130,12 @@ class LessonThumbnailImageView @JvmOverloads constructor(
   override fun onAttachedToWindow() {
     try {
       super.onAttachedToWindow()
-      (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-        .createViewComponent(this).inject(this)
+
+      val viewComponentFactory =
+        FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
+
       checkIfLoadingIsPossible()
     } catch (e: IllegalStateException) {
       if (::oppiaLogger.isInitialized)
