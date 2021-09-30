@@ -1,14 +1,17 @@
 package org.oppia.android.app.administratorcontrols
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.profile.ProfileChooserActivity
 
 /** [DialogFragment] that gives option to either cancel or log out from current profile. */
-class LogoutDialogFragment : DialogFragment() {
+class LogoutDialogFragment : InjectableDialogFragment() {
 
   companion object {
     const val TAG_LOGOUT_DIALOG_FRAGMENT = "TAG_LOGOUT_DIALOG_FRAGMENT"
@@ -16,6 +19,11 @@ class LogoutDialogFragment : DialogFragment() {
     fun newInstance(): LogoutDialogFragment {
       return LogoutDialogFragment()
     }
+  }
+
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

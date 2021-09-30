@@ -12,6 +12,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.databinding.WalkthroughFinalFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -26,7 +27,8 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : WalkthroughEndPageChanger {
   private lateinit var binding: WalkthroughFinalFragmentBinding
   private lateinit var walkthroughFinalViewModel: WalkthroughFinalViewModel
@@ -74,7 +76,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private fun setTopicName() {
     if (::walkthroughFinalViewModel.isInitialized && ::topicName.isInitialized) {
       walkthroughFinalViewModel.topicTitle.set(
-        activity.getString(
+        resourceHandler.getStringInLocaleWithWrapping(
           R.string.are_you_interested,
           topicName
         )

@@ -3,36 +3,28 @@ apply plugin: 'com.google.protobuf'
 
 protobuf {
   protoc {
-    artifact = 'com.google.protobuf:protoc:3.0.0'
-  }
-  plugins {
-    javalite {
-      artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
-    }
+    artifact = 'com.google.protobuf:protoc:3.8.0'
   }
   generateProtoTasks {
     all().each { task ->
       task.builtins {
-        remove java
-      }
-      task.plugins {
-        javalite {}
+        java {
+          // This setup is per https://github.com/google/protobuf-gradle-plugin/issues/315.
+          option 'lite'
+        }
       }
     }
   }
 }
 
 dependencies {
-  // This must use compile in order for lite protobufs to generate correctly.
-  // TODO(#59): Move to Bazel to avoid relying on a deprecated Gradle directive.
-  compile 'com.google.protobuf:protobuf-lite:3.0.0'
+  implementation 'com.google.protobuf:protobuf-javalite:3.17.3'
 }
 
 sourceSets {
-  main.java.srcDirs += "${protobuf.generatedFilesBaseDir}/main/javalite"
-  main.java.srcDirs += "$projectDir/src/main/proto"
-}
-
-processResources {
-  exclude('**/*.proto')
+  main {
+    proto {
+      srcDir 'src/main/proto'
+    }
+  }
 }

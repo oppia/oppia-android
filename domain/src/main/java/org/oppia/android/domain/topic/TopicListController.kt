@@ -26,6 +26,7 @@ import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
@@ -224,7 +225,7 @@ class TopicListController @Inject constructor(
     }
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
-      .setName(jsonObject.getString("topic_name"))
+      .setName(jsonObject.getStringFromObject("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
@@ -251,7 +252,7 @@ class TopicListController @Inject constructor(
     }
 
     return UpcomingTopic.newBuilder().setTopicId(topicId)
-      .setName(jsonObject.getString("topic_name"))
+      .setName(jsonObject.getStringFromObject("topic_name"))
       .setVersion(jsonObject.optInt("version"))
       .setTopicPlayAvailability(topicPlayAvailability)
       .setLessonThumbnail(createTopicThumbnailFromJson(jsonObject))

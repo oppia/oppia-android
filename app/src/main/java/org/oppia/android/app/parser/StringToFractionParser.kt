@@ -1,9 +1,9 @@
 package org.oppia.android.app.parser
 
-import android.content.Context
 import androidx.annotation.StringRes
 import org.oppia.android.R
 import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.util.normalizeWhitespace
 
 /** This class contains method that helps to parse string to fraction. */
@@ -20,11 +20,11 @@ class StringToFractionParser {
 
   /**
    * Returns a [FractionParsingError] for the specified text input if it's an invalid fraction, or
-   * [FractionParsingError.VALID] if no issues are found. Note that a valid fraction returned by this method is guaranteed
-   * to be parsed correctly by [parseRegularFraction].
+   * [FractionParsingError.VALID] if no issues are found. Note that a valid fraction returned by
+   * this method is guaranteed to be parsed correctly by [parseRegularFraction].
    *
-   * This method should only be used when a user tries submitting an answer. Real-time error detection should be done
-   * using [getRealTimeAnswerError], instead.
+   * This method should only be used when a user tries submitting an answer. Real-time error
+   * detection should be done using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
     if (invalidCharsLengthRegex.find(text) != null)
@@ -38,12 +38,12 @@ class StringToFractionParser {
   }
 
   /**
-   * Returns a [FractionParsingError] for obvious incorrect fraction formatting issues for the specified raw text, or
-   * [FractionParsingError.VALID] if not such issues are found.
+   * Returns a [FractionParsingError] for obvious incorrect fraction formatting issues for the
+   * specified raw text, or [FractionParsingError.VALID] if not such issues are found.
    *
-   * Note that this method returning a valid result does not guarantee the text is a valid fraction--
-   * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a quick sanity check for
-   * general validity, not for definite correctness.
+   * Note that this method returning a valid result does not guarantee the text is a valid
+   * fraction--[getSubmitTimeError] should be used for that, instead. This method is meant to be
+   * used as a quick sanity check for general validity, not for definite correctness.
    */
   fun getRealTimeAnswerError(text: String): FractionParsingError {
     val normalized = text.normalizeWhitespace()
@@ -116,9 +116,10 @@ class StringToFractionParser {
     DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero),
     NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits);
 
-    /** Returns the string corresponding to this error's string resources, or null if there is none. */
-    fun getErrorMessageFromStringRes(context: Context): String? {
-      return error?.let(context::getString)
-    }
+    /**
+     * Returns the string corresponding to this error's string resources, or null if there is none.
+     */
+    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
+      error?.let(resourceHandler::getStringInLocale)
   }
 }

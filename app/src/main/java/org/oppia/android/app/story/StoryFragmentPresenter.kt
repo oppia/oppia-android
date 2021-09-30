@@ -29,6 +29,7 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewMod
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.app.topic.RouteToResumeLessonListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.StoryChapterViewBinding
 import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
@@ -50,7 +51,8 @@ class StoryFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  @TopicHtmlParserEntityType private val entityType: String
+  @TopicHtmlParserEntityType private val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -175,7 +177,7 @@ class StoryFragmentPresenter @Inject constructor(
           if (storyItemViewModel.chapterSummary.chapterPlayState
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           ) {
-            val missingPrerequisiteSummary = fragment.getString(
+            val missingPrerequisiteSummary = resourceHandler.getStringInLocaleWithWrapping(
               R.string.chapter_prerequisite_title_label,
               storyItemViewModel.index.toString(),
               storyItemViewModel.missingPrerequisiteChapter.name
