@@ -35,6 +35,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.oppia.android.util.locale.LocaleProdModule
 
 private const val MATH_MARKUP_1 =
   "<oppia-noninteractive-math math_content-with-value=\"{" +
@@ -247,7 +248,7 @@ class MathTagHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

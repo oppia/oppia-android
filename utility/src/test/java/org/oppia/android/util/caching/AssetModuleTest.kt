@@ -19,6 +19,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
 
 /** Tests for [AssetModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -62,7 +64,7 @@ class AssetModuleTest {
   @Component(
     modules = [
       TestModule::class, AssetModule::class, LoggerModule::class, TestDispatcherModule::class,
-      RobolectricModule::class
+      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

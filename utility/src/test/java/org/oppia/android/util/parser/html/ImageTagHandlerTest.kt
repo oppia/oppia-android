@@ -35,6 +35,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.oppia.android.util.locale.LocaleProdModule
 
 private const val IMAGE_TAG_MARKUP_1 =
   "<oppia-noninteractive-image alt-with-value=\"&amp;quot;alt text 1&amp;quot;\" " +
@@ -214,7 +215,7 @@ class ImageTagHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

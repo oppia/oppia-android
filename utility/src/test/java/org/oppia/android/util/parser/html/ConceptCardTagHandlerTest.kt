@@ -38,6 +38,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.oppia.android.util.locale.LocaleProdModule
 
 private const val CONCEPT_CARD_LINK_MARKUP_1 =
   "<oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -285,7 +286,7 @@ class ConceptCardTagHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

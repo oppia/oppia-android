@@ -46,6 +46,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.locale.LocaleProdModule
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094120000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094110000
@@ -404,7 +405,7 @@ class ExceptionsControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
       TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

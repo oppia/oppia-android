@@ -40,6 +40,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -175,12 +177,9 @@ class CellularAudioDialogControllerTest {
   @Singleton
   @Component(
     modules = [
-      LogStorageModule::class,
-      RobolectricModule::class,
-      TestDispatcherModule::class,
-      TestModule::class,
-      TestLogReportingModule::class,
-      NetworkConnectionUtilDebugModule::class
+      LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
+      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class,
+      LocaleProdModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

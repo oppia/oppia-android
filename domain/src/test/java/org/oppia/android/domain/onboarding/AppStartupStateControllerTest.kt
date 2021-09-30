@@ -40,7 +40,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.MachineLocaleModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -56,6 +55,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.locale.LocaleProdModule
 
 /** Tests for [AppStartupStateController]. */
 @RunWith(AndroidJUnit4::class)
@@ -435,7 +435,7 @@ class AppStartupStateControllerTest {
       LogStorageModule::class, RobolectricModule::class,
       TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
       NetworkConnectionUtilDebugModule::class,
-      OppiaClockModule::class, MachineLocaleModule::class,
+      OppiaClockModule::class, LocaleProdModule::class,
       ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
     ]
   )

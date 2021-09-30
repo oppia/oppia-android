@@ -28,6 +28,7 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.locale.LocaleProdModule
 
 private const val TEST_TOPIC_ID = "test_topicId"
 private const val TEST_STORY_ID = "test_storyId"
@@ -291,11 +292,9 @@ class OppiaLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class,
-      TestLogReportingModule::class,
-      TestLogStorageModule::class,
-      TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class
+      TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

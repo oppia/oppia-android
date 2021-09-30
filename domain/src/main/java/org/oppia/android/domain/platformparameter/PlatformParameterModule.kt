@@ -13,15 +13,9 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
-/* Dagger module that provides values for individual Platform Parameters. */
+/** Dagger module that provides bindings for platform parameters. */
 @Module
 class PlatformParameterModule {
-
-  @Provides
-  fun providePlatformParameterSingleton(
-    platformParameterSingletonImpl: PlatformParameterSingletonImpl
-  ): PlatformParameterSingleton = platformParameterSingletonImpl
-
   @Provides
   @SplashScreenWelcomeMsg
   fun provideSplashScreenWelcomeMsgParam(
