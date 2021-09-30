@@ -333,5 +333,6 @@
   <!-- Topic Practice -->
   <dimen name="topic_practice_subtopic_layout_margin_start">8dp</dimen>
   <dimen name="topic_practice_subtopic_layout_margin_end">0dp</dimen>
+  <dimen name="topic_practice_subtopic_layout_width">360dp</dimen>
 
 </resources>
