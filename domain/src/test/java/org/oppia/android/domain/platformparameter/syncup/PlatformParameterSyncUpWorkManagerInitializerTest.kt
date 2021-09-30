@@ -229,9 +229,9 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
-      RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      NetworkConfigProdModule::class
+      NetworkConfigProdModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {

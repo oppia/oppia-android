@@ -1384,11 +1384,12 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_javaTextImports_fileContentIsNotCorrect() {
-    val prohibitedContent = """
+    val prohibitedContent =
+      """
       import java.text.DateFormat
       import java.text.SimpleDateFormat
       import java.text.ParseException
-    """.trimIndent()
+      """.trimIndent()
     tempFolder.newFolder("testfiles", "domain", "src", "main")
     val stringFilePath = "domain/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)

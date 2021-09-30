@@ -163,7 +163,7 @@ class DateTimeUtilTest {
       ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
       ImageParsingModule::class, AccessibilityTestModule::class, PracticeTabModule::class,
       GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
-      NetworkModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class, HintsAndSolutionProdModule::class,
+      NetworkModule::class, PlatformParameterModule::class, HintsAndSolutionProdModule::class,
       CachingTestModule::class, InteractionsModule::class, ExplorationStorageModule::class,
       QuestionModule::class, NetworkConfigProdModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -173,7 +173,8 @@ class DateTimeUtilTest {
       GlideImageLoaderModule::class, PrimeTopicAssetsControllerModule::class,
       HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
-      LocaleProdModule::class, ActivityRecreatorTestModule::class
+      LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

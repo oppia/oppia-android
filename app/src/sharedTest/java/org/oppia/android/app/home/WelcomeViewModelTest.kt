@@ -328,7 +328,7 @@ class WelcomeViewModelTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class, ApplicationModule::class,
+      TestDispatcherModule::class, PlatformParameterModule::class, ApplicationModule::class,
       RobolectricModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -345,7 +345,7 @@ class WelcomeViewModelTest {
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NetworkConfigProdModule::class
+      NetworkConfigProdModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

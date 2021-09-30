@@ -88,11 +88,11 @@ import javax.inject.Singleton
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionDebugModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
-    PlatformParameterModule::class, PlatformParameterSingletonModule::class, ExplorationStorageModule::class,
-    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-    PlatformParameterSyncUpWorkerModule::class, NetworkConnectionUtilDebugModule::class,
-    NetworkConfigProdModule::class, AssetModule::class, LocaleProdModule::class,
-    ActivityRecreatorProdModule::class,
+    PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+    ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
+    DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
+    NetworkConnectionUtilDebugModule::class, NetworkConfigProdModule::class, AssetModule::class,
+    LocaleProdModule::class, ActivityRecreatorProdModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
     NetworkConnectionDebugUtilModule::class

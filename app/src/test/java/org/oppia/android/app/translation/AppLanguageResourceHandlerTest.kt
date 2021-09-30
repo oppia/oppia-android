@@ -496,7 +496,7 @@ class AppLanguageResourceHandlerTest {
   @Component(
     modules = [
       RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class, LoggerModule::class, ContinueModule::class,
+      PlatformParameterModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
@@ -512,7 +512,7 @@ class AppLanguageResourceHandlerTest {
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleTestModule::class, ActivityRecreatorTestModule::class,
-      ActivityIntentFactoriesModule::class
+      ActivityIntentFactoriesModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

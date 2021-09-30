@@ -113,7 +113,7 @@ class InitializeDefaultLocaleRuleOmissionTest {
   @Component(
     modules = [
       RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class, LoggerModule::class, ContinueModule::class,
+      PlatformParameterModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
@@ -128,7 +128,8 @@ class InitializeDefaultLocaleRuleOmissionTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, ActivityRecreatorTestModule::class, LocaleProdModule::class
+      AssetModule::class, ActivityRecreatorTestModule::class, LocaleProdModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
