@@ -37,6 +37,8 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
+import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
+import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceSingleActivity
 import org.oppia.android.app.profile.AddProfileActivity
 import org.oppia.android.app.profile.AdminAuthActivity
 import org.oppia.android.app.profile.AdminPinActivity
@@ -140,6 +142,7 @@ interface ActivityComponentImpl :
   fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
+  fun inject(privacyPolicySingleActivity: PrivacyPolicySingleActivity)
   fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
@@ -167,6 +170,7 @@ interface ActivityComponentImpl :
 
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
+  fun inject(termsOfServiceSingleActivity: TermsOfServiceSingleActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
   fun inject(thirdPartyDependencyListActivity: ThirdPartyDependencyListActivity)
   fun inject(topicActivity: TopicActivity)
