@@ -18,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
@@ -31,7 +32,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
-  private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>
+  private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
@@ -59,9 +61,15 @@ class OnboardingFragmentPresenter @Inject constructor(
     val onboardingViewPagerBindableAdapter = createViewPagerAdapter()
     onboardingViewPagerBindableAdapter.setData(
       listOf(
-        OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_0),
-        OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_1),
-        OnboardingSlideViewModel(context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_2),
+        OnboardingSlideViewModel(
+          context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_0, resourceHandler
+        ),
+        OnboardingSlideViewModel(
+          context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_1, resourceHandler
+        ),
+        OnboardingSlideViewModel(
+          context = activity, viewPagerSlide = ViewPagerSlide.SLIDE_2, resourceHandler
+        ),
         getOnboardingSlideFinalViewModel()
       )
     )

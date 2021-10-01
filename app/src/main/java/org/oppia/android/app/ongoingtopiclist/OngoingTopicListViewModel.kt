@@ -7,6 +7,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -22,7 +23,8 @@ class OngoingTopicListViewModel @Inject constructor(
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger,
   private val intentFactoryShim: IntentFactoryShim,
-  @TopicHtmlParserEntityType private val entityType: String
+  @TopicHtmlParserEntityType private val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -64,7 +66,9 @@ class OngoingTopicListViewModel @Inject constructor(
     val itemViewModelList: MutableList<OngoingTopicItemViewModel> = mutableListOf()
     itemViewModelList.addAll(
       ongoingTopicList.topicList.map { topic ->
-        OngoingTopicItemViewModel(activity, internalProfileId, topic, entityType, intentFactoryShim)
+        OngoingTopicItemViewModel(
+          activity, internalProfileId, topic, entityType, intentFactoryShim, resourceHandler
+        )
       }
     )
     return itemViewModelList

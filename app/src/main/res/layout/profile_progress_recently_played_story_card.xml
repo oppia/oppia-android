@@ -33,7 +33,7 @@
         android:id="@+id/lesson_thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="@{@string/lesson_thumbnail_content_description(viewModel.promotedStory.nextChapterName)}"
+        android:contentDescription="@{viewModel.computeLessonThumbnailContentDescription()}"
         android:importantForAccessibility="no"
         app:entityId="@{viewModel.promotedStory.storyId}"
         app:entityType="@{viewModel.entityType}"

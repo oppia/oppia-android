@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -24,7 +25,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -36,6 +37,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -62,6 +64,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -70,6 +73,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -78,7 +82,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.system.OppiaDateTimeFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -97,15 +100,14 @@ private const val TEST_SUB_TOPIC_ID = 1
   qualifiers = "port-xxhdpi"
 )
 class ViewEventLogsFragmentTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
 
   @Inject
   lateinit var context: Context
@@ -354,36 +356,36 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_dateAndTimeIsDisplayedCorrectly() {
-    launch(ViewEventLogsTestActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
     }
@@ -391,37 +393,37 @@ class ViewEventLogsFragmentTest {
 
   @Test
   fun testViewEventLogsFragment_configChange_dateAndTimeIsDisplayedCorrectly() {
-    launch(ViewEventLogsTestActivity::class.java).use {
+    launch(ViewEventLogsTestActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
         targetViewId = R.id.view_event_logs_time_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
-        stringToMatch = convertTimeStampToDateAndTime(TEST_TIMESTAMP),
+        stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
         targetViewId = R.id.view_event_logs_time_text_view
       )
     }
@@ -575,11 +577,15 @@ class ViewEventLogsFragmentTest {
     ).check(matches(isDisplayed()))
   }
 
-  private fun convertTimeStampToDateAndTime(timestamp: Long): String {
-    return oppiaDateTimeFormatter.formatDateFromDateString(
-      OppiaDateTimeFormatter.DD_MMM_hh_mm_aa,
-      timestamp
-    )
+  private fun ActivityScenario<ViewEventLogsTestActivity>.convertTimeStampToDateAndTime(
+    timestampMillis: Long
+  ): String {
+    lateinit var dateTimeString: String
+    onActivity { activity ->
+      val resourceHandler = activity.appLanguageResourceHandler
+      dateTimeString = resourceHandler.computeDateTimeString(timestampMillis)
+    }
+    return dateTimeString
   }
 
   private fun scrollToPosition(position: Int) {
@@ -611,7 +617,7 @@ class ViewEventLogsFragmentTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
 

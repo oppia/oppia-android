@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 private const val SMALL_TEXT_SIZE_SCALE = 0.8f
@@ -13,21 +14,25 @@ private const val LARGE_TEXT_SIZE_SCALE = 1.2f
 private const val EXTRA_LARGE_TEXT_SIZE_SCALE = 1.4f
 
 /** Text Size item view model for the recycler view in [ReadingTextSizeFragment]. */
-class TextSizeItemViewModel constructor(
+class TextSizeItemViewModel(
   val resources: Resources,
   val readingTextSize: ReadingTextSize,
   private val selectedTextSize: LiveData<String>,
-  val textSizeRadioButtonListener: TextSizeRadioButtonListener
+  val textSizeRadioButtonListener: TextSizeRadioButtonListener,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   private val defaultReadingTextSizeInFloat by lazy {
     resources.getDimension(R.dimen.default_reading_text_size)
   }
   val textSizeName: String by lazy {
     when (readingTextSize) {
-      ReadingTextSize.SMALL_TEXT_SIZE -> resources.getString(R.string.reading_text_size_small)
-      ReadingTextSize.MEDIUM_TEXT_SIZE -> resources.getString(R.string.reading_text_size_medium)
-      ReadingTextSize.LARGE_TEXT_SIZE -> resources.getString(R.string.reading_text_size_large)
-      else -> resources.getString(R.string.reading_text_size_extra_large)
+      ReadingTextSize.SMALL_TEXT_SIZE ->
+        resourceHandler.getStringInLocale(R.string.reading_text_size_small)
+      ReadingTextSize.MEDIUM_TEXT_SIZE ->
+        resourceHandler.getStringInLocale(R.string.reading_text_size_medium)
+      ReadingTextSize.LARGE_TEXT_SIZE ->
+        resourceHandler.getStringInLocale(R.string.reading_text_size_large)
+      else -> resourceHandler.getStringInLocale(R.string.reading_text_size_extra_large)
     }
   }
   val textSize: Float by lazy {

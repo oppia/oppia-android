@@ -4,11 +4,11 @@ import android.app.Application
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponentImpl
 import javax.inject.Singleton
 
 /** Provides core infrastructure needed to support all other dependencies in the app. */
-@Module(subcomponents = [ActivityComponent::class])
+@Module(subcomponents = [ActivityComponentImpl::class])
 class ApplicationModule {
   @Provides
   @Singleton

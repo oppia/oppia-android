@@ -53,7 +53,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginBottom="4dp"
-      android:contentDescription="@{String.format(@string/onboarding_slide_dots_content_description((viewModel.slideNumber + 1), viewModel.totalNumberOfSlides))}"
+      android:contentDescription="@{viewModel.slideDotsContainerContentDescription}"
       android:gravity="center"
       android:minHeight="48dp"
       android:orientation="horizontal"

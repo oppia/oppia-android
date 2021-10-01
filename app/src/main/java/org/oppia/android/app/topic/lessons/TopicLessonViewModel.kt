@@ -8,6 +8,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class TopicLessonViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -65,7 +67,8 @@ class TopicLessonViewModel @Inject constructor(
           StorySummaryViewModel(
             storySummary,
             fragment as StorySummarySelector,
-            fragment as ChapterSummarySelector
+            fragment as ChapterSummarySelector,
+            resourceHandler
           )
         )
       }

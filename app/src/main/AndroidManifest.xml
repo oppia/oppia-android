@@ -264,6 +264,9 @@
       android:name=".app.resumelesson.ResumeLessonActivity"
       android:label="@string/resume_lesson_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.testing.activity.TestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"

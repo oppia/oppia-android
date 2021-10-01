@@ -1,29 +1,31 @@
 package org.oppia.android.app.databinding;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.ContextWrapper;
+import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import org.oppia.android.R;
-import org.oppia.android.util.system.OppiaDateTimeFormatter;
+import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider;
+import org.oppia.android.app.translation.AppLanguageResourceHandler;
+import org.oppia.android.util.system.OppiaClock;
+import org.oppia.android.util.system.OppiaClockInjectorProvider;
 
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
 
+  // TODO(#3846): Add tests for these adapters.
+
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
-    OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
-    String time = oppiaDateTimeFormatter.formatDateFromDateString(
-        OppiaDateTimeFormatter.DD_MMM_YYYY,
-        timestamp,
-        Locale.getDefault()
-    );
-    textView.setText(textView.getContext().getString(
+    AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
+    String time = resourceHandler.computeDateString(timestamp);
+    textView.setText(resourceHandler.getStringInLocaleWithWrapping(
         R.string.profile_edit_created,
         time
     ));
@@ -32,12 +34,10 @@ public final class TextViewBindingAdapters {
   /** Binds last used with relative timestamp. */
   @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
-    String profileLastUsed = textView.getContext().getString(R.string.profile_last_used);
-    String timeAgoTimeStamp = getTimeAgo(
-        timestamp,
-        textView.getContext()
-    );
-    String profileLastVisited = textView.getContext().getString(
+    AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
+    String profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used);
+    String timeAgoTimeStamp = getTimeAgo(textView, timestamp);
+    String profileLastVisited = resourceHandler.getStringInLocaleWithWrapping(
         R.string.profile_last_visited,
         profileLastUsed,
         timeAgoTimeStamp
@@ -45,56 +45,93 @@ public final class TextViewBindingAdapters {
     textView.setText(profileLastVisited);
   }
 
-  private static String getTimeAgo(long lastVisitedTimeStamp, Context context) {
-    OppiaDateTimeFormatter oppiaDateTimeFormatter = new OppiaDateTimeFormatter();
-    long timeStampMillis =
-        oppiaDateTimeFormatter.checkAndConvertTimestampToMilliseconds(lastVisitedTimeStamp);
-    long currentTimeMillis = oppiaDateTimeFormatter.currentDate().getTime();
+  private static String getTimeAgo(View view, long lastVisitedTimestamp) {
+    long timeStampMillis = ensureTimestampIsInMilliseconds(lastVisitedTimestamp);
+    long currentTimeMillis = getOppiaClock(view).getCurrentTimeMs();
 
     if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
       return "";
     }
 
-    Resources res = context.getResources();
     long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
 
+    AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
     if (timeDifferenceMillis < (int) TimeUnit.MINUTES.toMillis(1)) {
-      return context.getString(R.string.just_now);
+      return resourceHandler.getStringInLocale(R.string.just_now);
     } else if (timeDifferenceMillis < TimeUnit.MINUTES.toMillis(50)) {
       return getPluralString(
-          context,
+              resourceHandler,
           R.plurals.minutes,
           (int) TimeUnit.MILLISECONDS.toMinutes(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(1)) {
       return getPluralString(
-          context,
+              resourceHandler,
           R.plurals.hours,
           (int) TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(2)) {
-      return context.getString(R.string.yesterday);
+      return resourceHandler.getStringInLocale(R.string.yesterday);
     }
     return getPluralString(
-        context,
+            resourceHandler,
         R.plurals.days,
         (int) TimeUnit.MILLISECONDS.toDays(timeDifferenceMillis)
     );
   }
 
   private static String getPluralString(
-      @NonNull Context context,
+      AppLanguageResourceHandler resourceHandler,
       @PluralsRes int pluralsResId,
       int count
   ) {
-    Resources resources = context.getResources();
-    return context.getString(
+    // TODO(#3841): Combine these strings together.
+    return resourceHandler.getStringInLocaleWithWrapping(
         R.string.time_ago,
-        resources.getQuantityString(
-            pluralsResId,
-            count,
-            count
+        resourceHandler.getQuantityStringInLocaleWithWrapping(
+            pluralsResId, count, String.valueOf(count)
         )
     );
+  }
+
+  private static long ensureTimestampIsInMilliseconds(long lastVisitedTimestamp) {
+    // TODO(#3842): Investigate & remove this check.
+    if (lastVisitedTimestamp < 1000000000000L) {
+      // If timestamp is given in seconds, convert that to milliseconds.
+      return TimeUnit.SECONDS.toMillis(lastVisitedTimestamp);
+    }
+    return lastVisitedTimestamp;
+  }
+
+  private static AppLanguageResourceHandler getResourceHandler(View view) {
+    AppLanguageActivityInjectorProvider provider =
+        (AppLanguageActivityInjectorProvider) getAttachedActivity(view);
+    return provider.getAppLanguageActivityInjector().getAppLanguageResourceHandler();
+  }
+
+  private static Activity getAttachedActivity(View view) {
+    Context context = view.getContext();
+    while (context != null && !(context instanceof Activity)) {
+      if (!(context instanceof ContextWrapper)) {
+        throw new IllegalStateException(
+          "Encountered context in view (" + view + ") that doesn't wrap a parent context: "
+            + context
+        );
+      }
+      context = ((ContextWrapper) context).getBaseContext();
+    }
+    if (context == null) {
+      throw new IllegalStateException("Failed to find base Activity for view: " + view);
+    }
+    return (Activity) context;
+  }
+
+  private static OppiaClock getOppiaClock(View view) {
+    OppiaClockInjectorProvider provider = (OppiaClockInjectorProvider) getApplication(view);
+    return provider.getOppiaClockInjector().getOppiaClock();
+  }
+
+  private static Context getApplication(View view) {
+    return view.getContext().getApplicationContext();
   }
 }

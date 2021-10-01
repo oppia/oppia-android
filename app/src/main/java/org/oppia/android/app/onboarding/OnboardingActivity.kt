@@ -3,6 +3,7 @@ package org.oppia.android.app.onboarding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
 import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceSingleActivity
@@ -26,7 +27,7 @@ class OnboardingActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     onboardingActivityPresenter.handleOnCreate()
   }
 

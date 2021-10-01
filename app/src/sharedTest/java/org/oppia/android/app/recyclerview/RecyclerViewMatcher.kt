@@ -36,10 +36,7 @@ class RecyclerViewMatcher {
             idDescription = try {
               this.resources!!.getResourceName(recyclerViewId)
             } catch (var4: Resources.NotFoundException) {
-              String.format(
-                "%s (resource name not found)",
-                recyclerViewId
-              )
+              "$recyclerViewId (resource name not found)"
             }
           }
           description.appendText("with id: $idDescription")

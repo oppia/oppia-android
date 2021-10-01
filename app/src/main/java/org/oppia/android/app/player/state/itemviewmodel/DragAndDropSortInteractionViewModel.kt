@@ -17,6 +17,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandle
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel(
@@ -24,7 +25,8 @@ class DragAndDropSortInteractionViewModel(
   val hasConversationView: Boolean,
   interaction: Interaction,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION),
   InteractionAnswerHandler,
   OnItemDragListener,
@@ -46,7 +48,7 @@ class DragAndDropSortInteractionViewModel(
     }
 
   private val _choiceItems: MutableList<DragDropInteractionContentViewModel> =
-    computeChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this)
+    computeChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
 
   val choiceItems: List<DragDropInteractionContentViewModel> = _choiceItems
 
@@ -168,7 +170,8 @@ class DragAndDropSortInteractionViewModel(
           }.build(),
           itemIndex = 0,
           listSize = 0,
-          dragAndDropSortInteractionViewModel = this
+          dragAndDropSortInteractionViewModel = this,
+          resourceHandler = resourceHandler
         )
       )
     }
@@ -185,7 +188,8 @@ class DragAndDropSortInteractionViewModel(
     private fun computeChoiceItems(
       contentIdHtmlMap: Map<String, String>,
       choiceStrings: List<SubtitledHtml>,
-      dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel
+      dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
+      resourceHandler: AppLanguageResourceHandler
     ): MutableList<DragDropInteractionContentViewModel> {
       return choiceStrings.mapIndexed { index, subtitledHtml ->
         DragDropInteractionContentViewModel(
@@ -199,7 +203,8 @@ class DragAndDropSortInteractionViewModel(
           }.build(),
           itemIndex = index,
           listSize = choiceStrings.size,
-          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel
+          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+          resourceHandler = resourceHandler
         )
       }.toMutableList()
     }
