@@ -92,7 +92,7 @@ At this point, we can define the ``ANDROID_HOME`` variable to point to the new S
 
 ```sh
 echo "export ANDROID_HOME=\$HOME/Android/Sdk" >> ~/.bashrc
-echo "export PATH=\$ANDROID_HOME/cmdline-tools/tools/bin/:\$PATH >> ~/.bashrc
+echo "export PATH=\$ANDROID_HOME/cmdline-tools/tools/bin/:\$PATH" >> ~/.bashrc
 source ~/.bashrc
 ```
 
