@@ -24,7 +24,9 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1)
+    internalProfileId = intent.getIntExtra(
+      MARK_CHAPTERS_COMPLETED_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1
+    )
     markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
   }
