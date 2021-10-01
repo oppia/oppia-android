@@ -506,4 +506,7 @@
   <dimen name="promoted_story_card_layout_width">280dp</dimen>
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">8dp</dimen>
+
+  <!-- Topic Lessons Fragment -->
+  <dimen name="topic_lessons_fragment_layout_padding_bottom">128dp</dimen>
 </resources>
