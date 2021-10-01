@@ -21,6 +21,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
 import org.oppia.android.domain.audio.CellularAudioDialogController
@@ -45,7 +46,8 @@ class AudioFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -282,9 +284,11 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun showOfflineDialog() {
     AlertDialog.Builder(activity, R.style.AlertDialogTheme)
-      .setTitle(context.getString(R.string.audio_dialog_offline_title))
-      .setMessage(context.getString(R.string.audio_dialog_offline_message))
-      .setPositiveButton(context.getString(R.string.audio_dialog_offline_positive)) { dialog, _ ->
+      .setTitle(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_title))
+      .setMessage(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_message))
+      .setPositiveButton(
+        resourceHandler.getStringInLocale(R.string.audio_dialog_offline_positive)
+      ) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
   }

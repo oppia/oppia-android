@@ -16,3 +16,9 @@ message Translation {
   string html = 1;
   bool needs_update = 2;
 }
+
+// Represents the context for translating written content strings.
+message WrittenTranslationContext {
+  // A map from content ID to translation.
+  map<string, Translation> translations = 1;
+}

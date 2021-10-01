@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
@@ -20,6 +19,8 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -29,7 +30,6 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.system.OppiaClock
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -37,17 +37,17 @@ private const val HOME_FRAGMENT_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList+topicListProvider"
 
 /** [ViewModel] for layouts in home fragment. */
-@FragmentScope
 class HomeViewModel(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   private val internalProfileId: Int,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String
+  @StoryHtmlParserEntityType private val storyEntityType: String,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val dateTimeUtil: DateTimeUtil
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -111,7 +111,7 @@ class HomeViewModel(
    */
   private fun computeWelcomeViewModel(profile: Profile): HomeItemViewModel? {
     return if (profile.name.isNotEmpty()) {
-      WelcomeViewModel(fragment, oppiaClock, profile.name)
+      WelcomeViewModel(profile.name, resourceHandler, dateTimeUtil)
     } else null
   }
 
@@ -133,7 +133,8 @@ class HomeViewModel(
           return PromotedStoryListViewModel(
             activity,
             storyViewModelList,
-            promotedActivityList
+            promotedActivityList,
+            resourceHandler
           )
         } else null
       }
@@ -227,7 +228,8 @@ class HomeViewModel(
         topicSummary,
         topicEntityType,
         fragment as TopicSummaryClickListener,
-        position = topicIndex
+        position = topicIndex,
+        resourceHandler
       )
     }
     return if (allTopicsList.isNotEmpty()) {

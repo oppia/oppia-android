@@ -25,7 +25,9 @@ kt_android_library(
     deps = [
         ":dagger",
         "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
