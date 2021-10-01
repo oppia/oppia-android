@@ -56,6 +56,13 @@ kt_jvm_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:retrieve_affected_tests_lib"],
 )
 
+kt_jvm_binary(
+    name = "vector_drawable_to_svg",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.resources.VectorDrawableToSvgKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/resources:vector_drawable_to_svg_lib"],
+)
+
 # TODO(#3428): Refactor textproto assets to subpackage level.
 REGEX_PATTERN_CHECK_ASSETS = generate_regex_assets_list_from_text_protos(
     name = "regex_asset_files",

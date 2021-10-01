@@ -1,0 +1,17 @@
+"""
+Libraries corresponding to developer scripts that are used to process resources during app builds.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "vector_drawable_to_svg_lib",
+    testonly = True,
+    srcs = [
+        "VectorDrawableToSvg.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+    ],
+)
