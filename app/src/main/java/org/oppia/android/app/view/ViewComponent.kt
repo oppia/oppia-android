@@ -1,31 +1,23 @@
 package org.oppia.android.app.view
 
 import android.view.View
-import dagger.BindsInstance
-import dagger.Subcomponent
-import org.oppia.android.app.customview.LessonThumbnailImageView
-import org.oppia.android.app.home.promotedlist.ComingSoonTopicsListView
-import org.oppia.android.app.home.promotedlist.PromotedStoryListView
-import org.oppia.android.app.player.state.DragDropSortInteractionView
-import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
-import org.oppia.android.app.player.state.SelectionInteractionView
 
-/** Root subcomponent for custom views. */
-@Subcomponent
-@ViewScope
+/**
+ * Root subcomponent for custom views.
+ *
+ * Instances of this subcomponent should be created using [ViewComponentFactory].
+ */
 interface ViewComponent {
-  @Subcomponent.Builder
+  /** Dagger builder for [ViewComponent]. */
   interface Builder {
-    @BindsInstance
+    /**
+     * Sets the root [View] that defines this component.
+     *
+     * @return this [Builder]
+     */
     fun setView(view: View): Builder
 
+    /** Returns a new [ViewComponent]. */
     fun build(): ViewComponent
   }
-
-  fun inject(comingSoonTopicsListView: ComingSoonTopicsListView)
-  fun inject(selectionInteractionView: SelectionInteractionView)
-  fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
-  fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
-  fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
-  fun inject(promotedStoryListView: PromotedStoryListView)
 }

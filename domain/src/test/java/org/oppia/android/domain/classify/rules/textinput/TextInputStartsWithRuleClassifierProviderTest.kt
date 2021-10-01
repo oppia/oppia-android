@@ -13,6 +13,8 @@ import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonN
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -290,7 +292,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [])
+  @Component(modules = [LocaleProdModule::class, FakeOppiaClockModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
