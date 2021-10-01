@@ -15,8 +15,8 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
   lateinit var markStoriesCompletedFragmentPresenter: MarkStoriesCompletedFragmentPresenter
 
   companion object {
-    internal const val MARK_STORIES_COMPLETED_FRAGMENT_PROFILE_ID_KEY =
-      "MarkStoriesCompletedFragment.internal_profile_id"
+    internal const val MARK_STORIES_COMPLETED_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
+      "MarkStoriesCompletedFragment.mark_stories_completed_fragment_profile_id"
 
     private const val STORY_ID_LIST_ARGUMENT_KEY = "MarkStoriesCompletedFragment.story_id_list"
 
@@ -24,7 +24,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
     fun newInstance(internalProfileId: Int): MarkStoriesCompletedFragment {
       val markStoriesCompletedFragment = MarkStoriesCompletedFragment()
       val args = Bundle()
-      args.putInt(MARK_STORIES_COMPLETED_FRAGMENT_PROFILE_ID_KEY, internalProfileId)
+      args.putInt(MARK_STORIES_COMPLETED_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
       markStoriesCompletedFragment.arguments = args
       return markStoriesCompletedFragment
     }
@@ -43,7 +43,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkStoriesCompletedFragment" }
     val internalProfileId = args
-      .getInt(MARK_STORIES_COMPLETED_FRAGMENT_PROFILE_ID_KEY, -1)
+      .getInt(MARK_STORIES_COMPLETED_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
     var selectedStoryIdList = ArrayList<String>()
     if (savedInstanceState != null) {
       selectedStoryIdList = savedInstanceState.getStringArrayList(STORY_ID_LIST_ARGUMENT_KEY)!!
