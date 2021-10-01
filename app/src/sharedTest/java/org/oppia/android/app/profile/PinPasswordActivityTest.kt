@@ -11,12 +11,16 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasFocus
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -953,6 +957,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
+  @Config(qualifiers = "land-xhdpi")
   fun testPinPassword_withAdmin_showHidePassword_textChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -962,13 +967,13 @@ class PinPasswordActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      closeSoftKeyboard()
       onView(withId(R.id.show_pin)).perform(click())
       onView(withText(context.getString(R.string.pin_password_hide))).check(matches(isDisplayed()))
     }
   }
 
   @Test
+  @Config(qualifiers = "land-xhdpi")
   fun testPinPassword_withAdmin_clickShowHideIcon_hasPasswordShownContentDescription() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -992,6 +997,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
+  @Config(qualifiers = "land-xhdpi")
   fun testPinPassword_withAdmin_showHidePassword_imageChangesToShow() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1015,6 +1021,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
+  @Config(qualifiers = "land-xhdpi")
   fun testPinPassword_withAdmin_showHidePassword_configChange_showViewIsShown() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1040,6 +1047,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
+  @Config(qualifiers = "land-xhdpi")
   fun testPinPassword_checkInputType_showHidePassword_inputTypeIsSame() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
