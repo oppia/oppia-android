@@ -461,6 +461,7 @@
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
   <string name="incorrect_submitted_answer_with_append">Incorrect submitted answer: %s</string>
+  <string name="splash_activity_title">Splash Activity</string>
   <!-- DeveloperOptionsActivity -->
   <string name="developer_options_activity_title">Developer Options</string>
   <string name="mark_chapters_completed_activity_title">Mark Chapters Completed</string>

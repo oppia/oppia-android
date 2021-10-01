@@ -150,6 +150,7 @@
     <activity
       android:name=".app.splash.SplashActivity"
       android:screenOrientation="portrait"
+      android:label="@string/splash_activity_title"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
