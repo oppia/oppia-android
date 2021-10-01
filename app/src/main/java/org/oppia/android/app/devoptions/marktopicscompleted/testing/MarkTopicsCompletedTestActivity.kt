@@ -19,7 +19,9 @@ class MarkTopicsCompletedTestActivity : InjectableAppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_topics_completed_activity)
-    internalProfileId = intent.getIntExtra(MARK_TOPICS_COMPLETED_TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1)
+    internalProfileId = intent.getIntExtra(
+      MARK_TOPICS_COMPLETED_TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1
+    )
     if (getMarkTopicsCompletedFragment() == null) {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(internalProfileId)
       supportFragmentManager.beginTransaction().add(

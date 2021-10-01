@@ -19,7 +19,9 @@ class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_stories_completed_activity)
-    internalProfileId = intent.getIntExtra(MARK_STORIES_COMPLETED_TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1)
+    internalProfileId = intent.getIntExtra(
+      MARK_STORIES_COMPLETED_TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1
+    )
     if (getMarkStoriesCompletedFragment() == null) {
       val markStoriesCompletedFragment = MarkStoriesCompletedFragment.newInstance(internalProfileId)
       supportFragmentManager.beginTransaction().add(
