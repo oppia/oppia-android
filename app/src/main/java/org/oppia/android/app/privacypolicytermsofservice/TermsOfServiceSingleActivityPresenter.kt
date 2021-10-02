@@ -45,7 +45,7 @@ class TermsOfServiceSingleActivityPresenter @Inject constructor(
     // NOTE: Here entityType and entityId can be anything as it will actually not get used.
     // They are needed only for cases where rich-text contains images from server and in TermsOfService
     // we do not have images.
-    termsOfServiceDescription = activity.getString(R.string.privacy_policy_description)
+    termsOfServiceDescription = activity.getString(R.string.terms_of_service_content)
     val TermsOfServicedescriptionTextView =
       activity.findViewById<TextView>(R.id.terms_of_service_description_text_view)
     TermsOfServicedescriptionTextView.text = htmlParserFactory.create(

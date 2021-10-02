@@ -44,7 +44,7 @@ class PrivacyPolicySingleActivityPresenter @Inject constructor(
     // NOTE: Here entityType and entityId can be anything as it will actually not get used.
     // They are needed only for cases where rich-text contains images from server and in PrivacyPolicy
     // we do not have images.
-    privacyPolicyDescription = activity.getString(R.string.privacy_policy_description)
+    privacyPolicyDescription = activity.getString(R.string.privacy_policy_content)
     val privacyPolicydescriptionTextView =
       activity.findViewById<TextView>(R.id.privacy_policy_description_text_view)
     privacyPolicydescriptionTextView.text = htmlParserFactory.create(

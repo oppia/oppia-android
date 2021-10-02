@@ -76,10 +76,10 @@
   <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
   <string name="topic_play_chapter_index">%s.</string>
-  <string name="chapter_name">Chapter %s: %s</string>
-  <string name="chapter_completed">Chapter %s with title %s is completed</string>
-  <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
-  <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
+  <string name="chapter_name">Chapter %1$s: %2$s</string>
+  <string name="chapter_completed">Chapter %1$s with title %2$s is completed</string>
+  <string name="chapter_in_progress">Chapter %1$s with title %2$s is in progress</string>
+  <string name="chapter_prerequisite_title_label">Complete Chapter %1$s: %2$s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
   <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
@@ -100,7 +100,7 @@
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
   <string name="question_player_title">Practice Mode</string>
-  <string name="question_training_session_progress">Question %s of %s</string>
+  <string name="question_training_session_progress">Question %1$s of %2$s</string>
   <string name="question_training_session_progress_finished">Complete</string>
   <string name="question_training_session_finished_header">Finished</string>
   <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
@@ -257,7 +257,7 @@
   <string name="skip">Skip</string>
   <string name="next_arrow">Next</string>
   <string name="get_started">Get Started</string>
-  <string name="onboarding_slide_dots_content_description">Slide %s of %s</string>
+  <string name="onboarding_slide_dots_content_description">Slide %1$s of %2$s</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
@@ -411,7 +411,7 @@
   <string name="move_item_up_content_description">Move item up to %s</string>
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
-  <string name="profile_last_visited">%s %s</string>
+  <string name="profile_last_visited">%1$s %2$s</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
     <item quantity="other">%s minutes</item>
@@ -456,7 +456,7 @@
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
-  <string name="hints_android_solution_correct_answer">%s/%s</string>
+  <string name="hints_android_solution_correct_answer">%1$s/%2$s</string>
   <string name="correct_submitted_answer">Correct submitted answer</string>
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>
