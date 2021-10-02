@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.lessons
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +48,7 @@ class TopicLessonsFragment :
   lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
 
   private var currentExpandedChapterListIndex: Int? = null
-  private var isDefaultStoryExpanded : Boolean = false
+  private var isDefaultStoryExpanded: Boolean = false
 
   override fun onAttach(context: Context) {
     super.onAttach(context)

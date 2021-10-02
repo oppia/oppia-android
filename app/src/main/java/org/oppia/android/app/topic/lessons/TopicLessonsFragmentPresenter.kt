@@ -64,7 +64,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    isDefaultStoryExpanded : Boolean
+    isDefaultStoryExpanded: Boolean
   ): View? {
     this.internalProfileId = internalProfileId
     this.topicId = topicId
