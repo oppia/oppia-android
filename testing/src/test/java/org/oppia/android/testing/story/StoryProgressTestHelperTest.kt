@@ -59,12 +59,14 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -1769,7 +1771,8 @@ class StoryProgressTestHelperTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class
+      ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class,
+      AssetModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

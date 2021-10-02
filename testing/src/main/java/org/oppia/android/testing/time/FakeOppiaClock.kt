@@ -2,6 +2,7 @@ package org.oppia.android.testing.time
 
 import android.annotation.SuppressLint
 import android.os.SystemClock
+import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode
 import org.oppia.android.util.system.OppiaClock
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -24,18 +25,17 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
   private var fixedFakeTimeMs: Long = 0
   private var fakeTimeMode: FakeTimeMode = FakeTimeMode.MODE_WALL_CLOCK_TIME
 
+  init {
+    // Ensure tests that rely on this clock are always operating in UTC.
+    TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+  }
+
   override fun getCurrentTimeMs(): Long {
     return when (fakeTimeMode) {
       FakeTimeMode.MODE_WALL_CLOCK_TIME -> System.currentTimeMillis()
       FakeTimeMode.MODE_FIXED_FAKE_TIME -> fixedFakeTimeMs
       FakeTimeMode.MODE_UPTIME_MILLIS -> SystemClock.uptimeMillis()
     }
-  }
-
-  override fun getCurrentCalendar(): Calendar {
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = getCurrentTimeMs()
-    return calendar
   }
 
   /**

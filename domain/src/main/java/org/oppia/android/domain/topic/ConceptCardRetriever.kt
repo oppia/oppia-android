@@ -11,6 +11,7 @@ import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
@@ -87,13 +88,13 @@ class ConceptCardRetriever @Inject constructor(
       }
 
       return ConceptCard.newBuilder()
-        .setSkillId(skillData.getString("id"))
-        .setSkillDescription(skillData.getString("description"))
+        .setSkillId(skillData.getStringFromObject("id"))
+        .setSkillDescription(skillData.getStringFromObject("description"))
         .setExplanation(
           SubtitledHtml.newBuilder()
-            .setHtml(skillContents.getJSONObject("explanation").getString("html"))
+            .setHtml(skillContents.getJSONObject("explanation").getStringFromObject("html"))
             .setContentId(
-              skillContents.getJSONObject("explanation").getString(
+              skillContents.getJSONObject("explanation").getStringFromObject(
                 "content_id"
               )
             ).build()
@@ -133,8 +134,8 @@ class ConceptCardRetriever @Inject constructor(
   private fun createSubtitledHtml(
     subtitledHtmlJson: JSONObject
   ): SubtitledHtml = SubtitledHtml.newBuilder().apply {
-    contentId = subtitledHtmlJson.getString("content_id")
-    html = subtitledHtmlJson.getString("html")
+    contentId = subtitledHtmlJson.getStringFromObject("content_id")
+    html = subtitledHtmlJson.getStringFromObject("html")
   }.build()
 
   private fun createWrittenTranslationFromJson(

@@ -15,6 +15,7 @@ import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.Response
 import java.lang.IllegalArgumentException
@@ -54,7 +55,7 @@ class PlatformParameterSyncUpWorker private constructor(
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
-      when (inputData.getString(WORKER_TYPE_KEY)) {
+      when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
         PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
         else -> Result.failure()
       }

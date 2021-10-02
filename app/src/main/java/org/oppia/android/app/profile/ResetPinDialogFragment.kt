@@ -3,7 +3,9 @@ package org.oppia.android.app.profile
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 const val RESET_PIN_PROFILE_ID_ARGUMENT_KEY = "ResetPinDialogFragment.reset_pin_profile_id"
@@ -27,12 +29,12 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val profileId = arguments?.getInt(RESET_PIN_PROFILE_ID_ARGUMENT_KEY)
-    val name = arguments?.getString(RESET_PIN_NAME_ARGUMENT_KEY)
+    val name = arguments?.getStringFromBundle(RESET_PIN_NAME_ARGUMENT_KEY)
     checkNotNull(profileId) { "Profile Id must not be null" }
     checkNotNull(name) { "Name must not be null" }
     return resetPinDialogFragmentPresenter.handleOnCreateDialog(

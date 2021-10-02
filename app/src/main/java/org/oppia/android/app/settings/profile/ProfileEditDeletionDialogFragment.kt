@@ -6,9 +6,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
 
 /** [DialogFragment] that gives option to delete profile. */
-class ProfileEditDeletionDialogFragment : DialogFragment() {
+class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -25,6 +27,11 @@ class ProfileEditDeletionDialogFragment : DialogFragment() {
   }
 
   lateinit var profileEditDialogInterface: ProfileEditDialogInterface
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
+  }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val args =
