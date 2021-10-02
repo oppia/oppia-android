@@ -50,6 +50,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
+  private var isDefaultStoryExpanded: Boolean = false
 
   private lateinit var expandedChapterListIndexListener: ExpandedChapterListIndexListener
 
@@ -62,11 +63,13 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     expandedChapterListIndexListener: ExpandedChapterListIndexListener,
     internalProfileId: Int,
     topicId: String,
-    storyId: String
+    storyId: String,
+    isDefaultStoryExpanded : Boolean
   ): View? {
     this.internalProfileId = internalProfileId
     this.topicId = topicId
     this.storyId = storyId
+    this.isDefaultStoryExpanded = isDefaultStoryExpanded
     this.currentExpandedChapterListIndex = currentExpandedChapterListIndex
     this.expandedChapterListIndexListener = expandedChapterListIndexListener
 
@@ -136,10 +139,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     binding.viewModel = storySummaryViewModel
 
     val position = topicLessonViewModel.itemList.indexOf(storySummaryViewModel)
-    if (storySummaryViewModel.storySummary.storyId == storyId) {
+    if (storySummaryViewModel.storySummary.storyId == storyId && !isDefaultStoryExpanded) {
       val index = topicLessonViewModel.getIndexOfStory(storySummaryViewModel.storySummary)
       currentExpandedChapterListIndex = index + 1
-      //storyId = ""
+      isDefaultStoryExpanded = true
     }
 
     var isChapterListVisible = false

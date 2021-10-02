@@ -785,9 +785,26 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_chapterListIsHidden() {
+  fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_chapterListIsNotVisible() {
     launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
+      scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_recycler_view
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_changeConfiguration_chapterListIsNotVisible() {
+    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
+      scrollToPosition(position = 1)
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      orientationLandscape()
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
