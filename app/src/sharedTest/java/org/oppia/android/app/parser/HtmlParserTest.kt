@@ -458,6 +458,29 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val htmlResult = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "You can read more about the CC-BY-SA 4.0 license <a href=\"https://creativecommons.org/licenses/by-sa/4.0/legalcode\"> here</a>",
+        textView,
+        supportsConceptCards = false
+      )
+    }
+
+    // Verify the displayed text is correct & has a clickable span.
+    val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
+    assertThat(htmlResult.toString()).isEqualTo("You can read more about the CC-BY-SA 4.0 license here")
+    assertThat(clickableSpans).hasLength(1)
+  }
+
+  @Test
   fun testHtmlContent_withConceptCard_noLinkSupport_clickSpan_doesNothing() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,

@@ -53,7 +53,6 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
     setUpViewPager()
     addDots()
-
     return binding.root
   }
 
