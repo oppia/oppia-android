@@ -319,4 +319,7 @@
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">80dp</dimen>
 
+  <!-- Story Header View -->
+  <dimen name="story_header_view_layout_margin_start">76dp</dimen>
+  <dimen name="story_header_view_layout_margin_end">72dp</dimen>
 </resources>
