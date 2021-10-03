@@ -503,4 +503,8 @@
 
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">128dp</dimen>
+
+  <!-- Story Header View -->
+  <dimen name="story_header_view_layout_margin_start">32dp</dimen>
+  <dimen name="story_header_view_layout_margin_end">32dp</dimen>
 </resources>
