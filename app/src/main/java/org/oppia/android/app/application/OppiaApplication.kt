@@ -7,6 +7,7 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.google.firebase.FirebaseApp
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** The root [Application] of the Oppia app. */

@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.audio
 
 import androidx.databinding.ObservableField
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
@@ -14,15 +13,15 @@ import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import java.util.Locale
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 
 /** [ObservableViewModel] for audio-player state. */
 @FragmentScope
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
-  private val fragment: Fragment,
-  @DefaultResourceBucketName private val gcsResource: String
+  @DefaultResourceBucketName private val gcsResource: String,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : ObservableViewModel() {
 
   private lateinit var state: State
@@ -85,7 +84,7 @@ class AudioViewModel @Inject constructor(
       state.recordedVoiceoversMap[contentId ?: state.content.contentId]
         ?: VoiceoverMapping.getDefaultInstance()
       ).voiceoverMappingMap
-    languages = voiceoverMap.keys.toList().map { it.toLowerCase(Locale.getDefault()) }
+    languages = voiceoverMap.keys.toList().map { machineLocale.run { it.toMachineLowerCase() } }
     when {
       selectedLanguageCode.isEmpty() && languages.any {
         it == defaultLanguage

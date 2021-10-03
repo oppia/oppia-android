@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 private const val KEY_TOPIC_ID_ARGUMENT = "TOPIC_ID"
@@ -28,7 +30,7 @@ class WalkthroughFinalFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(
@@ -41,7 +43,7 @@ class WalkthroughFinalFragment : InjectableFragment() {
         "Expected arguments to be passed to WalkthroughFinalFragment"
       }
     val topicId =
-      checkNotNull(args.getString(KEY_TOPIC_ID_ARGUMENT)) {
+      checkNotNull(args.getStringFromBundle(KEY_TOPIC_ID_ARGUMENT)) {
         "Expected topicId to be passed to WalkthroughFinalFragment"
       }
     return walkthroughFinalFragmentPresenter.handleCreateView(inflater, container, topicId)

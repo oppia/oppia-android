@@ -232,23 +232,27 @@ def oppia_android_application(name, config_file, **kwargs):
     module_zip_name = "%s_module_zip" % name
     native.android_binary(
         name = binary_name,
+        tags = ["manual"],
         **kwargs
     )
     _convert_apk_to_module_aab(
         name = module_aab_name,
         input_file = ":%s.apk" % binary_name,
         output_file = "%s.aab" % module_aab_name,
+        tags = ["manual"],
     )
     _convert_module_aab_to_structured_zip(
         name = module_zip_name,
         input_file = ":%s.aab" % module_aab_name,
         output_file = "%s.zip" % module_zip_name,
+        tags = ["manual"],
     )
     _bundle_module_zip_into_deployable_aab(
         name = name,
         input_file = ":%s.zip" % module_zip_name,
         config_file = config_file,
         output_file = "%s.aab" % name,
+        tags = ["manual"],
     )
 
 def declare_deployable_application(name, aab_target):
@@ -275,4 +279,5 @@ def declare_deployable_application(name, aab_target):
     _generate_apks_and_install(
         name = name,
         input_file = aab_target,
+        tags = ["manual"],
     )
