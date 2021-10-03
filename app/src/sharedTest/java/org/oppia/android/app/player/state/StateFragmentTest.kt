@@ -1332,42 +1332,10 @@ class StateFragmentTest {
       onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
     }
   }
-  @Test
-  fun testStateFragment_interactions_land_noItemSelected_selectionTextIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      rotateToLandscape()
-      startPlayingExploration()
-      playThroughPrototypeState1()
-      playThroughPrototypeState2()
-      playThroughPrototypeState3()
-      playThroughPrototypeState4()
-
-      // Verify that the attributes required for correct accessibility support are present.
-      verifyViewTypeIsPresent(SELECTION_INTERACTION)
-      onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
-    }
-  }
 
   @Test
   fun testStateFragment_interactions_singleItemSelected_selectionTextIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-      playThroughPrototypeState1()
-      playThroughPrototypeState2()
-      playThroughPrototypeState3()
-      playThroughPrototypeState4()
-
-      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
-      // Verify that the attributes required for correct accessibility support are present.
-      verifyViewTypeIsPresent(SELECTION_INTERACTION)
-      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
-  fun testStateFragment_interactions_land_singleItemSelected_selectionTextIsNotDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      rotateToLandscape()
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
@@ -1399,44 +1367,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_land_multipleItemSelected_selectionTextIsNotDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      rotateToLandscape()
-      startPlayingExploration()
-      playThroughPrototypeState1()
-      playThroughPrototypeState2()
-      playThroughPrototypeState3()
-      playThroughPrototypeState4()
-
-      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
-      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
-      // Verify that the attributes required for correct accessibility support are present.
-      verifyViewTypeIsPresent(SELECTION_INTERACTION)
-      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
   fun testStateFragment_interactions_selectUnselectCheckbox_selectionTextIsDisplayedCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-      playThroughPrototypeState1()
-      playThroughPrototypeState2()
-      playThroughPrototypeState3()
-      playThroughPrototypeState4()
-
-      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
-      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
-      // Verify that the attributes required for correct accessibility support are present.
-      verifyViewTypeIsPresent(SELECTION_INTERACTION)
-      onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testStateFragment_interactions_changeConfiguration_selectUnselectCheckbox_selectionTextIsDisplayedCorrectly() { // ktlint-disable max-line-length
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      rotateToLandscape()
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
