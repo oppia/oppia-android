@@ -1,4 +1,4 @@
-package org.oppia.android.app.TermsOfServicetermsofservice
+package org.oppia.android.app.privacypolicytermsofservice
 
 import android.app.Activity
 import android.app.Application
