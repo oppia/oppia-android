@@ -13,7 +13,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import java.util.Locale
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileChooserFragment]. */
@@ -21,7 +21,8 @@ import javax.inject.Inject
 class ProfileChooserViewModel @Inject constructor(
   fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : ObservableViewModel() {
 
   private val routeToAdminPinListener = fragment as RouteToAdminPinListener
@@ -59,7 +60,7 @@ class ProfileChooserViewModel @Inject constructor(
     }
 
     val sortedProfileList = profileList.sortedBy {
-      it.profile.name.toLowerCase(Locale.getDefault())
+      machineLocale.run { it.profile.name.toMachineLowerCase() }
     }.toMutableList()
 
     val adminProfile = sortedProfileList.find { it.profile.isAdmin }!!

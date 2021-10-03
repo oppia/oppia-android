@@ -5,14 +5,15 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
 
 /**
  * DialogFragment that visible to the user when they exit a partially complete exploration with
  * unsaved progress.
  */
-class UnsavedExplorationDialogFragment : DialogFragment() {
+class UnsavedExplorationDialogFragment : InjectableDialogFragment() {
   companion object {
     /**
      * Responsible for displaying content in DialogFragment.
@@ -22,6 +23,11 @@ class UnsavedExplorationDialogFragment : DialogFragment() {
     fun newInstance(): UnsavedExplorationDialogFragment {
       return UnsavedExplorationDialogFragment()
     }
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -38,7 +38,7 @@ class MavenDependenciesListCheckTest {
   private val DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX =
     "//third_party:androidx_databinding_databinding-adapters"
   private val PROTO_DEP_WITH_THIRD_PARTY_PREFIX =
-    "//third_party:com_google_protobuf_protobuf-lite"
+    "//third_party:com_google_protobuf_protobuf-javalite"
   private val GLIDE_DEP_WITH_THIRD_PARTY_PREFIX =
     "//third_party:com_github_bumptech_glide_annotations"
   private val FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX =
@@ -292,8 +292,12 @@ class MavenDependenciesListCheckTest {
   fun testMavenDepsListCheck_singleDepRemoved_failsAndCallsOutRedundantDep() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
     val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      this.licenseName = "Terms of Service for Firebase Services"
+      this.originalLink = "https://fabric.io/terms"
+      this.directLinkOnly = DirectLinkOnly.newBuilder().apply {
+        url = "https://firebase.google.com/terms"
+      }.build()
+      this.isOriginalLinkInvalid = true
     }.build()
     val license2 = License.newBuilder().apply {
       this.licenseName = "Simplified BSD License"
@@ -306,8 +310,8 @@ class MavenDependenciesListCheckTest {
       this.addAllMavenDependency(
         listOf(
           MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
+            this.artifactName = IO_FABRIC_DEP
+            this.artifactVersion = IO_FABRIC_VERSION
             this.addLicense(license1)
           }.build(),
           MavenDependency.newBuilder().apply {
@@ -341,11 +345,15 @@ class MavenDependenciesListCheckTest {
 
       Redundant dependencies that need to be removed:
 
-      artifact_name: "$DATA_BINDING_DEP"
-      artifact_version: "$DATA_BINDING_VERSION"
+      artifact_name: "$IO_FABRIC_DEP"
+      artifact_version: "$IO_FABRIC_VERSION"
       license {
-        license_name: "The Apache License, Version 2.0"
-        original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        license_name: "Terms of Service for Firebase Services"
+        original_link: "https://fabric.io/terms"
+        direct_link_only {
+          url: "https://firebase.google.com/terms"
+        }
+        is_original_link_invalid: true
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.

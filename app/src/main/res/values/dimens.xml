@@ -136,7 +136,7 @@
   <dimen name="drag_drop_item_exploration_view_margin_end">24dp</dimen>
   <dimen name="drag_drop_item_question_view_margin_top">24dp</dimen>
   <dimen name="numeric_input_interaction_item_conversation_view_margin_end">24dp</dimen>
-  <dimen name="profile_chooser_add_view_margin_top_profile_not_added">84dp</dimen>
+  <dimen name="profile_chooser_add_view_margin_top_profile_not_added">60dp</dimen>
   <dimen name="profile_chooser_description_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_description_margin_end_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_add_view_margin_end_profile_not_added">24dp</dimen>
@@ -444,6 +444,11 @@
   <dimen name="all_topics_text_margin_end">32dp</dimen>
   <dimen name="all_topics_text_margin_bottom">12dp</dimen>
 
+  <!-- Profile Chooser Fragment -->
+  <dimen name="profile_chooser_fragment_profile_select_text_margin_top">64dp</dimen>
+  <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">36dp</dimen>
+  <dimen name="profile_chooser_profile_view_view_margin_top">60dp</dimen>
+
   <!-- Coming Soon Topic List -->
   <dimen name="coming_soon_topic_list_constraint_layout_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_list_constraint_layout_padding_end">0dp</dimen>
@@ -458,10 +463,37 @@
   <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">108dp</dimen>
 
+  <!-- Completed Story Item -->
+  <dimen name="completed_story_item_topic_container_margin_start">8dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_end">8dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_top">12dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_bottom">12dp</dimen>
+
+  <!-- Completed Story list Fragment -->
+  <dimen name="completed_story_list_fragment_recyclerview_padding_start">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_top">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_end">20dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_bottom">144dp</dimen>
+
   <!-- App Version -->
   <dimen name="app_version_text_view_padding_start">16dp</dimen>
   <dimen name="app_version_text_view_padding_end">16dp</dimen>
   <dimen name="app_version_image_view_margin_start">24dp</dimen>
   <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
+  <!-- Add Profile -->
+  <dimen name="add_profile_container_width">304dp</dimen>
+  <dimen name="add_profile_main_padding_top">48dp</dimen>
+  <dimen name="add_profile_main_padding_bottom">64dp</dimen>
+  <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
+  <dimen name="add_profile_confirm_pin_margin_top">24dp</dimen>
+
+  <dimen name="home_fragment_padding_top">36dp</dimen>
+  <dimen name="home_fragment_padding_bottom">148dp</dimen>
+
+  <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
+  <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="promoted_story_card_layout_width">280dp</dimen>
+  <dimen name="promoted_story_card_text_size">16sp</dimen>
+  <dimen name="promoted_story_card_margin_top">8dp</dimen>
 </resources>

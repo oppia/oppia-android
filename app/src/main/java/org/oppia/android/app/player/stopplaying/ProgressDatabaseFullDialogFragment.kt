@@ -5,8 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getStringFromBundle
+import javax.inject.Inject
 
 private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
   "MaximumStorageCapacityReachedDialogFragment.oldest_saved_exploration_title"
@@ -20,7 +24,10 @@ private const val OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY =
  * the current progress, leave the exploration without saving the current progress, or go back to
  * continue the current exploration.
  */
-class ProgressDatabaseFullDialogFragment : DialogFragment() {
+class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   companion object {
     /**
      * Responsible for displaying content in DialogFragment.
@@ -39,9 +46,16 @@ class ProgressDatabaseFullDialogFragment : DialogFragment() {
     }
   }
 
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
+  }
+
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val oldestSavedExplorationTitle = arguments
-      ?.getString(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
+    val args = checkNotNull(arguments) { "Expected arguments to be passed to dialog fragment" }
+    val oldestSavedExplorationTitle =
+      args.getStringFromBundle(OLDEST_SAVED_EXPLORATION_TITLE_ARGUMENT_KEY)
+        ?: error("Expected exploration title to be passed via arguments")
     val stopStatePlayingSessionListenerWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =
         activity as StopStatePlayingSessionWithSavedProgressListener
@@ -50,7 +64,9 @@ class ProgressDatabaseFullDialogFragment : DialogFragment() {
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.progress_database_full_dialog_title)
       .setMessage(
-        getString(R.string.progress_database_full_dialog_description, oldestSavedExplorationTitle)
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.progress_database_full_dialog_description, oldestSavedExplorationTitle
+        )
       )
       .setPositiveButton(R.string.progress_database_full_dialog_continue_button) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
