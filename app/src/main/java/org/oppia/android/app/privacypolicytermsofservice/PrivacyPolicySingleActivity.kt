@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.help.thirdparty.LicenseListActivity
 import javax.inject.Inject
 
 /** The Privacy Policy page activity for placement of single PRIVACY_POLICY. */

@@ -88,7 +88,10 @@ import javax.inject.Singleton
 /** Tests for [PrivacyPolicySingleActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PrivacyPolicySingleActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@Config(
+  application = PrivacyPolicySingleActivityTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class PrivacyPolicySingleActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -107,7 +110,9 @@ class PrivacyPolicySingleActivityTest {
 
   @get:Rule
   var activityTestRule: ActivityTestRule<PrivacyPolicySingleActivity> = ActivityTestRule(
-    PrivacyPolicySingleActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    PrivacyPolicySingleActivity::class.java, /* initialTouchMode= */
+    true, /* launchActivity= */
+    false
   )
 
   @Inject
