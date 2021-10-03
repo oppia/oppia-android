@@ -11,10 +11,6 @@
       type="Boolean" />
 
     <variable
-      name="storyPercentage"
-      type="Integer" />
-
-    <variable
       name="viewModel"
       type="org.oppia.android.app.topic.lessons.StorySummaryViewModel" />
   </data>
@@ -59,7 +55,7 @@
               android:id="@+id/story_progress_container"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:contentDescription="@{@string/topic_story_progress_percentage(storyPercentage)}">
+              android:contentDescription="@{viewModel.storyProgressPercentageText}">
 
               <org.oppia.android.app.customview.SegmentedCircularProgressView
                 android:id="@+id/story_progress_view"
@@ -72,10 +68,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-medium"
-                android:text="@{@string/topic_story_progress_percentage(storyPercentage)}"
+                android:text="@{viewModel.storyProgressPercentageText}"
                 android:textColor="@color/oppiaPrimaryText"
                 android:textSize="14sp"
-                android:visibility="@{storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
             </FrameLayout>
 
             <TextView
@@ -84,10 +80,10 @@
               android:layout_gravity="center_horizontal"
               android:layout_marginTop="4dp"
               android:fontFamily="sans-serif"
-              android:text="@{storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
+              android:text="@{viewModel.storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
               android:textColor="@color/oppiaPrimaryText"
               android:textSize="10sp"
-              android:visibility="@{storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
+              android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
           </LinearLayout>
 
           <LinearLayout
@@ -101,7 +97,7 @@
               android:layout_height="wrap_content"
               android:layout_marginStart="20dp"
               android:layout_weight="1"
-              android:contentDescription="@{String.format(@string/chapter_count_with_story_name, @plurals/chapter_count(viewModel.storySummary.chapterCount, viewModel.storySummary.chapterCount), viewModel.storySummary.storyName)}"
+              android:contentDescription="@{viewModel.computeStoryNameChapterCountContainerContentDescription()}"
               android:gravity="center_vertical"
               android:orientation="vertical">
 
@@ -123,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:importantForAccessibility="no"
-                android:text="@{@plurals/chapter_count(viewModel.storySummary.chapterCount, viewModel.storySummary.chapterCount)}"
+                android:text="@{viewModel.computeChapterCountText()}"
                 android:textColor="@color/oppiaPrimaryText"
                 android:textSize="16sp" />
             </LinearLayout>

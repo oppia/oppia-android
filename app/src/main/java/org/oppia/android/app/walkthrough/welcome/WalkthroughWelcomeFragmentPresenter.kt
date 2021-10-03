@@ -12,6 +12,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPageChanger
@@ -29,7 +30,8 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : WalkthroughPageChanger {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
@@ -97,7 +99,9 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
 
   private fun setProfileName() {
     if (::walkthroughWelcomeViewModel.isInitialized && ::profileName.isInitialized) {
-      walkthroughWelcomeViewModel.profileName.set(activity.getString(R.string.welcome, profileName))
+      walkthroughWelcomeViewModel.profileName.set(
+        resourceHandler.getStringInLocaleWithWrapping(R.string.welcome, profileName)
+      )
     }
   }
 
