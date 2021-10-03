@@ -74,7 +74,7 @@ class TopicLessonsFragment :
     val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicLessonsFragment."
     }
-    val storyId = arguments?.getString(STORY_ID_ARGUMENT_KEY) ?: ""
+    val storyId = arguments?.getStringFromBundle(STORY_ID_ARGUMENT_KEY) ?: ""
 
     return topicLessonsFragmentPresenter.handleCreateView(
       inflater,
