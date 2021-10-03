@@ -22,9 +22,9 @@ class TermsOfServiceSingleActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val TERMS_OF_SERVICE_SINGLE_ACTIVITY = "TermsOfServiceSingleActivity"
+    private const val TERMS_OF_SERVICE_SINGLE_ACTIVITY = "TermsOfServiceSingleActivity"
 
+    /** Returns [Intent] for [TermsOfServiceSingleActivity]. */
     fun createTermsOfServiceSingleActivityIntent(context: Context): Intent {
       return Intent(context, TermsOfServiceSingleActivity::class.java)
     }

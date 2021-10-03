@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
 import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceSingleActivity
 import org.oppia.android.databinding.TermsOfServiceSingleActivityBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -23,6 +24,7 @@ class TermsOfServiceSingleActivityPresenter @Inject constructor(
   private lateinit var termsOfServiceSingleActivityToolbar: Toolbar
   private lateinit var termsOfServiceDescription: String
 
+  /** Handles onCreate() method of the [TermsOfServiceSingleActivity]. */
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<TermsOfServiceSingleActivityBinding>(
       activity,

@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.help.thirdparty.LicenseListActivity
 import org.oppia.android.databinding.PrivacyPolicySingleActivityBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
@@ -22,6 +23,7 @@ class PrivacyPolicySingleActivityPresenter @Inject constructor(
   private lateinit var privacyPolicySingleActivityToolbar: Toolbar
   private lateinit var privacyPolicyDescription: String
 
+  /** Handles onCreate() method of the [PrivacyPolicySingleActivity]. */
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<PrivacyPolicySingleActivityBinding>(
       activity,

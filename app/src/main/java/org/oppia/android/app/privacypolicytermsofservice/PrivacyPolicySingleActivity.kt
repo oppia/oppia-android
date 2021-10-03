@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.help.thirdparty.LicenseListActivity
 import javax.inject.Inject
 
 /** The Privacy Policy page activity for placement of single PRIVACY_POLICY. */
@@ -21,9 +22,9 @@ class PrivacyPolicySingleActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val PRIVACY_POLICY_SINGLE_ACTIVITY = "PrivacyPolicySingleActivity"
+    private const val PRIVACY_POLICY_SINGLE_ACTIVITY = "PrivacyPolicySingleActivity"
 
+    /** Returns [Intent] for [PrivacyPolicySingleActivity]. */
     fun createPrivacyPolicySingleActivityIntent(context: Context): Intent {
       return Intent(context, PrivacyPolicySingleActivity::class.java)
     }
