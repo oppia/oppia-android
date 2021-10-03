@@ -14,10 +14,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
-        "//third_party:androidx_work_work-runtime",
-        "//third_party:androidx_work_work-runtime-ktx",
-        "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+        "//domain/src/main/java/org/oppia/android/domain/util:asset",
     ],
 )
 
