@@ -89,7 +89,10 @@ import javax.inject.Singleton
 /** Tests for [TermsOfServiceSingleActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = TermsOfServiceSingleActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@Config(
+  application = TermsOfServiceSingleActivityTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class TermsOfServiceSingleActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -108,7 +111,9 @@ class TermsOfServiceSingleActivityTest {
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TermsOfServiceSingleActivity> = ActivityTestRule(
-    TermsOfServiceSingleActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+    TermsOfServiceSingleActivity::class.java, /* initialTouchMode= */
+    true, /* launchActivity= */
+    false
   )
 
   @Inject
