@@ -1289,9 +1289,8 @@ class StateFragmentTest {
     }
   }
 
-
   @Test
-  fun testStateFragment_interactions_radioItemSelection_selectionTextIsNotDisplayed(){
+  fun testStateFragment_interactions_radioItemSelection_selectionTextIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1435,7 +1434,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_changeConfiguration_selectUnselectCheckbox_selectionTextIsDisplayedCorrectly() {
+  fun testStateFragment_interactions_changeConfiguration_selectUnselectCheckbox_selectionTextIsDisplayedCorrectly() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       rotateToLandscape()
       startPlayingExploration()
