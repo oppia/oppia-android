@@ -120,10 +120,8 @@ class HtmlParserTest {
 
   @Mock
   lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
-
   @Captor
   lateinit var viewCaptor: ArgumentCaptor<View>
-
   @Captor
   lateinit var stringCaptor: ArgumentCaptor<String>
 
