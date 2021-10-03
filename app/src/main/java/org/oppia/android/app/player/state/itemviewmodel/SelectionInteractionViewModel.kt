@@ -50,7 +50,7 @@ class SelectionInteractionViewModel(
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
 
-  /**Number of selected answers. It updates on answer selection.*/
+  /**It stores the number of selected answers. It updates on answer selection updates.*/
   val selectedItemsCount = ObservableInt()
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
