@@ -818,7 +818,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_changeConfiguration_chapterListIsNotVisible() { // ktlint-disable max-line-length
+  fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_land_chapterListIsNotVisible() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
