@@ -332,8 +332,14 @@
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">4dp</dimen>
 
+  <!-- Topic Practice -->
+  <dimen name="topic_practice_subtopic_layout_margin_start">8dp</dimen>
+  <dimen name="topic_practice_subtopic_layout_margin_end">0dp</dimen>
+  <dimen name="topic_practice_subtopic_layout_width">360dp</dimen>
+
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
+
 
   <!-- TopicRevisionFragment -->
   <dimen name="topic_revision_fragment_padding_start">64dp</dimen>
