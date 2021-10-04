@@ -178,6 +178,28 @@ The following instructions describe how to make a one-off code change using a fe
   By using this command git will detect the file as a renamed file.
 
 
+## Finding something to do
+**Starter projects for new contributors**
+
+Welcome! Please make sure to follow the onboarding instructions above if you haven’t already. After that, we’d strongly recommend tackling some part of one of the following starter issues.
+
+**UI**
+
+ - [RTL Exempted files](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+RTL+Exempted+file)
+ - [Merge different versions of a xml into a single xml file](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+single+xml+file)
+
+**Bazel**
+
+ - [Create bazel subpackage](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22Bazel+Stage+2%22+label%3A%22good+first+issue%22)
+
+**Accessibility**
+
+ - [Accessibility support](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+a11y)
+
+**Testing**
+
+ - [Add missing tests](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+tests)
+
 ## Communication channels
 
 ### Mailing lists
