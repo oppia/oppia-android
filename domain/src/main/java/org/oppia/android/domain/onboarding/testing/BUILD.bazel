@@ -1,0 +1,32 @@
+"""
+Domain definitions for onboarding testing.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "exp_mdr",
+    srcs = [
+        "ExpirationMetaDataRetrieverTestModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":fake_exp_mdr",
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:exp_mdr",
+    ],
+)
+
+kt_android_library(
+    name = "fake_exp_mdr",
+    srcs = [
+        "FakeExpirationMetaDataRetriever.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:exp_mdr",
+        "//third_party:javax_inject_javax_inject",    ],
+)
+
+dagger_rules()

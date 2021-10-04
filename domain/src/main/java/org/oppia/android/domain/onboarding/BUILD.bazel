@@ -1,0 +1,62 @@
+"""
+Domain definitions for onboarding.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "state_controller",
+    srcs = [
+        "AppStartupStateController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":exp_mdr",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+        "//third_party:javax_inject_javax_inject",
+        "//model:onboarding_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "retriever_module",
+    srcs = [
+        "ExpirationMetaDataRetrieverModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":exp_mdr",
+        ":exp_mdr_imp",
+        ":dagger",
+    ],
+)
+
+kt_android_library(
+    name = "exp_mdr",
+    srcs = [
+        "ExpirationMetaDataRetriever.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+
+    ],
+)
+
+kt_android_library(
+    name = "exp_mdr_imp",
+    srcs = [
+        "ExpirationMetaDataRetrieverImpl.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        ":exp_mdr",
+    ],
+)
+
+dagger_rules()
