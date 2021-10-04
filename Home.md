@@ -52,6 +52,27 @@ If you are on Windows, please set up the environment path correctly for `Java`.
     - If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and the environment path variable is also set up.
     - If you find any error while pushing the code, related to kotlin or Java/Checkstyle, please check [here](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow#how-to-fix-push-failures)
 
+## Troubleshooting Installation
+**General**
+
+Here are some general troubleshooting tips for oppia-android. The platform specific are Linux, Windows and Mac OS.
+1. No matching toolchains (sdk_toolchain_type)
+    ```
+    ERROR: While resolving toolchains for target //:oppia: no matching toolchains found for types         
+    @bazel_tools//tools/android:sdk_toolchain_type
+    ERROR: Analysis of target '//:oppia' failed; build aborted: no matching toolchains found for types 
+    @bazel_tools//tools/android:sdk_toolchain_type
+    INFO: Elapsed time: 12.805s
+    INFO: 0 processes.
+    FAILED: Build did NOT complete successfully (13 packages loaded, 51 targets configured)
+    ```
+    [Steps](https://docs.bazel.build/versions/main/tutorial/android-app.html#integrate-with-the-android-sdk) to add ANDROID_HOME environment variable.
+
+**Can’t find the particular issue?**
+
+If the error you get is not in the troubleshooting page, create an issue providing us all the necessary information.
+
+
 ## Instructions for making a code change
 
 **Working on your first Pull Request?** You can learn how from this free series: [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
