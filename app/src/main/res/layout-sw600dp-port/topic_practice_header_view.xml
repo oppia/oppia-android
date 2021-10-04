@@ -12,11 +12,11 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="32dp"
-    android:paddingBottom="20dp">
+    android:layout_marginTop="@dimen/topic_practice_header_view_frame_layout_margin_top"
+    android:paddingBottom="@dimen/topic_practice_header_view_frame_layout_padding_bottom">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="360dp"
+      android:layout_width="@dimen/topic_practice_header_view_constraint_layout_layout_width"
       android:layout_height="wrap_content"
       android:layout_gravity="center">
 
@@ -27,7 +27,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="@string/topic_practice_master_these_skills"
         android:textColor="@color/oppiaPrimaryText"
-        android:textSize="20sp"
+        android:textSize="@dimen/topic_practice_header_view_master_skills_text_view_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,11 +35,11 @@
         android:id="@+id/skills_description_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/topic_practice_header_view_skills_description_text_view_layout_margin_top"
         android:fontFamily="sans-serif"
         android:text="@string/topic_practice_skills_description"
         android:textColor="@color/oppiaSecondaryText"
-        android:textSize="16sp"
+        android:textSize="@dimen/topic_practice_header_view_skills_description_text_view_text_size"
         app:layout_constraintStart_toStartOf="@+id/master_skills_text_view"
         app:layout_constraintTop_toBottomOf="@+id/master_skills_text_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
