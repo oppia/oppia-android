@@ -41,10 +41,6 @@ file_content_checks {
   file_path_regex: ".+?.xml"
   prohibited_content_regex: "paddingLeft|paddingRight|drawableLeft|drawableRight|layout_alignLeft|layout_alignRight|layout_marginLeft|layout_marginRight|layout_alignParentLeft|layout_alignParentRight|layout_toLeftOf|layout_toRightOf|layout_constraintLeft_toLeftOf|layout_constraintLeft_toRightOf|layout_constraintRight_toLeftOf|layout_constraintRight_toRightOf|layout_goneMarginLeft|layout_goneMarginRight"
   failure_message: "Use start/end versions of layout properties, instead, for proper RTL support"
-  exempted_file_name: "app/src/main/res/layout/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-land/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-land/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-port/profile_progress_header.xml"
   exempted_file_name: "app/src/main/res/values/styles.xml"
 }
 file_content_checks {
