@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.PrivacyPolicySingleActivityBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class PrivacyPolicySingleActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val htmlParserFactory: HtmlParser.Factory,
+  private val resourceHandler: AppLanguageResourceHandler,
   @DefaultResourceBucketName private val resourceBucketName: String
 ) {
 
@@ -34,7 +36,8 @@ class PrivacyPolicySingleActivityPresenter @Inject constructor(
 
     privacyPolicySingleActivityToolbar = binding.privacyPolicySingleActivityToolbar
     activity.setSupportActionBar(privacyPolicySingleActivityToolbar)
-    activity.supportActionBar!!.title = activity.getString(R.string.privacy_policy_activity_title)
+    activity.supportActionBar!!.title =
+      resourceHandler.getStringInLocale(R.string.privacy_policy_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
@@ -45,17 +48,17 @@ class PrivacyPolicySingleActivityPresenter @Inject constructor(
     // NOTE: Here entityType and entityId can be anything as it will actually not get used.
     // They are needed only for cases where rich-text contains images from server and in PrivacyPolicy
     // we do not have images.
-    privacyPolicyDescription = activity.getString(R.string.privacy_policy_content)
-    val privacyPolicydescriptionTextView =
+    privacyPolicyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
+    val privacyPolicyDescriptionTextView =
       activity.findViewById<TextView>(R.id.privacy_policy_description_text_view)
-    privacyPolicydescriptionTextView.text = htmlParserFactory.create(
+    privacyPolicyDescriptionTextView.text = htmlParserFactory.create(
       resourceBucketName,
       entityType = "PrivacyPolicy",
       entityId = "oppia",
       imageCenterAlign = false
     ).parseOppiaHtml(
       privacyPolicyDescription,
-      privacyPolicydescriptionTextView
+      privacyPolicyDescriptionTextView
     )
   }
 }

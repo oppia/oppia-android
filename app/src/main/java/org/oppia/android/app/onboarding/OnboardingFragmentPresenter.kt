@@ -134,10 +134,11 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setTermsAndCondition(binding: OnboardingSlideFinalBinding) {
-    val termsOfService: String = activity.getString(R.string.terms_of_service)
-    val privacyPolicy: String = activity.getString(R.string.privacy_policy)
+    val termsOfService: String = resourceHandler.getStringInLocale(R.string.terms_of_service)
+    val privacyPolicy: String = resourceHandler.getStringInLocale(R.string.privacy_policy)
     val completeString: String =
-      activity.getString(R.string.agree_to_terms) + termsOfService + " and " + privacyPolicy
+      resourceHandler.getStringInLocale(R.string.agree_to_terms) +
+        termsOfService + " and " + privacyPolicy
 
     val startIndex = completeString.indexOf(termsOfService)
     val endIndex = startIndex + termsOfService.length
@@ -148,6 +149,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       override fun onClick(widget: View) {
         (activity as RouteToTermsOfServiceSingleListener).onRouteToTermsOfServiceSingle()
       }
+
       override fun updateDrawState(ds: TextPaint) {
         super.updateDrawState(ds)
         ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
@@ -158,6 +160,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       override fun onClick(widget: View) {
         (activity as RouteToPrivacyPolicySingleListener).onRouteToPrivacyPolicySingle()
       }
+
       override fun updateDrawState(ds: TextPaint) {
         super.updateDrawState(ds)
         ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)

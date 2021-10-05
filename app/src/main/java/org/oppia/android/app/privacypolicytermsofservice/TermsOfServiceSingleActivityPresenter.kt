@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceSingleActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TermsOfServiceSingleActivityBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
@@ -17,6 +18,7 @@ import javax.inject.Inject
 class TermsOfServiceSingleActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val htmlParserFactory: HtmlParser.Factory,
+  private val resourceHandler: AppLanguageResourceHandler,
   @DefaultResourceBucketName private val resourceBucketName: String
 ) {
 
@@ -35,7 +37,8 @@ class TermsOfServiceSingleActivityPresenter @Inject constructor(
 
     termsOfServiceSingleActivityToolbar = binding.termsOfServiceSingleActivityToolbar
     activity.setSupportActionBar(termsOfServiceSingleActivityToolbar)
-    activity.supportActionBar!!.title = activity.getString(R.string.terms_of_service_activity_title)
+    activity.supportActionBar!!.title =
+      resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
@@ -46,17 +49,17 @@ class TermsOfServiceSingleActivityPresenter @Inject constructor(
     // NOTE: Here entityType and entityId can be anything as it will actually not get used.
     // They are needed only for cases where rich-text contains images from server and in TermsOfService
     // we do not have images.
-    termsOfServiceDescription = activity.getString(R.string.terms_of_service_content)
-    val TermsOfServicedescriptionTextView =
+    termsOfServiceDescription = resourceHandler.getStringInLocale(R.string.terms_of_service_content)
+    val termsOfServiceDescriptionTextView =
       activity.findViewById<TextView>(R.id.terms_of_service_description_text_view)
-    TermsOfServicedescriptionTextView.text = htmlParserFactory.create(
+    termsOfServiceDescriptionTextView.text = htmlParserFactory.create(
       resourceBucketName,
       entityType = "TermsOfService",
       entityId = "oppia",
       imageCenterAlign = false
     ).parseOppiaHtml(
       termsOfServiceDescription,
-      TermsOfServicedescriptionTextView
+      termsOfServiceDescriptionTextView
     )
   }
 }
