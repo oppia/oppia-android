@@ -307,6 +307,8 @@
   <string name="profile_edit_delete_dialog_negative">Cancel</string>
   <string name="profile_edit_allow_download_heading">Allow Download Access</string>
   <string name="profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
+  <!-- ProfilePictureActivity -->
+  <string name="profile_picture_activity_title" >profile picture activity</string>
   <!-- ProfileProgressActivity -->
   <string name="profile_progress_edit_dialog_title">Profile Picture</string>
   <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>

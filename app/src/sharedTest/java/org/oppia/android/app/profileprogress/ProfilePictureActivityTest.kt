@@ -12,6 +12,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -92,6 +94,11 @@ class ProfilePictureActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
+  @get:Rule
+  val activityTestRule: ActivityTestRule<ProfilePictureActivity> = ActivityTestRule(
+    ProfilePictureActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -121,6 +128,18 @@ class ProfilePictureActivityTest {
       ApplicationProvider.getApplicationContext(),
       profileId
     )
+  }
+
+  @Test
+  fun testProfilePictureActivity_hasCorrectActivityLabel(){
+    activityTestRule.launchActivity(
+      createProfilePictureActivityIntent(
+        internalProfileId
+      )
+    )
+
+    val title = activityTestRule.activity.title
+    assertThat(title).isEqualTo(context.getString(R.string.profile_picture_activity_title))
   }
 
   @Test
