@@ -320,12 +320,6 @@
   <dimen name="topic_practice_header_view_constraint_layout_layout_margin_start">96dp</dimen>
   <dimen name="topic_practice_header_view_constraint_layout_layout_margin_end">96dp</dimen>
   <dimen name="topic_practice_header_view_master_skills_text_view_layout_margin_end">0dp</dimen>
-  <dimen name="topic_practice_header_view_frame_layout_margin_top">32dp</dimen>
-  <dimen name="topic_practice_header_view_frame_layout_padding_bottom">20dp</dimen>
-  <dimen name="topic_practice_header_view_constraint_layout_layout_width">360dp</dimen>
-  <dimen name="topic_practice_header_view_master_skills_text_view_text_size">20sp</dimen>
-  <dimen name="topic_practice_header_view_skills_description_text_view_layout_margin_top">4dp</dimen>
-  <dimen name="topic_practice_header_view_skills_description_text_view_text_size">16sp</dimen>
 
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">80dp</dimen>
