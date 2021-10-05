@@ -389,7 +389,7 @@ class SplashActivityTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     val title = activityTestRule.activity.title
-    assertThat(title).isEqualTo(context.getString(R.string.splash_activity_title))
+    assertThat(title).isEqualTo(context.getString(R.string.app_name))
   }
 
   private fun simulateAppAlreadyOnboarded() {
