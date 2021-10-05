@@ -340,6 +340,11 @@
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
 
+  <!-- Ongoing Topic List Fragment -->
+  <dimen name="ongoing_topic_list_fragment_padding_start">64dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_top">24dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_end">64dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_bottom">112dp</dimen>
 
   <!-- TopicRevisionFragment -->
   <dimen name="topic_revision_fragment_padding_start">64dp</dimen>
