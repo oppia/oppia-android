@@ -137,7 +137,6 @@ class ProfilePictureActivityTest {
         internalProfileId
       )
     )
-
     val title = activityTestRule.activity.title
     assertThat(title).isEqualTo(context.getString(R.string.profile_picture_activity_title))
   }
