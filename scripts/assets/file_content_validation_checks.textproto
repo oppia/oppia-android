@@ -47,7 +47,6 @@ file_content_checks {
   exempted_file_name: "app/src/main/res/layout-sw600dp-land/profile_progress_header.xml"
   exempted_file_name: "app/src/main/res/layout-sw600dp-port/profile_progress_header.xml"
   exempted_file_name: "app/src/main/res/values/styles.xml"
-  exempted_file_name: "app/src/main/res/values/themes.xml"
 }
 file_content_checks {
   file_path_regex: ".+?.xml"
