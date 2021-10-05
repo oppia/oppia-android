@@ -512,4 +512,11 @@
   <!-- Story Header View -->
   <dimen name="story_header_view_layout_margin_start">32dp</dimen>
   <dimen name="story_header_view_layout_margin_end">32dp</dimen>
+
+  <!-- Profile Progress Header-->
+  <dimen name="profile_edit_image_layout_margin_start">42dp</dimen>
+  <dimen name="profile_name_textview_layout_margin_end">202dp</dimen>
+  <dimen name="recently_played_stories_textView_layout_margin_start">42dp</dimen>
+  <dimen name="view_all_textview_margin_end">24dp</dimen>
+
 </resources>
