@@ -43,7 +43,6 @@ _FLAVOR_METADATA = {
         "min_sdk_version": 21,
         "target_sdk_version": 29,
         "multidex": "native",
-        "dex_shards": 1,
         "proguard_specs": [],  # Developer builds are not optimized.
         "deps": [
             "//app",
@@ -56,7 +55,6 @@ _FLAVOR_METADATA = {
         "target_sdk_version": 29,
         "multidex": "manual_main_dex",
         "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
-        "dex_shards": 1,
         "proguard_specs": [],  # Developer builds are not optimized.
         "deps": [
             "//app",
@@ -80,7 +78,7 @@ _FLAVOR_METADATA = {
         "target_sdk_version": 29,
         "multidex": "manual_main_dex",
         "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "proguard_specs": [],  # TODO: Re-add Proguard support to alpha_kitkat.
         "deps": [
             "//app",
         ],
