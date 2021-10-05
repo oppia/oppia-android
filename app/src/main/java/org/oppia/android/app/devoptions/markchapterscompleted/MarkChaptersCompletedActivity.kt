@@ -25,7 +25,7 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(
-      MARK_CHAPTERS_COMPLETED_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1
+      PROFILE_ID_EXTRA_KEY, -1
     )
     markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
@@ -39,12 +39,12 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val MARK_CHAPTERS_COMPLETED_ACTIVITY_PROFILE_ID_EXTRA_KEY =
-      "MarkChaptersCompletedActivity.mark_chapters_completed_activity_profile_id"
+    const val PROFILE_ID_EXTRA_KEY =
+      "MarkChaptersCompletedActivity.profile_id"
 
     fun createMarkChaptersCompletedIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkChaptersCompletedActivity::class.java)
-      intent.putExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_PROFILE_ID_EXTRA_KEY, internalProfileId)
+      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }

@@ -19,9 +19,7 @@ class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_stories_completed_activity)
-    internalProfileId = intent.getIntExtra(
-      MARK_STORIES_COMPLETED_TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1
-    )
+    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     if (getMarkStoriesCompletedFragment() == null) {
       val markStoriesCompletedFragment = MarkStoriesCompletedFragment.newInstance(internalProfileId)
       supportFragmentManager.beginTransaction().add(
@@ -37,13 +35,12 @@ class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val MARK_STORIES_COMPLETED_TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
-      "MarkStoriesCompletedTestActivity.internal_profile_id"
+    const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedTestActivity.profile_id"
 
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
     fun createMarkStoriesCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkStoriesCompletedTestActivity::class.java)
-      intent.putExtra(MARK_STORIES_COMPLETED_TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, internalProfileId)
+      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }
