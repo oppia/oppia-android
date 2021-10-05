@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -10,7 +11,7 @@
       type="org.oppia.android.app.home.recentlyplayed.SectionTitleViewModel" />
   </data>
 
-  <FrameLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/topic_lessons_title_frame_margin_top">
@@ -18,6 +19,8 @@
       android:id="@+id/topic_play_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
       android:layout_marginStart="@dimen/topic_lessons_title_margin_start"
       android:layout_marginTop="@dimen/topic_lessons_title_margin_top"
       android:layout_marginEnd="@dimen/topic_lessons_title_margin_end"
@@ -25,5 +28,5 @@
       android:text="@string/stories_you_can_play"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp" />
-  </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
