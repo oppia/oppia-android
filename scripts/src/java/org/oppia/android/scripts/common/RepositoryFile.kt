@@ -6,16 +6,16 @@ import java.io.File
 class RepositoryFile() {
   companion object {
     /** A list of directories which should be excluded for every script check. */
-    private val alwaysExcludeDirectoryList = listOf(
-      ".git/",
+    private val alwaysExcludeDirectoryList = listOf<String>(
+      ".git",
       ".gitsecret",
-      ".idea/",
+      ".idea",
       ".aswb",
       "gradle",
-      "bazel-bin/",
-      "bazel-oppia-android/",
-      "bazel-out/",
-      "bazel-testlogs/",
+      "bazel-bin",
+      "bazel-oppia-android",
+      "bazel-out",
+      "bazel-testlogs",
       "app/build/",
       "data/build/",
       "domain/build/",
@@ -37,17 +37,17 @@ class RepositoryFile() {
      * @return all files which need to be checked
      */
     fun collectSearchFiles(
-      repoRoot: File,
+      repoPath: String,
       expectedExtension: String = "",
-      exemptionsList: List<String> = listOf()
-    ): Sequence<File> {
-      return repoRoot.walk().filter { file ->
-        val isProhibited = checkIfProhibitedFile(retrieveRelativeFilePath(file, repoRoot))
+      exemptionsList: List<String> = listOf<String>()
+    ): List<File> {
+      return File(repoPath).walk().filter { file ->
+        val isProhibited = checkIfProhibitedFile(retrieveRelativeFilePath(file, repoPath))
         !isProhibited &&
           file.isFile &&
           file.name.endsWith(expectedExtension) &&
-          retrieveRelativeFilePath(file, repoRoot) !in exemptionsList
-      }
+          retrieveRelativeFilePath(file, repoPath) !in exemptionsList
+      }.toList()
     }
 
     /**
@@ -57,7 +57,13 @@ class RepositoryFile() {
      * @return whether the specified path should be analyzed per allow rules
      */
     private fun checkIfProhibitedFile(pathString: String): Boolean {
-      return alwaysExcludeDirectoryList.any { pathString.startsWith(it) }
+      return alwaysExcludeDirectoryList.any {
+        if (it.endsWith("/")) {
+          pathString.startsWith("$it")
+        } else {
+          pathString.startsWith("$it/")
+        }
+      }
     }
 
     /**
@@ -67,8 +73,8 @@ class RepositoryFile() {
      * @param repoPath the path of the repo to be analyzed
      * @return path relative to root repository
      */
-    fun retrieveRelativeFilePath(file: File, repoRoot: File): String {
-      return file.toRelativeString(repoRoot)
+    fun retrieveRelativeFilePath(file: File, repoPath: String): String {
+      return file.toString().removePrefix(repoPath)
     }
   }
 }
