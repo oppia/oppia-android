@@ -953,7 +953,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @Config(qualifiers = "w360dp-h760dp-port-xxxhdpi")
   fun testPinPassword_withAdmin_showHidePassword_textChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -969,7 +968,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @Config(qualifiers = "w360dp-h760dp-port-xxxhdpi")
   fun testPinPassword_withAdmin_clickShowHideIcon_hasPasswordShownContentDescription() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -993,7 +991,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @Config(qualifiers = "w360dp-h760dp-port-xxxhdpi")
   fun testPinPassword_withAdmin_showHidePassword_imageChangesToShow() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1017,7 +1014,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @Config(qualifiers = "w360dp-h760dp-port-xxxhdpi")
   fun testPinPassword_withAdmin_showHidePassword_configChange_showViewIsShown() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1043,7 +1039,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @Config(qualifiers = "w360dp-h760dp-port-xxxhdpi")
   fun testPinPassword_checkInputType_showHidePassword_inputTypeIsSame() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
