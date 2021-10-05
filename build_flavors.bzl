@@ -10,7 +10,9 @@ load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KITKAT_VER
 # flavors as they mature).
 AVAILABLE_FLAVORS = [
     "dev",
+    "dev_kitkat",
     "alpha",
+    "alpha_kitkat",
 ]
 
 # TODO: put this somewhere
@@ -53,7 +55,7 @@ _FLAVOR_METADATA = {
         "min_sdk_version": 19,
         "target_sdk_version": 29,
         "multidex": "manual_main_dex",
-        "main_dex_list": ":kitkat_main_dex_class_list.txt",
+        "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
         "dex_shards": 1,
         "proguard_specs": [],  # Developer builds are not optimized.
         "deps": [
@@ -77,7 +79,7 @@ _FLAVOR_METADATA = {
         "min_sdk_version": 19,
         "target_sdk_version": 29,
         "multidex": "manual_main_dex",
-        "main_dex_list": ":kitkat_main_dex_class_list.txt",
+        "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "deps": [
             "//app",

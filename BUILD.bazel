@@ -3,6 +3,9 @@
 load("//:build_flavors.bzl", "AVAILABLE_FLAVORS", "define_oppia_aab_binary_flavor", "transform_android_manifest")
 load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
 
+# This is exported here since config/ isn't a Bazel package.
+exports_files(["config/kitkat_main_dex_class_list.txt"])
+
 # Corresponds to being accessible to all Oppia targets. This should be used for production APIs &
 # modules that may be used both in production targets and in tests.
 package_group(
@@ -120,7 +123,7 @@ package_group(
             "min_sdk_version": 19,
             "target_sdk_version": 29,
             "multidex": "manual_main_dex",
-            "main_dex_list": ":kitkat_main_dex_class_list.txt",
+            "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
         },
     ]
 ]
