@@ -24,9 +24,7 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(
-      PROFILE_ID_EXTRA_KEY, -1
-    )
+    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     markChaptersCompletedActivityPresenter.handleOnCreate(internalProfileId)
     title = resourceHandler.getStringInLocale(R.string.mark_chapters_completed_activity_title)
   }
@@ -39,8 +37,7 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val PROFILE_ID_EXTRA_KEY =
-      "MarkChaptersCompletedActivity.profile_id"
+    const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedActivity.profile_id"
 
     fun createMarkChaptersCompletedIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkChaptersCompletedActivity::class.java)
