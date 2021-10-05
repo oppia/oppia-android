@@ -1,5 +1,8 @@
 package org.oppia.android.data.backends.gae
 
+import android.annotation.SuppressLint
+import android.os.Build
+import com.google.common.base.Optional
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -23,6 +26,7 @@ class NetworkModule {
    * Provides the Retrofit object.
    * @return the Retrofit object
    */
+  @SuppressLint("ObsoleteSdkInt") // AS warning is incorrect in this context.
   @OppiaRetrofit
   @Provides
   @Singleton
@@ -30,17 +34,22 @@ class NetworkModule {
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
     @BaseUrl baseUrl: String
-  ): Retrofit {
-    val client = OkHttpClient.Builder()
-      .addInterceptor(jsonPrefixNetworkInterceptor)
-      .addInterceptor(remoteAuthNetworkInterceptor)
-      .build()
+  ): Optional<Retrofit> {
+    // TODO: make this a compile-time dep (update with correct TODO & issue number).
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      val client = OkHttpClient.Builder()
+        .addInterceptor(jsonPrefixNetworkInterceptor)
+        .addInterceptor(remoteAuthNetworkInterceptor)
+        .build()
 
-    return Retrofit.Builder()
-      .baseUrl(baseUrl)
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client)
-      .build()
+      Optional.of(
+        Retrofit.Builder()
+          .baseUrl(baseUrl)
+          .addConverterFactory(MoshiConverterFactory.create())
+          .client(client)
+          .build()
+      )
+    } else Optional.absent()
   }
 
   /**
@@ -50,8 +59,8 @@ class NetworkModule {
    */
   @Provides
   @Singleton
-  fun provideTopicService(@OppiaRetrofit retrofit: Retrofit): TopicService {
-    return retrofit.create(TopicService::class.java)
+  fun provideTopicService(@OppiaRetrofit retrofit: Optional<Retrofit>): Optional<TopicService> {
+    return retrofit.map { it.create(TopicService::class.java) }
   }
 
   /**
@@ -61,15 +70,19 @@ class NetworkModule {
    */
   @Provides
   @Singleton
-  fun provideClassroomService(@OppiaRetrofit retrofit: Retrofit): ClassroomService {
-    return retrofit.create(ClassroomService::class.java)
+  fun provideClassroomService(
+    @OppiaRetrofit retrofit: Optional<Retrofit>
+  ): Optional<ClassroomService> {
+    return retrofit.map { it.create(ClassroomService::class.java) }
   }
 
   // Provides the Feedback Reporting service implementation.
   @Provides
   @Singleton
-  fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
-    return retrofit.create(FeedbackReportingService::class.java)
+  fun provideFeedbackReportingService(
+    @OppiaRetrofit retrofit: Optional<Retrofit>
+  ): Optional<FeedbackReportingService> {
+    return retrofit.map { it.create(FeedbackReportingService::class.java) }
   }
 
   /**
@@ -80,8 +93,10 @@ class NetworkModule {
    */
   @Provides
   @Singleton
-  fun providePlatformParameterService(@OppiaRetrofit retrofit: Retrofit): PlatformParameterService {
-    return retrofit.create(PlatformParameterService::class.java)
+  fun providePlatformParameterService(
+    @OppiaRetrofit retrofit: Optional<Retrofit>
+  ): Optional<PlatformParameterService> {
+    return retrofit.map { it.create(PlatformParameterService::class.java) }
   }
 
   // Provides the API key to use in authenticating remote messages sent or received. This will be
@@ -89,4 +104,9 @@ class NetworkModule {
   @Provides
   @NetworkApiKey
   fun provideNetworkApiKey(): String = ""
+
+  private companion object {
+    private fun <T, V> Optional<T>.map(mapFunc: (T) -> V): Optional<V> =
+      transform { mapFunc(checkNotNull(it)) } // Paylaod should never actually be null.
+  }
 }

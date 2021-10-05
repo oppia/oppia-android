@@ -16,7 +16,8 @@ import org.w3c.dom.NodeList
 fun main(vararg args: String) {
   val rootDirectory = File(args[0])
 
-  VectorDrawableToSvg(rootDirectory).convertAllVectorDrawablesToSvgs()
+//  VectorDrawableToSvg(rootDirectory).convertAllVectorDrawablesToSvgs()
+  VectorDrawableToSvg(rootDirectory).convertVectorDrawableToSvg(File(rootDirectory, "app/src/main/res/drawable/ic_admin_settings_icon_grey_24dp.xml"))!!.generateSvg(System.out)
 }
 
 private class VectorDrawableToSvg(private val repoRoot: File) {
@@ -28,19 +29,20 @@ private class VectorDrawableToSvg(private val repoRoot: File) {
       expectedExtension = ".xml"
     )
 
-    val containers = searchFiles.mapNotNull { file ->
+    val containers = searchFiles.shuffled().mapNotNull { file ->
       convertVectorDrawableToSvg(file)
     }.toList()
 
     val failed = containers.count { it.viewportWidth == -1 }
     println("$failed/${containers.size} failed")
+    // 48/79 failed
 
     containers.forEach { container ->
       PrintStream(ByteArrayOutputStream()).use { container.generateSvg(it) }
     }
   }
 
-  private fun convertVectorDrawableToSvg(drawableFile: File): VectorContainer? {
+  fun convertVectorDrawableToSvg(drawableFile: File): VectorContainer? {
     val docBuilder = documentBuilderFactory.newDocumentBuilder()
     val document = docBuilder.parse(drawableFile)
     return document.parseVectorContainer(drawableFile)
@@ -54,7 +56,7 @@ private class VectorDrawableToSvg(private val repoRoot: File) {
     if (rootNode.nodeName != "vector") return null
 
     // TODO: consider adding print output to provide context on which file is being parsed, e.g.:
-    // println("Parsing drawable: ${file.toRelativeString(repoRoot)}")
+    println("Parsing drawable: ${file.toRelativeString(repoRoot)}")
 
     // TODO: remove try-catch once all drawables are supported
     try {
@@ -73,7 +75,8 @@ private class VectorDrawableToSvg(private val repoRoot: File) {
 
       return VectorContainer(paths, viewportWidth, viewportHeight)
     } catch (e: IllegalStateException) {
-      return VectorContainer(paths = listOf(), viewportWidth = -1, viewportHeight = -1)
+      throw e
+//      return VectorContainer(paths = listOf(), viewportWidth = -1, viewportHeight = -1)
     }
   }
 
@@ -216,7 +219,7 @@ private class VectorDrawableToSvg(private val repoRoot: File) {
 
   private fun Char.isHexCharacter(): Boolean = toLowerCase() in ACCEPTABLE_HEX_CHARACTERS
 
-  private data class VectorContainer(
+  data class VectorContainer(
     val paths: List<Path>, val viewportWidth: Int, val viewportHeight: Int
   ) {
     fun generateSvg(stream: PrintStream) {
@@ -345,7 +348,7 @@ private class VectorDrawableToSvg(private val repoRoot: File) {
 
     private val ACCEPTABLE_VECTOR_ATTRIBUTES = setOf(
       "xmlns:android", "xmlns:aapt", "android:width", "android:height", "android:autoMirrored",
-      "android:viewportWidth", "android:viewportHeight"
+      "android:viewportWidth", "android:viewportHeight", "android:tint"
     )
 
     private val ACCEPTABLE_PATH_ATTRIBUTES = setOf("android:pathData", "android:fillColor")

@@ -88,7 +88,7 @@
       android:layout_gravity="center_vertical"
       android:layout_marginStart="@dimen/answer_tick_margin"
       android:importantForAccessibility="no"
-      android:src="@drawable/ic_check_primary"
+      app:srcCompat="@drawable/ic_check_primary"
       android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toEndOf="@+id/submitted_answer_text_view"

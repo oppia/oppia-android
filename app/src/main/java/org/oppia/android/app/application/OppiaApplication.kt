@@ -2,6 +2,7 @@ package org.oppia.android.app.application
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.WorkManager
@@ -31,6 +32,7 @@ class OppiaApplication :
 
   override fun onCreate() {
     super.onCreate()
+    AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     FirebaseApp.initializeApp(applicationContext)
     WorkManager.initialize(applicationContext, workManagerConfiguration)
     component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)

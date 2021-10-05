@@ -527,7 +527,6 @@ android_library(
 # Library for layout resource files.
 android_library(
     name = "databinding_resources",
-    srcs = BINDING_ADAPTERS,
     custom_package = "org.oppia.android.app.databinding",
     enable_data_binding = True,
     exports_manifest = True,
@@ -683,6 +682,7 @@ android_library(
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
         "//third_party:circularimageview_circular_image_view",
         "//third_party:com_google_android_material_material",
+        "//third_party:de_hdodenhof_circleimageview",
         "//third_party:io_github_chaosleung_pinview",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",

@@ -60,6 +60,7 @@ class GlideImageLoader @Inject constructor(
     target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation>
   ) {
+    // TODO: causes native crash on KK
     glide
       .asDrawable()
       .load(imageDrawableResId)

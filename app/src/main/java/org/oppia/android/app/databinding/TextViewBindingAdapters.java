@@ -3,8 +3,11 @@ package org.oppia.android.app.databinding;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
@@ -43,6 +46,16 @@ public final class TextViewBindingAdapters {
         timeAgoTimeStamp
     );
     textView.setText(profileLastVisited);
+  }
+
+  @BindingAdapter("app:drawableEndCompat")
+  public static void setDrawableEndCompat(
+      @NonNull TextView imageView,
+      Drawable drawable
+  ) {
+    imageView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+        /* start= */ null, /* top= */ null, /* end= */ drawable, /* bottom=*/ null
+    );
   }
 
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
