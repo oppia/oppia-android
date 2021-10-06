@@ -154,6 +154,19 @@ class PinPasswordActivityTest {
   }
 
   @Test
+  fun testPinPassword_withAdmin_keyboardIsVisibleByDefault() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(hasFocus()))
+    }
+  }
+
+  @Test
   fun testPinPassword_pinView_hasContentDescription() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
