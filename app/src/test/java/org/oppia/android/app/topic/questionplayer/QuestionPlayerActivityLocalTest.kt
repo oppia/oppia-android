@@ -37,6 +37,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -277,7 +278,7 @@ class QuestionPlayerActivityLocalTest {
   ): ActivityScenario<QuestionPlayerActivity> {
     return ActivityScenario.launch(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, skillIdList
+        context, skillIdList, ProfileId.getDefaultInstance()
       )
     )
   }

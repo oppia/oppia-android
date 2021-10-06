@@ -45,7 +45,7 @@ def _convert_module_aab_to_structured_zip_impl(ctx):
     mkdir -p $WORKING_DIR/assets $WORKING_DIR/dex $WORKING_DIR/manifest $WORKING_DIR/root
     mv $WORKING_DIR/*.dex $WORKING_DIR/dex/
     mv $WORKING_DIR/AndroidManifest.xml $WORKING_DIR/manifest/
-    ls -d $WORKING_DIR/* | grep -v -w -E "res|assets|dex|manifest|root|resources.pb" | xargs -n 1 -I {{}} mv {{}} root/
+    ls -d $WORKING_DIR/* | grep -v -w -E "res|assets|dex|manifest|root|resources.pb" | xargs -I{{}} sh -c "mv \\$0 $WORKING_DIR/root/ || exit 255" {{}} 2>&1 || exit $?
 
     # Zip up the result--this will be used by bundletool to build a deployable AAB. Note that these
     # strange file path bits are needed because zip will always retain the directory structure

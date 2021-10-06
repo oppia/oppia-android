@@ -54,10 +54,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -73,10 +73,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -97,10 +97,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Final Test A second try",
@@ -110,8 +110,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -131,7 +131,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -252,57 +252,57 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"Intentemos eso de nuevo,\"&nbsp;dijo el Sr. Baker.</p>\n\n<p>\"Aquí hay una imagen. ¿Qué fracción está sombreada?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un triángulo con un cuadrado negro en su interior.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_224317_bhk947uos9_height_106_width_110.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"Intentemos eso de nuevo,\"&nbsp;dijo el Sr. Baker.</p>\n\n<p>\"Aquí hay una imagen. ¿Qué fracción está sombreada?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un triángulo con un cuadrado negro en su interior.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_224317_bhk947uos9_height_106_width_110.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, debes recordarlo tu mismo!)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, debes recordarlo tu mismo!)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, parece que olvidaste dividir la forma en partes iguales al calcular el numerador. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, parece que olvidaste dividir la forma en partes iguales al calcular el numerador. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, eso es correcto!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, eso es correcto!</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Recuerda el consejo del Sr. Baker: antes de escribir una fracción, asegúrate de dividir toda la forma en <strong>partes iguales.</strong></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Recuerda el consejo del Sr. Baker: antes de escribir una fracción, asegúrate de dividir toda la forma en <strong>partes iguales.</strong></p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Puedes dividir la forma en cuatro triángulos pequeños.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Puedes dividir la forma en cuatro triángulos pequeños.</p>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Intenta dividir el cuadrado negro en triángulos más pequeños para que todas las partes tengan la misma forma.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Intenta dividir el cuadrado negro en triángulos más pequeños para que todas las partes tengan la misma forma.</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, inténtalo de nuevo ¡Puedes hacerlo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, inténtalo de nuevo ¡Puedes hacerlo!</p>"},
                 "needs_update": false
               }
             }
@@ -356,10 +356,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalentTo",
@@ -380,10 +380,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -399,10 +399,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -418,10 +418,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Thinking in fractions Q3",
@@ -431,8 +431,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -464,7 +464,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -595,71 +595,71 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"¡Estás empezando a resolver problemas usando fracciones!\" dijo el Sr. Baker. \"Esa es una gran habilidad para tener!</p>\n\n<p>\u201cAhora, Mateo,\u201d&nbsp;dijo, \u201cmira si puedes resolver esto sin el pastel frente a ti. Digamos que tengo una torta, y 3/8 de ella se come. ¿Qué fracción del pastel <strong>queda</strong>?\"</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"¡Estás empezando a resolver problemas usando fracciones!\" dijo el Sr. Baker. \"Esa es una gran habilidad para tener!</p>\n\n<p>\u201cAhora, Mateo,\u201d&nbsp;dijo, \u201cmira si puedes resolver esto sin el pastel frente a ti. Digamos que tengo una torta, y 3/8 de ella se come. ¿Qué fracción del pastel <strong>queda</strong>?\"</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, esa es la fracción del pastel que se comió.</p>\n\n<p>Pero la pregunta se refiere a la fracción de la torta que <strong>queda</strong>, que es la parte de la torta que <strong>no se comió</strong>.</p>\n\n<p>¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, esa es la fracción del pastel que se comió.</p>\n\n<p>Pero la pregunta se refiere a la fracción de la torta que <strong>queda</strong>, que es la parte de la torta que <strong>no se comió</strong>.</p>\n\n<p>¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Vamos a empezar dibujando un rectángulo dividido en 8 partes iguales.</p>\n\n<p>&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un rectángulo dividido en 8 partes iguales. 3 partes son de color azul.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_221553_d8n2lolkhx_height_140_width_237.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>3 piezas están sombreadas. Las piezas que sobran son blancas. Hay 5 piezas blancas y hay 8 piezas en total. Así que la respuesta es 5/8.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Vamos a empezar dibujando un rectángulo dividido en 8 partes iguales.</p>\n\n<p>&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un rectángulo dividido en 8 partes iguales. 3 partes son de color azul.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_221553_d8n2lolkhx_height_140_width_237.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>3 piezas están sombreadas. Las piezas que sobran son blancas. Hay 5 piezas blancas y hay 8 piezas en total. Así que la respuesta es 5/8.</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Esta es una pregunta diferente de las anteriores: ahora el pastel está dividido en 8 partes iguales no 9.</p>\n\n<p>Si es necesario, sigue adelante y haz un dibujo, para que puedas resolverlo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Esta es una pregunta diferente de las anteriores: ahora el pastel está dividido en 8 partes iguales no 9.</p>\n\n<p>Si es necesario, sigue adelante y haz un dibujo, para que puedas resolverlo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Comienza por dibujar un pastel dividido en 8 partes iguales. Luego tacha 3/8 de la torta. ¿Qué fracción del pastel queda?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Comienza por dibujar un pastel dividido en 8 partes iguales. Luego tacha 3/8 de la torta. ¿Qué fracción del pastel queda?</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, bien hecho!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, bien hecho!</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Intenta visualizar la imagen en tu cabeza. Pero si no puedes verlo en tu cabeza, está bien. ¡Puedes hacer un dibujo en tu cuaderno!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Intenta visualizar la imagen en tu cabeza. Pero si no puedes verlo en tu cabeza, está bien. ¡Puedes hacer un dibujo en tu cuaderno!</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Puede ser más fácil para dibujar rectángulos en lugar de círculos. Eso es porque rectángulos son más fácil para dividir en partes iguales.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Puede ser más fácil para dibujar rectángulos en lugar de círculos. Eso es porque rectángulos son más fácil para dividir en partes iguales.</p>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí hay una forma de dibujarlo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un rectángulo dividido en 8 partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_221107_oho7joqhv2_height_156_width_263.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, si se come 3/8 de esto, ¿puedes averiguar la parte restante?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí hay una forma de dibujarlo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un rectángulo dividido en 8 partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_221107_oho7joqhv2_height_156_width_263.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, si se come 3/8 de esto, ¿puedes averiguar la parte restante?</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡Dibuja una imagen!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡Dibuja una imagen!</p>"},
                 "needs_update": false
               }
             }
@@ -713,10 +713,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalentTo",
@@ -737,10 +737,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -801,10 +801,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -820,10 +820,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Thinking in fractions Q2",
@@ -833,8 +833,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -866,7 +866,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -1009,71 +1009,71 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Excelente!\" dijo el Sr. Baker. Tomó un cuchillo y cortó otras 3/9 de la torta, que tomó para sí mismo.</p>\n\n<p>\"Ahora, Mateo,\"&nbsp;dijo. \"Tienes 2/9 de la torta, y tengo 3/9. ¿Qué fracción del pastel <strong>queda en la mesa</strong>?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Excelente!\" dijo el Sr. Baker. Tomó un cuchillo y cortó otras 3/9 de la torta, que tomó para sí mismo.</p>\n\n<p>\"Ahora, Mateo,\"&nbsp;dijo. \"Tienes 2/9 de la torta, y tengo 3/9. ¿Qué fracción del pastel <strong>queda en la mesa</strong>?</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Para contestar esta pregunta debes hacer un dibujo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Para contestar esta pregunta debes hacer un dibujo.</p>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Vamos a empezar por hacer un dibujo. Podemos representar la torta usando 9 partes iguales, ya que eso hará que sea más fácil colorear las partes de Sr. Baker y Mateo más adelante. Aquí hay un dibujo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel cortado en 9 partes iguales. Dos partes están coloreados marrón y dos están coloreados en verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_220523_5hick4sitt_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Mateo obtiene 2/9 de la torta (las partes marrones) y Sr. Baker obtiene 3/9 (las partes verdes). Quedan 4 cuadrados (las partes blancas), y hay 9 cuadrados en total. Así que la respuesta es 4/9.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Vamos a empezar por hacer un dibujo. Podemos representar la torta usando 9 partes iguales, ya que eso hará que sea más fácil colorear las partes de Sr. Baker y Mateo más adelante. Aquí hay un dibujo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel cortado en 9 partes iguales. Dos partes están coloreados marrón y dos están coloreados en verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_220523_5hick4sitt_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Mateo obtiene 2/9 de la torta (las partes marrones) y Sr. Baker obtiene 3/9 (las partes verdes). Quedan 4 cuadrados (las partes blancas), y hay 9 cuadrados en total. Así que la respuesta es 4/9.</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Lee la pregunta cuidadosamente. Tu respuesta es la fracción del pastel que tienen el Sr. Baker y Mateo. Pero el Sr. Baker pregunta qué fracción del pastel <strong>queda en la mesa</strong> después de eso.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Lee la pregunta cuidadosamente. Tu respuesta es la fracción del pastel que tienen el Sr. Baker y Mateo. Pero el Sr. Baker pregunta qué fracción del pastel <strong>queda en la mesa</strong> después de eso.</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Parece que estás intentando agregar los números en las fracciones, pero no necesitas hacer eso.</p>\n\n<p>En su lugar, empieza por <strong>dibujar una imagen</strong> y averiguar cómo se ven \"2/9 y 3/9\". Luego mira tu imagen para ver qué fracción del pastel queda.</p>\n\n<p>¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Parece que estás intentando agregar los números en las fracciones, pero no necesitas hacer eso.</p>\n\n<p>En su lugar, empieza por <strong>dibujar una imagen</strong> y averiguar cómo se ven \"2/9 y 3/9\". Luego mira tu imagen para ver qué fracción del pastel queda.</p>\n\n<p>¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, eso es correcto!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, eso es correcto!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Dibuja una imagen! Todas las fracciones tienen denominador 9, por lo que tiene sentido comenzar por dibujar un pastel dividido en 9 partes iguales</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Dibuja una imagen! Todas las fracciones tienen denominador 9, por lo que tiene sentido comenzar por dibujar un pastel dividido en 9 partes iguales</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí es cómo debe verse el pastel después de que la parte de Mateo&nbsp;esté pintada de color marrón.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel cortado en 9 partes iguales. 2 partes están coloreados en marrón.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_220318_ez6zosvbkz_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Intenta sombrear la parte del Sr. Baker luego.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí es cómo debe verse el pastel después de que la parte de Mateo&nbsp;esté pintada de color marrón.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel cortado en 9 partes iguales. 2 partes están coloreados en marrón.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_220318_ez6zosvbkz_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Intenta sombrear la parte del Sr. Baker luego.</p>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>El Sr. Baker tomó 3/9 de la torta, por lo que podemos sombrear 3 piezas para él.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel cortado en 9 partes iguales. 2 partes están coloreados en marrón y tres están coloreados en verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_220403_5614ejtgcv_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Qué fracción del pastel queda?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>El Sr. Baker tomó 3/9 de la torta, por lo que podemos sombrear 3 piezas para él.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel cortado en 9 partes iguales. 2 partes están coloreados en marrón y tres están coloreados en verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_220403_5614ejtgcv_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Qué fracción del pastel queda?</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Al igual que la pregunta anterior, para contestar esta pregunta debes hacer un dibujo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Al igual que la pregunta anterior, para contestar esta pregunta debes hacer un dibujo.</p>"},
                 "needs_update": false
               }
             }
@@ -1127,10 +1127,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -1151,10 +1151,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -1196,9 +1196,9 @@
               "labelled_as_correct": false,
               "param_changes": [],
               "refresher_exploration_id": "xHwiGtvK2N4L",
-              "missing_prerequisite_skill_id": null
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -1214,10 +1214,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -1233,10 +1233,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Thinking in fractions Q1",
@@ -1246,8 +1246,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -1279,7 +1279,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1424,78 +1424,78 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"¡Genial, Mateo!\" dijo el Sr. Baker.</p>\n\n<p>\"Ahora, ¿puedes averiguar qué <strong>fracción</strong> del pastel <strong>quedó</strong>&nbsp;después de que Crumb te diera 2/9? Utiliza tu cuaderno y haz un dibujo si te ayuda. Intenta hacerlo sin mirar el pastel desde antes, si es posible. \"</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"¡Genial, Mateo!\" dijo el Sr. Baker.</p>\n\n<p>\"Ahora, ¿puedes averiguar qué <strong>fracción</strong> del pastel <strong>quedó</strong>&nbsp;después de que Crumb te diera 2/9? Utiliza tu cuaderno y haz un dibujo si te ayuda. Intenta hacerlo sin mirar el pastel desde antes, si es posible. \"</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡Sigue los consejos del Sr. Baker y haz un dibujo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡Sigue los consejos del Sr. Baker y haz un dibujo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡Sigue los consejos del Sr. Baker y haz un dibujo!</p>\n\n<p>Asegúrate de dividir el conjunto en 9 partes iguales (por lo que cada parte representa una novena parte de la torta completa). Luego tacha 2 de ellos.</p>\n\n<p>¿Qué <strong>fracción de todo el pastel</strong> representan estas piezas sobrantes? Recuerda que todo el pastel está dividido en un total de<strong> 9 partes iguales</strong>.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡Sigue los consejos del Sr. Baker y haz un dibujo!</p>\n\n<p>Asegúrate de dividir el conjunto en 9 partes iguales (por lo que cada parte representa una novena parte de la torta completa). Luego tacha 2 de ellos.</p>\n\n<p>¿Qué <strong>fracción de todo el pastel</strong> representan estas piezas sobrantes? Recuerda que todo el pastel está dividido en un total de<strong> 9 partes iguales</strong>.</p>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí hay una imagen que muestra el 2/9 de la torta que Crumbs le dio a Matthew: la fracción de la torta que queda está representada por las piezas blancas.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado dividido en 9 partes iguales con 2 partes coloreados&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_155826_sil9a4rlq3_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Hay 7 piezas blancas, y hay 9 piezas en total. Así que la respuesta es 7/9.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí hay una imagen que muestra el 2/9 de la torta que Crumbs le dio a Matthew: la fracción de la torta que queda está representada por las piezas blancas.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado dividido en 9 partes iguales con 2 partes coloreados&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_155826_sil9a4rlq3_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Hay 7 piezas blancas, y hay 9 piezas en total. Así que la respuesta es 7/9.</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, esa es la cantidad de pastel que Crumbs le dio a Matthew. La pregunta se refiere a algo diferente. ¿Cuánta torta <strong>queda</strong> luego de esto? Inténtalo de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, esa es la cantidad de pastel que Crumbs le dio a Matthew. La pregunta se refiere a algo diferente. ¿Cuánta torta <strong>queda</strong> luego de esto? Inténtalo de nuevo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡Parece que has olvidado lo que significan los números en una fracción! Recuerda que el número <strong>inferior</strong> es el denominador y representa <strong>el número total </strong>de partes iguales en el pastel. Intenta refrescar tu memoria con&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;la lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link>.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡Parece que has olvidado lo que significan los números en una fracción! Recuerda que el número <strong>inferior</strong> es el denominador y representa <strong>el número total </strong>de partes iguales en el pastel. Intenta refrescar tu memoria con&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;la lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link>.</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, eso es correcto!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, eso es correcto!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sigue los consejos del Sr. Baker y haz un dibujo! Comienza con un pastel cuadrado dividido en 9 partes iguales. Asegúrate de que, en tu dibujo, tus partes sean <strong>iguales</strong>.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sigue los consejos del Sr. Baker y haz un dibujo! Comienza con un pastel cuadrado dividido en 9 partes iguales. Asegúrate de que, en tu dibujo, tus partes sean <strong>iguales</strong>.</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Tu dibujo no tiene que verse muy bonito, pero debe ser lo más preciso posible. Algo como esto tal vez \u2026</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado dividido en 9 partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_155606_38tzh0edbz_height_153_width_156.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Tu dibujo no tiene que verse muy bonito, pero debe ser lo más preciso posible. Algo como esto tal vez \u2026</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado dividido en 9 partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_155606_38tzh0edbz_height_153_width_156.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Crumbs dieron a Matthew 2/9 de la torta. Así que vamos a sombrear 2/9 de la imagen para representar eso.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado que haya dividido en 9 partes iguales tiene dos partes coloreados.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_155643_qs19qi8ks0_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Qué fracción queda?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Crumbs dieron a Matthew 2/9 de la torta. Así que vamos a sombrear 2/9 de la imagen para representar eso.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado que haya dividido en 9 partes iguales tiene dos partes coloreados.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_155643_qs19qi8ks0_height_174_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Qué fracción queda?</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡Sigue los consejos del Sr. Baker y haz un dibujo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡Sigue los consejos del Sr. Baker y haz un dibujo!</p>"},
                 "needs_update": false
               }
             }
@@ -1549,10 +1549,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -1618,10 +1618,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Thinking in fractions Q4",
@@ -1631,8 +1631,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -1674,7 +1674,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -1823,71 +1823,71 @@
           "translations_mapping": {
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Como Sr. Baker dijo, no te limites a mirar los números.</p>\n\n<p>En su lugar, <strong>haz un dibujo</strong> y colorea las partes correspondientes a 1/2 y 1/4. Eso te ayudará a descubrir qué está pasando. Siéntete libre de obtener una pista si estás atascado.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Como Sr. Baker dijo, no te limites a mirar los números.</p>\n\n<p>En su lugar, <strong>haz un dibujo</strong> y colorea las partes correspondientes a 1/2 y 1/4. Eso te ayudará a descubrir qué está pasando. Siéntete libre de obtener una pista si estás atascado.</p>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Podemos dibujar un cuadrado y colorear 1/2 y 1/4 de esta manera:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de una mitad y un cuarto (1/2 + 1/4) del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223258_e4p52fuag0_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Para encontrar la fracción resultante, dividimos el cuadrado en partes iguales:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de 1/2 y 1/4: dividido en partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223437_hn2miaru8q_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Hay 4 partes iguales, y 3 de ellas son rojas, por lo que la respuesta correcta es<strong> 3/4.</strong></p>\n\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;----------------------------------------------</p>\n\n<p>&nbsp;</p>\n\n<p>Nota: puedes pensar que solo podrías sumar los numeradores y denominadores de las fracciones para obtener 2/6, <strong>¡pero esa es la respuesta incorrecta! </strong>Lo importante es la <strong>cantidad</strong> representada por la fracción, no los números reales (como 1 y 2) que se utilizan para escribir la fracción.</p>\n\n<p>&nbsp;</p>\n\n<p><strong>Dibujar una imagen clara</strong> es una buena estrategia para ayudarlo a \"ver\" esa cantidad.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Podemos dibujar un cuadrado y colorear 1/2 y 1/4 de esta manera:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de una mitad y un cuarto (1/2 + 1/4) del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223258_e4p52fuag0_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Para encontrar la fracción resultante, dividimos el cuadrado en partes iguales:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de 1/2 y 1/4: dividido en partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223437_hn2miaru8q_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Hay 4 partes iguales, y 3 de ellas son rojas, por lo que la respuesta correcta es<strong> 3/4.</strong></p>\n\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;----------------------------------------------</p>\n\n<p>&nbsp;</p>\n\n<p>Nota: puedes pensar que solo podrías sumar los numeradores y denominadores de las fracciones para obtener 2/6, <strong>¡pero esa es la respuesta incorrecta! </strong>Lo importante es la <strong>cantidad</strong> representada por la fracción, no los números reales (como 1 y 2) que se utilizan para escribir la fracción.</p>\n\n<p>&nbsp;</p>\n\n<p><strong>Dibujar una imagen clara</strong> es una buena estrategia para ayudarlo a \"ver\" esa cantidad.</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>El Sr. Baker se rió entre dientes. \"Está bien, Mateo\", dijo. \"Dos preguntas más, y si las respondes correctamente, ¡también puedes tener mi pedazo de pastel!\"</p>\n\n<p>Mateo sonrió. Le gustaba el pastel!</p>\n\n<p>\"Está bien\", dijo el Sr. Baker. \"Digamos que quería agregar 1/2 y 1/4. ¿Qué fracción me da eso?\"</p>\n\n<p>\"¡Oh, eso es fácil!\" dijo Mateo. \"1 + 1 es 2, y ...\"</p>\n\n<p>\"¿Estás seguro?\", dijo el Sr. Baker. \"No solo mires los números, eso sería engañoso. Tendrás que pensar en cuánta torta representan las fracciones. Es una buena idea <strong>hacer</strong> <strong>un dibujo.</strong>\"</p>\n\n<p>\"¿Qué es 1/2 + 1/4 ?\"</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>El Sr. Baker se rió entre dientes. \"Está bien, Mateo\", dijo. \"Dos preguntas más, y si las respondes correctamente, ¡también puedes tener mi pedazo de pastel!\"</p>\n\n<p>Mateo sonrió. Le gustaba el pastel!</p>\n\n<p>\"Está bien\", dijo el Sr. Baker. \"Digamos que quería agregar 1/2 y 1/4. ¿Qué fracción me da eso?\"</p>\n\n<p>\"¡Oh, eso es fácil!\" dijo Mateo. \"1 + 1 es 2, y ...\"</p>\n\n<p>\"¿Estás seguro?\", dijo el Sr. Baker. \"No solo mires los números, eso sería engañoso. Tendrás que pensar en cuánta torta representan las fracciones. Es una buena idea <strong>hacer</strong> <strong>un dibujo.</strong>\"</p>\n\n<p>\"¿Qué es 1/2 + 1/4 ?\"</p>"},
                 "needs_update": false
               }
             },
             "hint_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Recuerda dividir tu cuadrado en partes iguales antes de escribir la fracción</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Recuerda dividir tu cuadrado en partes iguales antes de escribir la fracción</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí bien hecho! ¡Lo tienes!</p>\n\n<p>Por cierto, hemos visto una pregunta como esta antes. ¿Recuerdas esta foto?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El diagrama del Sr. Baker que depicte 1/2 y 1/4 de una pastel circular.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_222245_4nu94lqrqg_height_283_width_270.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí bien hecho! ¡Lo tienes!</p>\n\n<p>Por cierto, hemos visto una pregunta como esta antes. ¿Recuerdas esta foto?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El diagrama del Sr. Baker que depicte 1/2 y 1/4 de una pastel circular.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_222245_4nu94lqrqg_height_283_width_270.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "hint_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí es cómo se ve la combinación de 1/2 y 1/4.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de una mitad y un cuarto (1/2 y 1/4) del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223110_gt261fg93z_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Qué fracción representa esto?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí es cómo se ve la combinación de 1/2 y 1/4.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;La combinación de una mitad y un cuarto (1/2 y 1/4) del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223110_gt261fg93z_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Qué fracción representa esto?</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Como dijo el Sr. Baker, ¡haz un dibujo! Puedes empezar con un cuadrado. Lo dividimos por la mitad y sombreamos una de las mitades, esto representa 1/2.</p>\n\n<p>Ahora, ¿cómo puedes representar 1/4 de una manera similar?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Como dijo el Sr. Baker, ¡haz un dibujo! Puedes empezar con un cuadrado. Lo dividimos por la mitad y sombreamos una de las mitades, esto representa 1/2.</p>\n\n<p>Ahora, ¿cómo puedes representar 1/4 de una manera similar?</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí es cómo podría verse el mismo cuadrado con un 1/2 coloreado en rojo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado dividido entre la mitad. Uno de los dos partes iguales está coloreado en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_222617_c52mln9i6w_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, ¿Qué fracción del pastel obtienes cuando sumas 1/2 y 1/4 ?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí es cómo podría verse el mismo cuadrado con un 1/2 coloreado en rojo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado dividido entre la mitad. Uno de los dos partes iguales está coloreado en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_222617_c52mln9i6w_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, ¿Qué fracción del pastel obtienes cuando sumas 1/2 y 1/4 ?</p>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí es cómo podría verse el mismo cuadrado con un 1/4 coloreado en rojo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado dividido en 4 partes iguales. Un parte está coloreado en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223001_gu6dq8su5v_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, ¿Qué fracción del pastel obtienes cuando sumas 1/2 y 1/4 ?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí es cómo podría verse el mismo cuadrado con un 1/4 coloreado en rojo.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado dividido en 4 partes iguales. Un parte está coloreado en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223001_gu6dq8su5v_height_120_width_122.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Ahora, ¿Qué fracción del pastel obtienes cuando sumas 1/2 y 1/4 ?</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Inténtalo de nuevo. (Es posible que desees hacer un dibujo!)</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Inténtalo de nuevo. (Es posible que desees hacer un dibujo!)</p>"},
                 "needs_update": false
               }
             }
@@ -1941,10 +1941,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -1966,9 +1966,9 @@
               "labelled_as_correct": false,
               "param_changes": [],
               "refresher_exploration_id": "xHwiGtvK2N4L",
-              "missing_prerequisite_skill_id": null
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -1989,10 +1989,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -2013,10 +2013,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -2037,10 +2037,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -2061,10 +2061,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -2080,10 +2080,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -2099,10 +2099,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasNumeratorEqualTo",
@@ -2118,10 +2118,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalentTo",
@@ -2142,10 +2142,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Matthew gets conned",
@@ -2155,8 +2155,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -2193,7 +2193,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -2536,120 +2536,120 @@
           "translations_mapping": {
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Eso no es correcto. Recordaste dividir el círculo en partes iguales, lo cual es genial. Pero parece que has olvidado lo que representan el numerador y el denominador.</p>\n\n<p>¡Inténtalo de nuevo! (Echa un vistazo a una breve&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link> para refrescar tu memoria si es necesario)</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Eso no es correcto. Recordaste dividir el círculo en partes iguales, lo cual es genial. Pero parece que has olvidado lo que representan el numerador y el denominador.</p>\n\n<p>¡Inténtalo de nuevo! (Echa un vistazo a una breve&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link> para refrescar tu memoria si es necesario)</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Según el Sr. Baker, antes de escribir una fracción, siempre debemos asegurarnos que todas las partes sean iguales.</p>\n\n<p>Intenta dividir la parte más grande del círculo en partes más pequeñas, de modo que <strong>todas las partes sean iguales.</strong></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Según el Sr. Baker, antes de escribir una fracción, siempre debemos asegurarnos que todas las partes sean iguales.</p>\n\n<p>Intenta dividir la parte más grande del círculo en partes más pequeñas, de modo que <strong>todas las partes sean iguales.</strong></p>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Así es como debería verse la imagen después de dividirla.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El mismo imagén, pero la mitad izquierda ha cortado en dos partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_232056_tvtdrlufhm_height_236_width_225.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Así es como debería verse la imagen después de dividirla.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El mismo imagén, pero la mitad izquierda ha cortado en dos partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_232056_tvtdrlufhm_height_236_width_225.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Comienza dividiendo el pastel en partes iguales:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Tres de cuatro partes iguales están coloreados en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_232250_plgwr8ch23_height_236_width_225.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Tres de las cuatro partes iguales son rojas. Entonces, la respuesta es <strong>3/4.</strong></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Comienza dividiendo el pastel en partes iguales:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Tres de cuatro partes iguales están coloreados en rojo.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_232250_plgwr8ch23_height_236_width_225.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Tres de las cuatro partes iguales son rojas. Entonces, la respuesta es <strong>3/4.</strong></p>"},
                 "needs_update": false
               }
             },
             "hint_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Hay 4 partes iguales, y 3 de ellas son rojas. ¿Puedes usar esta información para calcular la fracción del círculo que es roja?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Hay 4 partes iguales, y 3 de ellas son rojas. ¿Puedes usar esta información para calcular la fracción del círculo que es roja?</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Eso no es correcto. Parece que has olvidado lo que representan el numerador y el denominador.</p>\n\n<p>Echa un vistazo a una breve&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link> para refrescar la memoria si necesita.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Eso no es correcto. Parece que has olvidado lo que representan el numerador y el denominador.</p>\n\n<p>Echa un vistazo a una breve&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link> para refrescar la memoria si necesita.</p>"},
                 "needs_update": false
               }
             },
             "feedback_7": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>El denominador es correcto. Puedes dividir todo el pastel en 4 partes iguales, pero el numerador es incorrecto. ¿Cuántas de esas partes iguales son rojas?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>El denominador es correcto. Puedes dividir todo el pastel en 4 partes iguales, pero el numerador es incorrecto. ¿Cuántas de esas partes iguales son rojas?</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, eso es correcto! Bien hecho.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, eso es correcto! Bien hecho.</p>"},
                 "needs_update": false
               }
             },
             "feedback_6": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Eso no está bien. Sigue los consejos del Sr.&nbsp;Baker y recuerda dividir todo el pastel en partes iguales primero.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Eso no está bien. Sigue los consejos del Sr.&nbsp;Baker y recuerda dividir todo el pastel en partes iguales primero.</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí está la parte importante de lo que dijo el Sr. Baker: \"en una fracción, las piezas que representan el denominador deben ser <strong>iguales</strong>. Para averiguar lo que una fracción representa, siempre debes comenzar <strong>dividiendo el total en partes iguales.</strong>\"</p>\n\n<p>¿Puedes seguir sus instrucciones? Usa lápiz y papel si es necesario. Recuerda que todas las partes deben ser iguales.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí está la parte importante de lo que dijo el Sr. Baker: \"en una fracción, las piezas que representan el denominador deben ser <strong>iguales</strong>. Para averiguar lo que una fracción representa, siempre debes comenzar <strong>dividiendo el total en partes iguales.</strong>\"</p>\n\n<p>¿Puedes seguir sus instrucciones? Usa lápiz y papel si es necesario. Recuerda que todas las partes deben ser iguales.</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Eso no es correcto. Recuerda el consejo de Mr Baker: debes cortar todo el pastel en <strong>partes iguales</strong> antes de que puedas escribir una fracción. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Eso no es correcto. Recuerda el consejo de Mr Baker: debes cortar todo el pastel en <strong>partes iguales</strong> antes de que puedas escribir una fracción. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Lea atentamente las instrucciones del Sr. Baker y comience dividiendo el círculo en partes iguales.</p>\n\n<p>¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Lea atentamente las instrucciones del Sr. Baker y comience dividiendo el círculo en partes iguales.</p>\n\n<p>¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Mateo tomó el pedazo más pequeño de pastel. Justo en ese momento, apareció el señor Baker. \"¡Crumb!\"&nbsp;dijo, \"Necesito que me ayudes a limpiar el almacén\". Quejándose, Crumb fue a la habitación de atrás.</p>\n\n<p>\"Hola, señor Baker,\"&nbsp;dijo&nbsp;Mateo. \"Acabo de comprar media torta!\"</p>\n\n<p>El señor Baker frunció el ceño. \"Eso no es la mitad,\"&nbsp;dijo. \"En una fracción, las piezas que representan el denominador deben ser <strong>iguales</strong>. ¡Pero aquí, una pieza es mucho más grande que la otra! Para determinar qué fracción representa algo, siempre debes comenzar <strong>dividiendo el conjunto en partes iguales</strong>. Déjame mostrarte un ejemplo.\"&nbsp;Dibujó un círculo en una servilleta y pintó de rojo algunas partes.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un círculo con partes coloreados&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_231213_lxv9ap44iq_height_236_width_225.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>¿Qué fracción del círculo anterior es roja?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Mateo tomó el pedazo más pequeño de pastel. Justo en ese momento, apareció el señor Baker. \"¡Crumb!\"&nbsp;dijo, \"Necesito que me ayudes a limpiar el almacén\". Quejándose, Crumb fue a la habitación de atrás.</p>\n\n<p>\"Hola, señor Baker,\"&nbsp;dijo&nbsp;Mateo. \"Acabo de comprar media torta!\"</p>\n\n<p>El señor Baker frunció el ceño. \"Eso no es la mitad,\"&nbsp;dijo. \"En una fracción, las piezas que representan el denominador deben ser <strong>iguales</strong>. ¡Pero aquí, una pieza es mucho más grande que la otra! Para determinar qué fracción representa algo, siempre debes comenzar <strong>dividiendo el conjunto en partes iguales</strong>. Déjame mostrarte un ejemplo.\"&nbsp;Dibujó un círculo en una servilleta y pintó de rojo algunas partes.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un círculo con partes coloreados&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_231213_lxv9ap44iq_height_236_width_225.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>¿Qué fracción del círculo anterior es roja?</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Lea atentamente las instrucciones del Sr. Baker y comience dividiendo el círculo en partes iguales.</p>\n\n<p>¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Lea atentamente las instrucciones del Sr. Baker y comience dividiendo el círculo en partes iguales.</p>\n\n<p>¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_8": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso es correcto. Recuerde dividir primero la parte más grande en dos partes más pequeñas, de modo que todas las partes representen la misma cantidad. Inténtalo de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso es correcto. Recuerde dividir primero la parte más grande en dos partes más pequeñas, de modo que todas las partes representen la misma cantidad. Inténtalo de nuevo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_9": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Eso solo cuenta la mitad izquierda del pastel. Pero ¿qué pasa con la pequeña pieza en la parte inferior derecha?</p>\n\n<p>¡Inténtalo de nuevo! (Siga los consejos del Sr. Baker para dividir el pastel en <strong>partes iguales </strong>primero)</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Eso solo cuenta la mitad izquierda del pastel. Pero ¿qué pasa con la pequeña pieza en la parte inferior derecha?</p>\n\n<p>¡Inténtalo de nuevo! (Siga los consejos del Sr. Baker para dividir el pastel en <strong>partes iguales </strong>primero)</p>"},
                 "needs_update": false
               }
             },
             "feedback_10": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Eso no es correcto Parece que has olvidado lo que representa el denominador.</p>\n\n<p>Echa un vistazo a una breve <oppia-noninteractive-link text-with-value=\"&amp;quot;lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link>&nbsp;para refrescar la memoria si necesita.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Eso no es correcto Parece que has olvidado lo que representa el denominador.</p>\n\n<p>Echa un vistazo a una breve <oppia-noninteractive-link text-with-value=\"&amp;quot;lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link>&nbsp;para refrescar la memoria si necesita.</p>"},
                 "needs_update": false
               }
             }
@@ -2669,17 +2669,17 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>Yes, because the cake is cut into two pieces, and Crumb is giving one piece to Matthew.<br></p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>Yes, because the cake is cut into two pieces, and Crumb is giving one piece to Matthew.<br></p>"
               }, {
-                "html": "<p>Yes, because Crumb can cut any piece of cake he likes, and that results in two halves.<br></p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>Yes, because Crumb can cut any piece of cake he likes, and that results in two halves.<br></p>"
               }, {
-                "html": "<p>No, because the word \"half\" has a different meaning from the fraction ½.<br></p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>No, because the word \"half\" has a different meaning from the fraction ½.<br></p>"
               }, {
-                "html": "<p>No, because, in a fraction, the pieces must be the same size.<br></p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>No, because, in a fraction, the pieces must be the same size.<br></p>"
               }]
             }
           },
@@ -2698,10 +2698,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -2717,10 +2717,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Into the Bakery",
@@ -2730,13 +2730,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -2825,34 +2825,34 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Excelente! ¡Has aprendido tanto sobre fracciones como Mateo!</p>\n\n<p>Mateo estaba feliz de volver a la panadería, porque quería conseguir más pastel para sus amigos. Sin embargo, cuando llegó, se encontró con el Asistente de Baker detrás del mostrador, llamado Crumb.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El asistente joven de Sr. Baker, llamado Crumb&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_225815_stwdus6obz_height_286_width_89.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"Hola, señor Crumb,\"&nbsp;dijo Mateo. \"Me gustaría comprar la mitad de esa torta de chocolate, por favor\".</p>\n\n<p>\"Sí, está bien,\"&nbsp;dijo Crumb. Sacó un cuchillo y cortó un pequeño rincón de la torta para Mateo, así:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Una fracción pequeño del pastel&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_225850_pyckmyax35_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Crumb le está dando a Mateo&nbsp;la cantidad correcta de pastel?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Excelente! ¡Has aprendido tanto sobre fracciones como Mateo!</p>\n\n<p>Mateo estaba feliz de volver a la panadería, porque quería conseguir más pastel para sus amigos. Sin embargo, cuando llegó, se encontró con el Asistente de Baker detrás del mostrador, llamado Crumb.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El asistente joven de Sr. Baker, llamado Crumb&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_225815_stwdus6obz_height_286_width_89.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"Hola, señor Crumb,\"&nbsp;dijo Mateo. \"Me gustaría comprar la mitad de esa torta de chocolate, por favor\".</p>\n\n<p>\"Sí, está bien,\"&nbsp;dijo Crumb. Sacó un cuchillo y cortó un pequeño rincón de la torta para Mateo, así:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Una fracción pequeño del pastel&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_225850_pyckmyax35_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>¿Crumb le está dando a Mateo&nbsp;la cantidad correcta de pastel?</p>"},
                 "needs_update": false
               },
               "hi-en": {
-                "data_format": "<unknown>",
-                "translation": "<p><span>Excellent! Tumne Mathew ke barabar fractions seekh liye hai!</span></p>\n\n<p><span>Mathew bakery vapis aakar khush tha kyunki use apne friends ke liye aur cake lena tha. Par jab vo vhan pahuncha to usne ek lazy se dikh rahe Assistant baker ko counter ke peeche dekha. uska naam crumb tha.</span></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p><span>Excellent! Tumne Mathew ke barabar fractions seekh liye hai!</span></p>\n\n<p><span>Mathew bakery vapis aakar khush tha kyunki use apne friends ke liye aur cake lena tha. Par jab vo vhan pahuncha to usne ek lazy se dikh rahe Assistant baker ko counter ke peeche dekha. uska naam crumb tha.</span></p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>En realidad eso no está bien. la palabra mitad significa exactamente lo mismo que 1/2. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>En realidad eso no está bien. la palabra mitad significa exactamente lo mismo que 1/2. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Si eso es correcto...Felicidades! has descubierto el truco de Crumb! Vamos a ver qué le pasó a Mateo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Si eso es correcto...Felicidades! has descubierto el truco de Crumb! Vamos a ver qué le pasó a Mateo.</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¿Estás seguro? Mateo le pidió a Crumb media (1/2 torta. ¿Qué significa la fracción 1/2? Piensa en la lección anterior.</p>\n\n<p>¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¿Estás seguro? Mateo le pidió a Crumb media (1/2 torta. ¿Qué significa la fracción 1/2? Piensa en la lección anterior.</p>\n\n<p>¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             }
@@ -2906,10 +2906,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -2935,10 +2935,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -2979,10 +2979,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3033,10 +3033,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3067,10 +3067,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -3086,10 +3086,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Question 4",
@@ -3099,8 +3099,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -3142,7 +3142,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -3347,99 +3347,99 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"¡Te estás volviendo bueno en esto!\" dijo&nbsp;el Sr. Baker. \"Probemos solo uno más.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado con unos partes coloreados en azul&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_183220_usf21b7zue_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"¿Qué fracción de esta imagen es de color azul?\"</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"¡Te estás volviendo bueno en esto!\" dijo&nbsp;el Sr. Baker. \"Probemos solo uno más.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado con unos partes coloreados en azul&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_183220_usf21b7zue_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"¿Qué fracción de esta imagen es de color azul?\"</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Estás cerca, pero tu respuesta es ligeramente incorrecta. Asegúrate que<strong> todas las partes sean exactamente iguales</strong> y que hayas contado las partes azules correctamente.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Estás cerca, pero tu respuesta es ligeramente incorrecta. Asegúrate que<strong> todas las partes sean exactamente iguales</strong> y que hayas contado las partes azules correctamente.</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Calcula el numerador sólo después de haber dividido la imagen completa en partes iguales.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Calcula el numerador sólo después de haber dividido la imagen completa en partes iguales.</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Asegúrate que tu imagen esté dividida en partes que sean <strong>exactamente iguales</strong>, que cada parte sea completamente azul o sin colorear, y que cuentes la cantidad de partes azules correctamente.</p>\n\n<p>También está bien dividir la imagen en partes aún más pequeñas, si es necesario. Solo necesitan ser todas <strong>iguales</strong>.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Asegúrate que tu imagen esté dividida en partes que sean <strong>exactamente iguales</strong>, que cada parte sea completamente azul o sin colorear, y que cuentes la cantidad de partes azules correctamente.</p>\n\n<p>También está bien dividir la imagen en partes aún más pequeñas, si es necesario. Solo necesitan ser todas <strong>iguales</strong>.</p>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>&nbsp;La pieza más pequeña es un triángulo, entonces comencemos dividiendo el cuadrado en triángulos, aquí está el resultado:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado ha sido cortado en triángulos iguales (partes iguales)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_184124_z534frlwr1_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Hay 16 piezas iguales. 8 de ellas son azules. Entonces la respuesta es 8/16</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>&nbsp;La pieza más pequeña es un triángulo, entonces comencemos dividiendo el cuadrado en triángulos, aquí está el resultado:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado ha sido cortado en triángulos iguales (partes iguales)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_184124_z534frlwr1_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Hay 16 piezas iguales. 8 de ellas son azules. Entonces la respuesta es 8/16</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Antes de escribir una fracción, <strong>siempre</strong> debemos dividir el todo en partes iguales primero. Volvamos atrás y veamos el consejo de Mr Baker a Matthew.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Antes de escribir una fracción, <strong>siempre</strong> debemos dividir el todo en partes iguales primero. Volvamos atrás y veamos el consejo de Mr Baker a Matthew.</p>"},
                 "needs_update": false
               }
             },
             "hint_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí hay una pista final con la mitad derecha del rectángulo dividido en triángulos. ¿Puedes hacer lo mismo para la mitad izquierda? Asegúrate, que al final, todas las partes sean <strong>iguales</strong>.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El mismo cuadrado con unos líneas horizontales y diagonales dibujados para dividir en partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_183900_p7089vd44w_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí hay una pista final con la mitad derecha del rectángulo dividido en triángulos. ¿Puedes hacer lo mismo para la mitad izquierda? Asegúrate, que al final, todas las partes sean <strong>iguales</strong>.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El mismo cuadrado con unos líneas horizontales y diagonales dibujados para dividir en partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_183900_p7089vd44w_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sí, eso es correcto! Bien hecho! Eso fue complicado!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sí, eso es correcto! Bien hecho! Eso fue complicado!</p>"},
                 "needs_update": false
               }
             },
             "feedback_6": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>El denominador es correcto. Puedes dividir el pastel entero en 16 partes iguales. Pero el numerador está equivocado. ¿Cuántas de esas 16 partes iguales son azules?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>El denominador es correcto. Puedes dividir el pastel entero en 16 partes iguales. Pero el numerador está equivocado. ¿Cuántas de esas 16 partes iguales son azules?</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Comienza dividiendo el cuadrado en <strong>partes</strong> <strong>iguales</strong>. Es una buena idea copiar la imagen original en un papel y luego dibujar más líneas para dividirla.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Comienza dividiendo el cuadrado en <strong>partes</strong> <strong>iguales</strong>. Es una buena idea copiar la imagen original en un papel y luego dibujar más líneas para dividirla.</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Puedes dividir el cuadrado en triángulos que sean todos del mismo tamaño.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Puedes dividir el cuadrado en triángulos que sean todos del mismo tamaño.</p>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí hay un poco más de la división. ¿Puedes ver cómo completarlo?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un poco más de la división (una línea nueva ha sido dibujado)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_183752_elhjthdtk2_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí hay un poco más de la división. ¿Puedes ver cómo completarlo?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un poco más de la división (una línea nueva ha sido dibujado)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_183752_elhjthdtk2_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Eso no está bien. ¡Inténtalo de nuevo!</p>\n\n<p>Asegúrate de dividir el cuadrado cuidadosamente en partes iguales antes de hacer cualquier otra cosa. Todas las partes deben ser iguales. Usa lápiz y papel si lo necesitas.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Eso no está bien. ¡Inténtalo de nuevo!</p>\n\n<p>Asegúrate de dividir el cuadrado cuidadosamente en partes iguales antes de hacer cualquier otra cosa. Todas las partes deben ser iguales. Usa lápiz y papel si lo necesitas.</p>"},
                 "needs_update": false
               }
             },
             "hint_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Ahora hay&nbsp;más de la división. ¿Puedes ver cómo completarlo?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Más de la división&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_184015_8ryut9kpvh_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Ahora hay&nbsp;más de la división. ¿Puedes ver cómo completarlo?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Más de la división&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_184015_8ryut9kpvh_height_132_width_129.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             }
@@ -3493,10 +3493,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3517,10 +3517,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3571,10 +3571,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalentTo",
@@ -3616,9 +3616,9 @@
               "labelled_as_correct": false,
               "param_changes": [],
               "refresher_exploration_id": "xHwiGtvK2N4L",
-              "missing_prerequisite_skill_id": null
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3639,10 +3639,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3663,10 +3663,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3687,10 +3687,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Question 5",
@@ -3700,13 +3700,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -3817,64 +3817,64 @@
           "translations_mapping": {
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, esa no es la parte del pastel que Crumb cortó para sí mismo. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, esa no es la parte del pastel que Crumb cortó para sí mismo. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"¡Eso es genial!\" dijo el Sr. Baker. \"Ahora echemos un vistazo al pastel de antes.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pedazo del pastel que Crumb había cortado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_154839_14uoilbk6g_height_240_width_240.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"¿Qué fracción del pastel cortó Crumb para ti?\"</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"¡Eso es genial!\" dijo el Sr. Baker. \"Ahora echemos un vistazo al pastel de antes.\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pedazo del pastel que Crumb había cortado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_154839_14uoilbk6g_height_240_width_240.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"¿Qué fracción del pastel cortó Crumb para ti?\"</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Oh no, parece que aún no has aprendido esto correctamente! Recuerda, debes dividir el pastel en partes iguales antes de anotar las fracciones.</p>\n\n<p>Volvamos y echemos un vistazo a los consejos de&nbsp;Sr.&nbsp;Baker a Mateo para que podamos practicar un poco más.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Oh no, parece que aún no has aprendido esto correctamente! Recuerda, debes dividir el pastel en partes iguales antes de anotar las fracciones.</p>\n\n<p>Volvamos y echemos un vistazo a los consejos de&nbsp;Sr.&nbsp;Baker a Mateo para que podamos practicar un poco más.</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, eso es correcto!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, eso es correcto!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_6": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Recuerda dividir todo el pastel en<strong> partes iguales</strong> antes de escribir el <strong>numerador.</strong></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Recuerda dividir todo el pastel en<strong> partes iguales</strong> antes de escribir el <strong>numerador.</strong></p>"},
                 "needs_update": false
               }
             },
             "feedback_7": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. el denominador debe contar<strong> el número total</strong> de partes iguales, que no es 6. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. el denominador debe contar<strong> el número total</strong> de partes iguales, que no es 6. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no está bien. Parece que has olvidado lo que son un denominador y un numerador. El <strong>denominador</strong> siempre debe ser el <strong>número</strong> <strong>total</strong> de partes iguales.&nbsp;Intenta refrescar tu memoria con&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;la lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link>.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no está bien. Parece que has olvidado lo que son un denominador y un numerador. El <strong>denominador</strong> siempre debe ser el <strong>número</strong> <strong>total</strong> de partes iguales.&nbsp;Intenta refrescar tu memoria con&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;la lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link>.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Recuerda dividir <strong>todo el pastel</strong> en partes iguales antes de escribir el <strong>denominador</strong></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Recuerda dividir <strong>todo el pastel</strong> en partes iguales antes de escribir el <strong>denominador</strong></p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto! Inténtalo de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto! Inténtalo de nuevo.</p>"},
                 "needs_update": false
               }
             }
@@ -3928,10 +3928,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3952,10 +3952,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -3976,10 +3976,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalentTo",
@@ -4000,10 +4000,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalentTo",
@@ -4025,9 +4025,9 @@
               "labelled_as_correct": false,
               "param_changes": [],
               "refresher_exploration_id": "xHwiGtvK2N4L",
-              "missing_prerequisite_skill_id": null
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4043,10 +4043,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4062,10 +4062,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4081,10 +4081,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4105,10 +4105,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Question 2",
@@ -4118,8 +4118,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -4146,7 +4146,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -4423,99 +4423,99 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"¡Qué bueno, Mateo! Probemos otro,\"&nbsp;dijo&nbsp;el Sr. Baker.</p>\n\n<p>\"¿Qué fracción de este pastel está <strong>sombreada</strong>?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un pastel con dos pedazos pequeños sombreados.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_173602_fxctrmsnzh_height_196_width_196.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"¡Qué bueno, Mateo! Probemos otro,\"&nbsp;dijo&nbsp;el Sr. Baker.</p>\n\n<p>\"¿Qué fracción de este pastel está <strong>sombreada</strong>?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un pastel con dos pedazos pequeños sombreados.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_173602_fxctrmsnzh_height_196_width_196.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto.</p>\n\n<p>Parece que has olvidado lo que representan el numerador y el denominador. Probablemente deberías intentar refrescar tu memoria con la&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link>.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto.</p>\n\n<p>Parece que has olvidado lo que representan el numerador y el denominador. Probablemente deberías intentar refrescar tu memoria con la&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link>.</p>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Primero, divide la torta en partes iguales.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El mismo pastel dividido en 8 partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_180504_nqfz65nkjw_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Dos de las ocho partes iguales están oscurecidas. Entonces, la respuesta es <strong>2/8.</strong></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Primero, divide la torta en partes iguales.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El mismo pastel dividido en 8 partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_180504_nqfz65nkjw_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Dos de las ocho partes iguales están oscurecidas. Entonces, la respuesta es <strong>2/8.</strong></p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Olvidaste dividir todo el pastel en <strong>partes</strong> <strong>iguales</strong> primero.</p>\n\n<p>Volvamos y miremos el consejo de Mr. Baker a Mateo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Olvidaste dividir todo el pastel en <strong>partes</strong> <strong>iguales</strong> primero.</p>\n\n<p>Volvamos y miremos el consejo de Mr. Baker a Mateo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto, pero casi lo tienes. 6/8 es la fracción que representa los partes que <strong>no</strong> <strong>son</strong> <strong>sombreados</strong>. ¿Qué fracción del pastel está sombreado (más oscuro)?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto, pero casi lo tienes. 6/8 es la fracción que representa los partes que <strong>no</strong> <strong>son</strong> <strong>sombreados</strong>. ¿Qué fracción del pastel está sombreado (más oscuro)?</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sí,&nbsp;muy bien!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sí,&nbsp;muy bien!</p>"},
                 "needs_update": false
               }
             },
             "feedback_6": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Este pastel no se puede dividir en 6 partes iguales.</p>\n\n<p>Tendrás que dividir el pastel <strong>con</strong> <strong>más</strong> <strong>cuidado</strong>, para que <strong>todos</strong> <strong>las</strong> <strong>partes</strong> <strong>sean</strong> <strong>iguales</strong>. Es una buena idea usar papel y bolígrafo para esto.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Este pastel no se puede dividir en 6 partes iguales.</p>\n\n<p>Tendrás que dividir el pastel <strong>con</strong> <strong>más</strong> <strong>cuidado</strong>, para que <strong>todos</strong> <strong>las</strong> <strong>partes</strong> <strong>sean</strong> <strong>iguales</strong>. Es una buena idea usar papel y bolígrafo para esto.</p>"},
                 "needs_update": false
               }
             },
             "feedback_7": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Asegúrate de dividir el pastel <strong>con</strong> <strong>precisión</strong> en partes iguales. Tienes la idea correcta, pero debes dividirlo correctamente. Dibuja el pastel en un pedazo de papel si es necesario.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Asegúrate de dividir el pastel <strong>con</strong> <strong>precisión</strong> en partes iguales. Tienes la idea correcta, pero debes dividirlo correctamente. Dibuja el pastel en un pedazo de papel si es necesario.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Así debe lucir el pastel después de haberlo dividido.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El mismo pastel dividido en partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_180302_41xltwyk8k_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Así debe lucir el pastel después de haberlo dividido.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El mismo pastel dividido en partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_180302_41xltwyk8k_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>El denominador es correcto. Puedes dividir el pastel en 8 partes iguales. Pero el numerador es incorrecto. ¿Cuántas de esas 8 partes iguales son más oscuras?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>El denominador es correcto. Puedes dividir el pastel en 8 partes iguales. Pero el numerador es incorrecto. ¿Cuántas de esas 8 partes iguales son más oscuras?</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡Inténtalo de nuevo! Usa lápiz y papel si lo necesitas.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡Inténtalo de nuevo! Usa lápiz y papel si lo necesitas.</p>"},
                 "needs_update": false
               }
             },
             "feedback_8": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Este pastel no se puede dividir en 10 partes iguales. Pero tienes la idea correcta!</p>\n\n<p>Tendrás que dividir el pastel <strong>con más cuidado</strong>, para que <strong>todos las partes sean iguales.</strong> Es una buena idea usar papel y bolígrafo para esto.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Este pastel no se puede dividir en 10 partes iguales. Pero tienes la idea correcta!</p>\n\n<p>Tendrás que dividir el pastel <strong>con más cuidado</strong>, para que <strong>todos las partes sean iguales.</strong> Es una buena idea usar papel y bolígrafo para esto.</p>"},
                 "needs_update": false
               }
             },
             "feedback_9": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. El denominador de tu fracción es 3, lo que significa que la torta se puede dividir en 3 partes iguales en total. Tu respuesta no parece correcta ...</p>\n\n<p>Recuerda, el denominador debe ser el <strong>número total</strong> de <strong>partes</strong> <strong>iguales</strong> en que se puede dividir la torta. Es importante que las partes sean iguales. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. El denominador de tu fracción es 3, lo que significa que la torta se puede dividir en 3 partes iguales en total. Tu respuesta no parece correcta ...</p>\n\n<p>Recuerda, el denominador debe ser el <strong>número total</strong> de <strong>partes</strong> <strong>iguales</strong> en que se puede dividir la torta. Es importante que las partes sean iguales. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Comienza dividiendo la torta en <strong>partes</strong> <strong>iguales</strong>. Cada parte debe tener el mismo tamaño.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Comienza dividiendo la torta en <strong>partes</strong> <strong>iguales</strong>. Cada parte debe tener el mismo tamaño.</p>"},
                 "needs_update": false
               }
             }
@@ -4569,10 +4569,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -4598,10 +4598,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -4622,10 +4622,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -4646,10 +4646,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalentTo",
@@ -4671,9 +4671,9 @@
               "labelled_as_correct": false,
               "param_changes": [],
               "refresher_exploration_id": "xHwiGtvK2N4L",
-              "missing_prerequisite_skill_id": null
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4689,10 +4689,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4708,10 +4708,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4727,10 +4727,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4746,10 +4746,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -4765,10 +4765,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Question 3",
@@ -4778,8 +4778,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -4811,7 +4811,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_10": {
@@ -5128,113 +5128,113 @@
           "translations_mapping": {
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡has olvidado <strong>algo muy importante</strong> que debes hacer primero al calcular una fracción de una imagen! Volvamos y echemos un vistazo al consejo de Mr. Baker para Mateo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡has olvidado <strong>algo muy importante</strong> que debes hacer primero al calcular una fracción de una imagen! Volvamos y echemos un vistazo al consejo de Mr. Baker para Mateo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_9": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. La imagen <strong>no</strong> <strong>se</strong> <strong>puede</strong> dividir en 3 partes <strong>iguales</strong>.</p>\n\n<p>Asegúrate de dividir <strong>la</strong> <strong>imagen</strong> <strong>completa</strong> en partes iguales, luego intenta nuevamente. ¡Usa lápiz y papel si lo necesitas!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. La imagen <strong>no</strong> <strong>se</strong> <strong>puede</strong> dividir en 3 partes <strong>iguales</strong>.</p>\n\n<p>Asegúrate de dividir <strong>la</strong> <strong>imagen</strong> <strong>completa</strong> en partes iguales, luego intenta nuevamente. ¡Usa lápiz y papel si lo necesitas!</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. La parte verde cubre la mitad del cuadrado pequeño en el que se encuentra, pero la pregunta se refiere a la fracción de <strong>toda la figura</strong> que está coloreada de verde. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. La parte verde cubre la mitad del cuadrado pequeño en el que se encuentra, pero la pregunta se refiere a la fracción de <strong>toda la figura</strong> que está coloreada de verde. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Has dividido correctamente la forma en partes iguales, pero parece que has olvidado lo que representan el numerador y el denominador. El <strong>denominador</strong> debe ser el <strong>número total</strong> de partes iguales.</p>\n\n<p>Intenta refrescar la memoria con&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;la lección de actualización!&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Has dividido correctamente la forma en partes iguales, pero parece que has olvidado lo que representan el numerador y el denominador. El <strong>denominador</strong> debe ser el <strong>número total</strong> de partes iguales.</p>\n\n<p>Intenta refrescar la memoria con&nbsp;<oppia-noninteractive-link text-with-value=\"&amp;quot;la lección de actualización!&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link></p>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Primero, divide la torta en <strong>partes</strong> <strong>iguales</strong>:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado dividido en 8 partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_183033_gnohmgti25_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Una de las ocho partes iguales está&nbsp;oscurecida.&nbsp;Entonces, la respuesta es 1/8.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Primero, divide la torta en <strong>partes</strong> <strong>iguales</strong>:</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El cuadrado dividido en 8 partes iguales&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_183033_gnohmgti25_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Una de las ocho partes iguales está&nbsp;oscurecida.&nbsp;Entonces, la respuesta es 1/8.</p>"},
                 "needs_update": false
               }
             },
             "feedback_10": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. La imagen <strong>no</strong> <strong>se</strong> <strong>puede</strong> dividir en 7 partes <strong>iguales</strong>.</p>\n\n<p>Recuerda el denominador debe ser el <strong>número</strong> <strong>total</strong> de partes iguales, no solo las partes sin colorear. ¡Usa lápiz y papel si lo necesitas!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. La imagen <strong>no</strong> <strong>se</strong> <strong>puede</strong> dividir en 7 partes <strong>iguales</strong>.</p>\n\n<p>Recuerda el denominador debe ser el <strong>número</strong> <strong>total</strong> de partes iguales, no solo las partes sin colorear. ¡Usa lápiz y papel si lo necesitas!</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. La parte verde no cubre completamente el cuadrado pequeño. Debes dividir <strong>la</strong> <strong>imagen</strong> <strong>completa</strong> en partes iguales antes de calcular la fracción.</p>\n\n<p>¡Inténtelo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. La parte verde no cubre completamente el cuadrado pequeño. Debes dividir <strong>la</strong> <strong>imagen</strong> <strong>completa</strong> en partes iguales antes de calcular la fracción.</p>\n\n<p>¡Inténtelo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, eso es correcto! ¡Bien hecho!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, eso es correcto! ¡Bien hecho!</p>"},
                 "needs_update": false
               }
             },
             "feedback_6": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. La imagen <strong>no</strong> <strong>se</strong> <strong>puede</strong> dividir en 6 partes&nbsp;<strong>iguales</strong>. Asegúrate de dividir <strong>la</strong> <strong>imagen</strong> <strong>completa</strong> en partes iguales, luego intenta nuevamente. ¡Usa lápiz y papel si lo necesitas!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. La imagen <strong>no</strong> <strong>se</strong> <strong>puede</strong> dividir en 6 partes&nbsp;<strong>iguales</strong>. Asegúrate de dividir <strong>la</strong> <strong>imagen</strong> <strong>completa</strong> en partes iguales, luego intenta nuevamente. ¡Usa lápiz y papel si lo necesitas!</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Empieza con dividir el cuadrado grande en <strong>partes</strong> <strong>iguales</strong>. Es posible para hacer este en una manera en que el parte verde es uno de los partes iguales.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Empieza con dividir el cuadrado grande en <strong>partes</strong> <strong>iguales</strong>. Es posible para hacer este en una manera en que el parte verde es uno de los partes iguales.</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí tienes parte de la división para comenzar. Puedes completarlo?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El parte verde en el cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_182804_vabjen82g7_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí tienes parte de la división para comenzar. Puedes completarlo?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El parte verde en el cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_182804_vabjen82g7_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Aquí hay un poco más de la división, para comenzar. Puedes completarlo?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un poco más de la division del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_182847_4ila03h9rt_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Aquí hay un poco más de la división, para comenzar. Puedes completarlo?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un poco más de la division del cuadrado&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_182847_4ila03h9rt_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡Inténtalo de nuevo! Usa su lápiz y papel si lo necesitas.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡Inténtalo de nuevo! Usa su lápiz y papel si lo necesitas.</p>"},
                 "needs_update": false
               }
             },
             "feedback_8": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. El cuadrado ya comenzó con 5 partes iguales, por lo que no puedes obtener un denominador de 4 dividiéndolo más. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. El cuadrado ya comenzó con 5 partes iguales, por lo que no puedes obtener un denominador de 4 dividiéndolo más. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"Sr. Baker, ¿puedes hacerme una pregunta más difícil, por favor?\u201d preguntó Mateo. \"¡Es divertido tratar de averiguar cómo dividir estos pasteles en partes iguales!\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado dividido en cuartos. Un parte de uno de los cuartos está coloreado verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_180718_an5kjtw2mq_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"¡Claro!\" dijo&nbsp;el Sr. Baker. \"¿Qué fracción de esta imagen es de color verde?\"</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"Sr. Baker, ¿puedes hacerme una pregunta más difícil, por favor?\u201d preguntó Mateo. \"¡Es divertido tratar de averiguar cómo dividir estos pasteles en partes iguales!\"</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado dividido en cuartos. Un parte de uno de los cuartos está coloreado verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190816_180718_an5kjtw2mq_height_115_width_112.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"¡Claro!\" dijo&nbsp;el Sr. Baker. \"¿Qué fracción de esta imagen es de color verde?\"</p>"},
                 "needs_update": false
               }
             },
             "feedback_7": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>El denominador es correcto. Puedes dividir el pastel entero en 8 partes iguales. Pero el numerador es incorrecto ¿Cuántas de esas partes iguales están coloreadas?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>El denominador es correcto. Puedes dividir el pastel entero en 8 partes iguales. Pero el numerador es incorrecto ¿Cuántas de esas partes iguales están coloreadas?</p>"},
                 "needs_update": false
               }
             }
@@ -5288,10 +5288,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalentTo",
@@ -5312,10 +5312,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -5341,10 +5341,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -5375,10 +5375,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasNumeratorEqualTo",
@@ -5399,10 +5399,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsExactlyEqualTo",
@@ -5454,9 +5454,9 @@
               "labelled_as_correct": false,
               "param_changes": [],
               "refresher_exploration_id": "xHwiGtvK2N4L",
-              "missing_prerequisite_skill_id": null
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -5472,10 +5472,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Question 1",
@@ -5485,8 +5485,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -5528,7 +5528,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -5837,106 +5837,106 @@
           "translations_mapping": {
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Estás cerca, pero esta fracción en realidad representa la parte del pastel que no está oscurecida. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Estás cerca, pero esta fracción en realidad representa la parte del pastel que no está oscurecida. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Así debe lucir el pastel después de haberlo dividido.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel claramente cortado en nueve pedazos iguales. Cuatro pedazos son oscuros.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_232854_xcomk4ukrf_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Así debe lucir el pastel después de haberlo dividido.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel claramente cortado en nueve pedazos iguales. Cuatro pedazos son oscuros.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_232854_xcomk4ukrf_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "hint_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Cuatro de los 9 partes han sido coloreadas, así que el numerador es 4.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Cuatro de los 9 partes han sido coloreadas, así que el numerador es 4.</p>"},
                 "needs_update": false
               }
             },
             "hint_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Recuerda: el denominador de una fracción es el número total de <strong>partes</strong> <strong>iguales</strong> en que se divide el todo.</p>\n\n<p>En este caso, el total se divide en 9 partes iguales, por lo que el denominador de la fracción es 9.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Recuerda: el denominador de una fracción es el número total de <strong>partes</strong> <strong>iguales</strong> en que se divide el todo.</p>\n\n<p>En este caso, el total se divide en 9 partes iguales, por lo que el denominador de la fracción es 9.</p>"},
                 "needs_update": false
               }
             },
             "solution": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Primero, divide la torta en partes iguales.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel con cuatro de nueve partes coloreados oscuros.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_233406_awbnkk6654_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Cuatro de las nueve partes iguales están oscurecidas entonces la respuesta es 4/9.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Primero, divide la torta en partes iguales.</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel con cuatro de nueve partes coloreados oscuros.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_233406_awbnkk6654_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Cuatro de las nueve partes iguales están oscurecidas entonces la respuesta es 4/9.</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"¡Bueno! Aquí hay otro pastel,\u201d&nbsp;dijo el Sr. Baker, señalando. \"¿Qué fracción del pastel se ve <strong>más</strong> <strong>oscuro</strong>?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un pastel cortado en nueve pedazos.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_232447_js97pqnfhf_height_240_width_240.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"¡Bueno! Aquí hay otro pastel,\u201d&nbsp;dijo el Sr. Baker, señalando. \"¿Qué fracción del pastel se ve <strong>más</strong> <strong>oscuro</strong>?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un pastel cortado en nueve pedazos.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190814_232447_js97pqnfhf_height_240_width_240.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. ¡Recuerda dividir todo el pastel en partes iguales primero!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. ¡Recuerda dividir todo el pastel en partes iguales primero!</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Si, eso es correcto!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Si, eso es correcto!</p>"},
                 "needs_update": false
               }
             },
             "feedback_6": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Parece que has olvidado lo que representan el numerador y el denominador. El denominador debe ser el número total de partes iguales, pero no es correcto en tu respuesta.</p>\n\n<p>Probablemente deberías intentar <oppia-noninteractive-link text-with-value=\"&amp;quot;la lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link> para&nbsp;refrescar tu memoria.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Parece que has olvidado lo que representan el numerador y el denominador. El denominador debe ser el número total de partes iguales, pero no es correcto en tu respuesta.</p>\n\n<p>Probablemente deberías intentar <oppia-noninteractive-link text-with-value=\"&amp;quot;la lección de actualización&amp;quot;\" url-with-value=\"&amp;quot;https://www.oppia.org/explore/xHwiGtvK2N4L?parent=MjZzEVOG47_1&amp;quot;\"></oppia-noninteractive-link> para&nbsp;refrescar tu memoria.</p>"},
                 "needs_update": false
               }
             },
             "feedback_7": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Tu denominador es correcto (¡yay!), Pero asegúrate de calcular correctamente el numerador. ¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Tu denominador es correcto (¡yay!), Pero asegúrate de calcular correctamente el numerador. ¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. El denominador es correcto, pero recuerda que también debes dividir el pastel en <strong>partes</strong> <strong>iguales</strong> antes de calcular el numerador. Inténtalo de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. El denominador es correcto, pero recuerda que también debes dividir el pastel en <strong>partes</strong> <strong>iguales</strong> antes de calcular el numerador. Inténtalo de nuevo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Calcula el numerador sólo <strong>después</strong> <strong>de</strong> haber dividido la imagen completa en partes iguales.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Calcula el numerador sólo <strong>después</strong> <strong>de</strong> haber dividido la imagen completa en partes iguales.</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto. Asegúrate de comenzar dividiendo la torta en partes iguales. Es una buena idea hacer esto con lápiz y papel.</p>\n\n<p>¡Inténtalo de nuevo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto. Asegúrate de comenzar dividiendo la torta en partes iguales. Es una buena idea hacer esto con lápiz y papel.</p>\n\n<p>¡Inténtalo de nuevo!</p>"},
                 "needs_update": false
               }
             },
             "hint_4": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>El numerador de una fracción es la cantidad de partes que se han seleccionado (después de asegurarse que todas las partes sean iguales).</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>El numerador de una fracción es la cantidad de partes que se han seleccionado (después de asegurarse que todas las partes sean iguales).</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Recuerda, antes de escribir una fracción, comience dividiendo la torta entera en <strong>partes</strong> <strong>iguales.</strong></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Recuerda, antes de escribir una fracción, comience dividiendo la torta entera en <strong>partes</strong> <strong>iguales.</strong></p>"},
                 "needs_update": false
               }
             }
@@ -5963,7 +5963,7 @@
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -5986,8 +5986,8 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Felicitaciones por completar otra lección en la panadería!</p>\n\n<p>Mateo visitó la panadería de nuevo al día siguiente. Encontró que el Sr. Baker se veía infeliz, y había muchos cartones de huevos en la mesa a su alrededor. ¿Qué pasó? ¡Únete a ellos en la próxima lección para averiguarlo!</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;¡Un pollo con sus huevos!&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_230538_j4d5buvl5a_height_200_width_270.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Felicitaciones por completar otra lección en la panadería!</p>\n\n<p>Mateo visitó la panadería de nuevo al día siguiente. Encontró que el Sr. Baker se veía infeliz, y había muchos cartones de huevos en la mesa a su alrededor. ¿Qué pasó? ¡Únete a ellos en la próxima lección para averiguarlo!</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;¡Un pollo con sus huevos!&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_230538_j4d5buvl5a_height_200_width_270.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             }
@@ -6041,10 +6041,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -6060,10 +6060,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Final Test A second try",
@@ -6073,13 +6073,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -6144,29 +6144,29 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"¡Bien hecho!,\"&nbsp;dijo el Sr. Baker. \"¡Has aprendido mucho sobre fracciones! Ahora, si respondes correctamente una pregunta más en el primer intento, ¡te daré mi pedazo de pastel!\"</p>\n\n<p>\"Está bien,\" dijo Mateo. \"¡Hazlo difícil! ¡Yo puedo hacerlo!\"</p>\n\n<p>\"Está bien,\"&nbsp;dijo el Sr. Baker, sonriendo. \"Aquí hay un dibujo. ¿Qué fracción está sombreada?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un triángulo con un cuadrado negro en su interior.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223940_wbhbpvg0k8_height_106_width_110.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"¡Bien hecho!,\"&nbsp;dijo el Sr. Baker. \"¡Has aprendido mucho sobre fracciones! Ahora, si respondes correctamente una pregunta más en el primer intento, ¡te daré mi pedazo de pastel!\"</p>\n\n<p>\"Está bien,\" dijo Mateo. \"¡Hazlo difícil! ¡Yo puedo hacerlo!\"</p>\n\n<p>\"Está bien,\"&nbsp;dijo el Sr. Baker, sonriendo. \"Aquí hay un dibujo. ¿Qué fracción está sombreada?</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un triángulo con un cuadrado negro en su interior.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_223940_wbhbpvg0k8_height_106_width_110.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, debes recordarlo tu mismo)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, debes recordarlo tu mismo)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, bien hecho!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, bien hecho!</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto! Miremos más de cerca.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto! Miremos más de cerca.</p>"},
                 "needs_update": false
               }
             }
@@ -6220,10 +6220,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -6239,10 +6239,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Final Test B second try",
@@ -6252,13 +6252,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -6323,29 +6323,29 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"No te preocupes, Mateo,\"&nbsp;dijo el Sr. Baker. \"Eso fue un poco complicado. Hagamos otro, y veamos si puedes hacerlo bien en el primer intento.\"</p>\n\n<p>\"¿Puedes decirme qué fracción de esta imagen está <strong>sombreada</strong>?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un rectángulo grande dividido en 5 partes iguales. Unos partes de los 5 partes iguales están coloreados verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_225326_acw86dm086_height_106_width_215.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"No te preocupes, Mateo,\"&nbsp;dijo el Sr. Baker. \"Eso fue un poco complicado. Hagamos otro, y veamos si puedes hacerlo bien en el primer intento.\"</p>\n\n<p>\"¿Puedes decirme qué fracción de esta imagen está <strong>sombreada</strong>?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un rectángulo grande dividido en 5 partes iguales. Unos partes de los 5 partes iguales están coloreados verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_225326_acw86dm086_height_106_width_215.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, debes recordarlo tu mismo)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, debes recordarlo tu mismo)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, bien hecho! Eso es correcto.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, bien hecho! Eso es correcto.</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, eso no es correcto! Miremos más de cerca.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, eso no es correcto! Miremos más de cerca.</p>"},
                 "needs_update": false
               }
             }
@@ -6399,10 +6399,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -6418,10 +6418,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Final Test C",
@@ -6431,13 +6431,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -6502,29 +6502,29 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"Eso también fue un poco complicado, ¡pero estás aprendiendo!\" dijo el Sr. Baker. \"¡Probemos uno más!\"</p>\n\n<p>\"¿Qué fracción de esta imagen está sombreada?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado con un triángulo dentro coloreado en rojo&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_230005_thwtm76lz3_height_120_width_132.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"Eso también fue un poco complicado, ¡pero estás aprendiendo!\" dijo el Sr. Baker. \"¡Probemos uno más!\"</p>\n\n<p>\"¿Qué fracción de esta imagen está sombreada?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un cuadrado con un triángulo dentro coloreado en rojo&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_230005_thwtm76lz3_height_120_width_132.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, ¡debes recordarlo tu mismo!)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, ¡debes recordarlo tu mismo!)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, eso es correcto! ¡Bien hecho!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, eso es correcto! ¡Bien hecho!</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, inténtalo de nuevo ¡Puedes hacerlo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, inténtalo de nuevo ¡Puedes hacerlo!</p>"},
                 "needs_update": false
               }
             }
@@ -6578,10 +6578,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasDenominatorEqualTo",
@@ -6597,10 +6597,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Final Test B second try",
@@ -6610,8 +6610,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -6626,7 +6626,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -6719,43 +6719,43 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"Vamos a intentarlo de nuevo,\"&nbsp;dijo el Sr. Baker. \"¿Qué fracción de esta imagen está sombreada?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un rectángulo grande dividido en 5 partes iguales. Unos partes de los 5 partes iguales están coloreados verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_225534_hh3e1tvdwt_height_106_width_215.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"Vamos a intentarlo de nuevo,\"&nbsp;dijo el Sr. Baker. \"¿Qué fracción de esta imagen está sombreada?\"</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Un rectángulo grande dividido en 5 partes iguales. Unos partes de los 5 partes iguales están coloreados verde.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_225534_hh3e1tvdwt_height_106_width_215.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, ¡debes recordarlo tu mismo!)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, olvidaste dividir la forma en partes iguales primero (nadie te recordará que hagas eso, ¡debes recordarlo tu mismo!)</p>\n\n<p>Volvamos y practiquemos de nuevo.</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>¡Sí, bien hecho!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>¡Sí, bien hecho!</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Siempre recuerda el consejo del Sr. Baker: antes de escribir una fracción, asegúrate que divides toda la figura en<strong> partes iguales.</strong></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Siempre recuerda el consejo del Sr. Baker: antes de escribir una fracción, asegúrate que divides toda la figura en<strong> partes iguales.</strong></p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>Puedes dividir el rectángulo en el centro para hacer todas las piezas en triángulos del mismo tamaño.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Puedes dividir el rectángulo en el centro para hacer todas las piezas en triángulos del mismo tamaño.</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>No, inténtalo de nuevo ¡Puedes hacerlo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>No, inténtalo de nuevo ¡Puedes hacerlo!</p>"},
                 "needs_update": false
               }
             }
@@ -6786,13 +6786,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -6816,8 +6816,8 @@
           "translations_mapping": {
             "content": {
               "es": {
-                "data_format": "<unknown>",
-                "translation": "<p>\"¡Bien hecho!,\" dijo el Sr. Baker. Le dio a Mateo su pedazo de pastel de chocolate. \u201cMira,\u201d dijo, combinando las piezas, \u201c¡eso es más de la mitad de un pastel! ¡Así que deberías tener suficiente, y un poco más también!</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel de Mateo!&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_230250_1n96ojsx5g_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"¡Gracias, señor Baker!\" dijo Mateo. Llevó el pastel a sus amigos y lo disfrutaron tanto que Mateo sabía que volvería por más.</p>\n\n<p>Antes de dejar la panadería, Mateo anotó algunas cosas importantes que aprendió en su cuaderno. ¡Quizás quieras escribirlos también!</p>\n\n<ul>\n\t<li><strong>Siempre</strong> divide la imagen en <strong>partes</strong> <strong>iguales</strong>, antes de tratar de decir qué fracción representa.</li>\n\t<li>Al resolver un problema de fracciones, <strong>intenta</strong> <strong>dibujar una imagen</strong>. Además, piense qué <strong>cantidad</strong> representa la fracción, no los números en la fracción.</li></ul>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\"¡Bien hecho!,\" dijo el Sr. Baker. Le dio a Mateo su pedazo de pastel de chocolate. \u201cMira,\u201d dijo, combinando las piezas, \u201c¡eso es más de la mitad de un pastel! ¡Así que deberías tener suficiente, y un poco más también!</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;El pastel de Mateo!&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190817_230250_1n96ojsx5g_height_192_width_192.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\"¡Gracias, señor Baker!\" dijo Mateo. Llevó el pastel a sus amigos y lo disfrutaron tanto que Mateo sabía que volvería por más.</p>\n\n<p>Antes de dejar la panadería, Mateo anotó algunas cosas importantes que aprendió en su cuaderno. ¡Quizás quieras escribirlos también!</p>\n\n<ul>\n\t<li><strong>Siempre</strong> divide la imagen en <strong>partes</strong> <strong>iguales</strong>, antes de tratar de decir qué fracción representa.</li>\n\t<li>Al resolver un problema de fracciones, <strong>intenta</strong> <strong>dibujar una imagen</strong>. Además, piense qué <strong>cantidad</strong> representa la fracción, no los números en la fracción.</li></ul>"},
                 "needs_update": false
               }
             },

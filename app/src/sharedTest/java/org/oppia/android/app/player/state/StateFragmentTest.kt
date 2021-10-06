@@ -71,7 +71,9 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
@@ -126,12 +128,15 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -199,7 +204,13 @@ class StateFragmentTest {
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
-  private val internalProfileId: Int = 1
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
@@ -1491,12 +1502,798 @@ class StateFragmentTest {
 
       clickReturnToTopicButton()
     }
-    explorationCheckpointTestHelper
-      .verifyExplorationProgressIsDeleted(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        TEST_EXPLORATION_ID_2
-      )
+    explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
+      profileId, TEST_EXPLORATION_ID_2
+    )
   }
+
+  // TODO(#503): Add versions of the following multi-language & localization tests for questions.
+
+  /* Multi-language & localization tests. */
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_englishContentLang_content_isInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      verifyContentContains("Test exploration with interactions")
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabicContentLang_content_isInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      verifyContentContains("التفاعلات")
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabicContentLang_thenEnglish_content_isInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      // The content should be updated to be back in English after the switch.
+      verifyContentContains("Test exploration with interactions")
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_continueInteraction_buttonIsInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.continue_button)).check(matches(withText("Continue")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_continueInteraction_buttonIsInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      // App strings aren't being translated, so the button label stays the same.
+      onView(withId(R.id.continue_button)).check(matches(withText("Continue")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_fractionInput_placeholderIsInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeState1()
+
+      onView(withId(R.id.fraction_input_interaction_view))
+        .check(matches(withHint("Input a fraction.")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_fractionInput_submitAnswer_answerMatchesSubmission() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      typeFractionText("2 1/2")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("2 1/2")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_fractionInput_placeholderIsInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeState1()
+
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(withHint("إدخال الكسر.")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_fractionInput_submitAnswer_answerMatchesSubmission() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      typeFractionText("2 1/2")
+      clickSubmitAnswerButton()
+
+      // The answer stays the same--the selected language doesn't change how fractions are
+      // represented.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("2 1/2")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_englishContentLang_feedback_isInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabicContentLang_feedback_isInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+
+      // The feedback should be in Arabic since the content language is set to that.
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("صحيح!"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabicContentLang_thenEnglish_feedback_isInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+      scrollToViewType(FEEDBACK)
+
+      // The feedback should be in Arabic since the content language was just changed.
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("صحيح!"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_multipleChoice_optionsAreInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      playThroughPrototypeState2()
+      scrollToViewType(SELECTION_INTERACTION)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).check(matches(withText(containsString("Eagle"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_multipleChoice_submittedAnswer_answerIsInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("Eagle")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_multipleChoice_optionsAreInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      playThroughPrototypeState2()
+      scrollToViewType(SELECTION_INTERACTION)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).check(matches(withText(containsString("النسر"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_multipleChoice_submittedAnswer_answerIsInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
+
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withText(containsString("النسر"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
+
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      // The answer should stay in Arabic despite switching back to English.
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withText(containsString("النسر"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_itemSelection_optionsAreInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      scrollToViewType(SELECTION_INTERACTION)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.item_selection_contents_text_view
+        )
+      ).check(matches(withText(containsString("Red"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_itemSelection_submittedAnswer_answerIsInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      scrollToViewType(SELECTION_INTERACTION)
+
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withText(containsString("Green"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_itemSelection_optionsAreInArabic() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      scrollToViewType(SELECTION_INTERACTION)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.item_selection_contents_text_view
+        )
+      ).check(matches(withText(containsString("أحمر"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_itemSelection_submittedAnswer_answerIsInArabic() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+      scrollToViewType(SELECTION_INTERACTION)
+
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "أخضر")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withText(containsString("أخضر"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInArabic() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+      scrollToViewType(SELECTION_INTERACTION)
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "أخضر")
+      clickSubmitAnswerButton()
+
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      // The answer should stay in the language it was submitted in even if the language changes.
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withText(containsString("أخضر"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_numericInput_submitAnswer_answerMatchesSubmission() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      typeNumericInput("121")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("121")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_numericInput_submitAnswer_answerMatchesSubmission() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      typeNumericInput("121")
+      clickSubmitAnswerButton()
+
+      // Arabic doesn't change the display answer for numeric input.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("121")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_ratioInput_placeholderIsInEnglish() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      onView(withId(R.id.ratio_input_interaction_view))
+        .check(matches(withHint(containsString("Enter in format of"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_ratioInput_submitAnswer_answerMatchesSubmission() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      typeRatioExpression("4:5")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("4:5")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_ratioInput_placeholderIsInArabic() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      onView(withId(R.id.ratio_input_interaction_view))
+        .check(matches(withHint(containsString("بتنسيق"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_ratioInput_submitAnswer_answerMatchesSubmission() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      typeRatioExpression("4:5")
+      clickSubmitAnswerButton()
+
+      // Arabic shouldn't change how ratio answers are displayed.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("4:5")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_textInput_placeholderIsInEnglish() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      onView(withId(R.id.text_input_interaction_view))
+        .check(matches(withHint(containsString("Enter a language"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_textInput_submitAnswer_answerMatchesSubmission() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      typeTextInput("finnish")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("finnish")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_textInput_placeholderIsInArabic() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      onView(withId(R.id.text_input_interaction_view))
+        .check(matches(withHint(containsString("أدخل لغة"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_textInput_submitAnswer_answerMatchesSubmission() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      typeTextInput("الفنلندية")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("الفنلندية")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_arabic_textInput_submitAnswer_switchToEnglish_answerDoesNotChange() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+      typeTextInput("الفنلندية")
+      clickSubmitAnswerButton()
+
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      // Text answers should stay exactly as inputted, even if the content language changes.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("الفنلندية")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testStateFragment_english_dragAndDrop_optionsAreInEnglish() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_item_recyclerview,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("0.35"))))
+    }
+  }
+
+  // TODO(#1612): Enable for Robolectric.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_english_dragAndDrop_submittedAnswer_answerIsInEnglish() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      dragAndDropItem(fromPosition = 0, toPosition = 3)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.submitted_answer_recycler_view,
+          position = 3,
+          targetViewId = R.id.submitted_answer_content_text_view
+        )
+      ).check(matches(withText("0.35")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_portuguese_dragAndDrop_optionsAreInPortuguese() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+      updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_item_recyclerview,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("0,35"))))
+    }
+  }
+
+  // TODO(#1612): Enable for Robolectric.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_portuguese_dragAndDrop_submittedAnswer_answerIsInPortuguese() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+      updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
+
+      dragAndDropItem(fromPosition = 0, toPosition = 3)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.submitted_answer_recycler_view,
+          position = 3,
+          targetViewId = R.id.submitted_answer_content_text_view
+        )
+      ).check(matches(withText("0,35")))
+    }
+  }
+
+  // TODO(#1612): Enable for Robolectric.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_portuguese_dragAndDrop_submittedAnswer_switchToEnglish_answerIsInPt() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+      updateContentLanguage(profileId, OppiaLanguage.BRAZILIAN_PORTUGUESE)
+      dragAndDropItem(fromPosition = 0, toPosition = 3)
+      clickSubmitAnswerButton()
+
+      updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+
+      // The answer should stay in Portuguese even after switching to English.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.submitted_answer_recycler_view,
+          position = 3,
+          targetViewId = R.id.submitted_answer_content_text_view
+        )
+      ).check(matches(withText("0,35")))
+    }
+  }
+
+  // TODO(#1612): Enable for Robolectric.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_playWholeLesson_inArabic_hasReturnToTopicButton() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughPrototypeExplorationInArabic()
+
+      // Ninth state: end exploration.
+      scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+    }
+  }
+
+  // TODO(#3171): Implement image region selection tests for English/Arabic to demonstrate that
+  //  answers submit normally & with no special behaviors.
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
@@ -1532,7 +2329,7 @@ class StateFragmentTest {
     return launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
-        internalProfileId,
+        profileId.internalId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,
@@ -1600,6 +2397,13 @@ class StateFragmentTest {
     clickContinueNavigationButton()
   }
 
+  private fun playThroughPrototypeState8InArabic() {
+    // Eighth state: Text input. Correct answer: finnish.
+    typeTextInput("الفنلندية")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
   private fun playThroughPrototypeState9() {
     // Ninth state: Drag Drop Sort. Correct answer: Move 1st item to 4th position.
     dragAndDropItem(fromPosition = 0, toPosition = 3)
@@ -1641,6 +2445,19 @@ class StateFragmentTest {
     playThroughPrototypeState6()
     playThroughPrototypeState7()
     playThroughPrototypeState8()
+    playThroughPrototypeState9()
+    playThroughPrototypeState10()
+  }
+
+  private fun playThroughPrototypeExplorationInArabic() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
+    playThroughPrototypeState7()
+    playThroughPrototypeState8InArabic()
     playThroughPrototypeState9()
     playThroughPrototypeState10()
   }
@@ -1820,6 +2637,16 @@ class StateFragmentTest {
       scrollToHolder(StateViewHolderTypeMatcher(viewType))
     )
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   private fun verifyContentContains(expectedHtml: String) {
