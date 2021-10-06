@@ -2,10 +2,17 @@ package org.oppia.android.domain.translation
 
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
+import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.MACARONIC_ID
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
+import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.locale.LocaleController
@@ -47,7 +54,8 @@ private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
 class TranslationController @Inject constructor(
   private val dataProviders: DataProviders,
   private val localeController: LocaleController,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
   // TODO(#52): Finish this implementation. The implementation below doesn't actually save/restore
   //  settings from the local filesystem since the UI has been currently disabled as part of #20.
@@ -229,7 +237,7 @@ class TranslationController @Inject constructor(
    * contents if no translation exists for the subtitle.
    */
   fun extractString(html: SubtitledHtml, context: WrittenTranslationContext): String {
-    return context.translationsMap[html.contentId]?.html ?: html.html
+    return context.translationsMap[html.contentId]?.extractHtml() ?: html.html
   }
 
   /**
@@ -238,8 +246,42 @@ class TranslationController @Inject constructor(
    * variant).
    */
   fun extractString(unicode: SubtitledUnicode, context: WrittenTranslationContext): String {
-    return context.translationsMap[unicode.contentId]?.html ?: unicode.unicodeStr
+    return context.translationsMap[unicode.contentId]?.extractHtml() ?: unicode.unicodeStr
   }
+
+  /**
+   * Returns a potentially translated list of strings extracted from the provided
+   * [TranslatableSetOfNormalizedString] based on the provided [WrittenTranslationContext].
+   */
+  fun extractStringList(
+    translatableSetOfNormalizedString: TranslatableSetOfNormalizedString,
+    context: WrittenTranslationContext
+  ): List<String> {
+    return context.translationsMap[translatableSetOfNormalizedString.contentId]?.extractHtmlList()
+      ?: translatableSetOfNormalizedString.normalizedStringsList
+  }
+
+  /**
+   * Returns a new [WrittenTranslationContext] based on the specific written translation map and
+   * [OppiaLocale.ContentLocale] to translate content strings into.
+   *
+   * The returned context is meant to be used to translate content-specific strings using
+   * [extractString] and [extractStringList].
+   */
+  fun computeWrittenTranslationContext(
+    writtenTranslationsMap: Map<String, TranslationMapping>,
+    writtenTranslationContentLocale: OppiaLocale.ContentLocale
+  ): WrittenTranslationContext = WrittenTranslationContext.newBuilder().apply {
+    val languageCode = writtenTranslationContentLocale.getLanguageId().getOppiaLanguageCode()
+    val fallbackLanguageCode =
+      writtenTranslationContentLocale.getFallbackLanguageId().getOppiaLanguageCode()
+    val contentMapping = writtenTranslationsMap.mapValuesNotNull { (_, mapping) ->
+      mapping.selectTranslation(languageCode, fallbackLanguageCode)
+    }
+    // Translations that don't match this context are excluded (so app layer code is expected to
+    // default to the base HTML translation).
+    putAllTranslations(contentMapping)
+  }.build()
 
   private fun computeAppLanguage(
     profileId: ProfileId,
@@ -337,4 +379,39 @@ class TranslationController @Inject constructor(
 
   private fun getSystemLanguage(): DataProvider<OppiaLanguage> =
     localeController.retrieveSystemLanguage()
+
+  private fun TranslationMapping.selectTranslation(
+    languageCode: String?,
+    fallbackLanguageCode: String?
+  ): Translation? {
+    val mappingMapLowercaseKeys =
+      translationMappingMap.mapKeys { (key, _) ->
+        machineLocale.run { key.toMachineLowerCase() }
+      }
+    return languageCode?.let { mappingMapLowercaseKeys[it] }
+      ?: fallbackLanguageCode?.let { mappingMapLowercaseKeys[it] }
+  }
+
+  private fun LanguageSupportDefinition.LanguageId.getOppiaLanguageCode(): String? {
+    return when (languageTypeCase) {
+      IETF_BCP47_ID -> machineLocale.run { ietfBcp47Id.ietfLanguageTag.toMachineLowerCase() }
+      MACARONIC_ID -> machineLocale.run { macaronicId.combinedLanguageCode.toMachineLowerCase() }
+      LANGUAGETYPE_NOT_SET, null -> null
+    }
+  }
+
+  private companion object {
+    private fun Translation.extractHtml(): String? = takeIf {
+      it.dataFormatCase == Translation.DataFormatCase.HTML
+    }?.html
+
+    private fun Translation.extractHtmlList(): List<String>? = takeIf {
+      it.dataFormatCase == Translation.DataFormatCase.HTML_LIST
+    }?.htmlList?.htmlList
+
+    private fun <K, I, O> Map<K, I>.mapValuesNotNull(map: (Map.Entry<K, I>) -> O?): Map<K, O> {
+      // The force-non-null operator is safe here since nulls are filtered out.
+      return mapValues(map).filterValues { it != null }.mapValues { (_, value) -> value!! }
+    }
+  }
 }

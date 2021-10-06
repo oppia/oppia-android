@@ -4,6 +4,7 @@ import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.TRANSLATABLE_HTML_CONTENT_ID
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -40,9 +41,10 @@ class DragDropSortInputHasElementXBeforeElementYClassifierProvider @Inject const
   }
 
   override fun matches(
-    answer: ListOfSetsOfTranslatableHtmlContentIds,
-    firstInput: TranslatableHtmlContentId,
-    secondInput: TranslatableHtmlContentId
+    answer: ListOfContentIdSets2,
+    firstInput: ContentId2,
+    secondInput: ContentId2,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     val answerSets = answer.contentIdListsList.map { it.getContentIdSet() }
     return answerSets.indexOfFirst {

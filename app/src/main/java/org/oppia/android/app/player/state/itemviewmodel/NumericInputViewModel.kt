@@ -6,6 +6,7 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.StringToNumberParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -17,6 +18,7 @@ class NumericInputViewModel(
   val hasConversationView: Boolean,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
+  private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
@@ -74,14 +76,14 @@ class NumericInputViewModel(
     }
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
-      userAnswerBuilder.answer =
-        InteractionObject.newBuilder().setReal(answerTextString.toDouble()).build()
-      userAnswerBuilder.plainAnswer = answerTextString
+      answer = InteractionObject.newBuilder().apply {
+        real = answerTextString.toDouble()
+      }.build()
+      plainAnswer = answerTextString
+      this.writtenTranslationContext = this@NumericInputViewModel.writtenTranslationContext
     }
-    return userAnswerBuilder.build()
-  }
+  }.build()
 }

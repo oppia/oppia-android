@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
@@ -14,12 +15,15 @@ import org.oppia.android.domain.classify.ClassificationResult.OutcomeWithMisconc
 import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
+import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,6 +31,8 @@ import kotlin.concurrent.withLock
 
 private const val CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID =
   "create_current_question_data_provider_id"
+private const val CREATE_CURRENT_QUESTION_DATA_WITH_TRANSLATION_CONTEXT_PROVIDER_ID =
+  "create_current_question_data_with_translation_context_provider_id"
 private const val BEGIN_QUESTION_TRAINING_SESSION_PROVIDER_ID =
   "begin_question_training_session_provider_id"
 private const val CREATE_EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
@@ -49,7 +55,8 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val answerClassificationController: AnswerClassificationController,
   private val exceptionsController: ExceptionsController,
-  private val hintHandlerFactory: HintHandler.Factory
+  private val hintHandlerFactory: HintHandler.Factory,
+  private val translationController: TranslationController
 ) : HintHandler.HintMonitor {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
   //  training session.
@@ -66,12 +73,14 @@ class QuestionAssessmentProgressController @Inject constructor(
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
   internal fun beginQuestionTrainingSession(
-    questionsListDataProvider: DataProvider<List<Question>>
+    questionsListDataProvider: DataProvider<List<Question>>,
+    profileId: ProfileId
   ) {
     progressLock.withLock {
       check(progress.trainStage == TrainStage.NOT_IN_TRAINING_SESSION) {
         "Cannot start a new training session until the previous one is completed."
       }
+      progress.currentProfileId = profileId
 
       hintHandler = hintHandlerFactory.create(this)
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
@@ -149,7 +158,9 @@ class QuestionAssessmentProgressController @Inject constructor(
         try {
           val topPendingState = progress.stateDeck.getPendingTopState()
           val classificationResult =
-            answerClassificationController.classify(topPendingState.interaction, answer.answer)
+            answerClassificationController.classify(
+              topPendingState.interaction, answer.answer, answer.writtenTranslationContext
+            )
           answeredQuestionOutcome =
             progress.stateList.computeAnswerOutcomeForResult(classificationResult.outcome)
           progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
@@ -177,7 +188,7 @@ class QuestionAssessmentProgressController @Inject constructor(
             // the current ephemeral state of the training session because a new wrong answer was
             // submitted.
             hintHandler.handleWrongAnswerSubmission(
-              computeCurrentEphemeralState().pendingState.wrongAnswerCount
+              computeBaseCurrentEphemeralState().pendingState.wrongAnswerCount
             )
           }
         } finally {
@@ -335,7 +346,12 @@ class QuestionAssessmentProgressController @Inject constructor(
    * success or failure state back to pending.
    */
   fun getCurrentQuestion(): DataProvider<EphemeralQuestion> = progressLock.withLock {
-    currentQuestionDataProvider
+    val providerId = CREATE_CURRENT_QUESTION_DATA_WITH_TRANSLATION_CONTEXT_PROVIDER_ID
+    return translationController.getWrittenTranslationContentLocale(
+      progress.currentProfileId
+    ).combineWith(currentQuestionDataProvider, providerId) { contentLocale, currentQuestion ->
+      return@combineWith augmentEphemeralQuestion(contentLocale, currentQuestion)
+    }
   }
 
   /**
@@ -354,10 +370,8 @@ class QuestionAssessmentProgressController @Inject constructor(
       }
     }
 
-  private fun computeCurrentEphemeralState(): EphemeralState {
-    val helpIndex = hintHandler.getCurrentHelpIndex()
-    return progress.stateDeck.getCurrentEphemeralState(helpIndex)
-  }
+  private fun computeBaseCurrentEphemeralState(): EphemeralState =
+    progress.stateDeck.getCurrentEphemeralState(hintHandler.getCurrentHelpIndex())
 
   @Suppress("RedundantSuspendModifier")
   private suspend fun retrieveUserAssessmentPerformanceAsync(
@@ -392,12 +406,12 @@ class QuestionAssessmentProgressController @Inject constructor(
             // now that a list of questions is available.
             initializeAssessment(questionsList)
             progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
-            AsyncResult.success(retrieveEphemeralQuestionState(questionsList))
+            AsyncResult.success(
+              retrieveEphemeralQuestionState(questionsList)
+            )
           }
           TrainStage.VIEWING_STATE -> AsyncResult.success(
-            retrieveEphemeralQuestionState(
-              questionsList
-            )
+            retrieveEphemeralQuestionState(questionsList)
           )
           TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
         }
@@ -408,10 +422,30 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private fun retrieveEphemeralQuestionState(questionsList: List<Question>): EphemeralQuestion {
+  /**
+   * Augments the specified [EphemeralQuestion] [AsyncResult] by attaching the necessary context to
+   * translate the question.
+   */
+  private fun augmentEphemeralQuestion(
+    writtenTranslationContentLocale: OppiaLocale.ContentLocale,
+    ephemeralQuestion: EphemeralQuestion
+  ): EphemeralQuestion {
+    return ephemeralQuestion.toBuilder().apply {
+      ephemeralState = ephemeralState.toBuilder().apply {
+        writtenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            state.writtenTranslationsMap, writtenTranslationContentLocale
+          )
+      }.build()
+    }.build()
+  }
+
+  private fun retrieveEphemeralQuestionState(
+    questionsList: List<Question>
+  ): EphemeralQuestion {
     val currentQuestionIndex = progress.getCurrentQuestionIndex()
     val ephemeralQuestionBuilder = EphemeralQuestion.newBuilder()
-      .setEphemeralState(computeCurrentEphemeralState())
+      .setEphemeralState(computeBaseCurrentEphemeralState())
       .setCurrentQuestionIndex(currentQuestionIndex)
       .setTotalQuestionCount(progress.getTotalQuestionCount())
       .setInitialTotalQuestionCount(progress.getTotalQuestionCount())

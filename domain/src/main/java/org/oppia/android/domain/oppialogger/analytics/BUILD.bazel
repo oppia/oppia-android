@@ -1,5 +1,5 @@
 """
-Package for providing logging support for analytics events.
+Library for providing logging analytics to the Oppia android app.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")

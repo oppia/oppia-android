@@ -11,6 +11,7 @@ import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.SchemaObject
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
@@ -20,6 +21,7 @@ import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
+import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
 
 /**
@@ -37,11 +39,15 @@ class InputInteractionViewTestActivity :
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
+  @Inject
+  lateinit var translationController: TranslationController
+
   val numericInputViewModel by lazy {
     NumericInputViewModel(
       hasConversationView = false,
       interactionAnswerErrorOrAvailabilityCheckReceiver = this,
       isSplitView = false,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
       resourceHandler = resourceHandler
     )
   }
@@ -51,7 +57,9 @@ class InputInteractionViewTestActivity :
       interaction = Interaction.getDefaultInstance(),
       hasConversationView = false,
       interactionAnswerErrorOrAvailabilityCheckReceiver = this,
-      isSplitView = false
+      isSplitView = false,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
+      translationController = translationController
     )
   }
 
@@ -66,7 +74,9 @@ class InputInteractionViewTestActivity :
       hasConversationView = false,
       isSplitView = false,
       errorOrAvailabilityCheckReceiver = this,
-      resourceHandler = resourceHandler
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
+      resourceHandler = resourceHandler,
+      translationController = translationController
     )
 
     ratioExpressionInputInteractionViewModel = RatioExpressionInputInteractionViewModel(
@@ -77,7 +87,9 @@ class InputInteractionViewTestActivity :
       hasConversationView = false,
       isSplitView = false,
       errorOrAvailabilityCheckReceiver = this,
-      resourceHandler = resourceHandler
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
+      resourceHandler = resourceHandler,
+      translationController = translationController
     )
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel

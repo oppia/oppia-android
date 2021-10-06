@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableHtmlContentId
@@ -57,7 +58,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -76,7 +78,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -92,7 +95,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -108,7 +112,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -124,7 +129,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -140,7 +146,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -156,7 +163,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -169,7 +177,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -182,7 +191,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -195,7 +205,8 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()

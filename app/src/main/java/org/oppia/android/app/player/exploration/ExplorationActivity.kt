@@ -15,6 +15,7 @@ import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
@@ -45,6 +46,7 @@ class ExplorationActivity :
   private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var state: State
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
   private var backflowScreen: Int? = null
   private var isCheckpointingEnabled: Boolean = false
 
@@ -165,7 +167,8 @@ class ExplorationActivity :
       val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
         explorationId,
         state,
-        helpIndex
+        helpIndex,
+        writtenTranslationContext
       )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
@@ -179,8 +182,12 @@ class ExplorationActivity :
     explorationActivityPresenter.loadExplorationFragment(readingTextSize)
   }
 
-  override fun onExplorationStateLoaded(state: State) {
+  override fun onExplorationStateLoaded(
+    state: State,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
     this.state = state
+    this.writtenTranslationContext = writtenTranslationContext
   }
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
