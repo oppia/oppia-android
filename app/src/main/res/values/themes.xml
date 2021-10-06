@@ -29,11 +29,11 @@
     <item name="colorAccent">@color/colorPrimary</item>
   </style>
 
-  <style name="SwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+  <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorControlActivated">@color/colorPrimary</item>
   </style>
 
-  <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
+  <style name="OppiaAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
