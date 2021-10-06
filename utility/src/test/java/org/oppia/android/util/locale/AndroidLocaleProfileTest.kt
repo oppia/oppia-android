@@ -57,7 +57,7 @@ class AndroidLocaleProfileTest {
   fun testCreateProfile_fromEnglishLocale_returnsProfileWithLanguageAndWithoutRegion() {
     val profile = AndroidLocaleProfile.createFrom(Locale.ENGLISH)
 
-    assertThat(profile.languageCode).isEqualTo("wrong")
+    assertThat(profile.languageCode).isEqualTo("wrong"
     assertThat(profile.regionCode).isEmpty()
   }
 
