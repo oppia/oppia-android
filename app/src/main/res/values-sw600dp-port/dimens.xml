@@ -355,4 +355,11 @@
   <dimen name="ongoing_topic_list_fragment_padding_top">12dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_end">96dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_bottom">112dp</dimen>
+
+  <!-- TopicRevisionFragment -->
+  <dimen name="topic_revision_fragment_padding_start">96dp</dimen>
+  <dimen name="topic_revision_fragment_padding_top">8dp</dimen>
+  <dimen name="topic_revision_fragment_padding_end">96dp</dimen>
+  <dimen name="topic_revision_fragment_padding_bottom">112dp</dimen>
+
 </resources>
