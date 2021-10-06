@@ -87,8 +87,7 @@ class TopicFragmentPresenter @Inject constructor(
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
-      // TODO: maybe wrap getDrawable(), too?
-      tab.icon = AppCompatDrawableManager.get().getDrawable(activity, topicTab.tabIconResId)
+      tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
       setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)

@@ -22,10 +22,6 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-  /**
-   * Provides the Retrofit object.
-   * @return the Retrofit object
-   */
   @SuppressLint("ObsoleteSdkInt") // AS warning is incorrect in this context.
   @OppiaRetrofit
   @Provides
@@ -35,7 +31,7 @@ class NetworkModule {
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
     @BaseUrl baseUrl: String
   ): Optional<Retrofit> {
-    // TODO: make this a compile-time dep (update with correct TODO & issue number).
+    // TODO(#1720): Make this a compile-time dep once Hilt provides it as an option.
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
@@ -52,22 +48,12 @@ class NetworkModule {
     } else Optional.absent()
   }
 
-  /**
-   * Provides the Topic service implementation.
-   * @param retrofit the Retrofit object used to instantiate the service
-   * @return the Topic service implementation.
-   */
   @Provides
   @Singleton
   fun provideTopicService(@OppiaRetrofit retrofit: Optional<Retrofit>): Optional<TopicService> {
     return retrofit.map { it.create(TopicService::class.java) }
   }
 
-  /**
-   * Provides the Classroom service implementation.
-   * @param retrofit the Retrofit object used to instantiate the service
-   * @return the Classroom service implementation.
-   */
   @Provides
   @Singleton
   fun provideClassroomService(
@@ -76,7 +62,6 @@ class NetworkModule {
     return retrofit.map { it.create(ClassroomService::class.java) }
   }
 
-  // Provides the Feedback Reporting service implementation.
   @Provides
   @Singleton
   fun provideFeedbackReportingService(
@@ -85,12 +70,6 @@ class NetworkModule {
     return retrofit.map { it.create(FeedbackReportingService::class.java) }
   }
 
-  /**
-   * Provides the [PlatformParameterService] implementation.
-   *
-   * @param retrofit the Retrofit object used to instantiate the service
-   * @return the [PlatformParameterService] implementation
-   */
   @Provides
   @Singleton
   fun providePlatformParameterService(

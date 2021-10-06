@@ -47,8 +47,6 @@ const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
   "NavigationDrawerFragmentPresenter.navigation_profile_id"
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 
-// TODO: ban java.util.Optional in regex per KitKat/desugaring support
-
 /** The presenter for [NavigationDrawerFragment]. */
 @FragmentScope
 class NavigationDrawerFragmentPresenter @Inject constructor(

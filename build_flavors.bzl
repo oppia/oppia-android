@@ -15,10 +15,10 @@ AVAILABLE_FLAVORS = [
     "alpha_kitkat",
 ]
 
-# TODO: put this somewhere
 # This file contains the list of classes that must be in the main dex list for the legacy multidex
 # build used on KitKat devices. Generally, this is the main application class is needed so that it
 # can load multidex support, plus any dependencies needed by that pipeline.
+_MAIN_DEX_LIST_TARGET_KITKAT = "//:config/kitkat_main_dex_class_list.txt"
 
 # keep sorted
 _PRODUCTION_PROGUARD_SPECS = [
@@ -54,7 +54,7 @@ _FLAVOR_METADATA = {
         "min_sdk_version": 19,
         "target_sdk_version": 29,
         "multidex": "manual_main_dex",
-        "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
+        "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
         "proguard_specs": [],  # Developer builds are not optimized.
         "deps": [
             "//app",
@@ -77,8 +77,8 @@ _FLAVOR_METADATA = {
         "min_sdk_version": 19,
         "target_sdk_version": 29,
         "multidex": "manual_main_dex",
-        "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
-        "proguard_specs": [],  # TODO: Re-add Proguard support to alpha_kitkat.
+        "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
+        "proguard_specs": [],  # TODO(#3886): Re-add Proguard support to alpha_kitkat.
         "deps": [
             "//app",
         ],
@@ -148,8 +148,31 @@ _transform_android_manifest = rule(
     implementation = _transform_android_manifest_impl,
 )
 
-def transform_android_manifest(name, input_file, output_file, build_flavor, major_version, minor_version, version_code):
-    # TODO: docs
+def transform_android_manifest(
+        name,
+        input_file,
+        output_file,
+        build_flavor,
+        major_version,
+        minor_version,
+        version_code):
+    """
+    Generates a new transformation of the specified AndroidManifest.xml.
+
+    The transformed version of the manifest include an explicitly specified version code and
+    computed version name based on the specified major/minor version, flavor, and the most recent
+    develop branch hash.
+
+    Args:
+        name: str. The name of this transformation target.
+        input_file: target. The file target corresponding to the AndroidManifest.xml file to
+            transform.
+        output_file: str. The filename that should be generated as the transformed manifest.
+        build_flavor: str. The specific release flavor of this build of the app.
+        major_version: int. The major version of the app.
+        minor_version: int. The minor version of the app.
+        version_code: int. The version code of this flavor of the app.
+    """
     _transform_android_manifest(
         name = name,
         input_file = input_file,
