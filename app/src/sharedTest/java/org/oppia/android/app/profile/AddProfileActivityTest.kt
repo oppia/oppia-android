@@ -177,7 +177,6 @@ class AddProfileActivityTest {
   fun testAddProfileActivity_hasCorrectRequiredString() {
     activityTestRule.launchActivity(createAddProfileActivityIntent())
     val label = activityTestRule.activity.add_profile_activity_required_heading_text_view.text
-    println(label)
 
     // Verify that the activity shows the correct *Required string for add_profile_activity_required_heading_text_view
     assertThat(label).isEqualTo(context.getString(R.string.add_profile_required))
