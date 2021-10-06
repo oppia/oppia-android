@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
   "TopicLessonsFragment.current_expanded_list_index"
+private const val IS_DEFAULT_STORY_SHOWN = "TopicLessonsFragment.is_default_story_shown"
 
 /** Fragment that contains subtopic list for lessons mode. */
 class TopicLessonsFragment :
@@ -49,6 +50,7 @@ class TopicLessonsFragment :
   lateinit var topicLessonsFragmentPresenter: TopicLessonsFragmentPresenter
 
   private var currentExpandedChapterListIndex: Int? = null
+  private var isDefaultStoryExpanded: Boolean = false
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -66,6 +68,7 @@ class TopicLessonsFragment :
       if (currentExpandedChapterListIndex == -1) {
         currentExpandedChapterListIndex = null
       }
+      isDefaultStoryExpanded = savedInstanceState.getBoolean(IS_DEFAULT_STORY_SHOWN)
     }
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
     val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
@@ -80,7 +83,8 @@ class TopicLessonsFragment :
       this as ExpandedChapterListIndexListener,
       internalProfileId,
       topicId,
-      storyId
+      storyId,
+      isDefaultStoryExpanded
     )
   }
 
@@ -89,10 +93,12 @@ class TopicLessonsFragment :
     if (currentExpandedChapterListIndex != null) {
       outState.putInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, currentExpandedChapterListIndex!!)
     }
+    outState.putBoolean(IS_DEFAULT_STORY_SHOWN, isDefaultStoryExpanded)
   }
 
   override fun onExpandListIconClicked(index: Int?) {
     currentExpandedChapterListIndex = index
+    isDefaultStoryExpanded = true
   }
 
   override fun selectStorySummary(storySummary: StorySummary) {

@@ -520,4 +520,10 @@
   <!-- Story Header View -->
   <dimen name="story_header_view_layout_margin_start">32dp</dimen>
   <dimen name="story_header_view_layout_margin_end">32dp</dimen>
+
+  <!-- Ongoing Topic List Fragment -->
+  <dimen name="ongoing_topic_list_fragment_padding_start">20dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_top">20dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_end">20dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_bottom">144dp</dimen>
 </resources>
