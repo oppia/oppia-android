@@ -30,7 +30,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.databinding.ImageViewBindingAdapters.setImageDrawable
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setPlayStateDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ChapterPlayState
@@ -118,10 +118,10 @@ class ImageViewBindingAdaptersTest {
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
+  fun testSetPlayStateDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
     activityRule.scenario.runWithActivity {
       val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
-      setImageDrawable(imageView, ChapterPlayState.COMPLETED)
+      setPlayStateDrawable(imageView, ChapterPlayState.COMPLETED)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_solid_color_primary_32dp))
       )
@@ -129,10 +129,10 @@ class ImageViewBindingAdaptersTest {
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
+  fun testSetPlayStateDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
     activityRule.scenario.runWithActivity {
       val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
-      setImageDrawable(imageView, ChapterPlayState.NOT_STARTED)
+      setPlayStateDrawable(imageView, ChapterPlayState.NOT_STARTED)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
       )
@@ -140,10 +140,10 @@ class ImageViewBindingAdaptersTest {
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
+  fun testSetPlayStateDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
     activityRule.scenario.runWithActivity {
       val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
-      setImageDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
+      setPlayStateDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
       )
@@ -151,10 +151,10 @@ class ImageViewBindingAdaptersTest {
   }
 
   @Test
-  fun testSetImageDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
+  fun testSetPlayStateDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
     activityRule.scenario.runWithActivity {
       val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
-      setImageDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      setPlayStateDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_stroke_1dp_grey_32dp))
       )
