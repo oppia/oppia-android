@@ -347,4 +347,11 @@
   <dimen name="profile_name_textview_layout_margin_end">42dp</dimen>
   <dimen name="recently_played_stories_textView_layout_margin_start">24dp</dimen>
   <dimen name="view_all_textview_margin_end">24dp</dimen>
+
+  <!-- Ongoing Topic List Fragment -->
+  <dimen name="ongoing_topic_list_fragment_padding_start">96dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_top">12dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_end">96dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_bottom">112dp</dimen>
+
 </resources>
