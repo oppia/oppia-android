@@ -1,5 +1,5 @@
 """
-Domain definitions for onboarding.
+Utilities for onboarding domain components.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -12,7 +12,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":exp_mdr",
+        ":exploration_meta_data_retriever",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
@@ -28,16 +28,16 @@ kt_android_library(
     srcs = [
         "ExpirationMetaDataRetrieverModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":exp_mdr",
-        ":exp_mdr_imp",
+        ":exploration_meta_data_retriever",
+        ":exploration_meta_data_retriever_imp",
         ":dagger",
     ],
 )
 
 kt_android_library(
-    name = "exp_mdr",
+    name = "exploration_meta_data_retriever",
     srcs = [
         "ExpirationMetaDataRetriever.kt",
     ],
@@ -45,14 +45,13 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "exp_mdr_imp",
+    name = "exploration_meta_data_retriever_imp",
     srcs = [
         "ExpirationMetaDataRetrieverImpl.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
-        ":exp_mdr",
+        ":exploration_meta_data_retriever",
     ],
 )
 

@@ -1,31 +1,31 @@
 """
-Domain definitions for onboarding testing.
+Test-only utilities for onboarding domain components.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "exp_mdr",
+    name = "retriever_test_module",
     srcs = [
         "ExpirationMetaDataRetrieverTestModule.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":fake_exp_mdr",
+        ":fake_exploration_meta_data_retriever",
         ":dagger",
-        "//domain/src/main/java/org/oppia/android/domain/onboarding:exp_mdr",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:exploration_meta_data_retriever",
     ],
 )
 
 kt_android_library(
-    name = "fake_exp_mdr",
+    name = "fake_exploration_meta_data_retriever",
     srcs = [
         "FakeExpirationMetaDataRetriever.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//domain/src/main/java/org/oppia/android/domain/onboarding:exp_mdr",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:exploration_meta_data_retriever",
         "//third_party:javax_inject_javax_inject",    ],
 )
 

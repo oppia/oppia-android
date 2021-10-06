@@ -66,7 +66,7 @@ TEST_DEPS = [
     ":testing",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
-    "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:exp_mdr",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
