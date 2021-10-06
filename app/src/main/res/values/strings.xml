@@ -510,7 +510,7 @@
   <!--  Terms of Service -->
   <string name="terms_of_service_activity_title">Terms of Service</string>
   <string name="terms_of_service"> Terms of Service</string>
-  <string name="agree_to_terms">By using Oppia, you agree to our\u0020</string>
+  <string name="agree_to_terms">By using %s, you agree to our\u0020</string>
   <!-- Frequently asked questions & generic app help. -->
   <string name="faq_question_1">How can I create a new profile?</string>
   <string name="faq_question_2">How can I delete a profile?</string>

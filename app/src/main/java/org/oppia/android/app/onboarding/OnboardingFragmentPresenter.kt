@@ -137,7 +137,10 @@ class OnboardingFragmentPresenter @Inject constructor(
     val termsOfService: String = resourceHandler.getStringInLocale(R.string.terms_of_service)
     val privacyPolicy: String = resourceHandler.getStringInLocale(R.string.privacy_policy)
     val completeString: String =
-      resourceHandler.getStringInLocale(R.string.agree_to_terms) +
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.agree_to_terms,
+        resourceHandler.getStringInLocale(R.string.app_name)
+      ) +
         termsOfService + " and " + privacyPolicy
 
     val startIndex = completeString.indexOf(termsOfService)
