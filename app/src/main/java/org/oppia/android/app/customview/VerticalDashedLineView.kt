@@ -33,13 +33,14 @@ class VerticalDashedLineView @JvmOverloads constructor(
     val dashLength: Float = dpToPx(DASH_LENGTH_IN_DP)
     val dashThickness: Float = dpToPx(DASH_THICKNESS_IN_DP)
 
-    paint = Paint()
-    paint.isAntiAlias = true
-    paint.color = ContextCompat.getColor(context, R.color.colorPrimary)
-    paint.style = Paint.Style.STROKE
-    paint.strokeCap = Paint.Cap.ROUND
-    paint.strokeWidth = dashThickness
-    paint.pathEffect = DashPathEffect(floatArrayOf(dashLength, dashGap), /* phase= */ 0F)
+    paint = Paint().apply {
+      isAntiAlias = true
+      color = ContextCompat.getColor(context, R.color.colorPrimary)
+      style = Paint.Style.STROKE
+      strokeCap = Paint.Cap.ROUND
+      strokeWidth = dashThickness
+      pathEffect = DashPathEffect(floatArrayOf(dashLength, dashGap), /* phase= */ 0F)
+    }
   }
 
   /** Sets the color. */
