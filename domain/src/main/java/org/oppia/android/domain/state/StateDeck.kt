@@ -17,7 +17,7 @@ import org.oppia.android.app.model.UserAnswer
  * Tracks the progress of a dynamic playing session through a graph of State cards. This class treats the learner's
  * progress like a deck of cards to simplify forward/backward navigation.
  */
-internal class StateDeck internal constructor(
+class StateDeck constructor(
   initialState: State,
   private val isTopOfDeckTerminalChecker: (State) -> Boolean
 ) {
@@ -27,7 +27,7 @@ internal class StateDeck internal constructor(
   private var stateIndex: Int = 0
 
   /** Resets this deck to a new, specified initial [State]. */
-  internal fun resetDeck(initialState: State) {
+  fun resetDeck(initialState: State) {
     pendingTopState = initialState
     previousStates.clear()
     currentDialogInteractions.clear()
@@ -35,7 +35,7 @@ internal class StateDeck internal constructor(
   }
 
   /** Resumes this deck to continue the exploration from the last marked checkpoint. */
-  internal fun resumeDeck(
+  fun resumeDeck(
     pendingTopState: State,
     previousStates: List<EphemeralState>,
     currentDialogInteractions: List<AnswerAndResponse>,
@@ -50,13 +50,13 @@ internal class StateDeck internal constructor(
   }
 
   /** Navigates to the previous State in the deck, or fails if this isn't possible. */
-  internal fun navigateToPreviousState() {
+  fun navigateToPreviousState() {
     check(!isCurrentStateInitial()) { "Cannot navigate to previous state; at initial state." }
     stateIndex--
   }
 
   /** Navigates to the next State in the deck, or fails if this isn't possible. */
-  internal fun navigateToNextState() {
+  fun navigateToNextState() {
     check(!isCurrentStateTopOfDeck()) { "Cannot navigate to next state; at most recent state." }
     val previousState = previousStates[stateIndex]
     stateIndex++
@@ -71,13 +71,13 @@ internal class StateDeck internal constructor(
    * Returns the [State] corresponding to the latest card in the deck, regardless of whichever State the learner is
    * currently viewing.
    */
-  internal fun getPendingTopState(): State = pendingTopState
+  fun getPendingTopState(): State = pendingTopState
 
   /** Returns the index of the current selected card of the deck. */
-  internal fun getTopStateIndex(): Int = stateIndex
+  fun getTopStateIndex(): Int = stateIndex
 
   /** Returns the current [State] being viewed by the learner. */
-  internal fun getCurrentState(): State {
+  fun getCurrentState(): State {
     return when {
       isCurrentStateTopOfDeck() -> pendingTopState
       else -> previousStates[stateIndex].state
@@ -85,7 +85,7 @@ internal class StateDeck internal constructor(
   }
 
   /** Returns the current [EphemeralState] the learner is viewing. */
-  internal fun getCurrentEphemeralState(helpIndex: HelpIndex): EphemeralState {
+  fun getCurrentEphemeralState(helpIndex: HelpIndex): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current state is the top
     // of the deck, and that state is the terminal one. Otherwise the terminal check would never be triggered since
     // the second case assumes the top of the deck must be pending.
@@ -104,7 +104,7 @@ internal class StateDeck internal constructor(
    *
    * @param prohibitSameStateName whether to enable a sanity check to ensure the same state isn't routed to twice
    */
-  internal fun pushState(state: State, prohibitSameStateName: Boolean) {
+  fun pushState(state: State, prohibitSameStateName: Boolean) {
     check(isCurrentStateTopOfDeck()) {
       "Cannot push a new state unless the learner is at the most recent state."
     }
@@ -135,7 +135,7 @@ internal class StateDeck internal constructor(
    * the most recent State in the deck, or if the most recent State is terminal (since no answer can be submitted to a
    * terminal interaction).
    */
-  internal fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml) {
+  fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml) {
     check(isCurrentStateTopOfDeck()) { "Cannot submit an answer except to the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot submit an answer to a terminal state." }
     currentDialogInteractions += AnswerAndResponse.newBuilder()
@@ -148,7 +148,7 @@ internal class StateDeck internal constructor(
    * Returns an [ExplorationCheckpoint] which contains all the latest values of variables of the
    * [StateDeck] that are used in light weight checkpointing.
    */
-  internal fun createExplorationCheckpoint(
+  fun createExplorationCheckpoint(
     explorationVersion: Int,
     explorationTitle: String,
     timestamp: Long,
