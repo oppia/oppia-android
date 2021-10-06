@@ -61,7 +61,10 @@ class RegexPatternValidationCheckTest {
   private val translatablePluralsGoInMainFileErrorMessage =
     "All plurals outside strings.xml must be marked as not translatable, or moved to strings.xml."
   private val importingAndroidBidiFormatterErrorMessage =
-    "Do not use Android's BidiFormatter directly. Instead, use the wrapper utility" +
+    "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for" +
+      " KitKat compatibility."
+  private val importingAndroidXBidiFormatterErrorMessage =
+    "Do not use AndroidX's BidiFormatter directly. Instead, use the wrapper utility" +
       " OppiaBidiFormatter so that tests can verify that formatting actually occurs on select" +
       " strings."
   private val useStringFormattingFunctionInKotlinOrJavaErrorMessage =
@@ -96,6 +99,13 @@ class RegexPatternValidationCheckTest {
     "Never explicitly handle configuration changes. Instead, use saved instance states for" +
       " retaining state across rotations. For other types of configuration changes, follow up" +
       " with the developer mailing list with how to proceed if you think this is a legitimate case."
+  private val nonCompatDrawableUsedErrorMessage =
+    "Drawable start/end/top/bottom & image source should use the compat versions, instead, e.g.:" +
+      " app:drawableStartCompat or app:srcCompat, to ensure that vector drawables can load" +
+      " properly in SDK <21 environments."
+  private val useJava8OptionalErrorMessage =
+    "Prefer using com.google.common.base.Optional (Guava's Optional) since desugaring has some" +
+      " incompatibilities between Bazel & KitKat builds."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -931,7 +941,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_bidiFormatterImport_fileContentIsNotCorrect() {
+  fun testFileContent_androidBidiFormatterImport_fileContentIsNotCorrect() {
     val prohibitedContent = "import android.text.BidiFormatter"
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val stringFilePath = "data/src/main/SomeController.kt"
@@ -946,6 +956,27 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $importingAndroidBidiFormatterErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidXBidiFormatterImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import androidx.core.text.BidiFormatter"
+    tempFolder.newFolder("testfiles", "data", "src", "main")
+    val stringFilePath = "data/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $importingAndroidXBidiFormatterErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -1326,6 +1357,63 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:6: $androidActivityConfigChangesErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_nonCompatDrawables_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        android:drawableStart="@drawable/example_drawable"
+        app:drawableStartCompat="@drawable/example_drawable"
+        android:drawableEnd="@drawable/example_drawable"
+        app:drawableEndCompat="@drawable/example_drawable"
+        android:drawableTop="@drawable/example_drawable"
+        app:drawableTopCompat="@drawable/example_drawable"
+        android:drawableBottom="@drawable/example_drawable"
+        app:drawableBottomCompat="@drawable/example_drawable"
+        android:src="@drawable/example_drawable"
+        app:srcCompat="@drawable/example_drawable"
+      """.trimIndent()
+    val fileContainsSupportLibraryImport = "test_layout.xml"
+    tempFolder.newFile("testfiles/$fileContainsSupportLibraryImport").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $fileContainsSupportLibraryImport:1: $nonCompatDrawableUsedErrorMessage
+        $fileContainsSupportLibraryImport:3: $nonCompatDrawableUsedErrorMessage
+        $fileContainsSupportLibraryImport:5: $nonCompatDrawableUsedErrorMessage
+        $fileContainsSupportLibraryImport:7: $nonCompatDrawableUsedErrorMessage
+        $fileContainsSupportLibraryImport:9: $nonCompatDrawableUsedErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_java8OptionalImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import java.util.Optional"
+    tempFolder.newFolder("testfiles", "data", "src", "main")
+    val stringFilePath = "data/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $useJava8OptionalErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
