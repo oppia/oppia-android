@@ -131,7 +131,7 @@ class ProfilePictureActivityTest {
   }
 
   @Test
-  fun testProfilePictureActivity_hasCorrectActivityLabel(){
+  fun testProfilePictureActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createProfilePictureActivityIntent(
         internalProfileId
