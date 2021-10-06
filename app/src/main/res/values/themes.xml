@@ -16,7 +16,7 @@
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
-  <style name="OppiaThemeNoActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+  <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorPrimary</item>
