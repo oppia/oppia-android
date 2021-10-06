@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
-            android:text="@string/add_profile_required"
+            android:text="@{viewModel.starRequired}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />

@@ -39,6 +39,7 @@ import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import kotlinx.android.synthetic.main.add_profile_activity.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -170,6 +171,16 @@ class AddProfileActivityTest {
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(label).isEqualTo(context.getString(R.string.add_profile_activity_label))
+  }
+
+  @Test
+  fun testAddProfileActivity_hasCorrectRequiredString() {
+    activityTestRule.launchActivity(createAddProfileActivityIntent())
+    val label = activityTestRule.activity.add_profile_activity_required_heading_text_view.text
+    println(label)
+
+    // Verify that the activity shows the correct *Required string for add_profile_activity_required_heading_text_view
+    assertThat(label).isEqualTo(context.getString(R.string.add_profile_required))
   }
 
   @Test
