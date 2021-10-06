@@ -3,7 +3,11 @@ apply plugin: 'com.google.protobuf'
 
 protobuf {
   protoc {
-    artifact = 'com.google.protobuf:protoc:3.8.0'
+    if (project.rootProject.hasProperty('protobuf_platform')) { // Only for M1 Mac.
+      artifact = "com.google.protobuf:protoc:3.8.0:${project.rootProject.property("protobuf_platform")}"
+    } else {
+      artifact = "com.google.protobuf:protoc:3.8.0"
+    }
   }
   generateProtoTasks {
     all().each { task ->
