@@ -173,7 +173,7 @@ public final class ImageViewBindingAdapters {
   /**
    * Binds a drawable indicated by {@link ChapterPlayState} to an {@link ImageView} via
    * "android:src".
-   *
+   * <p/>
    * Reference: https://stackoverflow.com/a/35809319/3689782.
    */
   @BindingAdapter("playState:image")
