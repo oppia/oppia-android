@@ -436,7 +436,6 @@ BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/MarginBindingAdapters.java",
-    "src/main/java/org/oppia/android/app/databinding/PinViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java",
