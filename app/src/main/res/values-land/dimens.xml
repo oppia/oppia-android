@@ -299,6 +299,7 @@
   <dimen name="pin_password_margin_start">72dp</dimen>
   <dimen name="pin_password_margin_end">72dp</dimen>
   <dimen name="pin_password_padding_top">48dp</dimen>
+  <dimen name="pin_password_min_width">496dp</dimen>
 
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">304dp</dimen>

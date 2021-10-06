@@ -180,6 +180,7 @@
   <dimen name="pin_password_margin_start">28dp</dimen>
   <dimen name="pin_password_margin_end">28dp</dimen>
   <dimen name="pin_password_padding_top">40dp</dimen>
+  <dimen name="pin_password_min_width">304dp</dimen>
 
   <dimen name="submitted_answer_question_view_margin_end">64dp</dimen>
   <dimen name="submitted_answer_question_view_margin_start">64dp</dimen>
