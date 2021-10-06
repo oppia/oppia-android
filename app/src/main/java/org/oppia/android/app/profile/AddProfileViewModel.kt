@@ -5,7 +5,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
-
 /** The ViewModel for [AddProfileActivity]. */
 @ActivityScope
 class AddProfileViewModel @Inject constructor() : ObservableViewModel() {
