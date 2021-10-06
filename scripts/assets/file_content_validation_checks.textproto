@@ -41,11 +41,6 @@ file_content_checks {
   file_path_regex: ".+?.xml"
   prohibited_content_regex: "paddingLeft|paddingRight|drawableLeft|drawableRight|layout_alignLeft|layout_alignRight|layout_marginLeft|layout_marginRight|layout_alignParentLeft|layout_alignParentRight|layout_toLeftOf|layout_toRightOf|layout_constraintLeft_toLeftOf|layout_constraintLeft_toRightOf|layout_constraintRight_toLeftOf|layout_constraintRight_toRightOf|layout_goneMarginLeft|layout_goneMarginRight"
   failure_message: "Use start/end versions of layout properties, instead, for proper RTL support"
-  exempted_file_name: "app/src/main/res/layout/add_profile_activity.xml"
-  exempted_file_name: "app/src/main/res/layout/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-land/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-land/profile_progress_header.xml"
-  exempted_file_name: "app/src/main/res/layout-sw600dp-port/profile_progress_header.xml"
   exempted_file_name: "app/src/main/res/values/styles.xml"
 }
 file_content_checks {
@@ -108,4 +103,81 @@ file_content_checks {
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/robolectric/ShadowBidiFormatter.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/robolectric/ShadowBidiFormatterTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatterImpl.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "(format|getString|getStringArray|getQuantityString|getQuantityText|toLowerCase|toUpperCase|capitalize|decapitalize|lowercase|uppercase)\\("
+  failure_message: "String formatting and resource retrieval should go through AppLanguageResourceHandler, OppiaLocale.DisplayLocale, or OppiaLocale.MachineLocale depending on the context (see each class's documentation for details on when each should be used)."
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/locale/DisplayLocaleImpl.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/locale/OppiaLocale.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/JsonExtensions.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/WorkDataExtensions.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/extensions/BundleExtensions.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/parser/html/CustomHtmlContentHandlerTest.kt"
+  exempted_file_patterns: "app/src/test/.+?Test\\.kt"
+  exempted_file_patterns: "app/src/sharedTest/.+?Test\\.kt"
+  exempted_file_patterns: "scripts/.+"
+}
+file_content_checks {
+  file_path_regex: ".+?.java"
+  prohibited_content_regex: "(format|getString|getStringArray|getQuantityString|getQuantityText|toLowerCase|toUpperCase)\\("
+  failure_message: "String formatting and resource retrieval should go through AppLanguageResourceHandler, OppiaLocale.DisplayLocale, or OppiaLocale.MachineLocale depending on the context (see each class's documentation for details on when each should be used)."
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "ignoreCase\\s*?="
+  failure_message: "Case-insensitive string operations should be performed using MachineLocale."
+  exempted_file_patterns: "testing/src/main/.+?.kt"
+  exempted_file_patterns: "scripts/.+"
+}
+file_content_checks {
+  file_path_regex: ".+?.xml"
+  prohibited_content_regex: "(format|getString|getStringArray)\\("
+  failure_message: "String formatting and resource retrieval in layouts should go through AppLanguageResourceHandler."
+}
+file_content_checks {
+  file_path_regex: ".+?.xml"
+  prohibited_content_regex: "@string/[^\\s]+?\\("
+  failure_message: "String formatting and quantity string building shouldn't be done directly through databinding. Instead, pass in AppLanguageResourceHandler from the view model or call a new function through the view model to compute the string. Both should use the handler's locale-safe formatting/quantity string methods."
+}
+file_content_checks {
+  file_path_regex: ".+?.xml"
+  prohibited_content_regex: "@plurals/[^\\s]+?\\("
+  failure_message: "String plurals shouldn't be constructed directly through databinding. Instead, pass in AppLanguageResourceHandler from the view model or call a new function through the view model to compute the string. Both should use the handler's locale-safe formatting/quantity string methods."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/res/values.*?/strings\\.xml"
+  prohibited_content_regex: "[^%]*%(\\d+\\$)?[A-Za-z&&[^s]]"
+  failure_message: "Only string type specifiers should use for strings (to avoid runtime errors due to bidirectional wrapping requirements)."
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "\\sActivity\\("
+  failure_message: "Activity should never be subclassed. Use AppCompatActivity, instead."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "\\sAppCompatActivity\\("
+  failure_message: "Never subclass AppCompatActivity directly. Instead, use InjectableAppCompatActivity."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
+  exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing/.*?TestActivity.kt$"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "\\sDialogFragment\\("
+  failure_message: "DialogFragment should never be subclassed. Use InjectableDialogFragment, instead."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/fragment/InjectableDialogFragment.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?AndroidManifest.xml"
+  prohibited_content_regex: "android:configChanges"
+  failure_message: "Never explicitly handle configuration changes. Instead, use saved instance states for retaining state across rotations. For other types of configuration changes, follow up with the developer mailing list with how to proceed if you think this is a legitimate case."
 }

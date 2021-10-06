@@ -56,7 +56,7 @@
   <string name="state_submit_button">تقديم</string>
   <string name="lesson_replay_button_text">إعادة التشغيل</string>
   <string name="state_end_exploration_button">العودة إلى الموضوع</string>
-  <string name="previous_responses_header">الردود السابقة (%d)</string>
+  <string name="previous_responses_header" fuzzy="true">الردود السابقة (%s)</string>
   <string name="image_interaction_answer_text">يضغط على %s</string>
   <string name="state_learn_again_button">تعلم مرة أخرى</string>
   <string name="see_more">اعرض المزيد</string>
@@ -101,7 +101,7 @@
   <string name="topic_downloaded">المواضيع التي تم تنزيلها</string>
   <string name="downloaded">تم التنزيل</string>
   <string name="question_player_title">وضع الممارسة</string>
-  <string name="question_training_session_progress">السؤال %d من أصل %d</string>
+  <string name="question_training_session_progress" fuzzy="true">السؤال %s من أصل %s</string>
   <string name="question_training_session_progress_finished">تمّ</string>
   <string name="question_training_session_finished_header">تم الإنتهاء</string>
   <string name="question_training_session_finished_message">تم الإنتهاء من جميع الأسئلة! يمكنك بدأ مجموعة أسئلة أخرى، أو العودة للموضوع.</string>
@@ -126,19 +126,61 @@
   <string name="ratio_error_invalid_size">عدد الحدود لا يساوي العدد المطلوب.</string>
   <string name="ratio_error_includes_zero">لا يمكن أن تحتوي النسب على 0 كعنصر.</string>
   <string name="unknown_size">الحجم مجهول</string>
-  <string name="size_bytes">%d بايت</string>
-  <string name="size_kb">%d ك.ب</string>
-  <string name="size_mb">%d م.ب</string>
-  <string name="size_gb">%d ج.ب</string>
+  <string name="size_bytes" fuzzy="true">%s بايت</string>
+  <string name="size_kb" fuzzy="true">%s ك.ب</string>
+  <string name="size_mb" fuzzy="true">%s م.ب</string>
+  <string name="size_gb">%s ج.ب</string>
   <string name="correct">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
   <string name="chapter_count_with_story_name">%1$s في %2$s</string>
-  <string name="chapter_count">{{PLURAL|one=\nفصلًا واحدًا\n|\n%d من الفصول</string>
-  <string name="story_count">{{PLURAL|one=\nقصة واحدة\n|\n%d من القصص</string>
-  <string name="story_total_chapters">{{PLURAL|one=\n%d من %d فصل مكتمل\n|\n%d من %d من الفصول مكتملة</string>
-  <string name="lesson_count">{{PLURAL|one=\nدرسًا واحدًا\n|\n%d من الدروس</string>
-  <string name="completed_story_count">{{PLURAL|one=\nقصة واحدة مكتملة\n|zero=\n%d قصة مكتملة\n|\n%d من القصص مكتملة</string>
-  <string name="ongoing_topic_count">{{PLURAL|one=\nموضوع واحد في تقدم\n|zero=\n%d موضوع في تقدم\n|\n%d من المواضيع في تقدم</string>
+  <plurals name="chapter_count">
+    <item quantity="zero">و لا فصل</item>
+    <item quantity="one">فصلًا واحدًا</item>
+    <item quantity="two">فصلان</item>
+    <item quantity="few">%s من الفصول</item>
+    <item quantity="many">%s من الفصول</item>
+    <item quantity="other">%s من الفصول</item>
+  </plurals>
+  <plurals name="story_count">
+    <item quantity="zero">و لا قصة</item>
+    <item quantity="one">قصة واحدة</item>
+    <item quantity="two">قصتان</item>
+    <item quantity="few">%s من القصص</item>
+    <item quantity="many">%s من القصص</item>
+    <item quantity="other">%s من القصص</item>
+  </plurals>
+  <plurals name="story_total_chapters">
+    <item quantity="zero">و لا فصل مكتمل</item>
+    <item quantity="one">فصل %s مكتمل من %s</item>
+    <item quantity="two">فصلان %s مكتملان من %s</item>
+    <item quantity="few">%sفصول مكتملة من %s</item>
+    <item quantity="many">%s فصول مكتملة من %s</item>
+    <item quantity="other">%s فصول مكتملة من %s</item>
+  </plurals>
+  <plurals name="lesson_count" fuzzy="true">
+    <item quantity="zero">و لا درس</item>
+    <item quantity="one">درسًا واحدًا</item>
+    <item quantity="two">درسان</item>
+    <item quantity="few">%s درس</item>
+    <item quantity="many">%s درس</item>
+    <item quantity="other">%s درس</item>
+  </plurals>
+  <plurals name="completed_story_count" fuzzy="true">
+    <item quantity="zero">و لا قصة مكتملة</item>
+    <item quantity="one">قصة واحدة مكتملة</item>
+    <item quantity="two">قصتان مكتملتان</item>
+    <item quantity="few">%s قصة مكتملة</item>
+    <item quantity="many">%s قصة مكتملة</item>
+    <item quantity="other">%s قصة مكتملة</item>
+  </plurals>
+  <plurals name="ongoing_topic_count">
+    <item quantity="zero">و لا موضوع في تقدم</item>
+    <item quantity="one">موضوع واحد في تقدم</item>
+    <item quantity="two">موضوعان في تقدم</item>
+    <item quantity="few">%s موضوع في تقدم</item>
+    <item quantity="many">%s موضوع في تقدم</item>
+    <item quantity="other">%s موضوع في تقدم</item>
+  </plurals>
   <string name="profile_chooser_activity_label">صفحة اختيار الملف الشخصي</string>
   <string name="profile_chooser_admin">المشرف</string>
   <string name="profile_chooser_select">اختر الملف الشخصي</string>
@@ -197,7 +239,7 @@
   <string name="skip">تخطي</string>
   <string name="next_arrow">التالي</string>
   <string name="get_started">ابدأ</string>
-  <string name="onboarding_slide_dots_content_description">شاشة العرض %d من %d</string>
+  <string name="onboarding_slide_dots_content_description">شاشة العرض %s من %s</string>
   <string name="pin_password_hello">أهلًا، %s!</string>
   <string name="pin_password_admin_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بالمشرف.</string>
   <string name="pin_password_user_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بك.</string>
@@ -326,16 +368,37 @@
   <string name="return_to_topic">العودة إلى الموضوع</string>
   <string name="explanation">الشرح:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">إذا تساوى عنصران، قم بدمجهم.</string>
-  <string name="link_to_item_below">الربط بالعنصر %d</string>
-  <string name="unlink_items">إلغاء ربط العناصر عند %d</string>
-  <string name="move_item_down_content_description">تحريك العنصر إلى الأسفل إلى %d</string>
-  <string name="move_item_up_content_description">تحريك العنصر إلى الأعلى عند %d</string>
+  <string name="link_to_item_below" fuzzy="true">الربط بالعنصر %s</string>
+  <string name="unlink_items">إلغاء ربط العناصر عند %s</string>
+  <string name="move_item_down_content_description">تحريك العنصر إلى الأسفل إلى %s</string>
+  <string name="move_item_up_content_description" fuzzy="true">تحريك العنصر إلى الأعلى عند %s</string>
   <string name="up_button_disabled">أعلى</string>
   <string name="down_button_disabled">أسفل</string>
   <string name="profile_last_visited">%s %s</string>
-  <string name="minutes">{{PLURAL|one=\nدقيقة واحدة\n|\n%d من الدقائق</string>
-  <string name="hours">{{PLURAL|one=\nساعة واحدة\n|\n%d من الساعات</string>
-  <string name="days">{{PLURAL|one=\nيوم واحد\n|\n%d من الأيام</string>
+  <plurals name="minutes">
+    <item quantity="zero">و لا دقيقة</item>
+    <item quantity="one">دقيقة واحدة</item>
+    <item quantity="two">دقيقتان</item>
+    <item quantity="few">%s دقيقة</item>
+    <item quantity="many">%s دقيقة</item>
+    <item quantity="other">%s دقيقة</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="zero">و لا ساعة</item>
+    <item quantity="one">ساعة واحدة</item>
+    <item quantity="two">ساعتان</item>
+    <item quantity="few">%s ساعة</item>
+    <item quantity="many">%s ساعة</item>
+    <item quantity="other">%s ساعة</item>
+  </plurals>
+  <plurals name="days" fuzzy="true">
+    <item quantity="zero">و لا يوم</item>
+    <item quantity="one">يوم واحدة</item>
+    <item quantity="two">يومان</item>
+    <item quantity="few">%s يوم</item>
+    <item quantity="many">%s يوم</item>
+    <item quantity="other">%s يوم</item>
+  </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>

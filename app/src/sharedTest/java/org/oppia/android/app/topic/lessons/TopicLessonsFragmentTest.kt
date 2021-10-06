@@ -36,7 +36,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -55,6 +55,7 @@ import org.oppia.android.app.topic.EnablePracticeTab
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -87,6 +88,7 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
@@ -100,6 +102,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -120,6 +123,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class TopicLessonsFragmentTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
@@ -771,11 +777,87 @@ class TopicLessonsFragmentTest {
     }
   }
 
+  @Test
+  fun testLessonsPlayFragment_loadRecentStory_default_chapterListIsVisible() {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(
+        internalProfileId,
+        RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
+      )
+    ).use {
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_recycler_view
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_chapterListIsNotVisible() {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0
+      )
+    ).use {
+      scrollToPosition(position = 1)
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_recycler_view
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_land_chapterListIsNotVisible() {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0
+      )
+    ).use {
+      scrollToPosition(position = 1)
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      orientationLandscape()
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.chapter_recycler_view
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       topicId
+    )
+  }
+
+  private fun createTopicPlayStoryActivityIntent(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String
+  ): Intent {
+    return TopicActivity.createTopicPlayStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      topicId,
+      storyId
     )
   }
 
@@ -916,7 +998,7 @@ class TopicLessonsFragmentTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

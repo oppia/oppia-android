@@ -2,7 +2,6 @@ package org.oppia.android.app.shim
 
 import android.content.Context
 import android.content.Intent
-import androidx.fragment.app.FragmentActivity
 
 /**
  * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
@@ -14,10 +13,6 @@ import androidx.fragment.app.FragmentActivity
  */
 // TODO(#1619): Remove file post-Gradle
 interface IntentFactoryShim {
-
-  /** Returns [ProfileChooserActivity] intent for [AdministratorControlsAccountActionsViewModel]. */
-  fun createProfileChooserActivityIntent(fragment: FragmentActivity): Intent
-
   /**
    * Creates a [TopicActivity] intent for [PromotedStoryViewModel] and passes necessary string
    * data.
