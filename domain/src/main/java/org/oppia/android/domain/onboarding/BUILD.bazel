@@ -42,9 +42,6 @@ kt_android_library(
         "ExpirationMetaDataRetriever.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-
-    ],
 )
 
 kt_android_library(
