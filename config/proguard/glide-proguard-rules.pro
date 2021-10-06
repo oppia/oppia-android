@@ -1,4 +1,5 @@
-# Reference: https://github.com/bumptech/glide#proguard.
+# Reference: https://github.com/bumptech/glide#proguard &
+# https://bumptech.github.io/glide/doc/configuration.html.
 # TODO(#3749): Simplify this once the target SDK is updated.
 
 -keep public class * implements com.bumptech.glide.module.GlideModule
