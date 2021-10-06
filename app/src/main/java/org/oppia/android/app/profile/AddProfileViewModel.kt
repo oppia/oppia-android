@@ -2,10 +2,11 @@ package org.oppia.android.app.profile
 
 import android.content.res.Resources
 import androidx.databinding.ObservableField
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import javax.inject.Inject
+
 
 /** The ViewModel for [AddProfileActivity]. */
 @ActivityScope
