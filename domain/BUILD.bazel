@@ -30,6 +30,7 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/domain/feedbackreporting/*.kt",
     "src/main/java/org/oppia/android/domain/oppialogger/**/*.kt",
     "src/main/java/org/oppia/android/domain/util/*.kt",
+    "src/main/java/org/oppia/android/domain/state/*.kt",
 ])
 
 DOMAIN_ASSETS = generate_assets_list_from_text_protos(
@@ -101,6 +102,9 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_graph",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_list",
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//domain/src/main/java/org/oppia/android/domain/util:retriever",
