@@ -45,30 +45,6 @@ public final class ImageViewBindingAdapters {
   }
 
   /**
-   * Binds a drawable indicated by {@link ChapterPlayState} to an {@link ImageView} via
-   * "android:src".
-   *
-   * Reference: https://stackoverflow.com/a/35809319/3689782.
-   */
-  @BindingAdapter("playState:image")
-  public static void setPlayStateDrawable(
-      @NonNull ImageView imageView,
-      ChapterPlayState chapterPlayState
-  ) {
-    switch (chapterPlayState) {
-      case COMPLETED:
-        setImageDrawable(imageView, R.drawable.circular_solid_color_primary_32dp);
-        break;
-      case NOT_STARTED:
-      case STARTED_NOT_COMPLETED:
-        setImageDrawable(imageView, R.drawable.circular_stroke_2dp_color_primary_32dp);
-        break;
-      default:
-        setImageDrawable(imageView, R.drawable.circular_stroke_1dp_grey_32dp);
-    }
-  }
-
-  /**
    * Binds the specified [LessonThumbnailGraphic] as the source for the [ImageView].
    * <p/>
    * The view should be specified to have no width/height (when sized in a constraint layout), and
@@ -191,6 +167,30 @@ public final class ImageViewBindingAdapters {
             .placeholder(R.drawable.ic_default_avatar)
             .into(imageView);
       }
+    }
+  }
+
+  /**
+   * Binds a drawable indicated by {@link ChapterPlayState} to an {@link ImageView} via
+   * "android:src".
+   *
+   * Reference: https://stackoverflow.com/a/35809319/3689782.
+   */
+  @BindingAdapter("playState:image")
+  public static void setPlayStateDrawable(
+      @NonNull ImageView imageView,
+      ChapterPlayState chapterPlayState
+  ) {
+    switch (chapterPlayState) {
+      case COMPLETED:
+        setImageDrawable(imageView, R.drawable.circular_solid_color_primary_32dp);
+        break;
+      case NOT_STARTED:
+      case STARTED_NOT_COMPLETED:
+        setImageDrawable(imageView, R.drawable.circular_stroke_2dp_color_primary_32dp);
+        break;
+      default:
+        setImageDrawable(imageView, R.drawable.circular_stroke_1dp_grey_32dp);
     }
   }
 }
