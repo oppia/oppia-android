@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:app="http://schemas.android.com/apk/res-auto">
+<resources>
   <!-- This style specifies the Text Size of the Toolbar Title. -->
   <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
     <item name="android:textSize">20sp</item>
@@ -88,7 +88,7 @@
     <item name="android:background">@drawable/previous_next_state_image_view_background</item>
     <item name="android:contentDescription">@string/previous_state_description</item>
     <item name="android:padding">12dp</item>
-    <item name="app:srcCompat">@drawable/ic_arrow_back_oppia_dark_blue_24dp</item>
+    <item name="srcCompat">@drawable/ic_arrow_back_oppia_dark_blue_24dp</item>
   </style>
   <!-- NEXT BUTTON STYLE -->
   <style name="NextButton" parent="TextAppearance.AppCompat.Widget.Button">
@@ -101,7 +101,7 @@
     <item name="android:background">@drawable/previous_next_state_image_view_background</item>
     <item name="android:contentDescription">@string/next_state_description</item>
     <item name="android:padding">12dp</item>
-    <item name="app:srcCompat">@drawable/ic_arrow_forward_oppia_dark_blue_24dp</item>
+    <item name="srcCompat">@drawable/ic_arrow_forward_oppia_dark_blue_24dp</item>
   </style>
 
   <style name="TabLayout" parent="Widget.Design.TabLayout">
@@ -297,7 +297,7 @@
     <item name="android:paddingStart">12dp</item>
     <item name="android:background">@drawable/start_over_button_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
-    <item name="app:drawableStartCompat">@drawable/ic_start_over_24dp</item>
+    <item name="drawableStartCompat">@drawable/ic_start_over_24dp</item>
     <item name="android:drawablePadding">4dp</item>
     <item name="drawableTint">@color/oppiaPrimaryDark</item>
     <item name="android:textAllCaps">true</item>
@@ -312,7 +312,7 @@
     <item name="android:paddingEnd">12dp</item>
     <item name="android:paddingStart">12dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
-    <item name="app:drawableEndCompat">@drawable/ic_arrow_right_alt_24dp</item>
+    <item name="drawableEndCompat">@drawable/ic_arrow_right_alt_24dp</item>
     <item name="drawableTint">@color/white</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
