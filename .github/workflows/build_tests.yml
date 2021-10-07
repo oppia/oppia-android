@@ -130,33 +130,33 @@ jobs:
         run: |
           bazel build -- //:oppia
 
-    # Note that caching only works on non-forks.
-    - name: Build Oppia KitKat binary (with caching, non-fork only)
-      if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
-      env:
-        BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-      run: |
-        bazel build --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_kitkat
+      # Note that caching only works on non-forks.
+      - name: Build Oppia KitKat binary (with caching, non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+        run: |
+          bazel build --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_kitkat
 
-    - name: Build Oppia binary KitKat (without caching, or on a fork)
-      if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
-      run: |
-        bazel build -- //:oppia_kitkat
+      - name: Build Oppia binary KitKat (without caching, or on a fork)
+        if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
+        run: |
+          bazel build -- //:oppia_kitkat
 
-    - name: Copy Oppia dev APKs for uploading
-      run: |
-        cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
-        cp $GITHUB_WORKSPACE/bazel-bin/oppia_kitkat.apk /home/runner/work/oppia-android/oppia-android/
+      - name: Copy Oppia dev APKs for uploading
+        run: |
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia.apk /home/runner/work/oppia-android/oppia-android/
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia_kitkat.apk /home/runner/work/oppia-android/oppia-android/
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: oppia-bazel.apk
-        path: /home/runner/work/oppia-android/oppia-android/oppia.apk
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia-bazel.apk
+          path: /home/runner/work/oppia-android/oppia-android/oppia.apk
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: oppia-bazel-kitkat.apk
-        path: /home/runner/work/oppia-android/oppia-android/oppia_kitkat.apk
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia-bazel-kitkat.apk
+          path: /home/runner/work/oppia-android/oppia-android/oppia_kitkat.apk
 
   build_oppia_dev_aab:
     name: Build Oppia AAB (developer flavors)
