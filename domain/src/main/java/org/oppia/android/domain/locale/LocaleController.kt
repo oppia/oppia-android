@@ -103,8 +103,6 @@ class LocaleController @Inject constructor(
     }.build()
   }
 
-  // TODO(#3800): Utilize this method to build in resilience for low-memory process deaths resulting
-  //  in crashes upon the app be foregrounded.
   /**
    * Returns a new [DisplayLocale] corresponding to the specified [OppiaLocaleContext]. This is
    * meant to be used in cases when a context needs to be saved (e.g. in a bundle) and later

@@ -297,7 +297,7 @@ class NavigationDrawerActivityProdTest {
       intended(hasComponent(ProfileProgressActivity::class.java.name))
       intended(
         hasExtra(
-          ProfileProgressActivity.PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY,
+          ProfileProgressActivity.PROFILE_ID_EXTRA_KEY,
           internalProfileId
         )
       )
