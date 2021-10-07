@@ -658,7 +658,7 @@ class ProfileProgressFragmentTest {
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
       intended(
         hasExtra(
-          CompletedStoryListActivity.COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY,
+          CompletedStoryListActivity.PROFILE_ID_EXTRA_KEY,
           internalProfileId
         )
       )

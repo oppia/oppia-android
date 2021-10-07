@@ -33,7 +33,7 @@ class DeveloperOptionsTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.developer_options_activity)
-    internalProfileId = intent.getIntExtra(DEVELOPER_OPTIONS_TEST_ACTIVITY_PROFILE_ID_KEY, -1)
+    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(
         R.id.developer_options_fragment_placeholder,
@@ -78,13 +78,12 @@ class DeveloperOptionsTestActivity :
   }
 
   companion object {
-    const val DEVELOPER_OPTIONS_TEST_ACTIVITY_PROFILE_ID_KEY =
-      "DeveloperOptionsTestActivity.internal_profile_id"
+    const val PROFILE_ID_EXTRA_KEY = "DeveloperOptionsTestActivity.profile_id"
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
-      intent.putExtra(DEVELOPER_OPTIONS_TEST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }
