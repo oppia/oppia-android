@@ -634,7 +634,6 @@ kt_android_library(
     deps = [
         ":annotations",
         ":dagger",
-        "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
         ":listeners",
         ":resources",
         "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
@@ -643,6 +642,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
         "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
         "//third_party:androidx_core_core",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
