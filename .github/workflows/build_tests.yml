@@ -130,7 +130,7 @@ jobs:
         run: |
           bazel build -- //:oppia
 
-      # Note that caching only works on non-forks.
+    # Note that caching only works on non-forks.
     - name: Build Oppia KitKat binary (with caching, non-fork only)
       if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
       env:
