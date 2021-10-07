@@ -382,6 +382,17 @@ class SplashActivityTest {
     intended(hasComponent(OnboardingActivity::class.java.name))
   }
 
+  @Test
+  fun testSplashActivity_hasCorrectActivityLabel() {
+    initializeTestApplication()
+
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val title = activityTestRule.activity.title
+    assertThat(title).isEqualTo(context.getString(R.string.app_name))
+  }
+
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has
