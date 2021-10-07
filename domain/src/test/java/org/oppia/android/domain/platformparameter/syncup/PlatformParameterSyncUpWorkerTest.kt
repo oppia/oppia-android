@@ -1,5 +1,6 @@
 package org.oppia.android.domain.platformparameter.syncup
 
+import com.google.common.base.Optional
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.Observer
@@ -399,17 +400,17 @@ class PlatformParameterSyncUpWorkerTest {
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
       remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
       @BaseUrl baseUrl: String
-    ): Retrofit {
+    ): Optional<Retrofit> {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
         .addInterceptor(remoteAuthNetworkInterceptor)
         .build()
 
-      return Retrofit.Builder()
+      return Optional.of(Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(MoshiConverterFactory.create())
         .client(client)
-        .build()
+        .build())
     }
 
     @Provides
@@ -417,9 +418,11 @@ class PlatformParameterSyncUpWorkerTest {
     fun provideNetworkApiKey(): String = ""
 
     @Provides
-    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
+    fun provideMockPlatformParameterService(
+      mockRetrofit: MockRetrofit
+    ): Optional<PlatformParameterService> {
       val delegate = mockRetrofit.create(PlatformParameterService::class.java)
-      return MockPlatformParameterService(delegate)
+      return Optional.of(MockPlatformParameterService(delegate))
     }
   }
 

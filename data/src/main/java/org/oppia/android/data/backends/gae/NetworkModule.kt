@@ -21,6 +21,7 @@ import javax.inject.Singleton
  */
 @Module
 class NetworkModule {
+  // TODO: add test verify KitKat-based Optional.
 
   @SuppressLint("ObsoleteSdkInt") // AS warning is incorrect in this context.
   @OppiaRetrofit
