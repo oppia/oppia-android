@@ -310,7 +310,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun showInfoDialog() {
     profileViewModel.showInfoAlertPopup.set(true)
-    alertDialog = AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
+    alertDialog = AlertDialog.Builder(activity as Context, R.style.OppiaAlertDialogTheme)
       .setMessage(R.string.add_profile_pin_info)
       .setPositiveButton(R.string.add_profile_close) { dialog, _ ->
         profileViewModel.showInfoAlertPopup.set(false)

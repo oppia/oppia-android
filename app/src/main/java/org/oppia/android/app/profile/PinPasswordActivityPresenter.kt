@@ -165,7 +165,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   private fun showAdminForgotPin() {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
-    alertDialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.pin_password_forgot_title)
       .setMessage(
         resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_forgot_message, appName)
@@ -205,7 +205,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
 
   private fun showSuccessDialog() {
-    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setMessage(R.string.pin_password_success)
       .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
         dialog.dismiss()
