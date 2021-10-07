@@ -52,7 +52,8 @@ class TopicActivity :
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
-        skillIdList
+        skillIdList,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build()
       )
     )
   }

@@ -57,7 +57,7 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
     // Check if hints are available for this state.
     if (ephemeralState.state.interaction.hintList.size != 0) {
       (activity as HintsAndSolutionExplorationManagerListener).onExplorationStateLoaded(
-        ephemeralState.state
+        ephemeralState.state, ephemeralState.writtenTranslationContext
       )
     }
   }

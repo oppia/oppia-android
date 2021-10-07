@@ -594,6 +594,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/e
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorkerFactory.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorkerModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterSingletonImpl.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterSingletonModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkerFactory.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorkerModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionAssessmentCalculation.kt"
