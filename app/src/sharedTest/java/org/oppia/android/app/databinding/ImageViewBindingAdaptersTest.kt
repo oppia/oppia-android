@@ -120,7 +120,7 @@ class ImageViewBindingAdaptersTest {
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
     activityRule.scenario.runWithActivity {
-      val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
+      val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.COMPLETED)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_solid_color_primary_32dp))
@@ -131,7 +131,7 @@ class ImageViewBindingAdaptersTest {
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
     activityRule.scenario.runWithActivity {
-      val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
+      val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.NOT_STARTED)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
@@ -142,7 +142,7 @@ class ImageViewBindingAdaptersTest {
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
     activityRule.scenario.runWithActivity {
-      val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
+      val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
@@ -153,12 +153,18 @@ class ImageViewBindingAdaptersTest {
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
     activityRule.scenario.runWithActivity {
-      val imageView: ImageView = it.findViewById(R.id.image_view_for_data_binding)
+      val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawable(R.drawable.circular_stroke_1dp_grey_32dp))
       )
     }
+  }
+
+  private fun getImageView(
+    imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity
+  ): ImageView {
+    return imageViewBindingAdaptersTestActivity.findViewById(R.id.image_view_for_data_binding)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
