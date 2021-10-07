@@ -79,7 +79,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":svg_picture_drawable",
         "//third_party:glide_compiler",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:svg_picture_drawable",
     ],
 )
