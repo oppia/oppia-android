@@ -131,9 +131,9 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "repository_module_loader",
+    name = "repository_model_loader",
     srcs = [
-        "RepositoryModuleLoader.kt",
+        "RepositoryModelLoader.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
