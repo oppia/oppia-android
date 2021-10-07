@@ -39,3 +39,17 @@
 # A strange unknown issue that arises within a Room class (it seems an actual dependency is missing
 # within Room).
 -dontwarn androidx.room.paging.LimitOffsetDataSource
+
+# Ensure that lifecycle-related components (such as LiveData) work correctly. For context, see:
+# https://github.com/oppia/oppia-android/issues/3810#issuecomment-931925578.
+-keepclassmembers enum androidx.lifecycle.Lifecycle$Event {
+    <fields>;
+}
+-keep !interface * implements androidx.lifecycle.LifecycleObserver {}
+-keep class * implements androidx.lifecycle.GeneratedAdapter {
+    <init>(...);
+}
+-keepclassmembers class ** {
+    @androidx.lifecycle.OnLifecycleEvent *;
+}
+-keepclassmembers class androidx.lifecycle.ReportFragment$LifecycleCallbacks { *; }
