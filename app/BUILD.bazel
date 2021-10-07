@@ -795,7 +795,7 @@ TEST_DEPS = [
     "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//domain",
-    "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_prod_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:fake_exploration_meta_data_retriever",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",

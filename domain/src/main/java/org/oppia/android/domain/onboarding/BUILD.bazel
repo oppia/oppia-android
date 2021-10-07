@@ -31,7 +31,7 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":exploration_meta_data_retriever",
-        ":exploration_meta_data_retriever_imp",
+        ":impl",
         ":dagger",
     ],
 )
@@ -45,7 +45,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "exploration_meta_data_retriever_imp",
+    name = "impl",
     srcs = [
         "ExpirationMetaDataRetrieverImpl.kt",
     ],

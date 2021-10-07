@@ -6,7 +6,7 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "retriever_test_module",
+    name = "retriever_prod_module",
     testonly = True,
     srcs = [
         "ExpirationMetaDataRetrieverTestModule.kt",
