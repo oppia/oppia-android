@@ -1,0 +1,85 @@
+"""
+bazel build file for parser/svg
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "block_picture_drawable",
+    srcs = [
+        "BlockPictureDrawable.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":scalable_vector_graphic",
+        ":svg_picture_drawable",
+    ],
+)
+
+kt_android_library(
+    name = "block_svg_drawable_transcoder",
+    srcs = [
+        "BlockSvgDrawableTranscoder.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:glide_compiler",
+    ],
+)
+
+kt_android_library(
+    name = "scalable_vector_graphic",
+    srcs = [
+        "ScalableVectorGraphic.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
+    ],
+)
+
+kt_android_library(
+    name = "svg_blur_transformation",
+    srcs = [
+        "SvgBlurTransformation.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
+    ],
+)
+
+kt_android_library(
+    name = "svg_decoder",
+    srcs = [
+        "SvgDecoder.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:glide_compiler",
+    ],
+)
+
+kt_android_library(
+    name = "svg_picture_drawable",
+    srcs = [
+        "SvgPictureDrawable.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/parser/image:bitmap_blurrer",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
+    ],
+)
+
+kt_android_library(
+    name = "text_svg_drawable_transcoder",
+    srcs = [
+        "TextSvgDrawableTranscoder.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:glide_compiler",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:svg_picture_drawable",
+    ],
+)
