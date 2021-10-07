@@ -283,7 +283,7 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun showOfflineDialog() {
-    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_title))
       .setMessage(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_message))
       .setPositiveButton(
