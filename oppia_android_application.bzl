@@ -99,20 +99,26 @@ def _bundle_module_zip_into_deployable_aab_impl(ctx):
 
 def _generate_apks_and_install_impl(ctx):
     input_file = ctx.attr.input_file.files.to_list()[0]
+    debug_keystore_file = ctx.attr.debug_keystore.files.to_list()[0]
     apks_file = ctx.actions.declare_file("%s_processed.apks" % ctx.label.name)
     deploy_shell = ctx.actions.declare_file("%s_run.sh" % ctx.label.name)
 
     # Reference: https://developer.android.com/studio/command-line/bundletool#generate_apks.
+    # See also the Bazel BUILD file for the keystore for details on its password and alias.
     generate_apks_arguments = [
         "build-apks",
         "--bundle=%s" % input_file.path,
         "--output=%s" % apks_file.path,
+        "--ks=%s" % debug_keystore_file.path,
+        "--ks-pass=pass:android",
+        "--ks-key-alias=androiddebugkey",
+        "--key-pass=pass:android",
     ]
 
     # Reference: https://docs.bazel.build/versions/master/skylark/lib/actions.html#run.
     ctx.actions.run(
         outputs = [apks_file],
-        inputs = ctx.files.input_file,
+        inputs = ctx.files.input_file + ctx.files.debug_keystore,
         tools = [ctx.executable._bundletool_tool],
         executable = ctx.executable._bundletool_tool.path,
         arguments = generate_apks_arguments,
@@ -207,6 +213,10 @@ _generate_apks_and_install = rule(
             allow_files = True,
             mandatory = True,
         ),
+        "debug_keystore": attr.label(
+            allow_files = True,
+            mandatory = True,
+        ),
         "_bundletool_tool": attr.label(
             executable = True,
             cfg = "host",
@@ -279,5 +289,6 @@ def declare_deployable_application(name, aab_target):
     _generate_apks_and_install(
         name = name,
         input_file = aab_target,
+        debug_keystore = "@bazel_tools//tools/android:debug_keystore",
         tags = ["manual"],
     )
