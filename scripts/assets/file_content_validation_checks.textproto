@@ -105,14 +105,14 @@ file_content_checks {
   prohibited_content_regex: "android.text.BidiFormatter"
   failure_message: "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for KitKat compatibility."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
-  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/robolectric/ShadowBidiFormatter.kt"
-  exempted_file_name: "testing/src/test/java/org/oppia/android/testing/robolectric/ShadowBidiFormatterTest.kt"
 }
 file_content_checks {
   file_path_regex: ".+?.kt"
   prohibited_content_regex: "androidx.core.text.BidiFormatter"
   failure_message: "Do not use AndroidX's BidiFormatter directly. Instead, use the wrapper utility OppiaBidiFormatter so that tests can verify that formatting actually occurs on select strings."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/robolectric/ShadowBidiFormatter.kt"
+  exempted_file_name: "testing/src/test/java/org/oppia/android/testing/robolectric/ShadowBidiFormatterTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatterImpl.kt"
 }
 file_content_checks {
