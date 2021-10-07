@@ -7,9 +7,15 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -52,7 +58,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -74,13 +80,20 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
+import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
-@Config(application = OptionsFragmentTest.TestApplication::class)
+@Config(application = OptionsFragmentTest.TestApplication::class, qualifiers = "sw600dp")
+@LooperMode(LooperMode.Mode.PAUSED)
 class OptionsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -90,6 +103,7 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
+    TestModule.forceEnableLanguageSelectionUi = true
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -99,13 +113,7 @@ class OptionsFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
   @Test
-  @Config(qualifiers = "sw600dp")
-  @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_checkInitiallyLoadedFragmentIsReadingTextSizeFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
@@ -118,8 +126,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
-  @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_clickReadingTextSize_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
@@ -141,8 +147,26 @@ class OptionsFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
-  @LooperMode(LooperMode.Mode.PAUSED)
+  fun testOptionsFragment_featureEnabled_appLanguageItemIsDisplayed() {
+    TestModule.forceEnableLanguageSelectionUi = true
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.app_language_item_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testOptionsFragment_featureDisabled_appLanguageItemIsNotDisplayed() {
+    TestModule.forceEnableLanguageSelectionUi = false
+    launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.app_language_item_layout)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testOptionsFragment_clickAppLanguage_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
@@ -164,8 +188,6 @@ class OptionsFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
-  @LooperMode(LooperMode.Mode.PAUSED)
   fun testOptionsFragment_clickDefaultAudio_checkLoadingTheCorrectFragment() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
@@ -197,12 +219,43 @@ class OptionsFragmentTest {
     )
   }
 
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Module
+  class TestModule {
+    companion object {
+      var forceEnableLanguageSelectionUi: Boolean = true
+    }
+
+    @Provides
+    @SplashScreenWelcomeMsg
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
+    }
+
+    @Provides
+    @SyncUpWorkerTimePeriodHours
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @EnableLanguageSelectionUi
+    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      PlatformParameterModule::class,
+      TestModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

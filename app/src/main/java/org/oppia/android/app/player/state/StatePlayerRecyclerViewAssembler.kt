@@ -23,9 +23,11 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler.Builder.Factory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -84,6 +86,7 @@ import org.oppia.android.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -120,6 +123,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
+  private val profileId: ProfileId,
   private val context: Context,
   private val congratulationsTextView: TextView?,
   private val congratulationsTextConfettiView: KonfettiView?,
@@ -135,7 +139,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     String, @JvmSuppressWildcards InteractionViewModelFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val hasConversationView: Boolean,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -176,7 +181,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     ConceptCardFragment
-      .newInstance(skillId)
+      .newInstance(skillId, profileId)
       .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 
@@ -213,7 +218,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         extraInteractionPendingItemList,
         ephemeralState.pendingState.wrongAnswerList,
         /* isCorrectAnswer= */ false,
-        gcsEntityId
+        gcsEntityId,
+        ephemeralState.writtenTranslationContext
       )
       if (playerFeatureSet.interactionSupport) {
         val interactionItemList =
@@ -222,7 +228,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           interactionItemList,
           interaction,
           hasPreviousState,
-          gcsEntityId
+          gcsEntityId,
+          ephemeralState.writtenTranslationContext
         )
       }
     } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
@@ -242,7 +249,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         extraInteractionPendingItemList,
         ephemeralState.completedState.answerList,
         /* isCorrectAnswer= */ true,
-        gcsEntityId
+        gcsEntityId,
+        ephemeralState.writtenTranslationContext
       )
     }
 
@@ -295,7 +303,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     pendingItemList: MutableList<StateItemViewModel>,
     interaction: Interaction,
     hasPreviousButton: Boolean,
-    gcsEntityId: String
+    gcsEntityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory(
@@ -305,7 +314,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       fragment as InteractionAnswerReceiver,
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton,
-      isSplitView.get()!!
+      isSplitView.get()!!,
+      writtenTranslationContext
     )
   }
 
@@ -314,9 +324,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     ephemeralState: EphemeralState,
     gcsEntityId: String
   ) {
-    val contentSubtitledHtml: SubtitledHtml = ephemeralState.state.content
+    val contentSubtitledHtml =
+      translationController.extractString(
+        ephemeralState.state.content, ephemeralState.writtenTranslationContext
+      )
     pendingItemList += ContentViewModel(
-      contentSubtitledHtml.html,
+      contentSubtitledHtml,
       gcsEntityId,
       hasConversationView,
       isSplitView.get()!!,
@@ -329,7 +342,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     rightPendingItemList: MutableList<StateItemViewModel>,
     answersAndResponses: List<AnswerAndResponse>,
     isCorrectAnswer: Boolean,
-    gcsEntityId: String
+    gcsEntityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   ) {
     if (answersAndResponses.size > 1) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
@@ -364,7 +378,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
             answerAndResponse.feedback,
-            gcsEntityId
+            gcsEntityId,
+            writtenTranslationContext
           )?.let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
@@ -391,7 +406,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
       if (playerFeatureSet.feedbackSupport) {
-        createFeedbackItem(answerAndResponse.feedback, gcsEntityId)?.let(
+        createFeedbackItem(answerAndResponse.feedback, gcsEntityId, writtenTranslationContext)?.let(
           pendingItemList::add
         )
       }
@@ -539,12 +554,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun createFeedbackItem(
     feedback: SubtitledHtml,
-    gcsEntityId: String
+    gcsEntityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   ): FeedbackViewModel? {
     // Only show feedback if there's some to show.
-    if (feedback.html.isNotEmpty()) {
+    val feedbackHtml = translationController.extractString(feedback, writtenTranslationContext)
+    if (feedbackHtml.isNotEmpty()) {
       return FeedbackViewModel(
-        feedback.html,
+        feedbackHtml,
         gcsEntityId,
         hasConversationView,
         isSplitView.get()!!,
@@ -849,10 +866,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val resourceBucketName: String,
     private val entityType: String,
     private val fragment: Fragment,
+    private val profileId: ProfileId,
     private val context: Context,
     private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher,
-    private val resourceHandler: AppLanguageResourceHandler
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController
   ) {
     private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
       StateItemViewModel::viewType
@@ -1300,6 +1319,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
+        profileId,
         context,
         congratulationsTextView,
         congratulationsTextConfettiView,
@@ -1314,7 +1334,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         interactionViewModelFactoryMap,
         backgroundCoroutineDispatcher,
         hasConversationView,
-        resourceHandler
+        resourceHandler,
+        translationController
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1330,22 +1351,25 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val interactionViewModelFactoryMap: Map<
         String, @JvmSuppressWildcards InteractionViewModelFactory>,
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
-      private val resourceHandler: AppLanguageResourceHandler
+      private val resourceHandler: AppLanguageResourceHandler,
+      private val translationController: TranslationController
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
-       * assets.
+       * assets, and the current logged in [ProfileId].
        */
-      fun create(resourceBucketName: String, entityType: String): Builder {
+      fun create(resourceBucketName: String, entityType: String, profileId: ProfileId): Builder {
         return Builder(
           htmlParserFactory,
           resourceBucketName,
           entityType,
           fragment,
+          profileId,
           context,
           interactionViewModelFactoryMap,
           backgroundCoroutineDispatcher,
-          resourceHandler
+          resourceHandler,
+          translationController
         )
       }
     }

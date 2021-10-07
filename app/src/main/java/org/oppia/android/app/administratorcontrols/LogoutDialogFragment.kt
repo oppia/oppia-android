@@ -27,7 +27,7 @@ class LogoutDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+    return AlertDialog.Builder(requireContext(), R.style.OppiaAlertDialogTheme)
       .setMessage(R.string.log_out_dialog_message)
       .setNegativeButton(R.string.log_out_dialog_cancel_button) { dialog, _ ->
         dialog.dismiss()
