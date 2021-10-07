@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:app="http://schemas.android.com/apk/res-auto">
   <!-- This style specifies the Text Size of the Toolbar Title. -->
   <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
     <item name="android:textSize">20sp</item>
