@@ -1,6 +1,5 @@
 package org.oppia.android.app.drawer
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View

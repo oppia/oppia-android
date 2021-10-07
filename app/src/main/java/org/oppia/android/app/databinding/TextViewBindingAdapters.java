@@ -6,8 +6,6 @@ import android.content.ContextWrapper;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
-
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
@@ -48,6 +46,7 @@ public final class TextViewBindingAdapters {
     textView.setText(profileLastVisited);
   }
 
+  /** Binds an AndroidX KitKat-compatible drawable end to the specified text view. */
   @BindingAdapter("app:drawableEndCompat")
   public static void setDrawableEndCompat(
       @NonNull TextView imageView,

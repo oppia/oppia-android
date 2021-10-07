@@ -1,6 +1,5 @@
 package org.oppia.android.domain.platformparameter.syncup
 
-import com.google.common.base.Optional
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.Observer
@@ -16,6 +15,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
+import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -407,11 +407,13 @@ class PlatformParameterSyncUpWorkerTest {
         .addInterceptor(remoteAuthNetworkInterceptor)
         .build()
 
-      return Optional.of(Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build())
+      return Optional.of(
+        Retrofit.Builder()
+          .baseUrl(baseUrl)
+          .addConverterFactory(MoshiConverterFactory.create())
+          .client(client)
+          .build()
+      )
     }
 
     @Provides

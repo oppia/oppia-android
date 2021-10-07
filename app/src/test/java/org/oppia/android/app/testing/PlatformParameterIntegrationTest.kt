@@ -1,6 +1,5 @@
 package org.oppia.android.app.testing
 
-import com.google.common.base.Optional
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +15,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.impl.utils.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
+import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
@@ -305,11 +305,13 @@ class PlatformParameterIntegrationTest {
         .addInterceptor(remoteAuthNetworkInterceptor)
         .build()
 
-      return Optional.of(Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build())
+      return Optional.of(
+        Retrofit.Builder()
+          .baseUrl(baseUrl)
+          .addConverterFactory(MoshiConverterFactory.create())
+          .client(client)
+          .build()
+      )
     }
 
     @Provides
