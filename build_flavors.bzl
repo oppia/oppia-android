@@ -22,6 +22,7 @@ _MAIN_DEX_LIST_TARGET_KITKAT = "//:config/kitkat_main_dex_class_list.txt"
 
 # keep sorted
 _PRODUCTION_PROGUARD_SPECS = [
+    "config/proguard/android-proguard-rules.pro",
     "config/proguard/androidx-proguard-rules.pro",
     "config/proguard/firebase-components-proguard-rules.pro",
     "config/proguard/glide-proguard-rules.pro",
@@ -44,6 +45,7 @@ _FLAVOR_METADATA = {
         "target_sdk_version": 29,
         "multidex": "native",
         "proguard_specs": [],  # Developer builds are not optimized.
+        "production_release": False,
         "deps": [
             "//app",
         ],
@@ -56,6 +58,7 @@ _FLAVOR_METADATA = {
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
         "proguard_specs": [],  # Developer builds are not optimized.
+        "production_release": False,
         "deps": [
             "//app",
         ],
@@ -67,6 +70,7 @@ _FLAVOR_METADATA = {
         "target_sdk_version": 29,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
         "deps": [
             "//app",
         ],
@@ -79,6 +83,7 @@ _FLAVOR_METADATA = {
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
         "proguard_specs": [],  # TODO(#3886): Re-add Proguard support to alpha_kitkat.
+        "production_release": True,
         "deps": [
             "//app",
         ],
@@ -211,6 +216,7 @@ def define_oppia_aab_binary_flavor(flavor):
     oppia_android_application(
         name = "oppia_%s" % flavor,
         custom_package = "org.oppia.android",
+        testonly = not _FLAVOR_METADATA[flavor]["production_release"],
         enable_data_binding = True,
         config_file = "//:bundle_config.pb.json",
         manifest = ":AndroidManifest_transformed_%s.xml" % flavor,

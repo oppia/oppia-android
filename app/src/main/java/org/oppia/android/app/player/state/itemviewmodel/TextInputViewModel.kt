@@ -7,15 +7,19 @@ import androidx.databinding.ObservableField
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.domain.translation.TranslationController
 
 /** [StateItemViewModel] for the text input interaction. */
 class TextInputViewModel(
   interaction: Interaction,
   val hasConversationView: Boolean,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
+  private val writtenTranslationContext: WrittenTranslationContext,
+  private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
   var answerText: CharSequence = ""
   val hintText: CharSequence = deriveHintText(interaction)
@@ -53,19 +57,31 @@ class TextInputViewModel(
     }
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
-      userAnswerBuilder.answer =
-        InteractionObject.newBuilder().setNormalizedString(answerTextString).build()
-      userAnswerBuilder.plainAnswer = answerTextString
+      answer = InteractionObject.newBuilder().apply {
+        normalizedString = answerTextString
+      }.build()
+      plainAnswer = answerTextString
+      writtenTranslationContext = this@TextInputViewModel.writtenTranslationContext
     }
-    return userAnswerBuilder.build()
-  }
+  }.build()
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
-    // The default placeholder for text input is empty.
-    return interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.unicodeStr ?: ""
+    // The subtitled unicode can apparently exist in the structure in two different formats.
+    val placeholderUnicodeOption1 =
+      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode
+    val placeholderUnicodeOption2 =
+      interaction.customizationArgsMap["placeholder"]?.customSchemaValue?.subtitledUnicode
+    val placeholder1 =
+      placeholderUnicodeOption1?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
+    val placeholder2 =
+      placeholderUnicodeOption2?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: "" // The default placeholder for text input is empty.
+    return if (placeholder1.isNotEmpty()) placeholder1 else placeholder2
   }
 }

@@ -3,13 +3,13 @@ package org.oppia.android.app.topic.questionplayer
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
-import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
@@ -22,7 +22,11 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private val questionTrainingController: QuestionTrainingController,
   private val oppiaLogger: OppiaLogger
 ) {
-  fun handleOnCreate() {
+  private lateinit var profileId: ProfileId
+
+  fun handleOnCreate(profileId: ProfileId) {
+    this.profileId = profileId
+
     val binding = DataBindingUtil.setContentView<QuestionPlayerActivityBinding>(
       activity,
       R.layout.question_player_activity
@@ -42,7 +46,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       startTrainingSessionWithCallback {
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment(),
+          QuestionPlayerFragment.newInstance(profileId),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
@@ -77,7 +81,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         // Re-add the player fragment when the new session is ready.
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment(),
+          QuestionPlayerFragment.newInstance(profileId),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
@@ -87,9 +91,11 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
     val skillIds =
       activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
-    questionTrainingController.startQuestionTrainingSession(skillIds).observe(
+    val startDataProvider =
+      questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
+    startDataProvider.toLiveData().observe(
       activity,
-      Observer {
+      {
         when {
           it.isPending() -> oppiaLogger.d(
             "QuestionPlayerActivity",
@@ -113,9 +119,9 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
-    questionTrainingController.stopQuestionTrainingSession().observe(
+    questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
       activity,
-      Observer<AsyncResult<Any?>> {
+      {
         when {
           it.isPending() -> oppiaLogger.d(
             "QuestionPlayerActivity",
