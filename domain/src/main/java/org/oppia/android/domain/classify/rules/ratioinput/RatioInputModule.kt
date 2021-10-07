@@ -20,17 +20,25 @@ class RatioInputModule {
 
   @Provides
   @IntoMap
-  @StringKey("IsEquivalent")
-  @RatioExpressionInputRules
-  internal fun provideRatioInputIsEquivalentRuleClassifier(
-    classifierProvider: RatioInputIsEquivalentRuleClassifierProvider
-  ): RuleClassifier = classifierProvider.createRuleClassifier()
-
-  @Provides
-  @IntoMap
   @StringKey("HasNumberOfTermsEqualTo")
   @RatioExpressionInputRules
   internal fun provideRatioInputHasNumberOfTermsEqualToRuleClassifier(
     classifierProvider: RatioInputHasNumberOfTermsEqualToClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+
+  @Provides
+  @IntoMap
+  @StringKey("HasSpecificTermEqualTo")
+  @RatioExpressionInputRules
+  internal fun provideRatioInputHasSpecificTermEqualToRuleClassifierProvider(
+    classifierProvider: RatioInputHasSpecificTermEqualToRuleClassifierProvider
+  ): RuleClassifier = classifierProvider.createRuleClassifier()
+
+  @Provides
+  @IntoMap
+  @StringKey("IsEquivalent")
+  @RatioExpressionInputRules
+  internal fun provideRatioInputIsEquivalentRuleClassifier(
+    classifierProvider: RatioInputIsEquivalentRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

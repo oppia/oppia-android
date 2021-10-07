@@ -1,0 +1,33 @@
+{
+  "topic_id": "test_topic_id_0",
+  "topic_name": "First Test Topic",
+  "page_contents": {
+    "subtitled_html": {
+      "content_id": "content",
+      "html": "<p>Description of subtopic is here.</p><p>This is sample subtopic with dummy content not related to anything in particular. Note that this is multiple paragraphs to simulate more realistic subtopic content. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p><oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview></p>"
+    },
+    "recorded_voiceovers": {
+      "voiceovers_mapping": {
+        "content": {}
+      }
+    },
+    "written_translations": {
+      "translations_mapping": {
+        "content": {
+          "pt": {
+            "data_format": "html",
+            "translation": {"translation" : "<p> Descrição do subtopic está aqui. </p> <p> Este é a amostra subtópico com conteúdo fictício não relacionado a qualquer coisa em particular. Observe que isso é vários parágrafos para simular conteúdo subtópico mais realista. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;skill_id_0 conceito cartão&amp;quot;\"></oppia-noninteractive-skillreview>. </p> <p> <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;skill_id_1 cartão&amp;quot;\"></oppia-noninteractive-skillreview></p>"},
+            "needs_update": false
+          },
+          "ar": {
+            "data_format": "html",
+            "translation": {"translation" : "<p> وصف subtopic هنا. </p> <p> هذا هو نموذج subtopic مع محتوى وهمية لا يرتبط بأي شيء على وجه الخصوص. لاحظ أن هذه فقرات متعددة محاكاة محتوى أكثر واقعية. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot; نص مع القيمة test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>. </p> <p> <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot; نص مع القيمة test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview></p>"},
+            "needs_update": false
+          }
+        }
+      }
+    }
+  },
+  "subtopic_title": "Test subtopic",
+  "next_subtopic_dict": null
+}

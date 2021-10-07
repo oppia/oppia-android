@@ -21,6 +21,7 @@ _FLAVOR_METADATA = {
         "target_sdk_version": 29,
         "multidex": "native",  # Legacy multidex not needed for dev builds.
         "proguard_specs": [],  # Developer builds are not optimized.
+        "production_release": False,
         "deps": [
             "//app",
         ],
@@ -31,6 +32,7 @@ _FLAVOR_METADATA = {
         "target_sdk_version": 29,
         "multidex": "legacy",
         "proguard_specs": [
+            "config/proguard/android-proguard-rules.pro",
             "config/proguard/androidx-proguard-rules.pro",
             "config/proguard/firebase-components-proguard-rules.pro",
             "config/proguard/glide-proguard-rules.pro",
@@ -44,6 +46,7 @@ _FLAVOR_METADATA = {
             "config/proguard/oppia-prod-proguard-rules.pro",
             "config/proguard/protobuf-proguard-rules.pro",
         ],
+        "production_release": True,
         "deps": [
             "//app",
         ],
@@ -140,6 +143,7 @@ def define_oppia_binary_flavor(flavor):
     oppia_android_application(
         name = "oppia_%s" % flavor,
         custom_package = "org.oppia.android",
+        testonly = not _FLAVOR_METADATA[flavor]["production_release"],
         enable_data_binding = True,
         config_file = "//:bundle_config.pb.json",
         manifest = ":AndroidManifest_transformed_%s.xml" % flavor,

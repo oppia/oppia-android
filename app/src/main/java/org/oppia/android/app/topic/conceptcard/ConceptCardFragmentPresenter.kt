@@ -4,13 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ConceptCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
@@ -26,15 +27,19 @@ class ConceptCardFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @ConceptCardHtmlParserEntityType private val entityType: String,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>
+  private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
+  private val translationController: TranslationController
 ) {
-  private lateinit var skillId: String
-
   /**
    * Sets up data binding and toolbar.
    * Host activity must inherit ConceptCardListener to dismiss this fragment.
    */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, id: String): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    skillId: String,
+    profileId: ProfileId
+  ): View? {
     val binding = ConceptCardFragmentBinding.inflate(
       inflater,
       container,
@@ -43,8 +48,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
     val view = binding.conceptCardExplanationText
     val viewModel = getConceptCardViewModel()
 
-    skillId = id
-    viewModel.setSkillId(skillId)
+    viewModel.initialize(skillId, profileId)
     logConceptCardEvent(skillId)
 
     binding.conceptCardToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -62,10 +66,15 @@ class ConceptCardFragmentPresenter @Inject constructor(
 
     viewModel.conceptCardLiveData.observe(
       fragment,
-      Observer {
+      { ephemeralConceptCard ->
+        val explanationHtml =
+          translationController.extractString(
+            ephemeralConceptCard.conceptCard.explanation,
+            ephemeralConceptCard.writtenTranslationContext
+          )
         view.text = htmlParserFactory
           .create(resourceBucketName, entityType, skillId, imageCenterAlign = true)
-          .parseOppiaHtml(it.explanation.html, view)
+          .parseOppiaHtml(explanationHtml, view)
       }
     )
 

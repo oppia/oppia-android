@@ -53,3 +53,11 @@ const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = "sync_up_worker_time_period"
  * [PlatformParameterSyncUpWorker] will run again.
  */
 const val SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE = 12
+
+/** Qualifier for the feature flag corresponding to enabling the language selection UI. */
+@Qualifier
+annotation class EnableLanguageSelectionUi
+
+// TODO(#52): Enable this feature by default once it's completed.
+/** Default value for the feature flag corresponding to [EnableLanguageSelectionUi]. */
+const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = false

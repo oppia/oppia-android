@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
@@ -44,25 +45,32 @@ class HintsAndSolutionDialogFragment :
     internal const val ID_ARGUMENT_KEY = "HintsAndSolutionDialogFragment.id"
     internal const val STATE_KEY = "HintsAndSolutionDialogFragment.state"
     internal const val HELP_INDEX_KEY = "HintsAndSolutionDialogFragment.help_index"
+    internal const val WRITTEN_TRANSLATION_CONTEXT_KEY =
+      "HintsAndSolutionDialogFragment.written_translation_context"
 
     /**
      * Creates a new instance of a DialogFragment to display hints and solution
      *
-     * @param id Used in ExplorationController/QuestionAssessmentProgressController to get current state data.
+     * @param id Used in ExplorationController/QuestionAssessmentProgressController to get current
+     *     state data.
      * @param state the [State] being viewed by the learner
      * @param helpIndex the [HelpIndex] corresponding to the current hints/solution configuration
+     * @param writtenTranslationContext the [WrittenTranslationContext] needed to translate the
+     *     hints/solution
      * @return [HintsAndSolutionDialogFragment]: DialogFragment
      */
     fun newInstance(
       id: String,
       state: State,
-      helpIndex: HelpIndex
+      helpIndex: HelpIndex,
+      writtenTranslationContext: WrittenTranslationContext
     ): HintsAndSolutionDialogFragment {
       return HintsAndSolutionDialogFragment().apply {
         arguments = Bundle().apply {
           putString(ID_ARGUMENT_KEY, id)
           putProto(STATE_KEY, state)
           putProto(HELP_INDEX_KEY, helpIndex)
+          putProto(WRITTEN_TRANSLATION_CONTEXT_KEY, writtenTranslationContext)
         }
       }
     }
@@ -107,12 +115,15 @@ class HintsAndSolutionDialogFragment :
 
     val state = args.getProto(STATE_KEY, State.getDefaultInstance())
     val helpIndex = args.getProto(HELP_INDEX_KEY, HelpIndex.getDefaultInstance())
+    val writtenTranslationContext =
+      args.getProto(WRITTEN_TRANSLATION_CONTEXT_KEY, WrittenTranslationContext.getDefaultInstance())
 
     return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,
       container,
       state,
       helpIndex,
+      writtenTranslationContext,
       id,
       currentExpandedHintListIndex,
       this as ExpandedHintListIndexListener,

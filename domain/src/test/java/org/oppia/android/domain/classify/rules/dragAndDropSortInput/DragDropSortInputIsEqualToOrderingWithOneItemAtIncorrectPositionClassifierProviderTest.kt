@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.RuleClassifier
@@ -71,7 +72,8 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     val exception = assertThrows(IllegalStateException::class) {
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -89,7 +91,8 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -102,7 +105,8 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -115,7 +119,8 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -128,7 +133,8 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -141,7 +147,8 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
     val exception = assertThrows(IllegalStateException::class) {
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

@@ -26,7 +26,7 @@ class ProfileProgressActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, -1)
+    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
   }
 
@@ -59,12 +59,11 @@ class ProfileProgressActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY =
-      "ProfileProgressActivity.internal_profile_id"
+    const val PROFILE_ID_EXTRA_KEY = "ProfileProgressActivity.profile_id"
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, ProfileProgressActivity::class.java)
-      intent.putExtra(PROFILE_PROGRESS_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }

@@ -37,10 +37,18 @@ import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
 private const val ANDROID_SYSTEM_LOCALE_DATA_PROVIDER_ID = "android_locale"
-private const val APP_STRING_LOCALE_DATA_BASE_PROVIDER_ID = "app_string_locale."
-private const val WRITTEN_TRANSLATION_LOCALE_BASE_DATA_PROVIDER_ID = "written_translation_locale."
-private const val AUDIO_TRANSLATIONS_LOCALE_BASE_DATA_PROVIDER_ID = "audio_translations_locale."
+private const val APP_STRING_LOCALE_DATA_BASE_PROVIDER_ID = "app_string_locale"
+private const val WRITTEN_TRANSLATION_LOCALE_BASE_DATA_PROVIDER_ID = "written_translation_locale"
+private const val AUDIO_TRANSLATIONS_LOCALE_BASE_DATA_PROVIDER_ID = "audio_translations_locale"
 private const val SYSTEM_LANGUAGE_DATA_PROVIDER_ID = "system_language"
+
+/**
+ * Represents the Oppia language code corresponding to the default language to use for written
+ * translations if the user-selected language is unavailable. Note that this is intentionally an
+ * invalid language code to force translation selection to fall back to the built-in strings (which
+ * is a guaranteed fallback for written translations).
+ */
+private const val DEFAULT_WRITTEN_TRANSLATION_LANGUAGE_CODE = "builtin"
 
 /** Controller for creating & retrieving user-specified [OppiaLocale]s. */
 @Singleton
@@ -95,8 +103,6 @@ class LocaleController @Inject constructor(
     }.build()
   }
 
-  // TODO(#3800): Utilize this method to build in resilience for low-memory process deaths resulting
-  //  in crashes upon the app be foregrounded.
   /**
    * Returns a new [DisplayLocale] corresponding to the specified [OppiaLocaleContext]. This is
    * meant to be used in cases when a context needs to be saved (e.g. in a bundle) and later
@@ -203,7 +209,8 @@ class LocaleController @Inject constructor(
    * written or audio content translations.
    *
    * The returned [DataProvider]'s subscribers may be notified upon calls to
-   * [notifyPotentialLocaleChange] if there's actually a change in the system locale.
+   * [notifyPotentialLocaleChange] if there's actually a change in the system locale, though note
+   * that this data provider aims to always represent the actual current system locale's language.
    */
   fun retrieveSystemLanguage(): DataProvider<OppiaLanguage> {
     val providerId = SYSTEM_LANGUAGE_DATA_PROVIDER_ID
@@ -220,8 +227,10 @@ class LocaleController @Inject constructor(
    * default locale for the current app process (which will affect string resource retrieval).
    *
    * Note that this may result in data providers returned by this class being notified of changes if
-   * any depend on the current system locale, and will likely change the result of the data provider
-   * returned by [retrieveSystemLanguage].
+   * any depend on the current system locale, but will likely not change the result of the data
+   * provider returned by [retrieveSystemLanguage] unless the system locale has been updated prior
+   * to this method being called (since it triggers a notification for potential changes on that
+   * data provider).
    */
   fun setAsDefault(displayLocale: DisplayLocale, configuration: Configuration) {
     (displayLocale as? DisplayLocaleImpl)?.let { locale ->
@@ -234,16 +243,11 @@ class LocaleController @Inject constructor(
       // there's no way to actually observe changes to it, so the controller aims to have eventual
       // consistency by always retrieving the latest state when requested. This does mean locale
       // changes can be missed if they aren't accompanied by a configuration change or activity
-      // recreation.
+      // recreation. Note that the app intentionally does not overwrite the application context's
+      // locale. Besides the fact that this seems unnecessary, it also makes it difficult to track
+      // the actual current system locale (which is necessary in order to determine when to recreate
+      // the app to apply a new language configuration).
       Locale.setDefault(locale.formattingLocale)
-
-      // Ensure that the application context is also using the new locale (which it should by
-      // default since Android's responsible for setting it, but this is done for assurance since
-      // other code in this controller relies on the application context's locale rather than the
-      // system default). Note also that this has the side effect of overriding user-selected
-      // locales for fallback languages (which is probably fine since the app relies on its own
-      // fallback mechanism when choosing the primary locale).
-      applicationContext.resources.configuration.setLocale(locale.formattingLocale)
 
       notifyPotentialLocaleChange()
     } ?: error("Invalid display locale type passed in: $displayLocale")
@@ -349,18 +353,26 @@ class LocaleController @Inject constructor(
     systemLocaleProfile: AndroidLocaleProfile,
     usageMode: LanguageUsageMode
   ): LanguageSupportDefinition? {
-    // Matching behaves as follows (for app strings):
-    // 1. Try to find a matching definition directly for the language.
-    // 2. If that fails, try falling back to the current system language.
-    // 3. If that fails, create a basic definition to represent the system language.
     // Content strings & audio translations only perform step 1 since there's no reasonable
     // fallback.
     val matchedDefinition = retrieveLanguageDefinition(language)
-    return if (usageMode == APP_STRINGS) {
-      matchedDefinition
-        ?: retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)
-        ?: computeDefaultLanguageDefinitionForSystemLanguage(systemLocaleProfile.languageCode)
-    } else matchedDefinition
+    return when (usageMode) {
+      APP_STRINGS -> {
+        // Matching behaves as follows:
+        // 1. Try to find a matching definition directly for the language.
+        // 2. If that fails, try falling back to the current system language.
+        // 3. If that fails, create a basic definition to represent the system language.
+        matchedDefinition
+          ?: retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)
+          ?: computeDefaultLanguageDefinitionForSystemLanguage(systemLocaleProfile)
+      }
+      // Content strings can always fall back to default built-in content strings.
+      CONTENT_STRINGS -> matchedDefinition ?: computeDefaultLanguageDefinitionForContentStrings()
+      // Audio translations have no possible fallback since the corresponding audio subtitles aren't
+      // guaranteed to exist.
+      AUDIO_TRANSLATIONS -> matchedDefinition
+      USAGE_MODE_UNSPECIFIED, UNRECOGNIZED -> null
+    }
   }
 
   /**
@@ -394,9 +406,8 @@ class LocaleController @Inject constructor(
     // Attempt to find a matching definition. Note that while Locale's language code is expected to
     // be an ISO 639-1/2/3 code, it not necessarily match the IETF BCP 47 tag defined for this
     // language. If a language is unknown, return a definition that attempts to be interoperable
-    // with Android. Note that a sequence is used here to avoid computing extra profiles when not
-    // needed.
-    return definitions.languageDefinitionsList.asSequence().mapNotNull { definition ->
+    // with Android.
+    return definitions.languageDefinitionsList.mapNotNull { definition ->
       return@mapNotNull definition.retrieveAppLanguageProfile()?.let { profile ->
         profile to definition
       }
@@ -452,7 +463,7 @@ class LocaleController @Inject constructor(
   }
 
   private fun computeDefaultLanguageDefinitionForSystemLanguage(
-    languageCode: String
+    systemLocaleProfile: AndroidLocaleProfile
   ) = LanguageSupportDefinition.newBuilder().apply {
     language = OppiaLanguage.LANGUAGE_UNSPECIFIED
     minAndroidSdkVersion = 1 // Assume it's supported on the current version.
@@ -461,8 +472,24 @@ class LocaleController @Inject constructor(
     // can be constructed from it.
     appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
       ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = languageCode
+        ietfLanguageTag = systemLocaleProfile.computeIetfLanguageTag()
       }.build()
     }.build()
   }.build()
+
+  private fun computeDefaultLanguageDefinitionForContentStrings(): LanguageSupportDefinition {
+    oppiaLogger.w(
+      "LocaleController",
+      "Falling back to the built-in content type due to mismatched configuration"
+    )
+    return LanguageSupportDefinition.newBuilder().apply {
+      language = OppiaLanguage.LANGUAGE_UNSPECIFIED
+      minAndroidSdkVersion = 1 // Assume it's supported on the current version.
+      contentStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+        ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+          ietfLanguageTag = DEFAULT_WRITTEN_TRANSLATION_LANGUAGE_CODE
+        }.build()
+      }.build()
+    }.build()
+  }
 }

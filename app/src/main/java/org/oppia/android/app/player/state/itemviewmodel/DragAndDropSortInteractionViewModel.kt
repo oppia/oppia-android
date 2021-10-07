@@ -12,12 +12,14 @@ import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.translation.TranslationController
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel(
@@ -26,7 +28,9 @@ class DragAndDropSortInteractionViewModel(
   interaction: Interaction,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val writtenTranslationContext: WrittenTranslationContext,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.DRAG_DROP_SORT_INTERACTION),
   InteractionAnswerHandler,
   OnItemDragListener,
@@ -44,7 +48,9 @@ class DragAndDropSortInteractionViewModel(
 
   private val contentIdHtmlMap: Map<String, String> =
     choiceSubtitledHtmls.associate { subtitledHtml ->
-      subtitledHtml.contentId to subtitledHtml.html
+      val translatedHtml =
+        translationController.extractString(subtitledHtml, writtenTranslationContext)
+      subtitledHtml.contentId to translatedHtml
     }
 
   private val _choiceItems: MutableList<DragDropInteractionContentViewModel> =
@@ -107,21 +113,19 @@ class DragAndDropSortInteractionViewModel(
     (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     val selectedLists = _choiceItems.map { it.htmlContent }
     val userStringLists = _choiceItems.map { it.computeStringList() }
-    userAnswerBuilder.listOfHtmlAnswers = convertItemsToAnswer(userStringLists)
-    userAnswerBuilder.answer =
-      InteractionObject.newBuilder().apply {
-        listOfSetsOfTranslatableHtmlContentIds =
-          ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
-            _choiceItems.map { }
-            addAllContentIdLists(selectedLists)
-          }.build()
-      }.build()
-    return userAnswerBuilder.build()
-  }
+    listOfHtmlAnswers = convertItemsToAnswer(userStringLists)
+    answer = InteractionObject.newBuilder().apply {
+      listOfSetsOfTranslatableHtmlContentIds =
+        ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+          addAllContentIdLists(selectedLists)
+        }.build()
+    }.build()
+    this.writtenTranslationContext =
+      this@DragAndDropSortInteractionViewModel.writtenTranslationContext
+  }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertItemsToAnswer(htmlItems: List<StringList>): ListOfSetsOfHtmlStrings {
