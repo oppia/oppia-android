@@ -348,8 +348,7 @@
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
 
-
-  <!-- Profile Progress Header-->
+  <!-- Profile Progress Header -->
   <dimen name="profile_edit_image_layout_margin_start">202dp</dimen>
   <dimen name="profile_name_textview_layout_margin_end">202dp</dimen>
   <dimen name="recently_played_stories_textView_layout_margin_start">32dp</dimen>
