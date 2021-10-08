@@ -102,7 +102,7 @@
   <string name="topic_downloaded">Tópico Baixado</string>
   <string name="downloaded">Baixado</string>
   <string name="question_player_title">Modo de Prática</string>
-  <string name="question_training_session_progress">Pergunta %s de %s</string>
+  <string name="question_training_session_progress" fuzzy="true">Pergunta %s de %s</string>
   <string name="question_training_session_progress_finished">Concluído</string>
   <string name="question_training_session_finished_header">Concluído</string>
   <string name="question_training_session_finished_message">Você concluiu todas as perguntas! Você pode escolher reproduzir outro conjunto de perguntas ou retornar ao tópico.</string>
@@ -127,8 +127,8 @@
   <string name="ratio_error_invalid_size">O número de termos não é igual ao exigido.</string>
   <string name="ratio_error_includes_zero">Proporções não podem ter 0 como elemento.</string>
   <string name="unknown_size">Tamanho desconhecido</string>
-  <string name="size_bytes">%s Bytes</string>
-  <string name="size_kb">%s KB</string>
+  <string name="size_bytes" fuzzy="true">%s Bytes</string>
+  <string name="size_kb" fuzzy="true">%s KB</string>
   <string name="size_mb">%s MB</string>
   <string name="size_gb">%s GB</string>
   <string name="correct">Correto!</string>
@@ -155,7 +155,7 @@
     <item quantity="zero">%s Histórias Concluídas\n    </item>
     <item quantity="other">\n      %s Histórias Concluídas\n    </item>
   </plurals>
-  <plurals name="ongoing_topic_count">
+  <plurals name="ongoing_topic_count" fuzzy="true">
     <item quantity="one">1 Tópico em Andamento\n    </item>
     <item quantity="zero">%s Tópicos em Andamento\n    </item>
     <item quantity="other">\n      %s Tópicos em Andamento\n    </item>
@@ -347,14 +347,14 @@
   <string name="return_to_topic">Voltar ao tópico</string>
   <string name="explanation">Explicação:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">Se dois itens forem iguais, junte-os.</string>
-  <string name="link_to_item_below">Vincular para o item %s</string>
+  <string name="link_to_item_below" fuzzy="true">Vincular para o item %s</string>
   <string name="unlink_items">Desvincular itens em %s</string>
   <string name="move_item_down_content_description">Mover o item para baixo para %s</string>
   <string name="move_item_up_content_description">Mover o item para cima para %s</string>
   <string name="up_button_disabled">Para cima</string>
   <string name="down_button_disabled">Para baixo</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes">
+  <plurals name="minutes" fuzzy="true">
     <item quantity="one">um minuto</item>
     <item quantity="other">%s minutos</item>
   </plurals>
@@ -387,25 +387,6 @@
   <string name="correct_submitted_answer_with_append">Resposta correta enviada: %s</string>
   <string name="incorrect_submitted_answer">Resposta incorreta enviada</string>
   <string name="incorrect_submitted_answer_with_append">Resposta incorreta enviada: %s</string>
-  <string name="developer_options_activity_title">Opções do Desenvolvedor</string>
-  <string name="mark_chapters_completed_activity_title">Marcar Capítulos como Concluídos</string>
-  <string name="mark_stories_completed_activity_title">Marcar Histórias como Concluídas</string>
-  <string name="mark_topics_completed_activity_title">Marcar Tópicos como Concluídos</string>
-  <string name="view_event_logs_activity_title">Ver Registro de Eventos</string>
-  <string name="developer_options_modify_lesson_progress_label">Alterar Progresso da Lição</string>
-  <string name="developer_options_mark_chapters_completed">Marcar Capítulos como Concluídos</string>
-  <string name="developer_options_mark_stories_completed">Marcar Histórias como Concluídas</string>
-  <string name="developer_options_mark_topics_completed">Marcar Tópicos como Concluídos</string>
-  <string name="developer_options_view_logs_label">Ver Registros</string>
-  <string name="developer_options_event_logs">Registro de Eventos</string>
-  <string name="developer_options_show_all_hints_solution">Mostrar todas as dicas/soluções</string>
-  <string name="modify_lesson_progress_all">Todos</string>
-  <string name="modify_lesson_progress_mark_completed_uppercase">MARCAR COMO CONCLUÍDO</string>
-  <string name="force_network_type_network_selected">Rede está selecionanda</string>
-  <string name="force_network_type_default_network">Padrão</string>
-  <string name="force_network_type_wifi_network">Wifi</string>
-  <string name="force_network_type_cellular_network">Celular</string>
-  <string name="force_network_type_no_network">Sem conexão</string>
   <string name="third_party_dependency_list_activity_title">Dependências de terceiros</string>
   <string name="third_party_dependency_version_formatter">versão %s</string>
   <string name="license_list_activity_title">Licença de Direitos Autorais</string>

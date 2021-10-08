@@ -17,7 +17,10 @@ load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
-package(default_visibility = ["//utility:__subpackages__"])
+package(default_visibility = [
+    "//domain:__subpackages__",
+    "//utility:__subpackages__",
+])
 
 exports_files(["src/main/AndroidManifest.xml"])
 
@@ -436,7 +439,6 @@ BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/GuidelineBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/MarginBindingAdapters.java",
-    "src/main/java/org/oppia/android/app/databinding/PinViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java",
@@ -798,6 +800,7 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_prod_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:fake_exploration_meta_data_retriever",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
     "//testing/src/main/java/org/oppia/android/testing/espresso:generic_view_matchers",
     "//testing/src/main/java/org/oppia/android/testing/espresso:image_view_matcher",

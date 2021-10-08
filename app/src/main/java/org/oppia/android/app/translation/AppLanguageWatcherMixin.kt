@@ -3,6 +3,7 @@ package org.oppia.android.app.translation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -20,14 +21,46 @@ class AppLanguageWatcherMixin @Inject constructor(
   private val activity: AppCompatActivity,
   private val translationController: TranslationController,
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
+  private val localeController: LocaleController,
   private val oppiaLogger: OppiaLogger,
   private val activityRecreator: ActivityRecreator
 ) {
   /**
    * Initializes this mixin by starting language monitoring. This method should only ever be called
    * once for the lifetime of the current activity.
+   *
+   * Note that this method will synchronously ensure that [AppLanguageLocaleHandler] is properly
+   * initialized if previous bootstrapping was lost (e.g. due to process death), so it must be
+   * called before interacting with the locale handler to avoid inadvertent crashes in such
+   * situations.
    */
   fun initialize() {
+    if (!appLanguageLocaleHandler.isInitialized()) {
+      /* The handler might have been de-initialized since bootstrapping. This can generally happen
+       * in two cases:
+       * 1. Upon crash (later versions of Android will reopen the previous activity rather than
+       *   starting from the launcher activity if the crash occurred with the app in the foreground)
+       * 2. Upon low-memory process death (the system will restore from a saved instance Bundle of
+       *   the application's activity stack)
+       *
+       * In both cases, the locale will be lost & can't be determined until the controller provides
+       * the state. Since initialization happens during activity initialization, there's no way to
+       * pass data from a previous instance of the application. Thus, the application can either
+       * block the main thread on waiting for the data provider result (a strict mode violation that
+       * could theoretically cause an ANR) or default the locale and, in the event the default is
+       * wrong, restart the activity after the correct locale is retrieved. For the sake of avoiding
+       * potential ANRs (even at the potential of perceived jank due to activity recreations), the
+       * latter option is used here.
+       */
+      oppiaLogger.e(
+        "AppLanguageWatcherMixin", "Restoring the display locale from de-initialization."
+      )
+      val defaultDisplayLocale = localeController.reconstituteDisplayLocale(
+        localeController.getLikelyDefaultAppStringLocaleContext()
+      )
+      appLanguageLocaleHandler.initializeLocale(defaultDisplayLocale)
+    }
+
     // TODO(#52): Hook this up properly to profiles, and handle the non-profile activity cases.
     val profileId = ProfileId.getDefaultInstance()
     val appLanguageLocaleDataProvider = translationController.getAppLanguageLocale(profileId)

@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -47,7 +48,8 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
 
     val matches = inputEqualsRuleClassifier.matches(
       answer = NON_NEGATIVE_VALUE_TEST_0,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -59,7 +61,8 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
 
     val matches = inputEqualsRuleClassifier.matches(
       answer = NON_NEGATIVE_VALUE_TEST_1,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -72,7 +75,8 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(
         answer = NON_NEGATIVE_VALUE_TEST_0,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -88,7 +92,8 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -104,7 +109,8 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifier.matches(
         answer = NON_NEGATIVE_VALUE_TEST_0,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

@@ -96,6 +96,15 @@ class RegexPatternValidationCheckTest {
     "Never explicitly handle configuration changes. Instead, use saved instance states for" +
       " retaining state across rotations. For other types of configuration changes, follow up" +
       " with the developer mailing list with how to proceed if you think this is a legitimate case."
+  private val useJavaCalendarErrorMessage =
+    "Don't use Calendar directly. Instead, use OppiaClock and/or OppiaLocale for" +
+      " calendar-specific operations."
+  private val useJavaDateErrorMessage =
+    "Don't use Date directly. Instead, perform date-based operations using OppiaLocale."
+  private val useJavaTextErrorMessage =
+    "Don't perform date/time formatting directly. Instead, use OppiaLocale."
+  private val useJavaLocaleErrorMessage =
+    "Don't use Locale directly. Instead, use LocaleController, or OppiaLocale & its subclasses."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1326,6 +1335,97 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:6: $androidActivityConfigChangesErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_javaCalendarImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import java.util.Calendar"
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $useJavaCalendarErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_javaDateImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import java.util.Date"
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $useJavaDateErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_javaTextImports_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      import java.text.DateFormat
+      import java.text.SimpleDateFormat
+      import java.text.ParseException
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $useJavaTextErrorMessage
+        $stringFilePath:2: $useJavaTextErrorMessage
+        $stringFilePath:3: $useJavaTextErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_javaLocaleImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import java.util.Locale"
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $useJavaLocaleErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )

@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -71,8 +72,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to POSITIVE_REAL_VALUE_1_5
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
@@ -84,8 +88,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to NEGATIVE_REAL_VALUE_3_5
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_3_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = NEGATIVE_REAL_VALUE_3_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
@@ -97,8 +104,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to POSITIVE_REAL_VALUE_3_5
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_2_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_2_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
@@ -110,8 +120,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to NEGATIVE_REAL_VALUE_3_5
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_2_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_2_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -123,8 +136,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to POSITIVE_REAL_VALUE_1_5
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_2_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = NEGATIVE_REAL_VALUE_2_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
@@ -136,8 +152,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to NEGATIVE_REAL_VALUE_3_5
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_2_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = NEGATIVE_REAL_VALUE_2_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -149,8 +168,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to POSITIVE_INT_VALUE_3
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_INT_VALUE_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
@@ -162,8 +184,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to NEGATIVE_INT_VALUE_1
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_INT_VALUE_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -175,8 +200,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to POSITIVE_INT_VALUE_1
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = NEGATIVE_INT_VALUE_2, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = NEGATIVE_INT_VALUE_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
@@ -188,8 +216,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to NEGATIVE_REAL_VALUE_3_5
     )
     val matches =
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = NEGATIVE_REAL_VALUE_2_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = NEGATIVE_REAL_VALUE_2_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -201,8 +232,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to POSITIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -217,8 +251,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "c" to POSITIVE_REAL_VALUE_1_5
     )
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -233,8 +270,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to NEGATIVE_REAL_VALUE_3_5
     )
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -249,8 +289,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to STRING_VALUE_2
     )
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_REAL_VALUE_1_5, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_REAL_VALUE_1_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -265,8 +308,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_INT_VALUE_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -281,8 +327,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "c" to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_INT_VALUE_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -297,8 +346,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to POSITIVE_INT_VALUE_3
     )
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_1, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_INT_VALUE_1,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)
@@ -313,8 +365,11 @@ class NumericInputIsInclusivelyBetweenRuleClassifierProviderTest {
       "b" to STRING_VALUE_2
     )
     val exception = assertThrows(IllegalStateException::class) {
-      inputIsInclusivelyBetweenRuleClassifier
-        .matches(answer = POSITIVE_INT_VALUE_2, inputs = inputs)
+      inputIsInclusivelyBetweenRuleClassifier.matches(
+        answer = POSITIVE_INT_VALUE_2,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

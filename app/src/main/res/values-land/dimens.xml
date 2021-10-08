@@ -293,6 +293,14 @@
   <dimen name="app_version_image_view_margin_start">36dp</dimen>
   <dimen name="app_version_text_view_margin_end">36dp</dimen>
 
+  <!-- Pin Password -->
+  <dimen name="pin_password_text_input_layout_width">244dp</dimen>
+  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.5</item>
+  <dimen name="pin_password_margin_start">72dp</dimen>
+  <dimen name="pin_password_margin_end">72dp</dimen>
+  <dimen name="pin_password_padding_top">48dp</dimen>
+  <dimen name="pin_password_min_width">496dp</dimen>
+
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">304dp</dimen>
   <dimen name="add_profile_main_padding_top">52dp</dimen>
@@ -322,4 +330,17 @@
   <!-- Story Header View -->
   <dimen name="story_header_view_layout_margin_start">76dp</dimen>
   <dimen name="story_header_view_layout_margin_end">72dp</dimen>
+
+  <!-- Ongoing Topic List Fragment -->
+  <dimen name="ongoing_topic_list_fragment_padding_start">56dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_top">28dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_end">56dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_bottom">88dp</dimen>
+
+  <!-- TopicRevisionFragment -->
+  <dimen name="topic_revision_fragment_padding_start">56dp</dimen>
+  <dimen name="topic_revision_fragment_padding_top">20dp</dimen>
+  <dimen name="topic_revision_fragment_padding_end">56dp</dimen>
+  <dimen name="topic_revision_fragment_padding_bottom">104dp</dimen>
+
 </resources>

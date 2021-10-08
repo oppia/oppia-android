@@ -1,0 +1,33 @@
+subtopic_title: "Test subtopic"
+page_contents {
+  html: "<p>Description of subtopic is here.</p><p>This is sample subtopic with dummy content not related to anything in particular. Note that this is multiple paragraphs to simulate more realistic subtopic content. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p><oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview></p>"
+  content_id: "content"
+}
+recorded_voiceover {
+  key: "content"
+  value {
+  }
+}
+written_translation {
+  key: "content"
+  value {
+    translation_mapping {
+      key: "pt"
+      value {
+        html: "<p> Descri\303\247\303\243o do subtopic est\303\241 aqui. </p> <p> Este \303\251 a amostra subt\303\263pico com conte\303\272do fict\303\255cio n\303\243o relacionado a qualquer coisa em particular. Observe que isso \303\251 v\303\241rios par\303\241grafos para simular conte\303\272do subt\303\263pico mais realista. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;skill_id_0 conceito cart\303\243o&amp;quot;\"></oppia-noninteractive-skillreview>. </p> <p> <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;skill_id_1 cart\303\243o&amp;quot;\"></oppia-noninteractive-skillreview></p>"
+      }
+    }
+    translation_mapping {
+      key: "ar"
+      value {
+        html: "<p> \331\210\330\265\331\201 subtopic \331\207\331\206\330\247. </p> <p> \331\207\330\260\330\247 \331\207\331\210 \331\206\331\205\331\210\330\260\330\254 subtopic \331\205\330\271 \331\205\330\255\330\252\331\210\331\211 \331\210\331\207\331\205\331\212\330\251 \331\204\330\247 \331\212\330\261\330\252\330\250\330\267 \330\250\330\243\331\212 \330\264\331\212\330\241 \330\271\331\204\331\211 \331\210\330\254\331\207 \330\247\331\204\330\256\330\265\331\210\330\265. \331\204\330\247\330\255\330\270 \330\243\331\206 \331\207\330\260\331\207 \331\201\331\202\330\261\330\247\330\252 \331\205\330\252\330\271\330\257\330\257\330\251 \331\205\330\255\330\247\331\203\330\247\330\251 \331\205\330\255\330\252\331\210\331\211 \330\243\331\203\330\253\330\261 \331\210\330\247\331\202\330\271\331\212\330\251. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot; \331\206\330\265 \331\205\330\271 \330\247\331\204\331\202\331\212\331\205\330\251 test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>. </p> <p> <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot; \331\206\330\265 \331\205\330\271 \330\247\331\204\331\202\331\212\331\205\330\251 test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview></p>"
+      }
+    }
+  }
+}
+skill_ids: "test_skill_id_0"
+skill_ids: "test_skill_id_1"
+skill_ids: "test_skill_id_2"
+subtopic_thumbnail {
+  background_color_rgb: 16741119
+}
