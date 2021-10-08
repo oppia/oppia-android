@@ -190,7 +190,7 @@ public final class ImageViewBindingAdapters {
         setImageDrawable(imageView, R.drawable.circular_stroke_2dp_color_primary_32dp);
         break;
       default:
-        setImageDrawable(imageView, R.drawable.circular_stroke_1dp_grey_32dp);
+        setImageDrawable(imageView, R.drawable.circular_stroke_2dp_grey_32dp);
     }
   }
 }
