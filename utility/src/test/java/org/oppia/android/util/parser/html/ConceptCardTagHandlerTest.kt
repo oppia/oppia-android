@@ -30,6 +30,7 @@ import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.ConceptCardTagHandler.ConceptCardLinkClickListener
@@ -285,7 +286,7 @@ class ConceptCardTagHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

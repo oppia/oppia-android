@@ -13,6 +13,7 @@ import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.LanguageSupportDefinition.MacaronicLanguageId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
 import org.oppia.android.domain.locale.LocaleController
@@ -125,9 +126,7 @@ class InitializeDefaultLocaleRule : TestRule {
             contentStringId = constructLanguageId(ietfTag = "en", combinedMacaronicId = null)
             audioTranslationId = constructLanguageId(ietfTag = "en", combinedMacaronicId = null)
           }.build()
-          regionDefinition = RegionSupportDefinition.newBuilder().apply {
-            regionId = RegionSupportDefinition.IetfBcp47RegionId.getDefaultInstance()
-          }.build()
+          regionDefinition = defineContext.getRegionDefinition()
           usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
         }.build()
       }
@@ -151,6 +150,24 @@ class InitializeDefaultLocaleRule : TestRule {
         }
       }?.build()
     }
+
+    private fun DefineAppLanguageLocaleContext.getRegionDefinition(): RegionSupportDefinition? {
+      return RegionSupportDefinition.newBuilder().apply {
+        getOppiaRegion()?.let { region = it }
+        addAllLanguages(getOppiaRegionLanguages())
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          regionIetfTag.tryExtractAnnotationStringConstant()?.let {
+            ietfRegionTag = it
+          }
+        }.build()
+      }.build()
+    }
+
+    private fun DefineAppLanguageLocaleContext.getOppiaRegion() =
+      OppiaRegion.values().getOrNull(oppiaRegionEnumId)
+
+    private fun DefineAppLanguageLocaleContext.getOppiaRegionLanguages() =
+      regionLanguageEnumIds.toList().mapNotNull { OppiaLanguage.values().getOrNull(it) }
 
     private fun constructLanguageId(
       ietfTag: String?,
