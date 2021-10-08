@@ -157,7 +157,7 @@ class ImageViewBindingAdaptersTest {
       val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_1dp_grey_32dp))
+        matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
       )
     }
   }
