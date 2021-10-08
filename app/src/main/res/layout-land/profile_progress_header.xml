@@ -30,6 +30,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:shadow_radius="8"
+      android:background="@color/whiteLight"
       profile:src="@{viewModel.profile.avatar}" />
 
     <ImageView
