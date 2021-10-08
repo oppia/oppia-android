@@ -1161,7 +1161,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -1839,7 +1839,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -3459,7 +3459,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -3658,7 +3658,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -3982,7 +3982,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -5521,7 +5521,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -6343,7 +6343,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -7318,8 +7318,8 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter a fraction in the form x/x."
+            subtitled_unicode {
+              unicode_str: "Enter a fraction in the form x/x."
               content_id: "ca_placeholder_0"
             }
           }
@@ -7762,7 +7762,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -9662,8 +9662,8 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Type a number (example: 1)."
+            subtitled_unicode {
+              unicode_str: "Type a number (example: 1)."
               content_id: "ca_placeholder_0"
             }
           }

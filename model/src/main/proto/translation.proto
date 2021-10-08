@@ -5,16 +5,32 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
+// Corresponds to a mapping of translations from language codes.
 message TranslationMapping {
-  // Mapping from language_code to Translation
+  // Mapping from Oppia language code to Translation structures.
   map<string, Translation> translation_mapping = 1;
 }
 
 // Structure for a single translation
 // Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeWrittenTranslation.kt
 message Translation {
-  string html = 1;
+  // Denotes the type of translation.
+  oneof data_format {
+    // Corresponds to a single string translation.
+    string html = 1;
+
+    // Corresponds to a list of strings that are translated.
+    HtmlTranslationList html_list = 3;
+  }
+
+  // Defines whether this translation is known to be out-of-date with the main content string.
   bool needs_update = 2;
+}
+
+// Corresponds to a list of HTML strings that are part of a single translation context.
+message HtmlTranslationList {
+  // The list of translated HTML strings.
+  repeated string html = 1;
 }
 
 // Represents the context for translating written content strings.

@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -67,7 +68,11 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_12_3_4)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isTrue()
   }
@@ -77,7 +82,11 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_3_12_4)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -87,7 +96,11 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_3_INVALID12_4)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -97,7 +110,11 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_3_12)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -107,7 +124,11 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("x" to LIST_OF_SETS_1_3_4)
 
     val matches =
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
 
     assertThat(matches).isFalse()
   }
@@ -117,7 +138,11 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
     val inputs = mapOf("y" to LIST_OF_SETS_12_3_4)
 
     val exception = assertThrows(IllegalStateException::class) {
-      isEqualToOrderingClassifierProvider.matches(answer = LIST_OF_SETS_12_3_4, inputs = inputs)
+      isEqualToOrderingClassifierProvider.matches(
+        answer = LIST_OF_SETS_12_3_4,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      )
     }
 
     assertThat(exception)

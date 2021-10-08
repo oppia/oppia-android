@@ -16,19 +16,19 @@ class CompletedStoryListActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val internalProfileId: Int =
-      intent.getIntExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, -1)
+      intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
   }
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY =
+    const val PROFILE_ID_EXTRA_KEY =
       "CompletedStoryListActivity.profile_id"
 
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
     fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, CompletedStoryListActivity::class.java)
-      intent.putExtra(COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }
