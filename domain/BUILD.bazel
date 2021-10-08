@@ -175,6 +175,7 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
+    "//domain/src/test/java/org/oppia/android/domain/onboarding:state_controller"
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:startup_listener",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
