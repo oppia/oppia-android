@@ -17,6 +17,11 @@ package org.oppia.android.testing.junit
  *     Android resources (e.g. 'pt')
  * @property appStringAndroidRegionId the region ID to be used when selecting app strings from
  *     Android resources (e.g. 'BR')
+ * @property oppiaRegionEnumId the OppiaRegion enum constant integer corresponding to this locale
+ * @property regionLanguageEnumIds an array of OppiaLanguage enum constant integers corresponding to
+ *     the languages supported in this region. Note that this should generally align with the app's
+ *     configuration for supported regions & languages.
+ * @property regionIetfTag the IETF BCP 47 region tag to use for this locale (e.g. 'BR')
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class DefineAppLanguageLocaleContext(
@@ -25,6 +30,9 @@ annotation class DefineAppLanguageLocaleContext(
   val appStringMacaronicId: String = DEFAULT_UNDEFINED_STRING_VALUE,
   val appStringAndroidLanguageId: String = DEFAULT_UNDEFINED_STRING_VALUE,
   val appStringAndroidRegionId: String = DEFAULT_UNDEFINED_STRING_VALUE,
+  val oppiaRegionEnumId: Int = DEFAULT_UNDEFINED_INT_VALUE,
+  val regionLanguageEnumIds: IntArray = [],
+  val regionIetfTag: String = DEFAULT_UNDEFINED_STRING_VALUE
 ) {
   companion object {
     /**
@@ -32,5 +40,11 @@ annotation class DefineAppLanguageLocaleContext(
      * [DefineAppLanguageLocaleContext] (undefined is generally treated as absent).
      */
     const val DEFAULT_UNDEFINED_STRING_VALUE = "<undefined>"
+
+    /**
+     * Represents the value of an undefined property for integers passed to
+     * [DefineAppLanguageLocaleContext] (undefined is generally treated as absent).
+     */
+    const val DEFAULT_UNDEFINED_INT_VALUE = -1
   }
 }

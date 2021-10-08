@@ -93,6 +93,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
@@ -1469,6 +1470,8 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_displaysStringsInArabic() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1492,6 +1495,8 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_isInRtlLayout() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1512,6 +1517,8 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialArabicContext_hasArabicDisplayLocale() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1533,6 +1540,8 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialBrazilianPortugueseContext_displayStringsInPortuguese() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1557,6 +1566,8 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialBrazilianPortugueseContext_isInLtrLayout() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1578,6 +1589,8 @@ class HomeActivityTest {
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialBrazilianPortugueseContext_hasPortugueseDisplayLocale() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1629,6 +1642,11 @@ class HomeActivityTest {
         position
       )
     )
+  }
+
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
   }
 
   private fun verifyTextOnHomeListItemAtPosition(
@@ -1700,7 +1718,7 @@ class HomeActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -1747,5 +1765,6 @@ class HomeActivityTest {
 
   private companion object {
     private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
   }
 }

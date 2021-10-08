@@ -5,9 +5,9 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
-import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,7 +18,8 @@ class ConsoleLogger @Inject constructor(
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @EnableConsoleLog private val enableConsoleLog: Boolean,
   @EnableFileLog private val enableFileLog: Boolean,
-  @GlobalLogLevel private val globalLogLevel: LogLevel
+  @GlobalLogLevel private val globalLogLevel: LogLevel,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
   private val blockingScope = CoroutineScope(blockingDispatcher)
   private val logDirectory = File(context.filesDir, "oppia_app.log")
@@ -93,7 +94,9 @@ class ConsoleLogger @Inject constructor(
       Log.println(logLevel.logLevel, tag, fullLog)
     }
     if (enableFileLog) {
-      logToFileInBackground("${Calendar.getInstance().time}\t${logLevel.name}/$tag: $fullLog")
+      logToFileInBackground(
+        "${machineLocale.computeCurrentTimeString()}\t${logLevel.name}/$tag: $fullLog"
+      )
     }
   }
 

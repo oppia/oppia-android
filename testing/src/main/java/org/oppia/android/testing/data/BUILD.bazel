@@ -17,6 +17,7 @@ kt_android_library(
         ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/mockito",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//third_party:androidx_test_runner",
         "//third_party:org_mockito_mockito-core",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",

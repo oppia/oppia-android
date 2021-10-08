@@ -1,16 +1,17 @@
 package org.oppia.android.domain.classify.rules
 
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import javax.inject.Inject
 
 /**
- * A convenience [RuleClassifier] which performs parameter extraction and sanitation to simplify classifiers, with the
- * possible configurations for zero, one, or two parameters with the same or differing types compared to the answer
- * being matched.
+ * A convenience [RuleClassifier] which performs parameter extraction and sanitation to simplify
+ * classifiers, with the possible configurations for zero, one, or two parameters with the same or
+ * differing types compared to the answer being matched.
  *
- * Child classes must ensure all specified types properly correspond to the type to which the parameter's specified
- * [InteractionObject.ObjectTypeCase] also corresponds.
+ * Child classes must ensure all specified types properly correspond to the type to which the
+ * parameter's specified [InteractionObject.ObjectTypeCase] also corresponds.
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class GenericRuleClassifier constructor(
@@ -19,7 +20,11 @@ class GenericRuleClassifier constructor(
     String, InteractionObject.ObjectTypeCase>,
   val matcherDelegate: MatcherDelegate
 ) : RuleClassifier {
-  override fun matches(answer: InteractionObject, inputs: Map<String, InteractionObject>): Boolean {
+  override fun matches(
+    answer: InteractionObject,
+    inputs: Map<String, InteractionObject>,
+    writtenTranslationContext: WrittenTranslationContext
+  ): Boolean {
     check(answer.objectTypeCase == expectedAnswerObjectType) {
       "Expected answer to be of type ${expectedAnswerObjectType.name} " +
         "not ${answer.objectTypeCase.name}"
@@ -29,7 +34,7 @@ class GenericRuleClassifier constructor(
         .map { (parameterName, expectedObjectType) ->
           retrieveInputObject(parameterName, expectedObjectType, inputs)
         }
-    return matcherDelegate.matches(answer, parameterInputs)
+    return matcherDelegate.matches(answer, parameterInputs, writtenTranslationContext)
   }
 
   private fun retrieveInputObject(
@@ -50,55 +55,77 @@ class GenericRuleClassifier constructor(
 
   interface NoInputInputMatcher<T> {
     /**
-     * Returns whether the validated and extracted answer matches the expectations per the specification of this
-     * classifier.
+     * Returns whether the validated and extracted answer matches the expectations per the
+     * specification of this classifier.
      */
-    fun matches(answer: T): Boolean
+    fun matches(answer: T, writtenTranslationContext: WrittenTranslationContext): Boolean
   }
 
   interface SingleInputMatcher<T> {
     /**
-     * Returns whether the validated and extracted answer matches the single validated and extracted input parameter per
-     * the specification of this classifier.
+     * Returns whether the validated and extracted answer matches the single validated and extracted
+     * input parameter per the specification of this classifier.
      */
-    fun matches(answer: T, input: T): Boolean
+    fun matches(answer: T, input: T, writtenTranslationContext: WrittenTranslationContext): Boolean
   }
 
   interface MultiTypeSingleInputMatcher<AT, IT> {
     /**
-     * Returns whether the validated and extracted answer matches the single validated and extracted input parameter per
-     * the specification of this classifier.
+     * Returns whether the validated and extracted answer matches the single validated and extracted
+     * input parameter per the specification of this classifier.
      */
-    fun matches(answer: AT, input: IT): Boolean
+    fun matches(
+      answer: AT,
+      input: IT,
+      writtenTranslationContext: WrittenTranslationContext
+    ): Boolean
   }
 
   interface MultiTypeDoubleInputMatcher<AT, ITF, ITS> {
     /**
-     * Returns whether the validated and extracted answer matches the two validated and extracted input parameters per
-     * the specification of this classifier.
+     * Returns whether the validated and extracted answer matches the two validated and extracted
+     * input parameters per the specification of this classifier.
      */
-    fun matches(answer: AT, firstInput: ITF, secondInput: ITS): Boolean
+    fun matches(
+      answer: AT,
+      firstInput: ITF,
+      secondInput: ITS,
+      writtenTranslationContext: WrittenTranslationContext
+    ): Boolean
   }
 
   interface DoubleInputMatcher<T> {
     /**
-     * Returns whether the validated and extracted answer matches the two validated and extracted input parameters per
-     * the specification of this classifier.
+     * Returns whether the validated and extracted answer matches the two validated and extracted
+     * input parameters per the specification of this classifier.
      */
-    fun matches(answer: T, firstInput: T, secondInput: T): Boolean
+    fun matches(
+      answer: T,
+      firstInput: T,
+      secondInput: T,
+      writtenTranslationContext: WrittenTranslationContext
+    ): Boolean
   }
 
   sealed class MatcherDelegate {
 
-    abstract fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean
+    abstract fun matches(
+      answer: InteractionObject,
+      inputs: List<InteractionObject>,
+      writtenTranslationContext: WrittenTranslationContext
+    ): Boolean
 
     class NoInputMatcherDelegate<T : Any>(
       private val matcher: NoInputInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
-      override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
+      override fun matches(
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
+        writtenTranslationContext: WrittenTranslationContext
+      ): Boolean {
         check(inputs.isEmpty())
-        return matcher.matches(extractObject(answer))
+        return matcher.matches(extractObject(answer), writtenTranslationContext)
       }
     }
 
@@ -106,9 +133,15 @@ class GenericRuleClassifier constructor(
       private val matcher: SingleInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
-      override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
+      override fun matches(
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
+        writtenTranslationContext: WrittenTranslationContext
+      ): Boolean {
         check(inputs.size == 1)
-        return matcher.matches(extractObject(answer), extractObject(inputs.first()))
+        return matcher.matches(
+          extractObject(answer), extractObject(inputs.first()), writtenTranslationContext
+        )
       }
     }
 
@@ -117,9 +150,15 @@ class GenericRuleClassifier constructor(
       private val extractAnswerObject: (InteractionObject) -> AT,
       private val extractInputObject: (InteractionObject) -> IT
     ) : MatcherDelegate() {
-      override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
+      override fun matches(
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
+        writtenTranslationContext: WrittenTranslationContext
+      ): Boolean {
         check(inputs.size == 1)
-        return matcher.matches(extractAnswerObject(answer), extractInputObject(inputs.first()))
+        return matcher.matches(
+          extractAnswerObject(answer), extractInputObject(inputs.first()), writtenTranslationContext
+        )
       }
     }
 
@@ -127,12 +166,17 @@ class GenericRuleClassifier constructor(
       private val matcher: DoubleInputMatcher<T>,
       private val extractObject: (InteractionObject) -> T
     ) : MatcherDelegate() {
-      override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
+      override fun matches(
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
+        writtenTranslationContext: WrittenTranslationContext
+      ): Boolean {
         check(inputs.size == 2)
         return matcher.matches(
           extractObject(answer),
           extractObject(inputs[0]),
-          extractObject(inputs[1])
+          extractObject(inputs[1]),
+          writtenTranslationContext
         )
       }
     }
@@ -143,12 +187,17 @@ class GenericRuleClassifier constructor(
       private val extractFirstParamObject: (InteractionObject) -> ITF,
       private val extractSecondParamObject: (InteractionObject) -> ITS
     ) : MatcherDelegate() {
-      override fun matches(answer: InteractionObject, inputs: List<InteractionObject>): Boolean {
+      override fun matches(
+        answer: InteractionObject,
+        inputs: List<InteractionObject>,
+        writtenTranslationContext: WrittenTranslationContext
+      ): Boolean {
         check(inputs.size == 2)
         return matcher.matches(
           extractAnswerObject(answer),
           extractFirstParamObject(inputs[0]),
-          extractSecondParamObject(inputs[1])
+          extractSecondParamObject(inputs[1]),
+          writtenTranslationContext
         )
       }
     }
@@ -158,7 +207,9 @@ class GenericRuleClassifier constructor(
   class Factory @Inject constructor(
     val interactionObjectTypeExtractorRepository: InteractionObjectTypeExtractorRepository
   ) {
-    /** Returns a new [GenericRuleClassifier] for an answer that is not matched to any input values. */
+    /**
+     * Returns a new [GenericRuleClassifier] for an answer that is not matched to any input values.
+     */
     inline fun <reified T : Any> createNoInputClassifier(
       expectedObjectType: InteractionObject.ObjectTypeCase,
       matcher: NoInputInputMatcher<T>
@@ -173,7 +224,8 @@ class GenericRuleClassifier constructor(
     }
 
     /**
-     * Returns a new [GenericRuleClassifier] for a single input value with the same type as the answer being classified.
+     * Returns a new [GenericRuleClassifier] for a single input value with the same type as the
+     * answer being classified.
      */
     inline fun <reified T : Any> createSingleInputClassifier(
       expectedObjectType: InteractionObject.ObjectTypeCase,
@@ -189,8 +241,8 @@ class GenericRuleClassifier constructor(
     }
 
     /**
-     * Returns a new [GenericRuleClassifier] for a single input value that has a different type than the answer being
-     * classified.
+     * Returns a new [GenericRuleClassifier] for a single input value that has a different type than
+     * the answer being classified.
      */
     inline fun <reified AT : Any, reified IT : Any> createMultiTypeSingleInputClassifier(
       expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
@@ -213,8 +265,8 @@ class GenericRuleClassifier constructor(
     }
 
     /**
-     * Returns a new [GenericRuleClassifier] for two input values of different types, possibly also different from
-     * the answer's type.
+     * Returns a new [GenericRuleClassifier] for two input values of different types, possibly also
+     * different from the answer's type.
      */
     inline fun <reified AT : Any, reified ITF : Any, reified ITS : Any> createDoubleInputClassifier(
       expectedAnswerObjectType: InteractionObject.ObjectTypeCase,
@@ -244,7 +296,10 @@ class GenericRuleClassifier constructor(
       )
     }
 
-    /** Returns a new [GenericRuleClassifier] for two input values of the same type as the answer it classifies. */
+    /**
+     * Returns a new [GenericRuleClassifier] for two input values of the same type as the answer it
+     * classifies.
+     */
     inline fun <reified T : Any> createDoubleInputClassifier(
       expectedObjectType: InteractionObject.ObjectTypeCase,
       firstInputParameterName: String,

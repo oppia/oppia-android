@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.testing.assertThrows
@@ -53,7 +54,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -65,7 +67,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -77,7 +80,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -89,7 +93,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_126,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -101,7 +106,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_16,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -113,7 +119,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_NONE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -125,7 +132,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_NONE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -137,7 +145,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_6,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -149,7 +158,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -162,7 +172,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_12345,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -178,7 +189,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_INVAILD,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -194,7 +206,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_12345,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

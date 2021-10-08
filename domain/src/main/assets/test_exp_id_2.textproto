@@ -30,21 +30,171 @@ states {
     written_translations {
       key: "feedback_2"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> \'amarelo\' \303\251 considerado uma cor prim\303\241ria no espectro de cores RYB, mas isso n\303\243o corresponde \303\240 luz. Tente novamente! </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\331\212\330\271\330\252\330\250\330\261 <p> \330\247\331\204\330\243\330\265\331\201\330\261 \331\204\331\210\331\206\330\247 \330\243\330\263\330\247\330\263\331\212\330\247 \331\201\331\212 \330\267\331\212\331\201 \331\204\331\210\331\206 RYB\330\214 \331\210\331\204\331\203\331\206 \331\207\330\260\330\247 \331\204\330\247 \331\212\330\252\331\210\330\247\331\201\331\202 \331\205\330\271 \330\247\331\204\330\266\331\210\330\241. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211! </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<b> correto! </b>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<b> \330\265\330\255\331\212\330\255! </b>"
+          }
+        }
       }
     }
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Quais s\303\243o as cores prim\303\241rias da luz? </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\212 \330\247\331\204\330\243\331\204\331\210\330\247\331\206 \330\247\331\204\330\243\330\263\330\247\330\263\331\212\330\251 \331\204\331\204\330\266\331\210\330\241\330\237 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Isso n\303\243o est\303\241 certo. Tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\207\330\260\330\247 \331\204\331\212\330\263 \330\265\330\255\331\212\330\255\330\247 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> vermelho </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\243\330\255\331\205\330\261 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> amarelo </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\331\204\330\243\330\265\331\201\330\261 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_2"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> verde </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\243\330\256\330\266\330\261 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_3"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> azul </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\331\204\330\243\330\262\330\261\331\202 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_4"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> laranja </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\331\204\330\250\330\261\330\252\331\202\330\247\331\204 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_5"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> roxo </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\331\204\330\243\330\261\330\254\331\210\330\247\331\206\331\212 </p>"
+          }
+        }
       }
     }
     interaction {
@@ -202,16 +352,103 @@ states {
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Correto! Eagles pode sustentar o v\303\264o. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! \331\212\331\205\331\203\331\206 \330\243\331\206 \331\212\330\257\330\271\331\205 \330\247\331\204\331\206\330\263\331\210\330\261 \330\247\331\204\330\261\330\255\331\204\330\251. </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Qual p\303\241ssaro pode sustentar o v\303\264o por longos per\303\255odos de tempo? </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\243\331\212 \330\267\330\247\330\246\330\261 \331\212\331\205\331\203\331\206 \330\243\331\206 \331\212\330\257\330\271\331\205 \330\247\331\204\330\261\330\255\331\204\330\251 \331\204\331\201\330\252\330\261\330\247\330\252 \330\267\331\210\331\212\331\204\330\251 \331\205\331\206 \330\247\331\204\330\262\331\205\331\206\330\237 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Pinguim </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> penguin </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> frango </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\331\204\330\257\330\254\330\247\330\254 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_2"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> \303\241guia </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\331\204\331\206\330\263\330\261 </p>"
+          }
+        }
       }
     }
     interaction {
@@ -311,26 +548,103 @@ states {
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "hint_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Lembre-se de que duas metades, quando adicionadas, fa\303\247a um todo. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\330\260\331\203\330\261 \330\243\331\206 \331\206\330\265\331\201\331\212\331\212\331\206\330\214 \330\271\331\206\330\257 \330\245\330\266\330\247\331\201\330\252\331\207 \331\205\330\271\330\247\330\214 \331\202\331\205 \330\250\330\245\330\254\330\261\330\247\330\241 \331\210\330\247\330\255\330\257\330\251 \331\203\330\247\331\205\331\204\330\251. </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "solution"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> metade de algo tem uma parte no numerador para cada duas partes no denominador. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\206\330\265\331\201 \330\264\331\212\330\241 \331\212\330\255\330\252\331\210\331\212 \330\271\331\204\331\211 \330\254\330\262\330\241 \331\210\330\247\330\255\330\257 \331\201\331\212 \330\247\331\204\330\250\330\263\330\267 \331\204\331\203\331\204 \331\202\330\263\331\205\331\212\331\206 \331\201\331\212 \330\247\331\204\331\205\331\202\330\247\331\205. </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Que fra\303\247\303\243o representa metade de alguma coisa? </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \330\247\331\204\331\203\330\263\330\261 \331\212\331\205\330\253\331\204 \331\206\330\265\331\201 \330\264\331\212\330\241 \331\205\330\247\330\237 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_placeholder_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "Inserir uma fra\303\247\303\243o."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\245\330\257\330\256\330\247\331\204 \330\247\331\204\331\203\330\263\330\261."
+          }
+        }
       }
     }
     interaction {
@@ -390,7 +704,8 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
+              unicode_str: "Input a fraction."
               content_id: "ca_placeholder_0"
             }
           }
@@ -432,11 +747,35 @@ states {
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Explora\303\247\303\243o de teste com intera\303\247\303\265es. <oppia-noninteractive-link text-with-value = \"& quot; oppia & quot;\" URL - com valor = \"& quot; https: //oppia.github.io&quot;\"> </oppia-noninteractive-link> </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\330\256\330\252\330\250\330\247\330\261 \330\247\331\204\330\247\330\263\330\252\331\203\330\264\330\247\331\201 \331\205\330\271 \330\247\331\204\330\252\331\201\330\247\330\271\331\204\330\247\330\252. <oppia-nonirtive-link \330\247\331\204\331\206\330\265 \331\205\330\271 \330\247\331\204\331\202\331\212\331\205\330\251 = \"& quot\330\233 oppia & quot\330\233\" \330\271\331\206\331\210\330\247\331\206 URL \331\205\330\271 \330\247\331\204\331\202\331\212\331\205\330\251 = \"& quot\330\233 https: //oppia.github.io&quot\330\233\"> </oppia-noninteractive-link> </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "Continuando em frente."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\247\330\263\330\252\331\205\330\261\330\247\330\261 \331\201\330\265\330\247\330\271\330\257\330\247."
+          }
+        }
       }
     }
     interaction {
@@ -444,6 +783,7 @@ states {
       default_outcome {
         dest_state_name: "Fractions"
         feedback {
+          html: "Continuing onward."
           content_id: "default_outcome"
         }
       }
@@ -492,26 +832,86 @@ states {
     written_translations {
       key: "feedback_2"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> N\303\243o \303\251 bem. \303\211 realmente maior que isso. Tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\247\331\206\331\207\330\247 \331\201\331\212 \330\247\331\204\331\210\330\247\331\202\330\271 \330\243\331\203\330\250\330\261 \331\205\331\206 \330\260\331\204\331\203. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_3"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> N\303\243o exatamente. \303\211 menos do que isso. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\247\331\206\331\207\330\247 \330\243\331\202\331\204 \331\205\331\206 \330\260\331\204\331\203. </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> O que \303\251 11 vezes 11? </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\210 11 \331\205\330\261\330\251 11\330\237 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Alguma coisa deu errado. A resposta \303\251 121 - tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\255\330\257\330\253 \330\256\330\267\330\243 \331\205\330\247. \330\247\331\204\330\254\331\210\330\247\330\250 \331\207\331\210 121 - \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
       }
     }
     interaction {
@@ -616,26 +1016,103 @@ states {
     written_translations {
       key: "feedback_2"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_3"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> N\303\243o, isso n\303\243o parece correto </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\204\330\247 \331\212\330\250\330\257\331\210 \331\207\330\260\330\247 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Dois n\303\272meros s\303\243o respectivamente 20% e 50% mais que um terceiro n\303\272mero. A propor\303\247\303\243o dos dois n\303\272meros \303\251: </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\261\331\202\331\205\331\212\331\206 \330\271\331\204\331\211 \330\247\331\204\330\252\331\210\330\247\331\204\331\212 20\331\252 \331\210 50\331\252 \330\243\331\203\330\253\330\261 \331\205\331\206 \330\261\331\202\331\205 \330\253\330\247\331\204\330\253. \331\206\330\263\330\250\330\251 \330\247\331\204\330\243\330\261\331\202\330\247\331\205\331\212\331\206 \331\207\331\212: </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> N\303\243o \303\251 correto </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\272\331\212\330\261 \330\265\330\255\331\212\330\255 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_placeholder_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "Digite no formato de x: y"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\243\330\257\330\256\331\204 \330\250\330\252\331\206\330\263\331\212\331\202 X: Y"
+          }
+        }
       }
     }
     interaction {
@@ -717,8 +1194,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter in format of x:y"
+            subtitled_unicode {
+              unicode_str: "Enter in format of x:y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -753,16 +1230,90 @@ states {
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Em que a linguagem significa \"aprender\"? </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\201\331\212 \330\243\331\212 \331\204\330\272\330\251 \330\252\330\271\331\206\331\212 Oppia \"\330\247\331\204\330\252\330\271\331\204\331\205\"\330\237 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> N\303\243o exatamente. Tente novamente (ou talvez use um mecanismo de pesquisa). </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211 (\330\243\331\210 \330\261\330\250\331\205\330\247 \330\247\330\263\330\252\330\256\330\257\331\205 \331\205\330\255\330\261\331\203 \330\250\330\255\330\253). </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_placeholder_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "Digite um idioma"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\243\330\257\330\256\331\204 \331\204\330\272\330\251"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "43df2897-0a03-4d1f-b892-9e1d251af5c9"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html_list {
+              html: "finlandesa"
+            }
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html_list {
+              html: "\330\247\331\204\331\201\331\206\331\204\331\206\330\257\331\212\330\251"
+            }
+          }
+        }
       }
     }
     interaction {
@@ -780,7 +1331,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "43df2897-0a03-4d1f-b892-9e1d251af5c9"
                 normalized_strings: "finnish"
               }
             }
@@ -805,8 +1356,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter a language"
+            subtitled_unicode {
+              unicode_str: "Enter a language"
               content_id: "ca_placeholder_0"
             }
           }
@@ -841,16 +1392,103 @@ states {
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Que cor o \'G\' em \'RGB\' corresponde a? </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\331\204\331\210\331\206 \"G\" \331\201\331\212 \"RGB\" \330\252\330\252\331\210\330\247\331\201\331\202 \331\205\330\271 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> N\303\243o \303\251 bem. Tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> <strong> verde </strong> </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> <strong> \330\243\330\256\330\266\330\261 </strong> </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> <strong> vermelho </strong> </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> <strong> \330\243\330\255\331\205\330\261 </strong> </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_2"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> <strong> azul </strong> </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> <strong> \330\247\331\204\330\243\330\262\330\261\331\202 </strong> </p>"
+          }
+        }
       }
     }
     interaction {
@@ -966,26 +1604,154 @@ states {
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Classifique o seguinte em ordem decrescente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\201\330\261\330\262 \331\205\330\247 \331\212\331\204\331\212 \331\201\331\212 \330\252\330\261\330\252\331\212\330\250 \330\252\331\206\330\247\330\262\331\204\331\212. </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_2"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Parece que voc\303\252 fez a ordem crescente </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\212\330\250\330\257\331\210 \330\243\331\206\331\203 \331\201\330\271\331\204\330\252 \330\247\331\204\331\206\330\270\330\247\331\205 \330\247\331\204\330\265\330\271\331\210\330\257\331\212 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_3"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Isso n\303\243o parece certo para mim </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\207\330\260\330\247 \331\204\330\247 \331\212\330\250\330\257\331\210 \330\265\330\255\331\212\330\255\330\247 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Isso \303\251 correto </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\207\330\260\330\247 \330\265\330\255\331\212\330\255 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> N\303\243o \303\251 bem. Tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 0,35 </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 0.35 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 3/5 </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 3/5 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_2"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 0,5 </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 0.5 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_3"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 0,46 </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 0.46 </p>"
+          }
+        }
       }
     }
     interaction {
@@ -1174,11 +1940,35 @@ states {
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Classifique o seguinte em ordem decrescente, colocando itens iguais na mesma posi\303\247\303\243o. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\201\330\261\330\262 \331\205\330\247 \331\212\331\204\331\212 \331\201\331\212 \330\252\330\261\330\252\331\212\330\250 \330\252\331\206\330\247\330\262\331\204\331\212\330\214 \331\210\330\266\330\271 \330\247\331\204\330\271\331\206\330\247\330\265\330\261 \330\247\331\204\331\205\330\252\330\263\330\247\331\210\331\212\330\251 \331\201\331\212 \331\206\331\201\330\263 \330\247\331\204\331\205\331\210\330\266\330\271. </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "feedback_2"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Parece que voc\303\252 fez em ordem crescente </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\212\330\250\330\257\331\210 \330\243\331\206\331\203 \331\201\330\271\331\204\330\252 \330\252\330\261\330\252\331\212\330\250\331\213\330\247 \330\252\330\265\330\247\330\271\330\257\331\212\331\213\330\247 </p>"
+          }
+        }
       }
     }
     written_translations {
@@ -1189,11 +1979,103 @@ states {
     written_translations {
       key: "feedback_1"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Isso \303\251 correto </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\207\330\260\330\247 \330\265\330\255\331\212\330\255 </p>"
+          }
+        }
       }
     }
     written_translations {
       key: "default_outcome"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> N\303\243o exatamente. Tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\204\331\212\330\263 \330\252\331\205\330\247\331\205\330\247. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 3/5 </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 3/5 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 0,6 </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 0.6 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_2"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 0,35 </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 0.35 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_choices_3"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 0,46 </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 0.46 </p>"
+          }
+        }
       }
     }
     interaction {
@@ -1332,6 +2214,18 @@ states {
     written_translations {
       key: "content"
       value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "Parab\303\251ns, voc\303\252 terminou!"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\252\331\207\330\247\331\206\331\212\331\206\330\247\330\214 \331\204\331\202\330\257 \330\247\331\206\330\252\331\207\331\212\330\252!"
+          }
+        }
       }
     }
     interaction {

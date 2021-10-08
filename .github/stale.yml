@@ -19,7 +19,7 @@ staleLabel: stale
 # by the bot, with the actual author of the pull request.
 markComment: >
   Hi @author, I'm going to mark this PR as stale because it hasn't had any updates for 7 days.
-  If no further activity occurs within **3 days**, it will be automatically closed so that others can take up the issue.
+  If no further activity occurs within **7 days**, it will be automatically closed so that others can take up the issue.
 
   If you are still working on this PR, please make a follow-up commit within **3 days** (and submit it for review, if applicable).
   Please also let us know if you are stuck so we can help you!
