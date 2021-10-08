@@ -13,13 +13,13 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":exploration_meta_data_retriever",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model:onboarding_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
-        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
-        "//third_party:javax_inject_javax_inject",
-        "//model:onboarding_java_proto_lite",
     ],
 )
 
@@ -30,9 +30,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":dagger",
         ":exploration_meta_data_retriever",
         ":impl",
-        ":dagger",
     ],
 )
 
@@ -50,8 +50,8 @@ kt_android_library(
         "ExpirationMetaDataRetrieverImpl.kt",
     ],
     deps = [
-        "//third_party:javax_inject_javax_inject",
         ":exploration_meta_data_retriever",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 

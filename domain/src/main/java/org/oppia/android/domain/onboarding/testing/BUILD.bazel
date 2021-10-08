@@ -13,8 +13,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":fake_exploration_meta_data_retriever",
         ":dagger",
+        ":fake_exploration_meta_data_retriever",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:exploration_meta_data_retriever",
     ],
 )
