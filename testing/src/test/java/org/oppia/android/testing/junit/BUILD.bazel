@@ -17,7 +17,7 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/translation:app_language_locale_handler",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
-        "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_prod_module"
+        "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_prod_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
