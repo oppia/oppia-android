@@ -376,7 +376,6 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/l
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing/ExplorationStorageModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/LogStorageModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
-exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/profile/ProfileManagementController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionAssessmentProgress.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionAssessmentProgressController.kt"

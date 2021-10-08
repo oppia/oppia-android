@@ -13,6 +13,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
+        "//model:interaction_object_java_proto_lite",
         "//model:languages_java_proto_lite",
         "//model:profile_java_proto_lite",
         "//model:subtitled_html_java_proto_lite",

@@ -2,7 +2,7 @@
   "exploration_id": "test_exp_id_2",
   "preferred_audio_language_code": "<unknown>",
   "correctness_feedback_enabled": false,
-  "version": 1,
+  "version": 0,
   "record_playthrough_probability": 0.0,
   "exploration": {
     "init_state_name": "Continue",
@@ -20,30 +20,30 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>Red</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>Red</p>"
               }, {
-                "html": "<p>Yellow</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>Yellow</p>"
               }, {
-                "html": "<p>Green</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>Green</p>"
               }, {
-                "html": "<p>Blue</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>Blue</p>"
               }, {
-                "html": "<p>Orange</p>",
-                "content_id": "ca_choices_4"
+                "content_id": "ca_choices_4",
+                "html": "<p>Orange</p>"
               }, {
-                "html": "<p>Purple</p>",
-                "content_id": "ca_choices_5"
+                "content_id": "ca_choices_5",
+                "html": "<p>Purple</p>"
               }]
             },
             "minAllowableSelectionCount": {
-              "value": 1.0
+              "value": 1
             },
             "maxAllowableSelectionCount": {
-              "value": 3.0
+              "value": 3
             }
           },
           "answer_groups": [{
@@ -61,10 +61,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "ContainsAtLeastOneOf",
@@ -80,10 +80,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "ItemSelectionMulti",
@@ -93,13 +93,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {},
@@ -110,10 +110,126 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "feedback_2": {},
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
+            "feedback_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 'amarelo' é considerado uma cor primária no espectro de cores RYB, mas isso não corresponde à luz. Tente novamente! </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "يعتبر <p> الأصفر لونا أساسيا في طيف لون RYB، ولكن هذا لا يتوافق مع الضوء. حاول مرة أخرى! </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<b> correto! </b>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<b> صحيح! </b>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Quais são as cores primárias da luz? </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هي الألوان الأساسية للضوء؟ </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Isso não está certo. Tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> هذا ليس صحيحا تماما. حاول مرة أخرى. </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> vermelho </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> أحمر </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> amarelo </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> الأصفر </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> verde </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> أخضر </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_3": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> azul </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> الأزرق </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_4": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> laranja </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> البرتقال </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_5": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> roxo </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> الأرجواني </p>"},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -130,14 +246,14 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>Penguin</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>Penguin</p>"
               }, {
-                "html": "<p>Chicken</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>Chicken</p>"
               }, {
-                "html": "<p>Eagle</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>Eagle</p>"
               }]
             }
           },
@@ -156,10 +272,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "MultipleChoice",
@@ -169,13 +285,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_1": {},
@@ -185,9 +301,78 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Correto! Eagles pode sustentar o vôo. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! يمكن أن يدعم النسور الرحلة. </p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Qual pássaro pode sustentar o vôo por longos períodos de tempo? </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> أي طائر يمكن أن يدعم الرحلة لفترات طويلة من الزمن؟ </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> حاول مرة أخرى. </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Pinguim </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> penguin </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> frango </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> الدجاج </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> águia </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> النسر </p>"},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -208,7 +393,7 @@
             "customPlaceholder": {
               "value": {
                 "content_id": "ca_placeholder_0",
-                "unicode_str": ""
+                "unicode_str": "Input a fraction."
               }
             },
             "allowImproperFraction": {
@@ -238,10 +423,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Fractions",
@@ -251,8 +436,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -274,7 +459,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_1": {},
@@ -286,11 +471,78 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "feedback_1": {},
-            "hint_1": {},
-            "solution": {},
-            "content": {},
-            "default_outcome": {}
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </p>"},
+                "needs_update": false
+              }
+            },
+            "hint_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Lembre-se de que duas metades, quando adicionadas, faça um todo. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تذكر أن نصفيين، عند إضافته معا، قم بإجراء واحدة كاملة. </p>"},
+                "needs_update": false
+              }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> metade de algo tem uma parte no numerador para cada duas partes no denominador. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> نصف شيء يحتوي على جزء واحد في البسط لكل قسمين في المقام. </p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Que fração representa metade de alguma coisa? </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما الكسر يمثل نصف شيء ما؟ </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_placeholder_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "Inserir uma fração."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "إدخال الكسر."},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -314,17 +566,17 @@
             "dest": "Fractions",
             "feedback": {
               "content_id": "default_outcome",
-              "html": ""
+              "html": "Continuing onward."
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {},
@@ -333,8 +585,30 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "content": {},
-            "default_outcome": {}
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Exploração de teste com interações. <oppia-noninteractive-link text-with-value = \"& quot; oppia & quot;\" URL - com valor = \"& quot; https: //oppia.github.io&quot;\"> </oppia-noninteractive-link> </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> اختبار الاستكشاف مع التفاعلات. <oppia-nonirtive-link النص مع القيمة = \"& quot؛ oppia & quot؛\" عنوان URL مع القيمة = \"& quot؛ https: //oppia.github.io&quot؛\"> </oppia-noninteractive-link> </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "Continuando em frente."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "استمرار فصاعدا."},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -364,10 +638,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsLessThan",
@@ -383,10 +657,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsGreaterThan",
@@ -402,10 +676,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "NumberInput",
@@ -415,13 +689,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {},
@@ -433,11 +707,66 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "feedback_2": {},
-            "feedback_3": {},
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
+            "feedback_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Não é bem. É realmente maior que isso. Tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ليس تماما. انها في الواقع أكبر من ذلك. حاول مرة أخرى. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_3": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Não exatamente. É menos do que isso. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ليس تماما. انها أقل من ذلك. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> O que é 11 vezes 11? </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هو 11 مرة 11؟ </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Alguma coisa deu errado. A resposta é 121 - tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> حدث خطأ ما. الجواب هو 121 - حاول مرة أخرى. </p>"},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -453,12 +782,12 @@
           "id": "RatioExpressionInput",
           "customization_args": {
             "numberOfTerms": {
-              "value": 0.0
+              "value": 0
             },
             "placeholder": {
               "value": {
-                "unicode_str": "Enter in format of x:y",
-                "content_id": "ca_placeholder_0"
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Enter in format of x:y"
               }
             }
           },
@@ -477,10 +806,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -496,10 +825,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEquivalent",
@@ -515,10 +844,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "RatioInput",
@@ -528,13 +857,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {},
@@ -546,11 +875,78 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "feedback_2": {},
-            "feedback_3": {},
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
+            "feedback_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_3": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Não, isso não parece correto </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> لا يبدو هذا غير صحيح </p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Dois números são respectivamente 20% e 50% mais que um terceiro número. A proporção dos dois números é: </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> رقمين على التوالي 20٪ و 50٪ أكثر من رقم ثالث. نسبة الأرقامين هي: </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Não é correto </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> غير صحيح </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_placeholder_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "Digite no formato de x: y"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "أدخل بتنسيق X: Y"},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -566,7 +962,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -580,7 +976,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "43df2897-0a03-4d1f-b892-9e1d251af5c9",
                   "normalizedStrSet": ["finnish"]
                 }
               }
@@ -593,10 +989,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Text",
@@ -606,13 +1002,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_1": {},
@@ -622,9 +1018,66 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Em que a linguagem significa \"aprender\"? </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> في أي لغة تعني Oppia \"التعلم\"؟ </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Não exatamente. Tente novamente (ou talvez use um mecanismo de pesquisa). </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ليس تماما. حاول مرة أخرى (أو ربما استخدم محرك بحث). </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_placeholder_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "Digite um idioma"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "أدخل لغة"},
+                "needs_update": false
+              }
+            },
+            "43df2897-0a03-4d1f-b892-9e1d251af5c9": {
+              "pt": {
+                "data_format": "set_of_normalized_string",
+                "translation": {"translations" : ["finlandesa"]},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "set_of_normalized_string",
+                "translation": {"translations" : ["الفنلندية"]},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -641,21 +1094,21 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p><strong>Green</strong></p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p><strong>Green</strong></p>"
               }, {
-                "html": "<p><strong>Red</strong></p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p><strong>Red</strong></p>"
               }, {
-                "html": "<p><strong>Blue</strong></p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p><strong>Blue</strong></p>"
               }]
             },
             "minAllowableSelectionCount": {
-              "value": 1.0
+              "value": 1
             },
             "maxAllowableSelectionCount": {
-              "value": 1.0
+              "value": 1
             }
           },
           "answer_groups": [{
@@ -673,10 +1126,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "ItemSelectionMinOne",
@@ -686,13 +1139,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_1": {},
@@ -702,9 +1155,78 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "feedback_1": {},
-            "content": {},
-            "default_outcome": {}
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Que cor o 'G' em 'RGB' corresponde a? </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هو اللون \"G\" في \"RGB\" تتوافق مع </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Não é bem. Tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ليس تماما. حاول مرة أخرى. </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> verde </strong> </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> أخضر </strong> </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> vermelho </strong> </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> أحمر </strong> </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> azul </strong> </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> <strong> الأزرق </strong> </p>"},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -724,17 +1246,17 @@
             },
             "choices": {
               "value": [{
-                "html": "<p>0.35</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>0.35</p>"
               }, {
-                "html": "<p>3/5</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>3/5</p>"
               }, {
-                "html": "<p>0.5</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>0.5</p>"
               }, {
-                "html": "<p>0.46</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>0.46</p>"
               }]
             }
           },
@@ -753,10 +1275,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasElementXAtPositionY",
@@ -773,10 +1295,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasElementXBeforeElementY",
@@ -793,10 +1315,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "DragDropNoGroup",
@@ -806,13 +1328,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {},
@@ -824,11 +1346,114 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "content": {},
-            "feedback_2": {},
-            "feedback_3": {},
-            "feedback_1": {},
-            "default_outcome": {}
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Classifique o seguinte em ordem decrescente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> فرز ما يلي في ترتيب تنازلي. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Parece que você fez a ordem crescente </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> يبدو أنك فعلت النظام الصعودي </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_3": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Isso não parece certo para mim </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> هذا لا يبدو صحيحا </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Isso é correto </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> هذا صحيح </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Não é bem. Tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ليس تماما. حاول مرة أخرى. </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0,35 </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.35 </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 3/5 </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 3/5 </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0,5 </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.5 </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_3": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0,46 </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.46 </p>"},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -848,17 +1473,17 @@
             },
             "choices": {
               "value": [{
-                "html": "<p>3/5</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>3/5</p>"
               }, {
-                "html": "<p>0.6</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>0.6</p>"
               }, {
-                "html": "<p>0.35</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>0.35</p>"
               }, {
-                "html": "<p>0.46</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>0.46</p>"
               }]
             }
           },
@@ -877,10 +1502,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasElementXAtPositionY",
@@ -897,10 +1522,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "DragDropGroup",
@@ -910,13 +1535,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {},
@@ -928,11 +1553,103 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "content": {},
-            "feedback_2": {},
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Classifique o seguinte em ordem decrescente, colocando itens iguais na mesma posição. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> فرز ما يلي في ترتيب تنازلي، وضع العناصر المتساوية في نفس الموضع. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Parece que você fez em ordem crescente </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> يبدو أنك فعلت ترتيبًا تصاعديًا </p>"},
+                "needs_update": false
+              }
+            },
             "feedback_3": {},
-            "feedback_1": {},
-            "default_outcome": {}
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Isso é correto </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> هذا صحيح </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Não exatamente. Tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ليس تماما. حاول مرة أخرى. </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 3/5 </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 3/5 </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0,6 </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.6 </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0,35 </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.35 </p>"},
+                "needs_update": false
+              }
+            },
+            "ca_choices_3": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0,46 </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 0.46 </p>"},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,
@@ -956,7 +1673,7 @@
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {}
@@ -964,7 +1681,18 @@
         },
         "written_translations": {
           "translations_mapping": {
-            "content": {}
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "Parabéns, você terminou!"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "تهانينا، لقد انتهيت!"},
+                "needs_update": false
+              }
+            }
           }
         },
         "solicit_answer_details": false,

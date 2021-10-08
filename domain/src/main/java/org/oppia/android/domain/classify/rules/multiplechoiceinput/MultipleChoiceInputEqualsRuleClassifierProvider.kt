@@ -1,6 +1,7 @@
 package org.oppia.android.domain.classify.rules.multiplechoiceinput
 
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -25,7 +26,9 @@ class MultipleChoiceInputEqualsRuleClassifierProvider @Inject constructor(
     )
   }
 
-  override fun matches(answer: Int, input: Int): Boolean {
-    return answer == input
-  }
+  override fun matches(
+    answer: Int,
+    input: Int,
+    writtenTranslationContext: WrittenTranslationContext
+  ): Boolean = answer == input
 }
