@@ -680,7 +680,7 @@ class StoryFragmentTest {
           position = 1,
           targetViewId = R.id.progress_image_view
         )
-      ).check(matches(withDrawable(R.drawable.circular_stroke_1dp_grey_32dp)))
+      ).check(matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp)))
     }
   }
 
