@@ -52,7 +52,7 @@
         android:layout_gravity="center_horizontal"
         android:importantForAccessibility="no"
         android:padding="8dp"
-        android:srcCompat="@drawable/ic_lessons_icon_24dp"
+        app:srcCompat="@drawable/ic_lessons_icon_24dp"
         android:visibility="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? View.GONE : View.VISIBLE}" />
     </FrameLayout>
 
@@ -105,7 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="center"
-            android:srcCompat="@drawable/ic_baseline_lock_24"
+            app:srcCompat="@drawable/ic_baseline_lock_24"
             android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
             app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
@@ -166,7 +166,7 @@
               android:layout_marginEnd="8dp"
               android:layout_marginBottom="4dp"
               android:contentDescription="@{@string/chapter_completed}"
-              android:srcCompat="@drawable/ic_check_24dp"
+              app:srcCompat="@drawable/ic_check_24dp"
               android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED ? View.VISIBLE : View.GONE}"
               app:layout_constraintBottom_toBottomOf="parent"
               app:layout_constraintEnd_toEndOf="parent"
