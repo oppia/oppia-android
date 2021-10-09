@@ -38,7 +38,7 @@
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="12dp"
       android:paddingTop="12dp"
-      android:src="@drawable/rounded_white_background_with_shadow"
+      app:srcCompat="@drawable/rounded_white_background_with_shadow"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
       app:layout_constraintEnd_toEndOf="@+id/profile_edit_image" />
 
