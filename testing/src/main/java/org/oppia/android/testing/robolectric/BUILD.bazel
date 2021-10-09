@@ -45,6 +45,7 @@ kt_android_library(
         "//utility/src/test/java/org/oppia/android/util/locale/testing:__pkg__",
     ],
     deps = [
+        "//third_party:androidx_core_core",
         "//third_party:org_robolectric_robolectric",
     ],
 )
