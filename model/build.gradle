@@ -3,7 +3,9 @@ apply plugin: 'com.google.protobuf'
 
 protobuf {
   protoc {
-    if (project.rootProject.hasProperty('protobuf_platform')) { // Only for M1 Mac.
+    // To build protoc in M1 mac. For Context, see:
+    // https://github.com/grpc/grpc-java/issues/7690.
+    if (project.rootProject.hasProperty('protobuf_platform')) {
       artifact = "com.google.protobuf:protoc:3.8.0:${project.rootProject.property("protobuf_platform")}"
     } else {
       artifact = "com.google.protobuf:protoc:3.8.0"
