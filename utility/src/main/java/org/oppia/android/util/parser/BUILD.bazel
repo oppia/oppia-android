@@ -1,0 +1,16 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "image_loader_and_block_picutre_drawable",
+    srcs = [
+        "image/ImageLoader.kt",
+        "svg/BlockPictureDrawable.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:glide_compiler",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_picture_drawable",
+    ],
+)
