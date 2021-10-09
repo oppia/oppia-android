@@ -15,6 +15,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+      android:id="@+id/profile_picture_activity_toolbar"
+      layout="@layout/toolbar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
       android:id="@+id/profile_picture_image_view"
       android:layout_width="0dp"
@@ -22,7 +29,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_toolbar"
       profile:src="@{viewModel.profileAvatar}"
       tools:src="@drawable/ic_default_avatar" />
   </androidx.constraintlayout.widget.ConstraintLayout>
