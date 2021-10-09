@@ -519,7 +519,7 @@
   <dimen name="ongoing_topic_list_fragment_padding_end">20dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_bottom">144dp</dimen>
 
-<!--  Topic Lessons Story Summary-->
+  <!-- Topic Lessons Story Summary -->
   <dimen name="topic_lessons_story_summary_card_view_layout_top">12dp</dimen>
   <dimen name="topic_lessons_story_summary_card_view_layout_bottom">12dp</dimen>
   <dimen name="topic_lessons_story_summary_card_view_layout_start">20dp</dimen>
