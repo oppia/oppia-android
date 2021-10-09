@@ -12,14 +12,14 @@ genrule(
     outs = ["ImageViewBindingAdaptersTest_updated.kt"],
     cmd = """
     cat $(SRCS) |
-    sed 's/import org.oppia.android.R/import org.oppia.android.app.test.R/g' |
-    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' > $(OUTS)
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' |
+    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding./g' > $(OUTS)
     """,
 )
 
 oppia_android_test(
     name = "ImageViewBindingAdaptersTest",
-    srcs = ["ImageViewBindingAdaptersTest.kt"],
+    srcs = ["ImageViewBindingAdaptersTest_updated.kt"],
     custom_package = "org.oppia.android.app.databinding",
     test_class = "org.oppia.android.app.databinding.ImageViewBindingAdaptersTest",
     test_manifest = "//app:test_manifest",
