@@ -21,6 +21,7 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@{viewModel.index == 0 ? @dimen/story_chapter_view_tablet_margin_top_first_item : @dimen/space_0dp}"
     android:orientation="horizontal">
 
     <FrameLayout
@@ -34,8 +35,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:visibility="@{viewModel.index == (viewModel.totalChapters - 1) ? View.INVISIBLE : View.VISIBLE}"
-        app:color="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? @color/grey : @color/colorPrimary}"
-        app:layoutMarginTop="@{viewModel.index != 1 ? @dimen/story_chapter_view_tablet_margin_top_first_item : @dimen/space_0dp}" />
+        app:color="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? @color/grey : @color/colorPrimary}" />
 
       <ImageView
         android:id="@+id/progress_image_view"
@@ -65,9 +65,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="28dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="32dp"
         android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
         android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
         app:cardCornerRadius="4dp"
