@@ -3,53 +3,91 @@ Macros & definitions corresponding to Oppia binary build flavors.
 """
 
 load("//:oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "VERSION_CODE")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
 
 # Defines the list of flavors available to build the Oppia app in. Note to developers: this list
 # should be ordered by the development pipeline (i.e. features go through dev first, then other
 # flavors as they mature).
 AVAILABLE_FLAVORS = [
     "dev",
+    "dev_kitkat",
     "alpha",
+    "alpha_kitkat",
+]
+
+# This file contains the list of classes that must be in the main dex list for the legacy multidex
+# build used on KitKat devices. Generally, this is the main application class is needed so that it
+# can load multidex support, plus any dependencies needed by that pipeline.
+_MAIN_DEX_LIST_TARGET_KITKAT = "//:config/kitkat_main_dex_class_list.txt"
+
+# keep sorted
+_PRODUCTION_PROGUARD_SPECS = [
+    "config/proguard/android-proguard-rules.pro",
+    "config/proguard/androidx-proguard-rules.pro",
+    "config/proguard/firebase-components-proguard-rules.pro",
+    "config/proguard/glide-proguard-rules.pro",
+    "config/proguard/google-play-services-proguard-rules.pro",
+    "config/proguard/guava-proguard-rules.pro",
+    "config/proguard/kotlin-proguard-rules.pro",
+    "config/proguard/kotlinpoet-javapoet-proguard-rules.pro",
+    "config/proguard/material-proguard-rules.pro",
+    "config/proguard/moshi-proguard-rules.pro",
+    "config/proguard/okhttp-proguard-rules.pro",
+    "config/proguard/oppia-prod-proguard-rules.pro",
+    "config/proguard/protobuf-proguard-rules.pro",
 ]
 
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
 _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 19,
+        "min_sdk_version": 21,
         "target_sdk_version": 29,
-        "multidex": "native",  # Legacy multidex not needed for dev builds.
+        "multidex": "native",
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
         "deps": [
             "//app",
         ],
+        "version_code": OPPIA_DEV_VERSION_CODE,
     },
-    "alpha": {
+    "dev_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 19,
         "target_sdk_version": 29,
-        "multidex": "legacy",
-        "proguard_specs": [
-            "config/proguard/android-proguard-rules.pro",
-            "config/proguard/androidx-proguard-rules.pro",
-            "config/proguard/firebase-components-proguard-rules.pro",
-            "config/proguard/glide-proguard-rules.pro",
-            "config/proguard/google-play-services-proguard-rules.pro",
-            "config/proguard/guava-proguard-rules.pro",
-            "config/proguard/kotlin-proguard-rules.pro",
-            "config/proguard/kotlinpoet-javapoet-proguard-rules.pro",
-            "config/proguard/material-proguard-rules.pro",
-            "config/proguard/moshi-proguard-rules.pro",
-            "config/proguard/okhttp-proguard-rules.pro",
-            "config/proguard/oppia-prod-proguard-rules.pro",
-            "config/proguard/protobuf-proguard-rules.pro",
+        "multidex": "manual_main_dex",
+        "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
+        "proguard_specs": [],  # Developer builds are not optimized.
+        "production_release": False,
+        "deps": [
+            "//app",
         ],
+        "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
+    },
+    "alpha": {
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 29,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app",
         ],
+        "version_code": OPPIA_ALPHA_VERSION_CODE,
+    },
+    "alpha_kitkat": {
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 19,
+        "target_sdk_version": 29,
+        "multidex": "manual_main_dex",
+        "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
+        "proguard_specs": [],  # TODO(#3886): Re-add Proguard support to alpha_kitkat.
+        "production_release": True,
+        "deps": [
+            "//app",
+        ],
+        "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
     },
 }
 
@@ -115,7 +153,43 @@ _transform_android_manifest = rule(
     implementation = _transform_android_manifest_impl,
 )
 
-def define_oppia_binary_flavor(flavor):
+def transform_android_manifest(
+        name,
+        input_file,
+        output_file,
+        build_flavor,
+        major_version,
+        minor_version,
+        version_code):
+    """
+    Generates a new transformation of the specified AndroidManifest.xml.
+
+    The transformed version of the manifest include an explicitly specified version code and
+    computed version name based on the specified major/minor version, flavor, and the most recent
+    develop branch hash.
+
+    Args:
+        name: str. The name of this transformation target.
+        input_file: target. The file target corresponding to the AndroidManifest.xml file to
+            transform.
+        output_file: str. The filename that should be generated as the transformed manifest.
+        build_flavor: str. The specific release flavor of this build of the app.
+        major_version: int. The major version of the app.
+        minor_version: int. The minor version of the app.
+        version_code: int. The version code of this flavor of the app.
+    """
+    _transform_android_manifest(
+        name = name,
+        input_file = input_file,
+        output_file = output_file,
+        git_meta_dir = "//:.git",
+        build_flavor = build_flavor,
+        major_version = major_version,
+        minor_version = minor_version,
+        version_code = version_code,
+    )
+
+def define_oppia_aab_binary_flavor(flavor):
     """
     Defines a new flavor of the Oppia Android app.
 
@@ -130,15 +204,14 @@ def define_oppia_binary_flavor(flavor):
         flavor: str. The name of the flavor of the app. Must correspond to an entry in
             AVAILABLE_FLAVORS.
     """
-    _transform_android_manifest(
+    transform_android_manifest(
         name = "oppia_%s_transformed_manifest" % flavor,
         input_file = _FLAVOR_METADATA[flavor]["manifest"],
         output_file = "AndroidManifest_transformed_%s.xml" % flavor,
-        git_meta_dir = "//:.git",
         build_flavor = flavor,
         major_version = MAJOR_VERSION,
         minor_version = MINOR_VERSION,
-        version_code = VERSION_CODE,
+        version_code = _FLAVOR_METADATA[flavor]["version_code"],
     )
     oppia_android_application(
         name = "oppia_%s" % flavor,
@@ -153,6 +226,7 @@ def define_oppia_binary_flavor(flavor):
             "targetSdkVersion": "%d" % _FLAVOR_METADATA[flavor]["target_sdk_version"],
         },
         multidex = _FLAVOR_METADATA[flavor]["multidex"],
+        main_dex_list = _FLAVOR_METADATA[flavor].get("main_dex_list"),
         proguard_generate_mapping = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
         proguard_specs = _FLAVOR_METADATA[flavor]["proguard_specs"],
         shrink_resources = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
