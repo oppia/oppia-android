@@ -12,8 +12,9 @@ genrule(
     outs = ["ImageViewBindingAdaptersTest_updated.kt"],
     cmd = """
     cat $(SRCS) |
-    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' |
-    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding./g' > $(OUTS)
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.test.R/g' |
+    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
+    sed 's/ImageViewBindingAdapters/ImageViewBindingAdapters_updated/g' > $(OUTS)
     """,
 )
 
