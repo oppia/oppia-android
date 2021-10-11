@@ -98,7 +98,13 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?.kt"
   prohibited_content_regex: "android.text.BidiFormatter"
-  failure_message: "Do not use Android's BidiFormatter directly. Instead, use the wrapper utility OppiaBidiFormatter so that tests can verify that formatting actually occurs on select strings."
+  failure_message: "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for KitKat compatibility."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "androidx.core.text.BidiFormatter"
+  failure_message: "Do not use AndroidX's BidiFormatter directly. Instead, use the wrapper utility OppiaBidiFormatter so that tests can verify that formatting actually occurs on select strings."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/robolectric/ShadowBidiFormatter.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/robolectric/ShadowBidiFormatterTest.kt"
@@ -180,6 +186,17 @@ file_content_checks {
   file_path_regex: ".+?AndroidManifest.xml"
   prohibited_content_regex: "android:configChanges"
   failure_message: "Never explicitly handle configuration changes. Instead, use saved instance states for retaining state across rotations. For other types of configuration changes, follow up with the developer mailing list with how to proceed if you think this is a legitimate case."
+}
+file_content_checks {
+  file_path_regex: ".+?.xml"
+  prohibited_content_regex: "(android:drawableStart)|(android:drawableEnd)|(android:drawableTop)|(android:drawableBottom)|(android:src)"
+  failure_message: "Drawable start/end/top/bottom & image source should use the compat versions, instead, e.g.: app:drawableStartCompat or app:srcCompat, to ensure that vector drawables can load properly in SDK <21 environments."
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "java.util.Optional"
+  failure_message: "Prefer using com.google.common.base.Optional (Guava's Optional) since desugaring has some incompatibilities between Bazel & KitKat builds."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
   file_path_regex: ".+?.kt"

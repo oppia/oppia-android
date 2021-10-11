@@ -28,7 +28,7 @@
       android:layout_height="wrap_content"
       android:button="@drawable/selector_checkbox"
       android:checked="@{isChapterChecked}"
-      android:drawableStart="@android:color/transparent"
+      app:drawableStartCompat="@android:color/transparent"
       android:drawablePadding="20dp"
       android:enabled="@{isChapterCheckboxEnabled}"
       android:fontFamily="sans-serif"
