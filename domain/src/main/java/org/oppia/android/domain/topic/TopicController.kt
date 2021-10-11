@@ -661,8 +661,8 @@ class TopicController @Inject constructor(
       chapterList.add(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
-          .setName(chapter.getString("title"))
-          .setSummary(chapter.getString("description"))
+          .setName(chapter.optString("title"))
+          .setSummary(chapter.optString("description"))
           .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
           .setChapterThumbnail(createChapterThumbnail(chapter))
           .build()
