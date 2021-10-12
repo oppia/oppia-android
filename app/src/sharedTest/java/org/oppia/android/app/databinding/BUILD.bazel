@@ -1,5 +1,5 @@
 """
-Tests for databinding.
+Tests for UI databinding utilities and adapters.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
