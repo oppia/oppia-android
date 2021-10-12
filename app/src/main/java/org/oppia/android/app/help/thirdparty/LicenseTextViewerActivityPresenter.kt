@@ -48,7 +48,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
 
     binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
       binding.licenseTextViewerActivityToolbarTitle.isSelected = true
-      if (isRtl) {
+      if (isRtlLayout(binding.licenseTextViewerActivityToolbarTitle)) {
         binding.licenseTextViewerActivityToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
       } else {
         binding.licenseTextViewerActivityToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
@@ -62,9 +62,9 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
         .add(R.id.license_text_viewer_fragment_placeholder, licenseTextViewerFragment).commitNow()
     }
   }
-
-  private val isRtl by lazy {
-    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  
+  private fun isRtlLayout(view: View): Boolean {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   private fun getLicenseTextViewerFragment(): LicenseTextViewerFragment? {
