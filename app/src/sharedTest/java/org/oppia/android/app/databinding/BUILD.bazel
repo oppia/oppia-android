@@ -26,7 +26,6 @@ oppia_android_test(
     test_manifest = "//app:test_manifest",
     deps = [
         ":dagger",
-        ":utility",
         "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
@@ -41,6 +40,7 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
