@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -61,7 +62,12 @@ class TopicFragmentPresenter @Inject constructor(
     }
 
     binding.topicToolbar.setOnClickListener {
-      binding.topicToolbarTitle.isSelected = true
+      binding.topicToolbar.isSelected = true
+      if (isRtl) {
+        binding.topicToolbar.textDirection = View.TEXT_DIRECTION_RTL
+      } else {
+        binding.topicToolbar.textDirection = View.TEXT_DIRECTION_LTR
+      }
     }
 
     val viewModel = getTopicViewModel()
@@ -71,6 +77,10 @@ class TopicFragmentPresenter @Inject constructor(
 
     setUpViewPager(viewPager, topicId, isConfigChanged)
     return binding.root
+  }
+
+  private val isRtl by lazy {
+    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   private fun setCurrentTab(tab: TopicTab) {

@@ -3,10 +3,12 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -94,6 +96,11 @@ class ExplorationActivityPresenter @Inject constructor(
 
     binding.explorationToolbarTitle.setOnClickListener {
       binding.explorationToolbarTitle.isSelected = true
+      if (isRtlLayout(binding.explorationToolbarTitle)) {
+        binding.explorationToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
+      } else {
+        binding.explorationToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
+      }
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
@@ -130,6 +137,10 @@ class ExplorationActivityPresenter @Inject constructor(
         TAG_EXPLORATION_MANAGER_FRAGMENT
       ).commitNow()
     }
+  }
+
+  private fun isRtlLayout(view: View): Boolean {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {

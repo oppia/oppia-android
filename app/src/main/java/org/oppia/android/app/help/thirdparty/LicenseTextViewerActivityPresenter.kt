@@ -1,6 +1,8 @@
 package org.oppia.android.app.help.thirdparty
 
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
@@ -46,6 +48,11 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
 
     binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
       binding.licenseTextViewerActivityToolbarTitle.isSelected = true
+      if (isRtl) {
+        binding.licenseTextViewerActivityToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
+      } else {
+        binding.licenseTextViewerActivityToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
+      }
     }
 
     if (getLicenseTextViewerFragment() == null) {
@@ -54,6 +61,10 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.license_text_viewer_fragment_placeholder, licenseTextViewerFragment).commitNow()
     }
+  }
+
+  private val isRtl by lazy {
+    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   private fun getLicenseTextViewerFragment(): LicenseTextViewerFragment? {

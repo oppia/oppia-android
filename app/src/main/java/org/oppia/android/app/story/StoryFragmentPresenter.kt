@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -87,6 +88,11 @@ class StoryFragmentPresenter @Inject constructor(
 
     binding.storyToolbarTitle.setOnClickListener {
       binding.storyToolbarTitle.isSelected = true
+      if (isRtl) {
+        binding.storyToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
+      } else {
+        binding.storyToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
+      }
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -104,6 +110,10 @@ class StoryFragmentPresenter @Inject constructor(
       it.viewModel = storyViewModel
     }
     return binding.root
+  }
+
+  private val isRtl by lazy {
+    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   fun handleSelectExploration(

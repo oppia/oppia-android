@@ -1,9 +1,11 @@
 package org.oppia.android.app.topic.revisioncard
 
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -57,8 +59,14 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as RevisionCardActivity).finish()
     }
+
     binding.revisionCardToolbarTitle.setOnClickListener {
       binding.revisionCardToolbarTitle.isSelected = true
+      if (isRtlLayout(binding.revisionCardToolbarTitle)) {
+        binding.revisionCardToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
+      } else {
+        binding.revisionCardToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
+      }
     }
     subscribeToSubtopicTitle()
 
@@ -68,6 +76,10 @@ class RevisionCardActivityPresenter @Inject constructor(
         RevisionCardFragment.newInstance(topicId, subtopicId, profileId)
       ).commitNow()
     }
+  }
+
+  private fun isRtlLayout(view: View): Boolean {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   /** Action for onOptionsItemSelected */
