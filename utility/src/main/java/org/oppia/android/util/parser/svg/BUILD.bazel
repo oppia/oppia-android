@@ -4,18 +4,6 @@ bazel build file for parser/svg
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
-#kt_android_library(
-#    name = "block_picture_drawable",
-#    srcs = [
-#        "BlockPictureDrawable.kt",
-#    ],
-#    visibility = ["//:oppia_api_visibility"],
-#    deps = [
-#        ":scalable_vector_graphic",
-#        ":svg_picture_drawable",
-#    ],
-#)
-
 kt_android_library(
     name = "block_svg_drawable_transcoder",
     srcs = [
