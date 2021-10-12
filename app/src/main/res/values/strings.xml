@@ -369,7 +369,7 @@
   <string name="reading_text_size_extra_large">Extra Large</string>
   <string name="slide_seekbar_to_control_text_size">Slide seekbar to control the text size.</string>
   <string name="profile">Profile</string>
-  <string name="profile_photo">Profile Photo</string>
+  <string name="profile_photo_activity_title">Profile Photo</string>
   <string name="story_count_text_view">2 Stories</string>
   <string name="topics_in_progress">Topics in Progress</string>
   <string name="topic_in_progress">Topic in Progress</string>

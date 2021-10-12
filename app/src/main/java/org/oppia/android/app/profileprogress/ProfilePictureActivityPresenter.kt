@@ -46,15 +46,15 @@ class ProfilePictureActivityPresenter @Inject constructor(
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     subscribeToProfileLiveData()
-    setUpNavigationDrawer()
+    setUpToolbar()
   }
 
-  private fun setUpNavigationDrawer() {
+  private fun setUpToolbar() {
     val toolbar = activity.findViewById<View>(
       R.id.profile_picture_activity_toolbar
     ) as Toolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar!!.setTitle(R.string.profile_photo)
+    activity.supportActionBar!!.setTitle(R.string.profile_photo_activity_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     toolbar.setNavigationOnClickListener {
