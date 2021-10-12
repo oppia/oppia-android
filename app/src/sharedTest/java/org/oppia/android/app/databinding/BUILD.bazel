@@ -14,7 +14,6 @@ genrule(
     cat $(SRCS) |
     sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
     sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
-    sed 's/import org.oppia.android.app.utility./import org.oppia.android.app.databinding.utility./g' |
     sed 's/import org.oppia.android.app.databinding.ImageViewBindingAdapters./import org.oppia.android.app.databinding.ImageViewBindingAdapters_updated./g' > $(OUTS)
     """,
 )
@@ -27,6 +26,7 @@ oppia_android_test(
     test_manifest = "//app:test_manifest",
     deps = [
         ":dagger",
+        ":utility",
         "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
