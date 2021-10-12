@@ -1,5 +1,5 @@
 """
-bazel file fofr image in parser
+General purpose utilities for image loading and processing
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")

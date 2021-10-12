@@ -1,5 +1,5 @@
 """
-Build bazel file for html directory
+General purpose utilities for html related targets
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
