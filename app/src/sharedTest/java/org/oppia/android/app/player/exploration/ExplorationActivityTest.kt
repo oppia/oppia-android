@@ -3,8 +3,11 @@ package org.oppia.android.app.player.exploration
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -288,6 +291,52 @@ class ExplorationActivityTest {
         .check(matches(withText("Prototype Exploration")))
     }
     explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+       val explorationToolbarTitle: TextView =
+        explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
+      ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.exploration_toolbar_title))
+        .perform(click())
+      assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+      assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+    }
+  }
+
+  @Test
+  fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+       val explorationToolbarTitle: TextView =
+        explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
+      ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.exploration_toolbar_title))
+        .perform(click())
+      assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+      assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+    }
   }
 
   @Test

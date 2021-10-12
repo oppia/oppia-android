@@ -209,26 +209,32 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
-      val storyToolbarTitle: TextView =
-        activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-      assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-      assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
-    }
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
+    testCoroutineDispatchers.runCurrent()
+
+    val storyToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
+    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    onView(withId(R.id.story_toolbar_title))
+      .perform(click())
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
 
   @Test
   fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
-      val storyToolbarTitle: TextView =
-        activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-      assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-      assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
-    }
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
+    testCoroutineDispatchers.runCurrent()
+
+    val storyToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
+    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+    onView(withId(R.id.story_toolbar_title))
+      .perform(click())
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
   @Test
