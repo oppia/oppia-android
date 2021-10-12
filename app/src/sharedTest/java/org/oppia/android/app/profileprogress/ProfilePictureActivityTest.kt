@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -12,7 +13,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -79,6 +79,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 
 /** Tests for [ProfilePictureActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -93,11 +95,6 @@ class ProfilePictureActivityTest {
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<ProfilePictureActivity> = ActivityTestRule(
-    ProfilePictureActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -132,13 +129,12 @@ class ProfilePictureActivityTest {
 
   @Test
   fun testProfilePictureActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createProfilePictureActivityIntent(
-        internalProfileId
-      )
+    val scenario: ActivityScenario<ProfilePictureActivity> = launch(
+      ProfilePictureActivity::class.java
     )
-    val title = activityTestRule.activity.title
-    assertThat(title).isEqualTo(context.getString(R.string.profile_picture_activity_title))
+    scenario.onActivity{ activity ->
+      assertThat(activity.title).isEqualTo(context.getString(R.string.profile_picture_activity_title))
+    }
   }
 
   @Test
