@@ -52,7 +52,7 @@
       android:id="@+id/previous_responses_header_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:drawableEnd="@{viewModel.isExpanded ? @drawable/ic_arrow_down_grey_24dp : @drawable/ic_arrow_right_grey_24dp}"
+      app:drawableEndCompat="@{viewModel.isExpanded ? @drawable/ic_arrow_down_grey_24dp : @drawable/ic_arrow_right_grey_24dp}"
       android:fontFamily="sans-serif-medium"
       android:gravity="center_vertical"
       android:paddingStart="8dp"

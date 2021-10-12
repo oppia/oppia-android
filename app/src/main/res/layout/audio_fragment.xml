@@ -35,7 +35,7 @@
       android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
       android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
       android:padding="12dp"
-      android:src="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_white_24dp : @drawable/ic_play_circle_filled_white_24dp}"
+      app:srcCompat="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_white_24dp : @drawable/ic_play_circle_filled_white_24dp}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -69,7 +69,7 @@
       android:gravity="center"
       android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
       android:padding="12dp"
-      android:src="@drawable/ic_audio_lang_24px"
+      app:srcCompat="@drawable/ic_audio_lang_24px"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

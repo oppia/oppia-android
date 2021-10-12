@@ -2,7 +2,8 @@ package org.oppia.android.testing.robolectric
 
 import android.app.Application
 import android.content.Context
-import android.text.BidiFormatter
+import android.os.Build
+import androidx.core.text.BidiFormatter
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -24,7 +25,9 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE, shadows = [ShadowBidiFormatter::class])
+@Config(
+  manifest = Config.NONE, sdk = [Build.VERSION_CODES.P], shadows = [ShadowBidiFormatter::class]
+)
 class ShadowBidiFormatterTest {
   @Before
   fun setUp() {
