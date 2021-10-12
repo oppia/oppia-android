@@ -157,17 +157,18 @@ class TopicFragmentTest {
 
   @Test
   fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+    initializeApplicationComponent()
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
         FRACTIONS_TOPIC_ID
       )
     )
+    testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-    testCoroutineDispatchers.runCurrent()
-
+    
     onView(withId(R.id.topic_toolbar_title))
       .perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -176,17 +177,17 @@ class TopicFragmentTest {
 
   @Test
   fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+    initializeApplicationComponent()
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
         FRACTIONS_TOPIC_ID
       )
     )
+    testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
-    testCoroutineDispatchers.runCurrent()
-
     onView(withId(R.id.topic_toolbar_title))
       .perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)

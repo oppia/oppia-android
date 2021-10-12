@@ -61,12 +61,12 @@ class TopicFragmentPresenter @Inject constructor(
       (activity as TopicActivity).finish()
     }
 
-    binding.topicToolbar.setOnClickListener {
-      binding.topicToolbar.isSelected = true
-      if (isRtlLayout(binding.topicToolbar)) {
-        binding.topicToolbar.textDirection = View.TEXT_DIRECTION_RTL
+    binding.topicToolbarTitle.setOnClickListener {
+      binding.topicToolbarTitle.isSelected = true
+      if (isRtlLayout(binding.topicToolbarTitle)) {
+        binding.topicToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
       } else {
-        binding.topicToolbar.textDirection = View.TEXT_DIRECTION_LTR
+        binding.topicToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
       }
     }
 

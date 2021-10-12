@@ -295,7 +295,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
-    launch<ExplorationActivity>(
+    explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
@@ -303,22 +303,20 @@ class ExplorationActivityTest {
         TEST_EXPLORATION_ID_2,
         shouldSavePartialProgress = false
       )
-    ).use {
-       val explorationToolbarTitle: TextView =
-        explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
-      ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
-      testCoroutineDispatchers.runCurrent()
+    )
+    val explorationToolbarTitle: TextView =
+      explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
+    ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-      onView(withId(R.id.exploration_toolbar_title))
-        .perform(click())
-      assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-      assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
-    }
+    onView(withId(R.id.exploration_toolbar_title))
+      .perform(click())
+    assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
 
   @Test
   fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
-    launch<ExplorationActivity>(
+    explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
@@ -326,17 +324,15 @@ class ExplorationActivityTest {
         TEST_EXPLORATION_ID_2,
         shouldSavePartialProgress = false
       )
-    ).use {
-       val explorationToolbarTitle: TextView =
-        explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
-      ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-      testCoroutineDispatchers.runCurrent()
+    )
+    val explorationToolbarTitle: TextView =
+      explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
+    ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-      onView(withId(R.id.exploration_toolbar_title))
-        .perform(click())
-      assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-      assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
-    }
+    onView(withId(R.id.exploration_toolbar_title))
+      .perform(click())
+    assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
   @Test
@@ -1943,12 +1939,12 @@ class ExplorationActivityTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
+// TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
+//  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
+//  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
+//  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
+//  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
+//  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.
