@@ -62,7 +62,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
         .add(R.id.license_text_viewer_fragment_placeholder, licenseTextViewerFragment).commitNow()
     }
   }
-  
+
   private fun isRtlLayout(view: View): Boolean {
     return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
