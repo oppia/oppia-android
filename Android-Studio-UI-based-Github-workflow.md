@@ -140,3 +140,38 @@ Now you will find the merged file changes locally in your Android Studio code.
 
 <img width="1676" alt="31" src="https://user-images.githubusercontent.com/54615666/72599257-55947a80-3937-11ea-9b27-ac0169d4f192.png">
 
+# Stacking Pull Requests 
+
+Stacked PRs, also know as dependent, incremental, or chained PRs, are pull requests that branch off from other pull requests. In `git` terms, they are feature branches that are checked out from other feature branches to build small and coherent units to represent changes.
+
+## When and why should you use stacked PRs?
+* To split large PRs
+* To share a piece of code between multiple feature branches
+* To make it easy for two people to work on the same feature 
+
+Stacked PRs are useful when wanting to split large pull requests. The other situation where stacked PRs really shine is when you want to use a particular change in two or more branches.
+
+## How to stack PRs? 
+* Check-out a new branch from `develop`. Let's call this `BranchA`. 
+* Check-out a new branch from `BranchA`. Let's call this `BranchB`. 
+
+Here, `BranchA` depends on `develop` but `BranchB` is stacked on top of `BranchA`. So whenever you create a pull request: 
+
+* for BranchA: `source branch = BranchA, base branch = develop`
+* for BranchB (if BranchA hasn't been merged into develop): `source branch = BranchB, base branch = BranchA `
+* for BranchB (if BranchA has been merged into develop): `source branch = BranchB, base branch = develop ` 
+
+## Steps to merge stacked PRs 
+- Merge `BranchA` PR into `develop`.
+- Locally, check out `develop`
+- Pull latest `develop` (should include your PR's changes)
+- Check out BranchA
+- Merge develop into BranchA
+- Check out BranchB
+- Merge BranchA into BranchB
+- Push BranchB. You're now based off of develop without conflicts.
+- Change BranchB PR to be based on develop on GitHub.
+
+This results in the history being replicated, but doesn't result in loss of commits. For what it's worth, GitHub also sometimes automatically will change the derive PR's base branch when the base branch PR gets merged.
+ 
+
