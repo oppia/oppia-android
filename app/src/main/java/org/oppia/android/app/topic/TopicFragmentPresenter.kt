@@ -63,7 +63,7 @@ class TopicFragmentPresenter @Inject constructor(
 
     binding.topicToolbar.setOnClickListener {
       binding.topicToolbar.isSelected = true
-      if (isRtl) {
+      if (isRtlLayout(binding.topicToolbar)) {
         binding.topicToolbar.textDirection = View.TEXT_DIRECTION_RTL
       } else {
         binding.topicToolbar.textDirection = View.TEXT_DIRECTION_LTR
@@ -79,8 +79,8 @@ class TopicFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private val isRtl by lazy {
-    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  private fun isRtlLayout(view: View): Boolean {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   private fun setCurrentTab(tab: TopicTab) {

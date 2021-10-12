@@ -88,7 +88,7 @@ class StoryFragmentPresenter @Inject constructor(
 
     binding.storyToolbarTitle.setOnClickListener {
       binding.storyToolbarTitle.isSelected = true
-      if (isRtl) {
+      if (isRtlLayout(binding.storyToolbarTitle)) {
         binding.storyToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
       } else {
         binding.storyToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
@@ -112,8 +112,8 @@ class StoryFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private val isRtl by lazy {
-    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  private fun isRtlLayout(view: View): Boolean {
+    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   fun handleSelectExploration(
