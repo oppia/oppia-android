@@ -135,7 +135,7 @@
               android:layout_height="wrap_content"
               android:layout_gravity="center_horizontal|bottom"
               android:contentDescription="@{isListExpanded ? @string/hide_chapter_list : @string/show_chapter_list}"
-              android:src="@drawable/ic_arrow_drop_down_black_24dp"
+              app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
               app:isRotationAnimationClockwise="@{isListExpanded}"
               app:rotationAnimationAngle="@{180f}" />
           </FrameLayout>

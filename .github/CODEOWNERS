@@ -96,6 +96,9 @@ NOTICE @BenHenning
 # Language configuration files.
 config/**/languages/*.textproto @BenHenning
 
+# Configuration for KitKat-specific curated builds.
+config/kitkat_main_dex_class_list.txt @BenHenning
+
 #####################################################################################
 #                                    app module                                     #
 #####################################################################################
