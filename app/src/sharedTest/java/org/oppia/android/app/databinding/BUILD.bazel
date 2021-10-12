@@ -14,6 +14,7 @@ genrule(
     cat $(SRCS) |
     sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
     sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
+    sed 's/import org.oppia.android.app.utility.EspressoTestsMatchers./import org.oppia.android.app.utility.EspressoTestsMatchers_updated./g' |
     sed 's/import org.oppia.android.app.databinding.ImageViewBindingAdapters./import org.oppia.android.app.databinding.ImageViewBindingAdapters_updated./g' > $(OUTS)
     """,
 )
@@ -40,7 +41,6 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
