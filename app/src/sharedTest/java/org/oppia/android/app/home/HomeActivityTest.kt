@@ -195,7 +195,6 @@ class HomeActivityTest {
   private val longNameInternalProfileId: Int = 3
   private lateinit var profileId: ProfileId
   private lateinit var profileId1: ProfileId
-  private val summaryValue = "Medium"
 
   @Before
   fun setUp() {
