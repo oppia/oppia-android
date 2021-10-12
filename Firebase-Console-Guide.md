@@ -11,6 +11,7 @@ This document is made as a guide for viewing and customising the Firebase projec
 * [Your own Firebase Project](#your-own-firebase-project) 
   * [Setting it up](#setting-it-up) 
   * [App registration](#app-registration)
+* [View events in the Android Studio debug log](#view-events-in-the-android-studio-debug-log)
 
 ## Viewing the Console 
 * Go to the [Firebase Console](https://console.firebase.google.com) -> Log in to your gmail account (if you haven't) -> Select Oppia Android Dev Project. 
@@ -100,3 +101,14 @@ This document is made as a guide for viewing and customising the Firebase projec
 * Then click next, add the said plugins (if not already added).
 * In the next step build & run the app so that the Firebase servers sync to it and click on Go to Console.
 * You can check the details of your project and the apps registered to it by clicking on the settings button (present on the top of the nav bar) and then selecting 'Project settings' from it. A new page will open up with all the necessary details. 
+
+## View events in the Android Studio debug log
+
+You can enable verbose logging to monitor logging of events by the SDK to help verify that events are being logged properly. This includes both automatically and manually logged events.
+
+You can enable verbose logging with a series of adb commands:
+* `adb shell setprop log.tag.FA VERBOSE`
+* `adb shell setprop log.tag.FA-SVC VERBOSE`
+* `adb logcat -v time -s FA FA-SVC`
+
+This command displays your events in the Android Studio logcat, helping you immediately verify that events are being sent.
