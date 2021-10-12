@@ -156,7 +156,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent()
     activityTestRule.launchActivity(
       createTopicActivityIntent(
@@ -176,7 +176,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+  fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent()
     activityTestRule.launchActivity(
       createTopicActivityIntent(

@@ -294,7 +294,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+  fun testExploration_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -315,7 +315,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+  fun testExploration_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
