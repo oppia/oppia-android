@@ -88,7 +88,8 @@ Refer [comment](https://github.com/oppia/oppia-android/pull/2101#issuecomment-75
 
 Once you push your new branch to "develop" you are ready to merge new changes from remote(upstream). Make sure the new branch's base branch is "develop" and the new branch is up-to-date with changes in "develop".
 
-<img width="1674" alt="17" src="https://user-images.githubusercontent.com/54615666/72599242-53322080-3937-11ea-93cb-c030747fc021.png">
+<img width="1674" alt="17a" src="https://user-images.githubusercontent.com/53938155/136962396-5735ec0b-1bc0-45f4-bcfe-2e02defabddf.png">
+<img width="1674" alt="17b" src="https://user-images.githubusercontent.com/54615666/72599242-53322080-3937-11ea-93cb-c030747fc021.png">
 
 If you are not getting the below options of selecting upstream.Please log in your GitHub account.
 
