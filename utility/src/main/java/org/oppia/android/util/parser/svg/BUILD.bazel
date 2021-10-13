@@ -16,17 +16,6 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "scalable_vector_graphic",
-    srcs = [
-        "ScalableVectorGraphic.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
-    ],
-)
-
-kt_android_library(
     name = "svg_blur_transformation",
     srcs = [
         "SvgBlurTransformation.kt",
@@ -45,18 +34,6 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:glide_compiler",
-    ],
-)
-
-kt_android_library(
-    name = "svg_picture_drawable",
-    srcs = [
-        "SvgPictureDrawable.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:bitmap_blurrer",
     ],
 )
 
