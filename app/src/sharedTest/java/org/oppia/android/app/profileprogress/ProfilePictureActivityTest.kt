@@ -4,14 +4,20 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -78,6 +84,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.markchapterscompleted.testing.MarkChaptersCompletedTestActivity
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 
 /** Tests for [ProfilePictureActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -99,6 +107,16 @@ class ProfilePictureActivityTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @get:Rule
+  val activityTestRule = ActivityTestRule(
+    ProfilePictureActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
   private val internalProfileId: Int = 1
 
   @Before
@@ -106,10 +124,12 @@ class ProfilePictureActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -126,9 +146,26 @@ class ProfilePictureActivityTest {
 
   @Test
   fun testProfilePictureActivity_userImageIsDisplayed() {
-    launch<ProfilePictureActivity>(createProfilePictureActivityIntent(internalProfileId)).use {
-      onView(withId(R.id.profile_picture_image_view)).check(matches(isDisplayed()))
-    }
+    activityTestRule.launchActivity(createProfilePictureActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.profile_picture_image_view)).check(matches(isDisplayed()))
+  }
+
+  @Test
+  fun testProfilePictureActivity_hasCorrectTitle() {
+    activityTestRule.launchActivity(createProfilePictureActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    val profilePictureActivityTitle = context.getString(R.string.profile_picture_activity_title)
+    onView(withId(R.id.profile_picture_activity_toolbar))
+      .check(matches(hasDescendant(withText(profilePictureActivityTitle))))
+  }
+
+  @Test
+  fun testProfilePictureActivity_closesOnPressingNavigateUpButton() {
+    activityTestRule.launchActivity(createProfilePictureActivityIntent(internalProfileId))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.profile_picture_activity_toolbar)).perform(click())
+    assertThat(activityTestRule.activity.isFinishing).isTrue()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
