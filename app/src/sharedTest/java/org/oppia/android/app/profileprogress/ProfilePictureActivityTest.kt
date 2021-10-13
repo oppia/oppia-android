@@ -127,15 +127,16 @@ class ProfilePictureActivityTest {
 
   @Test
   fun testProfilePictureActivity_hasCorrectActivityLabel() {
-    val scenario: ActivityScenario<ProfilePictureActivity> = launch(
+    launch(
       ProfilePictureActivity::class.java
-    )
-    scenario.onActivity { activity ->
-      assertThat(activity.title).isEqualTo(
-        context.getString(
-          R.string.profile_picture_activity_title
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(activity.title).isEqualTo(
+          context.getString(
+            R.string.profile_picture_activity_title
+          )
         )
-      )
+      }
     }
   }
 
