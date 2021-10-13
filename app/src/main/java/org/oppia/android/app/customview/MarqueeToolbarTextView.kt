@@ -12,9 +12,10 @@ class MarqueeToolbarTextView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.textViewStyle
-) : AppCompatTextView(context, attrs, defStyle), View.OnClickListener{
+) : AppCompatTextView(context, attrs, defStyle), View.OnClickListener {
 
   private var textView = this
+
   init {
     textView.setOnClickListener(this)
   }
