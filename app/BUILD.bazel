@@ -779,6 +779,7 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
     ],
+    visibility = ["//app:__subpackages__"],
     deps = [
         ":app",
         "//testing",
