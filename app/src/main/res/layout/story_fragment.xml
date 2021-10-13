@@ -34,7 +34,7 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
-        <TextView
+        <org.oppia.android.app.customview.MarqueeToolbarTextView
           android:id="@+id/story_toolbar_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

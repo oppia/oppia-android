@@ -38,7 +38,7 @@
           android:layout_height="wrap_content"
           android:orientation="horizontal">
 
-          <TextView
+          <org.oppia.android.app.customview.MarqueeToolbarTextView
             android:id="@+id/exploration_toolbar_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

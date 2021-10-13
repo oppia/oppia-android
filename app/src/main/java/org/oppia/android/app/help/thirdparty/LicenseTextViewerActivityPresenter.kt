@@ -46,25 +46,12 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       (activity as LicenseTextViewerActivity).finish()
     }
 
-    binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
-      binding.licenseTextViewerActivityToolbarTitle.isSelected = true
-      if (isRtlLayout(binding.licenseTextViewerActivityToolbarTitle)) {
-        binding.licenseTextViewerActivityToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
-      } else {
-        binding.licenseTextViewerActivityToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
-      }
-    }
-
     if (getLicenseTextViewerFragment() == null) {
       val licenseTextViewerFragment =
         LicenseTextViewerFragment.newInstance(dependencyIndex, licenseIndex)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.license_text_viewer_fragment_placeholder, licenseTextViewerFragment).commitNow()
     }
-  }
-
-  private fun isRtlLayout(view: View): Boolean {
-    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   private fun getLicenseTextViewerFragment(): LicenseTextViewerFragment? {

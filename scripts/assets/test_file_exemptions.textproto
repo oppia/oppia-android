@@ -390,6 +390,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ImageRegion
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/LessonThumbnailImageViewTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/LessonThumbnailImageViewTestFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/MarginBindingAdaptersTestActivity.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/MarqueeToolbarTextViewTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/NavigationDrawerTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ProfileChooserFragmentTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ProfileChooserFragmentTestActivityPresenter.kt"

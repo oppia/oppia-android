@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -86,15 +85,6 @@ class StoryFragmentPresenter @Inject constructor(
       (activity as StoryActivity).finish()
     }
 
-    binding.storyToolbarTitle.setOnClickListener {
-      binding.storyToolbarTitle.isSelected = true
-      if (isRtlLayout(binding.storyToolbarTitle)) {
-        binding.storyToolbarTitle.textDirection = View.TEXT_DIRECTION_RTL
-      } else {
-        binding.storyToolbarTitle.textDirection = View.TEXT_DIRECTION_LTR
-      }
-    }
-
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     linearSmoothScroller = createSmoothScroller()
 
@@ -110,10 +100,6 @@ class StoryFragmentPresenter @Inject constructor(
       it.viewModel = storyViewModel
     }
     return binding.root
-  }
-
-  private fun isRtlLayout(view: View): Boolean {
-    return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
   fun handleSelectExploration(
