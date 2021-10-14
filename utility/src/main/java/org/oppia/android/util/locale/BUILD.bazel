@@ -52,6 +52,7 @@ kt_android_library(
         ":dagger",
         ":oppia_bidi_formatter",
         ":oppia_locale",
+        "//third_party:androidx_core_core",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )

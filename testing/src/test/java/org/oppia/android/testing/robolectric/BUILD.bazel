@@ -14,6 +14,7 @@ oppia_android_test(
     deps = [
         ":dagger",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:shadow_bidi_formatter",
+        "//third_party:androidx_core_core",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",

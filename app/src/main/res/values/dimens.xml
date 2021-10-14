@@ -521,6 +521,13 @@
   <dimen name="story_header_view_layout_margin_start">32dp</dimen>
   <dimen name="story_header_view_layout_margin_end">32dp</dimen>
 
+  <!-- These values are getting used only in tablet mode and therefore mentioned as 0dp here -->
+  <!-- Profile Progress Header -->
+  <dimen name="profile_edit_image_layout_margin_start">0dp</dimen>
+  <dimen name="profile_name_text_view_layout_margin_end">0dp</dimen>
+  <dimen name="recently_played_stories_text_view_layout_margin_start">0dp</dimen>
+  <dimen name="view_all_text_view_margin_end">0dp</dimen>
+
   <!-- Ongoing Topic List Fragment -->
   <dimen name="ongoing_topic_list_fragment_padding_start">20dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_top">20dp</dimen>
