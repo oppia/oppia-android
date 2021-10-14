@@ -14,6 +14,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -60,7 +61,9 @@ import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -133,6 +136,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
+import org.oppia.android.testing.DisableAccessibilityChecks
+import org.oppia.android.testing.espresso.EditTextInputAction
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
@@ -159,6 +166,9 @@ class QuestionPlayerActivityTest {
     /* initialTouchMode= */ true,
     /* launchActivity= */ false
   )
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -421,6 +431,26 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  @Test
+  @DisableAccessibilityChecks // TODO(#3927): Feedback item should be min 48dp in height.
+  fun testQuestionPlayer_terminalState_recyclerViewItemCount_countIsTwo() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      selectMultipleChoiceOption(optionPosition = 2)
+      clickContinueNavigationButton()
+
+      typeTextInput("1/4")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      typeTextInput("3/4")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      onView(withId(R.id.question_recycler_view)).check(hasItemCount(count = 2))
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -436,6 +466,31 @@ class QuestionPlayerActivityTest {
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
     return scenario
+  }
+
+  private fun clickContinueNavigationButton() {
+    scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+    onView(withId(R.id.continue_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickSubmitAnswerButton() {
+    scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun typeTextInput(text: String) {
+    scrollToViewType(TEXT_INPUT_INTERACTION)
+    typeTextIntoInteraction(text, interactionViewId = R.id.text_input_interaction_view)
+  }
+
+  private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
+    onView(withId(interactionViewId)).perform(
+      editTextInputAction.appendText(text),
+      closeSoftKeyboard()
+    )
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun rotateToLandscape() {
