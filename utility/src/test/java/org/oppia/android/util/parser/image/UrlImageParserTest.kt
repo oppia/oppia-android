@@ -20,7 +20,9 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
 import org.robolectric.annotation.LooperMode
@@ -135,7 +137,8 @@ class UrlImageParserTest {
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, LoggerModule::class, TestImageLoaderModule::class,
-      CachingTestModule::class, ImageParsingModule::class
+      CachingTestModule::class, ImageParsingModule::class, AssetModule::class,
+      LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

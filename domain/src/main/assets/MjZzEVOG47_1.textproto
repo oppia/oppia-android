@@ -351,7 +351,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -786,7 +786,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -1294,7 +1294,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -1806,7 +1806,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -2304,7 +2304,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -3213,7 +3213,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -4179,7 +4179,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -4678,7 +4678,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -5442,7 +5442,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -6303,7 +6303,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -7157,7 +7157,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -7415,7 +7415,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -7623,7 +7623,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -7831,7 +7831,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }
@@ -8111,7 +8111,7 @@ states {
         key: "customPlaceholder"
         value {
           custom_schema_value {
-            subtitled_html {
+            subtitled_unicode {
               content_id: "ca_placeholder_0"
             }
           }

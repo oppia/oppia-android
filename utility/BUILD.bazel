@@ -31,7 +31,14 @@ android_library(
     custom_package = "org.oppia.android.util",
     manifest = "src/main/AndroidManifest.xml",
     resource_files = glob(["src/main/res/**/*.xml"]),
-    visibility = ["//visibility:public"],
+)
+
+# Visibility for migrated utility tests.
+package_group(
+    name = "utility_testing_visibility",
+    packages = [
+        "//utility/src/test/...",
+    ],
 )
 
 # Library for general-purpose utilities.
@@ -58,17 +65,16 @@ kt_android_library(
         "//third_party:com_google_guava_guava",
         "//third_party:glide_compiler",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
-        "//utility/src/main/java/org/oppia/android/util/caching:assets",
-        "//utility/src/main/java/org/oppia/android/util/datetime:date_time_util",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
         "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
-        "//utility/src/main/java/org/oppia/android/util/system:oppia_date_time_formatter",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/threading:concurrent_collections",
         "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
     ],
 )
@@ -92,13 +98,17 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",
     "//third_party:androidx_test_ext_junit",
+    "//third_party:androidx_test_ext_truth",
+    "//third_party:com_google_truth_extensions_truth-liteproto-extension",
     "//third_party:com_google_truth_truth",
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
+    "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
 ]
 

@@ -33,7 +33,7 @@
           android:paddingStart="4dp"
           android:paddingTop="20dp"
           android:paddingEnd="20dp"
-          android:src="@drawable/ic_language_icon_grey_24dp"
+          app:srcCompat="@drawable/ic_language_icon_grey_24dp"
           android:visibility="gone"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent"/>
@@ -53,7 +53,7 @@
           android:id="@+id/profile_select_text"
           style="@style/Heading1"
           android:layout_marginStart="36dp"
-          android:layout_marginTop="64dp"
+          android:layout_marginTop="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
           android:layout_marginEnd="36dp"
           android:text="@string/profile_chooser_select"
           android:textColor="@color/white"
@@ -65,7 +65,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_marginStart="32dp"
-          android:layout_marginTop="36dp"
+          android:layout_marginTop="@dimen/profile_chooser_fragment_profile_recycler_view_margin_top"
           android:layout_marginEnd="32dp"
           android:clipToPadding="false"
           android:fadingEdge="horizontal"
@@ -117,7 +117,7 @@
         android:paddingTop="12dp"
         android:paddingEnd="16dp"
         android:paddingBottom="12dp"
-        android:src="@drawable/ic_settings_grey_48dp" />
+        app:srcCompat="@drawable/ic_settings_grey_48dp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
@@ -60,7 +62,7 @@ class ResumeLessonFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(
@@ -73,15 +75,15 @@ class ResumeLessonFragment : InjectableFragment() {
         "Expected profile ID to be included in arguments for ResumeLessonFragment."
       }
     val topicId =
-      checkNotNull(arguments?.getString(RESUME_LESSON_FRAGMENT_TOPIC_ID_KEY)) {
+      checkNotNull(arguments?.getStringFromBundle(RESUME_LESSON_FRAGMENT_TOPIC_ID_KEY)) {
         "Expected topic ID to be included in arguments for ResumeLessonFragment."
       }
     val storyId =
-      checkNotNull(arguments?.getString(RESUME_LESSON_FRAGMENT_STORY_ID_KEY)) {
+      checkNotNull(arguments?.getStringFromBundle(RESUME_LESSON_FRAGMENT_STORY_ID_KEY)) {
         "Expected story ID to be included in arguments for ResumeLessonFragment."
       }
     val explorationId =
-      checkNotNull(arguments?.getString(RESUME_LESSON_FRAGMENT_EXPLORATION_ID_KEY)) {
+      checkNotNull(arguments?.getStringFromBundle(RESUME_LESSON_FRAGMENT_EXPLORATION_ID_KEY)) {
         "Expected exploration ID to be included in arguments for ResumeLessonFragment."
       }
     val backflowScreen = arguments?.getInt(RESUME_LESSON_FRAGMENT_BACKFLOW_SCREEN_KEY, -1)

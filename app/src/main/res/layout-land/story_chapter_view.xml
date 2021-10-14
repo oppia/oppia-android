@@ -32,7 +32,9 @@
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
       app:cardCornerRadius="4dp"
-      app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}">
+      app:cardElevation="@dimen/story_chapter_card_playable_state_elevation"
+      app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/colorPrimary : @color/chapterCardGreyBorder}"
+      app:strokeWidth="2dp">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -59,7 +61,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
-            android:text="@{String.format(@string/chapter_name, (viewModel.index + 1), viewModel.name)}"
+            android:text="@{viewModel.computeChapterTitleText()}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +95,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:contentDescription="@{@string/chapter_completed}"
-            android:src="@drawable/ic_check_24dp"
+            app:srcCompat="@drawable/ic_check_24dp"
             android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

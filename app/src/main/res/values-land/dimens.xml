@@ -260,6 +260,11 @@
   <dimen name="all_topics_text_margin_end">76dp</dimen>
   <dimen name="all_topics_text_margin_bottom">12dp</dimen>
 
+  <!-- Profile Chooser Fragment -->
+  <dimen name="profile_chooser_fragment_profile_select_text_margin_top">64dp</dimen>
+  <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">12dp</dimen>
+  <dimen name="profile_chooser_profile_view_view_margin_top">32dp</dimen>
+
   <!-- Coming Soon Topic List -->
   <dimen name="coming_soon_topic_list_constraint_layout_padding_start">72dp</dimen>
   <dimen name="coming_soon_topic_list_constraint_layout_padding_end">72dp</dimen>
@@ -270,10 +275,72 @@
   <dimen name="coming_soon_topic_promoted_list_view_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_Promoted_list_view_padding_end">0dp</dimen>
 
+  <!-- Completed Story Item -->
+  <dimen name="completed_story_item_topic_container_margin_start">16dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_end">16dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_top">12dp</dimen>
+  <dimen name="completed_story_item_topic_container_margin_bottom">12dp</dimen>
+
+  <!-- Completed Story list Fragment -->
+  <dimen name="completed_story_list_fragment_recyclerview_padding_start">56dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_top">28dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_end">56dp</dimen>
+  <dimen name="completed_story_list_fragment_recyclerview_padding_bottom">88dp</dimen>
+
   <!-- App Version -->
   <dimen name="app_version_text_view_padding_start">36dp</dimen>
   <dimen name="app_version_text_view_padding_end">36dp</dimen>
   <dimen name="app_version_image_view_margin_start">36dp</dimen>
   <dimen name="app_version_text_view_margin_end">36dp</dimen>
+
+  <!-- Pin Password -->
+  <dimen name="pin_password_text_input_layout_width">244dp</dimen>
+  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.5</item>
+  <dimen name="pin_password_margin_start">72dp</dimen>
+  <dimen name="pin_password_margin_end">72dp</dimen>
+  <dimen name="pin_password_padding_top">48dp</dimen>
+  <dimen name="pin_password_min_width">496dp</dimen>
+
+  <!-- Add Profile -->
+  <dimen name="add_profile_container_width">304dp</dimen>
+  <dimen name="add_profile_main_padding_top">52dp</dimen>
+  <dimen name="add_profile_main_padding_bottom">224dp</dimen>
+  <dimen name="add_profile_pin_checkbox_margin_top">36dp</dimen>
+  <dimen name="add_profile_confirm_pin_margin_top">8dp</dimen>
+
+  <dimen name="home_fragment_padding_top">40dp</dimen>
+  <dimen name="home_fragment_padding_bottom">96dp</dimen>
+
+  <!-- Recently Played -->
+  <dimen name="recently_played_fragment_padding_top">8dp</dimen>
+  <dimen name="recently_played_fragment_padding_bottom">108dp</dimen>
+
+  <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
+  <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="promoted_story_card_text_size">14sp</dimen>
+  <dimen name="promoted_story_card_margin_top">8dp</dimen>
+
+  <!-- Topic Practice -->
+  <dimen name="topic_practice_subtopic_layout_margin_start">104dp</dimen>
+  <dimen name="topic_practice_subtopic_layout_margin_end">96dp</dimen>
+
+  <!-- Topic Lessons Fragment -->
+  <dimen name="topic_lessons_fragment_layout_padding_bottom">80dp</dimen>
+
+  <!-- Story Header View -->
+  <dimen name="story_header_view_layout_margin_start">76dp</dimen>
+  <dimen name="story_header_view_layout_margin_end">72dp</dimen>
+
+  <!-- Ongoing Topic List Fragment -->
+  <dimen name="ongoing_topic_list_fragment_padding_start">56dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_top">28dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_end">56dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_bottom">88dp</dimen>
+
+  <!-- TopicRevisionFragment -->
+  <dimen name="topic_revision_fragment_padding_start">56dp</dimen>
+  <dimen name="topic_revision_fragment_padding_top">20dp</dimen>
+  <dimen name="topic_revision_fragment_padding_end">56dp</dimen>
+  <dimen name="topic_revision_fragment_padding_bottom">104dp</dimen>
 
 </resources>

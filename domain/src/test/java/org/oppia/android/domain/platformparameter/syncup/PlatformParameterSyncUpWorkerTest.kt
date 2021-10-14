@@ -15,6 +15,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
+import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -58,6 +59,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -399,17 +401,19 @@ class PlatformParameterSyncUpWorkerTest {
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
       remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
       @BaseUrl baseUrl: String
-    ): Retrofit {
+    ): Optional<Retrofit> {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
         .addInterceptor(remoteAuthNetworkInterceptor)
         .build()
 
-      return Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build()
+      return Optional.of(
+        Retrofit.Builder()
+          .baseUrl(baseUrl)
+          .addConverterFactory(MoshiConverterFactory.create())
+          .client(client)
+          .build()
+      )
     }
 
     @Provides
@@ -417,9 +421,11 @@ class PlatformParameterSyncUpWorkerTest {
     fun provideNetworkApiKey(): String = ""
 
     @Provides
-    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
+    fun provideMockPlatformParameterService(
+      mockRetrofit: MockRetrofit
+    ): Optional<PlatformParameterService> {
       val delegate = mockRetrofit.create(PlatformParameterService::class.java)
-      return MockPlatformParameterService(delegate)
+      return Optional.of(MockPlatformParameterService(delegate))
     }
   }
 
@@ -430,7 +436,8 @@ class PlatformParameterSyncUpWorkerTest {
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
       RetrofitTestModule::class, FakeOppiaClockModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
