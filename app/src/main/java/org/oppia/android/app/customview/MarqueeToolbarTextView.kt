@@ -34,6 +34,13 @@ class MarqueeToolbarTextView : AppCompatTextView, View.OnClickListener {
   init {
     setOnClickListener(this)
     ellipsize = TextUtils.TruncateAt.MARQUEE
+    marqueeRepeatLimit = 1
+    isHorizontalFadingEdgeEnabled = true
+    isHorizontalScrollBarEnabled = true
+    isFocusable = false
+    isFocusableInTouchMode = true
+    setFadingEdgeLength(20)
+    isSingleLine = true
   }
 
   override fun onClick(v: View?) {

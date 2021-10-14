@@ -181,8 +181,10 @@ class TopicFragmentTest {
     testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
+
     val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     val layoutDirection = displayLocale.getLayoutDirection()
+
     assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
     onView(withId(R.id.topic_toolbar_title))
       .perform(click())

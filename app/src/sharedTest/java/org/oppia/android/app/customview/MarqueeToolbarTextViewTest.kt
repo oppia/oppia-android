@@ -13,6 +13,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -142,7 +143,7 @@ class MarqueeToolbarTextViewTest {
     val layoutDirection = displayLocale.getLayoutDirection()
     assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
     onView(ViewMatchers.withId(R.id.marquee_toolbar_title))
-      .perform(ViewActions.click())
+      .perform(click())
     assertThat(marqueeToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(marqueeToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
