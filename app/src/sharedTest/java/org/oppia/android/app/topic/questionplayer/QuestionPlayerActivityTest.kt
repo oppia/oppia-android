@@ -60,11 +60,13 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -108,10 +110,12 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -136,10 +140,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
-import org.oppia.android.testing.DisableAccessibilityChecks
-import org.oppia.android.testing.espresso.EditTextInputAction
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 

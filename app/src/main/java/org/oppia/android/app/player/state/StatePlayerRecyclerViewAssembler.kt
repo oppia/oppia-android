@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -204,7 +203,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val extraInteractionPendingItemList = mutableListOf<StateItemViewModel>()
     if (playerFeatureSet.contentSupport) {
       addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
-      Log.d("TAG", "addContentItem: " + conversationPendingItemList.size)
     }
     val interaction = ephemeralState.state.interaction
 
