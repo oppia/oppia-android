@@ -350,9 +350,9 @@
 
   <!-- Profile Progress Header -->
   <dimen name="profile_edit_image_layout_margin_start">202dp</dimen>
-  <dimen name="profile_name_textview_layout_margin_end">202dp</dimen>
-  <dimen name="recently_played_stories_textView_layout_margin_start">32dp</dimen>
-  <dimen name="view_all_textview_margin_end">32dp</dimen>
+  <dimen name="profile_name_text_view_layout_margin_end">202dp</dimen>
+  <dimen name="recently_played_stories_text_view_layout_margin_start">32dp</dimen>
+  <dimen name="view_all_text_view_margin_end">32dp</dimen>
 
   <!-- Ongoing Topic List Fragment -->
   <dimen name="ongoing_topic_list_fragment_padding_start">64dp</dimen>

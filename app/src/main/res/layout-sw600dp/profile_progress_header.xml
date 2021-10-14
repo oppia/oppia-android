@@ -48,7 +48,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="44dp"
       android:layout_marginTop="12dp"
-      android:layout_marginEnd="@dimen/profile_name_textview_layout_margin_end"
+      android:layout_marginEnd="@dimen/profile_name_text_view_layout_margin_end"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
       android:textAlignment="viewStart"
