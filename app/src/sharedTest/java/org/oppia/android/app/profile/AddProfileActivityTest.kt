@@ -17,6 +17,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -989,6 +990,35 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(matches(hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputCorrectPinAndConfirmPin_actionDone_buttonIsVisible() {
+    launch(AddProfileActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_pin))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("123"),
+        pressImeActionButton()
+      )
+      onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_create_button)).check(matches(isDisplayed()))
     }
   }
 
