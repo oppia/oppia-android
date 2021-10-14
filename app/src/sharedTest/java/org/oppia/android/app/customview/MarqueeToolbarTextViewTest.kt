@@ -37,9 +37,11 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.MarqueeToolbarTextViewTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -65,8 +67,11 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -98,6 +103,9 @@ class MarqueeToolbarTextViewTest {
   @Inject
   lateinit var context: Context
 
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @get:Rule
   var activityRule: ActivityScenarioRule<MarqueeToolbarTextViewTestActivity> =
     ActivityScenarioRule(
@@ -119,12 +127,20 @@ class MarqueeToolbarTextViewTest {
   }
 
   @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric
   fun testMarqueeToolbarTitle_rtlIsEnabled_textDirectionForRtlIsCorrect() {
     val marqueeToolbarTitle = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.marquee_toolbar_title)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       return@runWithActivity textView
     }
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val layoutDirection = displayLocale.getLayoutDirection()
+    assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
     onView(ViewMatchers.withId(R.id.marquee_toolbar_title))
       .perform(ViewActions.click())
     assertThat(marqueeToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
