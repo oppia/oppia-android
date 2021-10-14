@@ -16,5 +16,4 @@ class MarqueeToolbarTextViewTestActivity : InjectableAppCompatActivity() {
       MarqueeToolbarTextViewTestFragment()
     ).commitNow()
   }
-
 }
