@@ -12,6 +12,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -122,6 +123,21 @@ class ProfilePictureActivityTest {
       ApplicationProvider.getApplicationContext(),
       profileId
     )
+  }
+
+  @Test
+  fun testProfilePictureActivity_hasCorrectActivityLabel() {
+    launch(
+      ProfilePictureActivity::class.java
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(activity.title).isEqualTo(
+          context.getString(
+            R.string.profile_picture_activity_title
+          )
+        )
+      }
+    }
   }
 
   @Test
