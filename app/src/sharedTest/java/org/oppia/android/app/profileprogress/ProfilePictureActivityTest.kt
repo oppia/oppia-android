@@ -3,8 +3,10 @@ package org.oppia.android.app.profileprogress
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -15,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
@@ -84,7 +87,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.devoptions.markchapterscompleted.testing.MarkChaptersCompletedTestActivity
+import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 
 /** Tests for [ProfilePictureActivity]. */
@@ -109,13 +112,6 @@ class ProfilePictureActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    ProfilePictureActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
 
   private val internalProfileId: Int = 1
 
@@ -146,14 +142,10 @@ class ProfilePictureActivityTest {
 
   @Test
   fun testProfilePictureActivity_hasCorrectActivityLabel() {
-    launch(
-      ProfilePictureActivity::class.java
-    ).use { scenario ->
+    launch(ProfilePictureActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(activity.title).isEqualTo(
-          context.getString(
-            R.string.profile_picture_activity_title
-          )
+          context.getString(R.string.profile_picture_activity_title)
         )
       }
     }
@@ -161,26 +153,35 @@ class ProfilePictureActivityTest {
 
   @Test
   fun testProfilePictureActivity_userImageIsDisplayed() {
-    activityTestRule.launchActivity(createProfilePictureActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.profile_picture_image_view)).check(matches(isDisplayed()))
+    launch(ProfilePictureActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val imageView = activity.findViewById<ImageView>(R.id.profile_picture_image_view)
+        assertThat(imageView.isVisible).isTrue()
+      }
+    }
   }
 
   @Test
-  fun testProfilePictureActivity_hasCorrectTitle() {
-    activityTestRule.launchActivity(createProfilePictureActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    val profilePictureActivityTitle = context.getString(R.string.profile_picture_activity_title)
-    onView(withId(R.id.profile_picture_activity_toolbar))
-      .check(matches(hasDescendant(withText(profilePictureActivityTitle))))
+  fun testProfilePictureActivity_toolbarHasCorrectTitle() {
+    launch(ProfilePictureActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val toolbar = activity.findViewById<Toolbar>(R.id.profile_picture_activity_toolbar)
+        assertThat(toolbar.title).isEqualTo(
+          context.getString(R.string.profile_picture_activity_title)
+        )
+      }
+    }
   }
 
   @Test
-  fun testProfilePictureActivity_closesOnPressingNavigateUpButton() {
-    activityTestRule.launchActivity(createProfilePictureActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.profile_picture_activity_toolbar)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
+  fun testProfilePictureActivity_pressNavigateUp_finishesActivity() {
+    launch(ProfilePictureActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val toolbar = activity.findViewById<Toolbar>(R.id.profile_picture_activity_toolbar)
+        toolbar.performClick()
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
