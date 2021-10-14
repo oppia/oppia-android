@@ -33,12 +33,11 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
-        <TextView
+        <org.oppia.android.app.customview.MarqueeToolbarTextView
           android:id="@+id/topic_toolbar_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp"
-          android:ellipsize="marquee"
           android:fadingEdge="horizontal"
           android:fadingEdgeLength="20dp"
           android:focusable="false"

@@ -1,46 +1,54 @@
 package org.oppia.android.app.customview
 
 import android.content.Context
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
+import javax.inject.Inject
 
 /** The custom Textview class for toolbar with Marquee effect. */
-class MarqueeToolbarTextView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyle: Int = android.R.attr.textViewStyle
-) : AppCompatTextView(context, attrs, defStyle), View.OnClickListener {
+class MarqueeToolbarTextView : AppCompatTextView, View.OnClickListener {
 
-  private var textView = this
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
+  constructor(context: Context) : super(context)
+  constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+  constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+    context,
+    attrs,
+    defStyleAttr
+  )
+
+  private val isRtl by lazy {
+    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  }
 
   init {
-    textView.setOnClickListener(this)
+    setOnClickListener(this)
+    ellipsize = TextUtils.TruncateAt.MARQUEE
   }
 
   override fun onClick(v: View?) {
-    textView.isSelected = true
-    setTextDirection(textView)
+    isSelected = true
   }
 
-  private fun setTextDirection(view: TextView) {
-    if (ViewCompat.isLayoutDirectionResolved(view)) {
-      when (getLayoutDirection(textView)) {
-        ViewCompat.LAYOUT_DIRECTION_RTL -> {
-          textView.textDirection = View.TEXT_DIRECTION_RTL
-        }
-        ViewCompat.LAYOUT_DIRECTION_LTR -> {
-          textView.textDirection = View.TEXT_DIRECTION_LTR
-        }
-      }
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    viewComponent.inject(this)
+    if (isRtl) {
+      textDirection = View.TEXT_DIRECTION_RTL
     } else {
-      textView.textDirection = View.TEXT_DIRECTION_LOCALE
+      textDirection = View.TEXT_DIRECTION_LTR
     }
-  }
-
-  private fun getLayoutDirection(view: View): Int {
-    return ViewCompat.getLayoutDirection(view)
   }
 }

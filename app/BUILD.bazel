@@ -367,7 +367,6 @@ VIEW_MODELS = [
 # keep sorted
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
-    "src/main/java/org/oppia/android/app/customview/MarqueeToolbarTextView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
@@ -380,6 +379,7 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 
 # keep sorted
 VIEWS = [
+    "src/main/java/org/oppia/android/app/customview/MarqueeToolbarTextView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
