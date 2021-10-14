@@ -149,8 +149,7 @@ class RevisionCardActivityTest {
           activity.findViewById(R.id.revision_card_toolbar_title)
         activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
 
-        onView(withId(R.id.revision_card_toolbar_title))
-          .perform(ViewActions.click())
+        onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
       }
@@ -171,8 +170,7 @@ class RevisionCardActivityTest {
         activity.window.decorView.layoutDirection =
           ViewCompat.LAYOUT_DIRECTION_LTR
 
-        onView(withId(R.id.revision_card_toolbar_title))
-          .perform(ViewActions.click())
+        onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
       }

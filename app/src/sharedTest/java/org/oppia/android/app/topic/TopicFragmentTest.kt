@@ -169,8 +169,7 @@ class TopicFragmentTest {
 
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
 
-    onView(withId(R.id.topic_toolbar_title))
-      .perform(click())
+    onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
@@ -189,8 +188,7 @@ class TopicFragmentTest {
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     activityTestRule.activity.window.decorView.layoutDirection =
       ViewCompat.LAYOUT_DIRECTION_LTR
-    onView(withId(R.id.topic_toolbar_title))
-      .perform(click())
+    onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }

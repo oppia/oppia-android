@@ -216,8 +216,7 @@ class StoryFragmentTest {
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
 
-    onView(withId(R.id.story_toolbar_title))
-      .perform(click())
+    onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
@@ -232,8 +231,7 @@ class StoryFragmentTest {
     activityTestRule.activity.window.decorView.layoutDirection =
       ViewCompat.LAYOUT_DIRECTION_LTR
 
-    onView(withId(R.id.story_toolbar_title))
-      .perform(click())
+    onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }

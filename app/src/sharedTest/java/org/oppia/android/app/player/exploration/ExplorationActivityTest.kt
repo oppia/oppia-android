@@ -309,8 +309,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.activity.window.decorView.layoutDirection =
       ViewCompat.LAYOUT_DIRECTION_RTL
 
-    onView(withId(R.id.exploration_toolbar_title))
-      .perform(click())
+    onView(withId(R.id.exploration_toolbar_title)).perform(click())
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
@@ -331,8 +330,7 @@ class ExplorationActivityTest {
     explorationActivityTestRule.activity.window.decorView.layoutDirection =
       ViewCompat.LAYOUT_DIRECTION_LTR
 
-    onView(withId(R.id.exploration_toolbar_title))
-      .perform(click())
+    onView(withId(R.id.exploration_toolbar_title)).perform(click())
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
