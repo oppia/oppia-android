@@ -97,7 +97,7 @@
     <activity
       android:name=".app.profile.AddProfileActivity"
       android:label="@string/add_profile_activity_label"
-      android:theme="@style/OppiaThemeNoActionBarColorAccentColorPrimary" />
+      android:theme="@style/OppiaThemeWithoutActionBarColorAccentColorPrimary" />
     <activity
       android:name=".app.profile.AdminAuthActivity"
       android:label="@string/admin_auth_activity_access_controls_title"

@@ -145,6 +145,21 @@ class ProfilePictureActivityTest {
   }
 
   @Test
+  fun testProfilePictureActivity_hasCorrectActivityLabel() {
+    launch(
+      ProfilePictureActivity::class.java
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(activity.title).isEqualTo(
+          context.getString(
+            R.string.profile_picture_activity_title
+          )
+        )
+      }
+    }
+  }
+
+  @Test
   fun testProfilePictureActivity_userImageIsDisplayed() {
     activityTestRule.launchActivity(createProfilePictureActivityIntent(internalProfileId))
     testCoroutineDispatchers.runCurrent()
