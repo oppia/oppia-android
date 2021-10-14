@@ -37,8 +37,6 @@ class MarqueeToolbarTextView : AppCompatTextView, View.OnClickListener {
     marqueeRepeatLimit = 1
     isHorizontalFadingEdgeEnabled = true
     isHorizontalScrollBarEnabled = true
-    isFocusable = false
-    isFocusableInTouchMode = true
     setFadingEdgeLength(20)
     isSingleLine = true
   }
