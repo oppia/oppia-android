@@ -38,7 +38,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -73,7 +72,6 @@ import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -110,9 +108,6 @@ class RevisionCardActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
@@ -142,12 +137,6 @@ class RevisionCardActivityTest {
   }
 
   @Test
-  @DefineAppLanguageLocaleContext(
-    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
-    appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
-  )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric
   fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     launchRevisionCardActivity(
       profileId = profileId,
@@ -158,7 +147,7 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
-        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
 
         onView(withId(R.id.revision_card_toolbar_title))
           .perform(ViewActions.click())
@@ -179,7 +168,8 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
-        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        activity.window.decorView.layoutDirection =
+          ViewCompat.LAYOUT_DIRECTION_LTR
 
         onView(withId(R.id.revision_card_toolbar_title))
           .perform(ViewActions.click())

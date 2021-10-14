@@ -45,10 +45,8 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -79,10 +77,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
-import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -120,9 +115,6 @@ private const val REVISION_TAB_POSITION = 3
 class TopicFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
@@ -163,14 +155,7 @@ class TopicFragmentTest {
     }
   }
 
-  @Test
-  @DefineAppLanguageLocaleContext(
-    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
-    appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
-  )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric
-  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+ fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent()
     activityTestRule.launchActivity(
       createTopicActivityIntent(
@@ -182,10 +167,8 @@ class TopicFragmentTest {
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
 
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val layoutDirection = displayLocale.getLayoutDirection()
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
 
-    assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
     onView(withId(R.id.topic_toolbar_title))
       .perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -204,7 +187,8 @@ class TopicFragmentTest {
     testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
-    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+    activityTestRule.activity.window.decorView.layoutDirection =
+      ViewCompat.LAYOUT_DIRECTION_LTR
     onView(withId(R.id.topic_toolbar_title))
       .perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)

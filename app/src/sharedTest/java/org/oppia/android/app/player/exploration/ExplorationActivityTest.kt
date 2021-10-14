@@ -78,7 +78,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -126,7 +125,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
@@ -168,9 +166,6 @@ import javax.inject.Singleton
 class ExplorationActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
@@ -299,12 +294,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  @DefineAppLanguageLocaleContext(
-    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
-    appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
-  )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric
   fun testExploration_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -317,9 +306,9 @@ class ExplorationActivityTest {
     )
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val layoutDirection = displayLocale.getLayoutDirection()
-    assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
+    explorationActivityTestRule.activity.window.decorView.layoutDirection =
+      ViewCompat.LAYOUT_DIRECTION_RTL
+
     onView(withId(R.id.exploration_toolbar_title))
       .perform(click())
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -339,7 +328,8 @@ class ExplorationActivityTest {
     )
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
-    ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+    explorationActivityTestRule.activity.window.decorView.layoutDirection =
+      ViewCompat.LAYOUT_DIRECTION_LTR
 
     onView(withId(R.id.exploration_toolbar_title))
       .perform(click())

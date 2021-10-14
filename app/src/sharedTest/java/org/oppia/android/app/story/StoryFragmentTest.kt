@@ -63,7 +63,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -71,7 +70,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -104,10 +102,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.DisableAccessibilityChecks
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TestPlatform
-import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.mockito.capture
@@ -150,9 +145,6 @@ class StoryFragmentTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -216,21 +208,14 @@ class StoryFragmentTest {
   }
 
   @Test
-  @DefineAppLanguageLocaleContext(
-    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
-    appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
-  )
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric
   fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val layoutDirection = displayLocale.getLayoutDirection()
-    assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+
     onView(withId(R.id.story_toolbar_title))
       .perform(click())
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
@@ -244,7 +229,8 @@ class StoryFragmentTest {
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+    activityTestRule.activity.window.decorView.layoutDirection =
+      ViewCompat.LAYOUT_DIRECTION_LTR
 
     onView(withId(R.id.story_toolbar_title))
       .perform(click())
