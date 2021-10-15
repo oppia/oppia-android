@@ -37,6 +37,7 @@
           android:fontFamily="sans-serif"
           android:gravity="center_vertical"
           android:minHeight="48dp"
+          android:singleLine="true"
           android:textColor="@color/white"
           android:textSize="20sp" />
       </androidx.appcompat.widget.Toolbar>

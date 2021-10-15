@@ -43,6 +43,7 @@
           android:fontFamily="sans-serif"
           android:gravity="center_vertical"
           android:minHeight="48dp"
+          android:singleLine="true"
           android:text="@{viewModel.storyNameLiveData}"
           android:textColor="@color/white"
           android:textSize="20sp" />

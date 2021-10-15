@@ -38,7 +38,6 @@ class MarqueeToolbarTextView : AppCompatTextView, View.OnClickListener {
     isHorizontalFadingEdgeEnabled = true
     isHorizontalScrollBarEnabled = true
     setFadingEdgeLength(20)
-    isSingleLine = true
   }
 
   override fun onClick(v: View?) {
