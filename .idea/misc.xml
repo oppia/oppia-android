@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout-land/hints_and_solution_fragment.xml" value="0.1" />
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout-land/hints_summary.xml" value="0.33" />
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout-land/solution_summary.xml" value="0.18" />
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout-sw600dp-land/hints_and_solution_fragment.xml" value="0.25" />
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout-sw600dp-land/solution_summary.xml" value="0.25" />
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout-sw600dp-port/hints_and_solution_fragment.xml" value="0.15135135135135136" />
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout-sw600dp-port/solution_summary.xml" value="0.33" />
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout/reveal_solution_dialog.xml" value="0.20416666666666666" />
-        <entry key="..\:/Open Source/oppia-android/app/src/main/res/layout/solution_summary.xml" value="0.22" />
-      </map>
-    </option>
-  </component>
-  <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
