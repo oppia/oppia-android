@@ -1,6 +1,6 @@
 {
   "story_nodes": [{
-    "description": "<unknown>",
+    "description": "Matthew learns about fractions.",
     "exploration_id": "umPkwp0L1M0-",
     "destination_node_ids": [],
     "thumbnail_filename": "",
@@ -12,7 +12,7 @@
     "title": "What is a Fraction?",
     "acquired_skill_ids": []
   }, {
-    "description": "<unknown>",
+    "description": "Matthew learns about equal parts in fractions.",
     "exploration_id": "MjZzEVOG47_1",
     "destination_node_ids": [],
     "thumbnail_filename": "",
