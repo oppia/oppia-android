@@ -3,6 +3,7 @@ package org.oppia.android.app.profileprogress
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -13,8 +14,10 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -110,9 +113,6 @@ class ProfilePictureActivityTest {
   @Inject
   lateinit var context: Context
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
   private val internalProfileId: Int = 1
 
   @Before
@@ -120,12 +120,10 @@ class ProfilePictureActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
-    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -177,9 +175,13 @@ class ProfilePictureActivityTest {
   fun testProfilePictureActivity_pressNavigateUp_finishesActivity() {
     launch(ProfilePictureActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        val toolbar = activity.findViewById<Toolbar>(R.id.profile_picture_activity_toolbar)
-        toolbar.performClick()
+        Log.d("BK","Before on View")
+        val view = onView(withContentDescription(R.string.navigate_up))
+        Log.d("BK", "After on View =>$view")
+        view.perform(click())
+        Log.d("BK","After on Click")
         assertThat(activity.isFinishing).isTrue()
+        Log.d("BK","After Finish")
       }
     }
   }
