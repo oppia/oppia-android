@@ -24,7 +24,9 @@ override directory must be an absolute path
 ```
 Try to delete the `.bazelrc` file to solve the above. error. 
 
-After the installation completes you can build the app using Bazel. Move your command line head to the `~/opensource/oppia-android` and run the below bazel command:
+After the installation completes you can build the app using Bazel. 
+
+**Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
 
 #### Building the app
 
