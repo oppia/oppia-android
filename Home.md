@@ -1,61 +1,77 @@
 Thanks for your interest in contributing to the Oppia Android project, and making it easier for students to learn online in an effective and enjoyable way!
 
 ## Onboarding instructions
-We're still working on setting up the basics of the Android project, but we are starting to welcome new contributors who'd like to help out. For now, if you're interested in contributing, please follow the following steps:
+If you'd like to help out with the Android project, please follow the following steps to get started:
 
 1. Sign the CLA, so that we can accept your contributions. If you're contributing as an individual, use the [individual CLA](https://goo.gl/forms/AttNH80OV0). If your company owns the copyright to your contributions, a company representative should sign the [corporate CLA](https://goo.gl/forms/xDq9gK3Zcv).
 2. Fill in the [Oppia contributor survey](https://goo.gl/forms/otv30JV3Ihv0dT3C3) to let us know what your interests are. (You can always change your responses later.) **Make sure to indicate prominently that you are interested in helping out with Android.**
-3. Check out the oppia-android codebase to become familiar with the project!
-4. Check out a copy of the [Oppia web app repository](https://github.com/oppia/oppia) and get it running locally, so that you can connect to a local instance of the web app when developing locally.
-5. Read the Oppia Android coding style guide: https://github.com/oppia/oppia-android/wiki/Coding-style-guide
+3. Download/Install the latest version of [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
+4. Install **Java 8** using the links from [the Java website](https://www.java.com/en/download/).
+   - **Note for Windows users:** Make sure to also set up the PATH system variable correctly for `Java`, following [these instructions](https://www.java.com/en/download/help/path.html).
+5. In Android Studio, open Tools > SDK Manager.
+   - In the "SDK Platforms" tab (which is the default), select `API Level 28`.
+   - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 31" and select 29.0.2 (this is needed for Bazel support).
 
+   Then, click "Apply" to download and install these two SDKs/Tools.
 
-## Prerequisites
-1. Good internet connectivity is required as this project uses third party libraries which will be needed to build the app.
-2. Download/Install latest [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads).
+**Note:** Make sure you have good Internet connectivity when developing on Oppia Android, since this project uses third party libraries which will be needed to build the app.
 
-## Installation
+## Install oppia-android
 
-Please follow these steps for initial setup of the project on your local machine.
+Please follow these steps to set up Oppia Android on your local machine.
 
 1. Create a new, empty folder called `opensource/` within your home folder. Navigate to it (`cd opensource`), then [fork and clone](https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia-Android) the Oppia-Android repo. This will create a new folder named `opensource/oppia-android`. Note that contributors who have write access to the repository may either create branches directly on oppia/oppia-android or use a fork.
 
-2. Navigate to `opensource/oppia-android/` and run the project in Android Studio. or follow [Android Studio UI based Github workflow](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow)
+    **Note**: Please keep the folder name as `oppia-android`. Changing the project folder name might lead to future issues with running the pre-push checks on your machine.
 
-Note: Please keep the project name as it is `oppia-android`, changing the project folder name might lead to failure.
+2. Run the setup script, which adds some development tools for Oppia Android (ktlint, checkstyle, etc.):
 
-3. Set up `Java` with the latest version. Install from [here](https://www.java.com/en/download/). <br>
-If you are on Windows, please set up the environment path correctly for `Java`.
+    - For Mac or Linux
+       1. Open a terminal and navigate to `opensource/oppia-android/`.
+       2. Run the script `bash scripts/setup.sh`.
 
-4. Run the script
-    - For Mac or Linux 
-       1. Open terminal
-       2. Move to `opensource/oppia-android/`
-       3. Run a script `bash scripts/setup.sh`
-    
     - For Mac with Apple M1 chip
-       1. Locate Terminal in Finder
-       2. Right-click and create a duplicate Terminal (and rename it accordingly say Terminal x86 to avoid confusion)
-       3. For the Terminal x86 right-click and click Get info and check the option Open using Rosetta
-       4. Move to `opensource/oppia-android/`
-       5. Now run `bash scripts/setup.sh` in Terminal x86 and all the required files will be generated as they should
+       1. Locate Terminal in Finder.
+       2. Right-click and create a duplicate Terminal (and rename it accordingly, say Terminal x86, to avoid confusion).
+       3. In the Terminal x86, right-click and click "Get info", and check the option "Open using Rosetta".
+       4. Navigate to `opensource/oppia-android/` in Rosetta.
+       5. Finally, run `bash scripts/setup.sh` in Terminal x86 and all the required files should be generated. (You should see messages like `Ktlint file downloaded`, etc.)
 
     - For Windows
        1. Install [Git Bash Command Line](https://gitforwindows.org/)
-       2. Open git bash command line
-       3. Move to `opensource/oppia-android/`
-       4. Run a script `bash scripts/setup.sh`
-       5. Download the [google_checks.xml](https://github.com/checkstyle/checkstyle/blob/14005e371803bd52dff429904b354dc3e72638c0/src/main/resources/google_checks.xml) file. To download this file, you can simply right-click on the `Raw` button and click on `Save Link as`. 
-       6. Copy it to directory where Git is installed (usually C:/Program Files/Git/).
+       2. Open Git Bash Command Line.
+       3. Navigate to `opensource/oppia-android/`.
+       4. Run the script `bash scripts/setup.sh`.
+       5. Download the [google_checks.xml](https://github.com/checkstyle/checkstyle/blob/14005e371803bd52dff429904b354dc3e72638c0/src/main/resources/google_checks.xml) file. To do this, you can simply right-click on the `Raw` button and click on `Save Link as`.
+       6. Copy this file to the directory where Git is installed (usually C:/Program Files/Git/).
 
-     - If you find any error related to `cURL`, please set up cURL at your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>
-    - If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and the environment path variable is also set up.
-    - If you find any error while pushing the code, related to kotlin or Java/Checkstyle, please check [here](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow#how-to-fix-push-failures)
+3. In Android Studio, select `File > Open`, navigate to `opensource/oppia-android/`, and click `OK` to load the project.
+
+4. Click the elephant icon in the toolbar ("Sync Gradle") to ensure that all the correct dependencies are downloaded. (In general, you'll want to do this step any time you update your dependencies.)
+
+## Run the app from Android Studio
+
+1. Go to Tools > AVD Manager, click "Create Virtual Device...". Then:
+   - Select a preferred device definition. In general, any device is fine, but you can use Pixel 3a as a default (if you're developing for phones) or Nexus 7 (if you're developing for tablets). After selecting a device, click "Next" at the bottom right to continue.
+   - Select a system image (in general, API Level 28, unless you're an M1 Mac user, in which case use API Level 29). Then click "Next".
+   - Click "Finish" to complete setup.
+
+2. To run the app, select the emulator device you want from the dropdown menu to the left of the "Run" button in the toolbar.
+
+3. Finally, click the "Run" button.
+
+
+## Installing the Oppia web app
+
+If you need to connect to a local version of the Oppia web application, check out a copy of the [Oppia web app repository](https://github.com/oppia/oppia) and get it running locally. This will allow you to connect to a local instance of the web app when developing locally.
+
+For now, you generally won't need to do this, until the Android app supports on-the-fly lesson downloading (which we're currently working on).
+
 
 ## Troubleshooting Installation
-**General**
 
-Here are some general troubleshooting tips for oppia-android. The platform specific are Linux, Windows and Mac OS.
+Here are some general troubleshooting tips for oppia-android. The specific platforms are Linux, Windows and Mac OS.
+
 1. No matching toolchains (sdk_toolchain_type)
     ```
     ERROR: While resolving toolchains for target //:oppia: no matching toolchains found for types         
@@ -68,18 +84,28 @@ Here are some general troubleshooting tips for oppia-android. The platform speci
     ```
     [Steps](https://docs.bazel.build/versions/main/tutorial/android-app.html#integrate-with-the-android-sdk) to add ANDROID_HOME environment variable.
 
+2. If you find any error related to `cURL`, please set up cURL on your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>
+
+3. If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and the [environment path variable](https://www.java.com/en/download/help/path.html) is also set up correctly.
+
+4. If you find any error related to Kotlin or Java/Checkstyle while pushing the code, please check [this link](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow#how-to-fix-push-failures).
+
 **Can’t find the particular issue?**
 
-If the error you get is not in the troubleshooting page, create an issue providing us all the necessary information.
+If the error you get is not in the Troubleshooting section above, please create an issue providing all the necessary information and assign it to **@FareesHussain**.
 
 
 ## Instructions for making a code change
+
+**Important:** Please read the [Oppia Android coding style guide](https://github.com/oppia/oppia-android/wiki/Coding-style-guide) before making any code changes.
 
 **Working on your first Pull Request?** You can learn how from this free series: [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
 *If your change isn't trivial, please [talk to us](https://gitter.im/oppia/oppia-android) before you start working on it -- this helps avoid duplication of effort, and allows us to offer advice and suggestions. For larger changes, it may be better to first create a short doc outlining a suggested implementation plan, and send it to the Android dev team for feedback.*
 
 The following instructions describe how to make a one-off code change using a feature branch. (In case you're interested, we mainly use the [Gitflow workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).) Please follow them carefully, otherwise your code review may be delayed.
+
+You might also find this reference for the [Android Studio UI-based Github workflow](https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow) helpful.
 
 1. **Choose a descriptive branch name.** It should be lowercase and hyphen-separated, such as `splash-screen`. Also, it shouldn't start with `hotfix` or `release`.
 2. **Before coding anything, create a new branch with this name, starting from 'develop'.** I.e., run:
