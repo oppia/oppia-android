@@ -9,7 +9,7 @@ chapters {
     background_color_rgb: 14061432
   }
   title: "Prototype Exploration"
-  outline: "This is the outline/summary for the first exploration of the story. It is very long but it has to be fully visible. You wil be learning about Oppia interactions. There is no second story to follow-up, but there is a second chapter."
+  description: "This is the outline/summary for the first exploration of the story. It is very long but it has to be fully visible. You wil be learning about Oppia interactions. There is no second story to follow-up, but there is a second chapter."
 }
 chapters {
   exploration_id: "13"

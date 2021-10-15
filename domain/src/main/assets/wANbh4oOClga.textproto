@@ -9,7 +9,7 @@ chapters {
     background_color_rgb: 14061432
   }
   title: "What is a Fraction?"
-  outline: "This is outline/summary for <b>What is a Fraction?</b>"
+  description: "Matthew learns about fractions."
 }
 chapters {
   exploration_id: "MjZzEVOG47_1"
@@ -17,5 +17,5 @@ chapters {
     background_color_rgb: 14055672
   }
   title: "The Meaning of Equal Parts"
-  outline: "This is outline/summary for <b>The Meaning of Equal Parts</b>"
+  description: "Matthew learns about equal parts in fractions."
 }

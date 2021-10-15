@@ -72,7 +72,7 @@
       android:minHeight="48dp"
       android:onClick="@{(v) -> presenter.clickOnNext()}"
       android:padding="12dp"
-      android:src="@drawable/ic_arrow_forward_black_24dp"
+      app:srcCompat="@drawable/ic_arrow_forward_black_24dp"
       android:visibility="@{viewModel.slideNumber != 3 ? View.VISIBLE: View.GONE, default=visible}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
