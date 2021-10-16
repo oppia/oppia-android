@@ -7,8 +7,10 @@
 /.idea/gradle.xml
 /.idea/jarRepositories.xml
 /.idea/libraries
+/.idea/misc.xml
 /.idea/modules.xml
 /.idea/navEditor.xml
+/.idea/runConfigurations.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
 app/build
