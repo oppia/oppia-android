@@ -343,4 +343,9 @@
   <dimen name="topic_revision_fragment_padding_end">56dp</dimen>
   <dimen name="topic_revision_fragment_padding_bottom">104dp</dimen>
 
+  <!-- SectionTitleFragment -->
+  <dimen name="section_title_divider_view_layout_marginTop">28dp</dimen>
+  <dimen name="section_title_text_view_layout_marginStart">72dp</dimen>
+  <dimen name="section_title_text_view_layout_marginTop">28dp</dimen>
+  <dimen name="section_title_text_view_layout_marginEnd">72dp</dimen>
 </resources>
