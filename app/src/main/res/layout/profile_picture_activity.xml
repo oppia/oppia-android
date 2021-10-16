@@ -33,20 +33,10 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/administrator_controls_app_version"
+        app:title="@string/profile_picture_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
-
-    <View
-      android:id="@+id/app_version_shadow_view"
-      android:layout_width="0dp"
-      android:layout_height="4dp"
-      android:layout_gravity="top"
-      android:background="@drawable/toolbar_drop_shadow"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_app_bar_layout" />
 
     <ImageView
       android:id="@+id/profile_picture_image_view"
@@ -58,5 +48,16 @@
       app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_app_bar_layout"
       profile:src="@{viewModel.profileAvatar}"
       tools:src="@drawable/ic_default_avatar" />
+
+    <View
+      android:id="@+id/app_version_shadow_view"
+      android:layout_width="0dp"
+      android:layout_height="6dp"
+      android:layout_gravity="top"
+      android:background="@drawable/toolbar_drop_shadow"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_app_bar_layout" />
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
