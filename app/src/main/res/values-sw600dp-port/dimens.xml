@@ -368,4 +368,25 @@
   <dimen name="topic_revision_fragment_padding_end">96dp</dimen>
   <dimen name="topic_revision_fragment_padding_bottom">112dp</dimen>
 
+  <!-- Solution Summary -->
+  <dimen name="solution_summary_margin_top_linear_layout_first">0dp</dimen>
+  <dimen name="solution_summary_margin_top_solution_title">32dp</dimen>
+  <dimen name="solution_summary_margin_bottom_solution_title">32dp</dimen>
+  <dimen name="solution_summary_margin_top_reveal_solution_button">0dp</dimen>
+  <dimen name="solution_summary_margin_bottom_reveal_solution_button">28dp</dimen>
+  <dimen name="solution_summary_margin_start_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_margin_end_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_min_width_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_min_height_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_margin_bottom_expand_list_icon">16dp</dimen>
+  <dimen name="solution_summary_margin_top_expand_list_icon">32dp</dimen>
+  <dimen name="solution_summary_margin_start">128dp</dimen>
+  <dimen name="solution_summary_margin_end">128dp</dimen>
+  <dimen name="solution_summary_margin_bottom">4dp</dimen>
+  <dimen name="solution_summary_margin_start_linear_layout">128dp</dimen>
+  <dimen name="solution_summary_margin_end_linear_layout">128dp</dimen>
+  <dimen name="solution_summary_margin_top_linear_layout">0dp</dimen>
+  <dimen name="solution_summary_margin_bottom_linear_layout">32dp</dimen>
+  <dimen name="solution_summary_margin_top_solution_summary_label">16dp</dimen>
+
 </resources>
