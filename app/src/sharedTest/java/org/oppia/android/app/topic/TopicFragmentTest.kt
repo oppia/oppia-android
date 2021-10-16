@@ -171,7 +171,7 @@ class TopicFragmentTest {
 
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(topicToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+    assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
@@ -189,7 +189,7 @@ class TopicFragmentTest {
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
     onView(withId(R.id.topic_toolbar_title)).perform(click())
     assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(topicToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+    assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test

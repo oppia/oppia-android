@@ -218,7 +218,7 @@ class StoryFragmentTest {
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+    assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
@@ -232,7 +232,7 @@ class StoryFragmentTest {
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+    assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test

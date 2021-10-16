@@ -168,7 +168,7 @@ class RevisionCardActivityTest {
         onView(withId(R.id.revision_card_toolbar_title))
           .perform(ViewActions.click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-        assertThat(revisionCardToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+        assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }
@@ -188,7 +188,7 @@ class RevisionCardActivityTest {
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-        assertThat(revisionCardToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+        assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }

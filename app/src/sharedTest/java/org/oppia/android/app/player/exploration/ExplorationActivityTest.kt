@@ -310,7 +310,7 @@ class ExplorationActivityTest {
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+    assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
@@ -330,7 +330,7 @@ class ExplorationActivityTest {
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
     assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(explorationToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+    assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
   @Test
