@@ -46,6 +46,7 @@
             android:layout_weight="1"
             android:minHeight="48dp"
             android:ellipsize="marquee"
+            android:textAlignment="viewStart"
             android:fadingEdge="horizontal"
             android:fadingEdgeLength="20dp"
             android:focusable="false"

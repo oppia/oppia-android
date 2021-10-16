@@ -85,6 +85,7 @@
         android:paddingStart="120dp"
         android:paddingEnd="120dp"
         android:text="@{viewModel.topicDescription}"
+        android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"

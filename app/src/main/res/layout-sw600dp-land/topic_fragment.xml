@@ -30,6 +30,7 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
@@ -49,6 +50,7 @@
           android:scrollHorizontally="true"
           android:singleLine="true"
           android:text="@{viewModel.topicToolbarTitleLiveData}"
+          android:textAlignment="viewStart"
           android:textColor="@color/white"
           android:textSize="20sp" />
       </androidx.appcompat.widget.Toolbar>

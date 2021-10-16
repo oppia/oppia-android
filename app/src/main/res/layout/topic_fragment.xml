@@ -39,6 +39,7 @@
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp"
           android:ellipsize="marquee"
+          android:textAlignment="viewStart"
           android:fadingEdge="horizontal"
           android:fadingEdgeLength="20dp"
           android:focusable="false"

@@ -14,8 +14,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="0dp"
@@ -81,7 +81,7 @@
           android:layout_marginEnd="32dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
-          android:gravity="start"
+          android:textAlignment="viewStart"
           android:textColor="@color/oppiaPrimaryText"
           android:textDirection="locale"
           android:textSize="16sp"
@@ -121,6 +121,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
   </LinearLayout>
 </layout>
