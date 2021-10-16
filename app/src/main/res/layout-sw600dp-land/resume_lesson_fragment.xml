@@ -14,8 +14,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:baselineAligned="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="0dp"
@@ -121,5 +121,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
   </LinearLayout>
 </layout>

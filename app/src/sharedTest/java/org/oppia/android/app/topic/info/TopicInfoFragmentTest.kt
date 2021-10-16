@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -21,6 +22,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
@@ -45,6 +48,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.topic.TopicActivity.Companion.createTopicActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -141,6 +145,11 @@ class TopicInfoFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @get:Rule
+  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
+    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
+  )
+
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
   private val internalProfileId = 0
 
@@ -186,6 +195,45 @@ class TopicInfoFragmentTest {
           )
         )
       )
+    }
+  }
+
+  @Test
+  fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescriptionInRtl_isCorrect() {
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        context = context,
+        internalProfileId = internalProfileId,
+        topicId = TEST_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+    onView(withId(R.id.topic_description_text_view)).check { view, _ ->
+      val topicDescriptionTextview: TextView = view.findViewById(
+        R.id.topic_description_text_view
+      )
+      assertThat(topicDescriptionTextview.textAlignment)
+        .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+    }
+  }
+  @Test
+  fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescriptionInLTR_isCorrect() {
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        context = context,
+        internalProfileId = internalProfileId,
+        topicId = TEST_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
+    onView(withId(R.id.topic_description_text_view)).check { view, _ ->
+      val topicDescriptionTextview: TextView = view.findViewById(
+        R.id.topic_description_text_view
+      )
+      assertThat(topicDescriptionTextview.textAlignment)
+        .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
     }
   }
 

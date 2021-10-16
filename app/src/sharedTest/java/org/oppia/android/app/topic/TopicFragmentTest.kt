@@ -2,7 +2,11 @@ package org.oppia.android.app.topic
 
 import android.app.Application
 import android.content.Intent
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -149,6 +153,43 @@ class TopicFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Topic: Fractions")))
     }
+  }
+
+  @Test
+  fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+    initializeApplicationComponent()
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    val topicToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
+    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    onView(withId(R.id.topic_toolbar_title)).perform(click())
+    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+  }
+
+  @Test
+  fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+    initializeApplicationComponent()
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    val topicToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
+    ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+    onView(withId(R.id.topic_toolbar_title)).perform(click())
+    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(topicToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
   @Test

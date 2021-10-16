@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.text.Spannable
+import android.text.TextUtils
 import android.text.style.ClickableSpan
 import android.view.View
 import android.view.View.TEXT_ALIGNMENT_VIEW_START
@@ -204,6 +205,34 @@ class StoryFragmentTest {
       onView(withId(R.id.story_toolbar_title))
         .check(matches(withText("Matthew Goes to the Bakery")))
     }
+  }
+
+  @Test
+  fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
+    testCoroutineDispatchers.runCurrent()
+
+    val storyToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
+    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+    onView(withId(R.id.story_toolbar_title)).perform(click())
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+  }
+
+  @Test
+  fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
+    testCoroutineDispatchers.runCurrent()
+
+    val storyToolbarTitle: TextView =
+      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
+    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+    onView(withId(R.id.story_toolbar_title)).perform(click())
+    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    assertThat(storyToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
   @Test

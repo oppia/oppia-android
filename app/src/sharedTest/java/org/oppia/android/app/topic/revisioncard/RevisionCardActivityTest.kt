@@ -2,10 +2,15 @@ package org.oppia.android.app.topic.revisioncard
 
 import android.app.Application
 import android.content.Context
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -144,6 +149,47 @@ class RevisionCardActivityTest {
       // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
       // correct string when it's read out.
       assertThat(title).isEqualTo(context.getString(R.string.revision_card_activity_title))
+    }
+  }
+
+  @Test
+  fun testRevisionCardActivity_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+
+        val revisionCardToolbarTitle: TextView =
+          activity.findViewById(R.id.revision_card_toolbar_title)
+        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+
+        onView(withId(R.id.revision_card_toolbar_title))
+          .perform(ViewActions.click())
+        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
+      }
+    }
+  }
+
+  @Test
+  fun testRevisionCardActivity_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+    launchRevisionCardActivity(
+      profileId = profileId,
+      topicId = FRACTIONS_TOPIC_ID,
+      subtopicId = 1
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+
+        val revisionCardToolbarTitle: TextView =
+          activity.findViewById(R.id.revision_card_toolbar_title)
+        ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+
+        onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
+        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(revisionCardToolbarTitle.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
+      }
     }
   }
 

@@ -3,7 +3,10 @@ package org.oppia.android.app.resumelesson
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -13,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -198,76 +202,106 @@ class ResumeLessonFragmentTest {
   }
 
   @Test
-  fun testResumeLessonFragment_configChange_lessonDescriptionIsDisplayed() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withText("Matthew learns about fractions."))
-      )
+  fun testResumeLessonFragment_lessonDescriptionIsInRTL_isDisplayedCorrectly() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        testCoroutineDispatchers.runCurrent()
+        val topicDescriptionTextview: TextView = activity.findViewById(
+          R.id.resume_lesson_chapter_description_text_view
+        )
+        assertThat(topicDescriptionTextview.textAlignment)
+          .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
     }
   }
 
-  private fun createResumeLessonActivityIntent(): Intent {
-    return ResumeLessonActivity.createResumeLessonActivityIntent(
-      context,
-      internalProfileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      backflowScreen = null,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+  @Test
+  fun testResumeLessonFragment_lessonDescriptionIsInLTR_isDisplayedCorrectly() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
+        testCoroutineDispatchers.runCurrent()
+        val topicDescriptionTextview: TextView = activity.findViewById(
+          R.id.resume_lesson_chapter_description_text_view
+        )
+        assertThat(topicDescriptionTextview.textAlignment)
+          .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+@Test
+fun testResumeLessonFragment_configChange_lessonDescriptionIsDisplayed() {
+  launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
+    testCoroutineDispatchers.runCurrent()
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+      matches(withText("Matthew learns about fractions."))
     )
   }
+}
 
-  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  @Singleton
-  @Component(
-    modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
-    ]
+private fun createResumeLessonActivityIntent(): Intent {
+  return ResumeLessonActivity.createResumeLessonActivityIntent(
+    context,
+    internalProfileId,
+    FRACTIONS_TOPIC_ID,
+    FRACTIONS_STORY_ID_0,
+    FRACTIONS_EXPLORATION_ID_0,
+    backflowScreen = null,
+    explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
   )
-  interface TestApplicationComponent : ApplicationComponent {
-    @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+}
 
-    fun inject(resumeLessonFragmentTest: ResumeLessonFragmentTest)
+// TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+@Singleton
+@Component(
+  modules = [
+    RobolectricModule::class,
+    PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+    TestDispatcherModule::class, ApplicationModule::class,
+    LoggerModule::class, ContinueModule::class, FractionInputModule::class,
+    ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+    NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+    DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+    GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
+    HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+    AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+    PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+    ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
+    ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+    HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+    FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+    ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+    NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+    AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
+  ]
+)
+interface TestApplicationComponent : ApplicationComponent {
+  @Component.Builder
+  interface Builder : ApplicationComponent.Builder
+
+  fun inject(resumeLessonFragmentTest: ResumeLessonFragmentTest)
+}
+
+class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  private val component: TestApplicationComponent by lazy {
+    DaggerResumeLessonFragmentTest_TestApplicationComponent.builder()
+      .setApplication(this)
+      .build() as TestApplicationComponent
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerResumeLessonFragmentTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build() as TestApplicationComponent
-    }
-
-    fun inject(resumeLessonFragmentTest: ResumeLessonFragmentTest) {
-      component.inject(resumeLessonFragmentTest)
-    }
-
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
-
-    override fun getApplicationInjector(): ApplicationInjector = component
+  fun inject(resumeLessonFragmentTest: ResumeLessonFragmentTest) {
+    component.inject(resumeLessonFragmentTest)
   }
+
+  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+    return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+  }
+
+  override fun getApplicationInjector(): ApplicationInjector = component
+}
 }
