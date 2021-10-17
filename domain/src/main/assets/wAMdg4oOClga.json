@@ -1,29 +1,29 @@
 {
   "story_nodes": [{
-    "description": "Matthew learns about ratios.",
+    "description": "<unknown>",
     "exploration_id": "2mzzFVDLuAj8",
-    "destination_node_ids": ["node_2"],
+    "destination_node_ids": [],
     "thumbnail_filename": "",
-    "outline_is_finalized": false,
-    "id": "node_1",
+    "outline_is_finalized": true,
+    "id": "2mzzFVDLuAj8",
     "prerequisite_skill_ids": [],
-    "thumbnail_bg_color": "#D68F78",
+    "thumbnail_bg_color": "#d68f78",
     "outline": "",
     "title": "What is a Ratio?",
     "acquired_skill_ids": []
   }, {
-    "description": "Matthew learns about ratios again.",
+    "description": "<unknown>",
     "exploration_id": "5NWuolNcwH6e",
     "destination_node_ids": [],
     "thumbnail_filename": "",
-    "outline_is_finalized": false,
-    "id": "node_2",
+    "outline_is_finalized": true,
+    "id": "5NWuolNcwH6e",
     "prerequisite_skill_ids": [],
-    "thumbnail_bg_color": "#D6FA78",
+    "thumbnail_bg_color": "#d6fa78",
     "outline": "",
     "title": "Order is important",
     "acquired_skill_ids": []
   }],
   "story_title": "Ratios: Part 1",
-  "story_description": ""
+  "story_description": "<removed>"
 }

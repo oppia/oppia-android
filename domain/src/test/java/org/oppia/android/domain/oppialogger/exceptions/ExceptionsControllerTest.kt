@@ -35,6 +35,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -404,7 +405,7 @@ class ExceptionsControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
       TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

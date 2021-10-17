@@ -2,7 +2,7 @@
   "exploration_id": "5NWuolNcwH6e",
   "preferred_audio_language_code": "<unknown>",
   "correctness_feedback_enabled": false,
-  "version": 77,
+  "version": 0,
   "record_playthrough_probability": 0.0,
   "exploration": {
     "init_state_name": "Introduction",
@@ -31,13 +31,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -82,13 +82,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -122,14 +122,14 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>The ratio of <strong>strawberry</strong> <strong>puree to blueberry puree</strong> is <strong>1:3</strong>.</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>The ratio of <strong>strawberry</strong> <strong>puree to blueberry puree</strong> is <strong>1:3</strong>.</p>"
               }, {
-                "html": "<p>The ratio of <strong>strawberry puree to blueberry puree</strong> is<strong> 3:1</strong>.</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>The ratio of <strong>strawberry puree to blueberry puree</strong> is<strong> 3:1</strong>.</p>"
               }, {
-                "html": "<p>It's impossible to figure out the new ratio.</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>It's impossible to figure out the new ratio.</p>"
               }]
             }
           },
@@ -148,10 +148,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -167,10 +167,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Ratio when the order is changed",
@@ -180,13 +180,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -244,7 +244,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -258,7 +258,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "e7cfd169-ab4f-4c33-af4b-661a99e92fe8",
                   "normalizedStrSet": ["2:3:4"]
                 }
               }
@@ -271,16 +271,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "98a24649-76c6-45fd-beed-efc786bc6673",
                   "normalizedStrSet": ["2:3:4:5"]
                 }
               }
@@ -293,10 +293,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Final Test",
@@ -306,13 +306,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -370,7 +370,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -384,7 +384,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "0c01e275-dbc5-47ab-a4d2-4011c8dfb8ed",
                   "normalizedStrSet": ["3:2:4"]
                 }
               }
@@ -397,16 +397,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "c028cae8-45c9-4abe-b1ad-da0998d30ce3",
                   "normalizedStrSet": ["3:2:2:4"]
                 }
               }
@@ -419,10 +419,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Review 4",
@@ -432,8 +432,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -443,7 +443,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -511,17 +511,17 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>For any amount of blueberry puree, we need to use twice that amount of milk.</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>For any amount of blueberry puree, we need to use twice that amount of milk.</p>"
               }, {
-                "html": "<p>We need <strong>exactly</strong> 1 cup of blueberry puree and 2 cups of milk.</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>We need <strong>exactly</strong> 1 cup of blueberry puree and 2 cups of milk.</p>"
               }, {
-                "html": "<p>We need <strong>exactly </strong>1 liter of blueberry puree and 2 liters of milk.</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>We need <strong>exactly </strong>1 liter of blueberry puree and 2 liters of milk.</p>"
               }, {
-                "html": "<p>We need <strong>exactly</strong> 2 cups of blueberry puree and 4 cups of milk.</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>We need <strong>exactly</strong> 2 cups of blueberry puree and 4 cups of milk.</p>"
               }]
             }
           },
@@ -540,10 +540,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Review 5",
@@ -554,12 +554,12 @@
             "labelled_as_correct": false,
             "param_changes": [],
             "refresher_exploration_id": "2mzzFVDLuAj8",
-            "missing_prerequisite_skill_id": null
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -609,20 +609,20 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>The ratio of ingredients is 1:2.</p>\n",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>The ratio of ingredients is 1:2.</p>\n"
               }, {
-                "html": "<p>The ratio of milk and mango puree is 1:2.</p>\n",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>The ratio of milk and mango puree is 1:2.</p>\n"
               }, {
-                "html": "<p>The ratio of mango puree to milk is 1:2.</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>The ratio of mango puree to milk is 1:2.</p>"
               }, {
-                "html": "<p>The ratio of milk to mango puree is 1:2.</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>The ratio of milk to mango puree is 1:2.</p>"
               }, {
-                "html": "<p>The ratio of mango puree and milk is 1:2.</p>",
-                "content_id": "ca_choices_4"
+                "content_id": "ca_choices_4",
+                "html": "<p>The ratio of mango puree and milk is 1:2.</p>"
               }]
             }
           },
@@ -641,10 +641,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -660,10 +660,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -684,10 +684,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -703,10 +703,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Writing ratio using words",
@@ -716,13 +716,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -791,7 +791,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -805,7 +805,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "ac97bee8-3570-4a5d-98fb-068b6ee44bbe",
                   "normalizedStrSet": ["3:5"]
                 }
               }
@@ -818,16 +818,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "2f4d1f25-50e7-4eff-9adf-c5fd61a47d6f",
                   "normalizedStrSet": ["3 to 5"]
                 }
               }
@@ -840,16 +840,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "7a4ae672-8e20-4fc2-85d6-4be7740a7fd0",
                   "normalizedStrSet": ["5:3"]
                 }
               }
@@ -857,7 +857,7 @@
               "rule_type": "CaseSensitiveEquals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "947c6855-b9e6-459d-a8f6-2b239e51d37f",
                   "normalizedStrSet": ["5 to 3"]
                 }
               }
@@ -870,10 +870,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Review 1",
@@ -883,13 +883,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -956,7 +956,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -970,7 +970,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "806a2027-df90-42b8-98f8-de80936aa634",
                   "normalizedStrSet": ["2:6"]
                 }
               }
@@ -978,7 +978,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "58c795c3-546d-4674-bbb4-0fbacd4fe3e1",
                   "normalizedStrSet": ["1:3"]
                 }
               }
@@ -986,7 +986,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "9d483320-17b7-4f22-aea3-f825cd550d42",
                   "normalizedStrSet": ["4:12"]
                 }
               }
@@ -994,7 +994,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "7e9ebacb-b81d-4511-9350-55d23a45a65b",
                   "normalizedStrSet": ["3:9"]
                 }
               }
@@ -1007,16 +1007,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "fcb8e2a4-6f53-478c-8500-ab1b09e52fdf",
                   "normalizedStrSet": ["6:2"]
                 }
               }
@@ -1024,7 +1024,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "75990caa-6a9a-4ef4-884f-10d16e398146",
                   "normalizedStrSet": ["3:1"]
                 }
               }
@@ -1032,7 +1032,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "77cfbde0-9a91-4650-82c0-2bdac72a3a66",
                   "normalizedStrSet": ["12:4"]
                 }
               }
@@ -1040,7 +1040,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "d26393fb-21a7-44b7-987d-148271632804",
                   "normalizedStrSet": ["9:3"]
                 }
               }
@@ -1053,16 +1053,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "ed056764-7c75-4d0b-8105-0e5940172fa7",
                   "normalizedStrSet": ["to"]
                 }
               }
@@ -1075,10 +1075,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Review 2",
@@ -1088,13 +1088,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1161,7 +1161,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -1175,7 +1175,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "e32170f9-da4f-4900-91d3-16ed482914ff",
                   "normalizedStrSet": ["1:4:2"]
                 }
               }
@@ -1188,16 +1188,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "72550358-e3f0-4e29-bab3-f51193fbd425",
                   "normalizedStrSet": ["1 to 4 to 2"]
                 }
               }
@@ -1210,10 +1210,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Review 3",
@@ -1223,13 +1223,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1299,13 +1299,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1346,7 +1346,7 @@
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1378,17 +1378,17 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>The relative amount of milk.</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>The relative amount of milk.</p>"
               }, {
-                "html": "<p>The relative amount of blueberry puree.</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>The relative amount of blueberry puree.</p>"
               }, {
-                "html": "<p>The exact amount of milk.</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>The exact amount of milk.</p>"
               }, {
-                "html": "<p>The exact amount of blueberry puree.</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>The exact amount of blueberry puree.</p>"
               }]
             }
           },
@@ -1407,10 +1407,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Order of number in the ratio is important",
@@ -1420,8 +1420,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -1431,7 +1431,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1490,20 +1490,20 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>The relative amount of milk</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>The relative amount of milk</p>"
               }, {
-                "html": "<p>The relative amount of strawberry puree</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>The relative amount of strawberry puree</p>"
               }, {
-                "html": "<p>3 cups of strawberry puree</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>3 cups of strawberry puree</p>"
               }, {
-                "html": "<p>3 cups of milk</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>3 cups of milk</p>"
               }, {
-                "html": "<p>I don't know</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>I don't know</p>"
               }]
             }
           },
@@ -1522,10 +1522,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -1541,10 +1541,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -1565,10 +1565,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Order of number in the ratio is important",
@@ -1578,13 +1578,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1652,20 +1652,20 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree on the left, and fully filed 1-unit tall glass of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182711_us61tazrzr_height_218_width_294.png&amp;quot;\"></oppia-noninteractive-image>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree on the left, and fully filed 1-unit tall glass of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182711_us61tazrzr_height_218_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree on the left and fully filled 5-units tall milk of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182344_eq6yk8f9yl_height_223_width_294.png&amp;quot;\"></oppia-noninteractive-image>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree on the left and fully filled 5-units tall milk of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182344_eq6yk8f9yl_height_223_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 5-units tall glass of mango puree on the left, and fully filled 6-units tall glass of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_154514_mp9cuopfvl_height_220_width_294.png&amp;quot;\"></oppia-noninteractive-image>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 5-units tall glass of mango puree on the left, and fully filled 6-units tall glass of milk on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_154514_mp9cuopfvl_height_220_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182434_vevph1sj01_height_222_width_294.png&amp;quot;\"></oppia-noninteractive-image>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of mango puree.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190129_182434_vevph1sj01_height_222_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of milk on the left, and fully filled 5-units tall glass of mango puree on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_155409_d83h88tvyl_height_229_width_294.png&amp;quot;\"></oppia-noninteractive-image>",
-                "content_id": "ca_choices_4"
+                "content_id": "ca_choices_4",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Image of fully filled 6-units tall glass of milk on the left, and fully filled 5-units tall glass of mango puree on the right.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190116_155409_d83h88tvyl_height_229_width_294.png&amp;quot;\"></oppia-noninteractive-image>"
               }]
             }
           },
@@ -1684,10 +1684,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -1708,10 +1708,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 3",
@@ -1721,8 +1721,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -1737,7 +1737,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -1814,17 +1814,17 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>The relative amount of blueberry puree</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>The relative amount of blueberry puree</p>"
               }, {
-                "html": "<p>The relative amount of strawberry puree</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>The relative amount of strawberry puree</p>"
               }, {
-                "html": "<p>The relative amount of mango puree</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>The relative amount of mango puree</p>"
               }, {
-                "html": "<p>The relative amount of milk</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>The relative amount of milk</p>"
               }]
             }
           },
@@ -1843,10 +1843,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -1862,10 +1862,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 2",
@@ -1875,8 +1875,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -1886,7 +1886,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1953,7 +1953,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -1967,7 +1967,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "f1fe65bb-24ff-420f-a03a-a6ec04eacd0d",
                   "normalizedStrSet": ["8:3"]
                 }
               }
@@ -1980,16 +1980,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "5aed13eb-35d7-4a12-8bc2-2b6471f621a9",
                   "normalizedStrSet": ["8 to 3"]
                 }
               }
@@ -2002,16 +2002,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "233b515b-f157-43c4-a87f-c9520f68e6f7",
                   "normalizedStrSet": ["3:8"]
                 }
               }
@@ -2024,10 +2024,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 5",
@@ -2037,13 +2037,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -2110,7 +2110,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -2124,7 +2124,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "1cdc88a5-5ffb-41ae-a155-23913d114bdc",
                   "normalizedStrSet": ["ratio of blueberry puree to mango puree is 5:4"]
                 }
               }
@@ -2132,7 +2132,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "51afb5c0-370c-43b9-bfa2-f6de55714c25",
                   "normalizedStrSet": ["ratio of mango puree to blueberry puree is 4:5"]
                 }
               }
@@ -2145,16 +2145,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "c6e3036f-35e7-4041-8d3d-e4214b170162",
                   "normalizedStrSet": ["blueberry puree to mango puree is 5:4"]
                 }
               }
@@ -2162,7 +2162,7 @@
               "rule_type": "CaseSensitiveEquals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "5d0d1769-2754-4f6a-9690-ba3675ce953d",
                   "normalizedStrSet": ["mango puree to blueberry puree is 4:5"]
                 }
               }
@@ -2170,7 +2170,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "47d05e6c-f4e0-4c0b-8c1a-0a6f16b17ecc",
                   "normalizedStrSet": ["5:4"]
                 }
               }
@@ -2178,7 +2178,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "bd8c30c7-f684-447e-99f3-0e40ee832baf",
                   "normalizedStrSet": ["4:5"]
                 }
               }
@@ -2191,16 +2191,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "a6ee33db-b5dd-4ca3-80cc-8def095961c8",
                   "normalizedStrSet": ["5 to 4"]
                 }
               }
@@ -2208,7 +2208,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "f6609005-4378-4f8f-9008-833dd66ab955",
                   "normalizedStrSet": ["4 to 5"]
                 }
               }
@@ -2216,7 +2216,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "55e00566-14a4-47a1-a506-d13f06985c12",
                   "normalizedStrSet": ["5: 4"]
                 }
               }
@@ -2224,7 +2224,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "ad3340fb-8930-46b5-89ff-24e7c04ce252",
                   "normalizedStrSet": ["5 : 4"]
                 }
               }
@@ -2232,7 +2232,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "de48282a-b0b3-4bd5-985e-0efd75aef7b0",
                   "normalizedStrSet": ["5 :4"]
                 }
               }
@@ -2240,7 +2240,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "a520b36c-dbec-4080-accd-16325a25c234",
                   "normalizedStrSet": ["4 :5"]
                 }
               }
@@ -2248,7 +2248,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "b0c3a074-d82a-4bae-ae3f-f37b7c0791b8",
                   "normalizedStrSet": ["4 : 5"]
                 }
               }
@@ -2256,7 +2256,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "97287714-ca1a-4b7b-b444-2a46e805a478",
                   "normalizedStrSet": ["4: 5"]
                 }
               }
@@ -2269,16 +2269,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "b9c0e1be-ebf3-4fe5-89ed-fe87817c93ff",
                   "normalizedStrSet": ["X"]
                 }
               }
@@ -2291,16 +2291,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "7a0e604d-d4ec-4ab3-997e-17b7ef64e6d1",
                   "normalizedStrSet": ["Y"]
                 }
               }
@@ -2313,10 +2313,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 4",
@@ -2326,13 +2326,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -2417,7 +2417,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -2431,7 +2431,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "b4d41331-b390-4f6b-a943-48eec6511bce",
                   "normalizedStrSet": ["2:1:5:6"]
                 }
               }
@@ -2444,16 +2444,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "d8cf4472-dc50-4277-9b33-aa4f02e74449",
                   "normalizedStrSet": ["1:2:5:6"]
                 }
               }
@@ -2461,7 +2461,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "8c800ffb-99f7-4519-9fdf-38e4703f5456",
                   "normalizedStrSet": ["1:2:6:5"]
                 }
               }
@@ -2469,7 +2469,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "8bef7a04-3a2f-4cf8-baa6-5d9f683cf37a",
                   "normalizedStrSet": ["1:5:2:6"]
                 }
               }
@@ -2477,7 +2477,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "8f125c6d-72c6-4ee8-9828-3d573b2cb856",
                   "normalizedStrSet": ["1:5:6:2"]
                 }
               }
@@ -2485,7 +2485,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "5b5dbac7-466f-4ccd-a8d3-e1c7fd1ba038",
                   "normalizedStrSet": ["1:6:2:5"]
                 }
               }
@@ -2493,7 +2493,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "e942103c-6c61-4b2f-8e5d-4bc702a06a78",
                   "normalizedStrSet": ["1:6:5:2"]
                 }
               }
@@ -2501,7 +2501,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "6850efd8-010a-4684-99f4-e11632c11637",
                   "normalizedStrSet": ["2:5:1:6"]
                 }
               }
@@ -2509,7 +2509,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "8eea08c1-9112-45e6-a864-f27953be1417",
                   "normalizedStrSet": ["2:5:6:1"]
                 }
               }
@@ -2517,7 +2517,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "4634dadd-7cfb-4eb9-b4b8-ff2b3ebcd857",
                   "normalizedStrSet": ["2:6:1:5"]
                 }
               }
@@ -2525,7 +2525,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "1782c97a-0f05-42d9-89a6-ca5785f94a90",
                   "normalizedStrSet": ["2:6:5:1"]
                 }
               }
@@ -2533,7 +2533,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "294de12a-4b7f-4897-ab6b-2e0805f0db1b",
                   "normalizedStrSet": ["5:1:2:6"]
                 }
               }
@@ -2541,7 +2541,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "fdc26ccb-f631-45f8-ac1c-d196b31ac1c0",
                   "normalizedStrSet": ["5:1:6:2"]
                 }
               }
@@ -2549,7 +2549,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "d3d5d5d9-240c-4750-9538-51d48ced6e4d",
                   "normalizedStrSet": ["5:2:1:6"]
                 }
               }
@@ -2557,7 +2557,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "d6b3a75d-b4ca-4c04-a5aa-22d81aee6f55",
                   "normalizedStrSet": ["5:2:6:1"]
                 }
               }
@@ -2565,7 +2565,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "a61f9ce9-b9c0-4348-a146-16433d586d77",
                   "normalizedStrSet": ["5:6:1:2"]
                 }
               }
@@ -2573,7 +2573,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "8db376aa-00fd-42cb-8ad0-521ebe8e878e",
                   "normalizedStrSet": ["5:6:2:1"]
                 }
               }
@@ -2581,7 +2581,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "daaf2170-9350-4e5d-a295-8ee7626c7e28",
                   "normalizedStrSet": ["6:1:2:5"]
                 }
               }
@@ -2589,7 +2589,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "62ffc6e0-a6f3-45f6-ab70-0b84e7222814",
                   "normalizedStrSet": ["6:1:5:2"]
                 }
               }
@@ -2597,7 +2597,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "b3cca3d6-2992-485c-bbf2-e68a7f145db8",
                   "normalizedStrSet": ["6:2:1:5"]
                 }
               }
@@ -2605,7 +2605,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "101f4309-33f0-4c57-94c1-96cf1d18e6d2",
                   "normalizedStrSet": ["6:2:5:1"]
                 }
               }
@@ -2613,7 +2613,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "f15cce94-548c-41bf-86a7-9cf9f9ea5166",
                   "normalizedStrSet": ["6:5:1:2"]
                 }
               }
@@ -2621,7 +2621,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "c3e55383-ee22-47bb-81d4-f2e0c563ff37",
                   "normalizedStrSet": ["6:5:2:1"]
                 }
               }
@@ -2634,10 +2634,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 7",
@@ -2647,8 +2647,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -2665,7 +2665,7 @@
             }
           }
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -2753,13 +2753,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -2792,7 +2792,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -2806,7 +2806,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "4b9e3c8e-835d-4526-945a-0a9fc9c0ad16",
                   "normalizedStrSet": ["7:1:6"]
                 }
               }
@@ -2819,16 +2819,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "9b530d5a-4b7b-4174-985f-4bf08aad620b",
                   "normalizedStrSet": ["1:6:7"]
                 }
               }
@@ -2836,7 +2836,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "738f563b-ac11-408c-867d-af5f6bd68a01",
                   "normalizedStrSet": ["1:7:6"]
                 }
               }
@@ -2844,7 +2844,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "0a3f63b1-b140-465e-8155-9aea9a76d3ec",
                   "normalizedStrSet": ["6:7:1"]
                 }
               }
@@ -2852,7 +2852,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "2f7c6d0e-8c7e-41cb-a279-7c618bff562f",
                   "normalizedStrSet": ["7:6:1"]
                 }
               }
@@ -2860,7 +2860,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "c52e7eb0-be1e-487c-bdd0-d6b33661a067",
                   "normalizedStrSet": ["6:1:7"]
                 }
               }
@@ -2873,10 +2873,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 6",
@@ -2886,13 +2886,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -2951,17 +2951,17 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>No, James did nothing wrong. He followed the recipe correctly.</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>No, James did nothing wrong. He followed the recipe correctly.</p>"
               }, {
-                "html": "<p>No, James did nothing wrong. The recipe itself was wrong.</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>No, James did nothing wrong. The recipe itself was wrong.</p>"
               }, {
-                "html": "<p>Yes, James did something wrong. He should have used 2 cups of mango puree and 1 cup of milk instead.</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>Yes, James did something wrong. He should have used 2 cups of mango puree and 1 cup of milk instead.</p>"
               }, {
-                "html": "<p>Yes, James did something wrong. He should have used 2 cups of mango puree and 4 cups of milk instead.</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>Yes, James did something wrong. He should have used 2 cups of mango puree and 4 cups of milk instead.</p>"
               }]
             }
           },
@@ -2980,10 +2980,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -3009,10 +3009,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "James making smoothie alone",
@@ -3022,8 +3022,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -3033,7 +3033,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {

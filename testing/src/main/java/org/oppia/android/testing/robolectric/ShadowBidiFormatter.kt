@@ -1,6 +1,6 @@
 package org.oppia.android.testing.robolectric
 
-import android.text.BidiFormatter
+import androidx.core.text.BidiFormatter
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
 import org.robolectric.annotation.RealObject

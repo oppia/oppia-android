@@ -39,6 +39,7 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -57,6 +58,11 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
+import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
@@ -93,16 +99,24 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -128,6 +142,7 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
 import java.io.IOException
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -142,6 +157,9 @@ import javax.inject.Singleton
 class StateFragmentLocalTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   private val AUDIO_URL_1 =
     createAudioUrl(explorationId = "MjZzEVOG47_1", audioFileName = "content-en-ouqm7j21vt8.mp3")
@@ -164,7 +182,13 @@ class StateFragmentLocalTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
-  private val internalProfileId: Int = 1
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
 
   @Before
@@ -1114,6 +1138,168 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint button label should be in English.
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  fun testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in English. Note that an Arabic version of this test doesn't
+      // exist because while the corresponding situation should be true with Arabic, limitations in
+      // the testing framework prevent this from being tested (since activity recreation can't be
+      // done to trigger the
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("Remember that two halves"))))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testStateFragment_arabicLocale_defaultContentLang_hint_labelsAreInArabic() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint button label should be in Arabic.
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("عرض الملاحظة")))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testStateFragment_arabicLocale_defaultContentLang_hint_explanationIsInArabic() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("واحدة كاملة"))))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testStateFragment_englishLocale_arabicContentLang_hint_labelsAreInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint button label should be in English since the app string locale is unaffected by the
+      // content string setting.
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testStateFragment_englishLocale_arabicContentLang_hint_explanationIsInArabic() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic per the content locale override.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("واحدة كاملة"))))
+    }
+  }
+
+  @Test
   @Config(qualifiers = "+port")
   fun testStateFragment_mobilePortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
@@ -1277,7 +1463,7 @@ class StateFragmentLocalTest {
     return ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
-        internalProfileId,
+        profileId.internalId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,
@@ -1619,6 +1805,21 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
   /**
    * Returns a [ViewAssertion] that can be used to check the specified matcher applies the specified
    * number of times for children against the view under test. If the count does not exactly match,
@@ -1659,7 +1860,7 @@ class StateFragmentLocalTest {
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -1721,5 +1922,9 @@ class StateFragmentLocalTest {
     override fun matches(item: Any?): Boolean {
       return (item as? ViewHolder)?.itemViewType == viewType.ordinal
     }
+  }
+
+  private companion object {
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
   }
 }

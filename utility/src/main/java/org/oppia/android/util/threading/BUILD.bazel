@@ -31,12 +31,4 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
-    name = "concurrent_collections",
-    srcs = [
-        "ConcurrentCollections.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-)
-
 dagger_rules()

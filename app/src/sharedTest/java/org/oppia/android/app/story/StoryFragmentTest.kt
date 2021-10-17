@@ -91,6 +91,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
@@ -300,7 +301,7 @@ class StoryFragmentTest {
         )
       ).check(
         matches(
-          withText("This is outline/summary for What is a Fraction?")
+          withText("Matthew learns about fractions.")
         )
       )
     }
@@ -374,7 +375,7 @@ class StoryFragmentTest {
         )
       ).check(
         matches(
-          withText("This is outline/summary for What is a Fraction?")
+          withText("Matthew learns about fractions.")
         )
       )
     }
@@ -398,7 +399,7 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is the outline/summary for the first exploration of the story. It is very long " +
+            "Learning about oppia app in First Story. It is very long " +
               "but it has to be fully visible. You wil be learning about Oppia interactions. " +
               "There is no second story to follow-up, but there is a second chapter."
           )
@@ -426,7 +427,7 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is the outline/summary for the first exploration of the story. It is very long " +
+            "Learning about oppia app in First Story. It is very long " +
               "but it has to be fully visible. You wil be learning about Oppia interactions. " +
               "There is no second story to follow-up, but there is a second chapter."
           )
@@ -721,7 +722,7 @@ class StoryFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

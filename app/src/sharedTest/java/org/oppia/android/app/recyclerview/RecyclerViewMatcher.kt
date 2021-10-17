@@ -45,9 +45,9 @@ class RecyclerViewMatcher {
         public override fun matchesSafely(view: View): Boolean {
           this.resources = view.resources
           if (childView == null) {
-            val recyclerView = view.rootView.findViewById<View>(recyclerViewId) as RecyclerView
-            if (recyclerView.id == recyclerViewId) {
-              childView = recyclerView.findViewHolderForAdapterPosition(position)!!.itemView
+            val recyclerView = view.rootView.findViewById<View>(recyclerViewId) as? RecyclerView
+            if (recyclerView?.id == recyclerViewId) {
+              childView = recyclerView?.findViewHolderForAdapterPosition(position)?.itemView
             } else {
               return false
             }
@@ -55,8 +55,7 @@ class RecyclerViewMatcher {
           return if (targetViewId == -1) {
             view === childView
           } else {
-            val targetView = childView!!.findViewById<View>(targetViewId)
-            view === targetView
+            view === childView?.findViewById<View>(targetViewId)
           }
         }
       }

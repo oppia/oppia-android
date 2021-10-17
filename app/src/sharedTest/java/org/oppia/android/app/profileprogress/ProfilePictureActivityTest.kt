@@ -12,6 +12,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -51,6 +52,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -124,6 +126,21 @@ class ProfilePictureActivityTest {
   }
 
   @Test
+  fun testProfilePictureActivity_hasCorrectActivityLabel() {
+    launch(
+      ProfilePictureActivity::class.java
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(activity.title).isEqualTo(
+          context.getString(
+            R.string.profile_picture_activity_title
+          )
+        )
+      }
+    }
+  }
+
+  @Test
   fun testProfilePictureActivity_userImageIsDisplayed() {
     launch<ProfilePictureActivity>(createProfilePictureActivityIntent(internalProfileId)).use {
       onView(withId(R.id.profile_picture_image_view)).check(matches(isDisplayed()))
@@ -135,7 +152,7 @@ class ProfilePictureActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

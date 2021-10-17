@@ -13,6 +13,7 @@ import androidx.work.NetworkType
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
+import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -31,6 +32,7 @@ import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
@@ -38,6 +40,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -198,17 +201,19 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
       remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
       @BaseUrl baseUrl: String
-    ): Retrofit {
+    ): Optional<Retrofit> {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
         .addInterceptor(remoteAuthNetworkInterceptor)
         .build()
 
-      return Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build()
+      return Optional.of(
+        Retrofit.Builder()
+          .baseUrl(baseUrl)
+          .addConverterFactory(MoshiConverterFactory.create())
+          .client(client)
+          .build()
+      )
     }
 
     @Provides
@@ -216,9 +221,11 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     fun provideNetworkApiKey(): String = ""
 
     @Provides
-    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
+    fun provideMockPlatformParameterService(
+      mockRetrofit: MockRetrofit
+    ): Optional<PlatformParameterService> {
       val delegate = mockRetrofit.create(PlatformParameterService::class.java)
-      return MockPlatformParameterService(delegate)
+      return Optional.of(MockPlatformParameterService(delegate))
     }
   }
 
@@ -230,7 +237,8 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
       RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      NetworkConfigProdModule::class
+      NetworkConfigProdModule::class, PlatformParameterSingletonModule::class,
+      LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

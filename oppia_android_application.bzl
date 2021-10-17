@@ -45,7 +45,7 @@ def _convert_module_aab_to_structured_zip_impl(ctx):
     mkdir -p $WORKING_DIR/assets $WORKING_DIR/dex $WORKING_DIR/manifest $WORKING_DIR/root
     mv $WORKING_DIR/*.dex $WORKING_DIR/dex/
     mv $WORKING_DIR/AndroidManifest.xml $WORKING_DIR/manifest/
-    ls -d $WORKING_DIR/* | grep -v -w -E "res|assets|dex|manifest|root|resources.pb" | xargs -n 1 -I {{}} mv {{}} root/
+    ls -d $WORKING_DIR/* | grep -v -w -E "res|assets|dex|manifest|root|resources.pb" | xargs -I{{}} sh -c "mv \\$0 $WORKING_DIR/root/ || exit 255" {{}} 2>&1 || exit $?
 
     # Zip up the result--this will be used by bundletool to build a deployable AAB. Note that these
     # strange file path bits are needed because zip will always retain the directory structure
@@ -99,20 +99,26 @@ def _bundle_module_zip_into_deployable_aab_impl(ctx):
 
 def _generate_apks_and_install_impl(ctx):
     input_file = ctx.attr.input_file.files.to_list()[0]
+    debug_keystore_file = ctx.attr.debug_keystore.files.to_list()[0]
     apks_file = ctx.actions.declare_file("%s_processed.apks" % ctx.label.name)
     deploy_shell = ctx.actions.declare_file("%s_run.sh" % ctx.label.name)
 
     # Reference: https://developer.android.com/studio/command-line/bundletool#generate_apks.
+    # See also the Bazel BUILD file for the keystore for details on its password and alias.
     generate_apks_arguments = [
         "build-apks",
         "--bundle=%s" % input_file.path,
         "--output=%s" % apks_file.path,
+        "--ks=%s" % debug_keystore_file.path,
+        "--ks-pass=pass:android",
+        "--ks-key-alias=androiddebugkey",
+        "--key-pass=pass:android",
     ]
 
     # Reference: https://docs.bazel.build/versions/master/skylark/lib/actions.html#run.
     ctx.actions.run(
         outputs = [apks_file],
-        inputs = ctx.files.input_file,
+        inputs = ctx.files.input_file + ctx.files.debug_keystore,
         tools = [ctx.executable._bundletool_tool],
         executable = ctx.executable._bundletool_tool.path,
         arguments = generate_apks_arguments,
@@ -207,6 +213,10 @@ _generate_apks_and_install = rule(
             allow_files = True,
             mandatory = True,
         ),
+        "debug_keystore": attr.label(
+            allow_files = True,
+            mandatory = True,
+        ),
         "_bundletool_tool": attr.label(
             executable = True,
             cfg = "host",
@@ -279,5 +289,6 @@ def declare_deployable_application(name, aab_target):
     _generate_apks_and_install(
         name = name,
         input_file = aab_target,
+        debug_keystore = "@bazel_tools//tools/android:debug_keystore",
         tags = ["manual"],
     )
