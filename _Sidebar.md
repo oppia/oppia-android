@@ -18,7 +18,7 @@
   * Testing
     * [[Oppia Android Testing|https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing]]
     * [[End to End Testing Guide|https://github.com/oppia/oppia-android/wiki/End-to-End-Testing-Guide]]
-  * [[Developing Skils|https://github.com/oppia/oppia-android/wiki/Developing-skills]]
+  * [[Developing Skills|https://github.com/oppia/oppia-android/wiki/Developing-skills]]
   * [[Creating a screenshot|https://github.com/oppia/oppia-android/wiki/Creating-a-screenshot]]
   * [[Interpreting CI Results|https://github.com/oppia/oppia-android/wiki/Interpreting-CI-Results]]
   * [[Frequent Errors and Solutions|https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions]]
