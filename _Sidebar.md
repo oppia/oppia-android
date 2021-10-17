@@ -7,11 +7,11 @@
 ---
 **Developing Oppia**
   * [[Installing Oppia-Android|https://github.com/oppia/oppia-android/wiki]]
+    * [[Fork and Clone Oppia Android|https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia-Android]]
   * [[Android Studio UI based Github workflow|https://github.com/oppia/oppia-android/wiki/Android-Studio-UI-based-Github-workflow]]
   * Bazel
     * [[Bazel setup instructions|https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions]]
     * [[Bazel Setup Instructions for Windows|https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows]]
-  * [[Fork and Clone Oppia Android|https://github.com/oppia/oppia-android/wiki/Fork-and-Clone-Oppia-Android]]
   * [[Guidance on submitting a PR|https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR]]
   * [[Instructions for making a code change|https://github.com/oppia/oppia-android/wiki/Instructions-for-making-a-code-change]]
   * [[Troubleshooting Installation|https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation]]
