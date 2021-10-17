@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "BulletTagHandler.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
 )
 
 kt_android_library(
@@ -18,7 +18,7 @@ kt_android_library(
     srcs = [
         "ConceptCardTagHandler.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
     deps = [
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
@@ -29,7 +29,7 @@ kt_android_library(
     srcs = [
         "CustomBulletSpan.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
 )
 
 kt_android_library(
@@ -37,7 +37,7 @@ kt_android_library(
     srcs = [
         "CustomHtmlContentHandler.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
     deps = [
         "//third_party:androidx_core_core",
         "//third_party:androidx_core_core-ktx",
@@ -49,7 +49,7 @@ kt_android_library(
     srcs = [
         "ExplorationHtmlParserEntityType.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
@@ -60,7 +60,7 @@ kt_android_library(
     srcs = [
         "HtmlParser.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
     deps = [
         "//third_party:androidx_core_core",
         "//third_party:androidx_core_core-ktx",
@@ -75,7 +75,7 @@ kt_android_library(
     srcs = [
         "HtmlParserEntityTypeModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
     ],
@@ -86,7 +86,7 @@ kt_android_library(
     srcs = [
         "ImageTagHandler.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
     deps = [
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
@@ -97,7 +97,7 @@ kt_android_library(
     srcs = [
         "MathTagHandler.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
     deps = [
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],

@@ -12,7 +12,7 @@ kt_android_library(
         "svg/ScalableVectorGraphic.kt",
         "svg/SvgPictureDrawable.kt",
     ]),
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//visibility:private"],
     deps = [
         "//third_party:androidx_annotation_annotation",
         "//third_party:glide_compiler",
