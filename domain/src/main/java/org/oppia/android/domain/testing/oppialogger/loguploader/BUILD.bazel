@@ -14,7 +14,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
-        "//domain/src/main/java/org/oppia/android/domain/util:asset",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
     ],
 )
 
