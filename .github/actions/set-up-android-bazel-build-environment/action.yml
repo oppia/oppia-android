@@ -99,5 +99,4 @@ runs:
         cd $HOME/opensource
         git clone https://github.com/oppia/oppia-bazel-tools
         echo build --override_repository=android_tools="$(cd "$(dirname "$HOME/opensource/oppia-bazel-tools")"; pwd)/$(basename "$HOME/opensource/oppia-bazel-tools")" >> $HOME/.bazelrc
-        echo build --android_databinding_use_androidx >> $HOME/.bazelrc
       shell: bash
