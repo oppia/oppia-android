@@ -11,8 +11,6 @@ kt_android_library(
         "BulletTagHandler.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-    ],
 )
 
 kt_android_library(
@@ -32,8 +30,6 @@ kt_android_library(
         "CustomBulletSpan.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-    ],
 )
 
 kt_android_library(

@@ -61,8 +61,6 @@ kt_android_library(
         "ImageAssetFetcher.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-    ],
 )
 
 kt_android_library(
