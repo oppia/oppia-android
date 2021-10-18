@@ -35,9 +35,9 @@ class HelpItemViewModel(
         }
       }
       resourceHandler.getStringInLocale(R.string.privacy_policy_activity_title) -> {
-          val routeToPrivacyPolicyListener = activity as RouteToPrivacyPolicySingleListener
-          routeToPrivacyPolicyListener.onRouteToPrivacyPolicySingle()
-        }
+        val routeToPrivacyPolicyListener = activity as RouteToPrivacyPolicySingleListener
+        routeToPrivacyPolicyListener.onRouteToPrivacyPolicySingle()
+      }
     }
   }
 }
