@@ -32,6 +32,12 @@ class HelpListViewModel @Inject constructor(
           helpItemViewModel =
             HelpItemViewModel(activity, category, isMultipane.get()!!, resourceHandler)
         }
+        HelpItems.PRIVACY_POLICY -> {
+          category =
+            resourceHandler.getStringInLocale(R.string.privacy_policy_activity_title)
+          helpItemViewModel =
+            HelpItemViewModel(activity, category, isMultipane.get()!!, resourceHandler)
+        }
       }
       arrayList.add(helpItemViewModel)
     }

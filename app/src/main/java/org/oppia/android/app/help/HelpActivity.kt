@@ -11,6 +11,7 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
@@ -31,6 +32,7 @@ class HelpActivity :
   InjectableAppCompatActivity(),
   RouteToFAQListListener,
   RouteToFAQSingleListener,
+  RouteToPrivacyPolicySingleListener,
   RouteToThirdPartyDependencyListListener,
   LoadFaqListFragmentListener,
   LoadThirdPartyDependencyListFragmentListener,
@@ -69,6 +71,7 @@ class HelpActivity :
       selectedDependencyIndex,
       selectedLicenseIndex
     )
+
     title = resourceHandler.getStringInLocale(R.string.menu_help)
   }
 
@@ -123,5 +126,9 @@ class HelpActivity :
   // TODO(#3681): Add support to display Single FAQ in split mode on tablet devices.
   override fun onRouteToFAQSingle(question: String, answer: String) {
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
+  }
+
+  override fun onRouteToPrivacyPolicySingle() {
+    startActivity(PrivacyPolicySingleActivity.createPrivacyPolicySingleActivityIntent(this))
   }
 }
