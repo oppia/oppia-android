@@ -213,12 +213,12 @@ class TopicInfoFragmentTest {
       val topicDescriptionTextview: TextView = view.findViewById(
         R.id.topic_description_text_view
       )
-      assertThat(topicDescriptionTextview.textAlignment)
-        .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
     }
   }
+
   @Test
-  fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescriptionInLTR_isCorrect() {
+  fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescriptionInLtr_isCorrect() {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         context = context,
@@ -232,8 +232,7 @@ class TopicInfoFragmentTest {
       val topicDescriptionTextview: TextView = view.findViewById(
         R.id.topic_description_text_view
       )
-      assertThat(topicDescriptionTextview.textAlignment)
-        .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
     }
   }
 

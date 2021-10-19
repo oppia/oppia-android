@@ -165,8 +165,7 @@ class RevisionCardActivityTest {
           activity.findViewById(R.id.revision_card_toolbar_title)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-        onView(withId(R.id.revision_card_toolbar_title))
-          .perform(ViewActions.click())
+        onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
