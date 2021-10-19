@@ -10,7 +10,6 @@ kt_android_library(
     srcs = [
         "BitmapBlurrer.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
     ],
@@ -21,7 +20,6 @@ kt_android_library(
     srcs = [
         "BitmapBlurTransformation.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
     ],
@@ -32,7 +30,6 @@ kt_android_library(
     srcs = [
         "GlideImageLoader.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
         "//third_party:javax_inject_javax_inject",
@@ -49,7 +46,6 @@ kt_android_library(
     srcs = [
         "GlideImageLoaderModule`.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         ":dagger",
     ],
@@ -60,7 +56,6 @@ kt_android_library(
     srcs = [
         "ImageAssetFetcher.kt",
     ],
-    visibility = ["//visibility:private"],
 )
 
 kt_android_library(
@@ -68,7 +63,6 @@ kt_android_library(
     srcs = [
         "ImageParsingAnnotations.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
@@ -91,7 +85,6 @@ kt_android_library(
     srcs = [
         "ImageTargets.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
     ],
@@ -102,7 +95,6 @@ kt_android_library(
     srcs = [
         "RepositoryGlideModule.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
         "//utility/src/main/java/org/oppia/android/util/caching:assets",
@@ -118,7 +110,6 @@ kt_android_library(
     srcs = [
         "RepositoryModelLoader.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
     ],
@@ -129,7 +120,6 @@ kt_android_library(
     srcs = [
         "TestGlideImageLoader.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
@@ -141,7 +131,6 @@ kt_android_library(
     srcs = [
         "TextPictureDrawable.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_picture_drawable",
@@ -153,7 +142,6 @@ kt_android_library(
     srcs = [
         "UrlImageParser.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
         "//third_party:javax_inject_javax_inject",

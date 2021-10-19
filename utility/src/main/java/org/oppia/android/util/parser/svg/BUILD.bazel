@@ -9,7 +9,6 @@ kt_android_library(
     srcs = [
         "BlockSvgDrawableTranscoder.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
     ],
@@ -20,7 +19,6 @@ kt_android_library(
     srcs = [
         "SvgBlurTransformation.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
     ],
@@ -31,7 +29,6 @@ kt_android_library(
     srcs = [
         "SvgDecoder.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         "//third_party:glide_compiler",
     ],
@@ -42,7 +39,6 @@ kt_android_library(
     srcs = [
         "TextSvgDrawableTranscoder.kt",
     ],
-    visibility = ["//visibility:private"],
     deps = [
         ":svg_picture_drawable",
         "//third_party:glide_compiler",
