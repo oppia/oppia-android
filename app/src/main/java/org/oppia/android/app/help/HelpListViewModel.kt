@@ -38,6 +38,12 @@ class HelpListViewModel @Inject constructor(
           helpItemViewModel =
             HelpItemViewModel(activity, category, isMultipane.get()!!, resourceHandler)
         }
+        HelpItems.TERMS_OF_SERVICE -> {
+          category =
+            resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title)
+          helpItemViewModel =
+            HelpItemViewModel(activity, category, isMultipane.get()!!, resourceHandler)
+        }
       }
       arrayList.add(helpItemViewModel)
     }

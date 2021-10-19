@@ -12,6 +12,7 @@ import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicySingleActivity
+import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceSingleActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
@@ -33,6 +34,7 @@ class HelpActivity :
   RouteToFAQListListener,
   RouteToFAQSingleListener,
   RouteToPrivacyPolicySingleListener,
+  RouteToTermsOfServiceSingleListener
   RouteToThirdPartyDependencyListListener,
   LoadFaqListFragmentListener,
   LoadThirdPartyDependencyListFragmentListener,
@@ -130,5 +132,13 @@ class HelpActivity :
 
   override fun onRouteToPrivacyPolicySingle() {
     startActivity(PrivacyPolicySingleActivity.createPrivacyPolicySingleActivityIntent(this))
+  }
+
+  override fun onRouteToTermsOfServiceSingle() {
+    startActivity(
+      TermsOfServiceSingleActivity.createTermsOfServiceSingleActivityIntent(
+        this
+      )
+    )
   }
 }

@@ -4,5 +4,6 @@ package org.oppia.android.app.help
 enum class HelpItems {
   FAQ,
   THIRD_PARTY,
-  PRIVACY_POLICY;
+  PRIVACY_POLICY,
+  TERMS_OF_SERVICE;
 }

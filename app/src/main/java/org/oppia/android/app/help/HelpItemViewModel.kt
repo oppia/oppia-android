@@ -38,6 +38,10 @@ class HelpItemViewModel(
         val routeToPrivacyPolicyListener = activity as RouteToPrivacyPolicySingleListener
         routeToPrivacyPolicyListener.onRouteToPrivacyPolicySingle()
       }
+      resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title) -> {
+        val routeToTermsOfServiceListener = activity as RouteToTermsOfServiceSingleListener
+        routeToTermsOfServiceListener.onRouteToTermsOfServiceSingle()
+      }
     }
   }
 }
