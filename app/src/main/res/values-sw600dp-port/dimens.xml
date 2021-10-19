@@ -350,6 +350,12 @@
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
 
+  <!-- Profile Progress Header -->
+  <dimen name="profile_edit_image_layout_margin_start">42dp</dimen>
+  <dimen name="profile_name_text_view_layout_margin_end">42dp</dimen>
+  <dimen name="recently_played_stories_text_view_layout_margin_start">24dp</dimen>
+  <dimen name="view_all_text_view_margin_end">24dp</dimen>
+
   <!-- Ongoing Topic List Fragment -->
   <dimen name="ongoing_topic_list_fragment_padding_start">96dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_top">12dp</dimen>
@@ -361,6 +367,27 @@
   <dimen name="topic_revision_fragment_padding_top">8dp</dimen>
   <dimen name="topic_revision_fragment_padding_end">96dp</dimen>
   <dimen name="topic_revision_fragment_padding_bottom">112dp</dimen>
+
+  <!-- Solution Summary -->
+  <dimen name="solution_summary_margin_top_linear_layout_first">0dp</dimen>
+  <dimen name="solution_summary_margin_top_solution_title">32dp</dimen>
+  <dimen name="solution_summary_margin_bottom_solution_title">32dp</dimen>
+  <dimen name="solution_summary_margin_top_reveal_solution_button">0dp</dimen>
+  <dimen name="solution_summary_margin_bottom_reveal_solution_button">28dp</dimen>
+  <dimen name="solution_summary_margin_start_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_margin_end_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_min_width_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_min_height_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_margin_bottom_expand_list_icon">16dp</dimen>
+  <dimen name="solution_summary_margin_top_expand_list_icon">32dp</dimen>
+  <dimen name="solution_summary_margin_start">128dp</dimen>
+  <dimen name="solution_summary_margin_end">128dp</dimen>
+  <dimen name="solution_summary_margin_bottom">4dp</dimen>
+  <dimen name="solution_summary_margin_start_linear_layout">128dp</dimen>
+  <dimen name="solution_summary_margin_end_linear_layout">128dp</dimen>
+  <dimen name="solution_summary_margin_top_linear_layout">0dp</dimen>
+  <dimen name="solution_summary_margin_bottom_linear_layout">32dp</dimen>
+  <dimen name="solution_summary_margin_top_solution_summary_label">16dp</dimen>
 
 
  <!-- SectionTitleFragment -->

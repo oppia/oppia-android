@@ -643,7 +643,7 @@ class TopicController @Inject constructor(
           ChapterSummary.newBuilder().apply {
             explorationId = chapterRecord.explorationId
             name = chapterRecord.title
-            summary = chapterRecord.outline
+            summary = chapterRecord.description
             chapterPlayState = ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
             chapterThumbnail = chapterRecord.chapterThumbnail
           }.build()
@@ -661,8 +661,8 @@ class TopicController @Inject constructor(
       chapterList.add(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
-          .setName(chapter.getStringFromObject("title"))
-          .setSummary(chapter.getStringFromObject("outline"))
+          .setName(chapter.optString("title"))
+          .setSummary(chapter.optString("description"))
           .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
           .setChapterThumbnail(createChapterThumbnail(chapter))
           .build()
