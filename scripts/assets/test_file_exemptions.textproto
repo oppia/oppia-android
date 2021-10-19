@@ -121,6 +121,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/help/LoadLicenseLis
 exempted_file_path: "app/src/main/java/org/oppia/android/app/help/LoadLicenseTextViewerFragmentListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/help/LoadThirdPartyDependencyListFragmentListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/help/RouteToPrivacyPolicySingleListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/help/RouteToThirdPartyDependencyListListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/help/faq/FAQListActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/help/faq/FAQListActivityPresenter.kt"
