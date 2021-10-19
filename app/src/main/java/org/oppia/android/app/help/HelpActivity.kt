@@ -34,7 +34,7 @@ class HelpActivity :
   RouteToFAQListListener,
   RouteToFAQSingleListener,
   RouteToPrivacyPolicySingleListener,
-  RouteToTermsOfServiceSingleListener
+  RouteToTermsOfServiceSingleListener,
   RouteToThirdPartyDependencyListListener,
   LoadFaqListFragmentListener,
   LoadThirdPartyDependencyListFragmentListener,
