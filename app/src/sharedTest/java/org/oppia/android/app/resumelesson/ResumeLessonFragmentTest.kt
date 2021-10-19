@@ -202,7 +202,7 @@ class ResumeLessonFragmentTest {
   }
 
   @Test
-  fun testResumeLessonFragment_lessonDescriptionIsInRTL_isDisplayedCorrectly() {
+  fun testResumeLessonFragment_lessonDescriptionIsInRtl_isDisplayedCorrectly() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
       scenario.onActivity { activity ->
         activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
