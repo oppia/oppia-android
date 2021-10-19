@@ -2,6 +2,6 @@ package org.oppia.android.app.help
 
 /** Listener for when a selection should result to [TermsOfServiceSingleActivity]. */
 interface RouteToTermsOfServiceSingleListener {
-  /**  Called when the user wants to open the Privacy policy page. */
+  /**  Called when the user wants to open the Terms Of Service page. */
   fun onRouteToTermsOfServiceSingle()
 }

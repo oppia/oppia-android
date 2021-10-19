@@ -206,7 +206,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/ongoingtopiclist/On
 exempted_file_path: "app/src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListViewModel.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageActivityPresenter.kt"
