@@ -244,7 +244,7 @@
   <dimen name="general_screen_padding_bottom">108dp</dimen>
 
   <!-- Profile Edit -->
-  <dimen name="profile_edit_delete_margin_bottom">108dp</dimen>
+  <dimen name="profile_edit_delete_margin_bottom">12dp</dimen>
 
   <!-- Concept Card Fragment -->
   <dimen name="concept_card_heading_text_margin_start">52dp</dimen>
@@ -376,5 +376,34 @@
   <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_top">16dp</dimen>
   <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_end">168dp</dimen>
   <dimen name="profile_reset_pin_activity_profile_reset_save_button_margin_end">168dp</dimen>
+
+  <!-- Profile Edit Fragment -->
+  <dimen name="profile_edit_fragment_view_padding">0dp</dimen>
+  <dimen name="profile_edit_fragment_profile_width_and_height">90dp</dimen>
+  <dimen name="profile_edit_fragment_margin_top_and_start">28dp</dimen>
+  <dimen name="elevation_of_2dp">2dp</dimen>
+  <dimen name="profile_text_view_margin_start">24dp</dimen>
+  <dimen name="profile_view_height">1dp</dimen>
+  <dimen name="view2_margin_top">36dp</dimen>
+  <dimen name="profile_rename_button_padding_start">16dp</dimen>
+  <dimen name="profile_rename_button_padding_end">16dp</dimen>
+  <dimen name="profile_rename_button_min_height">48dp</dimen>
+  <dimen name="profile_reset_button_padding_start">16dp</dimen>
+  <dimen name="profile_reset_button_padding_end">16dp</dimen>
+  <dimen name="profile_reset_button_min_height">48dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_padding_start">16dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_padding_top">12dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_padding_end">24dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_padding_start">24dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_padding_end">12dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_padding_bottom">12dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_min_height">48dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_min_width">48dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_padding_start">12dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_padding_end">12dp</dimen>
+  <dimen name="profile_delete_button_min_height">48dp</dimen>
+  <dimen name="profile_delete_button_padding_start">16dp</dimen>
+  <dimen name="profile_delete_button_padding_end">16dp</dimen>
+
 
 </resources>
