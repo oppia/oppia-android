@@ -217,7 +217,7 @@ class ResumeLessonFragmentTest {
   }
 
   @Test
-  fun testResumeLessonFragment_lessonDescriptionIsInLTR_isDisplayedCorrectly() {
+  fun testResumeLessonFragment_lessonDescriptionIsInLtr_isDisplayedCorrectly() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
       scenario.onActivity { activity ->
         activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
