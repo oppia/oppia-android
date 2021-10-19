@@ -63,18 +63,6 @@ genrule(
     """,
 )
 
-genrule(
-    name = "update_ImageViewBindingAdaptersTest",
-    srcs = ["ImageViewBindingAdaptersTest.kt"],
-    outs = ["ImageViewBindingAdaptersTest_updated.kt"],
-    cmd = """
-    cat $(SRCS) |
-    sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
-    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
-    sed 's/import org.oppia.android.app.databinding.ImageViewBindingAdapters./import org.oppia.android.app.databinding.ImageViewBindingAdapters_updated./g' > $(OUTS)
-    """,
-)
-
 oppia_android_test(
     name = "ImageViewBindingAdaptersTest",
     srcs = ["ImageViewBindingAdaptersTest_updated.kt"],
