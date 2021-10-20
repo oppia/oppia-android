@@ -54,9 +54,6 @@ class ProfilePictureActivityPresenter @Inject constructor(
       R.id.profile_picture_activity_toolbar
     ) as Toolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar!!.setTitle(R.string.profile_picture_activity_title)
-    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     toolbar.setNavigationOnClickListener {
       activity.finish()
     }
