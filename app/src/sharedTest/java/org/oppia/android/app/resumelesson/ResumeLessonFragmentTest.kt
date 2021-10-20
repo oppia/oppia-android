@@ -210,8 +210,7 @@ class ResumeLessonFragmentTest {
         val topicDescriptionTextview: TextView = activity.findViewById(
           R.id.resume_lesson_chapter_description_text_view
         )
-        assertThat(topicDescriptionTextview.textAlignment)
-          .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }
@@ -225,8 +224,7 @@ class ResumeLessonFragmentTest {
         val topicDescriptionTextview: TextView = activity.findViewById(
           R.id.resume_lesson_chapter_description_text_view
         )
-        assertThat(topicDescriptionTextview.textAlignment)
-          .isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
   }
