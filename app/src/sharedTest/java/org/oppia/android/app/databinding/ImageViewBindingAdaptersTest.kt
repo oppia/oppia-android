@@ -27,7 +27,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -81,11 +80,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.activity.ActivityComponentFactory
 
 /** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ImageViewBindingAdaptersTest.TestApplication::class)
 class ImageViewBindingAdaptersTest {
   var url1 = "https://images.unsplash"
   var url2 = ".com/photo-1554080353-a576cf803bda?ixid"
@@ -120,7 +119,7 @@ class ImageViewBindingAdaptersTest {
   fun setImageDrawableWithStaticDrawables() {
     val image_view = activityRule.scenario.runWithActivity {
       val imageview = it.findViewById<ImageView>(R.id.imageView)
-      ImageViewBindingAdapters.setImageDrawable(
+      ImageViewBindingAdapters.setImageDrawableCompat(
         imageview,
         R.drawable.lesson_thumbnail_graphic_baker
       )
@@ -129,7 +128,7 @@ class ImageViewBindingAdaptersTest {
     onView(withId(R.id.imageView))
       .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.lesson_thumbnail_graphic_baker)))
     onView(isRoot()).perform(orientationLandscape())
-    ImageViewBindingAdapters.setImageDrawable(image_view, R.drawable.lesson_thumbnail_graphic_baker)
+    ImageViewBindingAdapters.setImageDrawableCompat(image_view, R.drawable.lesson_thumbnail_graphic_baker)
     onView(withId(R.id.imageView))
       .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.lesson_thumbnail_graphic_baker)))
   }
