@@ -825,9 +825,29 @@ states {
       value {
       }
     }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "solution"
+      value {
+      }
+    }
     content {
       html: "<p>What is 11 times 11?</p>"
       content_id: "content"
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+      }
+    }
+    written_translations {
+      key: "solution"
+      value {
+      }
     }
     written_translations {
       key: "feedback_2"
@@ -968,6 +988,19 @@ states {
             }
           }
           rule_type: "IsGreaterThan"
+        }
+      }
+      solution {
+        interaction_id: "NumericInput"
+        explanation {
+          html: "<p>11 times 11 is 121.</p>"
+          content_id: "solution"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>11 * 11 can be rephrased as 11 * 10, then add 11 at the end.</p>"
+          content_id: "hint_1"
         }
       }
       default_outcome {

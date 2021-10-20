@@ -2603,6 +2603,7 @@ class StateFragmentTest {
     targetTextViewId: Int
   ) {
     scrollToViewType(SELECTION_INTERACTION)
+    // First, check that the option matches what's expected by the test.
     onView(
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,

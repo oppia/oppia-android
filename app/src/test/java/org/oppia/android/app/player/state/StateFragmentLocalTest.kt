@@ -72,6 +72,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -146,6 +147,15 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.TopicListToCache
+import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.testing.environment.TestEnvironmentConfig
+import dagger.Module
+import dagger.Provides
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -251,7 +261,7 @@ class StateFragmentLocalTest {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
 
-      playThroughState1()
+      playThroughFractionsState1()
 
       onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
     }
@@ -261,7 +271,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_wait10seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
@@ -273,7 +283,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_wait30seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
@@ -285,7 +295,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_wait60seconds_hintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
 
@@ -297,7 +307,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_wait60seconds_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
       openHintsAndSolutionsDialog()
@@ -310,7 +320,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_wait120seconds_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(120))
       openHintsAndSolutionsDialog()
@@ -324,7 +334,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_portrait_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
@@ -336,7 +346,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
@@ -348,7 +358,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_portrait_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
@@ -359,7 +369,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_landscape_submitCorrectAnswer_confettiIsActive() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
@@ -369,10 +379,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_wait60seconds_submitTwoWrongAnswers_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      submitTwoWrongAnswers()
+      submitTwoWrongAnswersForFractionsState2()
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -383,9 +393,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderVisible() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitTwoWrongAnswers()
+      submitTwoWrongAnswersForFractionsState2()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       testCoroutineDispatchers.runCurrent()
 
@@ -397,9 +407,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_submitTwoWrongAnswers_checkPreviousHeaderCollapsed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitTwoWrongAnswers()
+      submitTwoWrongAnswersForFractionsState2()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       testCoroutineDispatchers.runCurrent()
 
@@ -417,9 +427,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_submitTwoWrongAnswers_expandResponse_checkPreviousHeaderExpanded() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitTwoWrongAnswers()
+      submitTwoWrongAnswersForFractionsState2()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       testCoroutineDispatchers.runCurrent()
@@ -438,9 +448,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_expandCollapseResponse_checkPreviousHeaderCollapsed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitTwoWrongAnswers()
+      submitTwoWrongAnswersForFractionsState2()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       testCoroutineDispatchers.runCurrent()
@@ -475,9 +485,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_submitInitialWrongAnswer_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
 
       // Submitting one wrong answer isn't sufficient to show a hint.
       onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
@@ -488,9 +498,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_submitInitialWrongAnswer_wait10seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Submitting one wrong answer isn't sufficient to show a hint.
@@ -502,9 +512,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_submitInitialWrongAnswer_wait30seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
       // Submitting one wrong answer isn't sufficient to show a hint.
@@ -516,9 +526,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_submitTwoWrongAnswers_hintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitTwoWrongAnswers()
+      submitTwoWrongAnswersForFractionsState2()
 
       // Submitting two wrong answers should make the hint immediately available.
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
@@ -529,8 +539,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_submitTwoWrongAnswers_hintAvailable_prevState_hintNotAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      submitTwoWrongAnswers()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2()
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
       // The previous navigation button is next to a submit answer button in this state.
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
@@ -545,8 +555,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_submitTwoWrongAnswers_prevState_currentState_checkDotIconVisible() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      submitTwoWrongAnswers()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
@@ -557,8 +567,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_oneUnrevealedHint_prevState_currentState_checkOneUnrevealedHintVisible() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      submitTwoWrongAnswers()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -577,9 +587,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      produceAndViewFirstHint()
+      produceAndViewFirstHintForFractionState2()
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
       openHintsAndSolutionsDialog()
       onView(withId(R.id.hints_and_solution_recycler_view))
@@ -607,9 +617,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_submitTwoWrongAnswersAndWait_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitTwoWrongAnswers()
+      submitTwoWrongAnswersForFractionsState2()
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -620,9 +630,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_submitThreeWrongAnswers_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
-      submitThreeWrongAnswersAndWait()
+      submitThreeWrongAnswersForFractionsState2AndWait()
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -634,8 +644,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_newHintIsNoLongerAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      submitTwoWrongAnswersAndWait()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2AndWait()
       openHintsAndSolutionsDialog()
 
       pressRevealHintButton(hintPosition = 0)
@@ -650,8 +660,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_wait10seconds_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
@@ -663,8 +673,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_wait30seconds_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
@@ -677,8 +687,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_doNotWait_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -692,8 +702,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_wait30seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
       openHintsAndSolutionsDialog()
@@ -708,8 +718,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_wait60seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
       openHintsAndSolutionsDialog()
@@ -724,11 +734,11 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_wait60seconds_submitWrongAnswer_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       openHintsAndSolutionsDialog()
 
       // After 60 seconds and one wrong answer submission, only two hints should be available.
@@ -741,10 +751,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
 
       // Submitting a single wrong answer after the previous hint won't immediately show another.
       onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
@@ -755,10 +765,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait10seconds_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Waiting 10 seconds after submitting a wrong answer should allow another hint to be shown.
@@ -770,10 +780,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait10seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
       openHintsAndSolutionsDialog()
 
@@ -786,10 +796,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewHint_submitWrongAnswer_wait30seconds_canViewTwoHints() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
       openHintsAndSolutionsDialog()
 
@@ -803,8 +813,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFirstHint_configChange_secondHintIsNotAvailableImmediately() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -816,8 +826,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFirstHint_configChange_wait30Seconds_secondHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
 
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -832,7 +842,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_newHintAvailable_configChange_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
       onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
@@ -845,8 +855,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFirstHint_prevState_wait30seconds_newHintIsNotAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFirstHint()
+      playThroughFractionsState1()
+      produceAndViewFirstHintForFractionState2()
       clickPreviousStateNavigationButton()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
       onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
@@ -857,8 +867,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFourHints_wait10seconds_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
@@ -870,8 +880,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFourHints_wait30seconds_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
@@ -884,8 +894,8 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFourHints_wait30seconds_canViewSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
       openHintsAndSolutionsDialog()
@@ -907,10 +917,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
 
       // Submitting a wrong answer will not immediately reveal the solution.
       onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
@@ -921,10 +931,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_wait10s_newHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Submitting a wrong answer and waiting will reveal the solution.
@@ -936,10 +946,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewFourHints_submitWrongAnswer_wait10s_canViewSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
       openHintsAndSolutionsDialog()
 
@@ -960,10 +970,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewSolution_clickRevealSolutionButton_showsDialog() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
       openHintsAndSolutionsDialog()
 
@@ -989,10 +999,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_solutionIsRevealed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       openHintsAndSolutionsDialog()
@@ -1009,10 +1019,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickReveal_cannotViewRevealSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       openHintsAndSolutionsDialog()
@@ -1029,10 +1039,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_solutionIsNotRevealed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       openHintsAndSolutionsDialog()
@@ -1049,10 +1059,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       openHintsAndSolutionsDialog()
@@ -1069,10 +1079,10 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewSolution_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
 
-      produceAndViewSolution(scenario, revealedHintCount = 4)
+      produceAndViewSolutionInFractionsState2(scenario, revealedHintCount = 4)
 
       // No hint should be indicated as available after revealing the solution.
       onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
@@ -1083,9 +1093,9 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewSolution_wait30seconds_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
-      produceAndViewSolution(scenario, revealedHintCount = 4)
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+      produceAndViewSolutionInFractionsState2(scenario, revealedHintCount = 4)
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
@@ -1098,11 +1108,11 @@ class StateFragmentLocalTest {
   fun testStateFragment_nextState_viewSolution_submitWrongAnswer_wait10s_noNewHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
-      playThroughState1()
-      produceAndViewFourHints()
-      produceAndViewSolution(scenario, revealedHintCount = 4)
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+      produceAndViewSolutionInFractionsState2(scenario, revealedHintCount = 4)
 
-      submitWrongAnswerToState2()
+      submitWrongAnswerToFractionsState2()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Submitting a wrong answer should not change anything since the solution's been revealed.
@@ -1126,14 +1136,62 @@ class StateFragmentLocalTest {
   fun testStateFragment_stateWithoutSolution_viewAllHints_wrongAnswerAndWait_noHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playUpToFinalTestSecondTry()
-      produceAndViewThreeHintsInState13()
+      playUpToFractionsFinalTestSecondTry()
+      produceAndViewThreeHintsInFractionsState13()
 
-      submitWrongAnswerToState13()
+      submitWrongAnswerToFractionsState13()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // No hint indicator should be shown since there is no solution for this state.
       onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_stateWithNumericSolution_revealHint_reopenDialog_onlyOneHintShown() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+      playThroughTestState2()
+      playThroughTestState3()
+      playThroughTestState4()
+      playThroughTestState5()
+      // Trigger the first hint to show (via two incorrect answers), then reveal  it.
+      produceAndViewNextHint(hintPosition = 0) {
+        submitNumericInput(text = "1")
+        submitNumericInput(text = "1")
+      }
+
+      // Reopen the dialog after showing the hint.
+      openHintsAndSolutionsDialog()
+
+      // Verify that the first hint is available, but not the solution.
+      onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Solution")).inRoot(isDialog()).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_stateWithNumericSolution_revealHint_triggerSolution_hintBulbShown() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+      playThroughTestState2()
+      playThroughTestState3()
+      playThroughTestState4()
+      playThroughTestState5()
+      // Trigger the first hint to show (via two incorrect answers), then reveal  it.
+      produceAndViewNextHint(hintPosition = 0) {
+        submitNumericInput(text = "1")
+        submitNumericInput(text = "1")
+      }
+
+      // Trigger the solution to show by submitting another incorrect answer & waiting.
+      submitNumericInput(text = "1")
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      // The new hint indicator should be shown since a solution is now available.
+      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
     }
   }
 
@@ -1304,7 +1362,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_mobilePortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughAllStates()
+      playThroughAllFractionsStates()
       clickContinueButton()
 
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
@@ -1316,7 +1374,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_mobileLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughAllStates()
+      playThroughAllFractionsStates()
       clickContinueButton()
 
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
@@ -1330,7 +1388,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughAllStates()
+      playThroughAllFractionsStates()
       clickContinueButton()
 
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
@@ -1344,7 +1402,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughAllStates()
+      playThroughAllFractionsStates()
       clickContinueButton()
 
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
@@ -1356,7 +1414,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_finishExploration_changePortToLand_endOfSessionConfettiIsDisplayedAgain() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughAllStates()
+      playThroughAllFractionsStates()
       clickContinueButton()
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
@@ -1379,7 +1437,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_finishExploration_changeLandToPort_endOfSessionConfettiIsDisplayedAgain() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughAllStates()
+      playThroughAllFractionsStates()
       clickContinueButton()
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
@@ -1401,7 +1459,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_submitCorrectAnswer_endOfSessionConfettiDoesNotStart() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughState1()
+      playThroughFractionsState1()
 
       onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
     }
@@ -1412,7 +1470,7 @@ class StateFragmentLocalTest {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       // Play through all questions but do not reach the last screen of the exploration.
-      playThroughAllStates()
+      playThroughAllFractionsStates()
 
       onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
     }
@@ -1422,7 +1480,7 @@ class StateFragmentLocalTest {
   fun testStateFragment_reachEndOfExplorationTwice_endOfSessionConfettiIsDisplayedOnce() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
-      playThroughAllStates()
+      playThroughAllFractionsStates()
       clickContinueButton()
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
       onView(withId(R.id.full_screen_confetti_view)).check(
@@ -1477,113 +1535,140 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun playThroughState1() {
+  private fun playThroughFractionsState1() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState2() {
+  private fun playThroughFractionsState2() {
     // Correct answer to 'Matthew gets conned'
     submitFractionAnswer(answerText = "3/4")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState3() {
+  private fun playThroughFractionsState3() {
     // Correct answer to 'Question 1'
     submitFractionAnswer(answerText = "4/9")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState4() {
+  private fun playThroughFractionsState4() {
     // Correct answer to 'Question 2'
     submitFractionAnswer(answerText = "1/4")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState5() {
+  private fun playThroughFractionsState5() {
     // Correct answer to 'Question 3'
     submitFractionAnswer(answerText = "1/8")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState6() {
+  private fun playThroughFractionsState6() {
     // Correct answer to 'Question 4'
     submitFractionAnswer(answerText = "1/2")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState7() {
+  private fun playThroughFractionsState7() {
     // Correct answer to 'Question 5' which redirects the learner to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "2/9")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState8() {
+  private fun playThroughFractionsState8() {
     // Correct answer to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "7/9")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState9() {
+  private fun playThroughFractionsState9() {
     // Correct answer to 'Thinking in fractions Q2'
     submitFractionAnswer(answerText = "4/9")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState10() {
+  private fun playThroughFractionsState10() {
     // Correct answer to 'Thinking in fractions Q3'
     submitFractionAnswer(answerText = "5/8")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState11() {
+  private fun playThroughFractionsState11() {
     // Correct answer to 'Thinking in fractions Q4' which redirects the learner to 'Final Test A'
     submitFractionAnswer(answerText = "3/4")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState12() {
+  private fun playThroughFractionsState12() {
     // Correct answer to 'Final Test A' redirects learner to 'Happy ending'
     submitFractionAnswer(answerText = "2/4")
     clickContinueNavigationButton()
   }
 
-  private fun playThroughState12WithWrongAnswer() {
+  private fun playThroughFractionsState12WithWrongAnswer() {
     // Incorrect answer to 'Final Test A' redirects the learner to 'Final Test A second try'
     submitFractionAnswer(answerText = "1/9")
     clickContinueNavigationButton()
   }
 
-  private fun playUpToFinalTestSecondTry() {
-    playThroughState1()
-    playThroughState2()
-    playThroughState3()
-    playThroughState4()
-    playThroughState5()
-    playThroughState6()
-    playThroughState7()
-    playThroughState8()
-    playThroughState9()
-    playThroughState10()
-    playThroughState11()
-    playThroughState12WithWrongAnswer()
+  private fun playUpToFractionsFinalTestSecondTry() {
+    playThroughFractionsState1()
+    playThroughFractionsState2()
+    playThroughFractionsState3()
+    playThroughFractionsState4()
+    playThroughFractionsState5()
+    playThroughFractionsState6()
+    playThroughFractionsState7()
+    playThroughFractionsState8()
+    playThroughFractionsState9()
+    playThroughFractionsState10()
+    playThroughFractionsState11()
+    playThroughFractionsState12WithWrongAnswer()
   }
 
-  private fun playThroughAllStates() {
-    playThroughState1()
-    playThroughState2()
-    playThroughState3()
-    playThroughState4()
-    playThroughState5()
-    playThroughState6()
-    playThroughState7()
-    playThroughState8()
-    playThroughState9()
-    playThroughState10()
-    playThroughState11()
-    playThroughState12()
+  private fun playThroughAllFractionsStates() {
+    playThroughFractionsState1()
+    playThroughFractionsState2()
+    playThroughFractionsState3()
+    playThroughFractionsState4()
+    playThroughFractionsState5()
+    playThroughFractionsState6()
+    playThroughFractionsState7()
+    playThroughFractionsState8()
+    playThroughFractionsState9()
+    playThroughFractionsState10()
+    playThroughFractionsState11()
+    playThroughFractionsState12()
+  }
+
+  private fun playThroughTestState1() {
+    clickContinueButton()
+  }
+
+  private fun playThroughTestState2() {
+    submitFractionAnswer(answerText = "1/2")
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughTestState3() {
+    selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughTestState4() {
+    selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughTestState5() {
+    selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+    selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+    selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
   }
 
   private fun clickContinueNavigationButton() {
@@ -1597,6 +1682,12 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.continue_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickSubmitAnswerButton() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
+    onView(withId(R.id.submit_answer_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -1654,58 +1745,115 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun submitFractionAnswer(answerText: String) {
+  private fun typeFractionAnswer(answerText: String) {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(FRACTION_INPUT_INTERACTION))
-    onView(withId(R.id.fraction_input_interaction_view)).perform(
-      editTextInputAction.appendText(answerText)
-    )
-    testCoroutineDispatchers.runCurrent()
+    typeTextIntoInteraction(answerText, interactionViewId = R.id.fraction_input_interaction_view)
+  }
 
-    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SUBMIT_ANSWER_BUTTON))
-    onView(withId(R.id.submit_answer_button)).perform(click())
+  private fun submitFractionAnswer(answerText: String) {
+    typeFractionAnswer(answerText)
+    clickSubmitAnswerButton()
+  }
+
+  private fun selectMultipleChoiceOption(optionPosition: Int, expectedOptionText: String) {
+    clickSelection(
+      optionPosition,
+      targetClickViewId = R.id.multiple_choice_radio_button,
+      expectedText = expectedOptionText,
+      targetTextViewId = R.id.multiple_choice_content_text_view
+    )
+  }
+
+  private fun selectItemSelectionCheckbox(optionPosition: Int, expectedOptionText: String) {
+    clickSelection(
+      optionPosition,
+      targetClickViewId = R.id.item_selection_checkbox,
+      expectedText = expectedOptionText,
+      targetTextViewId = R.id.item_selection_contents_text_view
+    )
+  }
+
+  private fun typeNumericInput(text: String) {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NUMERIC_INPUT_INTERACTION))
+    typeTextIntoInteraction(text, interactionViewId = R.id.numeric_input_interaction_view)
+  }
+
+  private fun submitNumericInput(text: String) {
+    typeNumericInput(text)
+    clickSubmitAnswerButton()
+  }
+
+  private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
+    onView(withId(interactionViewId)).perform(editTextInputAction.appendText(text))
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun submitWrongAnswerToState2() {
+  private fun clickSelection(
+    optionPosition: Int,
+    targetClickViewId: Int,
+    expectedText: String,
+    targetTextViewId: Int
+  ) {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
+    // First, check that the option matches what's expected by the test.
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = optionPosition,
+        targetViewId = targetTextViewId
+      )
+    ).check(matches(withText(containsString(expectedText))))
+    // Then, click on it.
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = optionPosition,
+        targetViewId = targetClickViewId
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun submitWrongAnswerToFractionsState2() {
     submitFractionAnswer(answerText = "1/2")
   }
 
-  private fun submitWrongAnswerToState2AndWait() {
-    submitWrongAnswerToState2()
+  private fun submitWrongAnswerToFractionsState2AndWait() {
+    submitWrongAnswerToFractionsState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
   }
 
-  private fun submitWrongAnswerToState13() {
+  private fun submitWrongAnswerToFractionsState13() {
     submitFractionAnswer(answerText = "1/9")
   }
 
-  private fun submitWrongAnswerToState13AndWait() {
-    submitWrongAnswerToState13()
+  private fun submitWrongAnswerToFractionsState13AndWait() {
+    submitWrongAnswerToFractionsState13()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
   }
 
-  private fun submitTwoWrongAnswers() {
-    submitWrongAnswerToState2()
-    submitWrongAnswerToState2()
+  private fun submitTwoWrongAnswersForFractionsState2() {
+    submitWrongAnswerToFractionsState2()
+    submitWrongAnswerToFractionsState2()
   }
 
-  private fun submitTwoWrongAnswersAndWait() {
-    submitTwoWrongAnswers()
+  private fun submitTwoWrongAnswersForFractionsState2AndWait() {
+    submitTwoWrongAnswersForFractionsState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
   }
 
-  private fun submitThreeWrongAnswersAndWait() {
-    submitWrongAnswerToState2()
-    submitWrongAnswerToState2()
-    submitWrongAnswerToState2()
+  private fun submitThreeWrongAnswersForFractionsState2AndWait() {
+    submitWrongAnswerToFractionsState2()
+    submitWrongAnswerToFractionsState2()
+    submitWrongAnswerToFractionsState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
   }
 
-  private fun produceAndViewFirstHint() {
+  private fun produceAndViewFirstHintForFractionState2() {
     // Two wrong answers need to be submitted for the first hint to show up, so submit an extra one
     // in advance of the standard show & reveal hint flow.
-    submitWrongAnswerToState2()
-    produceAndViewNextHint(hintPosition = 0, submitAnswer = this::submitWrongAnswerToState2AndWait)
+    submitWrongAnswerToFractionsState2()
+    produceAndViewNextHint(hintPosition = 0, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait)
   }
 
   /**
@@ -1719,27 +1867,39 @@ class StateFragmentLocalTest {
     closeHintsAndSolutionsDialog()
   }
 
-  private fun produceAndViewThreeHintsInState13() {
-    submitWrongAnswerToState13()
-    produceAndViewNextHint(hintPosition = 0, submitAnswer = this::submitWrongAnswerToState13AndWait)
-    produceAndViewNextHint(hintPosition = 1, submitAnswer = this::submitWrongAnswerToState13AndWait)
-    produceAndViewNextHint(hintPosition = 2, submitAnswer = this::submitWrongAnswerToState13AndWait)
+  private fun produceAndViewThreeHintsInFractionsState13() {
+    submitWrongAnswerToFractionsState13()
+    produceAndViewNextHint(
+      hintPosition = 0, submitAnswer = this::submitWrongAnswerToFractionsState13AndWait
+    )
+    produceAndViewNextHint(
+      hintPosition = 1, submitAnswer = this::submitWrongAnswerToFractionsState13AndWait
+    )
+    produceAndViewNextHint(
+      hintPosition = 2, submitAnswer = this::submitWrongAnswerToFractionsState13AndWait
+    )
   }
 
-  private fun produceAndViewFourHints() {
+  private fun produceAndViewFourHintsInFractionState2() {
     // Cause three hints to show, and reveal each of them one at a time (to allow the later hints
     // to be shown).
-    produceAndViewFirstHint()
-    produceAndViewNextHint(hintPosition = 1, submitAnswer = this::submitWrongAnswerToState2AndWait)
-    produceAndViewNextHint(hintPosition = 2, submitAnswer = this::submitWrongAnswerToState2AndWait)
-    produceAndViewNextHint(hintPosition = 3, submitAnswer = this::submitWrongAnswerToState2AndWait)
+    produceAndViewFirstHintForFractionState2()
+    produceAndViewNextHint(
+      hintPosition = 1, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait
+    )
+    produceAndViewNextHint(
+      hintPosition = 2, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait
+    )
+    produceAndViewNextHint(
+      hintPosition = 3, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait
+    )
   }
 
-  private fun produceAndViewSolution(
+  private fun produceAndViewSolutionInFractionsState2(
     activityScenario: ActivityScenario<StateFragmentTestActivity>,
     revealedHintCount: Int
   ) {
-    submitWrongAnswerToState2AndWait()
+    submitWrongAnswerToFractionsState2AndWait()
     openHintsAndSolutionsDialog()
     pressRevealSolutionButton(revealedHintCount)
     clickConfirmRevealSolutionButton(activityScenario)
@@ -1855,19 +2015,40 @@ class StateFragmentLocalTest {
       })
   }
 
+  // TODO(#89): Move this to a common test application component.
+  @Module
+  class TestModule {
+    @Provides
+    @LoadLessonProtosFromAssets
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
+      testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    @CacheAssetsLocally
+    fun provideCacheAssetsLocally(): Boolean = false
+
+    @Provides
+    @TopicListToCache
+    fun provideTopicListToCache(): List<String> = listOf()
+
+    @Provides
+    @LoadImagesFromAssets
+    fun provideLoadImagesFromAssets(): Boolean = false
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      RobolectricModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class, LoggerModule::class, ContinueModule::class,
+      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,

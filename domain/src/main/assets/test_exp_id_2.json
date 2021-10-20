@@ -692,8 +692,20 @@
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
           },
-          "hints": [],
-          "solution": null
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>11 * 11 can be rephrased as 11 * 10, then add 11 at the end.</p>"
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": true,
+            "correct_answer": 121.0,
+            "explanation": {
+              "content_id": "solution",
+              "html": "<p>11 times 11 is 121.</p>"
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
