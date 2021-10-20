@@ -174,12 +174,18 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_hasCorrectRequiredString() {
-    activityTestRule.launchActivity(createAddProfileActivityIntent())
-    val label = activityTestRule.activity.add_profile_activity_required_heading_text_view.text
-
-    // Verify that the activity shows the correct *Required string for add_profile_activity_required_heading_text_view
-    assertThat(label).isEqualTo(context.getString(R.string.add_profile_required))
+  fun testAddProfileActivity_required_heading_text_view_hasCorrectRequiredString() {
+    launch(
+      AddProfileActivity::class.java
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(activity.add_profile_activity_required_heading_text_view.text).isEqualTo("*" +
+          context.getString(
+            R.string.add_profile_required
+          )
+        )
+      }
+    }
   }
 
   @Test
