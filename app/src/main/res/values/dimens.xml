@@ -574,4 +574,11 @@
   <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_end">28dp</dimen>
   <dimen name="profile_reset_pin_activity_profile_reset_save_button_margin_end">28dp</dimen>
 
+  <!-- Profile Rename Activity -->
+  <dimen name="profile_rename_activity_constraint_layout">32dp</dimen>
+  <dimen name="profile_rename_activity_profile_rename_input_margin_start">28dp</dimen>
+  <dimen name="profile_rename_activity_profile_rename_input_margin_top">28dp</dimen>
+  <dimen name="profile_rename_activity_profile_rename_input_margin_end">28dp</dimen>
+  <dimen name="profile_rename_activity_profile_rename_save_button_margin_end">28dp</dimen>
+
 </resources>
