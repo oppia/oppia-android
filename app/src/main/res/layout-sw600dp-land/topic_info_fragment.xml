@@ -58,8 +58,6 @@
         <TextView
           android:id="@+id/topic_description_text_view"
           style="@style/Body"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
           android:layout_marginTop="16dp"
           android:ellipsize="end"
           android:maxLines="@{viewModel.isDescriptionExpanded() ? @integer/topic_description_expanded : @integer/topic_description_collapsed}"
