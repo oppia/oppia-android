@@ -31,23 +31,10 @@
 
         <TextView
           android:id="@+id/revision_card_toolbar_title"
+          style="@style/MarqueeToolbarTitleTextView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="20dp"
-          android:ellipsize="marquee"
-          android:textAlignment="viewStart"
-          android:fadingEdge="horizontal"
-          android:fadingEdgeLength="20dp"
-          android:focusable="false"
-          android:focusableInTouchMode="true"
-          android:fontFamily="sans-serif"
-          android:marqueeRepeatLimit="1"
-          android:minHeight="48dp"
-          android:requiresFadingEdge="horizontal"
-          android:scrollHorizontally="true"
-          android:singleLine="true"
-          android:textColor="@color/white"
-          android:textSize="20sp" />
+          android:layout_marginEnd="20dp"/>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
