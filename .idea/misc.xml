@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/ic_language_icon_grey_24dp.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_lessons_icon_24dp.xml" value="0.1" />
+        <entry key="app/src/main/res/layout-land/app_language_fragment.xml" value="0.13922942206654992" />
+        <entry key="app/src/main/res/layout-land/profile_chooser_add_view.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-sw600dp-land/profile_chooser_add_view.xml" value="0.2003994673768309" />
+        <entry key="app/src/main/res/layout-sw600dp-land/profile_chooser_profile_view.xml" value="0.2003994673768309" />
+        <entry key="app/src/main/res/layout-sw600dp-port/profile_chooser_add_view.xml" value="0.21448087431693988" />
+        <entry key="app/src/main/res/layout-sw600dp/app_language_fragment.xml" value="0.12421875" />
+        <entry key="app/src/main/res/layout/activity_input_interaction_view_test.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/activity_view_binding_adapters_test.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/add_profile_activity.xml" value="0.1640625" />
+        <entry key="app/src/main/res/layout/admin_auth_activity.xml" value="0.1640625" />
+        <entry key="app/src/main/res/layout/admin_settings_dialog.xml" value="0.1640625" />
+        <entry key="app/src/main/res/layout/app_language_activity.xml" value="0.165625" />
+        <entry key="app/src/main/res/layout/app_language_fragment.xml" value="0.165625" />
+        <entry key="app/src/main/res/layout/drawer_fragment.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.1640625" />
+        <entry key="app/src/main/res/layout/options_fragment.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/profile_chooser_activity.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/profile_chooser_add_view.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/profile_chooser_fragment.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/profile_list_activity.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/profile_picture_activity.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/profile_picture_edit_dialog.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/layout/welcome.xml" value="0.28442028985507245" />
+        <entry key="app/src/main/res/menu/navigation_drawer_menu.xml" value="0.31354166666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

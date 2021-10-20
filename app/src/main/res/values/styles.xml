@@ -317,4 +317,9 @@
     <item name="android:textColor">@color/white</item>
     <item name="android:textSize">14sp</item>
   </style>
+
+  <!-- ShapableImageView Style -->
+  <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+    <item name="cornerSize">50%</item>
+  </style>
 </resources>
