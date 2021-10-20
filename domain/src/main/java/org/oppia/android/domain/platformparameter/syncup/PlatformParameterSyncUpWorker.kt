@@ -3,6 +3,7 @@ package org.oppia.android.domain.platformparameter.syncup
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
+import com.google.common.base.Optional
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,6 +16,7 @@ import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.Response
 import java.lang.IllegalArgumentException
@@ -26,7 +28,7 @@ class PlatformParameterSyncUpWorker private constructor(
   context: Context,
   params: WorkerParameters,
   private val platformParameterController: PlatformParameterController,
-  private val platformParameterService: PlatformParameterService,
+  private val platformParameterService: Optional<PlatformParameterService>,
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
@@ -54,7 +56,7 @@ class PlatformParameterSyncUpWorker private constructor(
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
-      when (inputData.getString(WORKER_TYPE_KEY)) {
+      when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
         PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
         else -> Result.failure()
       }
@@ -90,30 +92,38 @@ class PlatformParameterSyncUpWorker private constructor(
   }
 
   /** Synchronously executes the network request to get platform parameters from the Oppia backend */
-  private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>> {
-    return platformParameterService.getPlatformParametersByVersion(
-      applicationContext.getVersionName()
-    ).execute()
+  private fun makeNetworkCallForPlatformParameters(): Optional<Response<Map<String, Any>>?> {
+    return platformParameterService.transform { service ->
+      service?.getPlatformParametersByVersion(
+        applicationContext.getVersionName()
+      )?.execute()
+    }
   }
 
   /** Extracts platform parameters from the remote service and stores them in the cache store */
   private suspend fun refreshPlatformParameters(): Result {
     return try {
-      val response = makeNetworkCallForPlatformParameters()
-      val responseBody = checkNotNull(response.body())
-      val platformParameterList = parseNetworkResponse(responseBody)
-      if (platformParameterList.isEmpty()) {
-        throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
+      val optionalResponse = makeNetworkCallForPlatformParameters()
+      val response = optionalResponse.orNull()
+      if (response != null) {
+        val responseBody = checkNotNull(response.body())
+        val platformParameterList = parseNetworkResponse(responseBody)
+        if (platformParameterList.isEmpty()) {
+          throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
+        }
+        val cachingResult = platformParameterController
+          .updatePlatformParameterDatabase(platformParameterList)
+          .retrieveData()
+        if (cachingResult.isFailure()) {
+          throw IllegalStateException(cachingResult.getErrorOrNull())
+        }
+        Result.success()
+      } else {
+        oppiaLogger.e(TAG, "Failed to fetch platform parameters (no network stack available)")
+        Result.failure()
       }
-      val cachingResult = platformParameterController
-        .updatePlatformParameterDatabase(platformParameterList)
-        .retrieveData()
-      if (cachingResult.isFailure()) {
-        throw IllegalStateException(cachingResult.getErrorOrNull())
-      }
-      Result.success()
     } catch (e: Exception) {
-      oppiaLogger.e(TAG, "Failed to fetch the Platform Parameters", e)
+      oppiaLogger.e(TAG, "Failed to fetch platform parameters", e)
       exceptionsController.logNonFatalException(e)
       Result.failure()
     }
@@ -122,7 +132,7 @@ class PlatformParameterSyncUpWorker private constructor(
   /** Creates an instance of [PlatformParameterSyncUpWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val platformParameterController: PlatformParameterController,
-    private val platformParameterService: PlatformParameterService,
+    private val platformParameterService: Optional<PlatformParameterService>,
     private val oppiaLogger: OppiaLogger,
     private val exceptionsController: ExceptionsController,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher

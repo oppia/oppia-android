@@ -9,14 +9,6 @@
     <import type="androidx.constraintlayout.widget.ConstraintSet" />
 
     <variable
-      name="submittedAnswer"
-      type="CharSequence" />
-
-    <variable
-      name="accessibleAnswer"
-      type="CharSequence" />
-
-    <variable
       name="submittedListAnswer"
       type="org.oppia.android.app.model.ListOfSetsOfHtmlStrings" />
 
@@ -55,9 +47,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
-      android:contentDescription="@{viewModel.isCorrectAnswer() ? String.format(@string/correct_submitted_answer_with_append, accessibleAnswer.length() > 0  ? accessibleAnswer : submittedAnswer) : String.format(@string/incorrect_submitted_answer_with_append, accessibleAnswer.length() > 0  ? accessibleAnswer : submittedAnswer)}"
+      android:contentDescription="@{viewModel.submittedAnswerContentDescription}"
       android:padding="12dp"
-      android:text="@{submittedAnswer}"
+      android:text="@{viewModel.submittedAnswer}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="16sp"
       android:visibility="gone"
@@ -96,7 +88,7 @@
       android:layout_gravity="center_vertical"
       android:layout_marginStart="@dimen/answer_tick_margin"
       android:importantForAccessibility="no"
-      android:src="@drawable/ic_check_primary"
+      app:srcCompat="@drawable/ic_check_primary"
       android:visibility="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toEndOf="@+id/submitted_answer_text_view"

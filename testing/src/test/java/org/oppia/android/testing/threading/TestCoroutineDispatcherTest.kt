@@ -201,9 +201,7 @@ class TestCoroutineDispatcherTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private inline fun <S : Subject<S, T>, T, reified E : Any> Subject<S, T>.isInstanceOf(
-    type: KClass<E>
-  ) = isInstanceOf(type.java)
+  private fun Subject.isInstanceOf(type: KClass<*>) = isInstanceOf(type.java)
 
   // TODO(#89): Move this to a common test application component.
   @Module

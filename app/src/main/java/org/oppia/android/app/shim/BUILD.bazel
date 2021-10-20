@@ -1,0 +1,85 @@
+"""
+Temporary shims for providing indirection in the Bazel build graph to unblock modularizing certain
+parts of the app layer.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+IMPL_FILES = [
+    "IntentFactoryShimImpl.kt",
+    "ViewBindingShimImpl.kt",
+]
+
+# TODO(#1617): Remove genrules post-gradle
+[
+    genrule(
+        name = "update_" + file[0:-3],
+        srcs = [file],
+        outs = [file[0:-3] + "_updated.kt"],
+        cmd = """
+     cat $(SRCS) |
+     sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
+     sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' > $(OUTS)
+     """,
+    )
+    for file in IMPL_FILES
+]
+
+# Files to be built by the app library.
+UPDATED_IMPL_FILES = [
+    "update_" + file_with_resource_imports[0:-3]
+    for file_with_resource_imports in IMPL_FILES
+]
+
+kt_android_library(
+    name = "intent_factory_shim",
+    srcs = [
+        "IntentFactoryShim.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)
+
+kt_android_library(
+    name = "view_binding_shim",
+    srcs = [
+        "ViewBindingShim.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app:view_models",
+    ],
+)
+
+kt_android_library(
+    name = "impl",
+    srcs = UPDATED_IMPL_FILES,
+    deps = [
+        ":dagger",
+        ":intent_factory_shim",
+        ":view_binding_shim",
+        "//app:databinding_resources",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//utility",
+    ],
+)
+
+kt_android_library(
+    name = "prod_modules",
+    srcs = [
+        "IntentFactoryShimModule.kt",
+        "ViewBindingShimModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":impl",
+        ":intent_factory_shim",
+        ":view_binding_shim",
+    ],
+)
+
+dagger_rules()

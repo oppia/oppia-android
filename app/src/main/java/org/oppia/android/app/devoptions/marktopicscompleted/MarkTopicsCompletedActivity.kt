@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** Activity for Mark Topics Completed. */
@@ -13,14 +15,18 @@ class MarkTopicsCompletedActivity : InjectableAppCompatActivity() {
 
   @Inject
   lateinit var markTopicsCompletedActivityPresenter: MarkTopicsCompletedActivityPresenter
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
-    internalProfileId = intent.getIntExtra(MARK_TOPICS_COMPLETED_ACTIVITY_PROFILE_ID_KEY, -1)
+    (activityComponent as ActivityComponentImpl).inject(this)
+    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     markTopicsCompletedActivityPresenter.handleOnCreate(internalProfileId)
-    title = getString(R.string.mark_topics_completed_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.mark_topics_completed_activity_title)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -31,12 +37,11 @@ class MarkTopicsCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val MARK_TOPICS_COMPLETED_ACTIVITY_PROFILE_ID_KEY =
-      "MarkTopicsCompletedActivity.internal_profile_id"
+    const val PROFILE_ID_EXTRA_KEY = "MarkTopicsCompletedActivity.profile_id"
 
     fun createMarkTopicsCompletedIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkTopicsCompletedActivity::class.java)
-      intent.putExtra(MARK_TOPICS_COMPLETED_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }

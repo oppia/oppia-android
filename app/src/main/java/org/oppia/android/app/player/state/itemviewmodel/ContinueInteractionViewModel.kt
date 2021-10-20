@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
@@ -21,21 +22,21 @@ class ContinueInteractionViewModel(
   val hasConversationView: Boolean,
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
+  private val writtenTranslationContext: WrittenTranslationContext
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
   override fun isAutoNavigating(): Boolean = true
 
-  override fun getPendingAnswer(): UserAnswer {
-    return UserAnswer.newBuilder()
-      .setAnswer(
-        InteractionObject.newBuilder().setNormalizedString(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
-      )
-      .setPlainAnswer(DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER)
-      .build()
-  }
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
+    answer = InteractionObject.newBuilder().apply {
+      normalizedString = DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER
+    }.build()
+    plainAnswer = DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER
+    this.writtenTranslationContext = this@ContinueInteractionViewModel.writtenTranslationContext
+  }.build()
 
   fun handleButtonClicked() {
     interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())

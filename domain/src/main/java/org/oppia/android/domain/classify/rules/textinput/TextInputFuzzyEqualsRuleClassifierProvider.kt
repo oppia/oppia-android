@@ -2,10 +2,13 @@ package org.oppia.android.domain.classify.rules.textinput
 
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.normalizeWhitespace
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 
 /**
@@ -16,7 +19,9 @@ import javax.inject.Inject
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
+  private val classifierFactory: GenericRuleClassifier.Factory,
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val translationController: TranslationController
 ) : RuleClassifierProvider,
   GenericRuleClassifier.MultiTypeSingleInputMatcher<String, TranslatableSetOfNormalizedString> {
 
@@ -29,13 +34,18 @@ class TextInputFuzzyEqualsRuleClassifierProvider @Inject constructor(
     )
   }
 
-  override fun matches(answer: String, input: TranslatableSetOfNormalizedString): Boolean {
-    return input.normalizedStringsList.any { hasEditDistanceEqualToOne(it, answer) }
+  override fun matches(
+    answer: String,
+    input: TranslatableSetOfNormalizedString,
+    writtenTranslationContext: WrittenTranslationContext
+  ): Boolean {
+    val inputStringList = translationController.extractStringList(input, writtenTranslationContext)
+    return inputStringList.any { hasEditDistanceEqualToOne(it, answer) }
   }
 
   private fun hasEditDistanceEqualToOne(inputString: String, matchString: String): Boolean {
-    val lowerInput = inputString.normalizeWhitespace().toLowerCase()
-    val lowerMatch = matchString.normalizeWhitespace().toLowerCase()
+    val lowerInput = machineLocale.run { inputString.normalizeWhitespace().toMachineLowerCase() }
+    val lowerMatch = machineLocale.run { matchString.normalizeWhitespace().toMachineLowerCase() }
     if (lowerInput == lowerMatch) {
       return true
     }

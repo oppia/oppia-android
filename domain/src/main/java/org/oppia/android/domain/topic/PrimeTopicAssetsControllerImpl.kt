@@ -48,6 +48,7 @@ import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
@@ -81,6 +82,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   private val questionRetriever: QuestionRetriever,
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
+  private val machineLocale: OppiaLocale.MachineLocale,
   @DefaultGcsPrefix private val gcsPrefix: String,
   @DefaultResourceBucketName private val gcsResource: String,
   @QuestionResourceBucketName private val questionGcsResource: String,
@@ -100,6 +102,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   private val extraDispatcher = Executors.newFixedThreadPool(
     /* nThreads= */ 4
   ).asCoroutineDispatcher()
+
   // NOTE TO DEVELOPERS: Never do this. We should never hold activity references in singleton
   // objects, even as weak references. This is being done to keep priming code isolated so that it's
   // easier to remove after #169 is completed.
@@ -499,7 +502,9 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
     entityId: String,
     imageFileName: String
   ): String {
-    val downloadUrlFile = String.format(template, entityType, entityId, imageFileName)
+    val downloadUrlFile = machineLocale.run {
+      template.formatForMachines(entityType, entityId, imageFileName)
+    }
     return "$gcsPrefix/$gcsBucket/$downloadUrlFile"
   }
 

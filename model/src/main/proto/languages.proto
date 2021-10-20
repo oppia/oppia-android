@@ -1,0 +1,265 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// The list of languages partly or fully supported natively by the Android app.
+enum OppiaLanguage {
+  // Corresponds to an unspecified, unknown, or unsupported language.
+  LANGUAGE_UNSPECIFIED = 0;
+
+  // Corresponds to the Arabic (اَلْعَرَبِيَّةُ‎) macro language. IETF BCP 47 language tag: ar.
+  ARABIC = 1;
+
+  // Corresponds to the English (English) macro language. IETF BCP 47 language tag: en.
+  ENGLISH = 2;
+
+  // Corresponds to the Hindi (हिन्दी) macro language. IETF BCP 47 language tag: hi.
+  HINDI = 3;
+
+  // Corresponds to the Hindi-English macaraonic language. Custom language tag: hi-en.
+  HINGLISH = 4;
+
+  // Corresponds to the Portuguese (português) macro language. IETF BCP 47 language tag: pt.
+  PORTUGUESE = 5;
+
+  // Corresponds to the Brazilian variant of Portuguese. IETF BCP 47 language tag: pt-BR.
+  BRAZILIAN_PORTUGUESE = 6;
+}
+
+// The list of regions explicitly supported natively by the Android app. Note that the app is not
+// automatically unsupported in countries not on this list. Countries absent from this list may
+// default to default system behavior for certain localization situations (such as date & time
+// formatting) rather than being explicitly handled by the app.
+//
+// Note also that these regions cannot be construed as countries, nor as the area the user is in.
+// The system's locale can be changed by the user, so this is a best-effort basis to match to the
+// user's current system. Further, the app retains future support for regions not directly supported
+// by the Android system.
+enum OppiaRegion {
+  // Corresponds to an unspecified, unknown, or undefined region. In these cases, the app will rely
+  // on system behavior for locale-related decisions (such as formatting).
+  REGION_UNSPECIFIED = 0;
+
+  // Corresponds to Brazil (Brasil). IETF BCP 47 region tag: BR.
+  BRAZIL = 1;
+
+  // Corresponds to India (Bhārat Gaṇarājya). IETF BCP 47 region tag: IN.
+  INDIA = 2;
+
+  // Corresponds to United State of America (U.S.A.). IETF BCP 47 region tag: US.
+  UNITED_STATES = 3;
+}
+
+// Defines the list of supported languages in the app.
+message SupportedLanguages {
+  // The list of language definitions, one for each language. If any languages are not represented
+  // in this list then it's assumed that they are not supported. If a language is represented
+  // multiple times, the first occurrence in the list for that language is used.
+  repeated LanguageSupportDefinition language_definitions = 1;
+}
+
+// Defines the list of supported regions in the app. Note that countries missing from this list are
+// handled generically (that is, they rely on the system to handle certain localization contexts
+// or otherwise fallback to the default locale of the system). Note that regions are only associated
+// with languages for the purpose of localizing text such as date & time formats.
+message SupportedRegions {
+  // The list of region deifnitions, one for each OppiaRegion. If any regions are not represented in
+  // this list then the app relies on default behavior for that region's corresponding locale. If a
+  // region is represented multiply times, the first occurrence in the list for that region is used.
+  repeated RegionSupportDefinition region_definitions = 1;
+}
+
+// Defines the support for a specific language.
+message LanguageSupportDefinition {
+  // The language corresponding to this definition.
+  OppiaLanguage language = 1;
+
+  // The macro language to fall back to if this language is not supported on the local system or
+  // for specific content (e.g.: 'pt' could be a fallback for Brazilian Portuguese).
+  OppiaLanguage fallback_macro_language = 2;
+
+  // Corresponds to the minimum SDK version required to natively support this language. May be
+  // missing (i.e. 0) if the language is not natively supported by Android. Note that Android does
+  // not, strictly speaking, support individual languages at the SDK level since the actual support
+  // for languages may depend on the specific OEM and installation situation. However, Android does
+  // support certain versions of the Unicode standard based on the release which indicates which
+  // characters it _can_ support for rendering. That means this field indicates the minimum version
+  // of Android needed to render this language but not necessarily have Locale support for it. Note
+  // also that Android always allows defining translation strings for language codes that it does
+  // not recognize/natively support.
+  //
+  // https://developer.android.com/guide/topics/resources/internationalization provides a reference
+  // for Android Unicode support. Note that Android 7.0 and above leverages the ICU4J library for
+  // handling newer Unicode standards and is thus less clear about compatibility. The app doesn't
+  // currently compile in ICU4J.
+  //
+  // https://unicode.org/standard/supported.html provides a reference for which scripts are
+  // supported by each Unicode version. The IANA registry for languages includes scripts:
+  // http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry. Languages
+  // also have their scripts defined, so a mapping can be established between language and minimum
+  // Android SDK version.
+  int32 min_android_sdk_version = 3;
+
+  // Details of how to identify this language when translating app strings. If missing, this
+  // language will be unsupported for app strings.
+  LanguageId app_string_id = 4;
+
+  // Details of how to identify this language when translating content strings. If missing, this
+  // language will be unsupported for content strings.
+  LanguageId content_string_id = 5;
+
+  // Details of how to identify this language when selecting audio voiceover translations. If
+  // missing, this language will be unsupported for audio voiceovers.
+  LanguageId audio_translation_id = 6;
+
+  // A representation of identifying a particular language in different contexts.
+  message LanguageId {
+    // Corresponds to the type of language being identified.
+    oneof language_type {
+      // Indicates that this identifier corresponds to an IETF BCP 47 identified language.
+      IetfBcp47LanguageId ietf_bcp47_id = 1;
+
+      // Indicates that this identifier corresponds to a macaronic language.
+      MacaronicLanguageId macaronic_id = 2;
+    }
+
+    // Identifier for retrieving Android resources corresponding to this language. If this is absent
+    // then it's assumed there are no Android resources corresponding to this language.
+    AndroidLanguageId android_resources_language_id = 3;
+  }
+
+  // An identifier representation for IETF BCP 47 languages. Note that ISO 639-1/2/3 is not used
+  // since it can't represent regional languages like Canadian French. See the following article for
+  // details on how IETF language tags are formed: https://www.unfoldingword.org/ietf. Current tag
+  // registry: http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry.
+  // Note that the list above will contain languages not supported on all Android platforms.
+  message IetfBcp47LanguageId {
+    // The language tag according to the IETF BCP 47 standard.
+    string ietf_language_tag = 1;
+  }
+
+  // An identifier representation for macaronic languages (which are languages which combine two
+  // others, e.g.: Hinglish).
+  message MacaronicLanguageId {
+    // The combined language code for this macaronic language (e.g. 'hi-en' for Hinglish). Note that
+    // the constituent parts of the language may not necessarily correspond to ISO 639-1 language
+    // codes. It's also expected that order matters here: hi-en and en_hi would not correspond to
+    // the same macaronic language.
+    string combined_language_code = 1;
+  }
+
+  // An identifier representation for languages supported on Android via resource directories. Note
+  // that these may not exactly match with IETF BCP 47 since Android uses a slightly different
+  // system, and custom types are allowed by providing fake language/region codes (such as for
+  // hi-en).
+  message AndroidLanguageId {
+    // The language code understood by Android (usually an ISO 639-1 code, but custom codes may be
+    // used). This is always expected to be present for valid language IDs.
+    string language_code = 1;
+
+    // The language code understood by Android (usually an ISO 3166 alpha-2 code, but custom codes
+    // may be used). This may be absent when referencing macro languages.
+    string region_code = 2;
+  }
+}
+
+// Defines the support for a specific region.
+message RegionSupportDefinition {
+  // The specific region corresponding to this definition.
+  OppiaRegion region = 1;
+
+  // The IETF BCP 47 identifier corresponding to the region this region represents.
+  IetfBcp47RegionId region_id = 2;
+
+  // The list of languages corresponding to this region. Note that the app first prioritizes the
+  // selected language by the user (either via the Android system or through a language picker) when
+  // deciding which language to represent this region. If the user's locale and language selection
+  // do not match the region support definitions, the first language of this list will be used. If
+  // no languages are defined, the app will fall back to rely on the system's default behavior for
+  // the user's locale (if the system supports it, otherwise the default locale will be used).
+  repeated OppiaLanguage languages = 3;
+
+  // An identifier for IETF BCP 47 regions. The current registry of available regions is at:
+  // http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry (search for
+  // 'Type: region').
+  message IetfBcp47RegionId {
+    // The region tag according to the IETF BCP 47 standard, usually either an ISO 3166 alpha-2
+    // country code or a UN M.49 numeric-3 area code.
+    string ietf_region_tag = 1;
+  }
+}
+
+// Corresponds to a serializable context that can be used to reconstitute an OppiaLocale.
+message OppiaLocaleContext {
+  // The definition corresponding to this context's language.
+  LanguageSupportDefinition language_definition = 1;
+
+  // The definition corresponding to this context's fallback language.
+  LanguageSupportDefinition fallback_language_definition = 2;
+
+  // The definition corresponding to this context's region.
+  RegionSupportDefinition region_definition = 3;
+
+  // Indicates how the language & fallback support definitions should be used in this context. Note
+  // that this actually implies this context should not be used for other cases not indicated by
+  // this usage mode.
+  LanguageUsageMode usage_mode = 4;
+
+  // Corresponds to different usage modes that language definitions can be used in.
+  enum LanguageUsageMode {
+    // Indicates that no usage mode is defined (meaning that no aspects of language definitions
+    // should be used).
+    USAGE_MODE_UNSPECIFIED = 0;
+
+    // Indicates that the language definitions should only be used for retrieving app strings.
+    APP_STRINGS = 1;
+
+    // Indicates that the language definitions should only be used for translating content strings.
+    CONTENT_STRINGS = 2;
+
+    // Indicates that the language definitions should only be used for managing audio translations.
+    AUDIO_TRANSLATIONS = 3;
+  }
+}
+
+//  Represents the selection of an app language.
+message AppLanguageSelection {
+  // Different types of selections that can be made when choosing an app language.
+  oneof selection_type {
+    // Indicates that the system-specified language should be used for app translations. The actual
+    // boolean value specified here doesn't matter.
+    bool use_system_language_or_app_default = 1;
+
+    // Indicates that the specified language should be used for app string translations.
+    OppiaLanguage selected_language = 2;
+  }
+}
+
+//  Represents the selection of a written content translation language.
+message WrittenTranslationLanguageSelection {
+  // Different types of selections that can be made when choosing a language for written content
+  // translations. If this is not defined, the selection is assumed to be use_app_language.
+  oneof selection_type {
+    // Indicates that the selected app language should be used for written content translations.
+    bool use_app_language = 1;
+
+    // Indicates that the specified language should be used for written content translations.
+    OppiaLanguage selected_language = 2;
+  }
+}
+
+//  Represents the selection of an audio voiceover language.
+message AudioTranslationLanguageSelection {
+  // Different types of selections that can be made when choosing a language for audio voiceovers.
+  // If this is not defined, the selection is assumed to be use_app_language.
+  oneof selection_type {
+    // Indicates that the selected app language should be used for audio voiceovers.
+    bool use_app_language = 1;
+
+    // Indicates that the specified language should be used for audio voiceovers.
+    OppiaLanguage selected_language = 2;
+  }
+}

@@ -15,6 +15,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.impl.utils.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
+import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
@@ -22,10 +23,11 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -36,6 +38,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkApiKey
@@ -62,12 +65,14 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerFactory
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -75,8 +80,10 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -103,6 +110,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterIntegrationTest.TestApplication::class)
 class PlatformParameterIntegrationTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -290,17 +299,19 @@ class PlatformParameterIntegrationTest {
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
       remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
       @BaseUrl baseUrl: String
-    ): Retrofit {
+    ): Optional<Retrofit> {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
         .addInterceptor(remoteAuthNetworkInterceptor)
         .build()
 
-      return Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build()
+      return Optional.of(
+        Retrofit.Builder()
+          .baseUrl(baseUrl)
+          .addConverterFactory(MoshiConverterFactory.create())
+          .client(client)
+          .build()
+      )
     }
 
     @Provides
@@ -308,9 +319,11 @@ class PlatformParameterIntegrationTest {
     fun provideNetworkApiKey(): String = ""
 
     @Provides
-    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): PlatformParameterService {
+    fun provideMockPlatformParameterService(
+      mockRetrofit: MockRetrofit
+    ): Optional<PlatformParameterService> {
       val delegate = mockRetrofit.create(PlatformParameterService::class.java)
-      return MockPlatformParameterService(delegate)
+      return Optional.of(MockPlatformParameterService(delegate))
     }
   }
 
@@ -335,7 +348,8 @@ class PlatformParameterIntegrationTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, TestNetworkModule::class, RetrofitTestModule::class,
       NetworkConfigProdModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class
+      NetworkConnectionDebugUtilModule::class, AssetModule::class, LocaleProdModule::class,
+      ActivityRecreatorTestModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

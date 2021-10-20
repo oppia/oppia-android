@@ -9,8 +9,8 @@
       },
       "worked_examples": [{
         "question": {
-          "content_id": "<unknown>",
-          "html": "<unknown>"
+          "content_id": "question-related-to-test_skill_content_id_1",
+          "html": "<removed>"
         },
         "explanation": {
           "content_id": "test_skill_content_id_1",
@@ -41,15 +41,83 @@
         "translations_mapping": {
           "explanation": {
             "es": {
-              "data_format": "<unknown>",
-              "translation": "Hola. Bienvenidos a Oppia.",
+              "data_format": "html",
+              "translation": {"translation" : "Hola. Bienvenidos a Oppia."},
+              "needs_update": false
+            },
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Olá. Bem-vindo ao oppia."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "أهلا. مرحبا بكم في أوفيا."},
               "needs_update": false
             }
           },
           "test_skill_content_id_1": {
             "es": {
-              "data_format": "<unknown>",
-              "translation": "Este es el primer ejemplo trabajado.",
+              "data_format": "html",
+              "translation": {"translation" : "Este es el primer ejemplo trabajado."},
+              "needs_update": false
+            },
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Este é o primeiro exemplo."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "هذا هو المثال الأول."},
+              "needs_update": false
+            }
+          },
+          "565a49f4-dad4-4a77-bdb0-f4e3b43e7733": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "d4ea0e9a-2c09-4d4d-ae06-2f25037bf5c7": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "252f728b-e63f-448d-9284-e34327532e26": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "question-related-to-test_skill_content_id_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
               "needs_update": false
             }
           }
@@ -66,8 +134,8 @@
       },
       "worked_examples": [{
         "question": {
-          "content_id": "<unknown>",
-          "html": "<unknown>"
+          "content_id": "question-related-to-worked_example_1",
+          "html": "<removed>"
         },
         "explanation": {
           "content_id": "worked_example_1",
@@ -82,8 +150,78 @@
       },
       "written_translations": {
         "translations_mapping": {
-          "explanation": {},
-          "worked_example_1": {}
+          "explanation": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Explicação com <b> rico texto </b>."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "Explanation مع <b> Rich Text </b>."},
+              "needs_update": false
+            }
+          },
+          "worked_example_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Exemplo trabalhado com <i> texto rico </i>."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "مثال عمل مع <I> نص ريتش </I>."},
+              "needs_update": false
+            }
+          },
+          "99b6bb52-7e4a-4b70-b0ec-a3b25a4c1c5c": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "44e3cbc7-ba12-4126-87dc-bfebd614fbd7": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "110dd366-c6cb-4b39-8409-db9a4d8db078": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "question-related-to-worked_example_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          }
         }
       }
     }
@@ -97,8 +235,8 @@
       },
       "worked_examples": [{
         "question": {
-          "content_id": "<unknown>",
-          "html": "<unknown>"
+          "content_id": "question-related-to-worked_example_1",
+          "html": "<removed>"
         },
         "explanation": {
           "content_id": "worked_example_1",
@@ -106,8 +244,8 @@
         }
       }, {
         "question": {
-          "content_id": "<unknown>",
-          "html": "<unknown>"
+          "content_id": "question-related-to-worked_example_2",
+          "html": "<removed>"
         },
         "explanation": {
           "content_id": "worked_example_2",
@@ -122,8 +260,138 @@
       },
       "written_translations": {
         "translations_mapping": {
-          "explanation": {},
-          "worked_example_1": {}
+          "explanation": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Explicação sem texto rico."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "تفسير دون نص غني."},
+              "needs_update": false
+            }
+          },
+          "worked_example_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Exemplo trabalhado sem texto rico."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "مثال على ذلك دون نص غني."},
+              "needs_update": false
+            }
+          },
+          "8bb0b74e-5c73-4569-a548-e7460640b280": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "4b2998d6-d4f2-44e1-a489-17dbfd2c0368": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "worked_example_2": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Segundo exemplo trabalhado."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "مثال يعمل الثاني."},
+              "needs_update": false
+            }
+          },
+          "76a61e5f-205a-4950-9ce5-483304a36320": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالته>"},
+              "needs_update": false
+            }
+          },
+          "a0848668-d024-44cc-b960-d85af53fe570": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "d9aa4dce-8884-4045-baa7-1fb5520b7da2": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "4b5312f2-6504-49a8-a124-56bc0bf4d72d": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "question-related-to-worked_example_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "question-related-to-worked_example_2": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          }
         }
       }
     }
@@ -159,8 +427,8 @@
       },
       "worked_examples": [{
         "question": {
-          "content_id": "<unknown>",
-          "html": "<unknown>"
+          "content_id": "question-related-to-worked_example_1",
+          "html": "<removed>"
         },
         "explanation": {
           "content_id": "worked_example_1",
@@ -210,8 +478,8 @@
       },
       "worked_examples": [{
         "question": {
-          "content_id": "<unknown>",
-          "html": "<unknown>"
+          "content_id": "question-related-to-worked_example_1",
+          "html": "<removed>"
         },
         "explanation": {
           "content_id": "worked_example_1",

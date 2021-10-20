@@ -1,0 +1,80 @@
+"""
+Constructs for setting up activities for injection in the Dagger graph.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+# TODO(#59): Define these exported files as separate libraries from top-level targets.
+exports_files([
+    "ActivityComponentImpl.kt",
+    "ActivityIntentFactoriesModule.kt",
+    "ActivityModule.kt",
+])
+
+kt_android_library(
+    name = "activity_scope",
+    srcs = [
+        "ActivityScope.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "injectable_app_compat_activity",
+    srcs = [
+        "InjectableAppCompatActivity.kt",
+    ],
+    visibility = [
+        "//app:app_visibility",
+    ],
+    deps = [
+        ":activity_component",
+        ":activity_component_factory",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_builder_injector",
+        "//app/src/main/java/org/oppia/android/app/fragment:fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector_provider",
+    ],
+)
+
+kt_android_library(
+    name = "activity_component",
+    srcs = [
+        "ActivityComponent.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector",
+        "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
+    ],
+)
+
+kt_android_library(
+    name = "activity_component_factory",
+    srcs = [
+        "ActivityComponentFactory.kt",
+    ],
+    deps = [
+        ":activity_component",
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)
+
+kt_android_library(
+    name = "activity_intent_factories_shim",
+    srcs = [
+        "ActivityIntentFactories.kt",
+    ],
+    visibility = [
+        "//app:app_visibility",
+    ],
+    deps = [
+        "//model:profile_java_proto_lite",
+    ],
+)

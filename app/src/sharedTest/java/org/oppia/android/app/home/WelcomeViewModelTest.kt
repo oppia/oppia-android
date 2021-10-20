@@ -14,7 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -27,6 +27,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeFragmentTestActivity.Companion.createHomeFragmentTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -47,18 +48,22 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -88,6 +93,9 @@ private const val TEST_FRAGMENT_TAG = "welcome_view_model_test_fragment"
 )
 class WelcomeViewModelTest {
   @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
@@ -109,9 +117,9 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
-        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(activity)
 
         // Verify the reflexive property of equals(): a == a.
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1Morning)
@@ -124,10 +132,10 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
-        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
-        val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(activity)
+        val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(activity)
 
         // Verify the symmetric property of equals(): a == b iff b == a.
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
@@ -141,11 +149,11 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
-        val welcomeViewModelProfile1MorningCopy1 = createBasicWelcomeViewModel(testFragment)
-        val welcomeViewModelProfile1MorningCopy2 = createBasicWelcomeViewModel(testFragment)
-        val welcomeViewModelProfile1MorningCopy3 = createBasicWelcomeViewModel(testFragment)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
+        val welcomeViewModelProfile1MorningCopy1 = createBasicWelcomeViewModel(activity)
+        val welcomeViewModelProfile1MorningCopy2 = createBasicWelcomeViewModel(activity)
+        val welcomeViewModelProfile1MorningCopy3 = createBasicWelcomeViewModel(activity)
         assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(
           welcomeViewModelProfile1MorningCopy2
         )
@@ -166,10 +174,10 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
-        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
-        val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(testFragment)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(activity)
+        val welcomeViewModelProfile1MorningCopy = createBasicWelcomeViewModel(activity)
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
 
         // Verify the consistent property of equals(): if neither object is modified, then a == b
@@ -184,9 +192,9 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
-        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(testFragment)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
+        val welcomeViewModelProfile1Morning = createBasicWelcomeViewModel(activity)
 
         // Verify the non-null property of equals(): for any non-null reference a, a != null
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(null)
@@ -199,18 +207,18 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          fakeOppiaClock,
-          "Profile 1"
+          "Profile 1",
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
         val welcomeViewModelProfile2Morning = WelcomeViewModel(
-          testFragment,
-          fakeOppiaClock,
-          "Profile 2"
+          "Profile 2",
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
 
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile2Morning)
@@ -223,19 +231,19 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          fakeOppiaClock,
-          "Profile 1"
+          "Profile 1",
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
         setTimeToEvening()
         val welcomeViewModelProfile1Evening = WelcomeViewModel(
-          testFragment,
-          fakeOppiaClock,
-          "Profile 1"
+          "Profile 1",
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
 
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile1Evening)
@@ -248,18 +256,18 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          fakeOppiaClock,
-          "Profile 1"
+          "Profile 1",
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
         val welcomeViewModelProfile1MorningCopy = WelcomeViewModel(
-          testFragment,
-          fakeOppiaClock,
-          "Profile 1"
+          "Profile 1",
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
 
@@ -275,13 +283,13 @@ class WelcomeViewModelTest {
     launch<HomeFragmentTestActivity>(
       createHomeFragmentTestActivity(context)
     ).use { activityScenario ->
-      activityScenario.onActivity { homeFragmentTestActivity ->
-        setUpTestFragment(homeFragmentTestActivity)
+      activityScenario.onActivity { activity ->
+        setUpTestFragment(activity)
         setTimeToMorning()
         val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          testFragment,
-          fakeOppiaClock,
-          "Profile 1"
+          "Profile 1",
+          activity.appLanguageResourceHandler,
+          activity.dateTimeUtil
         )
 
         // Verify that hashCode consistently returns the same value.
@@ -309,12 +317,10 @@ class WelcomeViewModelTest {
     fakeOppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
   }
 
-  private fun createBasicWelcomeViewModel(fragment: Fragment): WelcomeViewModel {
+  private fun createBasicWelcomeViewModel(activity: HomeFragmentTestActivity): WelcomeViewModel {
     setTimeToMorning()
     return WelcomeViewModel(
-      fragment,
-      fakeOppiaClock,
-      "Profile 1"
+      "Profile 1", activity.appLanguageResourceHandler, activity.dateTimeUtil
     )
   }
 
@@ -338,7 +344,8 @@ class WelcomeViewModelTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      NetworkConfigProdModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NetworkConfigProdModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
