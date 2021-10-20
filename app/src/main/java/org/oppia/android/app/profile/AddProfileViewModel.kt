@@ -1,13 +1,15 @@
 package org.oppia.android.app.profile
 
+import android.content.Context
 import androidx.databinding.ObservableField
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.R
 import javax.inject.Inject
 
 /** The ViewModel for [AddProfileActivity]. */
 @ActivityScope
-class AddProfileViewModel @Inject constructor() : ObservableViewModel() {
+class AddProfileViewModel @Inject constructor(context: Context) : ObservableViewModel() {
   val validPin = ObservableField(false)
   val pinErrorMsg = ObservableField("")
   val confirmPinErrorMsg = ObservableField("")
@@ -18,7 +20,7 @@ class AddProfileViewModel @Inject constructor() : ObservableViewModel() {
   val createPin = ObservableField(false)
   val isButtonActive = ObservableField(false)
   val showInfoAlertPopup = ObservableField<Boolean>(false)
-  val starRequired: String = "*Required"
+  val starRequired: String = "*" + context.getString(R.string.add_profile_required)
 
   fun clearAllErrorMessages() {
     pinErrorMsg.set("")
