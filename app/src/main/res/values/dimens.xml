@@ -521,6 +521,13 @@
   <dimen name="story_header_view_layout_margin_start">32dp</dimen>
   <dimen name="story_header_view_layout_margin_end">32dp</dimen>
 
+  <!-- These values are getting used only in tablet mode and therefore mentioned as 0dp here -->
+  <!-- Profile Progress Header -->
+  <dimen name="profile_edit_image_layout_margin_start">0dp</dimen>
+  <dimen name="profile_name_text_view_layout_margin_end">0dp</dimen>
+  <dimen name="recently_played_stories_text_view_layout_margin_start">0dp</dimen>
+  <dimen name="view_all_text_view_margin_end">0dp</dimen>
+
   <!-- Ongoing Topic List Fragment -->
   <dimen name="ongoing_topic_list_fragment_padding_start">20dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_top">20dp</dimen>
@@ -532,5 +539,39 @@
   <dimen name="topic_revision_fragment_padding_top">20dp</dimen>
   <dimen name="topic_revision_fragment_padding_end">20dp</dimen>
   <dimen name="topic_revision_fragment_padding_bottom">144dp</dimen>
+
+  <!-- Solution Summary -->
+  <dimen name="solution_summary_margin_top_linear_layout_first">32dp</dimen>
+  <dimen name="solution_summary_margin_top_solution_title">12dp</dimen>
+  <dimen name="solution_summary_margin_start">28dp</dimen>
+  <dimen name="solution_summary_margin_end">28dp</dimen>
+  <dimen name="solution_summary_margin_bottom">20dp</dimen>
+  <dimen name="solution_summary_margin_bottom_solution_title">12dp</dimen>
+  <dimen name="solution_summary_margin_top_reveal_solution_button">28dp</dimen>
+  <dimen name="solution_summary_margin_bottom_reveal_solution_button">32dp</dimen>
+  <dimen name="solution_summary_margin_start_expand_list_icon">8dp</dimen>
+  <dimen name="solution_summary_margin_end_expand_list_icon">8dp</dimen>
+  <dimen name="solution_summary_min_width_expand_list_icon">48dp</dimen>
+  <dimen name="solution_summary_min_height_expand_list_icon">48dp</dimen>
+  <dimen name="solution_summary_margin_top_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_margin_start_linear_layout">40dp</dimen>
+  <dimen name="solution_summary_margin_end_linear_layout">40dp</dimen>
+  <dimen name="solution_summary_margin_top_linear_layout">8dp</dimen>
+  <dimen name="solution_summary_margin_bottom_linear_layout">32dp</dimen>
+  <dimen name="solution_summary_margin_bottom_expand_list_icon">8dp</dimen>
+  <dimen name="solution_summary_margin_top_solution_summary_label">12dp</dimen>
+
+  <!-- Profile Reset Pin Activity -->
+  <dimen name="profile_reset_pin_activity_scroll_view_padding_bottom">0dp</dimen>
+  <dimen name="profile_reset_pin_activity_constraint_layout_padding_bottom">32dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_pin_main_padding_start">28dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_pin_main_padding_end">28dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_pin_margin_start">28dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_pin_margin_top">28dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_pin_margin_end">28dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_start">28dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_top">28dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_end">28dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_save_button_margin_end">28dp</dimen>
 
 </resources>

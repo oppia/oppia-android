@@ -30,7 +30,7 @@
         android:adjustViewBounds="true"
         android:importantForAccessibility="no"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_landscape_onboarding_3"
+        app:srcCompat="@drawable/ic_landscape_onboarding_3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="H, 10:9"
         app:layout_constraintStart_toStartOf="parent"

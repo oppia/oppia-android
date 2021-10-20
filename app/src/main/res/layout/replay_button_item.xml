@@ -21,7 +21,7 @@
       android:id="@+id/replay_button"
       style="@style/StateButtonActive"
       android:background="@drawable/state_button_orange_background"
-      android:drawableStart="@drawable/ic_refresh_white_24dp"
+      app:drawableStartCompat="@drawable/ic_refresh_white_24dp"
       android:drawablePadding="4dp"
       android:onClick="@{(v) -> buttonViewModel.replayButtonListener.onReplayButtonClicked()}"
       android:paddingStart="24dp"
