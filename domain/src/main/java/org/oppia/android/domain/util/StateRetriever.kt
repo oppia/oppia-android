@@ -173,20 +173,20 @@ class StateRetriever @Inject constructor() {
   private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
     val correctAnswerObject = containerObject.optJSONObject("correct_answer")
     return when {
-        correctAnswerObject != null -> {
-          CorrectAnswer.newBuilder()
-            .setNumerator(correctAnswerObject.getInt("numerator"))
-            .setDenominator(correctAnswerObject.getInt("denominator"))
-            .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
-            .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
-            .build()
-        }
-        containerObject.optString("correct_answer", /* fallback= */ null) != null -> {
-          CorrectAnswer.newBuilder()
-            .setCorrectAnswer(containerObject.getStringFromObject("correct_answer"))
-            .build()
-        }
-        else -> CorrectAnswer.getDefaultInstance() // For incompatible types.
+      correctAnswerObject != null -> {
+        CorrectAnswer.newBuilder()
+          .setNumerator(correctAnswerObject.getInt("numerator"))
+          .setDenominator(correctAnswerObject.getInt("denominator"))
+          .setWholeNumber(correctAnswerObject.getInt("wholeNumber"))
+          .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
+          .build()
+      }
+      containerObject.optString("correct_answer", /* fallback= */ null) != null -> {
+        CorrectAnswer.newBuilder()
+          .setCorrectAnswer(containerObject.getStringFromObject("correct_answer"))
+          .build()
+      }
+      else -> CorrectAnswer.getDefaultInstance() // For incompatible types.
     }
   }
 

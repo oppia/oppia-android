@@ -17,6 +17,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -33,6 +34,8 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -69,12 +72,13 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -114,6 +118,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
@@ -127,7 +132,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
+import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -147,15 +155,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.caching.CacheAssetsLocally
-import org.oppia.android.util.caching.TopicListToCache
-import org.oppia.android.util.caching.LoadImagesFromAssets
-import org.oppia.android.testing.environment.TestEnvironmentConfig
-import dagger.Module
-import dagger.Provides
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -1853,7 +1852,9 @@ class StateFragmentLocalTest {
     // Two wrong answers need to be submitted for the first hint to show up, so submit an extra one
     // in advance of the standard show & reveal hint flow.
     submitWrongAnswerToFractionsState2()
-    produceAndViewNextHint(hintPosition = 0, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait)
+    produceAndViewNextHint(
+      hintPosition = 0, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait
+    )
   }
 
   /**
