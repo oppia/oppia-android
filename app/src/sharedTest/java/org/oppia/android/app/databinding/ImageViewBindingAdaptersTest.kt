@@ -92,10 +92,12 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.robolectric.annotation.Config
 
 /** Tests for [MarginBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = ImageViewBindingAdaptersTest.TestApplication::class)
 class ImageViewBindingAdaptersTest {
   var url1 = "https://images.unsplash"
   var url2 = ".com/photo-1554080353-a576cf803bda?ixid"
@@ -107,7 +109,7 @@ class ImageViewBindingAdaptersTest {
   lateinit var context: Context
 
   @get:Rule
-  public var activityRule: ActivityScenarioRule<ImageViewBindingAdaptersTestActivity> =
+  var activityRule: ActivityScenarioRule<ImageViewBindingAdaptersTestActivity> =
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
@@ -117,7 +119,7 @@ class ImageViewBindingAdaptersTest {
 
   @Before
   fun setUp() {
-//    setUpTestApplicationComponent()
+    setUpTestApplicationComponent()
     Intents.init()
   }
 
@@ -126,85 +128,22 @@ class ImageViewBindingAdaptersTest {
     Intents.release()
   }
 
-  fun convertToBitmap(drawable: Drawable, widthPixels: Int, heightPixels: Int): Bitmap? {
-    val mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(mutableBitmap)
-    drawable.setBounds(0, 0, widthPixels, heightPixels)
-    drawable.draw(canvas)
-    return mutableBitmap
-  }
-
-  fun drawableIsCorrect(@DrawableRes drawableResId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun describeTo(description: Description) {
-        description.appendText("with drawable from resource id: ")
-        description.appendValue(drawableResId)
-      }
-
-      override fun matchesSafely(target: View?): Boolean {
-        if (target !is ImageView) {
-          return false
-        }
-        if (drawableResId < 0) {
-          return target.drawable == null
-        }
-        val expectedDrawable = ContextCompat.getDrawable(target.context, drawableResId)
-          ?: return false
-
-        val bitmap = convertToBitmap(target.drawable, target.width, target.height)
-        val otherBitmap = (expectedDrawable as BitmapDrawable).bitmap
-        if (bitmap != null) {
-          return bitmap.sameAs(otherBitmap)
-        }
-        return false
-      }
-    }
-  }
-
   @Test
   fun setImageDrawableWithStaticDrawables() {
-    val imageView = activityRule.scenario.runWithActivity {
-      val imageView = it.findViewById<ImageView>(R.id.imageView)
+    val image_view = activityRule.scenario.runWithActivity {
+      val imageview = it.findViewById<ImageView>(R.id.imageView)
       ImageViewBindingAdapters.setImageDrawable(
-        imageView,
+        imageview,
         R.drawable.lesson_thumbnail_graphic_baker
       )
-      return@runWithActivity imageView
+      return@runWithActivity imageview
     }
     onView(withId(R.id.imageView))
       .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.lesson_thumbnail_graphic_baker)))
     onView(isRoot()).perform(orientationLandscape())
-    ImageViewBindingAdapters.setImageDrawable(imageView, R.drawable.lesson_thumbnail_graphic_baker)
+    ImageViewBindingAdapters.setImageDrawable(image_view, R.drawable.lesson_thumbnail_graphic_baker)
     onView(withId(R.id.imageView))
       .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.lesson_thumbnail_graphic_baker)))
-  }
-
-  @Test
-  fun setImageDrawableWithGlide() {
-    val imageViewID = activityRule.scenario.runWithActivity {
-      var imageView = it.findViewById<ImageView>(R.id.imageView)
-      return@runWithActivity imageView
-    }
-    runOnUiThread {
-      ImageViewBindingAdapters.setImageDrawable(
-        imageViewID,
-        url
-      )
-    }
-//    Thread.sleep(5000)
-    onView(withId(R.id.imageView))
-      .check(matches(isDisplayed()))
-
-    onView(isRoot()).perform(orientationLandscape())
-    runOnUiThread {
-      ImageViewBindingAdapters.setImageDrawable(
-        imageViewID,
-        url
-      )
-    }
-//    Thread.sleep(5000)
-    onView(withId(R.id.imageView))
-      .check(matches(isDisplayed()))
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
