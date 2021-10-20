@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -77,7 +78,8 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val matches =
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_NEGATIVE_2_OVER_4,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -90,7 +92,8 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val matches =
       numeratorIsEqualClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -103,7 +106,8 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val matches =
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -116,7 +120,8 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val matches =
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -129,7 +134,8 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val matches =
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -142,7 +148,8 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -160,7 +167,8 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

@@ -32,7 +32,9 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.time.ZoneId
 import java.util.Calendar
+import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,6 +58,11 @@ class FakeOppiaClockTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+  }
+
+  @Test
+  fun testInitialState_forcesTimeZoneToUtc() {
+    assertThat(TimeZone.getDefault().toZoneId()).isEqualTo(ZoneId.of("UTC"))
   }
 
   @Test

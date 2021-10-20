@@ -18,6 +18,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -199,7 +200,7 @@ class OppiaLoggerTest {
     )
     assertThat(eventContext.questionContext.questionId).matches(TEST_QUESTION_ID)
     assertThat(eventContext.questionContext.skillIdList)
-      .containsAllIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
+      .containsAtLeastElementsIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
   }
 
   @Test
@@ -291,11 +292,9 @@ class OppiaLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class,
-      TestLogReportingModule::class,
-      TestLogStorageModule::class,
-      TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class
+      TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

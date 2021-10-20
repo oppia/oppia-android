@@ -65,7 +65,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_baseline_code_24"
+            app:srcCompat="@drawable/ic_baseline_code_24"
             android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlightedDeveloperOptionsNavMenuItem : @color/oppiaPrimaryTextDark}"/>
 
           <TextView
@@ -96,7 +96,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_admin_settings_icon_brown_24dp"
+            app:srcCompat="@drawable/ic_admin_settings_icon_brown_24dp"
             android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}" />
 
           <TextView

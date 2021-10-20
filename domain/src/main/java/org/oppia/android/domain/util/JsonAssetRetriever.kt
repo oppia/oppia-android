@@ -23,7 +23,7 @@ class JsonAssetRetriever @Inject constructor(private val assetRepository: AssetR
   fun getStringsFromJSONArray(jsonData: JSONArray): List<String> {
     val stringList = mutableListOf<String>()
     for (i in 0 until jsonData.length()) {
-      stringList.add(jsonData.getString(i))
+      stringList.add(jsonData.getStringFromArray(i))
     }
     return stringList
   }

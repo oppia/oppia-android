@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
@@ -30,9 +31,9 @@ class DeveloperOptionsTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.developer_options_activity)
-    internalProfileId = intent.getIntExtra(DEVELOPER_OPTIONS_TEST_ACTIVITY_PROFILE_ID_KEY, -1)
+    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     if (getDeveloperOptionsFragment() == null) {
       supportFragmentManager.beginTransaction().add(
         R.id.developer_options_fragment_placeholder,
@@ -77,13 +78,12 @@ class DeveloperOptionsTestActivity :
   }
 
   companion object {
-    const val DEVELOPER_OPTIONS_TEST_ACTIVITY_PROFILE_ID_KEY =
-      "DeveloperOptionsTestActivity.internal_profile_id"
+    const val PROFILE_ID_EXTRA_KEY = "DeveloperOptionsTestActivity.profile_id"
 
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
     fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
-      intent.putExtra(DEVELOPER_OPTIONS_TEST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }

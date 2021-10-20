@@ -19,6 +19,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.topic.RouteToResumeLessonListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
@@ -38,7 +39,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val topicListController: TopicListController,
   private val explorationCheckpointController: ExplorationCheckpointController,
-  @StoryHtmlParserEntityType private val entityType: String
+  @StoryHtmlParserEntityType private val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -83,17 +85,20 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       fragment,
       {
         if (it.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
-          binding.recentlyPlayedToolbar.title = activity.getString(R.string.recently_played_stories)
+          binding.recentlyPlayedToolbar.title =
+            resourceHandler.getStringInLocale(R.string.recently_played_stories)
           addRecentlyPlayedStoryListSection(it.promotedStoryList.recentlyPlayedStoryList)
         }
 
         if (it.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
-          binding.recentlyPlayedToolbar.title = activity.getString(R.string.recently_played_stories)
+          binding.recentlyPlayedToolbar.title =
+            resourceHandler.getStringInLocale(R.string.recently_played_stories)
           addOlderStoryListSection(it.promotedStoryList.olderPlayedStoryList)
         }
 
         if (it.promotedStoryList.suggestedStoryList.isNotEmpty()) {
-          binding.recentlyPlayedToolbar.title = activity.getString(R.string.stories_for_you)
+          binding.recentlyPlayedToolbar.title =
+            resourceHandler.getStringInLocale(R.string.stories_for_you)
           addRecommendedStoryListSection(it.promotedStoryList.suggestedStoryList)
         }
 
@@ -112,7 +117,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     recentlyPlayedStoryList: MutableList<PromotedStory>
   ) {
     val recentSectionTitleViewModel =
-      SectionTitleViewModel(activity.getString(R.string.ongoing_story_last_week), false)
+      SectionTitleViewModel(
+        resourceHandler.getStringInLocale(R.string.ongoing_story_last_week), false
+      )
     itemList.add(recentSectionTitleViewModel)
     recentlyPlayedStoryList.forEachIndexed { index, promotedStory ->
       val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory, index)
@@ -129,7 +136,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       promotedStory,
       entityType,
       fragment as OngoingStoryClickListener,
-      index
+      index,
+      resourceHandler
     )
   }
 
@@ -137,7 +145,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     val showDivider = itemList.isNotEmpty()
     val olderSectionTitleViewModel =
       SectionTitleViewModel(
-        activity.getString(R.string.ongoing_story_last_month),
+        resourceHandler.getStringInLocale(R.string.ongoing_story_last_month),
         showDivider
       )
     itemList.add(olderSectionTitleViewModel)
@@ -151,7 +159,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     val showDivider = itemList.isNotEmpty()
     val recommendedSectionTitleViewModel =
       SectionTitleViewModel(
-        activity.getString(R.string.recommended_stories),
+        resourceHandler.getStringInLocale(R.string.recommended_stories),
         showDivider
       )
     itemList.add(recommendedSectionTitleViewModel)
@@ -233,7 +241,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.getDefaultInstance(),
+          ProfileId.newBuilder().apply {
+            internalId = internalProfileId
+          }.build(),
           promotedStory.explorationId
         ).toLiveData()
 

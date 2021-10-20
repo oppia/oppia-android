@@ -4,12 +4,13 @@ import android.app.Application
 import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
-import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -32,13 +33,16 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.util.accessibility.AccessibilityProdModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -84,10 +88,11 @@ import javax.inject.Singleton
     LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionDebugModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
-    PlatformParameterModule::class, ExplorationStorageModule::class,
-    DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-    PlatformParameterSyncUpWorkerModule::class, NetworkConnectionUtilDebugModule::class,
-    NetworkConfigProdModule::class,
+    PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+    ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
+    DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
+    NetworkConnectionUtilDebugModule::class, NetworkConfigProdModule::class, AssetModule::class,
+    LocaleProdModule::class, ActivityRecreatorProdModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
     NetworkConnectionDebugUtilModule::class
@@ -101,7 +106,7 @@ interface ApplicationComponent : ApplicationInjector {
     fun build(): ApplicationComponent
   }
 
-  fun getActivityComponentBuilderProvider(): Provider<ActivityComponent.Builder>
+  fun getActivityComponentBuilderProvider(): Provider<ActivityComponentImpl.Builder>
 
   fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
 

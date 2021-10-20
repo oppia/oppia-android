@@ -1,8 +1,10 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.RouteToQuestionPlayerListener
@@ -28,7 +30,7 @@ class TopicTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,
@@ -39,7 +41,7 @@ class TopicTestActivity :
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this, skillIdList
+        this, skillIdList, ProfileId.getDefaultInstance()
       )
     )
   }

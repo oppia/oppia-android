@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** Activity for Mark Stories Completed. */
@@ -13,14 +15,18 @@ class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
 
   @Inject
   lateinit var markStoriesCompletedActivityPresenter: MarkStoriesCompletedActivityPresenter
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
-    internalProfileId = intent.getIntExtra(MARK_STORIES_COMPLETED_ACTIVITY_PROFILE_ID_KEY, -1)
+    (activityComponent as ActivityComponentImpl).inject(this)
+    internalProfileId = intent.getIntExtra(PROFILE_ID_EXTRA_KEY, -1)
     markStoriesCompletedActivityPresenter.handleOnCreate(internalProfileId)
-    title = getString(R.string.mark_stories_completed_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.mark_stories_completed_activity_title)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -31,12 +37,11 @@ class MarkStoriesCompletedActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    const val MARK_STORIES_COMPLETED_ACTIVITY_PROFILE_ID_KEY =
-      "MarkStoriesCompletedActivity.internal_profile_id"
+    const val PROFILE_ID_EXTRA_KEY = "MarkStoriesCompletedActivity.profile_id"
 
     fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
       val intent = Intent(context, MarkStoriesCompletedActivity::class.java)
-      intent.putExtra(MARK_STORIES_COMPLETED_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
       return intent
     }
   }

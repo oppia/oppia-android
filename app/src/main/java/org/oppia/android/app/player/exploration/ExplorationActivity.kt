@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
@@ -14,6 +15,7 @@ import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
@@ -44,12 +46,13 @@ class ExplorationActivity :
   private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var state: State
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
   private var backflowScreen: Int? = null
   private var isCheckpointingEnabled: Boolean = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
@@ -164,7 +167,8 @@ class ExplorationActivity :
       val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
         explorationId,
         state,
-        helpIndex
+        helpIndex,
+        writtenTranslationContext
       )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
@@ -178,8 +182,12 @@ class ExplorationActivity :
     explorationActivityPresenter.loadExplorationFragment(readingTextSize)
   }
 
-  override fun onExplorationStateLoaded(state: State) {
+  override fun onExplorationStateLoaded(
+    state: State,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
     this.state = state
+    this.writtenTranslationContext = writtenTranslationContext
   }
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()

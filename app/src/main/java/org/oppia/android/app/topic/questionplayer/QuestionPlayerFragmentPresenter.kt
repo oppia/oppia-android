@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
@@ -67,7 +68,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    profileId: ProfileId
+  ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
       inflater,
       container,
@@ -75,7 +80,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
 
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, "skill"),
+      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView
     )
@@ -232,12 +237,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun updateProgress(currentQuestionIndex: Int, questionCount: Int) {
-    questionViewModel.currentQuestion.set(currentQuestionIndex + 1)
-    questionViewModel.questionCount.set(questionCount)
-    questionViewModel.progressPercentage.set(
-      (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt()
+    questionViewModel.updateQuestionProgress(
+      currentQuestion = currentQuestionIndex + 1,
+      questionCount = questionCount,
+      progressPercentage = (((currentQuestionIndex + 1) / questionCount.toDouble()) * 100).toInt(),
+      isAtEndOfSession = currentQuestionIndex == questionCount
     )
-    questionViewModel.isAtEndOfSession.set(currentQuestionIndex == questionCount)
   }
 
   private fun updateEndSessionMessage(ephemeralState: EphemeralState) {

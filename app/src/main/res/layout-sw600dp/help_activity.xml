@@ -37,7 +37,7 @@
         android:background="@color/oppiaGreyBackground"
         android:contentDescription="@string/help_activity_back_arrow_description"
         android:padding="12dp"
-        android:src="@drawable/ic_arrow_back_black_24_dp"
+        app:srcCompat="@drawable/ic_arrow_back_black_24_dp"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/multipane_guideline"
         app:layout_constraintTop_toTopOf="parent" />

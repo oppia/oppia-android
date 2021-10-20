@@ -4,10 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.settings.profile.ProfileListActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
@@ -26,12 +29,15 @@ class AdministratorControlsActivity :
   ShowLogoutDialogListener {
   @Inject
   lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
   private lateinit var lastLoadedFragment: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
-    val extraControlsTitle = savedInstanceState?.getString(SELECTED_CONTROLS_TITLE_SAVED_KEY)
+    (activityComponent as ActivityComponentImpl).inject(this)
+    val extraControlsTitle =
+      savedInstanceState?.getStringFromBundle(SELECTED_CONTROLS_TITLE_SAVED_KEY)
     lastLoadedFragment = if (savedInstanceState != null) {
       savedInstanceState.get(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
     } else {
@@ -39,7 +45,7 @@ class AdministratorControlsActivity :
       PROFILE_LIST_FRAGMENT
     }
     administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
-    title = getString(R.string.administrator_controls)
+    title = resourceHandler.getStringInLocale(R.string.administrator_controls)
   }
 
   override fun routeToAppVersion() {
@@ -65,14 +71,18 @@ class AdministratorControlsActivity :
   override fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     administratorControlsActivityPresenter
-      .setExtraControlsTitle(getString(R.string.administrator_controls_edit_profiles))
+      .setExtraControlsTitle(
+        resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
+      )
     administratorControlsActivityPresenter.loadProfileList()
   }
 
   override fun loadAppVersion() {
     lastLoadedFragment = APP_VERSION_FRAGMENT
     administratorControlsActivityPresenter
-      .setExtraControlsTitle(getString(R.string.administrator_controls_app_version))
+      .setExtraControlsTitle(
+        resourceHandler.getStringInLocale(R.string.administrator_controls_app_version)
+      )
     administratorControlsActivityPresenter.loadAppVersion()
   }
 

@@ -249,6 +249,9 @@ message EphemeralState {
 
   // The current status of checkpointing the exploration.
   CheckpointState checkpoint_state = 7;
+
+  // The current context that should be used for selecting written translations.
+  WrittenTranslationContext written_translation_context = 8;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
@@ -293,6 +296,12 @@ message UserAnswer {
   // answer when there is a screen-reader enabled. Also when this is value is not initialized and
   // if the screen-reader is enabled in that case the plain answer/html answer would be read out.
   string content_description = 5;
+
+  // The translation context used at the time this answer was submitted. This should be used when
+  // performing language-specific classification of the answer. Note that this context must be used
+  // instead of whatever is currently being used in the active progress controller since that one
+  // may have changed, but the user's answer is fixed.
+  WrittenTranslationContext written_translation_context = 6;
 }
 
 message AnswerAndResponse {

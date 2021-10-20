@@ -37,13 +37,24 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "oppia_date_time_formatter",
+    name = "oppia_clock_injector",
     srcs = [
-        "OppiaDateTimeFormatter.kt",
+        "OppiaClockInjector.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:javax_inject_javax_inject",
+        ":oppia_clock",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_clock_injector_provider",
+    srcs = [
+        "OppiaClockInjectorProvider.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":oppia_clock_injector",
     ],
 )
 

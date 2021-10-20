@@ -19,7 +19,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -33,7 +33,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "71b5c0d8-2c30-4bf8-ac21-dd42774c4b95",
                   "normalizedStrSet": ["2:1"]
                 }
               }
@@ -46,16 +46,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "4d5dbaff-8f03-4b9e-b3e6-241ec4a8827b",
                   "normalizedStrSet": ["3"]
                 }
               }
@@ -68,16 +68,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "4992c409-75ec-4729-b7f0-d4a7d18b5c92",
                   "normalizedStrSet": ["1:2"]
                 }
               }
@@ -90,10 +90,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "writing ratio of 2 quanitites",
@@ -103,13 +103,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -188,36 +188,36 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cUncle Berry,\u201d James ne kaha, \u201cMujhe ek mixed-fruit smoothie banani hai! Mujhe lagta hai yeh baqi smoothies se zyadah mazedaar hogi.\u201d</p>\n\n<p>\u201cZarur!\u201d Uncle Berry ne kaha. \u201cTum kaun se phal milana chahte ho?\u201d</p>\n\n<p>\u201cMujhe strawberries aur aam pasand hain!\u201d James ne kaha, smoothie ke baare mein sochkar muskuraate hue.</p>\n\n<p>\u201cTheek hai,\u201d Uncle Berry ne kaha, kitaab mein recipe dhoondte hue. \u201cHamein aam, strawberry, aur doodh daalna hoga, is tasveer ko dekhte hue.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek khuli hui kitaab. Is mein 3 glasses ki tasveer hai. Ek aam ka jis mein 2 unit hai. Ek strawberry ka jis mein ek unit hai. Aur ek doodh ka jis mein 3 unit hain&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_193142_x4w6gjkrvf_height_359_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cAb,\u201d unhone kaha, \u201ckya tum mujhe yeh bata sakte ho ki aam se strawberry ya kya ratio is recipe mein?\u201d</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cUncle Berry,\u201d James ne kaha, \u201cMujhe ek mixed-fruit smoothie banani hai! Mujhe lagta hai yeh baqi smoothies se zyadah mazedaar hogi.\u201d</p>\n\n<p>\u201cZarur!\u201d Uncle Berry ne kaha. \u201cTum kaun se phal milana chahte ho?\u201d</p>\n\n<p>\u201cMujhe strawberries aur aam pasand hain!\u201d James ne kaha, smoothie ke baare mein sochkar muskuraate hue.</p>\n\n<p>\u201cTheek hai,\u201d Uncle Berry ne kaha, kitaab mein recipe dhoondte hue. \u201cHamein aam, strawberry, aur doodh daalna hoga, is tasveer ko dekhte hue.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek khuli hui kitaab. Is mein 3 glasses ki tasveer hai. Ek aam ka jis mein 2 unit hai. Ek strawberry ka jis mein ek unit hai. Aur ek doodh ka jis mein 3 unit hain&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_193142_x4w6gjkrvf_height_359_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cAb,\u201d unhone kaha, \u201ckya tum mujhe yeh bata sakte ho ki aam se strawberry ya kya ratio is recipe mein?\u201d</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Uncle berry aam se strawberry ka ratio chaah rahe hain. Toh tum bas un dono phal par dhyaan de sakte ho, aur doodh ko dhyaan na do.&nbsp;</p>\n\n<p>Phir se koshish karo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Uncle berry aam se strawberry ka ratio chaah rahe hain. Toh tum bas un dono phal par dhyaan de sakte ho, aur doodh ko dhyaan na do.&nbsp;</p>\n\n<p>Phir se koshish karo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Han, yeh sahi hai. Bahut ache!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Han, yeh sahi hai. Bahut ache!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Yeh sawaal sirf aam aur strawberry ke ratio ke baare mein pooch raha hai, toh tumhein doodh ke baare mein jaankari ki zarurat nahin hai. Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Yeh sawaal sirf aam aur strawberry ke ratio ke baare mein pooch raha hai, toh tumhein doodh ke baare mein jaankari ki zarurat nahin hai. Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Tumne number sahi likhe hain, likin yaad rakho ki order se faraq padta hai! Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Tumne number sahi likhe hain, likin yaad rakho ki order se faraq padta hai! Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -236,7 +236,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -250,7 +250,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "8d2b9eea-c973-4bd6-a7e0-b1a7ae5603be",
                   "normalizedStrSet": ["2:3"]
                 }
               }
@@ -263,16 +263,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "c3c47717-3fdb-4d8d-9bfe-3dc72d19b8da",
                   "normalizedStrSet": ["2 to 3"]
                 }
               }
@@ -285,16 +285,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "a2431f83-2e3a-433c-8863-fe9dc3a75b98",
                   "normalizedStrSet": ["3:2"]
                 }
               }
@@ -307,16 +307,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "428fab4b-2a57-40e5-b025-9ffc11def1f4",
                   "normalizedStrSet": ["1"]
                 }
               }
@@ -329,10 +329,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 10",
@@ -342,8 +342,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -353,7 +353,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -460,50 +460,50 @@
           "translations_mapping": {
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cYeh sahi hai! Magar apna jawaab X:Y ki shakal mein likhna, jahan X aur Y number hain. Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cYeh sahi hai! Magar apna jawaab X:Y ki shakal mein likhna, jahan X aur Y number hain. Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cSahi kaha!\u201d kaha Uncle Berry ne. \u201cJab aapko sirf kuch hi cheezon ki ratio nikalni ho, aapko baqiyon pe dhyaan dene ki zarurat nahin hai.\u201d</p>\n\n<p>James ne aam aur strawberry milaye. Tab usko ek idea aaya. \u201cUncle Berry,\u201d usne kaha, \u201ckya main smoothie mein blueberry bhi daal sakta hun?\u201d</p>\n\n<p>\u201cHan, zarur!\u201d Uncle Berry ne kaha. \u201cTumko kitna chahiye?\u201d</p>\n\n<p>James ne kitaab mein blueberry ki drawing banakar Uncle Berry ko dikhayi.&nbsp;</p>\n\n<p>&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek khuli hui kitaab. Pichle tasveer jause 3 glasses hain jin mein 1 unit aam, 1 unit strawberry, 3 unit doodh hain. Lekin is tasveer mein ek aur glass hai jis mein 2 unit bluerberry hain&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_193528_2fgcrckgd2_height_348_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cAcha lag raha hai, James! Uncle Berry ne kaha. \u201cAb, tumhare naye recipe mein, kya tum blueberry se doodh ka ratio dhoond sakte ho?\u201d</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cSahi kaha!\u201d kaha Uncle Berry ne. \u201cJab aapko sirf kuch hi cheezon ki ratio nikalni ho, aapko baqiyon pe dhyaan dene ki zarurat nahin hai.\u201d</p>\n\n<p>James ne aam aur strawberry milaye. Tab usko ek idea aaya. \u201cUncle Berry,\u201d usne kaha, \u201ckya main smoothie mein blueberry bhi daal sakta hun?\u201d</p>\n\n<p>\u201cHan, zarur!\u201d Uncle Berry ne kaha. \u201cTumko kitna chahiye?\u201d</p>\n\n<p>James ne kitaab mein blueberry ki drawing banakar Uncle Berry ko dikhayi.&nbsp;</p>\n\n<p>&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek khuli hui kitaab. Pichle tasveer jause 3 glasses hain jin mein 1 unit aam, 1 unit strawberry, 3 unit doodh hain. Lekin is tasveer mein ek aur glass hai jis mein 2 unit bluerberry hain&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_193528_2fgcrckgd2_height_348_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cAcha lag raha hai, James! Uncle Berry ne kaha. \u201cAb, tumhare naye recipe mein, kya tum blueberry se doodh ka ratio dhoond sakte ho?\u201d</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Yaad rakho ki, ek ratio mein, number sahi order mein hone chahiyen. Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Yaad rakho ki, ek ratio mein, number sahi order mein hone chahiyen. Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sahi!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sahi!</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Kyunki tumne blueberry se doodh ka ratio poocha hai, tumhein sirf in dono cheezen pe dhyaan dene ki zarurat hai. Tum baqi pe dhyaan na do!&nbsp;</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Pahle jaise recipes ki khuli hui kitaab ki tasveer hai. Bas is mein aam aur strawberry ke glasses ko kaat diya gaya hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_194615_mr76vob45i_height_373_width_490.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Kyunki tumne blueberry se doodh ka ratio poocha hai, tumhein sirf in dono cheezen pe dhyaan dene ki zarurat hai. Tum baqi pe dhyaan na do!&nbsp;</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Pahle jaise recipes ki khuli hui kitaab ki tasveer hai. Bas is mein aam aur strawberry ke glasses ko kaat diya gaya hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_194615_mr76vob45i_height_373_width_490.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Tumhein sirf blueberry aur doodh pe dhyaan dekar baqi saare phal pe dhyaan nahin dena chahiye.&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Pahle jaise kitaab ki tasveer hai. Bas is mein aam aur strawberry glasses ko kaat diya gaya hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_193958_jo627kze95_height_362_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Phir se koshish kariye. Tum kar sakte ho!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Tumhein sirf blueberry aur doodh pe dhyaan dekar baqi saare phal pe dhyaan nahin dena chahiye.&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Pahle jaise kitaab ki tasveer hai. Bas is mein aam aur strawberry glasses ko kaat diya gaya hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_193958_jo627kze95_height_362_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Phir se koshish kariye. Tum kar sakte ho!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Yaad rakhiye, tumhein bas blueberry se doodh ka ratio dhoondna hoga. Tum baqi cheezen chod sakte ho.&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Pahle jaisi recipes ki kitaab ki tasveer hai. Bas is mein aam aur strawberry ke glasses ko kaat diya gaya hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_194434_8ziuln325h_height_358_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Yaad rakhiye, tumhein bas blueberry se doodh ka ratio dhoondna hoga. Tum baqi cheezen chod sakte ho.&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Pahle jaisi recipes ki kitaab ki tasveer hai. Bas is mein aam aur strawberry ke glasses ko kaat diya gaya hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_194434_8ziuln325h_height_358_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -534,13 +534,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -570,8 +570,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>James se milo!</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek Lanka jo muskura raha hai, yellow hoodie pahna hai. Uske kaale baal hain sur woh heath hila raha  hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_180502_go5msfattq_height_448_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>James ko apne doston ke saath khelna, aur tasty khana khana pasand hai. Ham log dekhenge ki James kaise ratios seekhta aur istemaal karta hai.&nbsp;</p>\n\n<p>Aage badhne se pahle aapko yeh sab cheezen pata honi chahiye:</p>\n\n<ul>\n\t<li>\n\t<p><strong>Counting numbers (1, 2, 3, 4, 5, \u2026) ko add, subtract, multiply, aur divide karna</strong></p>\n\t</li>\n\t<li>\n\t<p><strong>Yeh samajh ki ek counting number doosre counting number se bada ya chota hai</strong></p>\n\t</li>\n</ul>\n\n<p>Aap paper aur pen lekar kaam karne ke liye shaant jagah bhi dhoond lo. Aapko story samajhne ke liye jitne waqt ki zarurat hai lijiye, aur sukoon se story padhiye. Samajh tezi se zyadah zaruri hai!&nbsp;</p>\n\n<p>Jab aap shuroo karne ke liye tayyaar ho, tab <strong>Continue</strong> click karo.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>James se milo!</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek Lanka jo muskura raha hai, yellow hoodie pahna hai. Uske kaale baal hain sur woh heath hila raha  hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_180502_go5msfattq_height_448_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>James ko apne doston ke saath khelna, aur tasty khana khana pasand hai. Ham log dekhenge ki James kaise ratios seekhta aur istemaal karta hai.&nbsp;</p>\n\n<p>Aage badhne se pahle aapko yeh sab cheezen pata honi chahiye:</p>\n\n<ul>\n\t<li>\n\t<p><strong>Counting numbers (1, 2, 3, 4, 5, \u2026) ko add, subtract, multiply, aur divide karna</strong></p>\n\t</li>\n\t<li>\n\t<p><strong>Yeh samajh ki ek counting number doosre counting number se bada ya chota hai</strong></p>\n\t</li>\n</ul>\n\n<p>Aap paper aur pen lekar kaam karne ke liye shaant jagah bhi dhoond lo. Aapko story samajhne ke liye jitne waqt ki zarurat hai lijiye, aur sukoon se story padhiye. Samajh tezi se zyadah zaruri hai!&nbsp;</p>\n\n<p>Jab aap shuroo karne ke liye tayyaar ho, tab <strong>Continue</strong> click karo.&nbsp;</p>"},
                 "needs_update": false
               }
             },
@@ -591,7 +591,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -605,7 +605,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "20c3a4f5-b4c7-4fe6-9780-f7e01b0e532c",
                   "normalizedStrSet": ["2:4:3:2"]
                 }
               }
@@ -618,16 +618,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "75b41c64-7309-4a2e-a78e-45a0ca35ffab",
                   "normalizedStrSet": ["2:4:3:1"]
                 }
               }
@@ -640,10 +640,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Final Test",
@@ -653,8 +653,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -664,7 +664,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -743,36 +743,36 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>James aur Uncle Berry ne mixed-fruit smoothie banaya, aur woh bahut swaadisht tha!</p>\n\n<p>\u201cBas aaj ke liye ek aur karte hain!\u201d James ne kaha. Usne ek nayi recipe ki taraf ishara kiya.&nbsp;</p>\n\n<p>Uncle Berry ne recipe ko zor se padha. \u201cIs recipe ke hisaab se, har 2 unit doodh ke liye, hamein 4 unit blueberry, 2 unit strawberry, aur 1 unit kela chahiye.\u201d</p>\n\n<p>\u201cOh nahin,\u201d James ne kaha. \u201cAaj ke liye bahut kele kha liye. Kya ham kele ki jagah &nbsp;<strong>2 unit aam</strong> instemaal kar sakte hain?\u201d James ne poocha.&nbsp;</p>\n\n<p>\u201cHan, tum yeh kar sakte ho!\u201d Uncle Berry ne kaha. \u201cTab phir batao, ki <strong>doodh se blueberry se strawberry se aam ka kya ratio</strong> hoga?\u201d</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>James aur Uncle Berry ne mixed-fruit smoothie banaya, aur woh bahut swaadisht tha!</p>\n\n<p>\u201cBas aaj ke liye ek aur karte hain!\u201d James ne kaha. Usne ek nayi recipe ki taraf ishara kiya.&nbsp;</p>\n\n<p>Uncle Berry ne recipe ko zor se padha. \u201cIs recipe ke hisaab se, har 2 unit doodh ke liye, hamein 4 unit blueberry, 2 unit strawberry, aur 1 unit kela chahiye.\u201d</p>\n\n<p>\u201cOh nahin,\u201d James ne kaha. \u201cAaj ke liye bahut kele kha liye. Kya ham kele ki jagah &nbsp;<strong>2 unit aam</strong> instemaal kar sakte hain?\u201d James ne poocha.&nbsp;</p>\n\n<p>\u201cHan, tum yeh kar sakte ho!\u201d Uncle Berry ne kaha. \u201cTab phir batao, ki <strong>doodh se blueberry se strawberry se aam ka kya ratio</strong> hoga?\u201d</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Tumne doodh se blueberry se strawberry se <strong>kele</strong> ka ratio likha hai, lekin yeh sawaal kuch aur pooch raha hai. Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Tumne doodh se blueberry se strawberry se <strong>kele</strong> ka ratio likha hai, lekin yeh sawaal kuch aur pooch raha hai. Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Acha kiya. Tumne sahi jawaab nikal liya hai! Ab James apni smoothie bana sakta hai :-)</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Acha kiya. Tumne sahi jawaab nikal liya hai! Ab James apni smoothie bana sakta hai :-)</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Yeh sawaal tumse chaar ingredients ke baare mein pooch raha hai, toh tumhare ratio mein chaar hisse honen chahiye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Yeh sawaal tumse chaar ingredients ke baare mein pooch raha hai, toh tumhare ratio mein chaar hisse honen chahiye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Phir se koshish kariye - tum kar sakte ho!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Phir se koshish kariye - tum kar sakte ho!&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -791,7 +791,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -805,7 +805,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "fe13e3d8-4fc6-4863-a3ce-98c710a1ec82",
                   "normalizedStrSet": ["2:1:3"]
                 }
               }
@@ -818,16 +818,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "cb9437b2-2931-4cc7-9cbe-ecb31ac22ad0",
                   "normalizedStrSet": ["2:1"]
                 }
               }
@@ -840,16 +840,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "9ce00383-554d-4606-abcb-31d020799768",
                   "normalizedStrSet": ["1:3"]
                 }
               }
@@ -862,16 +862,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "0fe368d4-5459-4535-94de-4c311afbfda1",
                   "normalizedStrSet": ["1:2:3"]
                 }
               }
@@ -879,7 +879,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "b9eb65eb-8f9f-4c5b-80cf-c92c5fa6141f",
                   "normalizedStrSet": ["1:3:2"]
                 }
               }
@@ -887,7 +887,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "468469f4-2a78-4e6c-abff-5004a158eae5",
                   "normalizedStrSet": ["2:3:1"]
                 }
               }
@@ -895,7 +895,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "d61214b1-8e64-4f9a-bdcb-3f0c56e60960",
                   "normalizedStrSet": ["3:1:2"]
                 }
               }
@@ -903,7 +903,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "150ad47d-cdce-4292-a2ac-17075efeb4a4",
                   "normalizedStrSet": ["3:2:1"]
                 }
               }
@@ -916,10 +916,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Writing ratio with 3 quantities",
@@ -929,13 +929,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -1028,43 +1028,43 @@
           "translations_mapping": {
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Tumne sirf aam aur strawberry ka ratio likha hai. Lekin sawaal dhyaan se padho \u2014 aap doodh ke baare mein bhool gaye hain! Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Tumne sirf aam aur strawberry ka ratio likha hai. Lekin sawaal dhyaan se padho \u2014 aap doodh ke baare mein bhool gaye hain! Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cBahut ache!\u201d Uncle Berry ne kaha.</p>\n\n<p>\u201cTumhein bas ab ek aur cheez pata honi chahiye,\u201d unhone kaha. \u201cHam log <strong>do </strong><strong>se</strong><strong> </strong><strong>zyadah</strong> cheezon ke liye bhi ratios likh sakte hain. Toh jaise, agar ham 3 litre blueberry, 2 litre kele ka paste, aur 4 litre doodh milayenge, toh blueberry se kele se doodh ka ratio 3:2:4 hoga.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Blueberry se kele se doodh ka ratio likha hai jo ki 3 : 2 : 4 hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_194849_n56wl1int9_height_98_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cAb tum koshish karo. Kya tum is tasveer ke hisaab se aam se strawberry se doodh ka ratio likh sakte ho?\u201d</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Pahli jaisi recipe ki kitaab ki tasveer hai. Is mein 4 glasses hain jin mein 2 unit aam, 1 unit strawberry, 3 unit doodh, aur 2 unit blueberry hain&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_195020_plt7pi6lrk_height_350_width_490.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cBahut ache!\u201d Uncle Berry ne kaha.</p>\n\n<p>\u201cTumhein bas ab ek aur cheez pata honi chahiye,\u201d unhone kaha. \u201cHam log <strong>do </strong><strong>se</strong><strong> </strong><strong>zyadah</strong> cheezon ke liye bhi ratios likh sakte hain. Toh jaise, agar ham 3 litre blueberry, 2 litre kele ka paste, aur 4 litre doodh milayenge, toh blueberry se kele se doodh ka ratio 3:2:4 hoga.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Blueberry se kele se doodh ka ratio likha hai jo ki 3 : 2 : 4 hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_194849_n56wl1int9_height_98_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cAb tum koshish karo. Kya tum is tasveer ke hisaab se aam se strawberry se doodh ka ratio likh sakte ho?\u201d</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Pahli jaisi recipe ki kitaab ki tasveer hai. Is mein 4 glasses hain jin mein 2 unit aam, 1 unit strawberry, 3 unit doodh, aur 2 unit blueberry hain&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_195020_plt7pi6lrk_height_350_width_490.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Tumne sirf strawberry aur doodh ka ratio likha hai. Lekin sawaal dhyaan se padho \u2014 aap aam ke baare mein bhool gaye hain! Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Tumne sirf strawberry aur doodh ka ratio likha hai. Lekin sawaal dhyaan se padho \u2014 aap aam ke baare mein bhool gaye hain! Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Acha kiya! Yeh sahi jawaab hai.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Acha kiya! Yeh sahi jawaab hai.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>&nbsp;Nahin, yeh sahi nahin hai. Yaad rakho ki order sahi hona chahiye. Tumhara ratio sawaal mein diye order ke jaisa hona chahiye. Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>&nbsp;Nahin, yeh sahi nahin hai. Yaad rakho ki order sahi hona chahiye. Tumhara ratio sawaal mein diye order ke jaisa hona chahiye. Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -1095,13 +1095,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1125,8 +1125,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Chalo ratios par ek aur nazar daalen.&nbsp;</p>\n\n<p>--------------------------------------------------------------------------------------------------------------</p>\n\n<p><strong>Ratio</strong> do aur zyadah cheezon ki relative ginti batata hai, yaani in cheezon ki ginti ek doosre ke muqaable batata hai.&nbsp;</p>\n\n<p>Misaal ke taur par yeh sochte hain ki James khilaune aur aam 1:2 ki ratio mein badalta hai.&nbsp;</p>\n\n<ul>\n\t<li>\n\t<p>Iska matlab hai, usko har khilaune ke badle mein 2 aam milenge.</p>\n\t</li>\n\t<li>\n\t<p>Toh, agar woh 1 khilauna dega, toh uske wapas 2 aam milenge.&nbsp;</p>\n\t</li>\n\t<li>\n\t<p>Aur, agar woh 3 khilaune dega, tab usko badle mein 6 aam milenge. (Yeh abhi bhi 1:2 ratio ki pairwee karega, kyunki<strong> har baar</strong> woh ek khilauna dega, usko wapas 2 aam milenge.)</p>\n\t</li>\n</ul>\n\n<p>Notice karo ki \u201c1:2\u201d tumhein khilaune aur aam ke beech ke <strong>rishte</strong> ke baare mein batata hai. Yeh tumhein yeh nahin batata hai ki James kitne samaan ki adla badli karega. Lekin agar tumhein yeh pata ho ki woh kitne khilaune dega, toh tum yeh pata laga sakte ho ki woh kitne aam ke liye badlega.&nbsp;</p>\n\n<p>--------------------------------------------------------------------------------------------------------------</p>\n\n<p>Kya tumhein yeh samajh aaya? Tumhein yeh samajh aana chahiye ki <strong>kyun</strong> James ko 6 aam milenge 3 khilaune ke badle. Jab samajh aa jaye, \u201cContinue\u201d dabakar James aur Uncle Berry ki taraf laut jao.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Chalo ratios par ek aur nazar daalen.&nbsp;</p>\n\n<p>--------------------------------------------------------------------------------------------------------------</p>\n\n<p><strong>Ratio</strong> do aur zyadah cheezon ki relative ginti batata hai, yaani in cheezon ki ginti ek doosre ke muqaable batata hai.&nbsp;</p>\n\n<p>Misaal ke taur par yeh sochte hain ki James khilaune aur aam 1:2 ki ratio mein badalta hai.&nbsp;</p>\n\n<ul>\n\t<li>\n\t<p>Iska matlab hai, usko har khilaune ke badle mein 2 aam milenge.</p>\n\t</li>\n\t<li>\n\t<p>Toh, agar woh 1 khilauna dega, toh uske wapas 2 aam milenge.&nbsp;</p>\n\t</li>\n\t<li>\n\t<p>Aur, agar woh 3 khilaune dega, tab usko badle mein 6 aam milenge. (Yeh abhi bhi 1:2 ratio ki pairwee karega, kyunki<strong> har baar</strong> woh ek khilauna dega, usko wapas 2 aam milenge.)</p>\n\t</li>\n</ul>\n\n<p>Notice karo ki \u201c1:2\u201d tumhein khilaune aur aam ke beech ke <strong>rishte</strong> ke baare mein batata hai. Yeh tumhein yeh nahin batata hai ki James kitne samaan ki adla badli karega. Lekin agar tumhein yeh pata ho ki woh kitne khilaune dega, toh tum yeh pata laga sakte ho ki woh kitne aam ke liye badlega.&nbsp;</p>\n\n<p>--------------------------------------------------------------------------------------------------------------</p>\n\n<p>Kya tumhein yeh samajh aaya? Tumhein yeh samajh aana chahiye ki <strong>kyun</strong> James ko 6 aam milenge 3 khilaune ke badle. Jab samajh aa jaye, \u201cContinue\u201d dabakar James aur Uncle Berry ki taraf laut jao.</p>"},
                 "needs_update": false
               }
             },
@@ -1146,7 +1146,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -1160,7 +1160,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "866a20f8-a118-4058-933b-b6a91afd73b2",
                   "normalizedStrSet": ["2:3"]
                 }
               }
@@ -1173,16 +1173,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "75c4e32d-2357-46c8-8a1c-74dce83593fa",
                   "normalizedStrSet": ["2 : 3"]
                 }
               }
@@ -1190,7 +1190,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "fb41c73e-a2e7-47ea-90f2-26319ca611cc",
                   "normalizedStrSet": ["2: 3"]
                 }
               }
@@ -1198,7 +1198,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "156e3d22-7dfa-457d-b1d2-7ab26366349b",
                   "normalizedStrSet": ["2 :3"]
                 }
               }
@@ -1211,16 +1211,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "c33e0c96-28f8-4656-8760-f9684f61469f",
                   "normalizedStrSet": ["3:2"]
                 }
               }
@@ -1233,16 +1233,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "412b761e-74df-4161-a122-ad3bbe3908c2",
                   "normalizedStrSet": ["to"]
                 }
               }
@@ -1255,16 +1255,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "ab884bed-5685-4031-b9d2-0dd085b43f50",
                   "normalizedStrSet": ["X"]
                 }
               }
@@ -1272,7 +1272,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "068691b9-2fcd-4d50-987b-a8e588b0a0c8",
                   "normalizedStrSet": ["Y"]
                 }
               }
@@ -1285,16 +1285,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "763bf316-e64c-4196-993d-71df36487bdd",
                   "normalizedStrSet": [":"]
                 }
               }
@@ -1307,10 +1307,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Writing ratio in colon notation",
@@ -1320,13 +1320,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1447,57 +1447,57 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cSahi kaha!\u201d Uncle Berry ne bola.&nbsp;</p>\n\n<p>\u201cWaise, James, tum ratios ko aur asaani se bhi likh sakte ho, ek <strong>colon</strong> (\u2018:\u2019) istemaal karke, \u2018to\u2019 ke bajaye. Toh, \u20183 to 1\u2019 likhne ki jagah, ham \u20183:1\u2019 likh sakte hain. Lekin jab isko padhoge phir bhi \u20183 to 1\u2019 kahoge.\u201d&nbsp;</p>\n\n<p>\u201cAha!\u201d James ne kaha. \u201cChalo koshish karta hun. Main 2 toy car ke badle 3 kele badlunga.\u201d</p>\n\n<p>\u201cAcha,\u201d Uncle Berry ne kaha. \u201cToh batao, is maamle mein toy car to kele ka ratio kya hoga?\u201d</p>\n\n<p><em>(Ab se, apne saare ratios colon se hi likhna.)</em></p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cSahi kaha!\u201d Uncle Berry ne bola.&nbsp;</p>\n\n<p>\u201cWaise, James, tum ratios ko aur asaani se bhi likh sakte ho, ek <strong>colon</strong> (\u2018:\u2019) istemaal karke, \u2018to\u2019 ke bajaye. Toh, \u20183 to 1\u2019 likhne ki jagah, ham \u20183:1\u2019 likh sakte hain. Lekin jab isko padhoge phir bhi \u20183 to 1\u2019 kahoge.\u201d&nbsp;</p>\n\n<p>\u201cAha!\u201d James ne kaha. \u201cChalo koshish karta hun. Main 2 toy car ke badle 3 kele badlunga.\u201d</p>\n\n<p>\u201cAcha,\u201d Uncle Berry ne kaha. \u201cToh batao, is maamle mein toy car to kele ka ratio kya hoga?\u201d</p>\n\n<p><em>(Ab se, apne saare ratios colon se hi likhna.)</em></p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sawaal dhyaan se padhiye! Aapke jawaab ko \u201cX:Y\u201d ki shakal mein hona chahiye, jahan X aur Y numbers hain.&nbsp;</p>\n\n<p>Phir se koshish kariye.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sawaal dhyaan se padhiye! Aapke jawaab ko \u201cX:Y\u201d ki shakal mein hona chahiye, jahan X aur Y numbers hain.&nbsp;</p>\n\n<p>Phir se koshish kariye.</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi jawaab nahin hai. Numbers ki arrangement ka dhyaan rakhiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi jawaab nahin hai. Numbers ki arrangement ka dhyaan rakhiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Han sahi kaha!</p>\n\n<p>Bas ek cheez: jab ratios type kar rahe ho, tab number aur colon (\u2018:\u2019) ke beech mein <strong>koi space nahin</strong> likhna. Jaise, tumhein \u201c2:3\u201d type karna chahiye, na ki \u201c2 : 3\u201d ya \u201c2: 3\u201d.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Han sahi kaha!</p>\n\n<p>Bas ek cheez: jab ratios type kar rahe ho, tab number aur colon (\u2018:\u2019) ke beech mein <strong>koi space nahin</strong> likhna. Jaise, tumhein \u201c2:3\u201d type karna chahiye, na ki \u201c2 : 3\u201d ya \u201c2: 3\u201d.</p>"},
                 "needs_update": false
               }
             },
             "feedback_6": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. James kitni adla badli kar raha hai, us pe dhyaan dijiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. James kitni adla badli kar raha hai, us pe dhyaan dijiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_7": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Aapko X aur Y mein sahi numbers likhne honge taaki ratio sahi nikle.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Aapko X aur Y mein sahi numbers likhne honge taaki ratio sahi nikle.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sahi kaha!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sahi kaha!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Aapke jawaab ko \u201cX:Y\u201d ki shakal mein hona chahiye, jahan X aur Y numbers hain.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Aapke jawaab ko \u201cX:Y\u201d ki shakal mein hona chahiye, jahan X aur Y numbers hain.&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -1524,7 +1524,7 @@
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1547,8 +1547,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Mubarak ho is lesson ko khatam karne pe! Hamein ummeed hai ki tumhein James aur Uncle Berry ke saath smoothies banane mein maza aaya hoga.&nbsp;</p>\n\n<p>Jab tum tayyar ho, tab agle lesson pe badh jao dekhne ke liye ki James ne agle din kya seekha!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Mubarak ho is lesson ko khatam karne pe! Hamein ummeed hai ki tumhein James aur Uncle Berry ke saath smoothies banane mein maza aaya hoga.&nbsp;</p>\n\n<p>Jab tum tayyar ho, tab agle lesson pe badh jao dekhne ke liye ki James ne agle din kya seekha!</p>"},
                 "needs_update": false
               }
             }
@@ -1579,13 +1579,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1609,8 +1609,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Uncle Berry ne kaha, \u201cHan, maine kaha tha ki ratio kayi cheezon ke raqam ki beech relative <strong>rishta</strong> batata hai. Ab main tumko bataunga ki \u2018<strong>relative</strong>\u2019 lafz ka kya matlab hai.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;2 glasses. Chote wale mein doodh hai pur isse 2 gunah bade wale mein pise hua aam hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_185151_qh2ajc7rgc_height_177_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cIn glasses ko dekh rahe ho? Yahan, doodh se aam ka ratio 1:2 hai, kyunki aap <strong>jitna bhi doodh lo, uske dugne aam ki zarurat hogi.</strong> Jaise, agar aap 1 glass doodh lo, toh 2 glass aam ki zarurat hogi. Lekin, agar aap 3 glass doodh lo, tab aapko 6 glass aam ki zarurat padegi.\u201d</p>\n\n<p>\u201cRatio hamein yeh nahin batata hai ki kitne glass doodh istemaal karen. Lekin, agar hamein yeh pata ho, toh ham ratio istemaal karke dekh sakte hain ki hamein kitne glass aam chahiye honge.\u201d</p>\n\n<p>\u201cOh, ab samajh aaya!\u201d James ne kaha. \u201cToh, jab aap yeh kahte hain ki ratio <strong>relative</strong> relationship batata hai, toh aapka matlab hai ki woh kitne number chahiye yeh nahin batata hai, haina? Bas itna ki ek cheez ka kitna chahiye, doosre cheez ke muqaable (relative)?\u201d</p>\n\n<p>\u201cHan sahi hai!\u201d Uncle Berry ne kaha.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Uncle Berry ne kaha, \u201cHan, maine kaha tha ki ratio kayi cheezon ke raqam ki beech relative <strong>rishta</strong> batata hai. Ab main tumko bataunga ki \u2018<strong>relative</strong>\u2019 lafz ka kya matlab hai.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;2 glasses. Chote wale mein doodh hai pur isse 2 gunah bade wale mein pise hua aam hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_185151_qh2ajc7rgc_height_177_width_178.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cIn glasses ko dekh rahe ho? Yahan, doodh se aam ka ratio 1:2 hai, kyunki aap <strong>jitna bhi doodh lo, uske dugne aam ki zarurat hogi.</strong> Jaise, agar aap 1 glass doodh lo, toh 2 glass aam ki zarurat hogi. Lekin, agar aap 3 glass doodh lo, tab aapko 6 glass aam ki zarurat padegi.\u201d</p>\n\n<p>\u201cRatio hamein yeh nahin batata hai ki kitne glass doodh istemaal karen. Lekin, agar hamein yeh pata ho, toh ham ratio istemaal karke dekh sakte hain ki hamein kitne glass aam chahiye honge.\u201d</p>\n\n<p>\u201cOh, ab samajh aaya!\u201d James ne kaha. \u201cToh, jab aap yeh kahte hain ki ratio <strong>relative</strong> relationship batata hai, toh aapka matlab hai ki woh kitne number chahiye yeh nahin batata hai, haina? Bas itna ki ek cheez ka kitna chahiye, doosre cheez ke muqaable (relative)?\u201d</p>\n\n<p>\u201cHan sahi hai!\u201d Uncle Berry ne kaha.&nbsp;</p>"},
                 "needs_update": false
               }
             },
@@ -1631,17 +1631,17 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<p>The <strong>exact </strong>number of objects of each type.</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>The <strong>exact </strong>number of objects of each type.</p>"
               }, {
-                "html": "<p>The <strong>total number</strong> of objects we are trading.</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>The <strong>total number</strong> of objects we are trading.</p>"
               }, {
-                "html": "<p>The <strong>relative </strong>relationship between the amounts of different things.</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>The <strong>relative </strong>relationship between the amounts of different things.</p>"
               }, {
-                "html": "<p>I don\u2019t remember!</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>I don\u2019t remember!</p>"
               }]
             }
           },
@@ -1660,10 +1660,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -1679,10 +1679,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Definition of ratio",
@@ -1692,13 +1692,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1763,29 +1763,29 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Jab Uncle Berry ghar laute, James ne unko bataya ki usna kya kiya.&nbsp;</p>\n\n<p>\u201cAh,\u201d Uncle Berry ne kaha. \u201cSmoothie banane ke liye tumko pise hue phal aur doodh ko sahi ratio pe milana hoga.\u201d Unhone James ko vyanjan ki tarqeebon ki bhari kitaab di. \u201cIs kitaab ko dekho. Kya tum samajh sakte ho ki doodh aur pise phal ka kya ratio hona chahiye?\u201d</p>\n\n<p>\u201cAcha!\u201d James ne kaha. \u201cLekin doodh se pise phal ka ratio kaise likhenge ham? Yeh khilaune aur phal ki tarah nahin hai \u2014 \u2018ek doodh\u2019, ya \u2018do aam paste\u2019 ka koi matlab nahin hota hai na?\u201d</p>\n\n<p>\u201cYeh acha sawaal hai, James!\u201d Uncle Berry ne kaha. \u201cKya tumhein yaad hai ki maine ratios ke baare mein pahle kya kaha tha? Koi ratio hamein kya batata hai?\u201d</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Jab Uncle Berry ghar laute, James ne unko bataya ki usna kya kiya.&nbsp;</p>\n\n<p>\u201cAh,\u201d Uncle Berry ne kaha. \u201cSmoothie banane ke liye tumko pise hue phal aur doodh ko sahi ratio pe milana hoga.\u201d Unhone James ko vyanjan ki tarqeebon ki bhari kitaab di. \u201cIs kitaab ko dekho. Kya tum samajh sakte ho ki doodh aur pise phal ka kya ratio hona chahiye?\u201d</p>\n\n<p>\u201cAcha!\u201d James ne kaha. \u201cLekin doodh se pise phal ka ratio kaise likhenge ham? Yeh khilaune aur phal ki tarah nahin hai \u2014 \u2018ek doodh\u2019, ya \u2018do aam paste\u2019 ka koi matlab nahin hota hai na?\u201d</p>\n\n<p>\u201cYeh acha sawaal hai, James!\u201d Uncle Berry ne kaha. \u201cKya tumhein yaad hai ki maine ratios ke baare mein pahle kya kaha tha? Koi ratio hamein kya batata hai?\u201d</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Yeh theek hai, lekin ek minute wapas socho ki ratio ka kya matlab hai. Ratios aayendah se istemaal aayenge, toh hamein inhein ache se samajhna chahiye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Yeh theek hai, lekin ek minute wapas socho ki ratio ka kya matlab hai. Ratios aayendah se istemaal aayenge, toh hamein inhein ache se samajhna chahiye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Bahut ache!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Bahut ache!</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Yeh zaruri vishay hai, toh ek baar aur padh lo ki ratio ka kya matlab hota hai.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Yeh zaruri vishay hai, toh ek baar aur padh lo ki ratio ka kya matlab hota hai.&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -1816,13 +1816,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1846,8 +1846,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cLagta hai tumhein kuch phal khareedne padenge,\u201d Uncle Berry ne kaha.&nbsp;</p>\n\n<p>\u201cLekin hamare paas paise nahin hain, Uncle Berry,\u201d James ne kaha.&nbsp;</p>\n\n<p>Phir James ko ek khayaal aaya. \u201cHam apne doston se phal ke liye kuch khilaune badal sakte hain!\u201d usne kaha. \u201cUnko hamesha se hamare khilaunon se khelne ka shauq tha.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe 2 gaadiyan hain (ek hari, ek lalla), 4 rang birange balls hain, aur ek santra, ek pear, ek seb, aur ek kela hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_181411_hlzywv5lbl_height_185_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\u201cAcha idea hai!\u201d Uncle Berry ne kaha. \u201cLekin tum bina kisi niyam ke toh adla badli nahin karoge na? Pahle yeh decide kar lo ki khilaune to phal ko kis <strong>ratio</strong> pe badloge?\u201d</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cLagta hai tumhein kuch phal khareedne padenge,\u201d Uncle Berry ne kaha.&nbsp;</p>\n\n<p>\u201cLekin hamare paas paise nahin hain, Uncle Berry,\u201d James ne kaha.&nbsp;</p>\n\n<p>Phir James ko ek khayaal aaya. \u201cHam apne doston se phal ke liye kuch khilaune badal sakte hain!\u201d usne kaha. \u201cUnko hamesha se hamare khilaunon se khelne ka shauq tha.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe 2 gaadiyan hain (ek hari, ek lalla), 4 rang birange balls hain, aur ek santra, ek pear, ek seb, aur ek kela hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_181411_hlzywv5lbl_height_185_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>\u201cAcha idea hai!\u201d Uncle Berry ne kaha. \u201cLekin tum bina kisi niyam ke toh adla badli nahin karoge na? Pahle yeh decide kar lo ki khilaune to phal ko kis <strong>ratio</strong> pe badloge?\u201d</p>"},
                 "needs_update": false
               }
             },
@@ -1879,13 +1879,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1909,8 +1909,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>James phal ghar leke aa gaya. \u201cYeh phal dekhiye, Uncle Berry!\u201d usne chillaya, Uncle Berry ke kamre mein daudte hue. \u201cChalo smoothies banana shuroo karen!\u201d</p>\n\n<p>Bad-qismati se, Uncle Berry apne kamre mein nahin the. Woh kaam ke liye nikal chuke the.&nbsp;</p>\n\n<p>Toh, James ne smoothi khud banane ka faisla kiya. Usne rasoi mein jaakar blender dhoonda, aur har qism ke phal ko peesa. Iske baad, usne har pise hue phal ko ek ek bottle mein daal diya. Lekin usko yeh nahin pata tha ki har pise hue phal ko kaise milayen ki ek smoothi ban jaaye.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe 5 bottles hain jis mein pise hue phal hain. Ek strawberry, ek kela, ek santra, ek aam, ek angur&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_184422_98u57yhsuy_height_203_width_490.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>James phal ghar leke aa gaya. \u201cYeh phal dekhiye, Uncle Berry!\u201d usne chillaya, Uncle Berry ke kamre mein daudte hue. \u201cChalo smoothies banana shuroo karen!\u201d</p>\n\n<p>Bad-qismati se, Uncle Berry apne kamre mein nahin the. Woh kaam ke liye nikal chuke the.&nbsp;</p>\n\n<p>Toh, James ne smoothi khud banane ka faisla kiya. Usne rasoi mein jaakar blender dhoonda, aur har qism ke phal ko peesa. Iske baad, usne har pise hue phal ko ek ek bottle mein daal diya. Lekin usko yeh nahin pata tha ki har pise hue phal ko kaise milayen ki ek smoothi ban jaaye.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe 5 bottles hain jis mein pise hue phal hain. Ek strawberry, ek kela, ek santra, ek aam, ek angur&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_184422_98u57yhsuy_height_203_width_490.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
@@ -1942,13 +1942,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -1972,8 +1972,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>James sofe pe baithke haath se choote smoothies ko yaad kar raha&nbsp;tha. Uske uncle, Uncle Berry, ne guzarte hue poocha \u201cTum itne udaas kyun ho James?\u201d&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek admis jo neeli shirt pahna hai, jiski daadi hai, aur woh takla hai. Woh heath hila raha hai.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_181213_78oksxqgqo_height_315_width_196.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cHamein smoothie shop jaana hai lekin hamare paas itne paise hi nahin hain,\u201d James ne kaha. \u201cKya aap hamein kuch paise de sakte hain?\u201d</p>\n\n<p>\u201cNahin,\u201d Uncle Berry ne kaha. \u201cLekin agar tum kuch phal le aao, toh ham dono milkar smoothie bana sakte hain!\u201d</p>\n\n<p>James kuch phal dhoondne ke liye daudte hue kitchen mein gaya. Lekin uske koi phal nahin mile.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>James sofe pe baithke haath se choote smoothies ko yaad kar raha&nbsp;tha. Uske uncle, Uncle Berry, ne guzarte hue poocha \u201cTum itne udaas kyun ho James?\u201d&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek admis jo neeli shirt pahna hai, jiski daadi hai, aur woh takla hai. Woh heath hila raha hai.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_181213_78oksxqgqo_height_315_width_196.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cHamein smoothie shop jaana hai lekin hamare paas itne paise hi nahin hain,\u201d James ne kaha. \u201cKya aap hamein kuch paise de sakte hain?\u201d</p>\n\n<p>\u201cNahin,\u201d Uncle Berry ne kaha. \u201cLekin agar tum kuch phal le aao, toh ham dono milkar smoothie bana sakte hain!\u201d</p>\n\n<p>James kuch phal dhoondne ke liye daudte hue kitchen mein gaya. Lekin uske koi phal nahin mile.&nbsp;</p>"},
                 "needs_update": false
               }
             },
@@ -1993,7 +1993,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -2007,7 +2007,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "783afa39-0a6e-4eaa-9876-9a9833f1705c",
                   "normalizedStrSet": ["2 to 5"]
                 }
               }
@@ -2015,7 +2015,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "3c2eb40b-911e-4023-8667-dc6a82b038c7",
                   "normalizedStrSet": ["2:5"]
                 }
               }
@@ -2023,7 +2023,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "4819cb3d-38c6-46ab-86fa-fba0f61ef821",
                   "normalizedStrSet": ["\"2 to 5\""]
                 }
               }
@@ -2036,16 +2036,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "cccb5b43-3764-4378-a7dd-de2151819128",
                   "normalizedStrSet": ["5 to 2"]
                 }
               }
@@ -2058,16 +2058,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "6cf25801-0344-466d-86b1-3fd0b3cb4373",
                   "normalizedStrSet": ["2to5"]
                 }
               }
@@ -2075,7 +2075,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "d649fc32-9e83-4ef6-a152-42f978ab9eee",
                   "normalizedStrSet": ["2 to5"]
                 }
               }
@@ -2083,7 +2083,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "f7783e38-65cd-4c09-8612-a28f24a5ec37",
                   "normalizedStrSet": ["2to 5"]
                 }
               }
@@ -2096,16 +2096,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "bba5b144-9374-40b4-8297-5aa3741d77ac",
                   "normalizedStrSet": ["X"]
                 }
               }
@@ -2113,7 +2113,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "b1e5f523-fe35-470d-a094-28dd1da45c8d",
                   "normalizedStrSet": ["Y"]
                 }
               }
@@ -2126,16 +2126,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "7c26d744-cfef-4184-a42a-a8412133ee1f",
                   "normalizedStrSet": ["to"]
                 }
               }
@@ -2148,10 +2148,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 1",
@@ -2161,13 +2161,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -2274,50 +2274,50 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cAb batao. Tum apne khelne ke kanche santron ke liye kaise badalne wale the?\u201d Uncle Berry ne poocha.&nbsp;</p>\n\n<p>\u201cHam 2 kanche dekar 5 santre wapas lene wale the,\u201d James ne kaha.&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe do rang birange balls hain, sur 5 santre hain&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_182140_r5wc0eehvi_height_173_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>Uncle Berry ne poocha, \u201cToh kanche se santre ka ratio kya hua?\u201d</p>\n\n<p>(Apna jawaab \u201cX to Y\u201d ke form mein likho, jahan X aur Y ratio ke number hain.)</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cAb batao. Tum apne khelne ke kanche santron ke liye kaise badalne wale the?\u201d Uncle Berry ne poocha.&nbsp;</p>\n\n<p>\u201cHam 2 kanche dekar 5 santre wapas lene wale the,\u201d James ne kaha.&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe do rang birange balls hain, sur 5 santre hain&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_182140_r5wc0eehvi_height_173_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>Uncle Berry ne poocha, \u201cToh kanche se santre ka ratio kya hua?\u201d</p>\n\n<p>(Apna jawaab \u201cX to Y\u201d ke form mein likho, jahan X aur Y ratio ke number hain.)</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi jawaab nahin hai. Numbers ki arrangement ka dhyaan rakhiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi jawaab nahin hai. Numbers ki arrangement ka dhyaan rakhiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Taqreeban sahi ho! Bas space ka dhyaan rakho. Pahle number baad ek space hona chahiye, aur \u201cto\u201d ke baad ek aur space.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Taqreeban sahi ho! Bas space ka dhyaan rakho. Pahle number baad ek space hona chahiye, aur \u201cto\u201d ke baad ek aur space.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Bahut Ache!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Bahut Ache!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Kitne kanche aur kitne santrey badle jaa rahe hain, us pe dhyaan dijiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Kitne kanche aur kitne santrey badle jaa rahe hain, us pe dhyaan dijiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Aapko X aur Y mein sahi numbers likhne honge taaki ratio sahi nikle.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Aapko X aur Y mein sahi numbers likhne honge taaki ratio sahi nikle.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Aapke jawaab ko \u201cX to Y\u201d ki shakal mein hona chahiye, jahan X aur Y numbers hain. (Aapko quotations likhne ki zarurat nahin hai.)</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Aapke jawaab ko \u201cX to Y\u201d ki shakal mein hona chahiye, jahan X aur Y numbers hain. (Aapko quotations likhne ki zarurat nahin hai.)</p>"},
                 "needs_update": false
               }
             }
@@ -2348,13 +2348,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -2378,8 +2378,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Pados mein ek mashhur smoothie shop khuli hai! James ko wahan jaane ka dil tha, lekin usne apne saare paise mithayi pe kharch kar diye the.&nbsp;</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table pe ek smoothie ka glass rakha hua hai. Woh rang biranga hai pur us mein ek straw laga hai.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_180905_b8nnynnj2o_height_145_width_288.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Pados mein ek mashhur smoothie shop khuli hai! James ko wahan jaane ka dil tha, lekin usne apne saare paise mithayi pe kharch kar diye the.&nbsp;</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table pe ek smoothie ka glass rakha hua hai. Woh rang biranga hai pur us mein ek straw laga hai.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_180905_b8nnynnj2o_height_145_width_288.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
@@ -2399,7 +2399,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -2413,7 +2413,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "9f99e701-3efe-4254-8fdc-3827d9ba498a",
                   "normalizedStrSet": ["50:20"]
                 }
               }
@@ -2421,7 +2421,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "1bdb2184-acc7-4b05-a024-5a975a796067",
                   "normalizedStrSet": ["5:2"]
                 }
               }
@@ -2434,16 +2434,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "724f7a4a-70aa-4a42-aab0-e1497424f465",
                   "normalizedStrSet": ["50 to 20"]
                 }
               }
@@ -2451,7 +2451,7 @@
               "rule_type": "CaseSensitiveEquals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "14186351-eee4-40fa-8f20-960306cfe465",
                   "normalizedStrSet": ["5 to 2"]
                 }
               }
@@ -2464,16 +2464,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "63181669-ee99-438e-8088-7308bcb55e95",
                   "normalizedStrSet": ["20:50"]
                 }
               }
@@ -2481,7 +2481,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "515833f7-3e0e-4eb4-a12e-629d95c43478",
                   "normalizedStrSet": ["2:5"]
                 }
               }
@@ -2494,16 +2494,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "54af7fbe-67fb-43d7-946c-920648a0a414",
                   "normalizedStrSet": ["50: 20"]
                 }
               }
@@ -2511,7 +2511,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "074938e1-b391-4d08-8d5f-ac14567cb05c",
                   "normalizedStrSet": ["50 :20"]
                 }
               }
@@ -2519,7 +2519,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "f9d87552-db3c-40a1-a9b6-d4748dc3c51b",
                   "normalizedStrSet": ["50 : 20"]
                 }
               }
@@ -2527,7 +2527,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "84be357c-d3f7-46c1-9b5a-527bbbb96058",
                   "normalizedStrSet": ["5: 2"]
                 }
               }
@@ -2535,7 +2535,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "5101996c-3a50-4dbe-8ffc-dfb8f0ee564e",
                   "normalizedStrSet": ["5 :2"]
                 }
               }
@@ -2543,7 +2543,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "d3299662-c092-44cb-95b3-b07dc0cf50fa",
                   "normalizedStrSet": ["5 : 2"]
                 }
               }
@@ -2556,10 +2556,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 3",
@@ -2569,13 +2569,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -2668,43 +2668,43 @@
           "translations_mapping": {
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Ratio sahi hai! Lekin, ab se, apna jawaab colon ke saath hi likhna. Phir se koshish kariye.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Ratio sahi hai! Lekin, ab se, apna jawaab colon ke saath hi likhna. Phir se koshish kariye.</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>James ne apne baqi adla badli ratios nikalkar, apne doston ke saath khilaune badalna shuroo kar diya.&nbsp;</p>\n\n<p>\u201cHam tumhein 50 kanche denge, aur tum hamko 20 strawberry dena,\u201d James ne kaha apne ek dost se.&nbsp;</p>\n\n<p>Is maamle mein kanche se stawberry ka kya ratio hai?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>James ne apne baqi adla badli ratios nikalkar, apne doston ke saath khilaune badalna shuroo kar diya.&nbsp;</p>\n\n<p>\u201cHam tumhein 50 kanche denge, aur tum hamko 20 strawberry dena,\u201d James ne kaha apne ek dost se.&nbsp;</p>\n\n<p>Is maamle mein kanche se stawberry ka kya ratio hai?</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, tumne ghalta order likha hai. Ratios mein, number ka arrangement sahi hona chahiye! Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, tumne ghalta order likha hai. Ratios mein, number ka arrangement sahi hona chahiye! Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sahi!&nbsp;</p>\n\n<p>Ham log ratio ko 50:20 likh sakte hain ya 5:3, kyunki hamein sirf <strong>relative</strong> number ki fiqr hai. Dono jawaab sahi hain.&nbsp;</p>\n\n<p>5:2 sahi hai kyunki har baar James 5 kanche deta hai, usko 2 strawberries wapas milte hain (aur woh yeh kaam 10 baar sakta hai taaki woh 50 kanche dekar 20 strawberries wapas le).&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sahi!&nbsp;</p>\n\n<p>Ham log ratio ko 50:20 likh sakte hain ya 5:3, kyunki hamein sirf <strong>relative</strong> number ki fiqr hai. Dono jawaab sahi hain.&nbsp;</p>\n\n<p>5:2 sahi hai kyunki har baar James 5 kanche deta hai, usko 2 strawberries wapas milte hain (aur woh yeh kaam 10 baar sakta hai taaki woh 50 kanche dekar 20 strawberries wapas le).&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Yeh sahi ratio hai, lekin ek choti cheez: jab ratio type karo, tab tumhein colon ke aaspaas space likhne ki zarurat nahin hai. Kya tum apna jawaab phir se likh sakte ho, bina kisi space ke?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Yeh sahi ratio hai, lekin ek choti cheez: jab ratio type karo, tab tumhein colon ke aaspaas space likhne ki zarurat nahin hai. Kya tum apna jawaab phir se likh sakte ho, bina kisi space ke?</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Sawaal ke number dhyaan se padho.</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Sawaal ke number dhyaan se padho.</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -2723,7 +2723,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -2737,7 +2737,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "c2b0772b-c38a-44c5-a14a-fe680a65a9e8",
                   "normalizedStrSet": ["3 to 1"]
                 }
               }
@@ -2745,7 +2745,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "bac00fc3-4953-4049-9dbe-52b04b2e85cf",
                   "normalizedStrSet": ["3:1"]
                 }
               }
@@ -2753,7 +2753,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "29006547-391f-474a-ac64-dbb2ab0de333",
                   "normalizedStrSet": ["\"3 to 1\""]
                 }
               }
@@ -2766,16 +2766,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "3bc9759f-b033-4dbf-a550-4670da8ecf3b",
                   "normalizedStrSet": ["1 to 3"]
                 }
               }
@@ -2788,16 +2788,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "992b6fb4-4550-4278-a083-8e3f8580410e",
                   "normalizedStrSet": ["3to1"]
                 }
               }
@@ -2805,7 +2805,7 @@
               "rule_type": "CaseSensitiveEquals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "c78bf24e-b510-4bac-a107-28a03dfa1c22",
                   "normalizedStrSet": ["3 to1"]
                 }
               }
@@ -2813,7 +2813,7 @@
               "rule_type": "CaseSensitiveEquals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "338cb82a-5e6f-460a-8fa0-5a2510c1a31e",
                   "normalizedStrSet": ["3to 1"]
                 }
               }
@@ -2826,16 +2826,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "7e96afac-4b8d-4a10-94bb-a146c5078c94",
                   "normalizedStrSet": ["X"]
                 }
               }
@@ -2843,7 +2843,7 @@
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "1c480baf-c5a9-43e3-a746-27febfe4e818",
                   "normalizedStrSet": ["Y"]
                 }
               }
@@ -2856,16 +2856,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "930b1d9c-2b0e-4c89-8247-a0665db536af",
                   "normalizedStrSet": ["to"]
                 }
               }
@@ -2878,10 +2878,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 2",
@@ -2891,13 +2891,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -3004,50 +3004,50 @@
           "translations_mapping": {
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi jawaab nahin hai. Numbers ki arrangement ka dhyaan rakhiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi jawaab nahin hai. Numbers ki arrangement ka dhyaan rakhiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cBahut ache, James!\u201d Uncle Berry ne kaha. \u201cPahle 2 likha jaata hai aur phir 5, kyunki ratio kanche to santre ka hai.Yeh numbers ka arrangement zaruri hai. Unko hamesha isi tarah se likhna chahiye.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe do rang birange kanche, our 5 santre rain. Use likes hai ki \\&amp;quot;kanche se santre ka ratio 2 to 5 hai\\&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_182825_px7741guhw_height_276_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cAb batao, tum kanche se seb kaise badloge?\u201d unhone poocha.&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe 3 manche sur ek seb hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_183037_t37zoapyts_height_172_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>James ne kaha, \u201cHam 3 kanchon se 1 seb badlenge. Toh, kanche to seb ka ratio hoga \u2026\u201d&nbsp;</p>\n\n<p>Kya tum kanche to seb ka ratio likh sakte ho?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cBahut ache, James!\u201d Uncle Berry ne kaha. \u201cPahle 2 likha jaata hai aur phir 5, kyunki ratio kanche to santre ka hai.Yeh numbers ka arrangement zaruri hai. Unko hamesha isi tarah se likhna chahiye.\u201d</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe do rang birange kanche, our 5 santre rain. Use likes hai ki \\&amp;quot;kanche se santre ka ratio 2 to 5 hai\\&amp;quot;&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_182825_px7741guhw_height_276_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cAb batao, tum kanche se seb kaise badloge?\u201d unhone poocha.&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek table jis pe 3 manche sur ek seb hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_183037_t37zoapyts_height_172_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>James ne kaha, \u201cHam 3 kanchon se 1 seb badlenge. Toh, kanche to seb ka ratio hoga \u2026\u201d&nbsp;</p>\n\n<p>Kya tum kanche to seb ka ratio likh sakte ho?</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Number sahi likhen hain! Bas space par dhyan do. \u201c3\u201d ke baad ek space hone chahiye, aur \u201cto\u201d ke baad ek space.&nbsp;</p>\n\n<p>Apna jawaab phir se likhne ki koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Number sahi likhen hain! Bas space par dhyan do. \u201c3\u201d ke baad ek space hone chahiye, aur \u201cto\u201d ke baad ek space.&nbsp;</p>\n\n<p>Apna jawaab phir se likhne ki koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sahi kaha! Bahut acha kar rahe ho!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sahi kaha! Bahut acha kar rahe ho!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Kitne kanche aur kitne seb badle jaa rahe hain, us pe dhyaan dijiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Kitne kanche aur kitne seb badle jaa rahe hain, us pe dhyaan dijiye.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Aapko X aur Y mein sahi numbers likhne honge taaki ratio sahi nikle.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Aapko X aur Y mein sahi numbers likhne honge taaki ratio sahi nikle.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Aapke jawaab ko \u201cX to Y\u201d ki shakal mein hona chahiye, jahan X aur Y numbers hain.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Aapke jawaab ko \u201cX to Y\u201d ki shakal mein hona chahiye, jahan X aur Y numbers hain.</p>"},
                 "needs_update": false
               }
             }
@@ -3066,7 +3066,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -3080,7 +3080,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "d4f1cd28-f796-4b32-9080-cf2c283039bf",
                   "normalizedStrSet": ["2:1"]
                 }
               }
@@ -3088,7 +3088,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "4161eeb4-38ae-43ca-8d06-3f62f6318c75",
                   "normalizedStrSet": ["1:1/2"]
                 }
               }
@@ -3096,7 +3096,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "72c48438-98eb-4cd5-b6dc-dca3034c98d5",
                   "normalizedStrSet": ["1:0.5"]
                 }
               }
@@ -3109,16 +3109,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "StartsWith",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "30bfedac-7ea5-44b9-95ef-3aeb08ba5d07",
                   "normalizedStrSet": ["1"]
                 }
               }
@@ -3131,16 +3131,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "1bfd83da-8e96-488a-84c6-985d1367af6e",
                   "normalizedStrSet": ["2: 1"]
                 }
               }
@@ -3153,16 +3153,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "44624b4f-5531-4e6f-8a91-539354be9596",
                   "normalizedStrSet": ["2:"]
                 }
               }
@@ -3175,10 +3175,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 5",
@@ -3188,13 +3188,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_2": {
@@ -3287,43 +3287,43 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>James ne page palta, aur usko kele ke smoothie ki recipe dikhi. Mazedaar!&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek khuli hui kitaab hai. Us mein do glass doodh our ek glass pise hue kele ki tasveer hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_190534_17472urgpg_height_361_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cMain yeh bana sakta hun,\u2019 Usne kaha. \u201cHamein doodh aur kele ko ____________ ratio mein milana hoga.\u201d</p>\n\n<p>Kya aap James ke jumle ko poora kar sakte hain? Doodh se kele ka kya ratio hai?</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>James ne page palta, aur usko kele ke smoothie ki recipe dikhi. Mazedaar!&nbsp;</p>\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;Ek khuli hui kitaab hai. Us mein do glass doodh our ek glass pise hue kele ki tasveer hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_190534_17472urgpg_height_361_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p>&nbsp;</p>\n\n<p>\u201cMain yeh bana sakta hun,\u2019 Usne kaha. \u201cHamein doodh aur kele ko ____________ ratio mein milana hoga.\u201d</p>\n\n<p>Kya aap James ke jumle ko poora kar sakte hain? Doodh se kele ka kya ratio hai?</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Ratio ka baaya side hamesha 1 nahin hota. Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Ratio ka baaya side hamesha 1 nahin hota. Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>&nbsp;</p>\n\n<p>Yeh achi shuruaat hai, lekin tumhare paas kela sahi raqam mein nahin hai. Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>&nbsp;</p>\n\n<p>Yeh achi shuruaat hai, lekin tumhare paas kela sahi raqam mein nahin hai. Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sahi kaha!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sahi kaha!</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>&nbsp;</p>\n\n<p>Ratio ko bina space ke likha karo. Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>&nbsp;</p>\n\n<p>Ratio ko bina space ke likha karo. Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai! Phir se koshish karo. (Aur yaad rakhna ki ratio ko spaces ke bina likhna chahiye.)</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai! Phir se koshish karo. (Aur yaad rakhna ki ratio ko spaces ke bina likhna chahiye.)</p>"},
                 "needs_update": false
               }
             }
@@ -3342,7 +3342,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -3356,7 +3356,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "9188484d-a59e-4932-9936-6d54e287f152",
                   "normalizedStrSet": ["1:4"]
                 }
               }
@@ -3364,7 +3364,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "1abb261a-14b8-4d67-850e-a1f173e0c824",
                   "normalizedStrSet": ["2:8"]
                 }
               }
@@ -3377,16 +3377,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Contains",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "9e160745-9991-4651-b1f3-fc46922b1d92",
                   "normalizedStrSet": ["to"]
                 }
               }
@@ -3399,10 +3399,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 4",
@@ -3412,8 +3412,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -3423,7 +3423,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -3502,36 +3502,36 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cBahut ache! Ab, yeh ek aur sawaal hai.\u201d</p>\n\n<p>\u201cSocho ki hamein doodh aur strawberry mix karna neeche ke tasveer jaise. Is mein pichli tasveer se bade glasses hain. Doodh se strawberry ka kya ratio hai?\u201d</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Do glasses jo pichle tasveer se bahut bade hain. Ek mein doodh hai, doosre mein 4 gunaah strawberry hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_190036_vg7330cyv4_height_485_width_490.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cBahut ache! Ab, yeh ek aur sawaal hai.\u201d</p>\n\n<p>\u201cSocho ki hamein doodh aur strawberry mix karna neeche ke tasveer jaise. Is mein pichli tasveer se bade glasses hain. Doodh se strawberry ka kya ratio hai?\u201d</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;Do glasses jo pichle tasveer se bahut bade hain. Ek mein doodh hai, doosre mein 4 gunaah strawberry hai&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_190036_vg7330cyv4_height_485_width_490.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Apna jawaab X:Y ki shakl mein likhiye, jahan X aur Y numbers hain. Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Apna jawaab X:Y ki shakl mein likhiye, jahan X aur Y numbers hain. Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sahi! Ratio abhi bhi 1:4 hai. Halaanki glasses bade hain, hamare paas abhi bhi doodh ke chaar gunaah strawberry hoga.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sahi! Ratio abhi bhi 1:4 hai. Halaanki glasses bade hain, hamare paas abhi bhi doodh ke chaar gunaah strawberry hoga.</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Yaad rakho, doodh aur strawberry ki exact raqam zaruri nahin hai. Unki ek doosre ke <strong>relative</strong> raqam zaruri hai.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Yaad rakho, doodh aur strawberry ki exact raqam zaruri nahin hai. Unki ek doosre ke <strong>relative</strong> raqam zaruri hai.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Socho ki baany haath pe doodh ka glass 1 unit hai, toh aapko ratio 1:Y ki shakal mein likhnahoga (jahan aapko samajhna hoga ki Y kya hai).&nbsp;</p>\n\n<p>Kya tum tasveer ko dekhke Y kya hai nikal sakte ho? Phir, poora ratio likho.&nbsp;</p>\n\n<p>Phir se koshish kariye!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Socho ki baany haath pe doodh ka glass 1 unit hai, toh aapko ratio 1:Y ki shakal mein likhnahoga (jahan aapko samajhna hoga ki Y kya hai).&nbsp;</p>\n\n<p>Kya tum tasveer ko dekhke Y kya hai nikal sakte ho? Phir, poora ratio likho.&nbsp;</p>\n\n<p>Phir se koshish kariye!</p>"},
                 "needs_update": false
               }
             }
@@ -3550,24 +3550,24 @@
           "id": "ItemSelectionInput",
           "customization_args": {
             "maxAllowableSelectionCount": {
-              "value": 4.0
+              "value": 4
             },
             "minAllowableSelectionCount": {
-              "value": 1.0
+              "value": 1
             },
             "choices": {
               "value": [{
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 2 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015718_z6etekas3e_height_70_width_311.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 2 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015718_z6etekas3e_height_70_width_311.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 3 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015857_72emgdu29g_height_65_width_334.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 block of white chocolate and 3 blocks of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015857_72emgdu29g_height_65_width_334.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-by-2 piece of white chocolate. On the right, there are three 2-by-2 pieces of white chocolate.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015928_djd6doa4jm_height_254_width_430.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is a 2-by-2 piece of white chocolate. On the right, there are three 2-by-2 pieces of white chocolate.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_015928_djd6doa4jm_height_254_width_430.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 piece of white chocolate. On the right, there is 2 by 2 piece of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_020001_rm6t5klmjv_height_126_width_352.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 piece of white chocolate. On the right, there is 2 by 2 piece of dark chocolate&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181114_020001_rm6t5klmjv_height_126_width_352.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }]
             }
           },
@@ -3586,10 +3586,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -3610,10 +3610,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "ContainsAtLeastOneOf",
@@ -3629,10 +3629,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -3648,10 +3648,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 7",
@@ -3661,8 +3661,8 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [{
             "hint_content": {
@@ -3677,7 +3677,7 @@
           }],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -3798,57 +3798,57 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cSahi!\u201d kaha Uncle Berry ne. \u201cJames, mere paas ek idea aaya. Tumhein chocolate smoothie bhi banani hai kya? Chocolate smoothies phal ke smoothies jitne ache lagte hain!\u201d</p>\n\n<p>\u201cAur nahin toh!\u201d James ne jawaab diya.&nbsp;</p>\n\n<p><br>\n\u201cTheek hai,\u201d Uncle Berry ne kaha. \u201cYeh recipe white chocolate aur dark chocolate ko 1:3 ki ratio mein pees rahi hai. Dekho agar tum woh <strong>sab</strong> tasveeren chun sakte ho jin mein yeh ratio sahi se dikhaya gaya ho.\u201d</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cSahi!\u201d kaha Uncle Berry ne. \u201cJames, mere paas ek idea aaya. Tumhein chocolate smoothie bhi banani hai kya? Chocolate smoothies phal ke smoothies jitne ache lagte hain!\u201d</p>\n\n<p>\u201cAur nahin toh!\u201d James ne jawaab diya.&nbsp;</p>\n\n<p><br>\n\u201cTheek hai,\u201d Uncle Berry ne kaha. \u201cYeh recipe white chocolate aur dark chocolate ko 1:3 ki ratio mein pees rahi hai. Dekho agar tum woh <strong>sab</strong> tasveeren chun sakte ho jin mein yeh ratio sahi se dikhaya gaya ho.\u201d</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Yaad rakho, ratio kisi samaan ki exact raqam nahin dikhata hai. Toh, yeh zaruri nahin hai ki white chocolate ka sirf 1 tukda hoga.&nbsp;</p>\n\n<p>Ratio hamesha <strong>relative</strong> rishta dikhata hai. Toh, is sawaal mein, yeh dhyaan rakho ki <em>white chocolate </em><em>ke</em><em> har 1 </em><em>tukde</em><em> </em><em>ke</em><em> </em><em>liye</em>, dark chocolate ke 3 tukde hone chahiyen.&nbsp;</p>\n\n<p>Dekho agar tum yeh jaankari se jawaab nikal sakte ho!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Yaad rakho, ratio kisi samaan ki exact raqam nahin dikhata hai. Toh, yeh zaruri nahin hai ki white chocolate ka sirf 1 tukda hoga.&nbsp;</p>\n\n<p>Ratio hamesha <strong>relative</strong> rishta dikhata hai. Toh, is sawaal mein, yeh dhyaan rakho ki <em>white chocolate </em><em>ke</em><em> har 1 </em><em>tukde</em><em> </em><em>ke</em><em> </em><em>liye</em>, dark chocolate ke 3 tukde hone chahiyen.&nbsp;</p>\n\n<p>Dekho agar tum yeh jaankari se jawaab nikal sakte ho!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Tumne ek jawaab toh sahi diya hai! Lekin phir se dekho ki tumne <strong>sab</strong> sahi jawaab chune ki nahin.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Tumne ek jawaab toh sahi diya hai! Lekin phir se dekho ki tumne <strong>sab</strong> sahi jawaab chune ki nahin.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Tumhara ek jawaab 1:2 ka ratio dikha raha hai. Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Tumhara ek jawaab 1:2 ka ratio dikha raha hai. Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Bahut ache!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Bahut ache!</p>"},
                 "needs_update": false
               }
             },
             "hint_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Ek se zyadah sahi jawaab hain.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Ek se zyadah sahi jawaab hain.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "hint_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cRelatively\u201d socha karo. Har 1 unit white chocolate ke liye, 3 unit dark chocolate hone chahiyen.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cRelatively\u201d socha karo. Har 1 unit white chocolate ke liye, 3 unit dark chocolate hone chahiyen.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai.&nbsp;</p>\n\n<p>Phir se koshish kariye.</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai.&nbsp;</p>\n\n<p>Phir se koshish kariye.</p>"},
                 "needs_update": false
               }
             }
@@ -3868,20 +3868,20 @@
           "customization_args": {
             "choices": {
               "value": [{
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 3-unit wide glass filled with apple puree. On the right there is 2-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162731_mcvshd7ssy_height_51_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 3-unit wide glass filled with apple puree. On the right there is 2-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162731_mcvshd7ssy_height_51_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 3-unit wide glass filled with apple puree. On the right, there is 1-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162744_35at2mhlgv_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 3-unit wide glass filled with apple puree. On the right, there is 1-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162744_35at2mhlgv_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1-unit wide glass filled with apple puree. On the right, there is 2-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162758_zhu65vaxgg_height_51_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1-unit wide glass filled with apple puree. On the right, there is 2-unit wide glass filled with milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162758_zhu65vaxgg_height_51_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 1-unit wide glass filled with apple puree. On the right there is 3-unit wide glass filled with milk. But the unit is smaller than units for above glasses&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162818_gzvytjmdne_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 1-unit wide glass filled with apple puree. On the right there is 3-unit wide glass filled with milk. But the unit is smaller than units for above glasses&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181226_162818_gzvytjmdne_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 2-unit wide glass filled with apple puree. On the right there is 3-unit wide glass filled with milk. But the unit is smaller than units for above glasses&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_210847_55i3yqso0y_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_4"
+                "content_id": "ca_choices_4",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left there is 2-unit wide glass filled with apple puree. On the right there is 3-unit wide glass filled with milk. But the unit is smaller than units for above glasses&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_210847_55i3yqso0y_height_50_width_294.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }]
             }
           },
@@ -3900,10 +3900,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -3919,10 +3919,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -3938,10 +3938,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
@@ -3957,10 +3957,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 6",
@@ -3970,13 +3970,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -4069,43 +4069,43 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cBahut ache!\u201d Uncle Berry ne kaha. Unhone rasoi ki table ko dekha aur unko ehsaas hua ki James ke paas ek jug santre ka juice tha&nbsp;jo istemaal nahin hua tha.&nbsp;</p>\n\n<p>\u201cAb, James,\u201d unhone kaha, \u201cMujhe santre ke smoothie ki ek achi recipe pata hai. Uske liye santre aur doodh ko 3:2 ratio mein milane ki zarurat hai. Kya tum mujhe bata sakte ho ki aage ki tasveeron mein se kaun si tasveer santre se doodh ka 3:2 ratio dikha rahi hai?\u201d</p>\n\n<p>(Dhyaan deejiye: Santre ka puree orange hai, aur doodh white.)</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cBahut ache!\u201d Uncle Berry ne kaha. Unhone rasoi ki table ko dekha aur unko ehsaas hua ki James ke paas ek jug santre ka juice tha&nbsp;jo istemaal nahin hua tha.&nbsp;</p>\n\n<p>\u201cAb, James,\u201d unhone kaha, \u201cMujhe santre ke smoothie ki ek achi recipe pata hai. Uske liye santre aur doodh ko 3:2 ratio mein milane ki zarurat hai. Kya tum mujhe bata sakte ho ki aage ki tasveeron mein se kaun si tasveer santre se doodh ka 3:2 ratio dikha rahi hai?\u201d</p>\n\n<p>(Dhyaan deejiye: Santre ka puree orange hai, aur doodh white.)</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh santre se doodh ka 3:1 ratio dikha raha hai. Tumhein 3:2 ratio ki zarurat hai.&nbsp;</p>\n\n<p>Shayad tumhein ratio ke matlab ko phir se dekhne ki zarurat hai. Chalo wapas chalke Uncle Berry se phir se seekhen!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh santre se doodh ka 3:1 ratio dikha raha hai. Tumhein 3:2 ratio ki zarurat hai.&nbsp;</p>\n\n<p>Shayad tumhein ratio ke matlab ko phir se dekhne ki zarurat hai. Chalo wapas chalke Uncle Berry se phir se seekhen!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin yeh dikhata hai ki santre se doodh ka ratio 1:2 hai. Lekin tumko woh tasveer chunna chahiye jo 3:2 ratio dikha raha hai.</p>\n\n<p>Shayad tumhein ratio ke matlab ko phir se dekhne ki zarurat hai. Chalo wapas chalke Uncle Berry se phir se seekhen!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin yeh dikhata hai ki santre se doodh ka ratio 1:2 hai. Lekin tumko woh tasveer chunna chahiye jo 3:2 ratio dikha raha hai.</p>\n\n<p>Shayad tumhein ratio ke matlab ko phir se dekhne ki zarurat hai. Chalo wapas chalke Uncle Berry se phir se seekhen!</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Sahi kiya!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Sahi kiya!</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin yeh dikhata hai ki santre se doodh ka ratio 1:3 hai. Lekin sawaal ka yeh sahi jawaab nahin hai.</p>\n\n<p>Shayad tumhein ratio ke matlab ko phir se dekhne ki zarurat hai. Chalo wapas chalke Uncle Berry se phir se seekhen! Apna waqt lekar samajhne ki koshish karo ki woh James se kya kah rahe hain.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin yeh dikhata hai ki santre se doodh ka ratio 1:3 hai. Lekin sawaal ka yeh sahi jawaab nahin hai.</p>\n\n<p>Shayad tumhein ratio ke matlab ko phir se dekhne ki zarurat hai. Chalo wapas chalke Uncle Berry se phir se seekhen! Apna waqt lekar samajhne ki koshish karo ki woh James se kya kah rahe hain.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Phir se koshish kariye, order pe dhyaan dijiye!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Phir se koshish kariye, order pe dhyaan dijiye!</p>"},
                 "needs_update": false
               }
             }
@@ -4124,27 +4124,27 @@
           "id": "ItemSelectionInput",
           "customization_args": {
             "maxAllowableSelectionCount": {
-              "value": 5.0
+              "value": 5
             },
             "minAllowableSelectionCount": {
-              "value": 1.0
+              "value": 1
             },
             "choices": {
               "value": [{
-                "html": "<p>For every glass of banana puree, we need 2 glasses of milk.</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>For every glass of banana puree, we need 2 glasses of milk.</p>"
               }, {
-                "html": "<p>For any amount of banana puree, we need twice (= 2 times) that amount of milk.</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>For any amount of banana puree, we need twice (= 2 times) that amount of milk.</p>"
               }, {
-                "html": "<p>We can make this smoothie by mixing 2 cups of milk and 4 cups of banana puree.</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>We can make this smoothie by mixing 2 cups of milk and 4 cups of banana puree.</p>"
               }, {
-                "html": "<p>The smoothie must contain<strong> exactly</strong> 1 glass of banana puree and 2 glasses of milk.</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>The smoothie must contain<strong> exactly</strong> 1 glass of banana puree and 2 glasses of milk.</p>"
               }, {
-                "html": "<p>We can make this smoothie using 3 glasses of banana puree and 6 glasses of milk.</p>",
-                "content_id": "ca_choices_4"
+                "content_id": "ca_choices_4",
+                "html": "<p>We can make this smoothie using 3 glasses of banana puree and 6 glasses of milk.</p>"
               }]
             }
           },
@@ -4163,10 +4163,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "ContainsAtLeastOneOf",
@@ -4182,10 +4182,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "ContainsAtLeastOneOf",
@@ -4201,10 +4201,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "DoesNotContainAtLeastOneOf",
@@ -4220,10 +4220,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "DoesNotContainAtLeastOneOf",
@@ -4239,10 +4239,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 9",
@@ -4252,13 +4252,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -4365,50 +4365,50 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cMujhe lagta hai ki mujhe ratios ab samajh aa rahe hain!\u201d James ne khushi se kaha.&nbsp;</p>\n\n<p>\u201cHhhhmm, shayad tumhein aa rahe hain!\u201d Uncle Berry ne kaha. \u201cKya ham bas ek aur sawaal padhen, bas hamare itmenaan ke liye?\u201d</p>\n\n<p>\u201cHan!\u201d kaha James ne.&nbsp;</p>\n\n<p><br>\n\u201cAcha,\u201d kaha Uncle Berry ne. \u201cKya tumhein yaad hai ki bas abhi ham kele ke smoothies ke baat kar rahe the? <strong>Is smoothie mein kele se doodh ka ratio 1:2 tha.</strong> In jumlon mein se kaun se is haal ko sahi se bayaan kar raha hai? <strong>Sab</strong> sahi wale chuno.\u201d&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cMujhe lagta hai ki mujhe ratios ab samajh aa rahe hain!\u201d James ne khushi se kaha.&nbsp;</p>\n\n<p>\u201cHhhhmm, shayad tumhein aa rahe hain!\u201d Uncle Berry ne kaha. \u201cKya ham bas ek aur sawaal padhen, bas hamare itmenaan ke liye?\u201d</p>\n\n<p>\u201cHan!\u201d kaha James ne.&nbsp;</p>\n\n<p><br>\n\u201cAcha,\u201d kaha Uncle Berry ne. \u201cKya tumhein yaad hai ki bas abhi ham kele ke smoothies ke baat kar rahe the? <strong>Is smoothie mein kele se doodh ka ratio 1:2 tha.</strong> In jumlon mein se kaun se is haal ko sahi se bayaan kar raha hai? <strong>Sab</strong> sahi wale chuno.\u201d&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Yeh sahi shuruaat hai, lekin tumhein sirf kuch kuch sahi jawaab mile hain. <strong>Saare</strong> sahi jawaab chuno. Phir se koshish karo!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Yeh sahi shuruaat hai, lekin tumhein sirf kuch kuch sahi jawaab mile hain. <strong>Saare</strong> sahi jawaab chuno. Phir se koshish karo!</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Yaad rakho, ratios hamesha <strong>relative</strong> rishte dikhate hain, exact raqam nahin. Uncle Berry ki baatein phir se padhte hain.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Yaad rakho, ratios hamesha <strong>relative</strong> rishte dikhate hain, exact raqam nahin. Uncle Berry ki baatein phir se padhte hain.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Han, yeh sahi hai! Tumne sahi kiya!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Han, yeh sahi hai! Tumne sahi kiya!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_4": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Oops, dhyaan se! <strong>Ratio mein cheezon ka order zaruri hai,</strong> lekin diye hue chunaav mein se ek aisa hai jis mein cheezen ghalat order mein likhi hain. Dhyaan rakho ki tum woh wala na chuno.&nbsp;</p>\n\n<p>Phir se koshish karo.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Oops, dhyaan se! <strong>Ratio mein cheezon ka order zaruri hai,</strong> lekin diye hue chunaav mein se ek aisa hai jis mein cheezen ghalat order mein likhi hain. Dhyaan rakho ki tum woh wala na chuno.&nbsp;</p>\n\n<p>Phir se koshish karo.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_5": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Yeh achi shuruaat hai, lekin dhyaan rakho ki <strong>sab</strong> sahi jawaab chuno. Yaad rakho, ratios <strong>relative</strong> rishte dikhaate hain, toh aap kitne bhi kele istemaal kar sakte hain, us hisaab se sahi raqam doodh bhi le lo.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Yeh achi shuruaat hai, lekin dhyaan rakho ki <strong>sab</strong> sahi jawaab chuno. Yaad rakho, ratios <strong>relative</strong> rishte dikhaate hain, toh aap kitne bhi kele istemaal kar sakte hain, us hisaab se sahi raqam doodh bhi le lo.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hain. Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hain. Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -4427,27 +4427,27 @@
           "id": "ItemSelectionInput",
           "customization_args": {
             "maxAllowableSelectionCount": {
-              "value": 5.0
+              "value": 5
             },
             "minAllowableSelectionCount": {
-              "value": 1.0
+              "value": 1
             },
             "choices": {
               "value": [{
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 pen and 6 strawberries&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_163338_3eispxy1pv_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 pen and 6 strawberries&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_163338_3eispxy1pv_height_245_width_245.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1L of blueberry puree and 6L of milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205133_nt7ngc4nbg_height_426_width_267.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1L of blueberry puree and 6L of milk.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205133_nt7ngc4nbg_height_426_width_267.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 block of white chocolate. On the write there are 4 by 6 block of dark chocolate (12 of 1 by 2 blocks)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_164311_brh9c84al7_height_268_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;On the left, there is 1 by 2 block of white chocolate. On the write there are 4 by 6 block of dark chocolate (12 of 1 by 2 blocks)&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181105_164311_brh9c84al7_height_268_width_490.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 unit filled glass of blueberry puree and 6 unit filled glass of milk&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205518_jl7a4rzmck_height_425_width_305.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 unit filled glass of blueberry puree and 6 unit filled glass of milk&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190107_205518_jl7a4rzmck_height_425_width_305.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }, {
-                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cups of milk and 7 cups of blueberry puree&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181230_132852_rxu1gj1uuw_height_329_width_441.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>",
-                "content_id": "ca_choices_4"
+                "content_id": "ca_choices_4",
+                "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1 cups of milk and 7 cups of blueberry puree&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20181230_132852_rxu1gj1uuw_height_329_width_441.png&amp;quot;\"></oppia-noninteractive-image>\n<p><span></span></p>"
               }]
             }
           },
@@ -4466,10 +4466,10 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "ContainsAtLeastOneOf",
@@ -4485,10 +4485,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "ContainsAtLeastOneOf",
@@ -4504,10 +4504,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 8",
@@ -4517,13 +4517,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -4602,36 +4602,36 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cAcha, tum is pe ache bante jaa rahe ho!\u201d Uncle Berry ne kaha.&nbsp;</p>\n\n<p>\u201cYeh wala thoda aur mushkil hai. Woh <strong>saari</strong> tasveeren chuno jo sahi se 1:6 ka ratio dikha rahi hain.\u201d</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cAcha, tum is pe ache bante jaa rahe ho!\u201d Uncle Berry ne kaha.&nbsp;</p>\n\n<p>\u201cYeh wala thoda aur mushkil hai. Woh <strong>saari</strong> tasveeren chuno jo sahi se 1:6 ka ratio dikha rahi hain.\u201d</p>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Yeh sahi hai, acha kiya! Tum is pe bahut ache ho!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Yeh sahi hai, acha kiya! Tum is pe bahut ache ho!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Hhhhm, tumne kuch sahi chune hain, lekin aur bhi sahi hain. Dhyaan rakho ki tum <strong>sab</strong> sahi jawaab chun rahe ho!</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Hhhhm, tumne kuch sahi chune hain, lekin aur bhi sahi hain. Dhyaan rakho ki tum <strong>sab</strong> sahi jawaab chun rahe ho!</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Phir se koshish karo.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Phir se koshish karo.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin yeh, sahi nahin hai. Tumne kuch aisi tasveeren chuni hain jo aise ratio dikha rahi hain jo ki 1:6 <strong>nahin</strong> hain.&nbsp;</p>\n\n<p>Yaad rakho, ratios <strong>relative</strong> rishte dikhate hain. Toh, dhyan rakho ki kisi cheez A ke har 1 unit ke liye, tum doosri cheez B ke 6 unit rakho.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin yeh, sahi nahin hai. Tumne kuch aisi tasveeren chuni hain jo aise ratio dikha rahi hain jo ki 1:6 <strong>nahin</strong> hain.&nbsp;</p>\n\n<p>Yaad rakho, ratios <strong>relative</strong> rishte dikhate hain. Toh, dhyan rakho ki kisi cheez A ke har 1 unit ke liye, tum doosri cheez B ke 6 unit rakho.&nbsp;</p>\n\n<p>Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             }
@@ -4662,13 +4662,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -4692,8 +4692,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>James aur Uncle Berry ne apne din ka aakhri smoothie banaya. Woh bahut swaadisht tha! Aur ab, kyunki James ko ratios ke baare mein pata tha, woh apni tarqeeben apne doston ko bhi bata sakta tha. Glass saaf karte hue James ne faisla kiya ki woh kal khud se aur smoothies banayega.&nbsp;</p>\n\n<p>James ne kuch zaruri cheezen bhi yaad rakhin. Tumhein yeh likh leni chahiyen taaki tumhein bhi yaad rahen!&nbsp;</p>\n\n<ul>\n\t<li>\n\t<p>Ratios kayi cheezon ke raqamon ke beech ke <strong>relative</strong> rishte ke baare mein batata hai.</p>\n\t</li>\n\t<li>\n\t<p>Woh \u2018to\u2019, ya ek colon (\u2018:\u2019) ki zariye likhe jaa sakte hain. E.g. \u20182 to 3\u2019 ya \u20182:3\u2019.&nbsp;</p>\n\t</li>\n\t<li>\n\t<p>Jab ratio likho, toh tumhein sirf un cheezon pe dhyaan dena chahiye jinke baare mein poocha gaya ho. Baqi sab ke baare mein bhool sakte ho!&nbsp;</p>\n\t</li></ul>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>James aur Uncle Berry ne apne din ka aakhri smoothie banaya. Woh bahut swaadisht tha! Aur ab, kyunki James ko ratios ke baare mein pata tha, woh apni tarqeeben apne doston ko bhi bata sakta tha. Glass saaf karte hue James ne faisla kiya ki woh kal khud se aur smoothies banayega.&nbsp;</p>\n\n<p>James ne kuch zaruri cheezen bhi yaad rakhin. Tumhein yeh likh leni chahiyen taaki tumhein bhi yaad rahen!&nbsp;</p>\n\n<ul>\n\t<li>\n\t<p>Ratios kayi cheezon ke raqamon ke beech ke <strong>relative</strong> rishte ke baare mein batata hai.</p>\n\t</li>\n\t<li>\n\t<p>Woh \u2018to\u2019, ya ek colon (\u2018:\u2019) ki zariye likhe jaa sakte hain. E.g. \u20182 to 3\u2019 ya \u20182:3\u2019.&nbsp;</p>\n\t</li>\n\t<li>\n\t<p>Jab ratio likho, toh tumhein sirf un cheezon pe dhyaan dena chahiye jinke baare mein poocha gaya ho. Baqi sab ke baare mein bhool sakte ho!&nbsp;</p>\n\t</li></ul>"},
                 "needs_update": false
               }
             },
@@ -4725,13 +4725,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -4755,8 +4755,8 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cYeh ratio kya hota hai?\u201d James ne hairaan hokar poocha.</p>\n\n<p>\u201cOh,\u201d Uncle Berry ne kaha. \u201cRatios bahut faydah-mand hote hai. Ratio <strong>kuch</strong><strong> </strong><strong>cheezon</strong><strong> ki </strong><strong>ginti</strong><strong>, </strong><strong>kuch</strong><strong> </strong><strong>aur</strong><strong> </strong><strong>cheezon</strong><strong> </strong><strong>ke</strong><strong> </strong><strong>muqaable</strong> mein batati hai. Jaisi ki, tum apne khilaune phal ke liye kaise badalne wale the?\u201d</p>\n\n<p>\u201cHam 1 khilauna dekar 2 aam wapas lene wale the,\u201d James ne kaha.&nbsp;</p>\n\n<p>\u201cAcha,\u201d Uncle Berry ne kaha. \u201cToh, tum aisa kah sakte ho ki tum khilaune aur aam 1 to 2 ki ratio mein badal rahe ho. Yaani <strong>khilaune to aam ka ratio 1 to 2 hai.</strong>\u201d&nbsp;&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cYeh ratio kya hota hai?\u201d James ne hairaan hokar poocha.</p>\n\n<p>\u201cOh,\u201d Uncle Berry ne kaha. \u201cRatios bahut faydah-mand hote hai. Ratio <strong>kuch</strong><strong> </strong><strong>cheezon</strong><strong> ki </strong><strong>ginti</strong><strong>, </strong><strong>kuch</strong><strong> </strong><strong>aur</strong><strong> </strong><strong>cheezon</strong><strong> </strong><strong>ke</strong><strong> </strong><strong>muqaable</strong> mein batati hai. Jaisi ki, tum apne khilaune phal ke liye kaise badalne wale the?\u201d</p>\n\n<p>\u201cHam 1 khilauna dekar 2 aam wapas lene wale the,\u201d James ne kaha.&nbsp;</p>\n\n<p>\u201cAcha,\u201d Uncle Berry ne kaha. \u201cToh, tum aisa kah sakte ho ki tum khilaune aur aam 1 to 2 ki ratio mein badal rahe ho. Yaani <strong>khilaune to aam ka ratio 1 to 2 hai.</strong>\u201d&nbsp;&nbsp;</p>"},
                 "needs_update": false
               }
             },
@@ -4776,7 +4776,7 @@
           "id": "TextInput",
           "customization_args": {
             "rows": {
-              "value": 1.0
+              "value": 1
             },
             "placeholder": {
               "value": {
@@ -4790,7 +4790,7 @@
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "2218f74f-cb3d-4b3d-8f7f-48901af0f33d",
                   "normalizedStrSet": ["1:4"]
                 }
               }
@@ -4803,16 +4803,16 @@
               },
               "labelled_as_correct": true,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "f498979c-a3cf-4a31-889a-b86aed44cfb5",
                   "normalizedStrSet": ["1 to 4"]
                 }
               }
@@ -4825,16 +4825,16 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "Equals",
               "inputs": {
                 "x": {
-                  "contentId": "<unknown>",
+                  "contentId": "1520f528-b819-49ef-bf04-734bfb918cc4",
                   "normalizedStrSet": ["4:1"]
                 }
               }
@@ -4847,10 +4847,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "Practice 3.5",
@@ -4860,13 +4860,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {
@@ -4945,36 +4945,36 @@
           "translations_mapping": {
             "content": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>\u201cAb,\u201d Uncle Berry ne kaha, \u201cmujhe is baat ka jawaab do. Is recipe ke hisaab se hamein doodh aur strawberry milana chahiye, jaise tasveer mein dikhaya gaya hai. Doodh se strawberry ka kya ratio hai?\u201d</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;2 glasses. 1 mein doodh hai pur doofer mein 4 gunaah strawberry&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_185715_n3ea3u0cez_height_288_width_441.png&amp;quot;\"></oppia-noninteractive-image>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>\u201cAb,\u201d Uncle Berry ne kaha, \u201cmujhe is baat ka jawaab do. Is recipe ke hisaab se hamein doodh aur strawberry milana chahiye, jaise tasveer mein dikhaya gaya hai. Doodh se strawberry ka kya ratio hai?\u201d</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;2 glasses. 1 mein doodh hai pur doofer mein 4 gunaah strawberry&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20190917_185715_n3ea3u0cez_height_288_width_441.png&amp;quot;\"></oppia-noninteractive-image>"},
                 "needs_update": false
               }
             },
             "feedback_2": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Yeh sahi ratio hai, lekin ek choti cheez: jab ratio type karo, tab tumhein jawab colon (\u201c:\u201d) istemaal karke likhna chahiye. Phir se koshish kariye!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Yeh sahi ratio hai, lekin ek choti cheez: jab ratio type karo, tab tumhein jawab colon (\u201c:\u201d) istemaal karke likhna chahiye. Phir se koshish kariye!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_1": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Han, yeh sahi hai!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Han, yeh sahi hai!&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "default_outcome": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Phir se koshish kariye.&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Phir se koshish kariye.&nbsp;</p>"},
                 "needs_update": false
               }
             },
             "feedback_3": {
               "hi": {
-                "data_format": "<unknown>",
-                "translation": "<p>Nahin, yeh sahi nahin hai. Order pe dhyaan do. Sawaal doodh se strawberry ke ratio ki baat kar raha hai, lekin 4:1 strawberry se doodh ka ratio hai. Order pe dhyaan do!&nbsp;</p>",
+                "data_format": "html",
+                "translation": {"translation" : "<p>Nahin, yeh sahi nahin hai. Order pe dhyaan do. Sawaal doodh se strawberry ke ratio ki baat kar raha hai, lekin 4:1 strawberry se doodh ka ratio hai. Order pe dhyaan do!&nbsp;</p>"},
                 "needs_update": false
               }
             }
