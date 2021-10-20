@@ -22,6 +22,7 @@
       android:id="@+id/profile_edit_image"
       android:layout_width="160dp"
       android:layout_height="160dp"
+      android:background="@color/whiteLight"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"
@@ -30,7 +31,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:shadow_radius="8"
-      android:background="@color/whiteLight"
       profile:src="@{viewModel.profile.avatar}" />
 
     <ImageView
@@ -40,9 +40,9 @@
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="12dp"
       android:paddingTop="12dp"
-      app:srcCompat="@drawable/rounded_white_background_with_shadow"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
-      app:layout_constraintEnd_toEndOf="@+id/profile_edit_image" />
+      app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"
+      app:srcCompat="@drawable/rounded_white_background_with_shadow" />
 
     <TextView
       android:id="@+id/profile_name_text_view"

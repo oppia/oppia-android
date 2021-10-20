@@ -21,6 +21,7 @@
       android:layout_width="160dp"
       android:layout_height="160dp"
       android:layout_marginStart="42dp"
+      android:background="@color/whiteLight"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"
@@ -29,7 +30,6 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:shadow_radius="8"
-      android:background="@color/whiteLight"
       profile:src="@{viewModel.profile.avatar}" />
 
     <ImageView
