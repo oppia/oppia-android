@@ -38,7 +38,7 @@
           android:paddingTop="@dimen/add_profile_main_padding_top"
           android:paddingBottom="@dimen/add_profile_main_padding_bottom">
 
-          <com.jackandphantom.circularimageview.CircleImage
+          <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/add_profile_activity_user_image_view"
             android:layout_width="120dp"
             android:layout_height="120dp"
@@ -47,6 +47,7 @@
             android:focusable="true"
             app:srcCompat="@drawable/ic_default_avatar"
             app:add_shadow="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
