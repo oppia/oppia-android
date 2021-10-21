@@ -60,36 +60,26 @@ class StateRetriever @Inject constructor() {
 
   // Creates an interaction from JSON
   private fun createInteractionFromJson(interactionJson: JSONObject): Interaction {
-    return Interaction.newBuilder()
-      .setId(interactionJson.getStringFromObject("id"))
-      .addAllAnswerGroups(
+    return Interaction.newBuilder().apply {
+      id = interactionJson.getStringFromObject("id")
+      addAllAnswerGroups(
         createAnswerGroupsFromJson(
           interactionJson.getJSONArray("answer_groups"),
           interactionJson.getStringFromObject("id")
         )
       )
-      .setDefaultOutcome(
-        createOutcomeFromJson(
-          interactionJson.optJSONObject("default_outcome")
-        )
-      )
-      .putAllCustomizationArgs(
+      defaultOutcome = createOutcomeFromJson(interactionJson.optJSONObject("default_outcome"))
+      putAllCustomizationArgs(
         createCustomizationArgsMapFromJson(
           interactionJson.getJSONObject("customization_args"),
           interactionJson.getStringFromObject("id")
         )
       )
-      .addAllHint(
-        createListOfHintsFromJson(
-          interactionJson.getJSONArray("hints")
-        )
-      )
-      .setSolution(
-        createSolutionFromJson(
-          interactionJson.optJSONObject("solution")
-        )
-      )
-      .build()
+      addAllHint(createListOfHintsFromJson(interactionJson.getJSONArray("hints")))
+
+      // Only set the solution if one has been defined.
+      createSolutionFromJson(interactionJson.optJSONObject("solution"))?.let { solution = it }
+    }.build()
   }
 
   // Creates the list of answer group objects from JSON
@@ -159,15 +149,14 @@ class StateRetriever @Inject constructor() {
   }
 
   // Creates a solution object from JSON
-  private fun createSolutionFromJson(solutionJson: JSONObject?): Solution {
-    if (solutionJson == null) {
-      return Solution.getDefaultInstance()
+  private fun createSolutionFromJson(optionalSolutionJson: JSONObject?): Solution? {
+    return optionalSolutionJson?.let { solutionJson ->
+      return Solution.newBuilder().apply {
+        correctAnswer = createCorrectAnswer(solutionJson)
+        explanation = parseSubtitledHtml(solutionJson.getJSONObject("explanation"))
+        answerIsExclusive = solutionJson.getBoolean("answer_is_exclusive")
+      }.build()
     }
-    return Solution.newBuilder().apply {
-      correctAnswer = createCorrectAnswer(solutionJson)
-      explanation = parseSubtitledHtml(solutionJson.getJSONObject("explanation"))
-      answerIsExclusive = solutionJson.getBoolean("answer_is_exclusive")
-    }.build()
   }
 
   private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
