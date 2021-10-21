@@ -156,9 +156,11 @@ class HelpActivityPresenter @Inject constructor(
       if (currentFragment != null) {
         when (currentFragment) {
           is LicenseTextViewerFragment -> {
-            handleLoadLicenseListFragment(checkNotNull(selectedDependencyIndex) {
-              "Expected dependency index to be selected & defined"
-            })
+            handleLoadLicenseListFragment(
+              checkNotNull(selectedDependencyIndex) {
+                "Expected dependency index to be selected & defined"
+              }
+            )
           }
           is LicenseListFragment -> handleLoadThirdPartyDependencyListFragment()
         }
