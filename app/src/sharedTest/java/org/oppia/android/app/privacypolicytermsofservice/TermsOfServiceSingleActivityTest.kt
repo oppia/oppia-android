@@ -57,6 +57,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -141,15 +142,15 @@ class TermsOfServiceSingleActivityTest {
   }
 
   @Test
-  fun openTermsOfServiceSingleActivity_checkTermsOfService_isDisplayed() {
+  fun testTermsOfServiceSingleActivity_checkTermsOfService_isDisplayed() {
     launch<TermsOfServiceSingleActivity>(createTermsOfServiceSingleActivity()).use {
-      onView(withId(R.id.privacy_policy_description_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.terms_of_service_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun openTermsOfServiceSingleActivity_checkTermsOfService_isCorrectlyParsed() {
-    val answerTextView = activityTestRule.activity.findViewById(
+  fun testTermsOfServiceSingleActivity_checkTermsOfService_isCorrectlyParsed() {
+    val termsOfServiceTextView = activityTestRule.activity.findViewById(
       R.id.terms_of_service_description_text_view
     ) as TextView
     val htmlParser = htmlParserFactory.create(
@@ -160,9 +161,9 @@ class TermsOfServiceSingleActivityTest {
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       getResources().getString(R.string.terms_of_service_content),
-      answerTextView
+      termsOfServiceTextView
     )
-    assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
+    assertThat(termsOfServiceTextView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
   private fun setUpTestApplicationComponent() {
@@ -184,7 +185,7 @@ class TermsOfServiceSingleActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

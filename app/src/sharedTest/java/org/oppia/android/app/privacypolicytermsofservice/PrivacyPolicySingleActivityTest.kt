@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -57,6 +58,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -141,15 +143,16 @@ class PrivacyPolicySingleActivityTest {
   }
 
   @Test
-  fun openPrivacyPolicySingleActivity_checkPrivacyPolicy_isDisplayed() {
+  fun testPrivacyPolicySingleActivity_checkPrivacyPolicy_isDisplayed() {
     launch<PrivacyPolicySingleActivity>(createPrivacyPolicySingleActivity()).use {
-      onView(withId(R.id.privacy_policy_description_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.privacy_policy_description_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun openPrivacyPolicySingleActivity_checkPrivacyPolicy_isCorrectlyParsed() {
-    val answerTextView = activityTestRule.activity.findViewById(
+  fun testPrivacyPolicySingleActivity_checkPrivacyPolicy_isCorrectlyParsed() {
+    val privacyPolicyTextView = activityTestRule.activity.findViewById(
       R.id.privacy_policy_description_text_view
     ) as TextView
     val htmlParser = htmlParserFactory.create(
@@ -160,9 +163,9 @@ class PrivacyPolicySingleActivityTest {
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       getResources().getString(R.string.privacy_policy_content),
-      answerTextView
+      privacyPolicyTextView
     )
-    assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
+    assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
   private fun setUpTestApplicationComponent() {
@@ -184,7 +187,7 @@ class PrivacyPolicySingleActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
