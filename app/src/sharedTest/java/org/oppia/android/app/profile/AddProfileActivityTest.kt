@@ -996,7 +996,14 @@ class AddProfileActivityTest {
   @Test
   fun testAddProfileActivity_inputCorrectPinAndConfirmPin_actionDone_buttonIsVisible() {
     launch(AddProfileActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("test"), closeSoftKeyboard()
+      )
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
       onView(
