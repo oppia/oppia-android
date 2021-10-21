@@ -1,6 +1,8 @@
 package org.oppia.android.app.profileprogress
 
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -44,6 +46,17 @@ class ProfilePictureActivityPresenter @Inject constructor(
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     subscribeToProfileLiveData()
+    setUpToolbar()
+  }
+
+  private fun setUpToolbar() {
+    val toolbar = activity.findViewById<View>(
+      R.id.profile_picture_activity_toolbar
+    ) as Toolbar
+    activity.setSupportActionBar(toolbar)
+    toolbar.setNavigationOnClickListener {
+      activity.finish()
+    }
   }
 
   private val profileLiveData: LiveData<Profile> by lazy {
