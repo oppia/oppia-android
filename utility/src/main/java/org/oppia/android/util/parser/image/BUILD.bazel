@@ -10,8 +10,9 @@ kt_android_library(
     srcs = [
         "BitmapBlurrer.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:glide_compiler",
+        "//third_party:com_github_bumptech_glide_glide",
     ],
 )
 
@@ -20,7 +21,9 @@ kt_android_library(
     srcs = [
         "BitmapBlurTransformation.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":bitmap_blurrer",
         "//third_party:glide_compiler",
     ],
 )
@@ -31,10 +34,14 @@ kt_android_library(
         "GlideImageLoader.kt",
     ],
     deps = [
+        ":image_asset_fetcher",
+        ":image_loader",
+        ":image_targets",
         "//third_party:glide_compiler",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/caching:assets",
-        "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_blur_transformation",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_decoder",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_picture_drawable",
@@ -44,10 +51,12 @@ kt_android_library(
 kt_android_library(
     name = "glide_image_loader_module",
     srcs = [
-        "GlideImageLoaderModule`.kt",
+        "GlideImageLoaderModule.kt",
     ],
     deps = [
         ":dagger",
+        ":glide_image_loader",
+        ":image_loader",
     ],
 )
 
@@ -56,6 +65,7 @@ kt_android_library(
     srcs = [
         "ImageAssetFetcher.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 kt_android_library(
@@ -65,6 +75,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":glide_image_loader",
+        ":image_loader",
+        ":text_picture_drawable",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
     ],
@@ -88,6 +101,7 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
+        ":image_parsing_annonations",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -98,7 +112,8 @@ kt_android_library(
         "ImageTargets.kt",
     ],
     deps = [
-        "//third_party:glide_compiler",
+        ":image_asset_fetcher",
+        "//third_party:com_github_bumptech_glide_glide",
     ],
 )
 
@@ -107,6 +122,7 @@ kt_android_library(
     srcs = [
         "ImageTransformation.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
 )
 
 kt_android_library(
@@ -115,10 +131,13 @@ kt_android_library(
         "RepositoryGlideModule.kt",
     ],
     deps = [
+        ":image_asset_fetcher",
+        ":repository_model_loader",
         "//third_party:glide_compiler",
         "//utility/src/main/java/org/oppia/android/util/caching:assets",
-        "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_svg_drawable_transcoder",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_decoder",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:text_svg_drawable_transcoder",
     ],
@@ -130,18 +149,8 @@ kt_android_library(
         "RepositoryModelLoader.kt",
     ],
     deps = [
-        "//third_party:glide_compiler",
-    ],
-)
-
-kt_android_library(
-    name = "test_glide_image_loader",
-    srcs = [
-        "TestGlideImageLoader.kt",
-    ],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
+        ":image_asset_fetcher",
+        "//third_party:com_github_bumptech_glide_glide",
     ],
 )
 
@@ -150,9 +159,25 @@ kt_android_library(
     srcs = [
         "TextPictureDrawable.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_picture_drawable",
+    ],
+)
+
+kt_android_library(
+    name = "image_loader",
+    srcs = [
+        "ImageLoader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":image_targets",
+        ":text_picture_drawable",
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:glide_compiler",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
     ],
 )
 
@@ -161,12 +186,17 @@ kt_android_library(
     srcs = [
         "UrlImageParser.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:glide_compiler",
+        ":image_loader",
+        ":image_parsing_annonations",
+        ":image_targets",
+        ":text_picture_drawable",
+        "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/parser:image_loader_and_block_picture_drawable",
         "//utility/src/main/java/org/oppia/android/util/parser/html:custom_html_content_handler",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
     ],
 )
 

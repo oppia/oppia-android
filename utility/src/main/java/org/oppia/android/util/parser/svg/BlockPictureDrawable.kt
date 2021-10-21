@@ -7,7 +7,7 @@ import android.content.Context
  * blocks of text (which must be used in conjunction with [UrlImageParser]), or as a standalone
  * image.
  */
-class BlockPictureDrawable internal constructor(
+class BlockPictureDrawable constructor(
   context: Context,
   scalableVectorGraphic: ScalableVectorGraphic
 ) : SvgPictureDrawable(context, scalableVectorGraphic) {
