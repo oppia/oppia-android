@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 
-
 /** Loads an image from the provided URL into the specified target, optionally caching it. */
 interface ImageLoader {
   /**
