@@ -59,7 +59,7 @@ kt_android_library(
         "DebugEventLogger.kt",
     ],
     visibility = [
-        "//app:__pkg__"
+        "//app:__pkg__",
     ],
     deps = [
         "//model:event_logger_java_proto_lite",
