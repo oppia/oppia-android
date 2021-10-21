@@ -18,7 +18,6 @@ import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 /** The presenter for [HelpActivity]. */
 @ActivityScope
@@ -31,8 +30,8 @@ class HelpActivityPresenter @Inject constructor(
 
   private lateinit var selectedFragmentTag: String
   private lateinit var selectedHelpOptionTitle: String
-  private var selectedDependencyIndex by Delegates.notNull<Int>()
-  private var selectedLicenseIndex by Delegates.notNull<Int>()
+  private var selectedDependencyIndex: Int? = null
+  private var selectedLicenseIndex: Int? = null
 
   fun handleOnCreate(
     helpOptionsTitle: String,
@@ -60,7 +59,7 @@ class HelpActivityPresenter @Inject constructor(
     val titleTextView =
       activity.findViewById<TextView>(R.id.options_activity_selected_options_title)
     if (titleTextView != null) {
-      setMultipaneContainerTitle(helpOptionsTitle!!)
+      setMultipaneContainerTitle(helpOptionsTitle)
     }
     val isMultipane = activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
     if (isMultipane) {
@@ -140,8 +139,8 @@ class HelpActivityPresenter @Inject constructor(
       outState.putString(HELP_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragmentTag)
-    outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, selectedDependencyIndex)
-    outState.putInt(LICENSE_INDEX_SAVED_KEY, selectedLicenseIndex)
+    selectedDependencyIndex?.let { outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, it) }
+    selectedLicenseIndex?.let { outState.putInt(LICENSE_INDEX_SAVED_KEY, it) }
   }
 
   private fun setUpToolbar() {
@@ -156,7 +155,11 @@ class HelpActivityPresenter @Inject constructor(
       val currentFragment = getMultipaneOptionsFragment()
       if (currentFragment != null) {
         when (currentFragment) {
-          is LicenseTextViewerFragment -> handleLoadLicenseListFragment(selectedDependencyIndex)
+          is LicenseTextViewerFragment -> {
+            handleLoadLicenseListFragment(checkNotNull(selectedDependencyIndex) {
+              "Expected dependency index to be selected & defined"
+            })
+          }
           is LicenseListFragment -> handleLoadThirdPartyDependencyListFragment()
         }
       }
