@@ -59,6 +59,18 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "test_glide_image_loader",
+    srcs = [
+        "TestGlideImageLoader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
+    ],
+)
+
+kt_android_library(
     name = "image_parsing_annonations",
     srcs = [
         "ImageParsingAnnotations.kt",
@@ -87,6 +99,13 @@ kt_android_library(
     ],
     deps = [
         "//third_party:glide_compiler",
+    ],
+)
+
+kt_android_library(
+    name = "image_transformation",
+    srcs = [
+        "ImageTransformation.kt",
     ],
 )
 
