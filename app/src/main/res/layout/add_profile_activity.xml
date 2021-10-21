@@ -45,7 +45,7 @@
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
-            app:srcCompat="@drawable/ic_default_avatar"
+            android:src="@drawable/ic_default_avatar"
             app:add_shadow="true"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/layout-land/profile_chooser_fragment.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-land/profile_chooser_profile_view.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-land/profile_edit_fragment.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-land/profile_list_fragment.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-land/profile_list_profile_view.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-land/profile_progress_fragment.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-land/profile_progress_header.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-land/profile_progress_recently_played_story_card.xml" value="0.2635726795096322" />
+        <entry key="app/src/main/res/layout-sw600dp-land/profile_progress_fragment.xml" value="0.2003994673768309" />
+        <entry key="app/src/main/res/layout-sw600dp-port/profile_chooser_profile_view.xml" value="0.20047814207650272" />
+        <entry key="app/src/main/res/layout-sw600dp-port/profile_progress_fragment.xml" value="0.20047814207650272" />
+        <entry key="app/src/main/res/layout-sw600dp/profile_list_fragment.xml" value="0.20047814207650272" />
+        <entry key="app/src/main/res/layout-sw600dp/profile_progress_header.xml" value="0.20047814207650272" />
+        <entry key="app/src/main/res/layout/profile_chooser_activity.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_chooser_profile_view.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_edit_fragment.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_list_activity.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_list_fragment.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_list_profile_view.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_picture_activity.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_picture_edit_dialog.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_progress_activity.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_progress_fragment.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_progress_header.xml" value="0.2658514492753623" />
+        <entry key="app/src/main/res/layout/profile_progress_recently_played_story_card.xml" value="0.2658514492753623" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -35,7 +35,7 @@
         android:id="@+id/profile_add_button"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        app:srcCompat="@{@drawable/ic_add_profile}"
+        android:src="@{@drawable/ic_add_profile}"
         app:strokeColor="@color/avatarBorder"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
         app:strokeWidth="1dp" />
