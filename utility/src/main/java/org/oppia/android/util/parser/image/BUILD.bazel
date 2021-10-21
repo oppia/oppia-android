@@ -194,6 +194,7 @@ kt_android_library(
         ":text_picture_drawable",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:javax_inject_javax_inject",
+        "//utility",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/parser/html:custom_html_content_handler",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",

@@ -29,6 +29,7 @@ kt_android_library(
     srcs = [
         "CustomBulletSpan.kt",
     ],
+    deps = ["//utility"],
 )
 
 kt_android_library(
@@ -59,6 +60,12 @@ kt_android_library(
         "HtmlParser.kt",
     ],
     deps = [
+        ":bullet_tag_handler",
+        ":concept_card_tag_handler",
+        ":custom_bullet_span",
+        ":custom_html_content_handler",
+        ":image_tag_handler",
+        ":math_tag_handler",
         "//third_party:androidx_core_core",
         "//third_party:androidx_core_core-ktx",
         "//third_party:javax_inject_javax_inject",
