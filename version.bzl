@@ -1,5 +1,9 @@
 """
 Defines the latest version of the Oppia Android app.
+
+Note that version codes must be ordered such that dev < alpha, and kitkat < lollipop+. This will
+ensure that the Play Store provides users with the correct version of the app in situations where
+their device qualifies for more than one choice.
 """
 
 MAJOR_VERSION = 0
