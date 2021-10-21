@@ -115,6 +115,10 @@ class RegexPatternValidationCheckTest {
     "Don't perform date/time formatting directly. Instead, use OppiaLocale."
   private val useJavaLocaleErrorMessage =
     "Don't use Locale directly. Instead, use LocaleController, or OppiaLocale & its subclasses."
+  private val doNotUseKotlinDelegatesErrorMessage =
+    "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to" +
+      " null, instead. Delegates uses reflection internally, has a non-trivial initialization" +
+      " cost, and can cause breakages on KitKat devices. See #3939 for more context."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1457,6 +1461,27 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $useJavaLocaleErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_kotlinDelegatesImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "kotlin.properties.Delegates"
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseKotlinDelegatesErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
