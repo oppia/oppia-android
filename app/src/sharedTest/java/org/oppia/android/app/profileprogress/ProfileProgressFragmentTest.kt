@@ -9,7 +9,9 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.provider.MediaStore
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -31,6 +33,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -200,6 +203,92 @@ class ProfileProgressFragmentTest {
         targetViewId = R.id.profile_name_text_view,
         stringToMatch = "Admin"
       )
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragment_checkAccessibilityFlowIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.profile_progress_list)
+        val headerView = recyclerView.getChildAt(0)
+        val rootView =
+          headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
+        assertThat(rootView.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        )
+
+        val ongoingTopicsContainer =
+          headerView.findViewById<ConstraintLayout>(R.id.ongoing_topics_container)
+        assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+
+        val completedStoriesContainer =
+          headerView.findViewById<ConstraintLayout>(R.id.completed_stories_container)
+        assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragment_configChange_checkAccessibilityFlowIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scenario.onActivity { activity ->
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.profile_progress_list)
+        val headerView = recyclerView.getChildAt(0)
+        val rootView =
+          headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
+        assertThat(rootView.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        )
+
+        val ongoingTopicsContainer =
+          headerView.findViewById<ConstraintLayout>(R.id.ongoing_topics_container)
+        assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+
+        val completedStoriesContainer =
+          headerView.findViewById<ConstraintLayout>(R.id.completed_stories_container)
+        assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+      }
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testProfileProgressFragment_tablet_checkAccessibilityFlowIsCorrect() {
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.profile_progress_list)
+        val headerView = recyclerView.getChildAt(0)
+        val rootView =
+          headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
+        assertThat(rootView.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        )
+
+        val ongoingTopicsContainer =
+          headerView.findViewById<ConstraintLayout>(R.id.ongoing_topics_container)
+        assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+
+        val completedStoriesContainer =
+          headerView.findViewById<ConstraintLayout>(R.id.completed_stories_container)
+        assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+      }
     }
   }
 
