@@ -1,0 +1,192 @@
+"""
+Tests for UI databinding utilities and adapters.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+# Resource shim needed so that tests can build in both Gradle & Bazel.
+_TEST_FILES = [
+    "MarginBindingAdaptersTest.kt",
+    "StateAssemblerMarginBindingAdaptersTest.kt",
+    "StateAssemblerPaddingBindingAdaptersTest.kt",
+    "ViewBindingAdaptersTest.kt",
+]
+
+# TODO(#1617): Remove genrules post-gradle
+[
+    genrule(
+        name = "update_" + file[0:-3],
+        srcs = [file],
+        outs = [file[0:-3] + "_updated.kt"],
+        cmd = """
+     cat $(SRCS) |
+     sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' > $(OUTS)
+     """,
+    )
+    for file in _TEST_FILES
+]
+
+genrule(
+    name = "update_ImageViewBindingAdaptersTest",
+    srcs = ["ImageViewBindingAdaptersTest.kt"],
+    outs = ["ImageViewBindingAdaptersTest_updated.kt"],
+    cmd = """
+    cat $(SRCS) |
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
+    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
+    sed 's/import org.oppia.android.app.databinding.ImageViewBindingAdapters./import org.oppia.android.app.databinding.ImageViewBindingAdapters_updated./g' > $(OUTS)
+    """,
+)
+
+oppia_android_test(
+    name = "ImageViewBindingAdaptersTest",
+    srcs = ["ImageViewBindingAdaptersTest_updated.kt"],
+    custom_package = "org.oppia.android.app.databinding",
+    test_class = "org.oppia.android.app.databinding.ImageViewBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//app",
+        "//app:test_deps",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//domain",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+oppia_android_test(
+    name = "MarginBindingAdaptersTest",
+    srcs = ["MarginBindingAdaptersTest_updated.kt"],
+    custom_package = "org.oppia.android.app.databinding",
+    test_class = "org.oppia.android.app.databinding.MarginBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//app",
+        "//app:test_deps",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//domain",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+oppia_android_test(
+    name = "StateAssemblerMarginBindingAdaptersTest",
+    srcs = ["StateAssemblerMarginBindingAdaptersTest_updated.kt"],
+    custom_package = "org.oppia.android.app.databinding",
+    test_class = "org.oppia.android.app.databinding.StateAssemblerMarginBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//app",
+        "//app:test_deps",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//domain",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+oppia_android_test(
+    name = "StateAssemblerPaddingBindingAdaptersTest",
+    srcs = ["StateAssemblerPaddingBindingAdaptersTest_updated.kt"],
+    custom_package = "org.oppia.android.app.databinding",
+    test_class = "org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//app",
+        "//app:test_deps",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//domain",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+oppia_android_test(
+    name = "ViewBindingAdaptersTest",
+    srcs = ["ViewBindingAdaptersTest_updated.kt"],
+    custom_package = "org.oppia.android.app.databinding",
+    test_class = "org.oppia.android.app.databinding.ViewBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//app",
+        "//app:test_deps",
+        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//domain",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+dagger_rules()
