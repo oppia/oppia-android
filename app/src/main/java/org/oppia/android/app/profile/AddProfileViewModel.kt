@@ -20,7 +20,7 @@ class AddProfileViewModel @Inject constructor(context: Context) : ObservableView
   val createPin = ObservableField(false)
   val isButtonActive = ObservableField(false)
   val showInfoAlertPopup = ObservableField<Boolean>(false)
-  val starRequired: String = "*" + context.getString(R.string.add_profile_required)
+  val starRequired: String = "*" + context.resources.getString(R.string.add_profile_required)
 
   fun clearAllErrorMessages() {
     pinErrorMsg.set("")
