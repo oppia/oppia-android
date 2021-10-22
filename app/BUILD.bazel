@@ -368,6 +368,7 @@ VIEW_MODELS = [
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
 
@@ -779,6 +780,7 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
     ],
+    visibility = ["//app:__subpackages__"],
     deps = [
         ":app",
         "//testing",
