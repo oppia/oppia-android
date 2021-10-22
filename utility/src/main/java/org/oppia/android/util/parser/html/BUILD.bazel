@@ -59,6 +59,7 @@ kt_android_library(
     srcs = [
         "HtmlParser.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":bullet_tag_handler",
         ":concept_card_tag_handler",
