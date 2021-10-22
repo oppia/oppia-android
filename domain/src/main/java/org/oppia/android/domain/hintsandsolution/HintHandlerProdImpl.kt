@@ -12,6 +12,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
@@ -65,7 +66,7 @@ class HintHandlerProdImpl private constructor(
 
   private var trackedWrongAnswerCount = 0
   private lateinit var pendingState: State
-  private var hintSequenceNumber = 0
+  private var hintSequenceNumber = AtomicInteger(0)
   private var lastRevealedHintIndex = -1
 
   private var latestAvailableHintIndex = -1
@@ -186,7 +187,7 @@ class HintHandlerProdImpl private constructor(
     // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
     // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
     // scheduled without overlapping with past sequence numbers.
-    hintSequenceNumber++
+    hintSequenceNumber.incrementAndGet()
   }
 
   private fun maybeScheduleShowHint(wrongAnswerCount: Int = trackedWrongAnswerCount) {
@@ -295,17 +296,17 @@ class HintHandlerProdImpl private constructor(
     // Return the index of the first unrevealed hint, or the length of the list if all have been
     // revealed.
     val hintList = pendingState.interaction.hintList
-    val solution = pendingState.interaction.solution
 
     val hasHints = hintList.isNotEmpty()
-    val hasHelp = hasHints || solution.hasCorrectAnswer()
+    val hasSolution = pendingState.hasSolution()
+    val hasHelp = hasHints || hasSolution
     val lastUnrevealedHintIndex = lastRevealedHintIndex + 1
 
     return if (!hasHelp) {
       HelpIndex.getDefaultInstance()
     } else if (hasHints && lastUnrevealedHintIndex < hintList.size) {
       HelpIndex.newBuilder().setNextAvailableHintIndex(lastUnrevealedHintIndex).build()
-    } else if (solution.hasCorrectAnswer() && !solutionIsRevealed) {
+    } else if (hasSolution && !solutionIsRevealed) {
       HelpIndex.newBuilder().setShowSolution(true).build()
     } else {
       HelpIndex.newBuilder().setEverythingRevealed(true).build()
@@ -317,7 +318,7 @@ class HintHandlerProdImpl private constructor(
    * cancelling any previously pending hints initiated by calls to this method.
    */
   private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
-    val targetSequenceNumber = ++hintSequenceNumber
+    val targetSequenceNumber = hintSequenceNumber.incrementAndGet()
     backgroundCoroutineScope.launch {
       delay(delayMs)
       handlerLock.withLock {
@@ -331,12 +332,12 @@ class HintHandlerProdImpl private constructor(
    * pending hints initiated by calls to [scheduleShowHint].
    */
   private fun showHintImmediately(helpIndexToShow: HelpIndex) {
-    showHint(++hintSequenceNumber, helpIndexToShow)
+    showHint(hintSequenceNumber.incrementAndGet(), helpIndexToShow)
   }
 
   private fun showHint(targetSequenceNumber: Int, nextHelpIndexToShow: HelpIndex) {
     // Only finish this timer if no other hints were scheduled and no cancellations occurred.
-    if (targetSequenceNumber == hintSequenceNumber) {
+    if (targetSequenceNumber == hintSequenceNumber.get()) {
       val previousHelpIndex = computeCurrentHelpIndex()
 
       when (nextHelpIndexToShow.indexTypeCase) {
@@ -376,7 +377,7 @@ class HintHandlerProdImpl private constructor(
 }
 
 /** Returns whether this state has a solution to show. */
-private fun State.hasSolution(): Boolean = interaction.solution.hasCorrectAnswer()
+private fun State.hasSolution(): Boolean = interaction.hasSolution()
 
 /** Returns whether this state has help that the user can see. */
 internal fun State.offersHelp(): Boolean = interaction.hintList.isNotEmpty() || hasSolution()

@@ -57,7 +57,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.admin_settings_heading)
       .setView(binding.root)
       .setMessage(R.string.admin_settings_sub)

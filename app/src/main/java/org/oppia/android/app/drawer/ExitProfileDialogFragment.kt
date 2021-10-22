@@ -64,7 +64,7 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
     }
 
     val alertDialog = AlertDialog
-      .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
+      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaAlertDialogTheme))
       .setMessage(R.string.home_activity_back_dialog_message)
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         dialog.dismiss()

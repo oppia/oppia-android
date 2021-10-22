@@ -61,14 +61,6 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
       startPlayingExploration(profileId, topicId, storyId, explorationId, shouldSavePartialProgress)
     }
-
-    if (getHintsAndSolutionManagerFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.exploration_fragment_placeholder,
-        HintsAndSolutionExplorationManagerFragment(),
-        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
-      ).commitNow()
-    }
   }
 
   fun stopExploration() = finishExploration()
@@ -124,6 +116,10 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       )
   }
 
+  /**
+   * Initializes fragments that depend on ephemeral state (which isn't valid to do until the play
+   * session is fully started).
+   */
   private fun initializeExploration(
     profileId: Int,
     topicId: String,
@@ -137,6 +133,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       R.id.state_fragment_placeholder,
       stateFragment
     ).commitNow()
+
+    if (getHintsAndSolutionManagerFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        HintsAndSolutionExplorationManagerFragment(),
+        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+      ).commitNow()
+    }
   }
 
   private fun finishExploration() {

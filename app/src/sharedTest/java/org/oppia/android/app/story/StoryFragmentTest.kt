@@ -35,6 +35,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -70,6 +71,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemC
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -91,10 +93,13 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
+import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -300,7 +305,7 @@ class StoryFragmentTest {
         )
       ).check(
         matches(
-          withText("This is outline/summary for What is a Fraction?")
+          withText("Matthew learns about fractions.")
         )
       )
     }
@@ -374,7 +379,7 @@ class StoryFragmentTest {
         )
       ).check(
         matches(
-          withText("This is outline/summary for What is a Fraction?")
+          withText("Matthew learns about fractions.")
         )
       )
     }
@@ -398,7 +403,7 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is the outline/summary for the first exploration of the story. It is very long " +
+            "Learning about oppia app in First Story. It is very long " +
               "but it has to be fully visible. You wil be learning about Oppia interactions. " +
               "There is no second story to follow-up, but there is a second chapter."
           )
@@ -426,7 +431,7 @@ class StoryFragmentTest {
       ).check(
         matches(
           withText(
-            "This is the outline/summary for the first exploration of the story. It is very long " +
+            "Learning about oppia app in First Story. It is very long " +
               "but it has to be fully visible. You wil be learning about Oppia interactions. " +
               "There is no second story to follow-up, but there is a second chapter."
           )
@@ -633,6 +638,112 @@ class StoryFragmentTest {
     }
   }
 
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testStoryFragment_completedChapter_checkProgressDrawableIsCorrect() {
+    setStoryPartialProgressForFractions()
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.progress_image_view
+        )
+      ).check(matches(withDrawable(R.drawable.circular_solid_color_primary_32dp)))
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testStoryFragment_notStartedChapter_checkProgressDrawableIsCorrect() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.progress_image_view
+        )
+      ).check(matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp)))
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testStoryFragment_lockedChapter_checkProgressDrawableIsCorrect() {
+    launch<StoryActivity>(createRatiosStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.progress_image_view
+        )
+      ).check(matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp)))
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testStoryFragment_completedChapter_pawIconIsVisible() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.completed_chapter_image_view
+        )
+      ).check(matches(withDrawable(R.drawable.ic_lessons_icon_24dp)))
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testStoryFragment_pendingChapter_pawIconIsGone() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.completed_chapter_image_view
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testStoryFragment_completedChapter_verticalDashedLineIsVisible() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 1,
+          targetViewId = R.id.verticalDashedLineView
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testStoryFragment_lastChapter_verticalDashedLineIsGone() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.verticalDashedLineView
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
   /**
    * Returns an action that finds a TextView containing the specific text, finds a ClickableSpan
    * within that text view that contains the specified text, then clicks it. The need for this was
@@ -701,6 +812,15 @@ class StoryFragmentTest {
     )
   }
 
+  private fun createRatiosStoryActivityIntent(): Intent {
+    return StoryActivity.createStoryActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0
+    )
+  }
+
   private fun setStoryPartialProgressForFractions() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
@@ -721,7 +841,7 @@ class StoryFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

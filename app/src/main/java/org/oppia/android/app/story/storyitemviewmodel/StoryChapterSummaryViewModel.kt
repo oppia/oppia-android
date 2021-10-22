@@ -17,6 +17,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 /** Chapter summary view model for the recycler view in [StoryFragment]. */
 class StoryChapterSummaryViewModel(
   val index: Int,
+  val totalChapters: Int,
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   val explorationCheckpointController: ExplorationCheckpointController,
@@ -45,7 +46,9 @@ class StoryChapterSummaryViewModel(
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.getDefaultInstance(),
+          ProfileId.newBuilder().apply {
+            internalId = internalProfileId
+          }.build(),
           explorationId
         ).toLiveData()
 

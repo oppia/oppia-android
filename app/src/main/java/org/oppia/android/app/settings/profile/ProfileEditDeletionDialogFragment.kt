@@ -44,7 +44,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
     profileEditDialogInterface =
       parentFragment as ProfileEditFragment
 
-    val alertDialog = AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
+    val alertDialog = AlertDialog.Builder(activity as Context, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.profile_edit_delete_dialog_title)
       .setMessage(R.string.profile_edit_delete_dialog_message)
       .setNegativeButton(R.string.profile_edit_delete_dialog_negative) { dialog, _ ->

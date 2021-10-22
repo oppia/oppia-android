@@ -242,6 +242,36 @@ class AppLanguageLocaleHandlerTest {
     assertThat(locales[0].language).isEqualTo("en")
   }
 
+  @Test
+  fun testIsInitialized_initialState_returnsFalse() {
+    val isInitialized = appLanguageLocaleHandler.isInitialized()
+
+    // initializeLocale() hasn't yet been called.
+    assertThat(isInitialized).isFalse()
+  }
+
+  @Test
+  fun testIsInitialized_afterInitialization_returnsTrue() {
+    setAppLanguage(ENGLISH)
+    appLanguageLocaleHandler.initializeLocale(retrieveAppLanguageLocale())
+
+    val isInitialized = appLanguageLocaleHandler.isInitialized()
+
+    // The handler should now (& hereafter) be initialized.
+    assertThat(isInitialized).isTrue()
+  }
+
+  @Test
+  fun testIsInitialized_afterInitialization_andUpdate_returnsTrue() {
+    appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
+    appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE))
+
+    val isInitialized = appLanguageLocaleHandler.isInitialized()
+
+    // Updating the locale should keep the handler initialized.
+    assertThat(isInitialized).isTrue()
+  }
+
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)
     Locale.setDefault(locale)

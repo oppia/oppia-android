@@ -7,9 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -164,15 +162,6 @@ class AddProfileActivityPresenter @Inject constructor(
       }
     }
 
-    binding.addProfileActivityConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
-      ) {
-        binding.addProfileActivityCreateButton.callOnClick()
-      }
-      false
-    }
-
     if (profileViewModel.showInfoAlertPopup.get()!!) {
       showInfoDialog()
     }
@@ -310,7 +299,7 @@ class AddProfileActivityPresenter @Inject constructor(
 
   private fun showInfoDialog() {
     profileViewModel.showInfoAlertPopup.set(true)
-    alertDialog = AlertDialog.Builder(activity as Context, R.style.AlertDialogTheme)
+    alertDialog = AlertDialog.Builder(activity as Context, R.style.OppiaAlertDialogTheme)
       .setMessage(R.string.add_profile_pin_info)
       .setPositiveButton(R.string.add_profile_close) { dialog, _ ->
         profileViewModel.showInfoAlertPopup.set(false)

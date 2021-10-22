@@ -152,7 +152,7 @@
         android:layout_gravity="top|end"
         android:layout_margin="8dp"
         android:contentDescription="@string/new_hint_available"
-        android:src="@drawable/ic_dot_yellow_24dp"
+        app:srcCompat="@drawable/ic_dot_yellow_24dp"
         android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
 
       <ImageView
@@ -161,7 +161,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:contentDescription="@string/show_hints_and_solution"
-        android:src="@drawable/ic_hint_bulb_white_24dp" />
+        app:srcCompat="@drawable/ic_hint_bulb_white_24dp" />
     </FrameLayout>
 
     <FrameLayout
