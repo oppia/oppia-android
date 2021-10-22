@@ -15,6 +15,7 @@ oppia_android_test(
         ":dagger",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_locale_handler",
         "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_prod_module",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
