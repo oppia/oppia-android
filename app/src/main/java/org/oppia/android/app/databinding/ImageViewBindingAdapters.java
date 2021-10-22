@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import org.oppia.android.R;
+import org.oppia.android.app.model.ChapterPlayState;
 import org.oppia.android.app.model.ProfileAvatar;
 
 /** Holds all custom binding adapters that bind to [ImageView]. */
@@ -76,6 +77,30 @@ public final class ImageViewBindingAdapters {
             .placeholder(R.drawable.ic_default_avatar)
             .into(imageView);
       }
+    }
+  }
+
+  /**
+   * Binds a drawable indicated by {@link ChapterPlayState} to an {@link ImageView} via
+   * "android:src".
+   * <p/>
+   * Reference: https://stackoverflow.com/a/35809319/3689782.
+   */
+  @BindingAdapter("playState:image")
+  public static void setPlayStateDrawable(
+      @NonNull ImageView imageView,
+      ChapterPlayState chapterPlayState
+  ) {
+    switch (chapterPlayState) {
+      case COMPLETED:
+        setImageDrawableCompat(imageView, R.drawable.circular_solid_color_primary_32dp);
+        break;
+      case NOT_STARTED:
+      case STARTED_NOT_COMPLETED:
+        setImageDrawableCompat(imageView, R.drawable.circular_stroke_2dp_color_primary_32dp);
+        break;
+      default:
+        setImageDrawableCompat(imageView, R.drawable.circular_stroke_2dp_grey_32dp);
     }
   }
 }
