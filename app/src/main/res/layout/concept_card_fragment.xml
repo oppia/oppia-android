@@ -50,26 +50,22 @@
 
           <TextView
             android:id="@+id/concept_card_heading_text"
+            style="@style/Heading2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/concept_card_heading_text_margin_start"
             android:layout_marginTop="@dimen/concept_card_heading_text_margin_top"
             android:layout_marginEnd="@dimen/concept_card_heading_text_margin_end"
-            android:fontFamily="sans-serif-medium"
             android:text="@{viewModel.conceptCardLiveData.conceptCard.skillDescription}"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="20sp" />
+            android:textColor="@color/oppiaPrimaryText"/>
 
           <TextView
             android:id="@+id/concept_card_explanation_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Body"
             android:layout_marginStart="@dimen/concept_card_explanation_text_margin_start"
             android:layout_marginTop="@dimen/concept_card_explanation_text_margin_top"
             android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="16sp" />
+            android:textColor="@color/oppiaPrimaryText"/>
         </LinearLayout>
         <!-- TODO(#352): Show worked examples in Concept Card. -->
       </ScrollView>

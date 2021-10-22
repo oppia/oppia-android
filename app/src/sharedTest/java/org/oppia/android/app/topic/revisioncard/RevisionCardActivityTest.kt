@@ -11,6 +11,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -185,7 +186,7 @@ class RevisionCardActivityTest {
           activity.findViewById(R.id.revision_card_toolbar_title)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-        onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
+        onView(withId(R.id.revision_card_toolbar_title)).perform(click())
         assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
