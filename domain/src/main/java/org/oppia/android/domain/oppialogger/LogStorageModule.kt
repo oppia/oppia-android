@@ -22,7 +22,7 @@ class LogStorageModule {
    */
   @Provides
   @EventLogStorageCacheSize
-  fun provideEventLogStorageCacheSize(): Int = 50000
+  fun provideEventLogStorageCacheSize(): Int = 50_000
 
   /**
    * Provides the maximum number of exception logs that can be cached on disk.
