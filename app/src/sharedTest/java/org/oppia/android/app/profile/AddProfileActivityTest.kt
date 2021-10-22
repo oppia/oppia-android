@@ -179,8 +179,8 @@ class AddProfileActivityTest {
       AddProfileActivity::class.java
     ).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(activity.add_profile_activity_required_heading_text_view.text).
-        isEqualTo("*" + context.getString(R.string.add_profile_required))
+        assertThat(activity.add_profile_activity_required_heading_text_view.text)
+          .isEqualTo("*" + context.getString(R.string.add_profile_required))
       }
     }
   }
