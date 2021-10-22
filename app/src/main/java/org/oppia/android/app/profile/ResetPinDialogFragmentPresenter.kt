@@ -64,7 +64,7 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.reset_pin_enter)
       .setView(binding.root)
       .setMessage("This PIN wil be $name's new PIN and will be required when signing in.")

@@ -1,29 +1,29 @@
 {
   "story_nodes": [{
-    "description": "Learning about oppia app in First Story",
+    "description": "<unknown>",
     "exploration_id": "test_exp_id_2",
-    "destination_node_ids": ["node_2"],
+    "destination_node_ids": [],
     "thumbnail_filename": "",
-    "outline_is_finalized": false,
-    "id": "node_1",
+    "outline_is_finalized": true,
+    "id": "test_exp_id_2",
     "prerequisite_skill_ids": [],
-    "thumbnail_bg_color": "#D68F78",
+    "thumbnail_bg_color": "#d68f78",
     "outline": "This is the outline/summary for the first exploration of the story. It is very long but it has to be fully visible. You wil be learning about Oppia interactions. There is no second story to follow-up, but there is a second chapter.",
     "title": "Prototype Exploration",
     "acquired_skill_ids": []
   }, {
-    "description": "Learning about oppia app in Second Story",
+    "description": "<unknown>",
     "exploration_id": "13",
     "destination_node_ids": [],
     "thumbnail_filename": "",
-    "outline_is_finalized": false,
-    "id": "node_2",
+    "outline_is_finalized": true,
+    "id": "13",
     "prerequisite_skill_ids": [],
-    "thumbnail_bg_color": "#D68F78",
+    "thumbnail_bg_color": "#d68f78",
     "outline": "",
     "title": "Image Region Selection Exploration",
     "acquired_skill_ids": []
   }],
   "story_title": "First Story",
-  "story_description": ""
+  "story_description": "<removed>"
 }

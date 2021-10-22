@@ -7,6 +7,7 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.translation.TranslationController
 
 /**
  * Module to provide interaction view model-specific dependencies for interactions that should be
@@ -25,13 +26,14 @@ class InteractionViewModelModule {
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(fragment: Fragment): InteractionViewModelFactory {
     return { _, hasConversationView, _, interactionAnswerReceiver, _, hasPreviousButton,
-      isSplitView ->
+      isSplitView, writtenTranslationContext ->
       ContinueInteractionViewModel(
         interactionAnswerReceiver,
         hasConversationView,
         hasPreviousButton,
         fragment as PreviousNavigationButtonListener,
-        isSplitView
+        isSplitView,
+        writtenTranslationContext
       )
     }
   }
@@ -39,16 +41,20 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("MultipleChoiceInput")
-  fun provideMultipleChoiceInputViewModelFactory(): InteractionViewModelFactory {
+  fun provideMultipleChoiceInputViewModelFactory(
+    translationController: TranslationController
+  ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
-      interactionAnswerErrorReceiver, _, isSplitView ->
+      interactionAnswerErrorReceiver, _, isSplitView, writtenTranslationContext ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
         interaction,
         interactionAnswerReceiver,
         interactionAnswerErrorReceiver,
-        isSplitView
+        isSplitView,
+        writtenTranslationContext,
+        translationController
       )
     }
   }
@@ -56,16 +62,20 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("ItemSelectionInput")
-  fun provideItemSelectionInputViewModelFactory(): InteractionViewModelFactory {
+  fun provideItemSelectionInputViewModelFactory(
+    translationController: TranslationController
+  ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
-      interactionAnswerErrorReceiver, _, isSplitView ->
+      interactionAnswerErrorReceiver, _, isSplitView, writtenTranslationContext ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
         interaction,
         interactionAnswerReceiver,
         interactionAnswerErrorReceiver,
-        isSplitView
+        isSplitView,
+        writtenTranslationContext,
+        translationController
       )
     }
   }
@@ -74,16 +84,19 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputViewModelFactory(
-    resourceHandler: AppLanguageResourceHandler
+    resourceHandler: AppLanguageResourceHandler,
+    translationController: TranslationController
   ): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-      isSplitView ->
+      isSplitView, writtenTranslationContext ->
       FractionInteractionViewModel(
         interaction,
         hasConversationView,
         isSplitView,
         interactionAnswerErrorReceiver,
-        resourceHandler
+        writtenTranslationContext,
+        resourceHandler,
+        translationController
       )
     }
   }
@@ -94,11 +107,13 @@ class InteractionViewModelModule {
   fun provideNumericInputViewModelFactory(
     resourceHandler: AppLanguageResourceHandler
   ): InteractionViewModelFactory {
-    return { _, hasConversationView, _, _, interactionAnswerErrorReceiver, _, isSplitView ->
+    return { _, hasConversationView, _, _, interactionAnswerErrorReceiver, _, isSplitView,
+      writtenTranslationContext ->
       NumericInputViewModel(
         hasConversationView,
         interactionAnswerErrorReceiver,
         isSplitView,
+        writtenTranslationContext,
         resourceHandler
       )
     }
@@ -107,11 +122,14 @@ class InteractionViewModelModule {
   @Provides
   @IntoMap
   @StringKey("TextInput")
-  fun provideTextInputViewModelFactory(): InteractionViewModelFactory {
+  fun provideTextInputViewModelFactory(
+    translationController: TranslationController
+  ): InteractionViewModelFactory {
     return { _, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-      isSplitView ->
+      isSplitView, writtenTranslationContext ->
       TextInputViewModel(
-        interaction, hasConversationView, interactionAnswerErrorReceiver, isSplitView
+        interaction, hasConversationView, interactionAnswerErrorReceiver, isSplitView,
+        writtenTranslationContext, translationController
       )
     }
   }
@@ -120,13 +138,14 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputViewModelFactory(
-    resourceHandler: AppLanguageResourceHandler
+    resourceHandler: AppLanguageResourceHandler,
+    translationController: TranslationController
   ): InteractionViewModelFactory {
     return { entityId, hasConversationView, interaction, _, interactionAnswerErrorReceiver, _,
-      isSplitView ->
+      isSplitView, writtenTranslationContext ->
       DragAndDropSortInteractionViewModel(
         entityId, hasConversationView, interaction, interactionAnswerErrorReceiver, isSplitView,
-        resourceHandler
+        writtenTranslationContext, resourceHandler, translationController
       )
     }
   }
@@ -137,13 +156,15 @@ class InteractionViewModelModule {
   fun provideImageClickInputViewModelFactory(
     resourceHandler: AppLanguageResourceHandler
   ): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView ->
+    return { entityId, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView,
+      writtenTranslationContext ->
       ImageRegionSelectionInteractionViewModel(
         entityId,
         hasConversationView,
         interaction,
         answerErrorReceiver,
         isSplitView,
+        writtenTranslationContext,
         resourceHandler
       )
     }
@@ -153,15 +174,19 @@ class InteractionViewModelModule {
   @IntoMap
   @StringKey("RatioExpressionInput")
   fun provideRatioExpressionInputViewModelFactory(
-    resourceHandler: AppLanguageResourceHandler
+    resourceHandler: AppLanguageResourceHandler,
+    translationController: TranslationController
   ): InteractionViewModelFactory {
-    return { _, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView ->
+    return { _, hasConversationView, interaction, _, answerErrorReceiver, _, isSplitView,
+      writtenTranslationContext ->
       RatioExpressionInputInteractionViewModel(
         interaction,
         hasConversationView,
         isSplitView,
         answerErrorReceiver,
-        resourceHandler
+        writtenTranslationContext,
+        resourceHandler,
+        translationController
       )
     }
   }

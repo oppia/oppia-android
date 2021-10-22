@@ -396,7 +396,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "5b782ed4-c01f-42e7-a13a-746a38ce056b"
                 normalized_strings: "4:9:6"
               }
             }
@@ -417,7 +417,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "5ebc8857-ee64-4cee-8296-00f09c3283e8"
                 normalized_strings: "4:3:2"
               }
             }
@@ -429,7 +429,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "a18be8fd-4650-48ce-809e-fdc071ee8979"
                 normalized_strings: "2:3:1"
               }
             }
@@ -441,7 +441,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "b7fdc21a-3c72-4e60-a4ad-260bae12c690"
                 normalized_strings: "2:9:3"
               }
             }
@@ -462,7 +462,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "76722779-92da-46fa-8bc1-c0f754330272"
                 normalized_strings: "ml"
               }
             }
@@ -487,8 +487,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X:Y:Z"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X:Y:Z"
               content_id: "ca_placeholder_0"
             }
           }
@@ -589,7 +589,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "73d892b2-23aa-4218-b164-9a6efaaa3ec1"
                 normalized_strings: "1:1:4"
               }
             }
@@ -610,7 +610,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "a9614d32-5212-4c0d-b8a7-7cf46a51ce72"
                 normalized_strings: "1:1:8"
               }
             }
@@ -635,8 +635,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter ratio as X:Y:Z"
+            subtitled_unicode {
+              unicode_str: "Enter ratio as X:Y:Z"
               content_id: "ca_placeholder_0"
             }
           }
@@ -1328,7 +1328,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "f709e0ca-ef37-4358-8a73-f128c15c37db"
                 normalized_strings: "1:2"
               }
             }
@@ -1349,7 +1349,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "40340e49-81bd-49c0-8648-e553c678f053"
                 normalized_strings: "2:4"
               }
             }
@@ -1390,8 +1390,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter the correct ratio in the form X:Y"
+            subtitled_unicode {
+              unicode_str: "Enter the correct ratio in the form X:Y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -2263,7 +2263,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "e8356425-0901-4394-aa3c-ff0951e2f62f"
                 normalized_strings: "5:2:4"
               }
             }
@@ -2284,7 +2284,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "c18d4cd2-f21f-476d-9f20-38c27efacd80"
                 normalized_strings: "10:4:8"
               }
             }
@@ -2305,7 +2305,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "4fe466a4-8eca-4122-a74b-7872daeea88a"
                 normalized_strings: "5:1:2"
               }
             }
@@ -2330,8 +2330,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Write your answer as X:Y:Z, where X, Y and Z are counting numbers"
+            subtitled_unicode {
+              unicode_str: "Write your answer as X:Y:Z, where X, Y and Z are counting numbers"
               content_id: "ca_placeholder_0"
             }
           }
@@ -2735,7 +2735,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "0540c2fd-f8d0-4d44-9cce-45930f14d13d"
                 normalized_strings: "12:20"
               }
             }
@@ -2756,7 +2756,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "68552c4a-4ce9-46b5-bce4-c0e7a8944aa3"
                 normalized_strings: "12"
               }
             }
@@ -2777,7 +2777,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "f5ebb2e1-44ce-4e15-b5e4-cc93a153084d"
                 normalized_strings: "X:20"
               }
             }
@@ -2798,7 +2798,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "d367dd51-1f03-4221-9098-997a59662dc9"
                 normalized_strings: ":20"
               }
             }
@@ -2823,8 +2823,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X:20"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X:20"
               content_id: "ca_placeholder_0"
             }
           }

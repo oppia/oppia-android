@@ -112,7 +112,7 @@ class StateFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType),
+      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
@@ -275,7 +275,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(
       fragment,
-      Observer { result ->
+      { result ->
         processEphemeralStateResult(result)
       }
     )

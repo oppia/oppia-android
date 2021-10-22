@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.util.parser.html.HtmlParser
@@ -139,7 +140,8 @@ interface ViewBindingShim {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
+    entityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   )
 
   /**
@@ -162,6 +164,7 @@ interface ViewBindingShim {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
+    entityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   )
 }

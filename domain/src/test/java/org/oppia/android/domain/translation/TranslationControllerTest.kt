@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -15,22 +16,28 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.AUDIO_TRANSLATIONS
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
 import org.oppia.android.app.model.OppiaRegion.BRAZIL
+import org.oppia.android.app.model.OppiaRegion.INDIA
 import org.oppia.android.app.model.OppiaRegion.REGION_UNSPECIFIED
 import org.oppia.android.app.model.OppiaRegion.UNITED_STATES
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.SubtitledUnicode
+import org.oppia.android.app.model.TranslatableSetOfNormalizedString
 import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.locale.LocaleController
@@ -111,7 +118,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetSystemLanguageLocale_updateLocaleToIndia_updatesProviderWithNewLocale() {
+  fun testGetSystemLanguageLocale_updateLocaleToIndia_doesNotUpdateProviderWithNewLocale() {
     forceDefaultLocale(Locale.US)
     val localeProvider = translationController.getSystemLanguageLocale()
     val monitor = monitorFactory.createMonitor(localeProvider)
@@ -119,12 +126,27 @@ class TranslationControllerTest {
 
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
 
-    // Verify that the provider has changed.
+    // Verify that the provider hasn't changed since simply calling setAsDefault isn't sufficient to
+    // trigger a system provider change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testGetSystemLanguageLocale_updateDisplayAndSysLocaleToIndia_updatesProviderWithNewLocale() {
+    forceDefaultLocale(Locale.US)
+    val localeProvider = translationController.getSystemLanguageLocale()
+    val monitor = monitorFactory.createMonitor(localeProvider)
+    monitor.waitForNextSuccessResult()
+
+    forceDefaultLocale(INDIA_HINDI_LOCALE)
+    localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
+
+    // Verify that the provider has changed since the system & display locales were updated.
     val locale = monitor.waitForNextSuccessResult()
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(APP_STRINGS)
     assertThat(context.languageDefinition.language).isEqualTo(HINDI)
-    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
+    assertThat(context.regionDefinition.region).isEqualTo(INDIA)
   }
 
   /* Tests for app language functions */
@@ -200,7 +222,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAppLanguage_useSystemLang_updateLocale_notifiesProviderWithNewLanguage() {
+  fun testGetAppLanguage_useSystemLang_updateLocale_doesNotNotifyProviderWithNewLanguage() {
     forceDefaultLocale(Locale.ENGLISH)
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     val languageProvider = translationController.getAppLanguage(PROFILE_ID_0)
@@ -209,9 +231,9 @@ class TranslationControllerTest {
 
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
 
-    // The language should be updated to English since the system language was changed.
-    val updatedLanguage = monitor.waitForNextSuccessResult()
-    assertThat(updatedLanguage).isEqualTo(HINDI)
+    // The data provider shouldn't be updated. English will continue to be reported for the data
+    // provider, but the actual app strings are allowed to use Hindi per the override.
+    monitor.verifyProviderIsNotUpdated()
   }
 
   @Test
@@ -287,7 +309,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAppLanguageLocale_useSystemLang_updateLocale_notifiesProviderWithNewLocale() {
+  fun testGetAppLanguageLocale_useSystemLang_updateLocale_doesNotNotifyProviderWithNewLocale() {
     forceDefaultLocale(Locale.ENGLISH)
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     val localeProvider = translationController.getAppLanguageLocale(PROFILE_ID_0)
@@ -296,11 +318,9 @@ class TranslationControllerTest {
 
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
 
-    // The language should be updated to English since the system language was changed.
-    val updateLocale = monitor.waitForNextSuccessResult()
-    val context = updateLocale.localeContext
-    assertThat(context.usageMode).isEqualTo(APP_STRINGS)
-    assertThat(context.languageDefinition.language).isEqualTo(HINDI)
+    // The data provider shouldn't be updated. English will continue to be reported for the data
+    // provider, but the actual app strings are allowed to use Hindi per the override.
+    monitor.verifyProviderIsNotUpdated()
   }
 
   @Test
@@ -351,13 +371,13 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLang_uninitialized_rootLocale_returnsFailure() {
+  fun testGetWrittenContentLang_uninitialized_rootLocale_returnsUnspecifiedLanguage() {
     forceDefaultLocale(Locale.ROOT)
 
     val languageProvider = translationController.getWrittenTranslationContentLanguage(PROFILE_ID_0)
 
-    val error = monitorFactory.waitForNextFailureResult(languageProvider)
-    assertThat(error).hasMessageThat().contains("doesn't match supported language definitions")
+    val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
+    assertThat(language).isEqualTo(LANGUAGE_UNSPECIFIED)
   }
 
   @Test
@@ -423,7 +443,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLang_useSystemLangForApp_updateLocale_notifiesProviderWithNewLang() {
+  fun testGetWrittenContentLang_useSysLangForApp_updateLocale_doesNotNotifyProviderWithNewLang() {
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     forceDefaultLocale(Locale.US)
     ensureWrittenTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
@@ -431,10 +451,9 @@ class TranslationControllerTest {
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
     val languageProvider = translationController.getWrittenTranslationContentLanguage(PROFILE_ID_0)
 
-    // Changing the locale should change the language since this provider depends on the app strings
-    // language & app strings depend on the system locale.
+    // Changing the locale isn't sufficient unless the system locale also changes.
     val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
-    assertThat(language).isEqualTo(HINDI)
+    assertThat(language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -450,13 +469,18 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLocale_uninitialized_rootLocale_returnsFailure() {
+  fun testGetWrittenContentLocale_uninitialized_rootLocale_returnsBuiltinLocale() {
     forceDefaultLocale(Locale.ROOT)
 
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
 
-    val error = monitorFactory.waitForNextFailureResult(localeProvider)
-    assertThat(error).hasMessageThat().contains("doesn't match supported language definitions")
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    val languageDefinition = context.languageDefinition
+    assertThat(context.usageMode).isEqualTo(CONTENT_STRINGS)
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("builtin")
+    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 
   @Test
@@ -537,7 +561,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetWrittenContentLocale_useSystemLangForApp_updateLocale_notifiesProviderWithNewLang() {
+  fun testGetWrittenContentLocale_useSysLangForApp_updateLocale_doesNotNotifyProviderWithNewLang() {
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     forceDefaultLocale(Locale.US)
     ensureWrittenTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
@@ -545,12 +569,11 @@ class TranslationControllerTest {
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
 
-    // Changing the locale should change the language since this provider depends on the app strings
-    // language & app strings depend on the system locale.
+    // Changing the locale isn't sufficient unless the system locale also changes.
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(CONTENT_STRINGS)
-    assertThat(context.languageDefinition.language).isEqualTo(HINDI)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -673,7 +696,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAudioLanguage_useSystemLangForApp_updateLocale_notifiesProviderWithNewLang() {
+  fun testGetAudioLanguage_useSystemLangForApp_updateLocale_doesNotNotifyProviderWithNewLang() {
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     forceDefaultLocale(Locale.US)
     ensureAudioTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
@@ -681,10 +704,9 @@ class TranslationControllerTest {
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
     val languageProvider = translationController.getAudioTranslationContentLanguage(PROFILE_ID_0)
 
-    // Changing the locale should change the language since this provider depends on the app strings
-    // language & app strings depend on the system locale.
+    // Changing the locale isn't sufficient unless the system locale also changes.
     val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
-    assertThat(language).isEqualTo(HINDI)
+    assertThat(language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -787,7 +809,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAudioLocale_useSystemLangForApp_updateLocale_notifiesProviderWithNewLang() {
+  fun testGetAudioLocale_useSystemLangForApp_updateLocale_doesNotNotifyProviderWithNewLang() {
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
     forceDefaultLocale(Locale.US)
     ensureAudioTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
@@ -795,12 +817,11 @@ class TranslationControllerTest {
     localeController.setAsDefault(createDisplayLocaleForLanguage(HINDI), Configuration())
     val localeProvider = translationController.getAudioTranslationContentLocale(PROFILE_ID_0)
 
-    // Changing the locale should change the language since this provider depends on the app strings
-    // language & app strings depend on the system locale.
+    // Changing the locale isn't sufficient unless the system locale also changes.
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
-    assertThat(context.languageDefinition.language).isEqualTo(HINDI)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -986,6 +1007,259 @@ class TranslationControllerTest {
     assertThat(extracted).isEqualTo("Translated string")
   }
 
+  @Test
+  fun testExtractStringList_defaultSet_defaultContext_returnsEmptyList() {
+    val stringList = TranslatableSetOfNormalizedString.getDefaultInstance()
+    val context = WrittenTranslationContext.getDefaultInstance()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).isEmpty()
+  }
+
+  @Test
+  fun testExtractStringList_defaultSet_validContext_returnsEmptyList() {
+    val stringList = TranslatableSetOfNormalizedString.getDefaultInstance()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            addHtml("First translated string")
+            addHtml("Second translated string")
+          }.build()
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).isEmpty()
+  }
+
+  @Test
+  fun testExtractStringList_defaultContext_returnsUntranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+      addAllNormalizedStrings(listOf("First string", "Second string"))
+    }.build()
+    val context = WrittenTranslationContext.getDefaultInstance()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).containsExactly("First string", "Second string")
+  }
+
+  @Test
+  fun testExtractStringList_validContext_emptyList_returnsTranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+    }.build()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            addHtml("First translated string")
+            addHtml("Second translated string")
+          }.build()
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    // The translated strings are returned since there's a match, even though the original list is
+    // empty.
+    assertThat(extracted).containsExactly("First translated string", "Second translated string")
+  }
+
+  @Test
+  fun testExtractStringList_validContext_doesNotMatchContentId_returnsUntranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+      addAllNormalizedStrings(listOf("First string", "Second string"))
+    }.build()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "different_content_id",
+        Translation.newBuilder().apply {
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            addHtml("First translated string")
+            addHtml("Second translated string")
+          }.build()
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).containsExactly("First string", "Second string")
+  }
+
+  @Test
+  fun testExtractStringList_validContext_matchesContentId_returnsTranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+      addAllNormalizedStrings(listOf("First string", "Second string"))
+    }.build()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          htmlList = HtmlTranslationList.newBuilder().apply {
+            addHtml("First translated string")
+            addHtml("Second translated string")
+          }.build()
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    assertThat(extracted).containsExactly("First translated string", "Second translated string")
+  }
+
+  @Test
+  fun testExtractStringList_validContextWithoutList_matchesContentId_returnsUntranslatedList() {
+    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
+      contentId = "content_id"
+      addNormalizedStrings("First string")
+    }.build()
+    val context = WrittenTranslationContext.newBuilder().apply {
+      putTranslations(
+        "content_id",
+        Translation.newBuilder().apply {
+          html = "First translated string"
+        }.build()
+      )
+    }.build()
+
+    val extracted = translationController.extractStringList(stringList, context)
+
+    // Even though the translation matches, a single HTML entry can't be matched against an expected
+    // list.
+    assertThat(extracted).containsExactly("First string")
+  }
+
+  @Test
+  fun testComputeTranslationContext_englishLocale_emptyMap_returnsEmptyContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
+    val writtenTranslationsMap = mapOf<String, TranslationMapping>()
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    assertThat(translationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testComputeTranslationContext_englishLocale_returnsEmptyContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    assertThat(translationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testComputeTranslationContext_defaultMismatchedLocale_returnsEmptyContext() {
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    assertThat(translationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testComputeTranslationContext_arabicLocale_noArabicTranslationsInMap_returnsEmptyContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ARABIC)
+    val writtenTranslationsWithoutArabicMap = createTranslationMappingWithout("ar")
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(
+        writtenTranslationsWithoutArabicMap, contentLocale
+      )
+
+    assertThat(translationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testComputeTranslationContext_arabicLocale_withXlations_returnsContextWithXlations() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ARABIC)
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    val extractedTranslationMap = translationContext.translationsMap
+    assertThat(extractedTranslationMap).containsKey(TEST_CONTENT_ID)
+    assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_AR_TRANSLATION)
+  }
+
+  @Test
+  fun testComputeTranslationContext_portugueseLocale_withXlations_returnsContextWithXlations() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, PORTUGUESE)
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    val extractedTranslationMap = translationContext.translationsMap
+    assertThat(extractedTranslationMap).containsKey(TEST_CONTENT_ID)
+    assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_PT_TRANSLATION)
+  }
+
+  @Test
+  fun testComputeTranslationContext_brazilianPortugueseLocale_withXlations_returnsXlatedContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, BRAZILIAN_PORTUGUESE)
+    val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
+
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
+
+    val extractedTranslationMap = translationContext.translationsMap
+    assertThat(extractedTranslationMap).containsKey(TEST_CONTENT_ID)
+    assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_PT_BR_TRANSLATION)
+  }
+
+  @Test
+  fun testComputeTranslationContext_brazilianPortugueseLocale_ptXlations_returnsCorrectContext() {
+    ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, BRAZILIAN_PORTUGUESE)
+    val writtenTranslationsWithoutBrazilianPortugueseMap = createTranslationMappingWithout("pt-BR")
+
+    val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
+    val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+
+    val translationContext =
+      translationController.computeWrittenTranslationContext(
+        writtenTranslationsWithoutBrazilianPortugueseMap, contentLocale
+      )
+
+    // Without Brazilian Portuguese translations, the context should fall back to Portuguese.
+    val extractedTranslationMap = translationContext.translationsMap
+    assertThat(extractedTranslationMap).containsKey(TEST_CONTENT_ID)
+    assertThat(extractedTranslationMap[TEST_CONTENT_ID]?.html).isEqualTo(TEST_PT_TRANSLATION)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -1120,6 +1394,7 @@ class TranslationControllerTest {
 
   private companion object {
     private val BRAZIL_ENGLISH_LOCALE = Locale("en", "BR")
+    private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
 
     private val PROFILE_ID_0 = ProfileId.newBuilder().apply {
       internalId = 0
@@ -1142,5 +1417,34 @@ class TranslationControllerTest {
       AudioTranslationLanguageSelection.newBuilder().apply {
         useAppLanguage = true
       }.build()
+
+    private const val TEST_CONTENT_ID = "content_id"
+    private const val TEST_AR_TRANSLATION = "test ar translation string"
+    private const val TEST_PT_TRANSLATION = "test pt translation string"
+    private const val TEST_PT_BR_TRANSLATION = "test pt-BR translation string"
+    private val TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES =
+      mapOf(
+        TEST_CONTENT_ID to TranslationMapping.newBuilder().apply {
+          putTranslationMapping("ar", createSingleTranslation(TEST_AR_TRANSLATION))
+          // Note that this language code is intentionally capitalized to help ensure that the
+          // controller can perform case-insensitive matching.
+          putTranslationMapping("PT", createSingleTranslation(TEST_PT_TRANSLATION))
+          putTranslationMapping("pt-BR", createSingleTranslation(TEST_PT_BR_TRANSLATION))
+        }.build()
+      )
+
+    private fun createSingleTranslation(translation: String) = Translation.newBuilder().apply {
+      html = translation
+    }.build()
+
+    private fun createTranslationMappingWithout(
+      languageCode: String
+    ): Map<String, TranslationMapping> {
+      return TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES.toMutableMap().also {
+        it[TEST_CONTENT_ID] = it[TEST_CONTENT_ID]?.toBuilder().apply {
+          this?.removeTranslationMapping(languageCode)
+        }?.build()
+      }
+    }
   }
 }

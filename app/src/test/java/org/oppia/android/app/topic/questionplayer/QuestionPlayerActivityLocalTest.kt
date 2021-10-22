@@ -37,6 +37,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -61,6 +62,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.InternalMasteryMultiplyFactor
 import org.oppia.android.domain.question.InternalScoreMultiplyFactor
 import org.oppia.android.domain.question.MaxMasteryGainPerQuestion
@@ -277,7 +279,7 @@ class QuestionPlayerActivityLocalTest {
   ): ActivityScenario<QuestionPlayerActivity> {
     return ActivityScenario.launch(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, skillIdList
+        context, skillIdList, ProfileId.getDefaultInstance()
       )
     )
   }
@@ -392,7 +394,7 @@ class QuestionPlayerActivityLocalTest {
   @Component(
     modules = [
       QuestionPlayerActivityLocalTestModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

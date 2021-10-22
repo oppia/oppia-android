@@ -47,7 +47,7 @@ class SplashActivityPresenter @Inject constructor(
       WindowManager.LayoutParams.FLAG_FULLSCREEN
     )
     // Initiate download support before any additional processing begins.
-    primeTopicAssetsController.downloadAssets(R.style.AlertDialogTheme)
+    primeTopicAssetsController.downloadAssets(R.style.OppiaAlertDialogTheme)
     subscribeToOnboardingFlow()
   }
 
