@@ -350,6 +350,9 @@
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
 
+  <!-- Story Chapter View -->
+  <dimen name="story_chapter_view_margin_top_first_item">20dp</dimen>
+
   <!-- Profile Progress Header -->
   <dimen name="profile_edit_image_layout_margin_start">42dp</dimen>
   <dimen name="profile_name_text_view_layout_margin_end">42dp</dimen>
