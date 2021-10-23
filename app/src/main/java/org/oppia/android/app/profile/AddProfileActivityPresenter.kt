@@ -7,9 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -162,15 +160,6 @@ class AddProfileActivityPresenter @Inject constructor(
           setValidPin(binding)
         }
       }
-    }
-
-    binding.addProfileActivityConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
-      ) {
-        binding.addProfileActivityCreateButton.callOnClick()
-      }
-      false
     }
 
     if (profileViewModel.showInfoAlertPopup.get()!!) {

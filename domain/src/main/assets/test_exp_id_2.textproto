@@ -825,9 +825,53 @@ states {
       value {
       }
     }
+    recorded_voiceovers {
+      key: "hint_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "solution"
+      value {
+      }
+    }
     content {
       html: "<p>What is 11 times 11?</p>"
       content_id: "content"
+    }
+    written_translations {
+      key: "hint_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 11 * 11 pode ser reformulado como 11 * 10 e, em seguida, adicione 11 no final. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\331\212\331\205\331\203\331\206 \330\245\330\271\330\247\330\257\330\251 \330\265\331\212\330\247\330\272\330\251 <p> 11 * 11 \330\271\331\204\331\211 \330\243\331\206\331\207\330\247 11 * 10\330\214 \330\253\331\205 \330\243\330\266\331\201 11 \331\201\331\212 \330\247\331\204\331\206\331\207\330\247\331\212\330\251. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "solution"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> 11 vezes 11 \303\251 121. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> 11 \331\205\330\261\330\247\330\252 11 \331\207\331\210 121. </p>"
+          }
+        }
+      }
     }
     written_translations {
       key: "feedback_2"
@@ -968,6 +1012,19 @@ states {
             }
           }
           rule_type: "IsGreaterThan"
+        }
+      }
+      solution {
+        interaction_id: "NumericInput"
+        explanation {
+          html: "<p>11 times 11 is 121.</p>"
+          content_id: "solution"
+        }
+      }
+      hint {
+        hint_content {
+          html: "<p>11 * 11 can be rephrased as 11 * 10, then add 11 at the end.</p>"
+          content_id: "hint_1"
         }
       }
       default_outcome {

@@ -103,6 +103,7 @@ class StoryViewModel @Inject constructor(
       chapterList.mapIndexed { index, chapter ->
         StoryChapterSummaryViewModel(
           index,
+          chapterList.size,
           fragment,
           explorationSelectionListener,
           explorationCheckpointController,

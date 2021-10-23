@@ -13,9 +13,11 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/profile_progress_header_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
+    android:importantForAccessibility="no"
     android:paddingTop="32dp">
 
     <com.jackandphantom.circularimageview.CircleImage
@@ -40,9 +42,9 @@
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="8dp"
       android:paddingTop="8dp"
-      app:srcCompat="@drawable/rounded_white_background_with_shadow"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
-      app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"/>
+      app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"
+      app:srcCompat="@drawable/rounded_white_background_with_shadow" />
 
     <TextView
       android:id="@+id/profile_name_text_view"
@@ -68,6 +70,7 @@
       android:layout_weight="1"
       android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.ongoingTopicCount > 0}"
+      android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnOngoingTopicCount()}"
       app:cardElevation="2dp"
       app:contentPadding="8dp"
@@ -113,6 +116,7 @@
       android:layout_weight="1"
       android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.completedStoryCount > 0}"
+      android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnCompletedStoryCount()}"
       app:cardElevation="2dp"
       app:contentPadding="8dp"
