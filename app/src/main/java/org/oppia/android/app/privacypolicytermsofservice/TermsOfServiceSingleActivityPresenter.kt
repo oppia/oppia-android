@@ -78,4 +78,3 @@ class TermsOfServiceSingleActivityPresenter @Inject constructor(
     )
   }
 }
-
