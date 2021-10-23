@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableHtmlContentId
@@ -58,7 +59,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -74,7 +76,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -90,7 +93,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -106,7 +110,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -122,7 +127,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -138,7 +144,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -154,7 +161,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val matches =
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -167,7 +175,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val matches =
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -180,7 +189,8 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val matches =
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()

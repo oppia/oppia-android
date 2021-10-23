@@ -58,6 +58,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       if (languageCode == "hi-en") {
         languageNameArrayList.add("Hinglish")
       } else {
+        // TODO(#3791): Remove this dependency.
         val locale = Locale(languageCode)
         val name = locale.getDisplayLanguage(locale)
         languageNameArrayList.add(name)

@@ -293,6 +293,14 @@
   <dimen name="app_version_image_view_margin_start">36dp</dimen>
   <dimen name="app_version_text_view_margin_end">36dp</dimen>
 
+  <!-- Pin Password -->
+  <dimen name="pin_password_text_input_layout_width">244dp</dimen>
+  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.5</item>
+  <dimen name="pin_password_margin_start">72dp</dimen>
+  <dimen name="pin_password_margin_end">72dp</dimen>
+  <dimen name="pin_password_padding_top">48dp</dimen>
+  <dimen name="pin_password_min_width">496dp</dimen>
+
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">304dp</dimen>
   <dimen name="add_profile_main_padding_top">52dp</dimen>
@@ -322,4 +330,51 @@
   <!-- Story Header View -->
   <dimen name="story_header_view_layout_margin_start">76dp</dimen>
   <dimen name="story_header_view_layout_margin_end">72dp</dimen>
+
+  <!-- Ongoing Topic List Fragment -->
+  <dimen name="ongoing_topic_list_fragment_padding_start">56dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_top">28dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_end">56dp</dimen>
+  <dimen name="ongoing_topic_list_fragment_padding_bottom">88dp</dimen>
+
+  <!-- TopicRevisionFragment -->
+  <dimen name="topic_revision_fragment_padding_start">56dp</dimen>
+  <dimen name="topic_revision_fragment_padding_top">20dp</dimen>
+  <dimen name="topic_revision_fragment_padding_end">56dp</dimen>
+  <dimen name="topic_revision_fragment_padding_bottom">104dp</dimen>
+
+  <!-- Solution Summary -->
+  <dimen name="solution_summary_margin_top_linear_layout_first">32dp</dimen>
+  <dimen name="solution_summary_margin_top_solution_title">12dp</dimen>
+  <dimen name="solution_summary_margin_bottom_solution_title">12dp</dimen>
+  <dimen name="solution_summary_margin_top_reveal_solution_button">0dp</dimen>
+  <dimen name="solution_summary_margin_bottom_reveal_solution_button">28dp</dimen>
+  <dimen name="solution_summary_margin_start_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_margin_end_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_min_width_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_min_height_expand_list_icon">0dp</dimen>
+  <dimen name="solution_summary_margin_bottom_expand_list_icon">16dp</dimen>
+  <dimen name="solution_summary_margin_top_expand_list_icon">32dp</dimen>
+  <dimen name="solution_summary_margin_start">72dp</dimen>
+  <dimen name="solution_summary_margin_end">72dp</dimen>
+  <dimen name="solution_summary_margin_bottom">20dp</dimen>
+  <dimen name="solution_summary_margin_start_linear_layout">84dp</dimen>
+  <dimen name="solution_summary_margin_end_linear_layout">84dp</dimen>
+  <dimen name="solution_summary_margin_top_linear_layout">8dp</dimen>
+  <dimen name="solution_summary_margin_bottom_linear_layout">32dp</dimen>
+  <dimen name="solution_summary_margin_top_solution_summary_label">16dp</dimen>
+
+  <!-- Profile Reset Pin Activity -->
+  <dimen name="profile_reset_pin_activity_scroll_view_padding_bottom">168dp</dimen>
+  <dimen name="profile_reset_pin_activity_constraint_layout_padding_bottom">108dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_pin_main_padding_start">72dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_pin_main_padding_end">72dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_pin_margin_start">168dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_pin_margin_top">32dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_pin_margin_end">168dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_start">168dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_top">16dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_end">168dp</dimen>
+  <dimen name="profile_reset_pin_activity_profile_reset_save_button_margin_end">168dp</dimen>
+
 </resources>

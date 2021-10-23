@@ -1,5 +1,5 @@
 """
-Package for providing log uploading functionality.
+Library for providing log uploading functionality to the Oppia android app.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -52,7 +52,7 @@ kt_android_library(
     srcs = [
         "LogUploadWorkerModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         ":initializer",

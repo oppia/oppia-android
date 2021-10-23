@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -97,7 +98,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     val matches =
       unitIsEquivalentRuleClassifier.matches(
         answer = DIFF_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -110,7 +112,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     val matches =
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -123,7 +126,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     val matches =
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -136,7 +140,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     val matches =
       unitIsEquivalentRuleClassifier.matches(
         answer = DIFF_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -149,7 +154,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     val matches =
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_REAL_NUMBER_WITH_UNITS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -162,7 +168,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     val matches =
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_REAL_NUMBER_WITH_UNITS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -175,7 +182,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       unitIsEquivalentRuleClassifier.matches(
         answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -193,7 +201,8 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

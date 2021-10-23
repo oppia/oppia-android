@@ -2,7 +2,7 @@
   "exploration_id": "test_exp_id_4",
   "preferred_audio_language_code": "<unknown>",
   "correctness_feedback_enabled": false,
-  "version": 1,
+  "version": 0,
   "record_playthrough_probability": 0.0,
   "exploration": {
     "init_state_name": "DragDropSortInput",
@@ -27,7 +27,7 @@
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {}
@@ -55,17 +55,17 @@
             },
             "choices": {
               "value": [{
-                "html": "<p>I bought</p>",
-                "content_id": "ca_choices_0"
+                "content_id": "ca_choices_0",
+                "html": "<p>I bought</p>"
               }, {
-                "html": "<p>a camera at the store</p>",
-                "content_id": "ca_choices_1"
+                "content_id": "ca_choices_1",
+                "html": "<p>a camera at the store</p>"
               }, {
-                "html": "<p>yesterday</p>",
-                "content_id": "ca_choices_2"
+                "content_id": "ca_choices_2",
+                "html": "<p>yesterday</p>"
               }, {
-                "html": "<p>to photograph the parade.</p>",
-                "content_id": "ca_choices_3"
+                "content_id": "ca_choices_3",
+                "html": "<p>to photograph the parade.</p>"
               }]
             }
           },
@@ -84,10 +84,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasElementXAtPositionY",
@@ -104,10 +104,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "HasElementXBeforeElementY",
@@ -124,10 +124,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }, {
             "rule_specs": [{
               "rule_type": "IsEqualToOrderingWithOneItemAtIncorrectPosition",
@@ -143,10 +143,10 @@
               },
               "labelled_as_correct": false,
               "param_changes": [],
-              "refresher_exploration_id": null,
-              "missing_prerequisite_skill_id": null
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
             },
-            "tagged_skill_misconception_id": null
+            "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
             "dest": "DragDropSortInput",
@@ -156,13 +156,13 @@
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "hints": [],
           "solution": null
         },
-        "classifier_model_id": null,
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_4": {},

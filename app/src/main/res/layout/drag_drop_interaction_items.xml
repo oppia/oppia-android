@@ -45,7 +45,7 @@
           android:enabled="@{viewModel.itemIndex != 0}"
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleUpMovement(adapter)}"
-          android:src="@drawable/ic_arrow_up_black_24dp"
+          app:srcCompat="@drawable/ic_arrow_up_black_24dp"
           android:tint="@{dragDropMoveUpItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +62,7 @@
           android:enabled="@{viewModel.itemIndex != viewModel.listSize-1}"
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleDownMovement(adapter)}"
-          android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+          app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
           android:tint="@{dragDropMoveDownItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}" />
       </LinearLayout>
 
@@ -91,7 +91,7 @@
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.handleGrouping(adapter)}"
       android:padding="16dp"
-      android:src="@drawable/ic_merge_icon_24"
+      app:srcCompat="@drawable/ic_merge_icon_24"
       android:tint="@{dragDropContentGroupItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -107,7 +107,7 @@
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.handleUnlinking(adapter)}"
       android:padding="16dp"
-      android:src="@drawable/ic_unlink_icon_24"
+      app:srcCompat="@drawable/ic_unlink_icon_24"
       app:layout_constraintBottom_toTopOf="@+id/drag_drop_content_group_item"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

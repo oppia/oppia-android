@@ -17,6 +17,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -84,6 +85,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -992,6 +994,42 @@ class AddProfileActivityTest {
   }
 
   @Test
+  fun testAddProfileActivity_inputCorrectPinAndConfirmPin_actionDone_buttonIsVisible() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("test"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_pin))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("123"),
+        pressImeActionButton()
+      )
+      onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_create_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testAddProfileActivity_inputPin_checkAllowDownloadIsDisabled() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
@@ -1625,7 +1663,7 @@ class AddProfileActivityTest {
   @Component(
     modules = [
       RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
