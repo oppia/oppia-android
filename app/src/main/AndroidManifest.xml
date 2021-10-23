@@ -129,6 +129,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfilePictureActivity"
+      android:label="@string/profile_picture_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfileProgressActivity"
@@ -181,6 +182,7 @@
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
+    <activity android:name=".app.testing.ImageViewBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.MarginBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.NavigationDrawerTestActivity"

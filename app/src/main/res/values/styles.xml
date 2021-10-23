@@ -63,7 +63,6 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_marginBottom">4dp</item>
     <item name="android:layout_marginEnd">4dp</item>
-    <item name="android:layout_marginRight">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
@@ -83,7 +82,6 @@
     <item name="android:layout_height">48dp</item>
     <item name="android:layout_marginBottom">4dp</item>
     <item name="android:layout_marginEnd">4dp</item>
-    <item name="android:layout_marginRight">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
     <item name="android:background">@drawable/previous_next_state_image_view_background</item>
     <item name="android:contentDescription">@string/previous_state_description</item>
@@ -96,7 +94,6 @@
     <item name="android:layout_height">48dp</item>
     <item name="android:layout_marginBottom">4dp</item>
     <item name="android:layout_marginEnd">4dp</item>
-    <item name="android:layout_marginRight">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
     <item name="android:background">@drawable/previous_next_state_image_view_background</item>
     <item name="android:contentDescription">@string/next_state_description</item>
