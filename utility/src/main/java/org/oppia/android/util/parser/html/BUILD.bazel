@@ -94,6 +94,7 @@ kt_android_library(
     srcs = [
         "ImageTagHandler.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "custom_html_content_handler",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
