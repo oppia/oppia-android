@@ -2,6 +2,7 @@ package org.oppia.android.domain.classify.rules.itemselectioninput
 
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -30,6 +31,7 @@ class ItemSelectionInputEqualsRuleClassifierProvider @Inject constructor(
 
   override fun matches(
     answer: SetOfTranslatableHtmlContentIds,
-    input: SetOfTranslatableHtmlContentIds
+    input: SetOfTranslatableHtmlContentIds,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean = answer.getContentIdSet() == input.getContentIdSet()
 }

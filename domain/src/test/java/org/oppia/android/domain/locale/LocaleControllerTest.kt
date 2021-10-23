@@ -27,7 +27,6 @@ import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.AUDIO_TRANSLATIONS
-import org.oppia.android.app.model.OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
 import org.oppia.android.app.model.OppiaRegion.INDIA
 import org.oppia.android.app.model.OppiaRegion.REGION_UNSPECIFIED
 import org.oppia.android.app.model.OppiaRegion.UNITED_STATES
@@ -230,9 +229,10 @@ class LocaleControllerTest {
     // app.
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
-    assertThat(context.languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(context.languageDefinition.fallbackMacroLanguage).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("fr")
+    val languageDefinition = context.languageDefinition
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.fallbackMacroLanguage).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("fr-MC")
     assertThat(context.hasFallbackLanguageDefinition()).isFalse()
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
     assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("MC")
@@ -326,8 +326,9 @@ class LocaleControllerTest {
     // Changing to an unmatched language should update the provider.
     val locale = monitor.waitForNextSuccessResult()
     val context = locale.localeContext
-    assertThat(context.languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("fr")
+    val languageDefinition = context.languageDefinition
+    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("fr-MC")
     assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
     assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("MC")
   }
@@ -398,19 +399,16 @@ class LocaleControllerTest {
   }
 
   @Test
-  fun testContentLocale_englishUsLocale_defaultLang_returnsFailure() {
+  fun testContentLocale_englishUsLocale_defaultLang_returnsDefaultBuiltin() {
     forceDefaultLocale(Locale.US)
 
     val localeProvider = localeController.retrieveWrittenTranslationsLocale(LANGUAGE_UNSPECIFIED)
 
-    // English should be matched per the system locale.
-    val error = monitorFactory.waitForNextFailureResult(localeProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains(
-        "Language $LANGUAGE_UNSPECIFIED for usage $CONTENT_STRINGS doesn't match supported" +
-          " language definitions"
-      )
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    val languageDefinition = context.languageDefinition
+    assertThat(languageDefinition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("builtin")
+    assertThat(context.regionDefinition.region).isEqualTo(UNITED_STATES)
   }
 
   @Test
@@ -424,6 +422,8 @@ class LocaleControllerTest {
 
     assertThat(retrieveLogcatLogs())
       .contains("Encountered unmatched language: $LANGUAGE_UNSPECIFIED")
+    assertThat(retrieveLogcatLogs())
+      .contains("Falling back to the built-in content type due to mismatched configuration")
   }
 
   @Test
@@ -805,7 +805,7 @@ class LocaleControllerTest {
   }
 
   @Test
-  fun testSetAsDefault_englishDisplayLocale_triggersChangeInSystemLanguageProvider() {
+  fun testSetAsDefault_englishDisplayLocale_doesNotTriggerChangeInSystemLanguageProvider() {
     forceDefaultLocale(Locale.ROOT)
     val locale = retrieveAppStringDisplayLocale(ENGLISH)
     val monitor = monitorFactory.createMonitor(localeController.retrieveSystemLanguage())
@@ -814,7 +814,24 @@ class LocaleControllerTest {
 
     localeController.setAsDefault(locale, Configuration())
 
-    // Verify that the system language provider is notified with the language change.
+    // Verify that the system language provider isn't notified since the system locale didn't
+    // change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testSetAsDefault_englishDisplayLocale_withNewSystemLocale_triggersChangeInSysLangProvider() {
+    forceDefaultLocale(Locale.ROOT)
+    val locale = retrieveAppStringDisplayLocale(ENGLISH)
+    val monitor = monitorFactory.createMonitor(localeController.retrieveSystemLanguage())
+    // Sanity check (to validate the system language actually changes).
+    assertThat(monitor.waitForNextSuccessResult()).isNotEqualTo(ENGLISH)
+
+    forceDefaultLocale(Locale.ENGLISH)
+    localeController.setAsDefault(locale, Configuration())
+
+    // Verify that the system language provider did change & was notified as part of the call to
+    // setAsDefault.
     assertThat(monitor.waitForNextSuccessResult()).isEqualTo(ENGLISH)
   }
 

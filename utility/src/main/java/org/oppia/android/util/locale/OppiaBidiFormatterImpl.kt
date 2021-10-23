@@ -1,6 +1,6 @@
 package org.oppia.android.util.locale
 
-import android.text.BidiFormatter
+import androidx.core.text.BidiFormatter
 import java.util.Locale
 import javax.inject.Inject
 

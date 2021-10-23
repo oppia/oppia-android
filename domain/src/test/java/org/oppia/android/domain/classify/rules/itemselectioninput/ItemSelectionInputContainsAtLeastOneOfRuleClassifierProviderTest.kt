@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -50,7 +51,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -62,7 +64,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -74,7 +77,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -86,7 +90,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -98,7 +103,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -110,7 +116,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()

@@ -25,6 +25,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -355,6 +356,30 @@ class StateRetrieverTest {
     assertThat(ruleSpecMap.inputMap["y"]).isEqualTo(expectedInputInteractionObject)
   }
 
+  @Test
+  fun testParseState_withWrittenTranslations_forMultiAndSingleStrDataFormats_parsesTranslations() {
+    val state = loadStateFromJson(
+      stateName = "Text",
+      explorationName = TEST_EXPLORATION_ID_2
+    )
+
+    assertThat(state.writtenTranslationsMap).isNotEmpty()
+    assertThat(state.writtenTranslationsMap).containsKey("content")
+    // This ID corresponds to a rule's input.
+    assertThat(state.writtenTranslationsMap).containsKey("43df2897-0a03-4d1f-b892-9e1d251af5c9")
+    val contentTranslations = state.writtenTranslationsMap["content"]?.translationMappingMap
+    assertThat(contentTranslations).containsKey("pt")
+    assertThat(contentTranslations).containsKey("ar")
+    assertThat(contentTranslations?.get("pt")?.html).contains("linguagem")
+    assertThat(contentTranslations?.get("ar")?.html).contains("تعني")
+    val ruleInputTranslations =
+      state.writtenTranslationsMap["43df2897-0a03-4d1f-b892-9e1d251af5c9"]?.translationMappingMap
+    assertThat(ruleInputTranslations).containsKey("pt")
+    assertThat(ruleInputTranslations).containsKey("ar")
+    assertThat(ruleInputTranslations?.get("pt")?.htmlList?.htmlList).containsExactly("finlandesa")
+    assertThat(ruleInputTranslations?.get("ar")?.htmlList?.htmlList).containsExactly("الفنلندية")
+  }
+
   /**
    * Return the first [RuleSpec] in the specified [State] matching the specified rule type, or fails
    * if one cannot be found.
@@ -429,7 +454,7 @@ class StateRetrieverTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, AssetModule::class
+      FakeOppiaClockModule::class, AssetModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -144,7 +145,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_1_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -156,7 +158,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_5_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -168,7 +171,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_5_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -180,7 +184,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_3_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -192,7 +197,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_3_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -204,7 +210,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_1_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -216,7 +223,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -228,7 +236,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = MIXED_NUMBER_VALUE_TEST_0_2_OVER_3,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -240,7 +249,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -252,7 +262,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -264,7 +275,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -276,7 +288,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_0_2_OVER_3,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -288,7 +301,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -300,7 +314,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -312,7 +327,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -324,7 +340,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -336,7 +353,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -347,7 +365,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -359,7 +378,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
       answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -373,7 +393,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
       inputHasIntegerPartEqualToRuleClassifier
         .matches(
           answer = FRACTION_VALUE_TEST_1_OVER_2,
-          inputs = inputs
+          inputs = inputs,
+          writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
         )
     }
 
@@ -390,7 +411,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
       inputHasIntegerPartEqualToRuleClassifier
         .matches(
           answer = FRACTION_VALUE_TEST_1_OVER_2,
-          inputs = inputs
+          inputs = inputs,
+          writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
         )
     }
 

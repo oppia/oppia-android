@@ -28,6 +28,10 @@ language_definitions {
       ietf_language_tag: "en"
     }
     android_resources_language_id {
+      # Note that while English is the default language for Oppia & no special language code is
+      # needed for it, "en" is still used here for consistency. Technically this will match strings
+      # against "values-en", but because the team will never define strings with that qualifier they
+      # will always fallback to the default English strings under "values".
       language_code: "en"
     }
   }
@@ -82,6 +86,11 @@ language_definitions {
 language_definitions {
   language: PORTUGUESE
   min_android_sdk_version: 1
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "pt"
+    }
+  }
 }
 language_definitions {
   language: BRAZILIAN_PORTUGUESE

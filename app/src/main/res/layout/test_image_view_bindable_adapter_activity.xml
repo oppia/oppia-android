@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><!-- TODO(#59): Make this layout only accessible to tests. -->
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/image_view_for_data_binding"
+  android:layout_width="32dp"
+  android:layout_height="32dp"/>
+

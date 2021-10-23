@@ -2,13 +2,25 @@ package org.oppia.android.app.topic
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,7 +35,9 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -45,14 +59,18 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -86,19 +104,23 @@ class TopicActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
-  @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
   @Inject
   lateinit var context: Context
 
-  private val internalProfileId = 0
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private val internalProfileId = 1
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -107,23 +129,50 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createTopicActivityIntent(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID
-      )
-    )
-    val title = activityTestRule.activity.title
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+      lateinit var title: CharSequence
+      scenario.onActivity { activity -> title = activity.title }
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.topic_page))
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(title).isEqualTo(context.getString(R.string.topic_page))
+    }
   }
 
-  private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
-    return TopicActivity.createTopicActivityIntent(
-      ApplicationProvider.getApplicationContext(), internalProfileId, topicId
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
+      // Open the practice tab and select a skill.
+      onView(withText("Practice")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText("What is a Fraction?")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Start the practice session.
+      onView(withId(R.id.topic_practice_skill_list))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(/* position= */ 5))
+      testCoroutineDispatchers.runCurrent()
+      onView(withText("Start")).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that the question activity is started with the correct profile ID.
+      val profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      intended(hasComponent(QuestionPlayerActivity::class.java.name))
+      intended(hasExtra("QuestionPlayerActivity.profile_id", profileId.toByteString()))
+    }
+  }
+
+  private fun launchTopicActivity(
+    internalProfileId: Int,
+    topicId: String
+  ): ActivityScenario<TopicActivity> {
+    val scenario = ActivityScenario.launch<TopicActivity>(
+      TopicActivity.createTopicActivityIntent(context, internalProfileId, topicId)
     )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))
+    return scenario
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -131,7 +180,7 @@ class TopicActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

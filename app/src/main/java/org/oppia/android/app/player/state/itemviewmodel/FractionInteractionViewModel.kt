@@ -8,11 +8,13 @@ import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.StringToFractionParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.translation.TranslationController
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel(
@@ -20,7 +22,9 @@ class FractionInteractionViewModel(
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val writtenTranslationContext: WrittenTranslationContext,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
@@ -44,17 +48,16 @@ class FractionInteractionViewModel(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
-      userAnswerBuilder.answer = InteractionObject.newBuilder()
-        .setFraction(stringToFractionParser.parseFractionFromString(answerTextString))
-        .build()
-      userAnswerBuilder.plainAnswer = answerTextString
+      answer = InteractionObject.newBuilder().apply {
+        fraction = stringToFractionParser.parseFractionFromString(answerTextString)
+      }.build()
+      plainAnswer = answerTextString
+      this.writtenTranslationContext = this@FractionInteractionViewModel.writtenTranslationContext
     }
-    return userAnswerBuilder.build()
-  }
+  }.build()
 
   /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
@@ -94,12 +97,24 @@ class FractionInteractionViewModel(
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
-    val customPlaceholder =
-      interaction.customizationArgsMap["customPlaceholder"]?.subtitledUnicode?.unicodeStr ?: ""
+    // The subtitled unicode can apparently exist in the structure in two different formats.
+    val placeholderUnicodeOption1 =
+      interaction.customizationArgsMap["customPlaceholder"]?.subtitledUnicode
+    val placeholderUnicodeOption2 =
+      interaction.customizationArgsMap["customPlaceholder"]?.customSchemaValue?.subtitledUnicode
+    val customPlaceholder1 =
+      placeholderUnicodeOption1?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
+    val customPlaceholder2 =
+      placeholderUnicodeOption2?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
     val allowNonzeroIntegerPart =
       interaction.customizationArgsMap["allowNonzeroIntegerPart"]?.boolValue ?: true
     return when {
-      customPlaceholder.isNotEmpty() -> customPlaceholder
+      customPlaceholder1.isNotEmpty() -> customPlaceholder1
+      customPlaceholder2.isNotEmpty() -> customPlaceholder2
       !allowNonzeroIntegerPart ->
         resourceHandler.getStringInLocale(R.string.fractions_default_hint_text_no_integer)
       else -> resourceHandler.getStringInLocale(R.string.fractions_default_hint_text)

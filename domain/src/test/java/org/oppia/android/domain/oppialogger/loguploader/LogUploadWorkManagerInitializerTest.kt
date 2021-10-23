@@ -32,12 +32,11 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.logging.EnableConsoleLog
-import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LogUploader
+import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -164,20 +163,6 @@ class LogUploadWorkManagerInitializerTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   @Module
@@ -206,7 +191,8 @@ class LogUploadWorkManagerInitializerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class
+      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
+      LoggerModule::class, AssetModule::class, LoggerModule::class
     ]
   )
   interface TestApplicationComponent {

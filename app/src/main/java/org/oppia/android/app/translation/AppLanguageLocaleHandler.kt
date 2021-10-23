@@ -24,13 +24,21 @@ class AppLanguageLocaleHandler @Inject constructor(
   private lateinit var displayLocale: OppiaLocale.DisplayLocale
 
   /**
+   * Returns whether this handler's tracked locale has been initialized, that is, whether
+   * [initializeLocale] has been called.
+   *
+   * Once this method returns true, it's guaranteed to stay true for the lifetime of this class.
+   */
+  fun isInitialized(): Boolean = ::displayLocale.isInitialized
+
+  /**
    * Initializes this handler with the specified initial [OppiaLocale.DisplayLocale].
    *
    * This must be called before any other methods in this class, and it must only be called once for
    * the lifetime of the application.
    */
   fun initializeLocale(locale: OppiaLocale.DisplayLocale) {
-    check(!::displayLocale.isInitialized) {
+    check(!isInitialized()) {
       "Expected to initialize the locale for the first time. If this is in a test, did you use" +
         " InitializeDefaultLocaleRule?"
     }
@@ -70,7 +78,7 @@ class AppLanguageLocaleHandler @Inject constructor(
   }
 
   private fun verifyDisplayLocaleIsInitialized() {
-    check(::displayLocale.isInitialized) {
+    check(isInitialized()) {
       "Expected locale to be initialized. If this is in a test, did you remember to include" +
         " InitializeDefaultLocaleRule?"
     }
