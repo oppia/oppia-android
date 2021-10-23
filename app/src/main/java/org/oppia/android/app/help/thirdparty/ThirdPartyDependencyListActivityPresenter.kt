@@ -4,13 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ThirdPartyDependencyListActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [ThirdPartyDependencyListActivity]. */
 @ActivityScope
 class ThirdPartyDependencyListActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   /** Handles onCreate() method of the [ThirdPartyDependencyListActivity]. */
@@ -26,7 +28,7 @@ class ThirdPartyDependencyListActivityPresenter @Inject constructor(
 
     val thirdPartyDependencyListActivityToolbar = binding.thirdPartyDependencyListActivityToolbar
     activity.setSupportActionBar(thirdPartyDependencyListActivityToolbar)
-    activity.supportActionBar!!.title = activity.getString(
+    activity.supportActionBar!!.title = resourceHandler.getStringInLocale(
       R.string.third_party_dependency_list_activity_title
     )
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)

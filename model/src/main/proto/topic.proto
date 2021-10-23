@@ -72,6 +72,15 @@ message ConceptCard {
   map<string, TranslationMapping> written_translation = 6;
 }
 
+// Corresponds to a concept card that is currently being viewed.
+message EphemeralConceptCard {
+  // The concept card to view.
+  ConceptCard concept_card = 1;
+
+  // The translation context that should be used for this concept card.
+  WrittenTranslationContext written_translation_context = 2;
+}
+
 // A summary of a story that can be played within a topic.
 message StorySummary {
   // The ID of the story.
@@ -386,6 +395,14 @@ message RevisionCard {
   map<string, TranslationMapping> written_translation = 4;
 }
 
+// Corresponds to a revision card that is currently being viewed.
+message EphemeralRevisionCard {
+  // The revision card to view.
+  RevisionCard revision_card = 1;
+
+  // The translation context that should be used for this revision card.
+  WrittenTranslationContext written_translation_context = 2;
+}
 
 // Corresponds to a local file cataloging all topics available to load.
 message TopicIdList {
@@ -447,7 +464,7 @@ message ChapterRecord {
   string title = 3;
 
   // The outline/description that is used to provide an initial summary of the chapter's contents.
-  string outline = 4;
+  string description = 4;
 }
 
 // Corresponds to a record of a subtopic/revision card available to be loaded from the local

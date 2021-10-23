@@ -56,8 +56,9 @@ gradlew.bat @BenHenning
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning
+/app/src/main/res/values*/untranslated_strings.xml @BenHenning
 
-# Proguard configuration.
+# Proguard configurations.
 *.pro @BenHenning
 
 # Lesson assets.
@@ -85,9 +86,18 @@ buf.yaml @anandwana001
 # Binary files.
 *.png @BenHenning
 
+# Configurations for Bazel-built Android App Bundles.
+bundle_config.pb.json @BenHenning
+
 # Important codebase files.
 LICENSE @BenHenning
 NOTICE @BenHenning
+
+# Language configuration files.
+config/**/languages/*.textproto @BenHenning
+
+# Configuration for KitKat-specific curated builds.
+config/kitkat_main_dex_class_list.txt @BenHenning
 
 #####################################################################################
 #                                    app module                                     #
@@ -139,6 +149,9 @@ NOTICE @BenHenning
 # Global domain module code ownership.
 /domain/**/*.kt @BenHenning
 
+# Domain test resources.
+/domain/src/test/res/values/strings.xml @BenHenning
+
 # Questions support.
 /domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
 
@@ -186,6 +199,9 @@ NOTICE @BenHenning
 # Shell file ownership.
 /scripts/**/*.sh @anandwana001 @BenHenning
 
+# Script proto ownership.
+/scripts/**/*.proto @BenHenning
+
 # Static analysis check configuration files ownership.
 /scripts/assets/ @BenHenning
 
@@ -193,8 +209,8 @@ NOTICE @BenHenning
 #                                      model                                        #
 #####################################################################################
 
-# Global proto file ownership (for protos outside the model directory since all protos should belong in models).
-*.proto @vinitamurthi @BenHenning
+# Global proto file ownership for model/.
+/model/**/*.proto @vinitamurthi @BenHenning
 
 # Global model ownership.
 /model/ @vinitamurthi @BenHenning
@@ -216,7 +232,14 @@ WORKSPACE @BenHenning
 *.bzl @BenHenning
 *.bazel @BenHenning
 .bazelrc @BenHenning
+.bazelversion @BenHenning
 /tools/android/ @BenHenning
 
 # License texts.
 /app/src/main/res/values/third_party_dependencies.xml @BenHenning
+
+# Exemptions to resource shrinking.
+app/src/main/res/raw/shrink_exemptions.xml @BenHenning
+
+# Version tracking.
+version.bzl @BenHenning

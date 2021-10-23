@@ -60,6 +60,7 @@ class GlideImageLoader @Inject constructor(
     target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation>
   ) {
+    // TODO(#3887): Investigate why this has a native crash on KitKat & find a fix.
     glide
       .asDrawable()
       .load(imageDrawableResId)

@@ -12,7 +12,7 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
-load("@rules_java//java:defs.bzl", "java_library")
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
 
@@ -83,4 +83,11 @@ java_library(
     exports = [
         "//third_party:com_github_bumptech_glide_compiler",
     ],
+)
+
+java_binary(
+    name = "android_bundletool",
+    main_class = "com.android.tools.build.bundletool.BundleToolMain",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["@android_bundletool//jar"],
 )

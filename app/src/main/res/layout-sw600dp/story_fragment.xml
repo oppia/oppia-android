@@ -67,11 +67,14 @@
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/story_chapter_list"
-        android:layout_width="match_parent"
+        android:layout_width="528dp"
         android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
         android:background="@color/white"
         android:clipToPadding="false"
         android:overScrollMode="never"
+        android:paddingStart="64dp"
+        android:paddingEnd="64dp"
         android:paddingBottom="@dimen/bottom_white_space"
         android:scrollbars="none"
         app:data="@{viewModel.storyChapterLiveData}" />

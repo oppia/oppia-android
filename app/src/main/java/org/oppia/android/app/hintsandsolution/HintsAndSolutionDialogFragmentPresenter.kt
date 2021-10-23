@@ -12,7 +12,9 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.android.databinding.HintsDividerBinding
@@ -22,7 +24,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import java.lang.IllegalStateException
-import java.util.Locale
 import javax.inject.Inject
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
@@ -34,7 +35,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<HintsViewModel>,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
-  @ExplorationHtmlParserEntityType private val entityType: String
+  @ExplorationHtmlParserEntityType private val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private var currentExpandedHintListIndex: Int? = null
@@ -46,6 +48,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private lateinit var binding: HintsAndSolutionFragmentBinding
   private lateinit var state: State
   private lateinit var helpIndex: HelpIndex
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
   private lateinit var itemList: List<HintsAndSolutionItemViewModel>
   private lateinit var bindingAdapter: BindableAdapter<HintsAndSolutionItemViewModel>
 
@@ -62,6 +65,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     state: State,
     helpIndex: HelpIndex,
+    writtenTranslationContext: WrittenTranslationContext,
     id: String?,
     currentExpandedHintListIndex: Int?,
     expandedHintListIndexListener: ExpandedHintListIndexListener,
@@ -92,6 +96,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
     this.state = state
     this.helpIndex = helpIndex
+    this.writtenTranslationContext = writtenTranslationContext
     // The newAvailableHintIndex received here is coming from state player but in this
     // implementation hints/solutions are shown on every even index and on every odd index we show a
     // divider. The relative index therefore needs to be doubled to account for the divider.
@@ -136,7 +141,9 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private fun loadHintsAndSolution(state: State) {
     // Check if hints are available for this state.
     if (state.interaction.hintList.isNotEmpty()) {
-      viewModel.initialize(helpIndex, state.interaction.hintList, state.interaction.solution)
+      viewModel.initialize(
+        helpIndex, state.interaction.hintList, state.interaction.solution, writtenTranslationContext
+      )
 
       itemList = viewModel.processHintList()
 
@@ -217,8 +224,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    binding.hintTitle.text = hintsViewModel.title.get()!!.replace("_", " ")
-      .capitalize(Locale.getDefault())
+    binding.hintTitle.text =
+      resourceHandler.capitalizeForHumans(hintsViewModel.title.get()!!.replace("_", " "))
     binding.hintsAndSolutionSummary.text =
       htmlParserFactory.create(
         resourceBucketName,
@@ -300,11 +307,12 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    binding.solutionTitle.text = solutionViewModel.title.get()!!.capitalize(Locale.getDefault())
+    binding.solutionTitle.text =
+      resourceHandler.capitalizeForHumans(solutionViewModel.title.get()!!)
     // TODO(#1050): Update to display answers for any answer type.
     if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
       binding.solutionCorrectAnswer.text =
-        fragment.requireContext().resources.getString(
+        resourceHandler.getStringInLocaleWithoutWrapping(
           R.string.hints_android_solution_correct_answer,
           solutionViewModel.numerator.get().toString(),
           solutionViewModel.denominator.get().toString()

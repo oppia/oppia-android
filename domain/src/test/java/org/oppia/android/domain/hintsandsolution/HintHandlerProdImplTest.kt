@@ -30,9 +30,12 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -82,6 +85,11 @@ class HintHandlerProdImplTest {
   private val expWithHintsAndSolution by lazy {
     explorationRetriever.loadExploration(
       "test_single_interactive_state_exp_with_hints_and_solution"
+    )
+  }
+  private val expWithSolutionMissingCorrectAnswer by lazy {
+    explorationRetriever.loadExploration(
+      "test_single_interactive_state_exp_with_solution_missing_answer"
     )
   }
 
@@ -1905,6 +1913,48 @@ class HintHandlerProdImplTest {
     )
   }
 
+  @Test
+  fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_isEmpty() {
+    val state = expWithSolutionMissingCorrectAnswer.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+
+    assertThat(helpIndex).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_twoWrongAnswers_canShowSolution() {
+    val state = expWithSolutionMissingCorrectAnswer.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
+  }
+
+  @Test
+  fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_triggeredAndShown_allRevealed() {
+    val state = expWithSolutionMissingCorrectAnswer.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    waitFor60Seconds()
+    hintHandler.viewSolution()
+
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
+  }
+
   private fun Exploration.getInitialState(): State = statesMap.getValue(initStateName)
 
   private fun triggerFirstHint() = waitFor60Seconds()
@@ -1970,7 +2020,7 @@ class HintHandlerProdImplTest {
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class
+      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

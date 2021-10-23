@@ -5,6 +5,8 @@
 
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+
   <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".app.application.OppiaApplication"
@@ -106,7 +108,7 @@
     <activity
       android:name=".app.profile.AddProfileActivity"
       android:label="@string/add_profile_activity_label"
-      android:theme="@style/OppiaThemeNoActionBarColorAccentColorPrimary" />
+      android:theme="@style/OppiaThemeWithoutActionBarColorAccentColorPrimary" />
     <activity
       android:name=".app.profile.AdminAuthActivity"
       android:label="@string/admin_auth_activity_access_controls_title"
@@ -127,6 +129,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfilePictureActivity"
+      android:label="@string/profile_picture_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.profileprogress.ProfileProgressActivity"
@@ -150,6 +153,7 @@
     <activity
       android:name=".app.splash.SplashActivity"
       android:screenOrientation="portrait"
+      android:label="@string/app_name"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -178,6 +182,7 @@
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
+    <activity android:name=".app.testing.ImageViewBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.MarginBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.NavigationDrawerTestActivity"
@@ -257,6 +262,9 @@
     <activity
       android:name=".app.resumelesson.ResumeLessonActivity"
       android:label="@string/resume_lesson_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.testing.activity.TestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider

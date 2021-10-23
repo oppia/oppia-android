@@ -3,9 +3,11 @@ package org.oppia.android.app.profile
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @ActivityScope
 class PinPasswordViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
   val showError = ObservableField(false)
@@ -32,6 +35,12 @@ class PinPasswordViewModel @Inject constructor(
       profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
+  }
+
+  val helloText: LiveData<String> by lazy {
+    Transformations.map(profile) { profile ->
+      resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_hello, profile.name)
+    }
   }
 
   fun setProfileId(id: Int) {

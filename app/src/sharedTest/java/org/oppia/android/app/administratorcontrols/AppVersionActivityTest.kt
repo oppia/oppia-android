@@ -30,8 +30,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.android.app.application.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -41,6 +41,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.getLastUpdateTime
 import org.oppia.android.app.utility.getVersionName
@@ -64,18 +65,22 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -83,10 +88,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.system.OppiaDateTimeFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -99,6 +102,9 @@ import javax.inject.Singleton
 )
 class AppVersionActivityTest {
   @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
@@ -110,10 +116,6 @@ class AppVersionActivityTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var oppiaDateTimeFormatter: OppiaDateTimeFormatter
-  private lateinit var lastUpdateDate: String
-
-  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -121,8 +123,6 @@ class AppVersionActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    val lastUpdateDateTime = context.getLastUpdateTime()
-    lastUpdateDate = getDateTime(lastUpdateDateTime)!!
   }
 
   @Test
@@ -153,7 +153,8 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
-    launchAppVersionActivityIntent().use {
+    launchAppVersionActivityIntent().use { scenario ->
+      val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
       onView(
         withText(
           String.format(
@@ -177,8 +178,9 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
-    launchAppVersionActivityIntent().use {
+    launchAppVersionActivityIntent().use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
+      val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
       onView(
         withId(
           R.id.app_version_text_view
@@ -230,12 +232,15 @@ class AppVersionActivityTest {
     }
   }
 
-  private fun getDateTime(dateTimeTimestamp: Long): String? {
-    return oppiaDateTimeFormatter.formatDateFromDateString(
-      OppiaDateTimeFormatter.DD_MMM_YYYY,
-      dateTimeTimestamp,
-      Locale.US
-    )
+  private fun ActivityScenario<AppVersionActivity>.convertTimeStampToDate(
+    timestampMillis: Long
+  ): String {
+    lateinit var dateTimeString: String
+    onActivity { activity ->
+      val resourceHandler = activity.activityComponent.getAppLanguageResourceHandler()
+      dateTimeString = resourceHandler.computeDateString(timestampMillis)
+    }
+    return dateTimeString
   }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
@@ -257,7 +262,7 @@ class AppVersionActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -273,7 +278,8 @@ class AppVersionActivityTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
