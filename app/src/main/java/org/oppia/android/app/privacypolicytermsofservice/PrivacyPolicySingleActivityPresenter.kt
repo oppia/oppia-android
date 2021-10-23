@@ -23,6 +23,7 @@ class PrivacyPolicySingleActivityPresenter @Inject constructor(
 
   private lateinit var privacyPolicySingleActivityToolbar: Toolbar
   private lateinit var privacyPolicyDescription: String
+  private lateinit var privacyPolicyWebLink: String
 
   /** Handles onCreate() method of the [PrivacyPolicySingleActivity]. */
   fun handleOnCreate() {
@@ -59,6 +60,20 @@ class PrivacyPolicySingleActivityPresenter @Inject constructor(
     ).parseOppiaHtml(
       privacyPolicyDescription,
       privacyPolicyDescriptionTextView
+    )
+
+    val privacyPolicyWebLinkTextView =
+      activity.findViewById<TextView>(R.id.privacy_policy_web_link_text_view)
+    privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
+
+    privacyPolicyWebLinkTextView.text = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "PrivacyPolicy",
+      entityId = "oppia",
+      imageCenterAlign = false
+    ).parseOppiaHtml(
+      privacyPolicyWebLink,
+      privacyPolicyWebLinkTextView
     )
   }
 }

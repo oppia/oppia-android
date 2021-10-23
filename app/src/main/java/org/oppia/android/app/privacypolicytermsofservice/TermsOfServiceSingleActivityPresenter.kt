@@ -24,6 +24,7 @@ class TermsOfServiceSingleActivityPresenter @Inject constructor(
 
   private lateinit var termsOfServiceSingleActivityToolbar: Toolbar
   private lateinit var termsOfServiceDescription: String
+  private lateinit var termsOfServiceWebLink: String
 
   /** Handles onCreate() method of the [TermsOfServiceSingleActivity]. */
   fun handleOnCreate() {
@@ -61,5 +62,20 @@ class TermsOfServiceSingleActivityPresenter @Inject constructor(
       termsOfServiceDescription,
       termsOfServiceDescriptionTextView
     )
+
+    val termsOfServiceWebLinkTextView =
+      activity.findViewById<TextView>(R.id.terms_of_service_web_link_text_view)
+    termsOfServiceWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
+
+    termsOfServiceWebLinkTextView.text = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "TermsOfService",
+      entityId = "oppia",
+      imageCenterAlign = false
+    ).parseOppiaHtml(
+      termsOfServiceWebLink,
+      termsOfServiceWebLinkTextView
+    )
   }
 }
+

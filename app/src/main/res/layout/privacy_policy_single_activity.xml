@@ -58,14 +58,23 @@
 
           <TextView
             android:id="@+id/privacy_policy_description_text_view"
+            style="@style/Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:fontFamily="sans-serif"
             android:justificationMode="inter_word"
             android:textAlignment="viewStart"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="16sp" />
+            android:textColor="@color/oppiaPrimaryText" />
+
+          <TextView
+            android:id="@+id/privacy_policy_web_link_text_view"
+            style="@style/Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textAlignment="viewStart"
+            android:textColor="@color/oppiaPrimaryText"/>
+
         </LinearLayout>
       </ScrollView>
 
