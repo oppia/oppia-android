@@ -1,0 +1,42 @@
+"""
+Package for audio controlling
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "audio_player_controller",
+    srcs = [
+        "AudioPlayerController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_annotation_annotation",
+        #        "//third_party:androidx_lifecycle_lifecycle-extensions",
+        #        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-android",
+        "//third_party:javax_inject_javax_inject",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+kt_android_library(
+    name = "cellular_audio_dialog_controller",
+    srcs = [
+        "CellularAudioDialogController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model:topic_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+    ],
+)
