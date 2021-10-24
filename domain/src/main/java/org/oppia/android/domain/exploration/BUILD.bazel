@@ -1,0 +1,88 @@
+"""
+Package for testing utilities for log uploading functionality.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "exploration_data_controller",
+    srcs = [
+        "ExplorationDataController.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":exploration_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:exploration_checkpoint_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//model:exploration_checkpoint_java_proto_lite",
+        "//model:exploration_java_proto_lite",
+        "//model:profile_java_proto_lite",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+kt_android_library(
+    name = "exploration_progress",
+    srcs = [
+        "ExplorationProgress.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
+        "//domain/src/main/java/org/oppia/android/domain/state:state_graph",
+        "//model:exploration_checkpoint_java_proto_lite",
+        "//model:exploration_java_proto_lite",
+        "//model:profile_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "exploration_progress_controller",
+    srcs = [
+        "ExplorationProgressController.kt",
+    ],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        #        "//domain/src/main/java/org/oppia/android/domain/classify:answer_classification_controller",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/lightweightcheckpointing:exploration_checkpoint_controller",
+        #        "//domain/src/main/java/org/oppia/android/domain/hintsandsolution:hint_handler",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        #        "//domain/src/main/java/org/oppia/android/domain/topic:story_progress_controller",
+        "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
+        "//model:exploration_checkpoint_java_proto_lite",
+        "//model:exploration_java_proto_lite",
+        "//model:profile_java_proto_lite",
+        "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "exploration_retriver",
+    srcs = [
+        "ExplorationRetriever.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/util:asset",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//domain/src/main/java/org/oppia/android/domain/util:retriever",
+        "//model:exploration_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+    ],
+)
+
+dagger_rules()
