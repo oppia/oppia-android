@@ -12,8 +12,6 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:androidx_annotation_annotation",
-        #        "//third_party:androidx_lifecycle_lifecycle-extensions",
-        #        "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-android",
         "//third_party:javax_inject_javax_inject",
