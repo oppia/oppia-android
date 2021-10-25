@@ -275,13 +275,22 @@ jobs:
         env:
           BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
           BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
-        run: bazel test --keep_going --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
-
+        run: |
+          while [ $i -ne 5 ]; do
+            i=$(( $i+1 ))
+            echo "Attempt $i/5 to run test targets"
+            bazel test --keep_going --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- $BAZEL_TEST_TARGETS
+          done
       - name: Run Oppia Tests (without caching, or on a fork)
         if: ${{ env.ENABLE_CACHING == 'false' || ((github.ref != 'refs/heads/develop' || github.event_name != 'push') && (github.event.pull_request.head.repo.full_name != 'oppia/oppia-android')) }}
         env:
           BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
-        run: bazel test --keep_going -- $BAZEL_TEST_TARGETS
+        run: |
+          while [ $i -ne 5 ]; do
+            i=$(( $i+1 ))
+            echo "Attempt $i/5 to run test targets"
+            bazel test --keep_going -- $BAZEL_TEST_TARGETS
+          done
 
   # Reference: https://github.community/t/127354/7.
   check_test_results:
