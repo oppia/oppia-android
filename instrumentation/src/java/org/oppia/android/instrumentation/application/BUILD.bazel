@@ -1,0 +1,29 @@
+"""
+This library contains the test application and modules used to build the test app for end-to-end tests.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "oppia_test_application",
+    testonly = True,
+    srcs = [
+        "EndToEndTestGcsResourceModule.kt",
+        "EndToEndTestImageParsingModule.kt",
+        "EndToEndTestNetworkConfigModule.kt",
+        "OppiaTestApplication.kt",
+        "TestApplicationComponent.kt",
+    ],
+    visibility = ["//:oppia_e2e_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//app",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
+        "//domain",
+        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/caching:caching_prod_module",
+    ],
+)
+
+dagger_rules()

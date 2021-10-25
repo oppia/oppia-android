@@ -12,15 +12,16 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.walkthrough.WalkthroughActivity
 import org.oppia.android.app.walkthrough.WalkthroughFragmentChangeListener
 import org.oppia.android.app.walkthrough.WalkthroughPageChanger
 import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.databinding.WalkthroughWelcomeFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [WalkthroughWelcomeFragment]. */
@@ -29,7 +30,8 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : WalkthroughPageChanger {
   private lateinit var binding: WalkthroughWelcomeFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
@@ -86,7 +88,7 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "WalkthroughWelcomeFragment",
         "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!
@@ -97,7 +99,9 @@ class WalkthroughWelcomeFragmentPresenter @Inject constructor(
 
   private fun setProfileName() {
     if (::walkthroughWelcomeViewModel.isInitialized && ::profileName.isInitialized) {
-      walkthroughWelcomeViewModel.profileName.set(activity.getString(R.string.welcome, profileName))
+      walkthroughWelcomeViewModel.profileName.set(
+        resourceHandler.getStringInLocaleWithWrapping(R.string.welcome, profileName)
+      )
     }
   }
 

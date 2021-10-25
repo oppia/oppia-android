@@ -1,0 +1,631 @@
+id: "13"
+states {
+  key: "End"
+  value {
+    name: "End"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    content {
+      html: "<p>This is the end&nbsp;</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Este \303\251 o fim e nbsp; </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\207\330\260\331\207 \331\207\331\212 \330\247\331\204\331\206\331\207\330\247\331\212\330\251 & nbsp\330\233 </p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "EndExploration"
+      customization_args {
+        key: "recommendedExplorationIds"
+        value {
+          schema_object_list {
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "ImageClickInput"
+  value {
+    name: "ImageClickInput"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_2"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_3"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_6"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_7"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_4"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_5"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_8"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "feedback_9"
+      value {
+      }
+    }
+    content {
+      html: "<p>Our Solar System consists of nine planets orbiting around our sun: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto. They range from huge gas giants to small icy dwarf planets.</p><p>\302\240</p><p>Click on the planets below to find out more about each one!</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Nosso sistema solar consiste em nove planetas orbitando em torno de nosso sol: Merc\303\272rio, Venus, Terra, Marte, J\303\272piter, Saturno, Urano, Netuno e Plut\303\243o. Eles variam de gigantes de g\303\241s enormes a pequenos planetas an\303\265es gelados. </P> <p> </p> <p> Clique nos planetas abaixo para descobrir mais sobre cada um! </P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\212\330\252\331\203\331\210\331\206 \331\206\330\270\330\247\331\205\331\206\330\247 \330\247\331\204\330\264\331\205\330\263\331\212 \331\205\331\206 \330\252\330\263\330\271\330\251 \331\203\331\210\330\247\331\203\330\250 \330\252\330\257\331\210\330\261 \330\255\331\210\331\204 \330\247\331\204\330\264\331\205\330\263: \330\247\331\204\330\262\330\246\330\250\331\202\330\214 \331\201\331\212\331\206\331\210\330\263\330\214 \330\247\331\204\330\243\330\261\330\266\330\214 \330\247\331\204\331\205\330\261\331\212\330\256\330\214 \331\203\331\210\331\203\330\250 \330\247\331\204\331\205\330\264\330\252\330\261\331\212\330\214 \330\262\330\255\331\204\330\214 \330\243\331\210\330\261\330\247\331\206\331\210\330\263\330\214 \331\206\330\250\330\252\331\210\331\206\330\214 \330\250\331\204\331\210\330\252\331\210. \331\210\331\207\331\212 \330\252\330\252\330\261\330\247\331\210\330\255 \330\250\331\212\331\206 \330\271\331\205\330\247\331\204\331\202\330\251 \330\247\331\204\330\272\330\247\330\262 \330\247\331\204\330\266\330\256\331\205\330\251 \330\245\331\204\331\211 \331\203\331\210\330\247\331\203\330\250 \330\247\331\204\330\243\331\202\330\262\331\205 \330\247\331\204\331\202\330\262\331\205 \330\247\331\204\330\265\330\272\331\212\330\261\330\251. </p> <p> </p> <p> \330\247\331\206\331\202\330\261 \330\271\331\204\331\211 \330\247\331\204\331\203\331\210\330\247\331\203\330\250 \330\243\330\257\331\206\330\247\331\207 \331\204\331\205\330\271\330\261\331\201\330\251 \330\247\331\204\331\205\330\262\331\212\330\257 \330\271\331\206 \331\203\331\204 \331\210\330\247\330\255\330\257! </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_2"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Este \303\251 venus, o segundo planeta do sol. \303\211 o planeta mais brilhante do sistema solar, e \303\240s vezes pode ser visto durante o dia. Embora o merc\303\272rio esteja mais perto do sol do que V\303\252nus, Venus \303\251 o planeta mais quente do sistema solar, porque sua atmosfera espessa de di\303\263xido de carbono traga calor na sua superf\303\255cie. </P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\207\330\260\330\247 \331\207\331\210 \331\201\331\212\331\206\331\210\330\263\330\214 \331\210\330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\253\330\247\331\206\331\212 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263. \330\245\331\206\331\207 \330\243\331\204\331\205\330\271 \331\203\331\210\331\203\330\250 \331\201\331\212 \330\247\331\204\331\206\330\270\330\247\331\205 \330\247\331\204\330\264\331\205\330\263\331\212\330\214 \331\210\331\212\331\205\331\203\331\206 \330\243\331\206 \331\212\331\206\330\270\330\261 \330\245\331\204\331\212\331\207 \331\201\331\212 \330\250\330\271\330\266 \330\247\331\204\330\243\330\255\331\212\330\247\331\206 \330\256\331\204\330\247\331\204 \330\247\331\204\331\212\331\210\331\205. \330\271\331\204\331\211 \330\247\331\204\330\261\330\272\331\205 \331\205\331\206 \330\243\331\206 \330\247\331\204\330\262\330\246\330\250\331\202 \330\243\331\202\330\261\330\250 \330\245\331\204\331\211 \330\247\331\204\330\264\331\205\330\263 \331\205\331\206 \331\201\331\212\331\206\331\210\330\263\330\214 \331\201\330\245\331\206 \331\201\331\212\331\206\331\210\330\263 \331\207\331\210 \330\263\330\256\331\210\331\206\330\251 \331\203\331\210\331\203\330\250 \331\201\331\212 \330\247\331\204\331\206\330\270\330\247\331\205 \330\247\331\204\330\264\331\205\330\263\331\212\330\214 \331\204\330\243\331\206 \330\254\331\210 \330\263\331\205\331\212\331\203\330\251 \330\253\330\247\331\206\331\212 \330\243\331\203\330\263\331\212\330\257 \330\247\331\204\331\203\330\261\330\250\331\210\331\206 \330\247\331\204\331\201\330\256\330\247\330\256 \330\247\331\204\330\255\330\261\330\247\330\261\330\251 \330\271\331\204\331\211 \330\263\330\267\330\255\331\207. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_3"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Terra! Nosso planeta de casa \303\251 o terceiro planeta do sol. Apesar da vastid\303\243o do sistema solar e do resto do espa\303\247o, \303\251 o \303\272nico lugar que sabemos que a vida existe. \303\211 apenas a dist\303\242ncia certa do sol para garantir uma temperatura confort\303\241vel para que existam. </P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\331\204\330\243\330\261\330\266! \331\203\331\210\331\203\330\250\331\206\330\247 \330\247\331\204\330\261\330\246\331\212\330\263\331\212 \331\207\331\210 \330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\253\330\247\331\204\330\253 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263. \330\271\331\204\331\211 \330\247\331\204\330\261\330\272\331\205 \331\205\331\206 \330\247\330\263\330\252\331\205\330\261\330\247\330\261 \330\247\331\204\331\206\330\270\330\247\331\205 \330\247\331\204\330\264\331\205\330\263\331\212 \331\210\330\250\331\202\331\212\330\251 \330\247\331\204\331\205\330\263\330\247\330\255\330\251\330\214 \331\201\330\245\331\206 \330\247\331\204\331\205\331\203\330\247\331\206 \330\247\331\204\331\210\330\255\331\212\330\257 \330\247\331\204\330\260\331\212 \331\206\330\271\330\261\331\201\331\207 \330\243\331\206 \330\247\331\204\330\255\331\212\330\247\330\251 \331\205\331\210\330\254\331\210\330\257\330\251. \331\201\331\212 \330\247\331\204\331\205\330\263\330\247\331\201\330\251 \330\247\331\204\331\212\331\205\331\206\331\211 \331\201\331\202\330\267 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263 \331\204\330\266\331\205\330\247\331\206 \330\257\330\261\330\254\330\251 \330\255\330\261\330\247\330\261\330\251 \331\205\330\261\331\212\330\255\330\251 \330\250\330\247\331\204\331\206\330\263\330\250\330\251 \331\204\331\206\330\247 \331\205\331\210\330\254\331\210\330\257\330\251 \331\201\331\212\331\207\330\247. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Isso \303\251 merc\303\272rio, um pequeno planeta met\303\241lico mais pr\303\263ximo do sol. Como \303\251 t\303\243o perto do sol, leva apenas 88 dias para viajar uma \303\263rbita inteira, ent\303\243o um ano em Merc\303\272rio s\303\263 seria de 88 dias. </P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<!DOCTYPE html>\n<html lang="
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_6"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Saturno, o sexto planeta do sol, \303\251 mais conhecido por seus belos an\303\251is de gelo e poeira em torno dele. Como J\303\272piter, \303\251 um gigante de g\303\241s, principalmente feito de camadas de hidrog\303\252nio que ficam progressivamente mais densos em rela\303\247\303\243o ao seu n\303\272cleo s\303\263lido. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<P> Saturn\330\214 \330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\263\330\247\330\257\330\263 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263\330\214 \331\207\331\210 \331\205\330\271\330\261\331\210\331\201 \330\254\331\212\330\257\330\247 \331\204\330\255\331\204\331\202\330\247\330\252\331\207\330\247 \330\247\331\204\330\254\331\205\331\212\331\204\330\251 \331\205\331\206 \330\247\331\204\330\254\331\204\331\212\330\257 \331\210\330\247\331\204\330\272\330\250\330\247\330\261 \330\247\331\204\331\205\330\257\330\247\330\261 \330\255\331\210\331\204\331\207\330\247. \331\205\330\253\331\204 \331\203\331\210\331\203\330\250 \330\247\331\204\331\205\330\264\330\252\330\261\331\212\330\214 \331\201\331\207\331\212 \330\271\331\205\331\204\330\247\331\202\330\251 \330\272\330\247\330\262\331\212\330\251\330\214 \331\205\330\271\330\270\331\205\331\207\330\247 \331\205\330\265\331\206\331\210\330\271\330\251 \331\205\331\206 \330\267\330\250\331\202\330\247\330\252 \330\247\331\204\331\207\331\212\330\257\330\261\331\210\330\254\331\212\331\206 \330\247\331\204\330\252\331\212 \330\252\330\255\330\265\331\204 \330\271\331\204\331\211 \331\203\330\253\330\247\331\201\330\251 \330\252\330\257\330\261\331\212\330\254\331\212\330\251 \331\206\330\255\331\210 \330\254\331\210\331\207\330\261\331\207\330\247 \330\247\331\204\330\265\331\204\330\250. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_7"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Urano \303\251 o s\303\251timo planeta do sol. Foi o primeiro planeta que foi descoberto usando um telesc\303\263pio, j\303\241 que \303\251 normalmente muito obscuro para ser visto com os olhos nus. \303\211 o planeta mais frio, e \303\251 formado de camadas de g\303\241s de hidrog\303\252nio envolvendo um n\303\272cleo fr\303\255gido de rocha e gelo. </P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\243\331\210\330\261\330\247\331\206\331\210\330\263 \331\207\331\210 \330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\263\330\247\330\250\330\271 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263. \331\203\330\247\331\206 \330\243\331\210\331\204 \331\203\331\210\331\203\330\250 \331\212\330\252\331\205 \330\247\331\203\330\252\330\264\330\247\331\201\331\207 \330\250\330\247\330\263\330\252\330\256\330\257\330\247\331\205 \330\247\331\204\330\252\331\204\330\263\331\203\331\210\330\250 \330\214 \331\204\330\243\331\206\331\207 \330\271\330\247\330\257\330\251 \331\205\330\247 \331\212\331\203\331\210\331\206 \330\256\330\247\331\201\330\252\331\213\330\247 \330\254\330\257\331\213\330\247 \330\250\330\255\331\212\330\253 \331\204\330\247 \331\212\331\205\331\203\331\206 \330\261\330\244\331\212\330\252\331\207 \330\250\330\247\331\204\330\271\331\212\331\206 \330\247\331\204\331\205\330\254\330\261\330\257\330\251. \330\245\331\206\331\207 \330\243\330\250\330\261\330\257 \331\203\331\210\331\203\330\250 \330\214 \331\210\331\212\330\252\331\203\331\210\331\206 \331\205\331\206 \330\267\330\250\331\202\330\247\330\252 \331\205\331\206 \330\272\330\247\330\262 \330\247\331\204\331\207\331\212\330\257\330\261\331\210\330\254\331\212\331\206 \330\252\330\255\331\212\330\267 \330\250\331\206\331\210\330\247\330\251 \331\205\330\252\330\254\331\205\330\257\330\251 \331\205\331\206 \330\247\331\204\330\265\330\256\331\210\330\261 \331\210\330\247\331\204\330\254\331\204\331\212\330\257. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_4"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Marte \303\251 o quarto planeta do sol. Muitas vezes \303\251 apelidado do \"Planeta Vermelho\" devido \303\240 sua cor, que \303\251 resultado de grandes quantidades de \303\263xido de ferro em sua superf\303\255cie. Tem uma atmosfera fina de di\303\263xido de carbono e c\303\241psulas de gelo em cada extremidade, e tem duas pequenas luas de forma irregular chamada Phobos e Deimos. </P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\247\331\204\331\205\330\261\331\212\330\256 \331\207\331\210 \330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\261\330\247\330\250\330\271 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263. \330\272\330\247\331\204\330\250\330\247 \331\205\330\247 \331\212\330\267\331\204\331\202 \330\271\331\204\331\212\331\207 \"\330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\243\330\255\331\205\330\261\" \330\250\330\263\330\250\330\250 \331\204\331\210\331\206\331\207\330\214 \331\210\331\207\331\210 \331\206\330\252\331\212\330\254\330\251 \331\203\331\205\331\212\330\247\330\252 \331\203\330\250\331\212\330\261\330\251 \331\205\331\206 \330\243\331\203\330\263\331\212\330\257 \330\247\331\204\330\255\330\257\331\212\330\257 \330\271\331\204\331\211 \330\263\330\267\330\255\331\207\330\247. \331\212\330\255\330\252\331\210\331\212 \330\271\331\204\331\211 \330\254\331\210 \330\261\331\202\331\212\331\202 \331\205\331\206 \330\253\330\247\331\206\331\212 \330\243\331\203\330\263\331\212\330\257 \330\247\331\204\331\203\330\261\330\250\331\210\331\206 \331\210\330\247\331\204\331\202\330\250\330\271\330\247\330\252 \330\247\331\204\330\254\331\204\331\212\330\257\331\212\330\251 \331\201\331\212 \330\243\331\212 \331\205\331\206 \330\247\331\204\330\267\330\261\331\201\331\212\331\206\330\214 \331\210\331\204\330\257\331\212\331\207 \330\247\330\253\331\206\331\212\331\206 \331\205\331\206 \330\243\331\202\331\205\330\247\330\261 \330\265\330\272\331\212\330\261\330\251 \330\271\331\204\331\211 \330\264\331\203\331\204 \330\272\331\212\330\261 \331\205\331\206\330\252\330\270\331\205 \331\212\330\263\331\205\331\211 \331\201\331\210\330\250\331\210\330\263 \331\210\330\257\331\212\331\205\331\210\330\263. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_5"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> J\303\272piter, o quinto planeta a partir do Sol, \303\251 um enorme planeta 2,5 vezes mais pesado do que todos os outros planetas do nosso Sistema Solar combinados. \303\211 principalmente formado por gases espessos em torno de um n\303\272cleo s\303\263lido. Uma caracter\303\255stica famosa \303\251 a \"Grande Mancha Vermelha\", que \303\251 uma enorme tempestade em sua superf\303\255cie que assola h\303\241 pelo menos 350 anos e \303\251 grande o suficiente para engolir tr\303\252s Terras inteiras. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<P> \331\203\331\210\331\203\330\250 \330\247\331\204\331\205\330\264\330\252\330\261\331\212\330\214 \330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\256\330\247\331\205\330\263 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263\330\214 \331\207\331\210 \331\203\331\210\331\203\330\250 \330\266\330\256\331\205 \331\212\330\250\331\204\330\272 \331\205\331\206 \330\247\331\204\330\271\331\205\330\261 2.5 \331\205\330\261\330\251 \331\205\331\206 \331\203\331\204 \330\247\331\204\331\203\331\210\330\247\331\203\330\250 \330\247\331\204\330\243\330\256\330\261\331\211 \331\201\331\212 \331\206\330\270\330\247\331\205\331\206\330\247 \330\247\331\204\330\264\331\205\330\263\331\212 \331\205\330\254\330\252\331\205\330\271\330\251. \331\212\330\252\331\205 \330\252\330\264\331\203\331\212\331\204\331\207\330\247 \331\201\331\212 \330\247\331\204\330\272\330\247\331\204\330\250 \331\205\331\206 \330\247\331\204\330\272\330\247\330\262\330\247\330\252 \330\247\331\204\330\263\331\205\331\212\331\203\330\251 \330\255\331\210\331\204 \330\254\331\210\331\207\330\261 \330\265\331\204\330\250. \331\205\331\212\330\262\330\251 \331\210\330\247\330\255\330\257\330\251 \331\205\330\264\331\207\331\210\330\261\330\251 \330\250\331\207\330\247 \331\207\331\212 \"\330\250\331\202\330\271\330\251 \330\255\331\205\330\261\330\247\330\241 \330\261\330\247\330\246\330\271\330\251\"\330\214 \331\210\331\207\331\212 \330\271\330\247\330\265\331\201\330\251 \331\203\330\250\331\212\330\261\330\251 \330\271\331\204\331\211 \330\263\330\267\330\255\331\207\330\247 \330\247\331\204\330\260\331\212 \330\247\331\206\330\257\331\204\330\271\330\252 \331\204\331\205\330\257\330\251 350 \330\271\330\247\331\205\330\247 \330\271\331\204\331\211 \330\247\331\204\330\243\331\202\331\204\330\214 \331\210\331\207\331\210 \331\203\330\250\331\212\330\261 \330\250\331\205\330\247 \331\212\331\203\331\201\331\212 \331\204\330\247\330\250\330\252\331\204\330\247\330\271 \330\253\331\204\330\247\330\253\330\251 \330\243\330\260\330\261\330\271 \330\250\330\243\331\203\331\205\331\204\331\207\330\247. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Isso n\303\243o parece ser a escolha correta.Tente novamente </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\207\330\260\330\247 \331\204\330\247 \331\212\330\250\330\257\331\210 \331\210\331\203\330\243\331\206\331\207 \330\247\331\204\330\247\330\256\330\252\331\212\330\247\330\261 \330\247\331\204\330\265\330\255\331\212\330\255. \331\205\330\261\330\251 \330\243\330\256\330\261\331\211 </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_8"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Netuno \303\251 o oitavo planeta do sol. \303\211 um \"gigante de gelo\", como Urano, com uma camada externa de hidrog\303\252nio, h\303\251lio e metano envolvendo um n\303\272cleo gelado. O metano em sua atmosfera absorve a luz vermelha, dando-lhe uma bela cor azul. Foi previsto primeiro existir de c\303\241lculos gravitacionais, e s\303\263 foi descoberto pelo telesc\303\263pio mais tarde. </P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\206\330\250\330\252\331\210\331\206 \331\207\331\210 \330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\253\330\247\331\205\331\206 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263. \330\245\331\206\331\207 \"\330\271\331\205\331\204\330\247\331\202 \330\253\331\204\330\254\"\330\214 \331\205\330\253\331\204 \330\243\331\210\330\261\330\247\331\206\331\210\330\263\330\214 \330\250\330\267\330\250\331\202\330\251 \330\256\330\247\330\261\330\254\331\212\330\251 \331\205\331\206 \330\247\331\204\331\207\331\212\330\257\330\261\331\210\330\254\331\212\331\206 \331\210\330\247\331\204\331\207\331\212\331\204\331\212\331\210\331\205 \331\210\330\247\331\204\331\205\331\212\330\253\330\247\331\206 \331\212\330\272\331\204\331\212\331\201 \330\254\331\210\331\207\330\261 \330\254\331\204\331\212\330\257\331\212. \331\212\331\205\330\252\330\265 \330\247\331\204\331\205\331\212\330\253\330\247\331\206 \331\201\331\212 \330\254\331\210\331\207\330\247 \330\247\331\204\330\266\331\210\330\241 \330\247\331\204\330\243\330\255\331\205\330\261\330\214 \331\205\331\205\330\247 \331\212\331\205\331\206\330\255\331\207 \330\247\331\204\331\204\331\210\331\206 \330\247\331\204\330\243\330\262\330\261\331\202 \330\247\331\204\330\254\331\205\331\212\331\204. \330\252\331\205 \330\252\331\210\331\202\330\271 \331\210\330\254\331\210\330\257\331\207 \331\204\330\243\331\210\331\204 \331\205\330\261\330\251 \331\205\331\206 \330\255\330\263\330\247\330\250\330\247\330\252 \330\247\331\204\330\254\330\247\330\260\330\250\331\212\330\251\330\214 \331\210\330\252\331\205 \330\247\331\203\330\252\330\264\330\247\331\201\331\207 \331\201\331\202\330\267 \330\250\331\210\330\247\330\263\330\267\330\251 \330\247\331\204\330\252\331\204\330\263\331\203\331\210\330\250 \331\201\331\212 \331\210\331\202\330\252 \331\204\330\247\330\255\331\202. </p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "feedback_9"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<P> Plut\303\243o j\303\241 foi considerado o nono planeta do sol, mas agora foi reclassificado como um \"planeta an\303\243o\". \303\211 formado por gelo e rocha, e \303\251 ainda menor que a nossa lua. A primeira espa\303\247onave a visitar Plut\303\243o \303\251 devido ao alcance em julho de 2015. </P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<P> \331\203\330\247\331\206 \330\250\331\204\331\210\330\252\331\210 \331\212\330\271\330\252\330\250\330\261 \331\205\330\261\330\251 \331\210\330\247\330\255\330\257\330\251 \330\247\331\204\331\203\331\210\331\203\330\250 \330\247\331\204\330\252\330\247\330\263\330\271 \331\205\331\206 \330\247\331\204\330\264\331\205\330\263\330\214 \331\204\331\203\331\206 \330\252\331\205 \330\245\330\271\330\247\330\257\330\251 \330\252\330\265\331\206\331\212\331\201\331\207 \330\247\331\204\330\242\331\206 \330\250\330\247\330\271\330\252\330\250\330\247\330\261\331\207 \"\331\203\331\210\331\203\330\250 \331\202\330\262\331\205\". \331\212\330\252\331\205 \330\252\330\264\331\203\331\212\331\204\331\207 \331\205\331\206 \330\247\331\204\330\254\331\204\331\212\330\257 \331\210\330\247\331\204\330\265\330\256\331\210\330\261\330\214 \331\210\331\207\331\210 \330\243\330\265\330\272\330\261 \331\205\331\206 \331\202\331\205\330\261\331\206\330\247. \331\205\331\206 \330\247\331\204\331\205\331\202\330\261\330\261 \330\243\331\206 \331\212\330\265\331\204 \330\247\331\204\331\205\330\261\331\203\330\250\330\251 \330\247\331\204\331\201\330\266\330\247\330\246\331\212\330\251 \330\247\331\204\330\243\331\210\331\204\331\211 \330\245\331\204\331\211 \330\262\331\212\330\247\330\261\330\251 \330\250\331\204\331\210\330\252\331\210 \331\201\331\212 \331\212\331\210\331\204\331\212\331\210 2015. </p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "ImageClickInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "ImageClickInput"
+          feedback {
+            html: "<p>This is Mercury, a small metallic planet closest to the sun. Since it is so near to the sun, it only takes 88 days for it to travel one entire orbit, so a year on Mercury would only be 88 days long.</p>"
+            content_id: "feedback_1"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Mercury"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "ImageClickInput"
+          feedback {
+            html: "<p>This is Venus, the second planet from the sun. It is the brightest planet in the Solar System, and can sometimes even be seen during the day. Though Mercury is nearer to the sun than Venus, Venus is the hottest planet in the Solar System, because its thick atmosphere of carbon dioxide traps heat on its surface.</p>"
+            content_id: "feedback_2"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Venus"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "ImageClickInput"
+          feedback {
+            html: "<p>Earth! Our home planet is the third planet from the sun. Despite the vastness of the Solar System and the rest of space, it is the only place that we know life exists on. It is at just the right distance from the sun to ensure a comfortable temperature for us to exist in.</p>"
+            content_id: "feedback_3"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Earth"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "ImageClickInput"
+          feedback {
+            html: "<p>Mars is the fourth planet from the sun. It is often dubbed the \"red planet\" due to its color, which is a result of large quantities of iron oxide on its surface. It has a thin atmosphere of carbon dioxide and ice caps on either end, and has two small irregularly-shaped moons called Phobos and Deimos.</p>"
+            content_id: "feedback_4"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Mars>"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "ImageClickInput"
+          feedback {
+            html: "<p>Jupiter, the fifth planet from the sun, is a huge planet that is 2.5 times heavier than all of the other planets in our Solar System combined. It is mostly formed out of thick gases around a solid core. One famous feature on it is the \"Great Red Spot\", which is a huge storm on its surface that has raged for at least 350 years, and is large enough to swallow three entire Earths.</p>"
+            content_id: "feedback_5"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Jupiter"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "End"
+          feedback {
+            html: "<p>Saturn, the sixth planet from the sun, is most well known for its beautiful rings of ice and dust orbiting around it. Like Jupiter, it is a gas giant, mostly made of layers of hydrogen which get progressively denser towards its solid core.\302\240</p>"
+            content_id: "feedback_6"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Saturn"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "ImageClickInput"
+          feedback {
+            html: "<p>Uranus is the seventh planet from the sun. It was the first planet that was discovered using a telescope, since it is normally too dim to be seen with the naked eye. It is the coldest planet, and is formed from layers of hydrogen gas enveloping a frigid core of rock and ice.</p>"
+            content_id: "feedback_7"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Uranus"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "ImageClickInput"
+          feedback {
+            html: "<p>Neptune is the eighth planet from the sun. It is an \"ice giant\", like Uranus, with an outer layer of hydrogen, helium, and methane enveloping an icy core. The methane in its atmosphere absorbs red light, giving it a beautiful blue color. It was first predicted to exist from gravitational calculations, and was only discovered by telescope later.</p>"
+            content_id: "feedback_8"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Neptune"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      answer_groups {
+        outcome {
+          dest_state_name: "ImageClickInput"
+          feedback {
+            html: "<p>Pluto was once considered the ninth planet from the sun, but has now been reclassified as a \"dwarf planet\". It is formed from ice and rock, and is even smaller than our moon. The first spacecraft to visit Pluto is due to reach in July 2015.</p>"
+            content_id: "feedback_9"
+          }
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              normalized_string: "Pluto"
+            }
+          }
+          rule_type: "IsInRegion"
+        }
+      }
+      default_outcome {
+        dest_state_name: "ImageClickInput"
+        feedback {
+          html: "<p>This doesn\'t seem like the correct choice.Try Again</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "highlightRegionsOnHover"
+        value {
+          bool_value: false
+        }
+      }
+      customization_args {
+        key: "imageAndRegions"
+        value {
+          custom_schema_value {
+            image_with_regions {
+              image_path: "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png"
+              label_regions {
+                label: "Mercury"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.010981758
+                      y: 0.09856376
+                    }
+                    lower_right {
+                      x: 0.048717607
+                      y: 0.17073357
+                    }
+                  }
+                }
+              }
+              label_regions {
+                label: "Venus"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.036925156
+                      y: 0.17554489
+                    }
+                    lower_right {
+                      x: 0.1006044
+                      y: 0.2958279
+                    }
+                  }
+                }
+              }
+              label_regions {
+                label: "Earth"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.08645345
+                      y: 0.1081864
+                    }
+                    lower_right {
+                      x: 0.15484968
+                      y: 0.22846942
+                    }
+                  }
+                }
+              }
+              label_regions {
+                label: "Mars"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.1477742
+                      y: 0.17554489
+                    }
+                    lower_right {
+                      x: 0.19258553
+                      y: 0.2717713
+                    }
+                  }
+                }
+              }
+              label_regions {
+                label: "Jupiter"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.19022705
+                      y: 0.06007319
+                    }
+                    lower_right {
+                      x: 0.5723025
+                      y: 0.81545055
+                    }
+                  }
+                }
+              }
+              label_regions {
+                label: "Saturn"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.2491893
+                      y: 0.3679977
+                    }
+                    lower_right {
+                      x: 0.9968308
+                      y: 0.9934694
+                    }
+                  }
+                }
+              }
+              label_regions {
+                label: "Uranus"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.66428363
+                      y: 0.05045055
+                    }
+                    lower_right {
+                      x: 0.81522703
+                      y: 0.35356376
+                    }
+                  }
+                }
+              }
+              label_regions {
+                label: "Neptune"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.824661
+                      y: 0.021582626
+                    }
+                    lower_right {
+                      x: 0.94022703
+                      y: 0.25252602
+                    }
+                  }
+                }
+              }
+              label_regions {
+                label: "Pluto"
+                region {
+                  region_type: RECTANGLE
+                  area {
+                    upper_left {
+                      x: 0.94022703
+                      y: 0.2236581
+                    }
+                    lower_right {
+                      x: 0.9779629
+                      y: 0.2958279
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+init_state_name: "ImageClickInput"
+objective: "learn how to arrange the sentence"
+title: "Image Click Input Test Exploration"
+language_code: "en"

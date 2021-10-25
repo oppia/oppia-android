@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TOPIC_ID_ARGUMENT_KEY
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 /** Fragment that card for topic revision. */
@@ -32,7 +34,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(
@@ -41,7 +43,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     savedInstanceState: Bundle?
   ): View? {
     val internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY, -1)!!
-    val topicId = checkNotNull(arguments?.getString(TOPIC_ID_ARGUMENT_KEY)) {
+    val topicId = checkNotNull(arguments?.getStringFromBundle(TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in arguments for TopicRevisionFragment."
     }
     return topicReviewFragmentPresenter.handleCreateView(

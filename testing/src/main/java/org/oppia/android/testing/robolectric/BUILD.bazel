@@ -1,0 +1,53 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Package for Robolectric-specific utilities and configurations.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "is_on_robolectric",
+    testonly = True,
+    srcs = [
+        "IsOnRobolectric.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "RobolectricModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":is_on_robolectric",
+    ],
+)
+
+# Note that this library is visibility restricted to avoid wide use of custom shadows in the
+# codebase.
+kt_android_library(
+    name = "shadow_bidi_formatter",
+    testonly = True,
+    srcs = [
+        "ShadowBidiFormatter.kt",
+    ],
+    visibility = [
+        "//testing/src/test/java/org/oppia/android/testing/robolectric:__pkg__",
+        "//utility/src/test/java/org/oppia/android/util/locale:__pkg__",
+        "//utility/src/test/java/org/oppia/android/util/locale/testing:__pkg__",
+    ],
+    deps = [
+        "//third_party:androidx_core_core",
+        "//third_party:org_robolectric_robolectric",
+    ],
+)
+
+dagger_rules()

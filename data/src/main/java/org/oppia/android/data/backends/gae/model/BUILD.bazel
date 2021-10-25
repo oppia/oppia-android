@@ -1,0 +1,58 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing model definitions for Oppia's App Engine backend endpoints.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "model",
+    srcs = [
+        "GaeAnswerGroup.kt",
+        "GaeClassroom.kt",
+        "GaeConceptCard.kt",
+        "GaeCustomizationArgs.kt",
+        "GaeExpSummary.kt",
+        "GaeExploration.kt",
+        "GaeExplorationContainer.kt",
+        "GaeFeedbackReport.kt",
+        "GaeFeedbackReportingAppContext.kt",
+        "GaeFeedbackReportingDeviceContext.kt",
+        "GaeFeedbackReportingEntryPoint.kt",
+        "GaeFeedbackReportingSystemContext.kt",
+        "GaeHint.kt",
+        "GaeInteractionInstance.kt",
+        "GaeOutcome.kt",
+        "GaeParamChange.kt",
+        "GaeParamSpec.kt",
+        "GaeQuestion.kt",
+        "GaeQuestionPlayer.kt",
+        "GaeRecordedVoiceovers.kt",
+        "GaeRuleSpec.kt",
+        "GaeSkillContents.kt",
+        "GaeSolution.kt",
+        "GaeState.kt",
+        "GaeStateClassifier.kt",
+        "GaeStory.kt",
+        "GaeStoryNode.kt",
+        "GaeStorySummary.kt",
+        "GaeSubtitledHtml.kt",
+        "GaeSubtopic.kt",
+        "GaeSubtopicPageContents.kt",
+        "GaeSubtopicSummary.kt",
+        "GaeTopic.kt",
+        "GaeTopicSummary.kt",
+        "GaeUserSuppliedFeedback.kt",
+        "GaeVoiceover.kt",
+        "GaeWrittenTranslation.kt",
+        "GaeWrittenTranslations.kt",
+    ],
+    custom_package = "org.oppia.android.data.backends.gae.model",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:moshi",
+    ],
+)
+
+dagger_rules()

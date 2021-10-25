@@ -1,0 +1,49 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Package for test-only utilities for coordinating time, particularly in simulated Android
+environments (i.e. Robolectric).
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fake_oppia_clock",
+    testonly = True,
+    srcs = [
+        "FakeOppiaClock.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+kt_android_library(
+    name = "fake_system_clock",
+    testonly = True,
+    srcs = [
+        "FakeSystemClock.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "FakeOppiaClockModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":fake_oppia_clock",
+    ],
+)
+
+dagger_rules()

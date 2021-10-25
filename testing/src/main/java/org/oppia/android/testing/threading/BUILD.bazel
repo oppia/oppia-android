@@ -1,0 +1,115 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Package for test-only threading utilities, including classes to coordinate cross-thread operations
+in a way that can improve test reliability, correctness, and performance.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "annotations",
+    testonly = True,
+    srcs = [
+        "BackgroundTestDispatcher.kt",
+        "BlockingTestDispatcher.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+# Note that this library has restricted visibility since tests should only use the dependency
+# directly in special circumstances. In general, you don't need this. Use TestCoroutineDispatchers
+# instead.
+kt_android_library(
+    name = "test_coroutine_dispatcher",
+    testonly = True,
+    srcs = [
+        "TestCoroutineDispatcher.kt",
+    ],
+    visibility = [
+        "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
+    ],
+    deps = [
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_android_library(
+    name = "test_coroutine_dispatchers",
+    testonly = True,
+    srcs = [
+        "TestCoroutineDispatchers.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
+kt_android_library(
+    name = "robolectric_impl",
+    testonly = True,
+    srcs = [
+        "TestCoroutineDispatcherRobolectricImpl.kt",
+        "TestCoroutineDispatchersRobolectricImpl.kt",
+    ],
+    deps = [
+        ":annotations",
+        ":test_coroutine_dispatcher",
+        ":test_coroutine_dispatchers",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
+        "//third_party:androidx_annotation_annotation",
+    ],
+)
+
+kt_android_library(
+    name = "espresso_impl",
+    testonly = True,
+    srcs = [
+        "TestCoroutineDispatcherEspressoImpl.kt",
+        "TestCoroutineDispatchersEspressoImpl.kt",
+    ],
+    deps = [
+        ":annotations",
+        ":test_coroutine_dispatcher",
+        ":test_coroutine_dispatchers",
+        "//third_party:androidx_test_espresso_espresso-core",
+    ],
+)
+
+# This package should have limited visibility only to the utilities that need it to discourage broad
+# use.
+kt_android_library(
+    name = "coroutine_executor_service",
+    testonly = True,
+    srcs = [
+        "CoroutineExecutorService.kt",
+    ],
+    visibility = [
+        "//app:__subpackages__",
+        "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
+    ],
+    deps = [
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "TestDispatcherModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":annotations",
+        ":dagger",
+        ":espresso_impl",
+        ":robolectric_impl",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+dagger_rules()

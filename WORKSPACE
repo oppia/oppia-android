@@ -2,9 +2,8 @@
 This file lists and imports all external dependencies needed to build Oppia Android.
 """
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
@@ -13,6 +12,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
+    build_tools_version = "29.0.2",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -41,12 +41,10 @@ kotlin_repositories()
 
 kt_register_toolchains()
 
-"""
-The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
-module while helping us avoid the unnecessary compilation of protoc. Referecences:
-- https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
-- https://github.com/bazelbuild/bazel/issues/7095
-"""
+# The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
+# module while helping us avoid the unnecessary compilation of protoc. Referecences:
+# - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
+# - https://github.com/bazelbuild/bazel/issues/7095
 
 bind(
     name = "proto_compiler",
@@ -98,8 +96,8 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    strip_prefix = "robolectric-bazel-4.x-oppia-exclusive-rc02",
-    urls = ["https://github.com/oppia/robolectric-bazel/archive/4.x-oppia-exclusive-rc02.tar.gz"],
+    strip_prefix = "robolectric-bazel-4.4",
+    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.4.tar.gz"],
 )
 
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
@@ -119,8 +117,16 @@ google_services_workspace_dependencies()
 
 git_repository(
     name = "circularimageview",
-    commit = "8a65ba42b3fee21b5e19ca5c8690185f7c60f65d",
+    commit = "35d08ba88a4a22e6e9ac96bdc5a68be27b55d09f",
     remote = "https://github.com/oppia/CircularImageview",
+)
+
+# A custom version of Android SVG is needed since custom changes needed to be added to the library
+# to correctly size in-line SVGs (such as those needed for LaTeX-based math expressions).
+git_repository(
+    name = "androidsvg",
+    commit = "6bd15f69caee3e6857fcfcd123023716b4adec1d",
+    remote = "https://github.com/oppia/androidsvg",
 )
 
 bind(
@@ -128,16 +134,49 @@ bind(
     actual = "//tools/android:compiler_annotation_processor",
 )
 
+http_archive(
+    name = "protobuf_tools",
+    strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
+)
+
 load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+ATS_TAG = "1edfdab3134a7f01b37afabd3eebfd2c5bb05151"
+
+ATS_SHA256 = "dcd1ff76aef1a26329d77863972780c8fe1fc8ff625747342239f0489c2837ec"
+
+http_archive(
+    name = "android_test_support",
+    sha256 = ATS_SHA256,
+    strip_prefix = "android-test-%s" % ATS_TAG,
+    urls = ["https://github.com/android/android-test/archive/%s.tar.gz" % ATS_TAG],
+)
+
+load("@android_test_support//:repo.bzl", "android_test_repositories")
+
+android_test_repositories()
+
+# Android bundle tool.
+http_jar(
+    name = "android_bundletool",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["sha"],
+    url = "https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["version"]),
+)
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    fail_if_repin_required = True,
+    fetch_sources = True,
+    maven_install_json = "//third_party:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
-        "https://bintray.com/bintray/jcenter",
-        "https://jcenter.bintray.com/",
         "https://maven.fabric.io/public",
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
     ],
 )
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()

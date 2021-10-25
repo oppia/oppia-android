@@ -1,0 +1,20 @@
+story_id: "test_story_id_0"
+story_name: "First Story"
+story_thumbnail {
+  background_color_rgb: 11761905
+}
+chapters {
+  exploration_id: "test_exp_id_2"
+  chapter_thumbnail {
+    background_color_rgb: 14061432
+  }
+  title: "Prototype Exploration"
+  description: "This is the outline/summary for the first exploration of the story. It is very long but it has to be fully visible. You wil be learning about Oppia interactions. There is no second story to follow-up, but there is a second chapter."
+}
+chapters {
+  exploration_id: "13"
+  chapter_thumbnail {
+    background_color_rgb: 14061432
+  }
+  title: "Image Region Selection Exploration"
+}

@@ -1,15 +1,17 @@
 package org.oppia.android.domain.classify.rules.itemselectioninput
 
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.StringList
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.domain.util.getContentIdSet
 import javax.inject.Inject
 
 /**
- * Provider for a classifier that determines whether an item selection answer does not contain any of a set of options
- * per the item selection input interaction.
+ * Provider for a classifier that determines whether an item selection answer does not contain any
+ * of a set of options per the item selection input interaction.
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/ItemSelectionInput/directives/item-selection-input-rules.service.ts#L41
  */
@@ -17,17 +19,20 @@ import javax.inject.Inject
 class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
 @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<StringList> {
+) : RuleClassifierProvider,
+  GenericRuleClassifier.SingleInputMatcher<SetOfTranslatableHtmlContentIds> {
 
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING,
+      InteractionObject.ObjectTypeCase.SET_OF_TRANSLATABLE_HTML_CONTENT_IDS,
       "x",
       this
     )
   }
 
-  override fun matches(answer: StringList, input: StringList): Boolean {
-    return answer.htmlList.toSet().intersect(input.htmlList).isEmpty()
-  }
+  override fun matches(
+    answer: SetOfTranslatableHtmlContentIds,
+    input: SetOfTranslatableHtmlContentIds,
+    writtenTranslationContext: WrittenTranslationContext
+  ): Boolean = answer.getContentIdSet().intersect(input.getContentIdSet()).isEmpty()
 }

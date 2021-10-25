@@ -12,8 +12,9 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
-load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
 
 # Create an android library wrapper for all production dependencies. Note that artifact is used so
 # that the correct Maven repository (default) is selected. This allows future customization
@@ -44,10 +45,49 @@ android_library(
     ],
 )
 
+# A wrapper dependency for the custom Git import of Android SVG (so that dependencies on this
+# library still routes through //third_party).
+android_library(
+    name = "com_caverock_androidsvg",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@androidsvg//androidsvg",
+    ],
+)
+
 android_library(
     name = "robolectric_android-all",
     visibility = ["//visibility:public"],
     exports = [
         "@robolectric//bazel:android-all",
     ],
+)
+
+java_library(
+    name = "moshi",
+    exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:com_squareup_moshi_moshi-kotlin",
+        "//third_party:com_squareup_moshi_moshi-kotlin-codegen",
+    ],
+)
+
+# Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
+# can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
+# Android assets which java_library targets do not export.
+java_library(
+    name = "glide_compiler",
+    exported_plugins = ["//tools:glide_compiler_plugin"],
+    visibility = ["//visibility:public"],
+    exports = [
+        "//third_party:com_github_bumptech_glide_compiler",
+    ],
+)
+
+java_binary(
+    name = "android_bundletool",
+    main_class = "com.android.tools.build.bundletool.BundleToolMain",
+    visibility = ["//visibility:public"],
+    runtime_deps = ["@android_bundletool//jar"],
 )

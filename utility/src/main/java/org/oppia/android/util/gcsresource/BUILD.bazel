@@ -1,0 +1,31 @@
+"""
+Utilities for interacting with GCS backend resources.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "annotations",
+    srcs = [
+        "GcsResourceAnnotations.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "GcsResourceModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":annotations",
+        ":dagger",
+    ],
+)
+
+dagger_rules()

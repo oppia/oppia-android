@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
@@ -9,20 +8,25 @@ import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.StringToRatioParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.toAccessibleAnswerString
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.toAnswerString
 
 /** [StateItemViewModel] for the ratio expression input interaction. */
 class RatioExpressionInputInteractionViewModel(
   interaction: Interaction,
-  private val context: Context,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
-  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver
+  private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  private val writtenTranslationContext: WrittenTranslationContext,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = ""
@@ -48,18 +52,18 @@ class RatioExpressionInputInteractionViewModel(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
       val ratioAnswer = stringToRatioParser.parseRatioOrThrow(answerText.toString())
-      userAnswerBuilder.answer = InteractionObject.newBuilder()
-        .setRatioExpression(ratioAnswer)
-        .build()
-      userAnswerBuilder.plainAnswer = ratioAnswer.toAnswerString()
-      userAnswerBuilder.contentDescription = ratioAnswer.toAccessibleAnswerString(context)
+      answer = InteractionObject.newBuilder().apply {
+        ratioExpression = ratioAnswer
+      }.build()
+      plainAnswer = ratioAnswer.toAnswerString()
+      contentDescription = ratioAnswer.toAccessibleAnswerString(resourceHandler)
+      this.writtenTranslationContext =
+        this@RatioExpressionInputInteractionViewModel.writtenTranslationContext
     }
-    return userAnswerBuilder.build()
-  }
+  }.build()
 
   /** It checks the pending error for the current ratio input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
@@ -68,17 +72,13 @@ class RatioExpressionInputInteractionViewModel(
         AnswerErrorCategory.REAL_TIME ->
           pendingAnswerError =
             stringToRatioParser.getRealTimeAnswerError(answerText.toString())
-              .getErrorMessageFromStringRes(
-                context
-              )
+              .getErrorMessageFromStringRes(resourceHandler)
         AnswerErrorCategory.SUBMIT_TIME ->
           pendingAnswerError =
             stringToRatioParser.getSubmitTimeError(
               answerText.toString(),
               numberOfTerms = numberOfTerms
-            ).getErrorMessageFromStringRes(
-              context
-            )
+            ).getErrorMessageFromStringRes(resourceHandler)
       }
       errorMessage.set(pendingAnswerError)
     }
@@ -105,11 +105,23 @@ class RatioExpressionInputInteractionViewModel(
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
-    val placeholder =
-      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode?.unicodeStr ?: ""
+    // The subtitled unicode can apparently exist in the structure in two different formats.
+    val placeholderUnicodeOption1 =
+      interaction.customizationArgsMap["placeholder"]?.subtitledUnicode
+    val placeholderUnicodeOption2 =
+      interaction.customizationArgsMap["placeholder"]?.customSchemaValue?.subtitledUnicode
+    val placeholder1 =
+      placeholderUnicodeOption1?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
+    val placeholder2 =
+      placeholderUnicodeOption2?.let { unicode ->
+        translationController.extractString(unicode, writtenTranslationContext)
+      } ?: ""
     return when {
-      placeholder.isNotEmpty() -> placeholder
-      else -> context.getString(R.string.ratio_default_hint_text)
+      placeholder1.isNotEmpty() -> placeholder1
+      placeholder2.isNotEmpty() -> placeholder2
+      else -> resourceHandler.getStringInLocale(R.string.ratio_default_hint_text)
     }
   }
 }

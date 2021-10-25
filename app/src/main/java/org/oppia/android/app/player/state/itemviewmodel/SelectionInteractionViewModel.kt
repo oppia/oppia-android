@@ -5,12 +5,16 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.StringList
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.viewmodel.ObservableArrayList
+import org.oppia.android.domain.translation.TranslationController
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -25,15 +29,17 @@ class SelectionInteractionViewModel(
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
+  val writtenTranslationContext: WrittenTranslationContext,
+  private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
-  private val choiceStrings: List<String> by lazy {
+  private val choiceSubtitledHtmls: List<SubtitledHtml> by lazy {
     interaction.customizationArgsMap["choices"]
       ?.schemaObjectList
       ?.schemaObjectList
-      ?.map { schemaObject -> schemaObject.subtitledHtml.html }
+      ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
       ?: listOf()
   }
   private val minAllowableSelectionCount: Int by lazy {
@@ -47,9 +53,9 @@ class SelectionInteractionViewModel(
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
-    computeChoiceItems(choiceStrings, hasConversationView, this)
+    computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
 
-  private val isAnswerAvailable = ObservableField<Boolean>(false)
+  private val isAnswerAvailable = ObservableField(false)
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -69,28 +75,42 @@ class SelectionInteractionViewModel(
     return maxAllowableSelectionCount > 1
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
-    val selectedItemsHtml = selectedItems.map(choiceItems::get).map { it.htmlContent }
-    if (interactionId == "ItemSelectionInput") {
-      userAnswerBuilder.answer = InteractionObject.newBuilder().setSetOfHtmlString(
-        StringList.newBuilder().addAllHtml(selectedItemsHtml)
-      ).build()
-      userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
-    } else if (selectedItems.size == 1) {
-      userAnswerBuilder.answer =
-        InteractionObject.newBuilder().setNonNegativeInt(selectedItems.first()).build()
-      userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemsHtml)
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
+    val translationContext = this@SelectionInteractionViewModel.writtenTranslationContext
+    val selectedItemSubtitledHtmls = selectedItems.map(choiceItems::get).map { it.htmlContent }
+    val itemHtmls = selectedItemSubtitledHtmls.map { subtitledHtml ->
+      translationController.extractString(subtitledHtml, translationContext)
     }
-    return userAnswerBuilder.build()
-  }
+    if (interactionId == "ItemSelectionInput") {
+      answer = InteractionObject.newBuilder().apply {
+        setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+          addAllContentIds(
+            selectedItemSubtitledHtmls.map { subtitledHtml ->
+              TranslatableHtmlContentId.newBuilder().apply {
+                contentId = subtitledHtml.contentId
+              }.build()
+            }
+          )
+        }.build()
+      }.build()
+      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
+    } else if (selectedItems.size == 1) {
+      answer = InteractionObject.newBuilder().apply {
+        nonNegativeInt = selectedItems.first()
+      }.build()
+      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
+    }
+    writtenTranslationContext = translationContext
+  }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
-  private fun convertSelectedItemsToHtmlString(htmlItems: Collection<String>): String {
-    return when (htmlItems.size) {
+  private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {
+    return when (itemHtmls.size) {
       0 -> ""
-      1 -> htmlItems.first()
-      else -> "<ul><li>${htmlItems.joinToString(separator = "</li><li>")}</li></ul>"
+      1 -> itemHtmls.first()
+      else -> {
+        "<ul><li>${itemHtmls.joinToString(separator = "</li><li>")}</li></ul>"
+      }
     }
   }
 
@@ -114,7 +134,7 @@ class SelectionInteractionViewModel(
         }
         return false
       } else if (selectedItems.size < maxAllowableSelectionCount) {
-        // TODO(#32): Add warning to user when they exceed the number of allowable selections or are under the minimum
+        // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
         //  number required.
         selectedItems += itemIndex
         val wasSelectedItemListEmpty = isAnswerAvailable.get()
@@ -148,14 +168,14 @@ class SelectionInteractionViewModel(
 
   companion object {
     private fun computeChoiceItems(
-      choiceStrings: List<String>,
+      choiceSubtitledHtmls: List<SubtitledHtml>,
       hasConversationView: Boolean,
       selectionInteractionViewModel: SelectionInteractionViewModel
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
-      observableList += choiceStrings.mapIndexed { index, choiceString ->
+      observableList += choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
         SelectionInteractionContentViewModel(
-          htmlContent = choiceString,
+          htmlContent = subtitledHtml,
           hasConversationView = hasConversationView,
           itemIndex = index,
           selectionInteractionViewModel = selectionInteractionViewModel

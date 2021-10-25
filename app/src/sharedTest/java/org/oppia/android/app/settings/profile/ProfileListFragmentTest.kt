@@ -22,21 +22,27 @@ import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -48,26 +54,37 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -80,6 +97,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileListFragmentTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var context: Context
@@ -118,12 +140,20 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -133,12 +163,20 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_admin_text)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -157,12 +195,20 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_admin_text)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(withText(context.getString(R.string.profile_chooser_admin)))
       )
@@ -172,12 +218,20 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_admin_text)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_admin_text
+        )
       ).check(
         matches(not(isDisplayed()))
       )
@@ -187,7 +241,7 @@ class ProfileListFragmentTest {
   @Test
   fun testProfileListFragment_addManyProfiles_checkProfilesAreSorted() {
     profileTestHelper.initializeProfiles()
-    profileTestHelper.addMoreProfiles(5)
+    profileTestHelper.addMoreProfiles(numProfiles = 5)
     launch(ProfileListActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
@@ -196,7 +250,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 0,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Admin"))
       )
@@ -206,7 +264,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 1,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("A"))
       )
@@ -216,7 +278,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 2, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 2,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("B"))
       )
@@ -226,7 +292,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 3, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 3,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("Ben"))
       )
@@ -236,7 +306,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 4, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 4,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("C"))
       )
@@ -246,7 +320,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 5, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 5,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("D"))
       )
@@ -256,7 +334,11 @@ class ProfileListFragmentTest {
         )
       )
       onView(
-        atPositionOnView(R.id.profile_list_recycler_view, 6, R.id.profile_list_name)
+        atPositionOnView(
+          recyclerViewId = R.id.profile_list_recycler_view,
+          position = 6,
+          targetViewId = R.id.profile_list_name
+        )
       ).check(
         matches(withText("E"))
       )
@@ -274,11 +356,11 @@ class ProfileListFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -286,12 +368,16 @@ class ProfileListFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

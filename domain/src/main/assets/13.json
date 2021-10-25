@@ -1,413 +1,317 @@
 {
+  "exploration_id": "13",
+  "preferred_audio_language_code": "<unknown>",
+  "correctness_feedback_enabled": false,
+  "version": 0,
+  "record_playthrough_probability": 0.0,
   "exploration": {
+    "init_state_name": "ImageClickInput",
+    "param_changes": [],
+    "param_specs": {},
     "states": {
       "End": {
-        "param_changes": [],
-        "classifier_model_id": null,
         "content": {
           "content_id": "content",
           "html": "<p>This is the end&nbsp;</p>"
         },
+        "param_changes": [],
         "interaction": {
-          "answer_groups": [],
-          "default_outcome": null,
+          "id": "EndExploration",
           "customization_args": {
             "recommendedExplorationIds": {
               "value": []
             }
           },
-          "id": "EndExploration",
-          "solution": null,
-          "confirmed_unclassified_answers": [],
-          "hints": []
+          "answer_groups": [],
+          "default_outcome": null,
+          "hints": [],
+          "solution": null
         },
-        "solicit_answer_details": false,
-        "written_translations": {
-          "translations_mapping": {
-            "content": {}
-          }
-        },
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {}
           }
-        }
-      },
-      "ImageClickInput": {
-        "param_changes": [],
-        "interaction": {
-          "solution": null,
-          "answer_groups": [
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_1",
-                  "html": "<p>This is Mercury, a small metallic planet closest to the sun. Since it is so near to the sun, it only takes 88 days for it to travel one entire orbit, so a year on Mercury would only be 88 days long.</p>"
-                },
-                "dest": "ImageClickInput",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Este é o fim e nbsp; </p>"},
+                "needs_update": false
               },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Mercury"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_2",
-                  "html": "<p>This is Venus, the second planet from the sun. It is the brightest planet in the Solar System, and can sometimes even be seen during the day. Though Mercury is nearer to the sun than Venus, Venus is the hottest planet in the Solar System, because its thick atmosphere of carbon dioxide traps heat on its surface.</p>"
-                },
-                "dest": "ImageClickInput",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Venus"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_3",
-                  "html": "<p>Earth! Our home planet is the third planet from the sun. Despite the vastness of the Solar System and the rest of space, it is the only place that we know life exists on. It is at just the right distance from the sun to ensure a comfortable temperature for us to exist in.</p>"
-                },
-                "dest": "ImageClickInput",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Earth"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_4",
-                  "html": "<p>Mars is the fourth planet from the sun. It is often dubbed the \"red planet\" due to its color, which is a result of large quantities of iron oxide on its surface. It has a thin atmosphere of carbon dioxide and ice caps on either end, and has two small irregularly-shaped moons called Phobos and Deimos.</p>"
-                },
-                "dest": "ImageClickInput",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Mars>"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_5",
-                  "html": "<p>Jupiter, the fifth planet from the sun, is a huge planet that is 2.5 times heavier than all of the other planets in our Solar System combined. It is mostly formed out of thick gases around a solid core. One famous feature on it is the \"Great Red Spot\", which is a huge storm on its surface that has raged for at least 350 years, and is large enough to swallow three entire Earths.</p>"
-                },
-                "dest": "ImageClickInput",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Jupiter"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_6",
-                  "html": "<p>Saturn, the sixth planet from the sun, is most well known for its beautiful rings of ice and dust orbiting around it. Like Jupiter, it is a gas giant, mostly made of layers of hydrogen which get progressively denser towards its solid core. </p>"
-                },
-                "dest": "End",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Saturn"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_7",
-                  "html": "<p>Uranus is the seventh planet from the sun. It was the first planet that was discovered using a telescope, since it is normally too dim to be seen with the naked eye. It is the coldest planet, and is formed from layers of hydrogen gas enveloping a frigid core of rock and ice.</p>"
-                },
-                "dest": "ImageClickInput",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Uranus"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_8",
-                  "html": "<p>Neptune is the eighth planet from the sun. It is an \"ice giant\", like Uranus, with an outer layer of hydrogen, helium, and methane enveloping an icy core. The methane in its atmosphere absorbs red light, giving it a beautiful blue color. It was first predicted to exist from gravitational calculations, and was only discovered by telescope later.</p>"
-                },
-                "dest": "ImageClickInput",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Neptune"
-                  }
-                ]
-              }
-            },
-            {
-              "tagged_skill_misconception_id": null,
-              "outcome": {
-                "param_changes": [],
-                "feedback": {
-                  "content_id": "feedback_9",
-                  "html": "<p>Pluto was once considered the ninth planet from the sun, but has now been reclassified as a \"dwarf planet\". It is formed from ice and rock, and is even smaller than our moon. The first spacecraft to visit Pluto is due to reach in July 2015.</p>"
-                },
-                "dest": "ImageClickInput",
-                "refresher_exploration_id": null,
-                "missing_prerequisite_skill_id": null,
-                "labelled_as_correct": false
-              },
-              "training_data": [],
-              "rule_types_to_inputs": {
-                "IsInRegion": [
-                  {
-                    "x": "Pluto"
-                  }
-                ]
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> هذه هي النهاية & nbsp؛ </p>"},
+                "needs_update": false
               }
             }
-          ],
-          "default_outcome": {
-            "param_changes": [],
-            "feedback": {
-              "content_id": "default_outcome",
-              "html": "<p>This doesn't seem like the correct choice.Try Again</p>"
-            },
-            "dest": "ImageClickInput",
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null,
-            "labelled_as_correct": false
-          },
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "ImageClickInput": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>Our Solar System consists of nine planets orbiting around our sun: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto. They range from huge gas giants to small icy dwarf planets.</p><p> </p><p>Click on the planets below to find out more about each one!</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "ImageClickInput",
           "customization_args": {
             "highlightRegionsOnHover": {
               "value": false
             },
             "imageAndRegions": {
               "value": {
-                "labeledRegions": [
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.010981757685823261,
-                          0.09856375700297611
-                        ],
-                        [
-                          0.04871760674242703,
-                          0.17073356832373082
-                        ]
-                      ]
-                    },
-                    "label": "Mercury"
-                  },
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.036925153912238357,
-                          0.1755448890784478
-                        ],
-                        [
-                          0.10060439919525722,
-                          0.2958279079463723
-                        ]
-                      ]
-                    },
-                    "label": "Venus"
-                  },
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.08645345579903081,
-                          0.10818639851241008
-                        ],
-                        [
-                          0.15484968221412515,
-                          0.22846941738033458
-                        ]
-                      ]
-                    },
-                    "label": "Earth"
-                  },
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.14777421051601194,
-                          0.1755448890784478
-                        ],
-                        [
-                          0.19258553127072892,
-                          0.2717713041727874
-                        ]
-                      ]
-                    },
-                    "label": "Mars"
-                  },
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.19022704070469118,
-                          0.06007319096524027
-                        ],
-                        [
-                          0.5723025124028044,
-                          0.8154505494558062
-                        ]
-                      ]
-                    },
-                    "label": "Jupiter"
-                  },
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.2491893048556346,
-                          0.36799771926712704
-                        ],
-                        [
-                          0.9968308142895969,
-                          0.9934694173803345
-                        ]
-                      ]
-                    },
-                    "label": "Saturn"
-                  },
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.664283644478276,
-                          0.05045054945580631
-                        ],
-                        [
-                          0.8152270407046912,
-                          0.3535637570029761
-                        ]
-                      ]
-                    },
-                    "label": "Uranus"
-                  },
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.8246610029688421,
-                          0.021582624927504426
-                        ],
-                        [
-                          0.9402270407046912,
-                          0.2525260211539195
-                        ]
-                      ]
-                    },
-                    "label": "Neptune"
-                  },
-                  {
-                    "region": {
-                      "regionType": "Rectangle",
-                      "area": [
-                        [
-                          0.9402270407046912,
-                          0.22365809662561761
-                        ],
-                        [
-                          0.977962889761295,
-                          0.2958279079463723
-                        ]
-                      ]
-                    },
-                    "label": "Pluto"
+                "imagePath": "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png",
+                "labeledRegions": [{
+                  "label": "Mercury",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.010981758125126362, 0.09856376051902771], [0.04871760681271553, 0.17073357105255127]]
                   }
-                ],
-                "imagePath": "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png"
+                }, {
+                  "label": "Venus",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.03692515566945076, 0.1755448877811432], [0.10060440003871918, 0.2958278954029083]]
+                  }
+                }, {
+                  "label": "Earth",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.08645345270633698, 0.10818640142679214], [0.15484967827796936, 0.22846941649913788]]
+                  }
+                }, {
+                  "label": "Mars",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.14777420461177826, 0.1755448877811432], [0.1925855278968811, 0.27177131175994873]]
+                  }
+                }, {
+                  "label": "Jupiter",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.19022704660892487, 0.060073189437389374], [0.572302520275116, 0.8154505491256714]]
+                  }
+                }, {
+                  "label": "Saturn",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.24918930232524872, 0.3679977059364319], [0.9968308210372925, 0.9934694170951843]]
+                  }
+                }, {
+                  "label": "Uranus",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.6642836332321167, 0.05045054852962494], [0.8152270317077637, 0.35356375575065613]]
+                  }
+                }, {
+                  "label": "Neptune",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.8246610164642334, 0.021582625806331635], [0.9402270317077637, 0.25252601504325867]]
+                  }
+                }, {
+                  "label": "Pluto",
+                  "region": {
+                    "regionType": "Rectangle",
+                    "area": [[0.9402270317077637, 0.22365809977054596], [0.9779629111289978, 0.2958278954029083]]
+                  }
+                }]
               }
             }
           },
-          "confirmed_unclassified_answers": [],
-          "id": "ImageClickInput",
-          "hints": []
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Mercury"
+              }
+            }],
+            "outcome": {
+              "dest": "ImageClickInput",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>This is Mercury, a small metallic planet closest to the sun. Since it is so near to the sun, it only takes 88 days for it to travel one entire orbit, so a year on Mercury would only be 88 days long.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Venus"
+              }
+            }],
+            "outcome": {
+              "dest": "ImageClickInput",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "<p>This is Venus, the second planet from the sun. It is the brightest planet in the Solar System, and can sometimes even be seen during the day. Though Mercury is nearer to the sun than Venus, Venus is the hottest planet in the Solar System, because its thick atmosphere of carbon dioxide traps heat on its surface.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Earth"
+              }
+            }],
+            "outcome": {
+              "dest": "ImageClickInput",
+              "feedback": {
+                "content_id": "feedback_3",
+                "html": "<p>Earth! Our home planet is the third planet from the sun. Despite the vastness of the Solar System and the rest of space, it is the only place that we know life exists on. It is at just the right distance from the sun to ensure a comfortable temperature for us to exist in.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Mars>"
+              }
+            }],
+            "outcome": {
+              "dest": "ImageClickInput",
+              "feedback": {
+                "content_id": "feedback_4",
+                "html": "<p>Mars is the fourth planet from the sun. It is often dubbed the \"red planet\" due to its color, which is a result of large quantities of iron oxide on its surface. It has a thin atmosphere of carbon dioxide and ice caps on either end, and has two small irregularly-shaped moons called Phobos and Deimos.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Jupiter"
+              }
+            }],
+            "outcome": {
+              "dest": "ImageClickInput",
+              "feedback": {
+                "content_id": "feedback_5",
+                "html": "<p>Jupiter, the fifth planet from the sun, is a huge planet that is 2.5 times heavier than all of the other planets in our Solar System combined. It is mostly formed out of thick gases around a solid core. One famous feature on it is the \"Great Red Spot\", which is a huge storm on its surface that has raged for at least 350 years, and is large enough to swallow three entire Earths.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Saturn"
+              }
+            }],
+            "outcome": {
+              "dest": "End",
+              "feedback": {
+                "content_id": "feedback_6",
+                "html": "<p>Saturn, the sixth planet from the sun, is most well known for its beautiful rings of ice and dust orbiting around it. Like Jupiter, it is a gas giant, mostly made of layers of hydrogen which get progressively denser towards its solid core. </p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Uranus"
+              }
+            }],
+            "outcome": {
+              "dest": "ImageClickInput",
+              "feedback": {
+                "content_id": "feedback_7",
+                "html": "<p>Uranus is the seventh planet from the sun. It was the first planet that was discovered using a telescope, since it is normally too dim to be seen with the naked eye. It is the coldest planet, and is formed from layers of hydrogen gas enveloping a frigid core of rock and ice.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Neptune"
+              }
+            }],
+            "outcome": {
+              "dest": "ImageClickInput",
+              "feedback": {
+                "content_id": "feedback_8",
+                "html": "<p>Neptune is the eighth planet from the sun. It is an \"ice giant\", like Uranus, with an outer layer of hydrogen, helium, and methane enveloping an icy core. The methane in its atmosphere absorbs red light, giving it a beautiful blue color. It was first predicted to exist from gravitational calculations, and was only discovered by telescope later.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "IsInRegion",
+              "inputs": {
+                "x": "Pluto"
+              }
+            }],
+            "outcome": {
+              "dest": "ImageClickInput",
+              "feedback": {
+                "content_id": "feedback_9",
+                "html": "<p>Pluto was once considered the ninth planet from the sun, but has now been reclassified as a \"dwarf planet\". It is formed from ice and rock, and is even smaller than our moon. The first spacecraft to visit Pluto is due to reach in July 2015.</p>"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "ImageClickInput",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>This doesn't seem like the correct choice.Try Again</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
         },
+        "classifier_model_id": "",
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "content": {},
@@ -423,37 +327,149 @@
             "feedback_9": {}
           }
         },
-        "classifier_model_id": null,
-        "content": {
-          "content_id": "content",
-          "html": "<p>Our Solar System consists of nine planets orbiting around our sun: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto. They range from huge gas giants to small icy dwarf planets.</p><p> </p><p>Click on the planets below to find out more about each one!</p>"
-        },
         "written_translations": {
           "translations_mapping": {
-            "content": {},
-            "feedback_2": {},
-            "feedback_3": {},
-            "feedback_1": {},
-            "feedback_6": {},
-            "feedback_7": {},
-            "feedback_4": {},
-            "feedback_5": {},
-            "default_outcome": {},
-            "feedback_8": {},
-            "feedback_9": {}
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Nosso sistema solar consiste em nove planetas orbitando em torno de nosso sol: Mercúrio, Venus, Terra, Marte, Júpiter, Saturno, Urano, Netuno e Plutão. Eles variam de gigantes de gás enormes a pequenos planetas anões gelados. </P> <p> </p> <p> Clique nos planetas abaixo para descobrir mais sobre cada um! </P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> يتكون نظامنا الشمسي من تسعة كواكب تدور حول الشمس: الزئبق، فينوس، الأرض، المريخ، كوكب المشتري، زحل، أورانوس، نبتون، بلوتو. وهي تتراوح بين عمالقة الغاز الضخمة إلى كواكب الأقزم القزم الصغيرة. </p> <p> </p> <p> انقر على الكواكب أدناه لمعرفة المزيد عن كل واحد! </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_2": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Este é venus, o segundo planeta do sol. É o planeta mais brilhante do sistema solar, e às vezes pode ser visto durante o dia. Embora o mercúrio esteja mais perto do sol do que Vênus, Venus é o planeta mais quente do sistema solar, porque sua atmosfera espessa de dióxido de carbono traga calor na sua superfície. </P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> هذا هو فينوس، والكوكب الثاني من الشمس. إنه ألمع كوكب في النظام الشمسي، ويمكن أن ينظر إليه في بعض الأحيان خلال اليوم. على الرغم من أن الزئبق أقرب إلى الشمس من فينوس، فإن فينوس هو سخونة كوكب في النظام الشمسي، لأن جو سميكة ثاني أكسيد الكربون الفخاخ الحرارة على سطحه. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_3": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Terra! Nosso planeta de casa é o terceiro planeta do sol. Apesar da vastidão do sistema solar e do resto do espaço, é o único lugar que sabemos que a vida existe. É apenas a distância certa do sol para garantir uma temperatura confortável para que existam. </P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> الأرض! كوكبنا الرئيسي هو الكوكب الثالث من الشمس. على الرغم من استمرار النظام الشمسي وبقية المساحة، فإن المكان الوحيد الذي نعرفه أن الحياة موجودة. في المسافة اليمنى فقط من الشمس لضمان درجة حرارة مريحة بالنسبة لنا موجودة فيها. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Isso é mercúrio, um pequeno planeta metálico mais próximo do sol. Como é tão perto do sol, leva apenas 88 dias para viajar uma órbita inteira, então um ano em Mercúrio só seria de 88 dias. </P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<!DOCTYPE html>\n<html lang="},
+                "needs_update": false
+              }
+            },
+            "feedback_6": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Saturno, o sexto planeta do sol, é mais conhecido por seus belos anéis de gelo e poeira em torno dele. Como Júpiter, é um gigante de gás, principalmente feito de camadas de hidrogênio que ficam progressivamente mais densos em relação ao seu núcleo sólido. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<P> Saturn، الكوكب السادس من الشمس، هو معروف جيدا لحلقاتها الجميلة من الجليد والغبار المدار حولها. مثل كوكب المشتري، فهي عملاقة غازية، معظمها مصنوعة من طبقات الهيدروجين التي تحصل على كثافة تدريجية نحو جوهرها الصلب. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_7": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Urano é o sétimo planeta do sol. Foi o primeiro planeta que foi descoberto usando um telescópio, já que é normalmente muito obscuro para ser visto com os olhos nus. É o planeta mais frio, e é formado de camadas de gás de hidrogênio envolvendo um núcleo frígido de rocha e gelo. </P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> أورانوس هو الكوكب السابع من الشمس. كان أول كوكب يتم اكتشافه باستخدام التلسكوب ، لأنه عادة ما يكون خافتًا جدًا بحيث لا يمكن رؤيته بالعين المجردة. إنه أبرد كوكب ، ويتكون من طبقات من غاز الهيدروجين تحيط بنواة متجمدة من الصخور والجليد. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_4": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Marte é o quarto planeta do sol. Muitas vezes é apelidado do \"Planeta Vermelho\" devido à sua cor, que é resultado de grandes quantidades de óxido de ferro em sua superfície. Tem uma atmosfera fina de dióxido de carbono e cápsulas de gelo em cada extremidade, e tem duas pequenas luas de forma irregular chamada Phobos e Deimos. </P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> المريخ هو الكوكب الرابع من الشمس. غالبا ما يطلق عليه \"الكوكب الأحمر\" بسبب لونه، وهو نتيجة كميات كبيرة من أكسيد الحديد على سطحها. يحتوي على جو رقيق من ثاني أكسيد الكربون والقبعات الجليدية في أي من الطرفين، ولديه اثنين من أقمار صغيرة على شكل غير منتظم يسمى فوبوس وديموس. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_5": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Júpiter, o quinto planeta a partir do Sol, é um enorme planeta 2,5 vezes mais pesado do que todos os outros planetas do nosso Sistema Solar combinados. É principalmente formado por gases espessos em torno de um núcleo sólido. Uma característica famosa é a \"Grande Mancha Vermelha\", que é uma enorme tempestade em sua superfície que assola há pelo menos 350 anos e é grande o suficiente para engolir três Terras inteiras. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<P> كوكب المشتري، الكوكب الخامس من الشمس، هو كوكب ضخم يبلغ من العمر 2.5 مرة من كل الكواكب الأخرى في نظامنا الشمسي مجتمعة. يتم تشكيلها في الغالب من الغازات السميكة حول جوهر صلب. ميزة واحدة مشهورة بها هي \"بقعة حمراء رائعة\"، وهي عاصفة كبيرة على سطحها الذي اندلعت لمدة 350 عاما على الأقل، وهو كبير بما يكفي لابتلاع ثلاثة أذرع بأكملها. </p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Isso não parece ser a escolha correta.Tente novamente </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> هذا لا يبدو وكأنه الاختيار الصحيح. مرة أخرى </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_8": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Netuno é o oitavo planeta do sol. É um \"gigante de gelo\", como Urano, com uma camada externa de hidrogênio, hélio e metano envolvendo um núcleo gelado. O metano em sua atmosfera absorve a luz vermelha, dando-lhe uma bela cor azul. Foi previsto primeiro existir de cálculos gravitacionais, e só foi descoberto pelo telescópio mais tarde. </P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> نبتون هو الكوكب الثامن من الشمس. إنه \"عملاق ثلج\"، مثل أورانوس، بطبقة خارجية من الهيدروجين والهيليوم والميثان يغليف جوهر جليدي. يمتص الميثان في جوها الضوء الأحمر، مما يمنحه اللون الأزرق الجميل. تم توقع وجوده لأول مرة من حسابات الجاذبية، وتم اكتشافه فقط بواسطة التلسكوب في وقت لاحق. </p>"},
+                "needs_update": false
+              }
+            },
+            "feedback_9": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<P> Plutão já foi considerado o nono planeta do sol, mas agora foi reclassificado como um \"planeta anão\". É formado por gelo e rocha, e é ainda menor que a nossa lua. A primeira espaçonave a visitar Plutão é devido ao alcance em julho de 2015. </P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<P> كان بلوتو يعتبر مرة واحدة الكوكب التاسع من الشمس، لكن تم إعادة تصنيفه الآن باعتباره \"كوكب قزم\". يتم تشكيله من الجليد والصخور، وهو أصغر من قمرنا. من المقرر أن يصل المركبة الفضائية الأولى إلى زيارة بلوتو في يوليو 2015. </p>"},
+                "needs_update": false
+              }
+            }
           }
         },
-        "solicit_answer_details": false
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
       }
     },
-    "title": "Image Click Input Test Exploration",
-    "language_code": "en",
-    "param_changes": [],
-    "param_specs": {},
     "objective": "learn how to arrange the sentence",
-    "init_state_name": "ImageClickInput"
-  },
-  "exploration_id": "13",
-  "states_schema_version": 39,
-  "version": 1
+    "language_code": "en",
+    "correctness_feedback_enabled": false,
+    "title": "Image Click Input Test Exploration"
+  }
 }

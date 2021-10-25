@@ -9,7 +9,9 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -18,47 +20,34 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider]. */
+@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest {
 
-  private val NON_NEGATIVE_VALUE_0 =
-    InteractionObjectTestBuilder.createNonNegativeInt(value = 0)
+  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
+  private val ITEM_SET_1_ITEMS_12 = listOf("content_id_1", "content_id_2")
+  private val ITEM_SET_1_ITEMS_123 = listOf("content_id_1", "content_id_2", "content_id_3")
+  private val ITEM_SET_1_ITEM_1 = listOf("content_id_1")
+  private val ITEM_SET_2_ITEM_4 = listOf("content_id_4")
+  private val ITEM_SET_3_ITEM_5 = listOf("content_id_5")
 
-  private val ITEM_SET_1_AB =
-    InteractionObjectTestBuilder.createHtmlStringList("item a", "item b")
-
-  private val ITEM_SET_1_ABC =
-    InteractionObjectTestBuilder.createHtmlStringList("item a", "item b", "item c")
-
-  private val ITEM_SET_1_A =
-    InteractionObjectTestBuilder.createHtmlStringList("item a")
-
-  private val ITEM_SET_2_ITEM_2 =
-    InteractionObjectTestBuilder.createHtmlStringList("item 2")
-
-  private val ITEM_SET_3_ITEM_3 =
-    InteractionObjectTestBuilder.createHtmlStringList("item 3")
-
-  private val SET_LIST_ITEMS_AB_ITEM_2_ITEM_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      listOf(ITEM_SET_1_AB, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_12_4_5 =
+    createListOfSetsOfTranslatableHtmlContentIds(
+      ITEM_SET_1_ITEMS_12, ITEM_SET_2_ITEM_4, ITEM_SET_3_ITEM_5
     )
-
-  private val SET_LIST_ITEMS_ABC_ITEM_2_ITEM_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      listOf(ITEM_SET_1_ABC, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_123_4_5 =
+    createListOfSetsOfTranslatableHtmlContentIds(
+      ITEM_SET_1_ITEMS_123, ITEM_SET_2_ITEM_4, ITEM_SET_3_ITEM_5
     )
-
-  private val SET_LIST_ITEM_2_ITEM_3_ITEMS_AB =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      listOf(ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3, ITEM_SET_1_AB)
+  private val LIST_OF_SETS_4_5_12 =
+    createListOfSetsOfTranslatableHtmlContentIds(
+      ITEM_SET_2_ITEM_4, ITEM_SET_3_ITEM_5, ITEM_SET_1_ITEMS_12
     )
-
-  private val SET_LIST_ITEM_A_ITEM_2_ITEM_3 =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      listOf(ITEM_SET_1_A, ITEM_SET_2_ITEM_2, ITEM_SET_3_ITEM_3)
+  private val LIST_OF_SETS_1_4_5 =
+    createListOfSetsOfTranslatableHtmlContentIds(
+      ITEM_SET_1_ITEM_1, ITEM_SET_2_ITEM_4, ITEM_SET_3_ITEM_5
     )
 
   @Inject
@@ -82,26 +71,28 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
     val exception = assertThrows(IllegalStateException::class) {
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = SET_LIST_ITEMS_AB_ITEM_2_ITEM_3,
-        inputs = inputs
+        answer = LIST_OF_SETS_12_4_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type LIST_OF_SETS_OF_HTML_STRING not NON_NEGATIVE_INT"
+        "Expected input value to be of type LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS"
       )
   }
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_sameValue_bothValuesMatch_failsCorrectly() {
-    val inputs = mapOf("x" to SET_LIST_ITEMS_AB_ITEM_2_ITEM_3)
+    val inputs = mapOf("x" to LIST_OF_SETS_12_4_5)
 
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = SET_LIST_ITEMS_AB_ITEM_2_ITEM_3,
-        inputs = inputs
+        answer = LIST_OF_SETS_12_4_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -109,12 +100,13 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_bothValuesDoNotMatch() {
-    val inputs = mapOf("x" to SET_LIST_ITEMS_AB_ITEM_2_ITEM_3)
+    val inputs = mapOf("x" to LIST_OF_SETS_12_4_5)
 
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = SET_LIST_ITEM_A_ITEM_2_ITEM_3,
-        inputs = inputs
+        answer = LIST_OF_SETS_1_4_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -122,12 +114,13 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_differentOrder_bothValuesDoNotMatch_failsCorrectly() { // ktlint-disable max-line-length
-    val inputs = mapOf("x" to SET_LIST_ITEM_2_ITEM_3_ITEMS_AB)
+    val inputs = mapOf("x" to LIST_OF_SETS_4_5_12)
 
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = SET_LIST_ITEM_A_ITEM_2_ITEM_3,
-        inputs = inputs
+        answer = LIST_OF_SETS_1_4_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -135,12 +128,13 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_differByTwoElements_bothValuesDoNotMatch_failsCorrectly() { // ktlint-disable max-line-length
-    val inputs = mapOf("x" to SET_LIST_ITEMS_ABC_ITEM_2_ITEM_3)
+    val inputs = mapOf("x" to LIST_OF_SETS_123_4_5)
 
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = SET_LIST_ITEM_A_ITEM_2_ITEM_3,
-        inputs = inputs
+        answer = LIST_OF_SETS_1_4_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -148,12 +142,13 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   @Test
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
-    val inputs = mapOf("y" to SET_LIST_ITEMS_AB_ITEM_2_ITEM_3)
+    val inputs = mapOf("y" to LIST_OF_SETS_12_4_5)
 
     val exception = assertThrows(IllegalStateException::class) {
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = SET_LIST_ITEMS_AB_ITEM_2_ITEM_3,
-        inputs = inputs
+        answer = LIST_OF_SETS_12_4_5,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

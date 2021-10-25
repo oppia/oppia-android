@@ -1,0 +1,30 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing a network API interface with Oppia's App Engine backend.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "api",
+    srcs = [
+        "ClassroomService.kt",
+        "ConceptCardService.kt",
+        "ExplorationService.kt",
+        "FeedbackReportingService.kt",
+        "PlatformParameterService.kt",
+        "QuestionPlayerService.kt",
+        "StoryService.kt",
+        "SubtopicService.kt",
+        "TopicService.kt",
+    ],
+    custom_package = "org.oppia.android.data.backends.gae.api",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//data/src/main/java/org/oppia/android/data/backends/gae/model",
+        "//third_party:com_squareup_retrofit2_retrofit",
+    ],
+)
+
+dagger_rules()

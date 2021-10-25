@@ -5,33 +5,43 @@ import org.oppia.android.R
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQItemViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
 /** View model in [FAQListFragment]. */
 class FAQListViewModel @Inject constructor(
-  val activity: AppCompatActivity
+  val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-  private val arrayList = ArrayList<FAQItemViewModel>()
-
   val faqItemList: List<FAQItemViewModel> by lazy {
-    getRecyclerViewItemList()
+    computeFaqViewModelList()
   }
 
-  private fun getRecyclerViewItemList(): ArrayList<FAQItemViewModel> {
-    val faqHeaderViewModel = FAQHeaderViewModel()
-    arrayList.add(faqHeaderViewModel)
-    val questions: Array<String> = activity.resources.getStringArray(R.array.faq_questions)
-    val answers: Array<String> = activity.resources.getStringArray(R.array.faq_answers)
-    questions.forEachIndexed { index, question ->
-      val faqContentViewModel = FAQContentViewModel(activity, question, answers[index])
-      if (questions[questions.size - 1] == question) {
-        faqContentViewModel.showDivider.set(false)
-      } else {
-        faqContentViewModel.showDivider.set(true)
-      }
-      arrayList.add(faqContentViewModel)
+  private fun computeFaqViewModelList(): List<FAQItemViewModel> {
+    val questions = retrieveQuestions()
+    val faqs = questions.zip(retrieveAnswers()).mapIndexed { index, (question, answer) ->
+      FAQContentViewModel(activity, question, answer, showDivider = index != questions.lastIndex)
     }
-    return arrayList
+    return listOf(FAQHeaderViewModel()) + faqs
+  }
+
+  private fun retrieveQuestionsOrAnswers(questionsOrAnswers: List<String>): List<String> {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
+    return questionsOrAnswers.mapIndexed { index, questionOrAnswer ->
+      if (index == QUESTION_INDEX_WITH_OPPIA_REFERENCE) {
+        resourceHandler.formatInLocaleWithWrapping(questionOrAnswer, appName)
+      } else questionOrAnswer
+    }
+  }
+
+  private fun retrieveQuestions(): List<String> =
+    retrieveQuestionsOrAnswers(resourceHandler.getStringArrayInLocale(R.array.faq_questions))
+
+  private fun retrieveAnswers(): List<String> =
+    retrieveQuestionsOrAnswers(resourceHandler.getStringArrayInLocale(R.array.faq_answers))
+
+  private companion object {
+    private const val QUESTION_INDEX_WITH_OPPIA_REFERENCE = 3
   }
 }

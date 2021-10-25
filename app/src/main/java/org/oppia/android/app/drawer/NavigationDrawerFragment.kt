@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ class NavigationDrawerFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(
@@ -40,7 +41,19 @@ class NavigationDrawerFragment :
     navigationDrawerFragmentPresenter.openProfileProgress(profileId)
   }
 
-  override fun markHomeMenuCloseDrawer() {
-    navigationDrawerFragmentPresenter.markHomeMenuCloseDrawer()
+  override fun highlightLastCheckedMenuItem() {
+    navigationDrawerFragmentPresenter.highlightLastCheckedMenuItem()
+  }
+
+  override fun highlightAdministratorControlsItem() {
+    navigationDrawerFragmentPresenter.highlightAdministratorControlsItem()
+  }
+
+  override fun highlightDeveloperOptionsItem() {
+    navigationDrawerFragmentPresenter.highlightDeveloperOptionsItem()
+  }
+
+  override fun unhighlightSwitchProfileMenuItem() {
+    navigationDrawerFragmentPresenter.unhighlightSwitchProfileMenuItem()
   }
 }

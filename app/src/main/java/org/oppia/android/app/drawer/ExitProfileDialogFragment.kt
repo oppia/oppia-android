@@ -2,31 +2,39 @@ package org.oppia.android.app.drawer
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.ExitProfileDialogArguments
+import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 
 /** [DialogFragment] that gives option to either cancel or exit current profile. */
-class ExitProfileDialogFragment : DialogFragment() {
+class ExitProfileDialogFragment : InjectableDialogFragment() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY =
-      "BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY"
+    const val EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO = "EXIT_PROFILE_DIALOG_ARGUMENT_PROTO"
 
     /**
      * This function is responsible for displaying content in DialogFragment.
      *
      * @return [ExitProfileDialogFragment]: DialogFragment
      */
-    fun newInstance(isFromNavigationDrawer: Boolean): ExitProfileDialogFragment {
+    fun newInstance(
+      exitProfileDialogArguments: ExitProfileDialogArguments
+    ): ExitProfileDialogFragment {
       val exitProfileDialogFragment = ExitProfileDialogFragment()
       val args = Bundle()
-      args.putBoolean(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO, exitProfileDialogArguments)
       exitProfileDialogFragment.arguments = args
       return exitProfileDialogFragment
     }
@@ -34,37 +42,74 @@ class ExitProfileDialogFragment : DialogFragment() {
 
   lateinit var exitProfileDialogInterface: ExitProfileDialogInterface
 
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
+  }
+
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val args =
       checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
 
-    val isFromNavigationDrawer = args.getBoolean(
-      BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-      false
+    val exitProfileDialogArguments = args.getProto(
+      EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,
+      ExitProfileDialogArguments.getDefaultInstance()
     )
 
-    if (isFromNavigationDrawer) {
-      exitProfileDialogInterface =
-        parentFragment as ExitProfileDialogInterface
+    val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItem) {
+      HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
+      HighlightItem.DEVELOPER_OPTIONS_ITEM,
+      HighlightItem.LAST_CHECKED_MENU_ITEM -> true
+      else -> false
     }
 
-    return AlertDialog
-      .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
+    val alertDialog = AlertDialog
+      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaAlertDialogTheme))
       .setMessage(R.string.home_activity_back_dialog_message)
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
-        if (isFromNavigationDrawer) {
-          exitProfileDialogInterface.markHomeMenuCloseDrawer()
-        }
         dialog.dismiss()
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
+        // TODO(#3641): Investigate on using finish instead of intent.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
-        if (!isFromNavigationDrawer) {
+        if (!restoreLastCheckedItem) {
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         activity!!.startActivity(intent)
       }
       .create()
+    alertDialog.setCanceledOnTouchOutside(false)
+    return alertDialog
+  }
+
+  override fun onDismiss(dialog: DialogInterface) {
+    super.onDismiss(dialog)
+    val args =
+      checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
+
+    val exitProfileDialogArguments = args.getProto(
+      EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,
+      ExitProfileDialogArguments.getDefaultInstance()
+    )
+
+    val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItem) {
+      HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
+      HighlightItem.DEVELOPER_OPTIONS_ITEM,
+      HighlightItem.LAST_CHECKED_MENU_ITEM -> true
+      else -> false
+    }
+
+    if (restoreLastCheckedItem) {
+      exitProfileDialogInterface =
+        parentFragment as ExitProfileDialogInterface
+      exitProfileDialogInterface.unhighlightSwitchProfileMenuItem()
+      if (exitProfileDialogArguments.highlightItem == HighlightItem.LAST_CHECKED_MENU_ITEM) {
+        exitProfileDialogInterface.highlightLastCheckedMenuItem()
+      } else if (exitProfileDialogArguments.highlightItem == HighlightItem.DEVELOPER_OPTIONS_ITEM) {
+        exitProfileDialogInterface.highlightDeveloperOptionsItem()
+      } else {
+        exitProfileDialogInterface.highlightAdministratorControlsItem()
+      }
+    }
   }
 }

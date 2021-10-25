@@ -19,6 +19,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -26,6 +27,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -38,7 +40,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
+import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -49,19 +56,30 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
+import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -74,12 +92,17 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -89,22 +112,40 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.testing.EditTextInputAction
-import org.oppia.android.testing.IsOnRobolectric
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+import org.oppia.android.testing.lightweightcheckpointing.RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.robolectric.IsOnRobolectric
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.networking.NetworkConnectionUtil
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -120,12 +161,23 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ExplorationActivityTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
   @Inject
   lateinit var explorationDataController: ExplorationDataController
 
   @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
   lateinit var context: Context
@@ -136,14 +188,23 @@ class ExplorationActivityTest {
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   private val internalProfileId: Int = 0
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    context = ApplicationProvider.getApplicationContext()
     testCoroutineDispatchers.registerIdlingResource()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -156,21 +217,52 @@ class ExplorationActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun getApplicationDependencies(id: String) {
+  private fun getApplicationDependencies(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
+  ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
-        networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
-        explorationDataController.startPlayingExploration(id)
+        explorationDataController.startPlayingExploration(
+          internalProfileId,
+          topicId,
+          storyId,
+          explorationId,
+          shouldSavePartialProgress,
+          explorationCheckpoint
+        )
       }
     }
   }
 
-  // TODO(#163): Fill in remaining tests for this activity.
+  // TODO(#388): Fill in remaining tests for this activity.
   @get:Rule
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
     ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
+
+  @Test
+  fun testExplorationActivity_hasCorrectActivityLabel() {
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    )
+    val title = explorationActivityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.exploration_activity_title))
+  }
 
   @Test
   fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
@@ -179,10 +271,18 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.exploration_toolbar_title))
         .check(matches(withText("Prototype Exploration")))
@@ -197,14 +297,109 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.exploration_toolbar_title))
         .check(matches(withText("Prototype Exploration")))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_toolbarAudioIcon_defaultContentDescription_isCorrect() {
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player))
+        .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player))
+        .check(matches(withContentDescription(context.getString(R.string.audio_player_on))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExploration_clickAudioIconTwice_contentDescription_changesToDefault() {
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player)).perform(click())
+      onView(withId(R.id.action_audio_player))
+        .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -216,13 +411,21 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.help))).check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.menu_help))).check(matches(isDisplayed()))
     }
     explorationDataController.stopPlayingExploration()
   }
@@ -234,12 +437,20 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
       openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.help))).perform(click())
+      onView(withText(context.getString(R.string.menu_help))).perform(click())
       intended(hasComponent(HelpActivity::class.java.name))
       intended(hasExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
     }
@@ -253,10 +464,18 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
       openActionBarOverflowOrOptionsMenu(context)
       onView(withText(context.getString(R.string.menu_options))).perform(click())
       intended(hasComponent(OptionsActivity::class.java.name))
@@ -277,27 +496,42 @@ class ExplorationActivityTest {
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithNoVoiceover_openPrototypeExploration_configurationChange_checkAudioButtonIsHidden() { // ktlint-disable max-line-length
+  fun testAudioWithNoVoiceover_prototypeExploration_configChange_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(TEST_EXPLORATION_ID_2)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.action_audio_player)).check(matches(not(isDisplayed())))
     }
@@ -306,17 +540,25 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.NONE)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.audio_dialog_offline_message)))
@@ -328,17 +570,23 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
-    setupAudio()
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
@@ -348,20 +596,25 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_changeConfiguration_checkOpensCellularAudioDialog() { // ktlint-disable max-line-length
-    setupAudio()
+  fun testAudioCellular_ratioExp_audioIcon_configChange_opensCellularAudioDialog() {
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -372,20 +625,25 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickNegative_checkAudioFragmentIsHidden() { // ktlint-disable max-line-length
-    setupAudio()
+  fun testAudioCellular_ratioExp_audioIcon_clickNegative_audioFragmentIsHidden() {
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
@@ -405,22 +663,27 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickAudioIcon_clickPositive_checkAudioFragmentIsVisible() { // ktlint-disable max-line-length
-    setupAudio()
+  fun testAudioCellular_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
@@ -447,20 +710,25 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickCheckboxAndNegative_clickAudioIcon_checkAudioFragmentIsHiddenAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
-    setupAudio()
+  fun testAudioCellular_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
@@ -484,20 +752,25 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithCellular_openRatioExploration_clickCheckboxAndPositive_clickAudioIconTwice_checkAudioFragmentIsVisibleAndDialogIsNotDisplayed() { // ktlint-disable max-line-length
-    setupAudio()
+  fun testAudioCellular_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
+    setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(RATIOS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.CELLULAR)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withText(context.getString(R.string.cellular_data_alert_dialog_title)))
@@ -522,19 +795,26 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_openRatioExploration_clickAudioIcon_checkAudioFragmentHasDefaultLanguageAndAutoPlays() { // ktlint-disable max-line-length
-    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+  fun testAudioWifi_ratioExp_audioIcon_audioFragHasDefaultLangAndAutoPlays() {
+    getApplicationDependencies(
+      internalProfileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
-        RATIOS_EXPLORATION_ID_0
+        RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
       waitForTheView(withText("What is a Ratio?"))
@@ -558,20 +838,27 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   @Test
-  fun testAudioWithWifi_openFractionsExploration_changeLanguage_clickNext_checkLanguageIsHinglish() { // ktlint-disable max-line-length
-    setupAudioForFraction()
+  fun testAudioWifi_fractionsExp_changeLang_next_langIsHinglish() {
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
-      explorationDataController.startPlayingExploration(FRACTIONS_EXPLORATION_ID_0)
-      networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -600,22 +887,37 @@ class ExplorationActivityTest {
         )
       )
       onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.audio_language_icon)).check(matches(withContentDescription("hi-en")))
+      onView(
+        allOf(
+          withId(R.id.audio_language_icon),
+          withEffectiveVisibility(Visibility.VISIBLE)
+        )
+      ).perform(click())
+      onView(withText("Hinglish"))
+        .inRoot(isDialog())
+        .check(matches(isChecked()))
     }
     explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testAudioWithWifi_openRatioExploration_continueToInteraction_clickAudioButton_submitAnswer_checkFeedbackAudioPlays() { // ktlint-disable max-line-length
-    getApplicationDependencies(RATIOS_EXPLORATION_ID_0)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.LOCAL)
+  fun testAudioWifi_ratioExp_continueInteraction_audioButton_submitAns_feedbackAudioPlays() {
+    getApplicationDependencies(
+      internalProfileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId, RATIOS_TOPIC_ID,
-        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+        RATIOS_STORY_ID_0, RATIOS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
       waitForTheView(withText("What is a Ratio?"))
@@ -647,7 +949,8 @@ class ExplorationActivityTest {
         internalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
       onView(withId(R.id.exploration_fragment_placeholder)).check(matches(isDisplayed()))
@@ -655,79 +958,808 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog() {
+  fun testExplorationActivity_onBackPressed_showsUnsavedExplorationDialog() {
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
+      onView(withText(R.string.unsaved_exploration_dialog_description)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
+    explorationDataController.stopPlayingExploration()
   }
 
   @Test
-  fun testExplorationActivity_onToolbarClosePressed_showsStopExplorationDialog() {
+  fun testExplorationActivity_onToolbarClosePressed_showsUnsavedExplorationDialog() {
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.stop_exploration_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
+      onView(withText(R.string.unsaved_exploration_dialog_description)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
+    explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
-  // TODO(#89): Check this test case too. It works in pair with below test case.
+  // TODO(#89): Check this test case too. It works in pair with below test cases.
   @Test
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickCancel_dismissesDialog() { // ktlint-disable max-line-length
+  fun testExpActivity_showUnsavedExpDialog_cancel_dismissesDialog() {
+    setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    testCoroutineDispatchers.runCurrent()
     pressBack()
-    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+    onView(withText(R.string.unsaved_exploration_dialog_cancel_button)).inRoot(isDialog())
       .perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isFalse()
+    explorationDataController.stopPlayingExploration()
   }
 
-  // TODO (#1855): Resolve ktlint max line in app module test
   // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
   @Test
   @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
-  fun testExplorationActivity_onBackPressed_showsStopExplorationDialog_clickLeave_closesExplorationActivity() { // ktlint-disable max-line-length
+  fun testExpActivity_showUnsavedExpDialog_leave_closesExpActivity() {
+    setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
       )
     )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    testCoroutineDispatchers.runCurrent()
+
     pressBack()
     onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
       .perform(click())
     assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
   }
 
+  @Test
+  fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_cancel_button)).inRoot(isDialog())
+      .perform(click())
+
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
+    )
+  }
+
+  // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
+  @Test
+  fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = false,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    pressBack()
+    onView(withText(R.string.stop_exploration_dialog_leave_button)).inRoot(isDialog())
+      .perform(click())
+
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
+    )
+  }
+
+  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
+  @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  fun testExpActivity_progressSaved_onBackPressed_closesExpActivity() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    pressBack()
+    assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+  }
+
+  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
+  @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  fun testExpActivity_progressSaved_onToolbarClosePressed_closesExpActivity() {
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+    onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+      .check(matches(isDisplayed()))
+
+    assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+  }
+
+  // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
+  @Test
+  fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    explorationActivityTestRule.launchActivity(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    )
+    explorationDataController.startPlayingExploration(
+      internalProfileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    pressBack()
+
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
+    )
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      FRACTIONS_EXPLORATION_ID_0
+    )
+  }
+
+  @Test
+  fun testExplorationActivity_databaseFull_onBackPressed_showsProgressDatabaseFullDialog() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#89): Check this test case too. It works in pair with below test cases.
+  @Test
+  fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      onView(withText(R.string.progress_database_full_dialog_title)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.progress_database_full_dialog_back_to_lesson_button))
+        .inRoot(isDialog()).perform(click())
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
+  @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  fun testExplorationActivity_showProgressDatabaseFullDialog_continue_closesExpActivity() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_continue_button))
+        .inRoot(isDialog()).perform(click())
+
+      assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#89): The ExplorationActivity takes time to finish. This test case is failing currently.
+  @Test
+  @Ignore("The ExplorationActivity takes time to finish, needs to fixed in #89.")
+  fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_closesExpActivity() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_leave_without_saving_progress_button))
+        .inRoot(isDialog()).perform(click())
+
+      assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
+  @Test
+  fun testExpActivity_showProgressDatabaseFullDialog_leaveWithoutSaving_correctProgressIsDeleted() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_leave_without_saving_progress_button))
+        .inRoot(isDialog()).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        RATIOS_EXPLORATION_ID_0
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_1
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExpActivity_showProgressDatabaseFullDialog_continue_correctProgressIsDeleted() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_continue_button))
+        .inRoot(isDialog()).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_1
+      )
+    }
+    explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
+    )
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  fun testExpActivity_showProgressDatabaseFullDialog_backToLesson_noProgressIsDeleted() {
+    explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+    )
+    explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+    )
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = true,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+
+      onView(withText(R.string.progress_database_full_dialog_back_to_lesson_button))
+        .inRoot(isDialog()).perform(click())
+
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        FRACTIONS_EXPLORATION_ID_1
+      )
+    }
+    explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      RATIOS_EXPLORATION_ID_0
+    )
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_englishContentLang_contentIsInEnglish() {
+    updateContentLanguage(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      OppiaLanguage.ENGLISH
+    )
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      verifyContentContains("Test exploration with interactions")
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testExpActivity_profileWithArabicContentLang_contentIsInArabic() {
+    updateContentLanguage(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      OppiaLanguage.ARABIC
+    )
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      verifyContentContains("التفاعلات")
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_englishContentLang_showHint_explanationInEnglish() {
+    updateContentLanguage(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      OppiaLanguage.ENGLISH
+    )
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in English.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("Remember that two halves"))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
+    updateContentLanguage(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      OppiaLanguage.ARABIC
+    )
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false,
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      )
+      testCoroutineDispatchers.runCurrent()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic. This helps demonstrate that the activity is
+      // correctly piping the profile ID along to the hint dialog fragment.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("واحدة كاملة"))))
+    }
+    explorationDataController.stopPlayingExploration()
+  }
+
   private fun createExplorationActivityIntent(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
   ): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -735,11 +1767,12 @@ class ExplorationActivityTest {
       topicId,
       storyId,
       explorationId,
-      /* backflowScreen= */ null
+      /* backflowScreen= */ null,
+      shouldSavePartialProgress
     )
   }
 
-  private fun setupAudio() {
+  private fun setUpAudio() {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
@@ -750,7 +1783,7 @@ class ExplorationActivityTest {
     }
   }
 
-  private fun setupAudioForFraction() {
+  private fun setUpAudioForFractionLesson() {
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
@@ -800,12 +1833,73 @@ class ExplorationActivityTest {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
 
-// TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-//  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-//  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-//  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-//  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-//  thread helps to counter that.
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  private fun clickContinueButton() {
+    scrollToViewType(StateItemViewModel.ViewType.CONTINUE_INTERACTION)
+    onView(withId(R.id.continue_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun submitFractionAnswer(answerText: String) {
+    scrollToViewType(StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION)
+    onView(withId(R.id.fraction_input_interaction_view)).perform(
+      editTextInputAction.appendText(answerText)
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun openHintsAndSolutionsDialog() {
+    onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun pressRevealHintButton(hintPosition: Int) {
+    onView(withId(R.id.hints_and_solution_recycler_view))
+      .inRoot(isDialog())
+      .perform(scrollToPosition<RecyclerView.ViewHolder>(hintPosition * 2))
+    onView(allOf(withId(R.id.reveal_hint_button), isDisplayed()))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyContentContains(expectedHtml: String) {
+    scrollToViewType(StateItemViewModel.ViewType.CONTENT)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.state_recycler_view,
+        position = 0,
+        targetViewId = R.id.content_text_view
+      )
+    ).check(matches(withText(containsString(expectedHtml))))
+  }
+
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
+    onView(withId(R.id.state_recycler_view)).perform(
+      scrollToHolder(StateViewHolderTypeMatcher(viewType))
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
+  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
+  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
+  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
+  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
+  //  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.
@@ -843,12 +1937,47 @@ class ExplorationActivityTest {
     }
   }
 
+  /**
+   * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
+   * StateFragment's RecyclerView.
+   */
+  private class StateViewHolderTypeMatcher(
+    private val viewType: StateItemViewModel.ViewType
+  ) : BaseMatcher<RecyclerView.ViewHolder>() {
+    override fun describeTo(description: Description?) {
+      description?.appendText("item view type of $viewType")
+    }
+
+    override fun matches(item: Any?): Boolean {
+      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
+    }
+  }
+
+  @Module
+  class TestExplorationStorageModule {
+
+    /**
+     * Provides the size allocated to exploration checkpoint database.
+     *
+     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
+     *
+     * The size is set to 100 bytes because size of the checkpoint saved just after the exploration
+     * with explorationId [FRACTIONS_EXPLORATION_ID_0] is loaded is equal to 73 bytes, and the total
+     * size of the two fake checkpoints saved using [ExplorationCheckpointTestHelper] is equal to
+     * 137 bytes. Therefore it is expected that the database will exceeded the allocated size limit
+     * when the checkpoint after all three checkpoints are saved.
+     */
+    @Provides
+    @ExplorationStorageDatabaseSize
+    fun provideExplorationStorageDatabaseSize(): Int = 150
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -856,14 +1985,19 @@ class ExplorationActivityTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      TestExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
+
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder

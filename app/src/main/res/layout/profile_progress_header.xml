@@ -5,15 +5,19 @@
 
   <data>
 
+    <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.profileprogress.ProfileProgressHeaderViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/profile_progress_header_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
+    android:importantForAccessibility="no"
     android:paddingTop="32dp">
 
     <com.jackandphantom.circularimageview.CircleImage
@@ -21,6 +25,7 @@
       android:layout_width="100dp"
       android:layout_height="100dp"
       android:clickable="true"
+      android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       app:add_shadow="true"
@@ -33,13 +38,13 @@
     <ImageView
       android:layout_width="48dp"
       android:layout_height="48dp"
+      android:contentDescription="@string/edit_profile_picture_content_description"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="8dp"
       android:paddingTop="8dp"
-      android:src="@drawable/rounded_white_background_with_shadow"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
       app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"
-      app:layout_constraintRight_toRightOf="@+id/profile_edit_image" />
+      app:srcCompat="@drawable/rounded_white_background_with_shadow" />
 
     <TextView
       android:id="@+id/profile_name_text_view"
@@ -65,6 +70,7 @@
       android:layout_weight="1"
       android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.ongoingTopicCount > 0}"
+      android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnOngoingTopicCount()}"
       app:cardElevation="2dp"
       app:contentPadding="8dp"
@@ -110,6 +116,7 @@
       android:layout_weight="1"
       android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.completedStoryCount > 0}"
+      android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnCompletedStoryCount()}"
       app:cardElevation="2dp"
       app:contentPadding="8dp"
@@ -160,6 +167,7 @@
       android:text="@string/recently_played_stories"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="18sp"
+      android:visibility="@{viewModel.headerTextVisibility}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/ongoing_topics_container" />
 
@@ -177,6 +185,7 @@
       android:textAllCaps="true"
       android:textColor="@color/oppiaPrimaryDark"
       android:textSize="14sp"
+      android:visibility="@{viewModel.viewAllButtonVisibility}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/completed_stories_container"
       app:layout_constraintTop_toTopOf="@+id/recently_played_stories_text_view" />

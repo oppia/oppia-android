@@ -30,7 +30,7 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <TextView
@@ -48,7 +48,7 @@
           android:requiresFadingEdge="horizontal"
           android:scrollHorizontally="true"
           android:singleLine="true"
-          android:text="@{String.format(@string/topic_name, viewModel.topicNameLiveData)}"
+          android:text="@{viewModel.topicToolbarTitleLiveData}"
           android:textColor="@color/white"
           android:textSize="20sp" />
       </androidx.appcompat.widget.Toolbar>

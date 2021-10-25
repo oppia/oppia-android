@@ -1,0 +1,39 @@
+"""
+Domain services & definitions corresponding to managing ephemeral states in play sessions.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "state_deck",
+    srcs = [
+        "StateDeck.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:exploration_checkpoint_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "state_graph",
+    srcs = [
+        "StateGraph.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:exploration_checkpoint_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "state_list",
+    srcs = [
+        "StateList.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:exploration_java_proto_lite",
+        "//model:question_java_proto_lite",
+    ],
+)

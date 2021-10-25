@@ -18,16 +18,18 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
@@ -35,10 +37,12 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -75,6 +79,12 @@ class StoryProgressControllerTest {
   @Captor
   lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
+  @Mock
+  lateinit var mockRetrieveChapterPlayStateObserver: Observer<AsyncResult<ChapterPlayState>>
+
+  @Captor
+  lateinit var retrieveChapterPlayStateCaptor: ArgumentCaptor<AsyncResult<ChapterPlayState>>
+
   private lateinit var profileId: ProfileId
 
   @Before
@@ -102,8 +112,8 @@ class StoryProgressControllerTest {
   }
 
   @Test
-  fun testStoryProgressController_recordRecentlyPlayedChapter_isSuccessful() {
-    storyProgressController.recordRecentlyPlayedChapter(
+  fun testStoryProgressController_recordChapterAsInProgressSaved_isSuccessful() {
+    storyProgressController.recordChapterAsInProgressSaved(
       profileId,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
@@ -115,12 +125,218 @@ class StoryProgressControllerTest {
     verifyRecordProgressSucceeded()
   }
 
+  @Test
+  fun testStoryProgressController_chapterCompleted_markChapterAsSaved_playStateIsCompleted() {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+
+    storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+    verifyChapterPlayStateIsCorrect(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      ChapterPlayState.COMPLETED
+    )
+  }
+
+  @Test
+  fun testStoryProgressController_chapterNotStarted_markChapterAsSaved_playStateIsSaved() {
+    storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+    verifyChapterPlayStateIsCorrect(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      ChapterPlayState.IN_PROGRESS_SAVED
+    )
+  }
+
+  @Test
+  fun testStoryProgressController_markChapterAsNotSaved_markChapterAsSaved_playStateIsSaved() {
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+
+    storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+    verifyChapterPlayStateIsCorrect(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      ChapterPlayState.IN_PROGRESS_SAVED
+    )
+  }
+
+  @Test
+  fun testStoryProgressController_recordChapterAsNotSaved_isSuccessful() {
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+  }
+
+  @Test
+  fun testStoryProgressController_chapterCompleted_markChapterAsNotSaved_playStateIsCompleted() {
+    storyProgressController.recordCompletedChapter(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+    verifyChapterPlayStateIsCorrect(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      ChapterPlayState.COMPLETED
+    )
+  }
+
+  @Test
+  fun testStoryProgressController_chapterNotStarted_markChapterAsSaved_playStateIsNotSaved() {
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+    verifyChapterPlayStateIsCorrect(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      ChapterPlayState.IN_PROGRESS_NOT_SAVED
+    )
+  }
+
+  @Test
+  fun testStoryProgressController_markChapterAsSaved_markChapterAsNotSaved_playStateIsNotSaved() {
+    storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+
+    storyProgressController.recordChapterAsInProgressNotSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    ).toLiveData().observeForever(mockRecordProgressObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyRecordProgressSucceeded()
+    verifyChapterPlayStateIsCorrect(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      ChapterPlayState.IN_PROGRESS_NOT_SAVED
+    )
+  }
+
+  private fun verifyChapterPlayStateIsCorrect(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    chapterPlayState: ChapterPlayState
+  ) {
+    storyProgressController.retrieveChapterPlayStateByExplorationId(
+      profileId,
+      topicId,
+      storyId,
+      explorationId
+    ).toLiveData().observeForever(mockRetrieveChapterPlayStateObserver)
+
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockRetrieveChapterPlayStateObserver, atLeastOnce())
+      .onChanged(retrieveChapterPlayStateCaptor.capture())
+
+    assertThat(retrieveChapterPlayStateCaptor.value.isSuccess()).isTrue()
+    assertThat(retrieveChapterPlayStateCaptor.value.getOrThrow()).isEqualTo(chapterPlayState)
+  }
+
   private fun verifyRecordProgressSucceeded() {
-    verify(
-      mockRecordProgressObserver,
-      atLeastOnce()
-    ).onChanged(recordProgressResultCaptor.capture())
+    verify(mockRecordProgressObserver, atLeastOnce())
+      .onChanged(recordProgressResultCaptor.capture())
     assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
+    reset(mockRecordProgressObserver)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -156,7 +372,8 @@ class StoryProgressControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

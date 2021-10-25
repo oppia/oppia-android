@@ -29,8 +29,9 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
+        android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <TextView
@@ -44,7 +45,9 @@
           android:focusable="false"
           android:focusableInTouchMode="true"
           android:fontFamily="sans-serif"
+          android:gravity="center_vertical"
           android:marqueeRepeatLimit="1"
+          android:minHeight="48dp"
           android:requiresFadingEdge="horizontal"
           android:scrollHorizontally="true"
           android:singleLine="true"

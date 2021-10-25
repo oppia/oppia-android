@@ -1,6 +1,7 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -14,7 +15,7 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     explorationTestActivityPresenter.handleOnCreate()
   }
 
@@ -23,7 +24,8 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isCheckpointingEnabled: Boolean
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -32,7 +34,8 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        isCheckpointingEnabled
       )
     )
   }

@@ -1,0 +1,99 @@
+"""
+General purpose utilities for logging.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "annotations",
+    srcs = [
+        "LoggingAnnotations.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "console_logger",
+    srcs = [
+        "ConsoleLogger.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":annotations",
+        ":log_level",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
+
+kt_android_library(
+    name = "event_bundle_creator",
+    srcs = [
+        "EventBundleCreator.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:event_logger_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "event_logger",
+    srcs = [
+        "EventLogger.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:event_logger_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "exception_logger",
+    srcs = [
+        "ExceptionLogger.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "log_level",
+    srcs = [
+        "LogLevel.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "LoggerModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":annotations",
+        ":dagger",
+        ":log_level",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "log_uploader",
+    srcs = [
+        "LogUploader.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+dagger_rules()

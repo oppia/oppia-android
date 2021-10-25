@@ -10,6 +10,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminPinActivityBinding
@@ -23,7 +24,8 @@ class AdminPinActivityPresenter @Inject constructor(
   private val context: Context,
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<AdminPinViewModel>
+  private val viewModelProvider: ViewModelProvider<AdminPinViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private var inputtedPin = false
@@ -35,9 +37,9 @@ class AdminPinActivityPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up text and button listeners. */
   fun handleOnCreate() {
-    activity.title = activity.getString(R.string.add_profile_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
 
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
@@ -87,7 +89,7 @@ class AdminPinActivityPresenter @Inject constructor(
       var failed = false
       if (inputPin.length < 5) {
         adminViewModel.pinErrorMsg.set(
-          activity.getString(
+          resourceHandler.getStringInLocale(
             R.string.admin_pin_error_pin_length
           )
         )
@@ -95,7 +97,7 @@ class AdminPinActivityPresenter @Inject constructor(
       }
       if (inputPin != confirmPin) {
         adminViewModel.confirmPinErrorMsg.set(
-          activity.getString(
+          resourceHandler.getStringInLocale(
             R.string.admin_pin_error_pin_confirm_wrong
           )
         )

@@ -16,18 +16,14 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/drag_drop_item_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginTop="8dp"
+      android:layout_marginTop="@dimen/drag_drop_interaction_items_margin_top"
+      android:layout_marginBottom="@dimen/drag_drop_interaction_items_margin_bottom"
       android:background="@drawable/rounded_rect_grey_border_gradient_white_background"
-      android:paddingStart="16dp"
-      android:paddingEnd="16dp"
-      app:layoutMarginEnd="@{viewModel.dragAndDropSortInteractionViewModel.isSplitView ? @dimen/space_0dp : @dimen/drag_drop_container_parent_non_split_margin_end}"
-      app:layoutMarginStart="@{viewModel.dragAndDropSortInteractionViewModel.isSplitView ? @dimen/space_0dp : @dimen/drag_drop_container_parent_non_split_margin_start}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/drag_drop_content_group_item"
       app:layout_constraintStart_toStartOf="parent"
@@ -36,21 +32,20 @@
       <LinearLayout
         android:id="@+id/drag_drop_accessible_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp">
+        android:layout_height="wrap_content">
 
         <ImageButton
           android:id="@+id/drag_drop_move_up_item"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:padding="12dp"
           android:background="?attr/selectableItemBackground"
           android:clickable="true"
-          android:contentDescription="@string/move_item_up"
+          android:contentDescription="@{viewModel.computeDragDropMoveUpItemContentDescription()}"
           android:enabled="@{viewModel.itemIndex != 0}"
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleUpMovement(adapter)}"
-          android:src="@drawable/ic_arrow_up_black_24dp"
+          app:srcCompat="@drawable/ic_arrow_up_black_24dp"
           android:tint="@{dragDropMoveUpItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
@@ -58,15 +53,16 @@
 
         <ImageButton
           android:id="@+id/drag_drop_move_down_item"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:padding="12dp"
           android:background="?attr/selectableItemBackground"
           android:clickable="true"
-          android:contentDescription="@string/move_item_down"
+          android:contentDescription="@{viewModel.computeDragDropMoveDownItemContentDescription()}"
           android:enabled="@{viewModel.itemIndex != viewModel.listSize-1}"
           android:focusable="true"
           android:onClick="@{(v) -> viewModel.handleDownMovement(adapter)}"
-          android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+          app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
           android:tint="@{dragDropMoveDownItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}" />
       </LinearLayout>
 
@@ -75,27 +71,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:overScrollMode="never"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:itemDecorator="@{@drawable/divider}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:list="@{viewModel.htmlContent.htmlList}"
+        app:list="@{viewModel.computeStringList().htmlList}"
         tools:itemCount="3"
         tools:listitem="@layout/drag_drop_single_item" />
     </LinearLayout>
 
     <ImageButton
       android:id="@+id/drag_drop_content_group_item"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/drag_drop_content_group_item_margin"
-      android:layout_marginEnd="8dp"
-      android:layout_marginBottom="8dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:background="?attr/selectableItemBackground"
       android:clickable="true"
-      android:contentDescription="@string/link_to_item_below"
+      android:contentDescription="@{viewModel.computeDragDropGroupItemContentDescription()}"
       android:enabled="@{viewModel.itemIndex != viewModel.listSize-1}"
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.handleGrouping(adapter)}"
-      android:src="@drawable/ic_merge_icon_24"
+      android:padding="16dp"
+      app:srcCompat="@drawable/ic_merge_icon_24"
       android:tint="@{dragDropContentGroupItem.enabled? @color/mergeIconEnabled : @color/mergeIconDisabled}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -103,16 +99,15 @@
 
     <ImageButton
       android:id="@+id/drag_drop_content_unlink_items"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="8dp"
-      android:layout_marginEnd="8dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:background="?attr/selectableItemBackground"
       android:clickable="true"
-      android:contentDescription="@string/unlink_items"
+      android:contentDescription="@{viewModel.computeDragDropUnlinkItemContentDescription()}"
       android:focusable="true"
       android:onClick="@{(v) -> viewModel.handleUnlinking(adapter)}"
-      android:src="@drawable/ic_unlink_icon_24"
+      android:padding="16dp"
+      app:srcCompat="@drawable/ic_unlink_icon_24"
       app:layout_constraintBottom_toTopOf="@+id/drag_drop_content_group_item"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

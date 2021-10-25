@@ -1,16 +1,15 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.json.JSONArray
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ChapterProgress
+import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.ConceptCard
+import org.oppia.android.app.model.EphemeralConceptCard
+import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
@@ -18,18 +17,26 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.StoryProgress
+import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Subtopic
+import org.oppia.android.app.model.SubtopicRecord
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
+import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionRetriever
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromObject
+import org.oppia.android.util.caching.AssetRepository
+import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -72,8 +79,11 @@ private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =
   "get_ongoing_topic_list_provider_id"
 private const val GET_TOPIC_PROVIDER_ID = "get_topic_provider_id"
 private const val GET_STORY_PROVIDER_ID = "get_story_provider_id"
+private const val GET_CHAPTER_PROVIDER_ID = "get_chapter_provider_id"
 private const val GET_TOPIC_COMBINED_PROVIDER_ID = "get_topic_combined_provider_id"
 private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_id"
+private const val GET_CONCEPT_CARD_PROVIDER_ID = "get_concept_card_provider_id"
+private const val GET_REVISION_CARD_PROVIDER_ID = "get_revision_card_provider_id"
 
 /** Controller for retrieving all aspects of a topic. */
 @Singleton
@@ -84,8 +94,16 @@ class TopicController @Inject constructor(
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
-  private val exceptionsController: ExceptionsController
+  private val exceptionsController: ExceptionsController,
+  private val assetRepository: AssetRepository,
+  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
+  private val translationController: TranslationController
 ) {
+
+  /**
+   * Indicates that the chapter for the specified exploration, story, and topic ID was not found.
+   */
+  class ChapterNotFoundException(message: String) : Exception(message)
 
   /**
    * Fetches a topic given a profile ID and a topic ID.
@@ -137,33 +155,72 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Returns the [ConceptCard] corresponding to the specified skill ID, or a failed result if there
-   * is none.
+   * Retrieves a chapter given a topic ID, story ID, and exploration ID.
+   *
+   * @param topicId the ID corresponding to the topic which contains this story
+   * @param storyId the ID corresponding to the story which needs to be returned
+   * @param explorationId the ID corresponding to the exploration which needs to be returned
+   * @return a [DataProvider] for [ChapterSummary]
    */
-  fun getConceptCard(skillId: String): LiveData<AsyncResult<ConceptCard>> {
-    return MutableLiveData(
-      try {
-        AsyncResult.success(conceptCardRetriever.loadConceptCard(skillId))
-      } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e)
-        AsyncResult.failed<ConceptCard>(e)
+  fun retrieveChapter(
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<ChapterSummary> {
+    return dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
+      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
+    }.transformAsync(GET_CHAPTER_PROVIDER_ID) { storySummary ->
+      val chapterSummary = fetchChapter(storySummary, explorationId)
+      if (chapterSummary != null) {
+        AsyncResult.success(chapterSummary)
+      } else {
+        AsyncResult.failed(
+          ChapterNotFoundException(
+            "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
+          )
+        )
       }
-    )
+    }
   }
 
   /**
-   * Returns the [RevisionCard] corresponding to the specified topic Id and subtopic ID, or a failed
-   * result if there is none.
+   * Returns the [EphemeralConceptCard] corresponding to the specified skill ID, or a failed result
+   * if there is none.
    */
-  fun getRevisionCard(topicId: String, subtopicId: Int): LiveData<AsyncResult<RevisionCard>> {
-    return MutableLiveData(
-      try {
-        AsyncResult.success(retrieveReviewCard(topicId, subtopicId))
-      } catch (e: Exception) {
-        exceptionsController.logNonFatalException(e)
-        AsyncResult.failed<RevisionCard>(e)
-      }
-    )
+  fun getConceptCard(profileId: ProfileId, skillId: String): DataProvider<EphemeralConceptCard> {
+    return translationController.getWrittenTranslationContentLocale(
+      profileId
+    ).transform(GET_CONCEPT_CARD_PROVIDER_ID) { contentLocale ->
+      EphemeralConceptCard.newBuilder().apply {
+        conceptCard = conceptCardRetriever.loadConceptCard(skillId)
+        writtenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            conceptCard.writtenTranslationMap, contentLocale
+          )
+      }.build()
+    }
+  }
+
+  /**
+   * Returns the [EphemeralRevisionCard] corresponding to the specified topic Id and subtopic ID, or
+   * a failed result if there is none.
+   */
+  fun getRevisionCard(
+    profileId: ProfileId,
+    topicId: String,
+    subtopicId: Int
+  ): DataProvider<EphemeralRevisionCard> {
+    return translationController.getWrittenTranslationContentLocale(
+      profileId
+    ).transform(GET_REVISION_CARD_PROVIDER_ID) { contentLocale ->
+      EphemeralRevisionCard.newBuilder().apply {
+        revisionCard = retrieveReviewCard(topicId, subtopicId)
+        writtenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            revisionCard.writtenTranslationMap, contentLocale
+          )
+      }.build()
+    }
   }
 
   /**
@@ -227,47 +284,33 @@ class TopicController @Inject constructor(
   }
 
   private fun checkIfTopicIsOngoing(topic: Topic, topicProgress: TopicProgress): Boolean {
-    val completedChapterProgressList = ArrayList<ChapterProgress>()
-    val startedChapterProgressList = ArrayList<ChapterProgress>()
-    topicProgress.storyProgressMap.values.toList().forEach { storyProgress ->
-      completedChapterProgressList.addAll(
-        storyProgress.chapterProgressMap.values
-          .filter { chapterProgress ->
-            chapterProgress.chapterPlayState ==
-              ChapterPlayState.COMPLETED
-          }
-      )
-      startedChapterProgressList.addAll(
-        storyProgress.chapterProgressMap.values
-          .filter { chapterProgress ->
-            chapterProgress.chapterPlayState ==
-              ChapterPlayState.STARTED_NOT_COMPLETED
-          }
-      )
+    // If there's at least one story with progress and not yet completed, then the topic
+    // is considered ongoing.
+    return topic.storyList.any { storySummary ->
+      topicProgress.storyProgressMap[storySummary.storyId]?.let { storyProgress ->
+        storySummary.isOngoing(storyProgress)
+      } ?: false
     }
+  }
 
-    // If there is at least 1 completed chapter and 1 not-completed chapter, it is definitely an
-    // ongoing-topic.
-    if (startedChapterProgressList.isNotEmpty()) {
-      return true
-    }
+  /**
+   * Return whether the current [StorySummary] can be considered "ongoing" given the specified
+   * [StoryProgress] (that is, at least one chapter has started and the final chapter isn't yet
+   * completed).
+   */
+  private fun StorySummary.isOngoing(storyProgress: StoryProgress): Boolean {
+    val firstChapterState = storyProgress.getChapterPlayState(chapterList.first().explorationId)
+    val lastChapterState = storyProgress.getChapterPlayState(chapterList.last().explorationId)
+    return firstChapterState != ChapterPlayState.NOT_STARTED &&
+      lastChapterState != ChapterPlayState.COMPLETED
+  }
 
-    if (topic.storyCount != topicProgress.storyProgressCount &&
-      topicProgress.storyProgressMap.isNotEmpty()
-    ) {
-      return true
-    }
-
-    topic.storyList.forEach { storySummary ->
-      if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
-        val storyProgress = topicProgress.storyProgressMap[storySummary.storyId]
-        val lastChapterSummary = storySummary.chapterList.last()
-        if (!storyProgress!!.chapterProgressMap.containsKey(lastChapterSummary.explorationId)) {
-          return true
-        }
-      }
-    }
-    return false
+  /**
+   * Returns the [ChapterPlayState] of this progress for the specified exploration, or
+   * [ChapterPlayState.NOT_STARTED] if the exploration hasn't even been attempted yet.
+   */
+  private fun StoryProgress.getChapterPlayState(explorationId: String): ChapterPlayState {
+    return chapterProgressMap[explorationId]?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
   }
 
   private fun createCompletedStoryListFromProgress(
@@ -295,7 +338,7 @@ class TopicController @Inject constructor(
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */
-  private fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
+  internal fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
     val topicBuilder = topic.toBuilder()
     if (topicProgress.storyProgressMap.isNotEmpty()) {
       topic.storyList.forEachIndexed { storyIndex, storySummary ->
@@ -348,13 +391,43 @@ class TopicController @Inject constructor(
     }
   }
 
-  // TODO(#21): Expose this as a data provider, or omit if it's not needed.
   internal fun retrieveTopic(topicId: String): Topic {
-    return createTopicFromJson(topicId)
+    return if (loadLessonProtosFromAssets) {
+      val topicRecord =
+        assetRepository.loadProtoFromLocalAssets(
+          assetName = topicId,
+          baseMessage = TopicRecord.getDefaultInstance()
+        )
+      val subtopics = topicRecord.subtopicIdsList.map { loadSubtopic(topicId, it) }
+      val stories = topicRecord.canonicalStoryIdsList.map { loadStorySummary(it) }
+      return Topic.newBuilder().apply {
+        this.topicId = topicId
+        name = topicRecord.name
+        description = topicRecord.description
+        addAllStory(stories)
+        topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
+        diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
+        addAllSubtopic(subtopics)
+        topicPlayAvailability = TopicPlayAvailability.newBuilder().apply {
+          if (topicRecord.isPublished) availableToPlayNow = true else availableToPlayInFuture = true
+        }.build()
+      }.build()
+    } else createTopicFromJson(topicId)
+  }
+
+  private fun fetchChapter(
+    storySummary: StorySummary,
+    explorationId: String
+  ): ChapterSummary? {
+    return storySummary.chapterList.firstOrNull {
+      it.explorationId == explorationId
+    }
   }
 
   internal fun retrieveStory(topicId: String, storyId: String): StorySummary {
-    return createStorySummaryFromJson(topicId, storyId)
+    return if (loadLessonProtosFromAssets) {
+      loadStorySummary(storyId)
+    } else createStorySummaryFromJson(topicId, storyId)
   }
 
   // TODO(#45): Expose this as a data provider, or omit if it's not needed.
@@ -407,14 +480,27 @@ class TopicController @Inject constructor(
     }
     return Topic.newBuilder()
       .setTopicId(topicId)
-      .setName(topicData.getString("topic_name"))
-      .setDescription(topicData.getString("topic_description"))
+      .setName(topicData.getStringFromObject("topic_name"))
+      .setDescription(topicData.getStringFromObject("topic_description"))
       .addAllStory(storySummaryList)
-      .setTopicThumbnail(createTopicThumbnail(topicData))
-      .setDiskSizeBytes(computeTopicSizeBytes(getAssetFileNameList(topicId)))
+      .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
+      .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
       .addAllSubtopic(subtopicList)
       .setTopicPlayAvailability(topicPlayAvailability)
       .build()
+  }
+
+  private fun loadSubtopic(topicId: String, subtopicId: Int): Subtopic {
+    val subtopicRecord = assetRepository.loadProtoFromLocalAssets(
+      assetName = "${topicId}_$subtopicId",
+      baseMessage = SubtopicRecord.getDefaultInstance()
+    )
+    return Subtopic.newBuilder().apply {
+      this.subtopicId = subtopicId
+      title = subtopicRecord.subtopicTitle
+      addAllSkillIds(subtopicRecord.skillIdsList)
+      subtopicThumbnail = subtopicRecord.subtopicThumbnail
+    }.build()
   }
 
   /**
@@ -444,14 +530,36 @@ class TopicController @Inject constructor(
     return subtopicList
   }
 
-  private fun computeTopicSizeBytes(constituentFiles: List<String>): Long {
+  private fun computeTopicSizeBytes(constituentFiles: List<String>): Int {
     // TODO(#169): Compute this based on protos & the combined topic package.
-    // TODO(#386): Incorporate audio & image files in this computation.
-    return constituentFiles.map(jsonAssetRetriever::getAssetSize).map(Int::toLong)
-      .reduceRight(Long::plus)
+    // TODO(#169): Incorporate image files in this computation.
+    return constituentFiles.map { file ->
+      if (loadLessonProtosFromAssets) {
+        assetRepository.getLocalAssetProtoSize(file)
+      } else {
+        jsonAssetRetriever.getAssetSize(file)
+      }
+    }.sum()
   }
 
-  internal fun getAssetFileNameList(topicId: String): List<String> {
+  private fun getProtoAssetFileNameList(topicId: String): List<String> {
+    val topicRecord =
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = topicId,
+        baseMessage = TopicRecord.getDefaultInstance()
+      )
+    val storyRecords = topicRecord.canonicalStoryIdsList.map { storyId ->
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = storyId,
+        baseMessage = StoryRecord.getDefaultInstance()
+      )
+    }
+    return storyRecords.flatMap { storyRecord: StoryRecord ->
+      storyRecord.chaptersList.map(ChapterRecord::getExplorationId) + storyRecord.storyId
+    } + topicRecord.subtopicIdsList.map { "${topicId}_$it" } + listOf("skills", topicId)
+  }
+
+  internal fun getJsonAssetFileNameList(topicId: String): List<String> {
     val assetFileNameList = mutableListOf<String>()
     assetFileNameList.add("questions.json")
     assetFileNameList.add("skills.json")
@@ -520,17 +628,41 @@ class TopicController @Inject constructor(
       .build()
   }
 
+  private fun loadStorySummary(storyId: String): StorySummary {
+    val storyRecord =
+      assetRepository.loadProtoFromLocalAssets(
+        assetName = storyId,
+        baseMessage = StoryRecord.getDefaultInstance()
+      )
+    return StorySummary.newBuilder().apply {
+      this.storyId = storyId
+      storyName = storyRecord.storyName
+      storyThumbnail = storyRecord.storyThumbnail
+      addAllChapter(
+        storyRecord.chaptersList.map { chapterRecord ->
+          ChapterSummary.newBuilder().apply {
+            explorationId = chapterRecord.explorationId
+            name = chapterRecord.title
+            summary = chapterRecord.description
+            chapterPlayState = ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
+            chapterThumbnail = chapterRecord.chapterThumbnail
+          }.build()
+        }
+      )
+    }.build()
+  }
+
   private fun createChaptersFromJson(chapterData: JSONArray): List<ChapterSummary> {
     val chapterList = mutableListOf<ChapterSummary>()
 
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
-      val explorationId = chapter.getString("exploration_id")
+      val explorationId = chapter.getStringFromObject("exploration_id")
       chapterList.add(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
-          .setName(chapter.getString("title"))
-          .setSummary(chapter.getString("outline"))
+          .setName(chapter.optString("title"))
+          .setSummary(chapter.optString("description"))
           .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
           .setChapterThumbnail(createChapterThumbnail(chapter))
           .build()

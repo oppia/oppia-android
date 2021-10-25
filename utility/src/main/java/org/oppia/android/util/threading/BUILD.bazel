@@ -1,0 +1,34 @@
+"""
+General purpose utilities for multi-threading and concurrency.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "annotations",
+    srcs = [
+        "BackgroundDispatcher.kt",
+        "BlockingDispatcher.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "DispatcherModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":annotations",
+        ":dagger",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-android",
+    ],
+)
+
+dagger_rules()

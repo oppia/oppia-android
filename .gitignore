@@ -29,3 +29,5 @@ gradlew.bat
 config/oppia-dev-workflow-remote-cache-credentials.json
 bazel-*
 .bazelproject
+.aswb
+*.pb

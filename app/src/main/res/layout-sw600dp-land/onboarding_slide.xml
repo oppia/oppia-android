@@ -19,7 +19,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:importantForAccessibility="yes">
 
       <ImageView
         android:id="@+id/slide_image_view"
@@ -27,7 +28,7 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:importantForAccessibility="no"
-        android:src="@{viewModel.slideImage}"
+        app:srcCompat="@{viewModel.slideImage}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="40:39"
         app:layout_constraintStart_toStartOf="parent"

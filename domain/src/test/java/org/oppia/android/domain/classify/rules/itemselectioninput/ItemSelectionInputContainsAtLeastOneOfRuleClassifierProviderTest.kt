@@ -9,59 +9,28 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider]. */
+@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
   private val ITEM_SELECTION_12345 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1", "test2", "test3", "test4", "test5")
-    )
-
-  private val ITEM_SELECTION_1 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1")
-    )
-
-  private val ITEM_SELECTION_16 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1", "test6")
-    )
-
-  private val ITEM_SELECTION_12 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1", "test2")
-    )
-
-  private val ITEM_SELECTION_126 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1", "test2", "test6")
-    )
-
-  private val ITEM_SELECTION_NONE =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList()
-    )
-
-  private val ITEM_SELECTION_6 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test6")
-    )
+    createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4", "test5")
+  private val ITEM_SELECTION_1 = createSetOfTranslatableHtmlContentIds("test1")
+  private val ITEM_SELECTION_16 = createSetOfTranslatableHtmlContentIds("test1", "test6")
+  private val ITEM_SELECTION_12 = createSetOfTranslatableHtmlContentIds("test1", "test2")
+  private val ITEM_SELECTION_126 = createSetOfTranslatableHtmlContentIds("test1", "test2", "test6")
+  private val ITEM_SELECTION_NONE = createSetOfTranslatableHtmlContentIds()
+  private val ITEM_SELECTION_6 = createSetOfTranslatableHtmlContentIds("test6")
 
   @Inject
   internal lateinit var itemSelectionInputContainsAtLeastOneOfRuleClassifierProvider:
@@ -82,7 +51,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -94,7 +64,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -106,7 +77,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -118,7 +90,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -130,7 +103,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -142,7 +116,8 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()

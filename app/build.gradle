@@ -91,6 +91,18 @@ android {
   }
 }
 
+// See notice for the excluded files in domain/build.gradle for an explanation.
+def filesToExclude = [
+    '**/*AppLanguageLocaleHandlerTest*.kt',
+    '**/*AppLanguageResourceHandlerTest*.kt',
+    '**/*AppLanguageWatcherMixinTest*.kt',
+]
+tasks.withType(SourceTask.class).configureEach {
+  it.exclude(filesToExclude)
+}
+android.sourceSets.test.java.exclude(filesToExclude)
+android.sourceSets.test.kotlin.exclude(filesToExclude)
+
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
@@ -110,9 +122,9 @@ dependencies {
       'androidx.multidex:multidex:2.0.1',
       'androidx.recyclerview:recyclerview:1.0.0',
       'androidx.work:work-runtime-ktx:2.4.0',
-      'com.chaos.view:pinview:1.4.4',
+      'io.github.chaosleung:pinview:1.4.4',
       'com.github.bumptech.glide:glide:4.11.0',
-      'com.google.android:flexbox:2.0.1',
+      'com.google.android.flexbox:flexbox:3.0.0',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics:17.5.0',
@@ -120,7 +132,8 @@ dependencies {
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
-      'com.jackandphantom.android:circularimageview:1.2.0',
+      'com.google.protobuf:protobuf-javalite:3.17.3',
+      'com.github.oppia:CircularImageview:35d08ba88a',
       'de.hdodenhof:circleimageview:3.0.1',
       'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
@@ -128,16 +141,24 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
       'org.mockito:mockito-core:2.7.22',
   )
+  compileOnly(
+      'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
+      'javax.annotation:javax.annotation-api:1.3.2',
+      'org.glassfish.jaxb:jaxb-runtime:2.3.2',
+  )
   testImplementation(
       'androidx.test:core:1.2.0',
       'androidx.test.espresso:espresso-contrib:3.1.0',
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
+      'androidx.test.ext:truth:1.4.0',
+      'androidx.work:work-testing:2.4.0',
       'com.github.bumptech.glide:mocks:4.11.0',
-      'com.google.truth:truth:0.43',
-      'org.robolectric:annotations:4.3',
-      'org.robolectric:robolectric:4.3',
+      'com.google.truth:truth:1.1.3',
+      'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
+      'org.robolectric:annotations:4.4',
+      'org.robolectric:robolectric:4.4',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.mockito:mockito-core:2.7.22',
@@ -150,14 +171,14 @@ dependencies {
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
       'com.github.bumptech.glide:mocks:4.11.0',
-      'com.google.truth:truth:0.43',
+      'com.google.truth:truth:1.1.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',
-      'org.robolectric:annotations:4.3',
+      'org.robolectric:annotations:4.4',
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
   // exclude them before adding the testing module to the androidTestImplementation dependencies
-  androidTestImplementation (project(":testing")) {
+  androidTestImplementation(project(":testing")) {
     exclude group: 'org.apache.maven', module: 'maven-artifact'
     exclude group: 'org.apache.maven', module: 'maven-artifact-manager'
     exclude group: 'org.apache.maven', module: 'maven-model'
@@ -183,7 +204,7 @@ dependencies {
   kaptAndroidTest(
       'com.google.dagger:dagger-compiler:2.24'
   )
-  // TODO (#59): Remove this once Bazel is introduced
+  // TODO(#59): Remove this once Bazel is introduced
   api project(':data')
   implementation project(":model")
   testImplementation project(":model")

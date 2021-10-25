@@ -1,0 +1,86 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+"""
+Library for providing top-level HTTP networking support for Oppia's App Engine backend.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "network_interceptors",
+    srcs = [
+        "JsonPrefixNetworkInterceptor.kt",
+        "NetworkApiKey.kt",
+        "RemoteAuthNetworkInterceptor.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":constants",
+        ":network_config_annotations",
+        "//model:arguments_java_proto_lite",
+        "//third_party:com_squareup_okhttp3_okhttp",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+    ],
+)
+
+kt_android_library(
+    name = "network_config_prod_module",
+    srcs = [
+        "NetworkConfigProdModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":network_config_annotations",
+    ],
+)
+
+kt_android_library(
+    name = "constants",
+    srcs = [
+        "Constants.kt",
+    ],
+)
+
+kt_android_library(
+    name = "network_config_annotations",
+    srcs = [
+        "BaseUrl.kt",
+        "XssiPrefix.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_retrofit",
+    srcs = [
+        "OppiaRetrofit.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "NetworkModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":network_config_annotations",
+        ":network_interceptors",
+        ":oppia_retrofit",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/api",
+        "//third_party:com_google_guava_guava",
+        "//third_party:com_squareup_retrofit2_converter-moshi",
+    ],
+)
+
+dagger_rules()

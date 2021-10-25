@@ -23,9 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
-        app:navigationContentDescription="@string/go_to_previous_page"
+        app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <TextView
@@ -39,11 +40,12 @@
           android:focusable="false"
           android:focusableInTouchMode="true"
           android:fontFamily="sans-serif"
+          android:gravity="center_vertical"
           android:marqueeRepeatLimit="1"
+          android:minHeight="48dp"
           android:requiresFadingEdge="horizontal"
           android:scrollHorizontally="true"
           android:singleLine="true"
-          android:textAlignment="viewStart"
           android:textColor="@color/white"
           android:textSize="20sp" />
       </androidx.appcompat.widget.Toolbar>

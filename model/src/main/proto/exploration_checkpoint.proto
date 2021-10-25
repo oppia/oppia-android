@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package model;
+
+import "exploration.proto";
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Top-level proto used to store exploration checkpoint per-profile basis.
+message ExplorationCheckpointDatabase {
+
+  // Map from exploration ID to ExplorationCheckpoint.
+  map<string, ExplorationCheckpoint> exploration_checkpoint = 1;
+}
+
+// Corresponds to the exploration checkpoint which will be used to resume the exploration.
+// This model contains information about all states of the deck which have been visited by the user.
+message ExplorationCheckpoint {
+
+  // The name of the latest state in the deck.
+  string pending_state_name = 1;
+
+  // The list of all states which the learner has previously completed.
+  repeated CompletedStateInCheckpoint completed_states_in_checkpoint = 2;
+
+  // Stores answers to the latest state in the deck.
+  repeated AnswerAndResponse pending_user_answers = 3;
+
+  // The index of the current selected state from the deck of states.
+  int32 state_index = 4;
+
+  // The last revealed hint index (deprecated). This has been functionally replaced by the HelpIndex
+  // provided below.
+  reserved 5;
+
+  // Whether the solution was revealed (deprecated). This has been functionally replaced by the
+  // HelpIndex provided below.
+  reserved 6;
+
+  // The title of the exploration whose checkpoint is saved.
+  string exploration_title = 7;
+
+  // Stores the version of the exploration which is compatible with the saved checkpoint.
+  int32 exploration_version = 8;
+
+  // The timestamp in milliseconds of when the checkpoint was saved for the first time.
+  int64 timestamp_of_first_checkpoint = 9;
+
+  // The saved help index for the exploration.
+  HelpIndex help_index = 10;
+}
+
+// Corresponds to exploration states that have been completed.
+message CompletedStateInCheckpoint {
+
+  // Corresponds to an exploration state that the learner has previous completed. Contains a list
+  // of AnswerAndResponse for a previous state.
+  CompletedState completed_state = 1;
+
+  // The name of the state previously completed.
+  string state_name = 2;
+}
+
+// Structure that holds the the exploration_title and the exploration_id associated with a saved
+// checkpoint. This container is used to return the details required to delete the oldest checkpoint
+// when the space allocated to save the checkpoints runs out.
+message ExplorationCheckpointDetails{
+
+  // The ID of the stored exploration checkpoint.
+  string exploration_id = 1;
+
+  // The title of the exploration whose checkpoint is saved.
+  string exploration_title = 2;
+
+  // Stores the version of the exploration which is compatible with the saved checkpoint.
+  int32 exploration_version = 3;
+}

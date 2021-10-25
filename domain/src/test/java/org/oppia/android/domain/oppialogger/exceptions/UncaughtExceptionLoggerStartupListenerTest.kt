@@ -24,21 +24,22 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.OppiaExceptionLogs
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.logging.EnableConsoleLog
-import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -61,7 +62,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
   lateinit var uncaughtExceptionLoggerStartupListener: UncaughtExceptionLoggerStartupListener
 
   @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -80,13 +81,12 @@ class UncaughtExceptionLoggerStartupListenerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
 
   @Test
   fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     val exceptionThrown = Exception("TEST")
     uncaughtExceptionLoggerStartupListener.uncaughtException(
       Thread.currentThread(),
@@ -134,20 +134,6 @@ class UncaughtExceptionLoggerStartupListenerTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   @Module
@@ -163,7 +149,9 @@ class UncaughtExceptionLoggerStartupListenerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class, FakeOppiaClockModule::class
+      TestDispatcherModule::class, TestLogStorageModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
+      AssetModule::class, UncaughtExceptionLoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

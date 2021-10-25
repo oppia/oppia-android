@@ -1,41 +1,27 @@
 {
-  "canonical_story_dicts": [
-    {
-      "thumbnail_bg_color": "#B378F1",
-      "description": "",
-      "title": "First Story",
-      "node_titles": [
-        "Prototype Exploration",
-        "Image Click Input Exploration"
-      ],
-      "thumbnail_filename": "",
-      "published": true,
-      "id": "test_story_id_0"
-    },
-    {
-      "thumbnail_bg_color": "#78B3F1",
-      "description": "",
-      "title": "Second Story",
-      "node_titles": [
-        "Second Exploration",
-        "Third Exploration",
-        "Fourth Exploration"
-      ],
-      "thumbnail_filename": "",
-      "published": true,
-      "id": "test_story_id_1"
-    }
-  ],
+  "canonical_story_dicts": [{
+    "thumbnail_bg_color": "#b378f1",
+    "description": "<removed>",
+    "title": "First Story",
+    "node_titles": ["Prototype Exploration", "Image Region Selection Exploration"],
+    "thumbnail_filename": "",
+    "published": true,
+    "id": "test_story_id_0"
+  }],
   "uncategorized_skill_ids": [],
   "additional_story_dicts": [],
-  "topic_description": "A topic investigating the interesting aspects of the Oppia Android app.",
   "topic_name": "First Test Topic",
+  "topic_description": "A topic investigating the interesting aspects of the Oppia Android app.",
   "topic_id": "test_topic_id_0",
-  "version": 1,
-  "published": true,
-  "skill_descriptions": {
-    "test_skill_id_0": "An important skill",
-    "test_skill_id_1": "Another important skill"
-  },
-  "subtopics": []
+  "thumbnail_bg_color": "#000000",
+  "thumbnail_filename": "",
+  "skill_descriptions": {},
+  "subtopics": [{
+    "thumbnail_bg_color": "#ff72ff",
+    "skill_ids": ["test_skill_id_0", "test_skill_id_1", "test_skill_id_2"],
+    "id": 1,
+    "thumbnail_filename": "",
+    "title": "Test subtopic"
+  }],
+  "published": true
 }

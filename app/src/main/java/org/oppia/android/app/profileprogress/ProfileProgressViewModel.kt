@@ -9,19 +9,20 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.OngoingStoryList
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.shim.IntentFactoryShim
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The [ObservableViewModel] for [ProfileProgressFragment]. */
@@ -33,8 +34,9 @@ class ProfileProgressViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val topicController: TopicController,
   private val topicListController: TopicListController,
-  private val logger: ConsoleLogger,
-  @StoryHtmlParserEntityType private val entityType: String
+  private val oppiaLogger: OppiaLogger,
+  @StoryHtmlParserEntityType private val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -73,7 +75,7 @@ class ProfileProgressViewModel @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileProgressFragment",
         "Failed to retrieve profile",
         profileResult.getErrorOrNull()!!
@@ -82,59 +84,70 @@ class ProfileProgressViewModel @Inject constructor(
     return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
-  private val ongoingStoryListResultLiveData: LiveData<AsyncResult<OngoingStoryList>> by lazy {
-    topicListController.getOngoingStoryList(profileId).toLiveData()
+  private val promotedActivityListResultLiveData:
+    LiveData<AsyncResult<PromotedActivityList>> by lazy {
+      topicListController.getPromotedActivityList(profileId).toLiveData()
+    }
+
+  private val promotedActivityListLiveData: LiveData<PromotedActivityList> by lazy {
+    Transformations.map(
+      promotedActivityListResultLiveData,
+      ::processPromotedActivityListResult
+    )
   }
 
-  private val ongoingStoryListLiveData: LiveData<OngoingStoryList> by lazy {
-    Transformations.map(ongoingStoryListResultLiveData, ::processOngoingStoryResult)
-  }
-
-  var refreshedOngoingStoryListViewModelLiveData =
+  var refreshedPromotedActivityListViewModelLiveData =
     MutableLiveData<List<ProfileProgressItemViewModel>>()
 
   /**
-   * Reprocesses the data of the [refreshedOngoingStoryListViewModelLiveData] so that we have the
+   * Reprocesses the data of the [refreshedPromotedActivityListViewModelLiveData] so that we have the
    * correct number of items on configuration changes
    */
   fun handleOnConfigurationChange() {
     limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
-    refreshedOngoingStoryListViewModelLiveData =
-      Transformations.map(ongoingStoryListLiveData, ::processOngoingStoryList) as MutableLiveData
+    refreshedPromotedActivityListViewModelLiveData =
+      Transformations.map(
+      promotedActivityListLiveData,
+      ::processPromotedActivityList
+    ) as MutableLiveData
   }
 
-  private fun processOngoingStoryResult(
-    ongoingStoryListResult: AsyncResult<OngoingStoryList>
-  ): OngoingStoryList {
-    if (ongoingStoryListResult.isFailure()) {
-      logger.e(
+  private fun processPromotedActivityListResult(
+    promotedActivityListtResult: AsyncResult<PromotedActivityList>
+  ): PromotedActivityList {
+    if (promotedActivityListtResult.isFailure()) {
+      oppiaLogger.e(
         "ProfileProgressFragment",
-        "Failed to retrieve ongoing story list: ",
-        ongoingStoryListResult.getErrorOrNull()!!
+        "Failed to retrieve promoted story list: ",
+        promotedActivityListtResult.getErrorOrNull()!!
       )
     }
-    return ongoingStoryListResult.getOrDefault(OngoingStoryList.getDefaultInstance())
+    return promotedActivityListtResult.getOrDefault(PromotedActivityList.getDefaultInstance())
   }
 
-  private fun processOngoingStoryList(
-    ongoingStoryList: OngoingStoryList
+  private fun processPromotedActivityList(
+    recommendedActivityList: PromotedActivityList
   ): List<ProfileProgressItemViewModel> {
-    limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
-    val itemList = if (ongoingStoryList.recentStoryList.size > limit) {
-      ongoingStoryList.recentStoryList.subList(0, limit)
-    } else {
-      ongoingStoryList.recentStoryList
+    with(recommendedActivityList.promotedStoryList) {
+      headerViewModel.setRecentlyPlayedStoryCount(recentlyPlayedStoryList.size)
+      limit = fragment.resources.getInteger(R.integer.profile_progress_limit)
+      val itemList =
+        if (recentlyPlayedStoryList.size > limit) {
+          recentlyPlayedStoryList.subList(0, limit)
+        } else {
+          recentlyPlayedStoryList
+        }
+      itemViewModelList.clear()
+      itemViewModelList.add(headerViewModel as ProfileProgressItemViewModel)
+      itemViewModelList.addAll(
+        itemList.map { story ->
+          RecentlyPlayedStorySummaryViewModel(
+            activity, internalProfileId, story, entityType, intentFactoryShim, resourceHandler
+          )
+        }
+      )
+      return itemViewModelList
     }
-    itemViewModelList.clear()
-    itemViewModelList.add(headerViewModel as ProfileProgressItemViewModel)
-    itemViewModelList.addAll(
-      itemList.map { story ->
-        RecentlyPlayedStorySummaryViewModel(
-          activity, internalProfileId, story, entityType, intentFactoryShim
-        )
-      }
-    )
-    return itemViewModelList
   }
 
   private fun subscribeToCompletedStoryListLiveData() {
@@ -157,7 +170,7 @@ class ProfileProgressViewModel @Inject constructor(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
     if (completedStoryListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileProgressFragment",
         "Failed to retrieve completed story list",
         completedStoryListResult.getErrorOrNull()!!
@@ -186,7 +199,7 @@ class ProfileProgressViewModel @Inject constructor(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
     if (ongoingTopicListResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileProgressFragment",
         "Failed to retrieve ongoing topic list",
         ongoingTopicListResult.getErrorOrNull()!!

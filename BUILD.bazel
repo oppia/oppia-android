@@ -1,19 +1,137 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
-# TODO(#1640): Move binary manifest to top-level package post-Gradle.
-android_binary(
-    name = "oppia",
-    custom_package = "org.oppia.android",
-    enable_data_binding = True,
-    manifest = "//app:src/main/AndroidManifest.xml",
-    manifest_values = {
-        "applicationId": "org.oppia.android",
-        "versionCode": "0",
-        "versionName": "0.1-alpha",
-        "minSdkVersion": "19",
-        "targetSdkVersion": "29",
-    },
-    multidex = "native",  # TODO(#1875): Re-enable legacy for optimized release builds.
-    deps = [
-        "//app",
+
+load("//:build_flavors.bzl", "AVAILABLE_FLAVORS", "define_oppia_aab_binary_flavor", "transform_android_manifest")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
+
+# This is exported here since config/ isn't a Bazel package.
+exports_files(["config/kitkat_main_dex_class_list.txt"])
+
+# Corresponds to being accessible to all Oppia targets. This should be used for production APIs &
+# modules that may be used both in production targets and in tests.
+package_group(
+    name = "oppia_api_visibility",
+    packages = [
+        "//...",
     ],
 )
+
+# Corresponds to being accessible to the Oppia binary. This should only be used by production-facing
+# modules that must be included in the top-level binary in order for the app to build.
+package_group(
+    name = "oppia_binary_visibility",
+    packages = [
+        "//",
+    ],
+)
+
+# Corresponds to being accessible to Oppia tests. This should be used by fakes & test-only modules
+# that can be included in tests for custom state arrangement or to satisfy upstream/downstream
+# dependency requirements for components whose production implementations cannot be used in test
+# environments.
+# TODO(#2773): Remove the open visibility access granted here & instead restrict this access to only
+# test targets.
+package_group(
+    name = "oppia_testing_visibility",
+    packages = [
+        "//app/...",
+        "//data/...",
+        "//domain/...",
+        "//instrumentation/...",
+        "//testing/...",
+        "//utility/...",
+    ],
+)
+
+package_group(
+    name = "oppia_e2e_testing_visibility",
+    packages = [
+        "//instrumentation/...",
+    ],
+)
+
+# Special visibility group specific to debug mode. This provides access to the target for both the
+# Oppia tests and specific debug only packages.
+package_group(
+    name = "oppia_debug_visibility",
+    includes = [
+        ":oppia_testing_visibility",
+    ],
+    packages = [
+        "//app/src/main/java/org/oppia/android/app/devoptions/...",
+    ],
+)
+
+# Special visibility group specific to prod modules. This provides access to the module for both the
+# Oppia binary & tests.
+package_group(
+    name = "oppia_prod_module_visibility",
+    includes = [
+        ":oppia_binary_visibility",
+        ":oppia_testing_visibility",
+    ],
+)
+
+# TODO(#1640): Move binary manifest to top-level package post-Gradle.
+[
+    transform_android_manifest(
+        name = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
+        build_flavor = apk_flavor_metadata["flavor"],
+        input_file = "//app:src/main/AndroidManifest.xml",
+        major_version = MAJOR_VERSION,
+        minor_version = MINOR_VERSION,
+        output_file = "AndroidManifest_transformed_%s.xml" % apk_flavor_metadata["flavor"],
+        version_code = apk_flavor_metadata["version_code"],
+    )
+    for apk_flavor_metadata in [
+        {
+            "flavor": "oppia",
+            "version_code": OPPIA_DEV_VERSION_CODE,
+        },
+        {
+            "flavor": "oppia_kitkat",
+            "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
+        },
+    ]
+]
+
+[
+    android_binary(
+        name = apk_flavor_metadata["flavor"],
+        custom_package = "org.oppia.android",
+        enable_data_binding = True,
+        main_dex_list = apk_flavor_metadata.get("main_dex_list"),
+        manifest = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
+        manifest_values = {
+            "applicationId": "org.oppia.android",
+            "minSdkVersion": "%d" % apk_flavor_metadata["min_sdk_version"],
+            "targetSdkVersion": "%d" % apk_flavor_metadata["target_sdk_version"],
+        },
+        multidex = apk_flavor_metadata["multidex"],
+        deps = [
+            "//app",
+        ],
+    )
+    for apk_flavor_metadata in [
+        {
+            "flavor": "oppia",
+            "min_sdk_version": 21,
+            "multidex": "native",
+            "target_sdk_version": 29,
+        },
+        {
+            "flavor": "oppia_kitkat",
+            "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
+            "min_sdk_version": 19,
+            "multidex": "manual_main_dex",
+            "target_sdk_version": 29,
+        },
+    ]
+]
+
+# Define all binary flavors that can be built. Note that these are AABs, not APKs, and can be
+# be installed on a local device or emulator using a 'bazel run' command like so:
+#  bazel run //:install_oppia_dev
+[
+    define_oppia_aab_binary_flavor(flavor = flavor)
+    for flavor in AVAILABLE_FLAVORS
+]

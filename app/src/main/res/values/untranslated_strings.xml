@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name" translatable="false">Oppia</string>
+  <!-- DeveloperOptionsActivity -->
+  <string name="developer_options_activity_title" translatable="false">Developer Options</string>
+  <string name="developer_options_modify_lesson_progress_label" translatable="false">Modify Lesson Progress</string>
+  <string name="developer_options_mark_chapters_completed" translatable="false">Mark Chapters Completed</string>
+  <string name="developer_options_mark_stories_completed" translatable="false">Mark Stories Completed</string>
+  <string name="developer_options_mark_topics_completed" translatable="false">Mark Topics Completed</string>
+  <string name="developer_options_view_logs_label" translatable="false">View Logs</string>
+  <string name="developer_options_event_logs" translatable="false">Event Logs</string>
+  <string name="developer_options_override_app_behaviors_label" translatable="false">Override App Behaviors</string>
+  <string name="developer_options_show_all_hints_solution" translatable="false">Show all hints/solution</string>
+  <string name="developer_options_force_network_type" translatable="false">Force network type</string>
+  <string name="developer_options_force_crash" translatable="false">Force crash</string>
+  <string name="modify_lesson_progress_all" translatable="false">All</string>
+  <string name="modify_lesson_progress_mark_completed_uppercase" translatable="false">MARK COMPLETED</string>
+  <string name="force_network_type_network_selected" translatable="false">Network is selected</string>
+  <string name="force_network_type_default_network" translatable="false">Default</string>
+  <string name="force_network_type_wifi_network" translatable="false">Wifi</string>
+  <string name="force_network_type_cellular_network" translatable="false">Cellular</string>
+  <string name="force_network_type_no_network" translatable="false">No network</string>
+  <string name="mark_chapters_completed_activity_title" translatable="false">Mark Chapters Completed</string>
+  <string name="mark_stories_completed_activity_title" translatable="false">Mark Stories Completed</string>
+  <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
+  <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
+  <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
+</resources>

@@ -22,3 +22,6 @@ bash ../oppia-android/scripts/ktlint_download.sh
 
 # Download checkstyle
 bash ../oppia-android/scripts/checkstyle_download.sh
+
+# Download buf
+bash ../oppia-android/scripts/buf_download.sh

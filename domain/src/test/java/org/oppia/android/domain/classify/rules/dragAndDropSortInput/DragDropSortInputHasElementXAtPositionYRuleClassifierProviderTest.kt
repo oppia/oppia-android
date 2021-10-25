@@ -9,7 +9,10 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableHtmlContentId
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
@@ -18,31 +21,20 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [DragDropSortInputHasElementXAtPositionYClassifierProvider]. */
+@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
-  private val NON_NEGATIVE_VALUE_0 =
-    InteractionObjectTestBuilder.createNonNegativeInt(value = 1)
-
-  private val NON_NEGATIVE_VALUE_1 =
-    InteractionObjectTestBuilder.createNonNegativeInt(value = 2)
-
-  private val STRING_VALUE_2 =
-    InteractionObjectTestBuilder.createString(value = "test item 2")
-
-  private val STRING_VALUE_3 =
-    InteractionObjectTestBuilder.createString(value = "test item invalid")
-
-  private val LIST_OF_SETS_OF_HTML_STRING_VALUE =
-    InteractionObjectTestBuilder.createListOfSetsOfHtmlStrings(
-      listOf(
-        InteractionObjectTestBuilder.createHtmlStringList("1", "2"),
-        InteractionObjectTestBuilder.createHtmlStringList(
-          "test item 1", "test item 2", "test item 3"
-        )
-      )
+  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 1)
+  private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 2)
+  private val VALID_CONTENT_ID_2 = createTranslatableHtmlContentId(contentId = "valid_content_id_2")
+  private val INVALID_CONTENT_ID = createTranslatableHtmlContentId(contentId = "invalid_content_id")
+  private val LIST_OF_SETS_OF_CONTENT_IDS =
+    createListOfSetsOfTranslatableHtmlContentIds(
+      listOf("other_id_1", "other_id_2"),
+      listOf("valid_content_id_1", "valid_content_id_2", "valid_content_id_3")
     )
 
   @Inject
@@ -61,18 +53,19 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
   @Test
   fun testAnswer_nonNegativeInput_testString_bothInputsWithIncorrectTypes_throwsException() {
     // Reverse the x and y parameters to ensure both have the incorrect type.
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to STRING_VALUE_2)
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected input value to be of type NORMALIZED_STRING not NON_NEGATIVE_INT")
+      .contains("Expected input value to be of type TRANSLATABLE_HTML_CONTENT_ID")
   }
 
   @Test
@@ -84,40 +77,43 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected input value to be of type NORMALIZED_STRING not NON_NEGATIVE_INT")
+      .contains("Expected input value to be of type TRANSLATABLE_HTML_CONTENT_ID")
   }
 
   @Test
   fun testAnswer_nonNegativeInput_testString_yInputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE_2, "y" to STRING_VALUE_2)
+    val inputs = mapOf("x" to VALID_CONTENT_ID_2, "y" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected input value to be of type NON_NEGATIVE_INT not NORMALIZED_STRING")
+      .contains("Expected input value to be of type NON_NEGATIVE_INT")
   }
 
   @Test
   fun testAnswer_testString_missingInputX_throwsException() {
-    val inputs = mapOf("y" to STRING_VALUE_2)
+    val inputs = mapOf("y" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -128,12 +124,13 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_missingInputY_throwsException() {
-    val inputs = mapOf("x" to STRING_VALUE_2)
+    val inputs = mapOf("x" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -144,12 +141,13 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_bothInputsMissing_throwsException() {
-    val inputs = mapOf("z" to STRING_VALUE_2)
+    val inputs = mapOf("z" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows(IllegalStateException::class) {
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
@@ -160,12 +158,13 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXWithPositionY_bothValueDoNotMatch() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to STRING_VALUE_3)
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to INVALID_CONTENT_ID)
 
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -173,12 +172,13 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXWithPositionY_xValueDoesNotMatch() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to STRING_VALUE_3)
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to INVALID_CONTENT_ID)
 
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -186,12 +186,13 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXWithPositionY_yValueDoesNotMatch() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to STRING_VALUE_2)
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to VALID_CONTENT_ID_2)
 
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -199,12 +200,13 @@ class DragDropSortInputHasElementXAtPositionYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_elementXWithPositionY_bothMatchesCorrectly() {
-    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to STRING_VALUE_2)
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to VALID_CONTENT_ID_2)
 
     val matches =
       hasElementXAtPositionYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_HTML_STRING_VALUE,
-        inputs = inputs
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()

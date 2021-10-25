@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
-private const val KEY_APP_LANGUAGE_PREFERENCE_TITLE = "APP_LANGUAGE_PREFERENCE"
-private const val KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
-  "APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE"
+private const val APP_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY =
+  "AppLanguageFragment.app_language_preference_title"
+private const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY =
+  "AppLanguageFragment.app_language_preference_summary_value"
 private const val SELECTED_LANGUAGE_SAVED_KEY = "AppLanguageFragment.selected_language"
 
 /** The fragment to change the language of the app. */
@@ -25,8 +28,8 @@ class AppLanguageFragment :
     fun newInstance(prefsKey: String, prefsSummaryValue: String): AppLanguageFragment {
       val fragment = AppLanguageFragment()
       val args = Bundle()
-      args.putString(KEY_APP_LANGUAGE_PREFERENCE_TITLE, prefsKey)
-      args.putString(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE, prefsSummaryValue)
+      args.putString(APP_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY, prefsKey)
+      args.putString(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY, prefsSummaryValue)
       fragment.arguments = args
       return fragment
     }
@@ -34,7 +37,7 @@ class AppLanguageFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(
@@ -44,9 +47,9 @@ class AppLanguageFragment :
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to AppLanguageFragment" }
-    val prefsKey = args.getString(KEY_APP_LANGUAGE_PREFERENCE_TITLE)
+    val prefsKey = args.getStringFromBundle(APP_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY)
     val prefsSummaryValue = if (savedInstanceState == null) {
-      args.getString(KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE)
+      args.getStringFromBundle(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY)
     } else {
       savedInstanceState.get(SELECTED_LANGUAGE_SAVED_KEY) as String
     }

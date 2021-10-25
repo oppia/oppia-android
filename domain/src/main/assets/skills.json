@@ -1,498 +1,525 @@
 {
-  "skills": [
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "An important skill",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "Easy"
-          ]
+  "skills": [{
+    "id": "test_skill_id_0",
+    "description": "An important skill",
+    "skill_contents": {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "Hello. Welcome to Oppia."
+      },
+      "worked_examples": [{
+        "question": {
+          "content_id": "question-related-to-test_skill_content_id_1",
+          "html": "<removed>"
         },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Medium"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "Hard"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "test_skill_id_0",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "test_skill_content_id_1",
-            "html": "This is the first example."
-          }
-        ],
         "explanation": {
-          "content_id": "explanation",
-          "html": "Hello. Welcome to Oppia."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {
-              "es": {
-                "html": "Hola. Bienvenidos a Oppia.",
-                "needs_update": false
-              }
-            },
-            "test_skill_content_id_1": {
-              "es": {
-                "html": "Este es el primer ejemplo trabajado.",
-                "needs_update": false
-              }
+          "content_id": "test_skill_content_id_1",
+          "html": "This is the first example."
+        }
+      }],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {
+            "es": {
+              "filename": "fake_spanish_xlated_explanation.mp3",
+              "file_size_bytes": 456,
+              "needs_update": false,
+              "duration_secs": 0.0
             }
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {
-              "es": {
-                "file_size_bytes": 456,
-                "needs_update": false,
-                "filename": "fake_spanish_xlated_explanation.mp3"
-              }
-            },
-            "test_skill_content_id_1": {
-              "es": {
-                "file_size_bytes": 456,
-                "needs_update": false,
-                "filename": "fake_spanish_xlated_example.mp3"
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Another important skill",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "Easy"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Medium"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "Hard"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "test_skill_id_1",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "worked_example_1",
-            "html": "Worked example with <i>rich text</i>."
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "Explanation with <b>rich text</b>."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "A different skill in a different topic",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "Easy"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Medium"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "Hard"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "test_skill_id_2",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "worked_example_1",
-            "html": "Worked example without rich text."
           },
-          {
-            "content_id": "worked_example_2",
-            "html": "Second worked example."
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "Explanation without rich text."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
+          "test_skill_content_id_1": {
+            "es": {
+              "filename": "fake_spanish_xlated_example.mp3",
+              "file_size_bytes": 456,
+              "needs_update": false,
+              "duration_secs": 0.0
+            }
           }
         }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Another important skill 4",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "Easy"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Medium"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "Hard"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "test_skill_id_3",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "The content for test skill id 3. This is a dummy skill content."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Given a picture divided into unequal parts, write the fraction.",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "<p>Reject a fraction derived from looking at a whole that is not divided into equal parts.</p>"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "<p>Given a picture divided into unequal parts, divide (or undivide) it into equal parts and write the resulting fraction.</p>"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "<p>As in the medium rubric, but the division/undivision requires the addition/removal of more than two lines.</p>"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "5RM9KPfQxobH",
-      "prerequisite_skill_ids": [],
-      "skill_contents_schema_version": 1,
-      "all_questions_merged": false,
-      "version": 3,
-      "misconceptions": [
-        {
-          "notes": "<p>NA</p>",
-          "feedback": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>",
-          "id": 0,
-          "name": "Picture divided into unequal parts initially"
-        }
-      ],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "worked_example_1",
-            "html": "<p>[Show a picture of a square, divided into quarters, except that two of the quarters are joined to form a single larger \"1/2\" rectangle. One of the quarters is shaded.]</p>\n\n<p>What fraction of this picture is shaded?<br>\n<br>\nAnswer: First, we must divide the picture into equal parts. We can divide the square into four equal parts, like this: [Show picture of square divided into quarters, with the same shading].<br>\n<br>\nNow, there are 4 equal parts and only 1 is shaded, so the fraction shown is <strong>1/4</strong>.</p>"
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "<p>First, divide the picture into equal parts, so that you can figure out what the denominator (the total number of parts) is.<br>\n<br>\nThen, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p>"
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Identify the numerator and denominator of a fraction.",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "N/A"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Identify the numerator and denominator of a fraction."
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "N/A"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "UxTGIJqaHMLa",
-      "prerequisite_skill_ids": [],
-      "skill_contents_schema_version": 1,
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [
-        {
-          "notes": "<p>NA</p>",
-          "feedback": "<p>No, that's not correct. Remember, the numerator counts (\"enumerates\") the number of pieces, so it should be the first number. The denominator names (\"denominates\") the type of piece, so it should be the second number.</p>",
-          "id": 0,
-          "name": "Switching the ID of numerator and denominator"
-        }
-      ],
-      "skill_contents": {
-        "worked_examples": [],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") the size of each piece.<br>\n<br>\nFor example, in 2/3, the numerator is 2 and the denominator is 3.</p>"
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\".",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            "N/A"
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\"."
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "N/A"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "B39yK4cbHZYI",
-      "prerequisite_skill_ids": [],
-      "skill_contents_schema_version": 1,
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [
-        {
-          "notes": "<p>NA</p>",
-          "feedback": "<p>No, that's not correct. The denominator (second number) describes the size of each piece, so it should be the <strong>total</strong>&nbsp;number of pieces that the whole is divided into. Try again.</p>",
-          "id": 0,
-          "name": "Switching the definitions of num and denom"
-        }
-      ],
-      "skill_contents": {
-        "worked_examples": [
-          {
-            "content_id": "worked_example_1",
-            "html": "<p>What does the <strong>denominator</strong>&nbsp;of a fraction represent?</p>\n\n<ul>\n\t<li>The total number of parts</li>\n\t<li>The number of unselected parts</li>\n\t<li>The number of selected parts</li>\n</ul>\n\n<p><br>\nAnswer: <strong>The total number of parts</strong>. (The \"denominator\" specifies the total number of parts in the whole, in order to explain what the size of each part is.)</p>"
-          }
-        ],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") what the size of each piece is, based on how many equal parts the \"whole\" is divided into.</p>"
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        }
-      }
-    },
-    {
-      "misconceptions_schema_version": 1,
-      "next_misconception_id": 1,
-      "description": "Derive a ratio from a description or a picture",
-      "rubrics": [
-        {
-          "difficulty": "Easy",
-          "explanation": [
-            ""
-          ]
-        },
-        {
-          "difficulty": "Medium",
-          "explanation": [
-            "<p>Derive a ratio from a description or a picture.</p>"
-          ]
-        },
-        {
-          "difficulty": "Hard",
-          "explanation": [
-            "<p>Given a description of a change in a situation, derive a new ratio (e.g. there are originally 9 apples and 6 pears, and Bobby ate 3 pears, what is the new ratio of apples to pears).</p>"
-          ]
-        }
-      ],
-      "superseding_skill_id": null,
-      "language_code": "en",
-      "rubric_schema_version": 1,
-      "id": "NGZ89uMw0IGV",
-      "skill_contents_schema_version": 1,
-      "prerequisite_skill_ids": [],
-      "all_questions_merged": false,
-      "version": 2,
-      "misconceptions": [],
-      "skill_contents": {
-        "worked_examples": [],
-        "explanation": {
-          "content_id": "explanation",
-          "html": "<p>A ratio represents a relative relationship between two or more amounts. To write a ratio, start by writing these amounts, separating them by a colon. Remember that the order matters!</p><p>For example, let's say you have 9 apples and 6 pears. You can write the ratio of apples to pears as <b> 9 : 6.</b></p>If, instead, you have 3 pears, 5 apples and 9 bananas, you can write the ratio of apples to bananas to pears as <b>5 : 9 : 3.</b> Notice that the order of items in the ratio follows the order that was asked for."
-        },
-        "written_translations": {
-          "translations_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
-          }
-        },
-        "recorded_voiceovers": {
-          "voiceovers_mapping": {
-            "explanation": {},
-            "worked_example_1": {}
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {
+            "es": {
+              "data_format": "html",
+              "translation": {"translation" : "Hola. Bienvenidos a Oppia."},
+              "needs_update": false
+            },
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Olá. Bem-vindo ao oppia."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "أهلا. مرحبا بكم في أوفيا."},
+              "needs_update": false
+            }
+          },
+          "test_skill_content_id_1": {
+            "es": {
+              "data_format": "html",
+              "translation": {"translation" : "Este es el primer ejemplo trabajado."},
+              "needs_update": false
+            },
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Este é o primeiro exemplo."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "هذا هو المثال الأول."},
+              "needs_update": false
+            }
+          },
+          "565a49f4-dad4-4a77-bdb0-f4e3b43e7733": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "d4ea0e9a-2c09-4d4d-ae06-2f25037bf5c7": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "252f728b-e63f-448d-9284-e34327532e26": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "question-related-to-test_skill_content_id_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
           }
         }
       }
     }
-  ]
+  }, {
+    "id": "test_skill_id_1",
+    "description": "Another important skill",
+    "skill_contents": {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "Explanation with <b>rich text</b>."
+      },
+      "worked_examples": [{
+        "question": {
+          "content_id": "question-related-to-worked_example_1",
+          "html": "<removed>"
+        },
+        "explanation": {
+          "content_id": "worked_example_1",
+          "html": "Worked example with <i>rich text</i>."
+        }
+      }],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Explicação com <b> rico texto </b>."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "Explanation مع <b> Rich Text </b>."},
+              "needs_update": false
+            }
+          },
+          "worked_example_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Exemplo trabalhado com <i> texto rico </i>."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "مثال عمل مع <I> نص ريتش </I>."},
+              "needs_update": false
+            }
+          },
+          "99b6bb52-7e4a-4b70-b0ec-a3b25a4c1c5c": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "44e3cbc7-ba12-4126-87dc-bfebd614fbd7": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "110dd366-c6cb-4b39-8409-db9a4d8db078": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "question-related-to-worked_example_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          }
+        }
+      }
+    }
+  }, {
+    "id": "test_skill_id_2",
+    "description": "A different skill in a different topic",
+    "skill_contents": {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "Explanation without rich text."
+      },
+      "worked_examples": [{
+        "question": {
+          "content_id": "question-related-to-worked_example_1",
+          "html": "<removed>"
+        },
+        "explanation": {
+          "content_id": "worked_example_1",
+          "html": "Worked example without rich text."
+        }
+      }, {
+        "question": {
+          "content_id": "question-related-to-worked_example_2",
+          "html": "<removed>"
+        },
+        "explanation": {
+          "content_id": "worked_example_2",
+          "html": "Second worked example."
+        }
+      }],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Explicação sem texto rico."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "تفسير دون نص غني."},
+              "needs_update": false
+            }
+          },
+          "worked_example_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Exemplo trabalhado sem texto rico."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "مثال على ذلك دون نص غني."},
+              "needs_update": false
+            }
+          },
+          "8bb0b74e-5c73-4569-a548-e7460640b280": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "4b2998d6-d4f2-44e1-a489-17dbfd2c0368": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "worked_example_2": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "Segundo exemplo trabalhado."},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "مثال يعمل الثاني."},
+              "needs_update": false
+            }
+          },
+          "76a61e5f-205a-4950-9ce5-483304a36320": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالته>"},
+              "needs_update": false
+            }
+          },
+          "a0848668-d024-44cc-b960-d85af53fe570": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "d9aa4dce-8884-4045-baa7-1fb5520b7da2": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "4b5312f2-6504-49a8-a124-56bc0bf4d72d": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "question-related-to-worked_example_1": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          },
+          "question-related-to-worked_example_2": {
+            "pt": {
+              "data_format": "html",
+              "translation": {"translation" : "<Removido>"},
+              "needs_update": false
+            },
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<تمت إزالة>"},
+              "needs_update": false
+            }
+          }
+        }
+      }
+    }
+  }, {
+    "id": "test_skill_id_3",
+    "description": "Another important skill 4",
+    "skill_contents": {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "The content for test skill id 3. This is a dummy skill content."
+      },
+      "worked_examples": [],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      }
+    }
+  }, {
+    "id": "5RM9KPfQxobH",
+    "description": "Given a picture divided into unequal parts, write the fraction.",
+    "skill_contents": {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "<p>First, divide the picture into equal parts, so that you can figure out what the denominator (the total number of parts) is.<br>\n<br>\nThen, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p>"
+      },
+      "worked_examples": [{
+        "question": {
+          "content_id": "question-related-to-worked_example_1",
+          "html": "<removed>"
+        },
+        "explanation": {
+          "content_id": "worked_example_1",
+          "html": "<p>[Show a picture of a square, divided into quarters, except that two of the quarters are joined to form a single larger \"1/2\" rectangle. One of the quarters is shaded.]</p>\n\n<p>What fraction of this picture is shaded?<br>\n<br>\nAnswer: First, we must divide the picture into equal parts. We can divide the square into four equal parts, like this: [Show picture of square divided into quarters, with the same shading].<br>\n<br>\nNow, there are 4 equal parts and only 1 is shaded, so the fraction shown is <strong>1/4</strong>.</p>"
+        }
+      }],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      }
+    }
+  }, {
+    "id": "UxTGIJqaHMLa",
+    "description": "Identify the numerator and denominator of a fraction.",
+    "skill_contents": {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") the size of each piece.<br>\n<br>\nFor example, in 2/3, the numerator is 2 and the denominator is 3.</p>"
+      },
+      "worked_examples": [],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {}
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {}
+        }
+      }
+    }
+  }, {
+    "id": "B39yK4cbHZYI",
+    "description": "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\".",
+    "skill_contents": {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") what the size of each piece is, based on how many equal parts the \"whole\" is divided into.</p>"
+      },
+      "worked_examples": [{
+        "question": {
+          "content_id": "question-related-to-worked_example_1",
+          "html": "<removed>"
+        },
+        "explanation": {
+          "content_id": "worked_example_1",
+          "html": "<p>What does the <strong>denominator</strong>&nbsp;of a fraction represent?</p>\n\n<ul>\n\t<li>The total number of parts</li>\n\t<li>The number of unselected parts</li>\n\t<li>The number of selected parts</li>\n</ul>\n\n<p><br>\nAnswer: <strong>The total number of parts</strong>. (The \"denominator\" specifies the total number of parts in the whole, in order to explain what the size of each part is.)</p>"
+        }
+      }],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      }
+    }
+  }, {
+    "id": "NGZ89uMw0IGV",
+    "description": "Derive a ratio from a description or a picture",
+    "skill_contents": {
+      "explanation": {
+        "content_id": "explanation",
+        "html": "<p>A ratio represents a relative relationship between two or more amounts. To write a ratio, start by writing these amounts, separating them by a colon. Remember that the order matters!</p><p>For example, let's say you have 9 apples and 6 pears. You can write the ratio of apples to pears as <b> 9 : 6.</b></p>If, instead, you have 3 pears, 5 apples and 9 bananas, you can write the ratio of apples to bananas to pears as <b>5 : 9 : 3.</b> Notice that the order of items in the ratio follows the order that was asked for."
+      },
+      "worked_examples": [],
+      "recorded_voiceovers": {
+        "voiceovers_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      },
+      "written_translations": {
+        "translations_mapping": {
+          "explanation": {},
+          "worked_example_1": {}
+        }
+      }
+    }
+  }]
 }

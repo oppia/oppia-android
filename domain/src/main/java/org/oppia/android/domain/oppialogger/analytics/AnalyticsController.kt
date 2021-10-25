@@ -11,7 +11,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import javax.inject.Inject
 
 /** Controller for handling analytics event logging.
@@ -116,7 +116,7 @@ class AnalyticsController @Inject constructor(
             .addEventLog(eventLog)
             .build()
         } else {
-          // TODO (#1433): Refactoring for logging exceptions to both console and exception loggers.
+          // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
             NullPointerException("Least Recent Event index absent -- EventLogCacheStoreSize is 0")
           consoleLogger.e("Analytics Controller", exception.toString())

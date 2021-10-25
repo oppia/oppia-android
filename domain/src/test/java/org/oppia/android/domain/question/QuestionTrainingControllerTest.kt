@@ -10,17 +10,18 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EphemeralQuestion
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -32,6 +33,8 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_QUESTION_ID_0
 import org.oppia.android.domain.topic.TEST_QUESTION_ID_1
@@ -40,19 +43,24 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.topic.TEST_SKILL_ID_2
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -80,38 +88,39 @@ class QuestionTrainingControllerTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<Any>>
-
-  @Mock
   lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
-
-  @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<Any>>
 
   @Captor
   lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
 
+  // TODO(#3813): Migrate all tests in this suite to use this factory.
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private lateinit var profileId1: ProfileId
+
+  @Before
+  fun setUp() {
+    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+  }
+
   @Test
   fun testController_startTrainingSession_succeeds() {
     setUpTestApplicationComponent(questionSeed = 0)
-    val questionListLiveData =
+
+    val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+        profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
-    testCoroutineDispatchers.runCurrent()
 
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
   }
 
   @Test
   fun testController_startTrainingSession_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+      profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -130,24 +139,20 @@ class QuestionTrainingControllerTest {
   @Test
   fun testController_startTrainingSession_differentSeed_succeeds() {
     setUpTestApplicationComponent(questionSeed = 2)
-    val questionListLiveData =
+
+    val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+        profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
-    testCoroutineDispatchers.runCurrent()
 
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
   }
 
   @Test
   fun testController_startTrainingSession_differentSeed_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 2)
     questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+      profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -166,24 +171,20 @@ class QuestionTrainingControllerTest {
   @Test
   fun testController_startTrainingSession_differentSkills_succeeds() {
     setUpTestApplicationComponent(questionSeed = 0)
-    val questionListLiveData =
+
+    val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+        profileId1, listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
       )
-    testCoroutineDispatchers.runCurrent()
 
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
   }
 
   @Test
   fun testController_startTrainingSession_differentSkills_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(
-      listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+      profileId1, listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -202,22 +203,18 @@ class QuestionTrainingControllerTest {
   @Test
   fun testController_startTrainingSession_noSkills_fails() {
     setUpTestApplicationComponent(questionSeed = 0)
-    val questionListLiveData =
-      questionTrainingController.startQuestionTrainingSession(listOf())
-    testCoroutineDispatchers.runCurrent()
 
-    questionListLiveData.observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val questionListDataProvider =
+      questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
 
-    verify(mockQuestionListObserver, atLeastOnce()).onChanged(questionListResultCaptor.capture())
-    assertThat(questionListResultCaptor.value.isFailure()).isTrue()
+    monitorFactory.waitForNextFailureResult(questionListDataProvider)
   }
 
   @Test
   fun testController_startTrainingSession_noSkills_fails_logsException() {
     setUpTestApplicationComponent(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(listOf())
-    questionTrainingController.startQuestionTrainingSession(listOf())
+    questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
+    questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
     testCoroutineDispatchers.runCurrent()
 
     val exception = fakeExceptionLogger.getMostRecentException()
@@ -282,6 +279,42 @@ class QuestionTrainingControllerTest {
     @Provides
     @QuestionTrainingSeed
     fun provideQuestionTrainingSeed(): Long = questionSeed
+
+    @Provides
+    @ViewHintScorePenalty
+    fun provideViewHintScorePenalty(): Int = 1
+
+    @Provides
+    @WrongAnswerScorePenalty
+    fun provideWrongAnswerScorePenalty(): Int = 1
+
+    @Provides
+    @MaxScorePerQuestion
+    fun provideMaxScorePerQuestion(): Int = 10
+
+    @Provides
+    @InternalScoreMultiplyFactor
+    fun provideInternalScoreMultiplyFactor(): Int = 10
+
+    @Provides
+    @MaxMasteryGainPerQuestion
+    fun provideMaxMasteryGainPerQuestion(): Int = 10
+
+    @Provides
+    @MaxMasteryLossPerQuestion
+    fun provideMaxMasteryLossPerQuestion(): Int = -10
+
+    @Provides
+    @ViewHintMasteryPenalty
+    fun provideViewHintMasteryPenalty(): Int = 2
+
+    @Provides
+    @WrongAnswerMasteryPenalty
+    fun provideWrongAnswerMasteryPenalty(): Int = 5
+
+    @Provides
+    @InternalMasteryMultiplyFactor
+    fun provideInternalMasteryMultiplyFactor(): Int = 100
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -294,7 +327,9 @@ class QuestionTrainingControllerTest {
       NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
       TestQuestionModule::class, TestLogReportingModule::class, ImageClickInputModule::class,
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -5,8 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
@@ -27,6 +30,9 @@ class OptionsActivity :
   @Inject
   lateinit var optionActivityPresenter: OptionsActivityPresenter
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   // used to initially load the suitable fragment in the case of multipane.
   private var isFirstOpen = true
   private lateinit var selectedFragment: String
@@ -42,7 +48,7 @@ class OptionsActivity :
       isFromNavigationDrawer: Boolean
     ): Intent {
       val intent = Intent(context, OptionsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
       return intent
     }
@@ -50,7 +56,7 @@ class OptionsActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     val isFromNavigationDrawer = intent.getBooleanExtra(
       BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
       /* defaultValue= */ false
@@ -63,14 +69,15 @@ class OptionsActivity :
     } else {
       savedInstanceState.get(SELECTED_FRAGMENT_SAVED_KEY) as String
     }
-    val extraOptionsTitle = savedInstanceState?.getString(SELECTED_OPTIONS_TITLE_SAVED_KEY)
+    val extraOptionsTitle =
+      savedInstanceState?.getStringFromBundle(SELECTED_OPTIONS_TITLE_SAVED_KEY)
     optionActivityPresenter.handleOnCreate(
       isFromNavigationDrawer,
       extraOptionsTitle,
       isFirstOpen,
       selectedFragment
     )
-    title = getString(R.string.menu_options)
+    title = resourceHandler.getStringInLocale(R.string.menu_options)
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -126,19 +133,25 @@ class OptionsActivity :
 
   override fun loadReadingTextSizeFragment(textSize: String) {
     selectedFragment = READING_TEXT_SIZE_FRAGMENT
-    optionActivityPresenter.setExtraOptionTitle(getString(R.string.reading_text_size))
+    optionActivityPresenter.setExtraOptionTitle(
+      resourceHandler.getStringInLocale(R.string.reading_text_size)
+    )
     optionActivityPresenter.loadReadingTextSizeFragment(textSize)
   }
 
   override fun loadAppLanguageFragment(appLanguage: String) {
     selectedFragment = APP_LANGUAGE_FRAGMENT
-    optionActivityPresenter.setExtraOptionTitle(getString(R.string.app_language))
+    optionActivityPresenter.setExtraOptionTitle(
+      resourceHandler.getStringInLocale(R.string.app_language)
+    )
     optionActivityPresenter.loadAppLanguageFragment(appLanguage)
   }
 
   override fun loadAudioLanguageFragment(audioLanguage: String) {
     selectedFragment = AUDIO_LANGUAGE_FRAGMENT
-    optionActivityPresenter.setExtraOptionTitle(getString(R.string.audio_language))
+    optionActivityPresenter.setExtraOptionTitle(
+      resourceHandler.getStringInLocale(R.string.audio_language)
+    )
     optionActivityPresenter.loadAudioLanguageFragment(audioLanguage)
   }
 

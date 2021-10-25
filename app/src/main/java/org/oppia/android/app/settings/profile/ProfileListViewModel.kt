@@ -5,18 +5,19 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
-import java.util.Locale
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileListActivity]. */
 @ActivityScope
 class ProfileListViewModel @Inject constructor(
-  private val logger: ConsoleLogger,
-  private val profileManagementController: ProfileManagementController
+  private val oppiaLogger: OppiaLogger,
+  private val profileManagementController: ProfileManagementController,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : ObservableViewModel() {
   val profiles: LiveData<List<Profile>> by lazy {
     Transformations.map(
@@ -26,7 +27,7 @@ class ProfileListViewModel @Inject constructor(
 
   private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
     if (profilesResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "ProfileListViewModel",
         "Failed to retrieve the list of profiles",
         profilesResult.getErrorOrNull()!!
@@ -35,7 +36,7 @@ class ProfileListViewModel @Inject constructor(
     val profileList = profilesResult.getOrDefault(emptyList())
 
     val sortedProfileList = profileList.sortedBy {
-      it.name.toLowerCase(Locale.getDefault())
+      machineLocale.run { it.name.toMachineLowerCase() }
     }.toMutableList()
 
     val adminProfile = sortedProfileList.find { it.isAdmin }

@@ -1,12 +1,18 @@
+
 package org.oppia.android.domain.classify
 
 import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.HtmlTranslationList
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
+import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.NumberUnit
 import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.RatioExpression
-import org.oppia.android.app.model.StringList
+import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.TranslatableHtmlContentId
+import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.app.model.Translation
+import org.oppia.android.app.model.WrittenTranslationContext
 
 /**
  * Helper class for test cases which can provide the [InteractionObject]
@@ -22,23 +28,57 @@ object InteractionObjectTestBuilder {
     return InteractionObject.newBuilder().setNormalizedString(value).build()
   }
 
-  fun createListOfSetsOfHtmlStrings(listOfStringList: List<StringList>): InteractionObject {
-    val listOfSetsOfHtmlStrings = ListOfSetsOfHtmlStrings.newBuilder()
-      .addAllSetOfHtmlStrings(
-        listOfStringList
+  fun createTranslatableSetOfNormalizedString(
+    vararg values: String,
+    contentId: String = ""
+  ): InteractionObject =
+    InteractionObject.newBuilder().apply {
+      translatableSetOfNormalizedString = TranslatableSetOfNormalizedString.newBuilder().apply {
+        addAllNormalizedStrings(values.toList())
+        this.contentId = contentId
+      }.build()
+    }.build()
+
+  fun createTranslatableHtmlContentId(
+    contentId: String
+  ): InteractionObject = InteractionObject.newBuilder().apply {
+    translatableHtmlContentId = TranslatableHtmlContentId.newBuilder().apply {
+      this.contentId = contentId
+    }.build()
+  }.build()
+
+  fun createSetOfTranslatableHtmlContentIds(
+    vararg contentIds: String
+  ): InteractionObject = InteractionObject.newBuilder().apply {
+    setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+      addAllContentIds(
+        contentIds.map { contentId ->
+          TranslatableHtmlContentId.newBuilder().apply { this.contentId = contentId }.build()
+        }
       )
-      .build()
+    }.build()
+  }.build()
 
-    return InteractionObject.newBuilder().setListOfSetsOfHtmlString(listOfSetsOfHtmlStrings).build()
-  }
-
-  fun createHtmlStringList(vararg items: String): StringList {
-    return StringList.newBuilder().addAllHtml(items.toList()).build()
-  }
-
-  fun createHtmlStringListInteractionObject(value: StringList): InteractionObject {
-    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
-  }
+  fun createListOfSetsOfTranslatableHtmlContentIds(
+    vararg contentIdsLists: List<String>
+  ): InteractionObject = InteractionObject.newBuilder().apply {
+    listOfSetsOfTranslatableHtmlContentIds =
+      ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+        addAllContentIdLists(
+          contentIdsLists.map { contentIds ->
+            SetOfTranslatableHtmlContentIds.newBuilder().apply {
+              addAllContentIds(
+                contentIds.map { contentId ->
+                  TranslatableHtmlContentId.newBuilder().apply {
+                    this.contentId = contentId
+                  }.build()
+                }
+              )
+            }.build()
+          }
+        )
+      }.build()
+  }.build()
 
   fun createWholeNumber(isNegative: Boolean, value: Int): InteractionObject {
     // Whole number fractions imply '0/1' fractional parts.
@@ -128,7 +168,18 @@ object InteractionObjectTestBuilder {
     ).build()
   }
 
-  fun createSetOfHtmlString(value: StringList): InteractionObject {
-    return InteractionObject.newBuilder().setSetOfHtmlString(value).build()
-  }
+  // Not technically an interaction object, but used in conjunction with them.
+  fun createTranslationContext(
+    contentId: String,
+    vararg translationStrings: String
+  ): WrittenTranslationContext = WrittenTranslationContext.newBuilder().apply {
+    putTranslations(
+      contentId,
+      Translation.newBuilder().apply {
+        htmlList = HtmlTranslationList.newBuilder().apply {
+          addAllHtml(translationStrings.toList())
+        }.build()
+      }.build()
+    )
+  }.build()
 }

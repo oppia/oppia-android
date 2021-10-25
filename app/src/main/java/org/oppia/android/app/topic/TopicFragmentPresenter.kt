@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -25,27 +26,23 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  @EnablePracticeTab private val enablePracticeTab: Boolean,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
-  private val tabIcons =
-    intArrayOf(
-      R.drawable.ic_info_icon_24dp,
-      R.drawable.ic_lessons_icon_24dp,
-      R.drawable.ic_practice_icon_24dp,
-      R.drawable.ic_revision_icon_24dp
-    )
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     internalProfileId: Int,
     topicId: String,
-    storyId: String
+    storyId: String,
+    isConfigChanged: Boolean
   ): View? {
     val binding = TopicFragmentBinding.inflate(
       inflater,
@@ -72,7 +69,7 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    setUpViewPager(viewPager, topicId)
+    setUpViewPager(viewPager, topicId, isConfigChanged)
     return binding.root
   }
 
@@ -81,34 +78,18 @@ class TopicFragmentPresenter @Inject constructor(
     logTopicEvents(tab)
   }
 
-  private fun setUpViewPager(viewPager2: ViewPager2, topicId: String) {
+  private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId)
+      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enablePracticeTab)
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-      when (position) {
-        0 -> {
-          tab.text = fragment.getString(R.string.info)
-          tab.icon = ContextCompat.getDrawable(activity, tabIcons[0])
-        }
-        1 -> {
-          tab.text = fragment.getString(R.string.lessons)
-          tab.icon = ContextCompat.getDrawable(activity, tabIcons[1])
-        }
-        2 -> {
-          tab.text = fragment.getString(R.string.practice)
-          tab.icon = ContextCompat.getDrawable(activity, tabIcons[2])
-        }
-        3 -> {
-          tab.text = fragment.getString(R.string.revision)
-          tab.icon = ContextCompat.getDrawable(activity, tabIcons[3])
-        }
-      }
+      val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)
+      tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
+      tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
     }.attach()
-    if (topicId.isNotEmpty() && storyId.isNotEmpty())
-      setCurrentTab(TopicTab.LESSONS)
-    else if (topicId.isNotEmpty() && storyId.isEmpty())
-      setCurrentTab(TopicTab.INFO)
+    if (!isConfigChanged && topicId.isNotEmpty()) {
+      setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+    }
   }
 
   private fun getTopicViewModel(): TopicViewModel {

@@ -7,11 +7,12 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.home.promotedlist.PromotedStoryListView
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.HtmlParser
 
 /**
  * Creates bindings for Views in order to avoid View files directly depending on Binding files.
@@ -88,17 +89,35 @@ interface ViewBindingShim {
   /** Returns [ClickableAreasImage]'s default region. */
   fun getDefaultRegion(parentView: FrameLayout): View
 
-  /** Handles binding inflation for [PromotedStoryListView]. */
+  /**
+   * Handles binding inflation for [org.oppia.android.app.home.promotedlist.PromotedStoryListView].
+   */
   fun providePromotedStoryCardInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
     attachToParent: Boolean
   ): View
 
-  /** Handles binding inflation for [PromotedStoryListView] and returns the view model. */
+  /**
+   * Handles binding inflation for [org.oppia.android.app.home.promotedlist.PromotedStoryListView]
+   * and returns the view model.
+   */
   fun providePromotedStoryViewModel(
     view: View,
     viewModel: PromotedStoryViewModel
+  )
+
+  /** Handles binding inflation for [ComingSoonTopicsListView]. */
+  fun provideComingSoonTopicViewInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View
+
+  /** Handles binding inflation for [ComingSoonTopicsListView] and returns the view model. */
+  fun provideComingSoonTopicsViewViewModel(
+    view: View,
+    viewModel: ComingSoonTopicsViewModel
   )
 
   /**
@@ -121,7 +140,8 @@ interface ViewBindingShim {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
+    entityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   )
 
   /**
@@ -144,6 +164,7 @@ interface ViewBindingShim {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
+    entityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   )
 }

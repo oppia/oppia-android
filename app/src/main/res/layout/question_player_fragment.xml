@@ -55,9 +55,11 @@
         android:id="@+id/question_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/question_progress_bar"
@@ -69,9 +71,11 @@
         android:id="@+id/extra_interaction_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:overScrollMode="never"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -80,29 +84,71 @@
         app:layout_constraintStart_toEndOf="@id/center_guideline"
         app:layout_constraintTop_toBottomOf="@+id/end_session_body_text_view" />
 
+      <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="72dp"
+        android:background="@drawable/question_player_progress_bar_background_gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
       <ProgressBar
         android:id="@+id/question_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="12dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/question_player_progress_bar_margin_start"
+        android:layout_marginEnd="@dimen/question_player_progress_bar_margin_end"
         android:max="100"
         android:progress="@{viewModel.progressPercentage}"
         android:progressDrawable="@drawable/progress_bar"
         app:layout_constraintBottom_toTopOf="@id/question_progress_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/hints_and_solution_fragment_container" />
+
+      <FrameLayout
+        android:id="@+id/hints_and_solution_fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+      <FrameLayout
+        android:id="@+id/hints_and_solution_fragment_container"
+        android:layout_width="@dimen/clickable_item_min_height"
+        android:layout_height="@dimen/clickable_item_min_height"
+        android:layout_gravity="bottom|start"
+        android:background="@drawable/hints_background"
+        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+          android:id="@+id/dot_hint"
+          android:layout_width="8dp"
+          android:layout_height="6dp"
+          android:layout_gravity="top|end"
+          android:layout_margin="8dp"
+          android:contentDescription="@string/new_hint_available"
+          app:srcCompat="@drawable/ic_dot_yellow_24dp"
+          android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
+
+        <ImageView
+          android:id="@+id/hint_bulb"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="12dp"
+          android:contentDescription="@string/show_hints_and_solution"
+          app:srcCompat="@drawable/ic_hint_bulb_white_24dp" />
+      </FrameLayout>
 
       <TextView
         android:id="@+id/question_progress_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="@dimen/question_player_progress_bar_text_margin_top"
+        android:layout_marginEnd="@dimen/question_player_progress_bar_text_margin_end"
+        android:layout_marginBottom="@dimen/question_player_progress_bar_text_margin_bottom"
         android:fontFamily="sans-serif"
-        android:text="@{viewModel.isAtEndOfSession ? @string/question_training_session_progress_finished : @string/question_training_session_progress(viewModel.currentQuestion, viewModel.questionCount)}"
+        android:text="@{viewModel.questionProgressText}"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="12sp"
         android:textStyle="italic"
@@ -119,36 +165,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
-      android:id="@+id/hints_and_solution_fragment_placeholder"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
-
-    <FrameLayout
-      android:id="@+id/hints_and_solution_fragment_container"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|start"
-      android:background="@drawable/hints_background"
-      android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
-
-      <ImageView
-        android:id="@+id/dot_hint"
-        android:layout_width="8dp"
-        android:layout_height="6dp"
-        android:layout_gravity="top|end"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_dot_yellow_24dp"
-        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
-
-      <ImageView
-        android:id="@+id/hint_bulb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:src="@drawable/ic_hint_bulb_white_24dp" />
-    </FrameLayout>
-
-    <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom">
@@ -157,10 +173,10 @@
         android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_gravity="bottom"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="16dp"
-        android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
@@ -174,7 +190,7 @@
       <nl.dionsegijn.konfetti.KonfettiView
         android:id="@+id/congratulations_text_confetti_view"
         android:layout_width="match_parent"
-        android:layout_height="124dp"/>
+        android:layout_height="124dp" />
     </FrameLayout>
   </FrameLayout>
 </layout>

@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.shim.ViewBindingShim
-import org.oppia.android.app.shim.ViewComponentFactory
-import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 
 private const val PROMOTED_STORY_LIST_VIEW_TAG = "PromotedStoryListView"
@@ -29,13 +30,14 @@ class PromotedStoryListView @JvmOverloads constructor(
   lateinit var bindingInterface: ViewBindingShim
 
   @Inject
-  lateinit var logger: ConsoleLogger
+  lateinit var oppiaLogger: OppiaLogger
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
+    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    viewComponent.inject(this)
 
     // The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
     // the item is completely visible in [HomeFragment] as soon as learner lifts the finger
@@ -60,7 +62,7 @@ class PromotedStoryListView @JvmOverloads constructor(
       adapter = createAdapter()
     }
     if (newDataList == null) {
-      logger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new story list data")
+      oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new story list data")
     } else {
       (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
     }

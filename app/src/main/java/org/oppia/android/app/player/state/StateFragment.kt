@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.UserAnswer
@@ -18,6 +19,7 @@ import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickL
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 /** Fragment that represents the current state of an exploration. */
@@ -64,7 +66,7 @@ class StateFragment :
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(
@@ -73,9 +75,10 @@ class StateFragment :
     savedInstanceState: Bundle?
   ): View? {
     val internalProfileId = arguments!!.getInt(STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY, -1)
-    val topicId = arguments!!.getString(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
-    val storyId = arguments!!.getString(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
-    val explorationId = arguments!!.getString(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
+    val topicId = arguments!!.getStringFromBundle(STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY)!!
+    val storyId = arguments!!.getStringFromBundle(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
+    val explorationId =
+      arguments!!.getStringFromBundle(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,
@@ -103,8 +106,8 @@ class StateFragment :
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onHintAvailable(helpIndex: HelpIndex) =
-    stateFragmentPresenter.onHintAvailable(helpIndex)
+  override fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) =
+    stateFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
@@ -122,11 +125,13 @@ class StateFragment :
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    stateFragmentPresenter.revealHint(saveUserChoice, hintIndex)
+  fun revealHint(hintIndex: Int) {
+    stateFragmentPresenter.revealHint(hintIndex)
   }
 
   fun revealSolution() = stateFragmentPresenter.revealSolution()
 
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
+
+  fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
 }

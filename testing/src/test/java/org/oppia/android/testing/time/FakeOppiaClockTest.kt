@@ -17,11 +17,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_WALL_CLOCK_TIME
@@ -29,10 +29,12 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.time.ZoneId
 import java.util.Calendar
+import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,6 +58,11 @@ class FakeOppiaClockTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+  }
+
+  @Test
+  fun testInitialState_forcesTimeZoneToUtc() {
+    assertThat(TimeZone.getDefault().toZoneId()).isEqualTo(ZoneId.of("UTC"))
   }
 
   @Test
@@ -134,10 +141,10 @@ class FakeOppiaClockTest {
     val currentTimeMs = System.currentTimeMillis()
     val reportedTimeMs = fakeOppiaClock.getCurrentTimeMs()
 
-    // Verify that the reported time is within 4ms of actual time (to provide some guard against
+    // Verify that the reported time is within 100ms of actual time (to provide some guard against
     // flakiness since this is testing real clock time).
-    assertThat(reportedTimeMs).isWithin((currentTimeMs - 2)..(currentTimeMs + 2))
-    // Sanity check that the fake is, indeed, using real clock time
+    assertThat(reportedTimeMs).isWithin((currentTimeMs - 50)..(currentTimeMs + 50))
+    // Sanity check that the fake is, indeed, using real clock time.
     assertThat(reportedTimeMs).isNotEqualTo(0)
   }
 
@@ -190,8 +197,8 @@ class FakeOppiaClockTest {
     val currentTimeMs = System.currentTimeMillis()
     val calendar = fakeOppiaClock.getCurrentCalendar()
 
-    // The calendar should be inited to a value close to the clock time at the time it was created.
-    assertThat(calendar.timeInMillis).isWithin((currentTimeMs - 2)..(currentTimeMs + 2))
+    // The calendar should be initiated to a value close to the clock time at the time it was created.
+    assertThat(calendar.timeInMillis).isWithin((currentTimeMs - 50)..(currentTimeMs + 50))
   }
 
   @Test

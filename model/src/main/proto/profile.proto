@@ -106,8 +106,7 @@ enum ReadingTextSize {
   EXTRA_LARGE_TEXT_SIZE =  4;
 }
 
-// TODO(#669): Add translation for language selection and track updating of this list to match the supported translation list.
-// Supported App language for user preference.
+// TODO(#3793): Replace this with OppiaLanguage.
 enum AppLanguage {
   APP_LANGUAGE_UNSPECIFIED = 0;
   ENGLISH_APP_LANGUAGE = 1;
@@ -116,8 +115,7 @@ enum AppLanguage {
   CHINESE_APP_LANGUAGE =  4;
 }
 
-// TODO(#669): Add translation for language selection and track updating of this list to match the supported translation list.
-// Supported Audio language for user preference.
+// TODO(#3793): Replace this with OppiaLanguage.
 enum AudioLanguage {
   AUDIO_LANGUAGE_UNSPECIFIED = 0;
   NO_AUDIO = 1;

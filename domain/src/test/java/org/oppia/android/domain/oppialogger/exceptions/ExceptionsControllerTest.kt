@@ -25,21 +25,24 @@ import org.oppia.android.app.model.ExceptionLog.ExceptionType
 import org.oppia.android.app.model.OppiaExceptionLogs
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.RobolectricModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -66,7 +69,7 @@ class ExceptionsControllerTest {
   lateinit var exceptionsController: ExceptionsController
 
   @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -82,7 +85,6 @@ class ExceptionsControllerTest {
 
   @Before
   fun setUp() {
-    networkConnectionUtil = NetworkConnectionUtil(ApplicationProvider.getApplicationContext())
     setUpTestApplicationComponent()
   }
 
@@ -106,12 +108,12 @@ class ExceptionsControllerTest {
     assertThat(exceptionLogged).isEqualTo(exceptionThrown)
   }
 
-  // TODO(#1106): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
+  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
 
   @Test
   fun testController_logException_nonFatal_withNoNetwork_logsToCacheStore() {
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST CAUSE"))
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
@@ -126,16 +128,23 @@ class ExceptionsControllerTest {
 
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
+    val expectedCauseExceptionStackTraceElems =
+      exceptionThrown.cause?.stackTrace?.extractRelevantDetails()
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
-    assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
     assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.NON_FATAL)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+    assertThat(thrownCauseExceptionStackTraceElems).isEqualTo(expectedCauseExceptionStackTraceElems)
   }
 
   @Test
   fun testController_logFatalException_withNoNetwork_logsToCacheStore() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     val exceptionThrown = Exception("TEST MESSAGE", Throwable("TEST"))
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
@@ -149,16 +158,23 @@ class ExceptionsControllerTest {
 
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
+    val expectedCauseExceptionStackTraceElems =
+      exceptionThrown.cause?.stackTrace?.extractRelevantDetails()
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
-    assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
     assertThat(exceptionLog.exceptionType).isEqualTo(ExceptionType.FATAL)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+    assertThat(thrownCauseExceptionStackTraceElems).isEqualTo(expectedCauseExceptionStackTraceElems)
   }
 
   @Test
   fun testController_logExceptions_exceedLimit_checkCorrectEviction() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
 
     exceptionsController.logFatalException(
       Exception("TEST1", Throwable("ONE")),
@@ -204,7 +220,7 @@ class ExceptionsControllerTest {
 
   @Test
   fun testController_logExceptions_exceedLimit_cacheSizeDoesNotExceedLimit() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
 
     exceptionsController.logFatalException(
       Exception("TEST1", Throwable("ONE")),
@@ -235,7 +251,7 @@ class ExceptionsControllerTest {
   fun testController_logException_switchToNoNetwork_logException_verifyLoggingAndCaching() {
     val exceptionThrown = Exception("TEST", Throwable())
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
     val cachedExceptions =
@@ -249,18 +265,24 @@ class ExceptionsControllerTest {
     val exceptionFromCacheStorage =
       oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionFromCacheStorage.toException()
-
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val thrownCauseExceptionStackTraceElems = exception.cause?.stackTrace?.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
+    val expectedCauseExceptionStackTraceElems =
+      exceptionThrown.cause?.stackTrace?.extractRelevantDetails()
     assertThat(exceptionFromRemoteService).isEqualTo(exceptionThrown)
     assertThat(exception.message).isEqualTo(exceptionThrown.message)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause?.message).isEqualTo(exceptionThrown.cause?.message)
-    assertThat(exception.cause?.stackTrace).isEqualTo(exceptionThrown.cause?.stackTrace)
     assertThat(exceptionFromCacheStorage.exceptionType).isEqualTo(ExceptionType.FATAL)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+    assertThat(thrownCauseExceptionStackTraceElems).isEqualTo(expectedCauseExceptionStackTraceElems)
   }
 
   @Test
   fun testController_logExceptions_withNoNetwork_verifyCachedInCorrectOrder() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     val exceptionThrown = Exception("TEST", Throwable())
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
     exceptionsController.logFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
@@ -280,7 +302,7 @@ class ExceptionsControllerTest {
 
   @Test
   fun testExtension_logEmptyException_withNoNetwork_verifyRecreationOfLogs() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     val exceptionThrown = Exception()
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
@@ -293,15 +315,18 @@ class ExceptionsControllerTest {
       .onChanged(oppiaExceptionLogsResultCaptor.capture())
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
-
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
     assertThat(exception.message).isEqualTo(null)
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause).isEqualTo(null)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
   }
 
   @Test
   fun testExtension_logException_withNoCause_withNoNetwork_verifyRecreationOfLogs() {
-    networkConnectionUtil.setCurrentConnectionStatus(NetworkConnectionUtil.ConnectionStatus.NONE)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
     val exceptionThrown = Exception("TEST")
     exceptionsController.logNonFatalException(exceptionThrown, TEST_TIMESTAMP_IN_MILLIS_ONE)
 
@@ -314,10 +339,28 @@ class ExceptionsControllerTest {
       .onChanged(oppiaExceptionLogsResultCaptor.capture())
     val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
     val exception = exceptionLog.toException()
-
+    val thrownExceptionStackTraceElems = exception.stackTrace.extractRelevantDetails()
+    val expectedExceptionStackTraceElems = exceptionThrown.stackTrace.extractRelevantDetails()
     assertThat(exception.message).isEqualTo("TEST")
-    assertThat(exception.stackTrace).isEqualTo(exceptionThrown.stackTrace)
     assertThat(exception.cause).isEqualTo(null)
+    // The following can't be an exact match for the stack trace since new properties are added to
+    // stack trace elements in newer versions of Java (such as module name).
+    assertThat(thrownExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+  }
+
+  /**
+   * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
+   * comparison in a way that's consistent across JDK versions.
+   */
+  private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> {
+    return this.map { element ->
+      return@map listOf(
+        element.fileName,
+        element.methodName,
+        element.lineNumber,
+        element.className
+      )
+    }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -361,7 +404,8 @@ class ExceptionsControllerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-      TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

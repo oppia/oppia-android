@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Exemptions for the test-file check. Exemptions indicate files for which we should not check for
+// having test files.
+message TestFileExemptions {
+  // List of all the files which should be exempted for the test-file check. For exempting any
+  // file, provide its relative path to root in 'script/assets/test_file_exemptions.textproto'.
+  // Also, note that the file paths in the textproto file are maintained in lexicographical order.
+  // While adding any new file, please add it only at the correct lexicographical position, so that
+  // the list remains sorted.
+  //
+  // For example if we want to add the 'ActivityComponent.kt' file to the exemption list, add:
+  // 'exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"'
+  // at the correct lexicographical position in the textproto file.
+  repeated string exempted_file_path = 1;
+}
+
+// Exemptions for the accessibility label check. Exemptions indicate Activities for which we should
+// not check for the presence of an accessibility label.
+message AccessibilityLabelExemptions {
+  // List of all the Activities which should be exempted for the accessibility label check.
+  // For exempting any Activity, provide its relative path to root in
+  // 'script/assets/accessibility_label_exemptions.textproto'
+  // Also, note that the exemptions in the textproto file are maintained in lexicographical order.
+  // While adding any new Activity, please add it only at the correct lexicographical position,
+  // so that the list remains sorted.
+  //
+  // For example if we want to add the 'RecentlyPlayedActivity' to the exemption list, add:
+  // 'exempted_activity: "app/src/main/java/org/oppia/android/app/home/HomeActivity"'
+  // at the correct lexicographical position in the textproto file.
+  repeated string exempted_activity = 1;
+}
+
+// Exemptions for the KDoc validity check. Exemptions indicate files for which we should
+// not check for the presence of KDocs.
+message KdocValidityExemptions {
+  // List of all the files which should be exempted for the KDoc check.
+  // For exempting any file, provide its relative path to root in
+  // 'script/assets/kdoc_validity_exemptions.textproto'.
+  // Also, note that the exemptions in the text proto file are maintained in lexicographical order.
+  // While adding any new file, please add it only at the correct lexicographical position,
+  // so that the list remains sorted.
+  //
+  // For example if we want to add the 'ActivityComponent.kt' file to the exemption list, add:
+  // 'exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"'
+  // at the correct lexicographical position in the text proto file.
+  repeated string exempted_file_path = 1;
+}
+
+// Exemptions for the TODO open check.
+message TodoOpenExemptions {
+  // List of all the TODO open exemptions.
+  repeated TodoOpenExemption todo_open_exemption = 1;
+}
+
+// A TodoOpen exemption indicates the usage of a TODO keyword which is not meant to accomplish a
+// future work item. For example when a TODO keyword is used for documentation purpose.
+message TodoOpenExemption {
+  // The path of the file relative to the root repository to be exempted for the check.
+  string exempted_file_path = 1;
+  // The line number of the exempted TODO.
+  repeated int32 line_number = 2;
+}

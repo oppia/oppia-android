@@ -6,9 +6,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.FaqSingleActivityBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /** The presenter for [FAQSingleActivity]. */
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class FAQSingleActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val htmlParserFactory: HtmlParser.Factory,
-  @DefaultResourceBucketName private val resourceBucketName: String
+  @DefaultResourceBucketName private val resourceBucketName: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private lateinit var faqSingleActivityToolbar: Toolbar
@@ -32,7 +34,7 @@ class FAQSingleActivityPresenter @Inject constructor(
 
     faqSingleActivityToolbar = binding.faqSingleActivityToolbar
     activity.setSupportActionBar(faqSingleActivityToolbar)
-    activity.supportActionBar!!.title = activity.resources.getString(R.string.FAQs)
+    activity.supportActionBar!!.title = resourceHandler.getStringInLocale(R.string.FAQs)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 

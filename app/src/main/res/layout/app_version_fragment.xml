@@ -9,10 +9,6 @@
       type="org.oppia.android.app.administratorcontrols.appversion.AppVersionViewModel" />
   </data>
 
-  <FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -24,11 +20,11 @@
         android:layout_height="wrap_content"
         android:background="@drawable/selector_app_version"
         android:fontFamily="sans-serif"
-        android:paddingStart="16dp"
+        android:paddingStart="@dimen/app_version_text_view_padding_start"
         android:paddingTop="20dp"
-        android:paddingEnd="16dp"
+        android:paddingEnd="@dimen/app_version_text_view_padding_end"
         android:paddingBottom="20dp"
-        android:text="@{@string/app_version_name(viewModel.versionName)}"
+        android:text="@{viewModel.computeVersionNameText()}"
         android:textColor="@color/oppiaPrimaryTextDark"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,8 +35,8 @@
         android:id="@+id/app_info_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:src="@drawable/ic_info_icon_gray_24dp"
+        android:layout_marginStart="@dimen/app_version_image_view_margin_start"
+        app:srcCompat="@drawable/ic_info_icon_gray_24dp"
         app:layout_constraintEnd_toStartOf="@id/app_last_update_date_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/app_last_update_date_text_view" />
@@ -51,9 +47,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginEnd="@dimen/app_version_text_view_margin_end"
         android:fontFamily="sans-serif"
-        android:text="@{@string/app_last_update_date(viewModel.lastUpdateDate)}"
+        android:text="@{viewModel.computeLastUpdatedDateText()}"
         android:textColor="@color/oppiaSecondaryText"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,12 +57,4 @@
         app:layout_constraintStart_toEndOf="@id/app_info_image_view"
         app:layout_constraintTop_toBottomOf="@id/app_version_text_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View
-      android:id="@+id/app_version_shadow_view"
-      android:layout_width="match_parent"
-      android:layout_height="4dp"
-      android:layout_gravity="top"
-      android:background="@drawable/toolbar_drop_shadow" />
-  </FrameLayout>
 </layout>

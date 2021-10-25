@@ -6,18 +6,21 @@ import android.content.res.Resources
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 const val TOTAL_NUMBER_OF_SLIDES = 4
 
 /** [ViewModel] for slide in onboarding flow. */
-class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSlide) :
-  ObservableViewModel() {
-  val slideImage = ObservableField<Int>(R.drawable.ic_portrait_onboarding_0)
+class OnboardingSlideViewModel(
+  val context: Context,
+  viewPagerSlide: ViewPagerSlide,
+  private val resourceHandler: AppLanguageResourceHandler
+) : OnboardingViewPagerViewModel() {
+  val slideImage = ObservableField(R.drawable.ic_portrait_onboarding_0)
   val title =
-    ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_title))
+    ObservableField(getOnboardingSlide0Title())
   val description =
-    ObservableField<String>(context.resources.getString(R.string.onboarding_slide_0_description))
+    ObservableField(resourceHandler.getStringInLocale(R.string.onboarding_slide_0_description))
   private val orientation = Resources.getSystem().configuration.orientation
 
   init {
@@ -36,8 +39,8 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_0)
         }
-        title.set(context.resources.getString(R.string.onboarding_slide_0_title))
-        description.set(context.resources.getString(R.string.onboarding_slide_0_description))
+        title.set(getOnboardingSlide0Title())
+        description.set(resourceHandler.getStringInLocale(R.string.onboarding_slide_0_description))
       }
       ViewPagerSlide.SLIDE_1 -> {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -49,8 +52,8 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_1)
         }
-        title.set(context.resources.getString(R.string.onboarding_slide_1_title))
-        description.set(context.resources.getString(R.string.onboarding_slide_1_description))
+        title.set(resourceHandler.getStringInLocale(R.string.onboarding_slide_1_title))
+        description.set(resourceHandler.getStringInLocale(R.string.onboarding_slide_1_description))
       }
       ViewPagerSlide.SLIDE_2 -> {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -62,9 +65,14 @@ class OnboardingSlideViewModel(val context: Context, viewPagerSlide: ViewPagerSl
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_2)
         }
-        title.set(context.resources.getString(R.string.onboarding_slide_2_title))
-        description.set(context.resources.getString(R.string.onboarding_slide_2_description))
+        title.set(resourceHandler.getStringInLocale(R.string.onboarding_slide_2_title))
+        description.set(resourceHandler.getStringInLocale(R.string.onboarding_slide_2_description))
       }
     }
+  }
+
+  private fun getOnboardingSlide0Title(): String {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
+    return resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_slide_0_title, appName)
   }
 }

@@ -9,15 +9,19 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.databinding.ComingSoonTopicViewBinding
 import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
 import org.oppia.android.databinding.ItemSelectionInteractionItemsBinding
 import org.oppia.android.databinding.MultipleChoiceInteractionItemsBinding
 import org.oppia.android.databinding.PromotedStoryCardBinding
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /**
@@ -29,7 +33,9 @@ import javax.inject.Inject
  * View once Gradle has been removed.
  */
 // TODO(#1619): Remove file post-Gradle
-class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
+class ViewBindingShimImpl @Inject constructor(
+  private val translationController: TranslationController
+) : ViewBindingShim {
 
   override fun providePromotedStoryCardInflatedView(
     inflater: LayoutInflater,
@@ -47,6 +53,25 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
   ) {
     val binding =
       DataBindingUtil.findBinding<PromotedStoryCardBinding>(view)!!
+    binding.viewModel = viewModel
+  }
+
+  override fun provideComingSoonTopicViewInflatedView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    attachToParent: Boolean
+  ): View {
+    return ComingSoonTopicViewBinding.inflate(
+      LayoutInflater.from(parent.context), parent, attachToParent
+    ).root
+  }
+
+  override fun provideComingSoonTopicsViewViewModel(
+    view: View,
+    viewModel: ComingSoonTopicsViewModel
+  ) {
+    val binding =
+      DataBindingUtil.findBinding<ComingSoonTopicViewBinding>(view)!!
     binding.viewModel = viewModel
   }
 
@@ -68,7 +93,8 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
+    entityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   ) {
     val binding =
       DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
@@ -79,7 +105,7 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
         entityId,
         false
       ).parseOppiaHtml(
-        viewModel.htmlContent,
+        translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
         binding.itemSelectionContentsTextView
       )
     binding.viewModel = viewModel
@@ -103,7 +129,8 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
     htmlParserFactory: HtmlParser.Factory,
     resourceBucketName: String,
     entityType: String,
-    entityId: String
+    entityId: String,
+    writtenTranslationContext: WrittenTranslationContext
   ) {
     val binding =
       DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
@@ -111,7 +138,8 @@ class ViewBindingShimImpl @Inject constructor() : ViewBindingShim {
       htmlParserFactory.create(
         resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
       ).parseOppiaHtml(
-        viewModel.htmlContent, binding.multipleChoiceContentTextView
+        translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
+        binding.multipleChoiceContentTextView
       )
     binding.viewModel = viewModel
   }

@@ -3,6 +3,7 @@ package org.oppia.android.app.topic.info
 import android.app.Application
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -33,17 +34,22 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -55,29 +61,41 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestAccessibilityModule
-import org.oppia.android.testing.TestCoroutineDispatchers
-import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.espresso.ImageViewMatcher.Companion.hasScaleType
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -108,6 +126,11 @@ private const val DUMMY_TOPIC_DESCRIPTION_LONG =
   qualifiers = "port-xxhdpi"
 )
 class TopicInfoFragmentTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -138,7 +161,10 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
     }
@@ -146,7 +172,10 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_description_text_view)).check(
         matches(
@@ -162,15 +191,36 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
     }
   }
 
   @Test
+  fun testTopicInfoFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.topic_thumbnail_image_view)).check(
+        matches(
+          hasScaleType(ImageView.ScaleType.FIT_CENTER)
+        )
+      )
+    }
+  }
+
+  @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_name_text_view))
@@ -188,7 +238,10 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_tabs_viewpager_container)).check(matches(isDisplayed()))
@@ -198,7 +251,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
-    launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = TEST_TOPIC_ID
+    ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_thumbnail_image_view)).check(doesNotExist())
     }
@@ -207,12 +263,15 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.topic_description_text_view))
         .check(
           matches(
             maxLines(
-              /* lineCount= */ 5
+              lineCount = 5
             )
           )
         )
@@ -222,7 +281,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -237,7 +299,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -249,7 +314,7 @@ class TopicInfoFragmentTest {
         .check(
           matches(
             maxLines(
-              /* lineCount= */ 5
+              lineCount = 5
             )
           )
         )
@@ -259,7 +324,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
           DUMMY_TOPIC_DESCRIPTION_LONG
@@ -275,7 +343,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
       onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.see_more)))
@@ -285,7 +356,10 @@ class TopicInfoFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
-    launchTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID).use {
+    launchTopicActivityIntent(
+      internalProfileId = internalProfileId,
+      topicId = RATIOS_TOPIC_ID
+    ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
@@ -341,11 +415,10 @@ class TopicInfoFragmentTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      RobolectricModule::class, PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -353,12 +426,17 @@ class TopicInfoFragmentTest {
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

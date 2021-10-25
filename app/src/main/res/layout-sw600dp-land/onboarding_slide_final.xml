@@ -20,7 +20,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/final_layout"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:importantForAccessibility="yes">
 
       <ImageView
         android:id="@+id/slide_image_view"
@@ -28,7 +29,7 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_landscape_onboarding_3_tablet"
+        app:srcCompat="@drawable/ic_landscape_onboarding_3_tablet"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="40:39"
         app:layout_constraintStart_toStartOf="parent"

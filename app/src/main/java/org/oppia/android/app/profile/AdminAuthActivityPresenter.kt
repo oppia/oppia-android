@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminAuthActivityBinding
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class AdminAuthActivityPresenter @Inject constructor(
   private val context: Context,
   private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<AdminAuthViewModel>
+  private val viewModelProvider: ViewModelProvider<AdminAuthViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var binding: AdminAuthActivityBinding
   private val authViewModel by lazy {
@@ -90,8 +92,10 @@ class AdminAuthActivityPresenter @Inject constructor(
             activity.finish()
           }
         }
-      } else {
-        authViewModel.errorMessage.set(activity.resources.getString(R.string.admin_auth_incorrect))
+      } else if (inputPin.length == adminPin.length) {
+        authViewModel.errorMessage.set(
+          resourceHandler.getStringInLocale(R.string.admin_auth_incorrect)
+        )
       }
     }
   }
@@ -99,18 +103,24 @@ class AdminAuthActivityPresenter @Inject constructor(
   private fun setTitleAndSubTitle(binding: AdminAuthActivityBinding?) {
     when (activity.intent.getIntExtra(ADMIN_AUTH_ENUM_EXTRA_KEY, 0)) {
       AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
+        activity.title =
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_access_controls_title)
         binding?.adminAuthToolbar?.title =
-          context.resources.getString(R.string.administrator_controls)
+          resourceHandler.getStringInLocale(R.string.administrator_controls)
         binding?.adminAuthHeadingTextview?.text =
-          context.resources.getString(R.string.admin_auth_heading)
+          resourceHandler.getStringInLocale(R.string.admin_auth_heading)
         binding?.adminAuthSubText?.text =
-          context.resources.getString(R.string.admin_auth_admin_controls_sub)
+          resourceHandler.getStringInLocale(R.string.admin_auth_admin_controls_sub)
       }
       AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-        binding?.adminAuthToolbar?.title = context.resources.getString(R.string.add_profile_title)
+        activity.title =
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
+        binding?.adminAuthToolbar?.title =
+          resourceHandler.getStringInLocale(R.string.add_profile_title)
         binding?.adminAuthHeadingTextview?.text =
-          context.resources.getString(R.string.admin_auth_heading)
-        binding?.adminAuthSubText?.text = context.resources.getString(R.string.admin_auth_sub)
+          resourceHandler.getStringInLocale(R.string.admin_auth_heading)
+        binding?.adminAuthSubText?.text =
+          resourceHandler.getStringInLocale(R.string.admin_auth_sub)
       }
     }
   }

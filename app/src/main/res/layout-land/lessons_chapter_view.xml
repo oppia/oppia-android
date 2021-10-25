@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -25,14 +26,14 @@
     android:paddingEnd="4dp">
 
     <ImageView
-      android:id="@+id/chapter_completed"
+      android:id="@+id/chapter_play_state_icon"
       android:layout_width="16dp"
       android:layout_height="16dp"
       android:layout_marginStart="16dp"
       android:layout_marginEnd="8dp"
-      android:contentDescription="@{String.format(@string/chapter_completed, (viewModel.index + 1), viewModel.chapterName)}"
-      android:src="@drawable/ic_check_24dp"
-      android:visibility="@{(viewModel.chapterPlayState != ChapterPlayState.COMPLETED)?View.INVISIBLE : View.VISIBLE}" />
+      android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
+      app:srcCompat="@{viewModel.chapterPlayState == ChapterPlayState.COMPLETED?@drawable/ic_check_24dp:@drawable/ic_pending_24dp}"
+      android:visibility="@{(viewModel.chapterPlayState == ChapterPlayState.COMPLETED || viewModel.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED)?View.VISIBLE : View.INVISIBLE}" />
 
     <TextView
       android:id="@+id/chapter_index"
@@ -41,7 +42,7 @@
       android:layout_marginStart="4dp"
       android:fontFamily="sans-serif"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
-      android:text="@{String.format(@string/topic_play_chapter_index, (viewModel.index + 1))}"
+      android:text="@{viewModel.computePlayChapterIndexText()}"
       android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
       android:textSize="14sp" />
 

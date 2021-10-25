@@ -4,13 +4,11 @@ import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.logging.ConsoleLogger
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,11 +18,10 @@ private const val APP_STARTUP_STATE_DATA_PROVIDER_ID = "app_startup_state_data_p
 @Singleton
 class AppStartupStateController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val consoleLogger: ConsoleLogger,
-  private val expirationMetaDataRetriever: ExpirationMetaDataRetriever
+  private val oppiaLogger: OppiaLogger,
+  private val expirationMetaDataRetriever: ExpirationMetaDataRetriever,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
-  private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
-
   private val onboardingFlowStore =
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
 
@@ -39,7 +36,7 @@ class AppStartupStateController @Inject constructor(
     // markOnboardingFlowCompleted().
     onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        consoleLogger.e(
+        oppiaLogger.e(
           "DOMAIN",
           "Failed to prime cache ahead of LiveData conversion for user onboarding data.",
           it
@@ -58,7 +55,7 @@ class AppStartupStateController @Inject constructor(
       it.toBuilder().setAlreadyOnboardedApp(true).build()
     }.invokeOnCompletion {
       it?.let {
-        consoleLogger.e(
+        oppiaLogger.e(
           "DOMAIN", "Failed when storing that the user already onboarded the app.", it
         )
       }
@@ -86,19 +83,10 @@ class AppStartupStateController @Inject constructor(
         "automatic_app_expiration_enabled", /* defaultValue= */ true
       ) ?: true
     return if (isAppExpirationEnabled) {
-      val expirationDateString = applicationMetadata?.getString("expiration_date")
-      val expirationDate = expirationDateString?.let { parseDate(it) }
+      val expirationDateString = applicationMetadata?.getStringFromBundle("expiration_date")
+      val expirationDate = expirationDateString?.let { machineLocale.parseOppiaDate(it) }
       // Assume the app is in an expired state if something fails when comparing the date.
-      expirationDate?.before(Date()) ?: true
+      expirationDate?.isBeforeToday() ?: true
     } else false
-  }
-
-  private fun parseDate(dateString: String): Date? {
-    return try {
-      expirationDateFormat.parse(dateString)
-    } catch (e: ParseException) {
-      consoleLogger.e("DOMAIN", "Failed to parse date string: $dateString", e)
-      null
-    }
   }
 }

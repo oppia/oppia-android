@@ -15,11 +15,12 @@ import org.oppia.android.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.shim.ViewBindingShim
-import org.oppia.android.app.shim.ViewComponentFactory
-import org.oppia.android.util.accessibility.CustomAccessibilityManager
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
+import org.oppia.android.util.accessibility.AccessibilityChecker
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /**
@@ -39,7 +40,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
-  lateinit var accessibilityManager: CustomAccessibilityManager
+  lateinit var accessibilityChecker: AccessibilityChecker
 
   @Inject
   @field:ExplorationHtmlParserEntityType
@@ -58,9 +59,12 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
-    isAccessibilityEnabled = accessibilityManager.isScreenReaderEnabled()
+
+    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    viewComponent.inject(this)
+
+    isAccessibilityEnabled = accessibilityChecker.isScreenReaderEnabled()
   }
 
   fun allowMultipleItemsInSamePosition(isAllowed: Boolean) {
@@ -97,7 +101,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           viewBindingShim.getDragDropInteractionItemsBindingGroupItem().isVisible =
             isMultipleItemsInSamePositionAllowed
           viewBindingShim.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
-            viewModel.htmlContent.htmlList.size > 1
+            viewModel.htmlContent.contentIdsList.size > 1
           viewBindingShim.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =
             isAccessibilityEnabled
           viewBindingShim.setDragDropInteractionItemsBindingViewModel(viewModel)

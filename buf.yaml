@@ -1,20 +1,20 @@
 # buf.yaml files should always be in the root of your repository.
 # More details can be found on our wiki page {@link 'https://github.com/oppia/oppia-android/wiki/Buf-Guide'
+
+version: v1beta1
+
 build:
   roots:
     # Roots is the directories that all .proto files are contained within, and
     # all imports must derive from.
     # Only *.proto files within these directory will be compiled.
-    - .
-  # Excludes is the list of directories within root to exclude.
-  excludes:
-    - model/build
+    - model/src/main/proto
 
 # Lint contains the options for lint checks.
 lint:
   # Use is the list of checker categories and ids to use for buf check lint.
   use:
-    # Three categories {@link 'https://buf.build/docs/lint-checkers'
+    # Three categories {@link 'https://docs.buf.build/lint-rules'
     # The BASIC category includes everything from the MINIMAL category, as well as the STYLE_BASIC category.
     # The MINIMAL category represents what we consider to be fundamental rules for modern Protobuf development,
     # regardless of style

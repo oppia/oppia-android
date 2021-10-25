@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
+            android:minHeight="48dp"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:fadingEdgeLength="20dp"
@@ -62,8 +63,9 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end"
+            android:contentDescription="@{viewModel.isAudioStreamingOn ? @string/audio_player_on : @string/audio_player_off}"
             android:scaleType="center"
-            android:src="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp :  @drawable/ic_audio_streaming_off_24dp}"
+            app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp : @drawable/ic_audio_streaming_off_24dp}"
             android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>

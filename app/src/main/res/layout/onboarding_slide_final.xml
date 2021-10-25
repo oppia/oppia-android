@@ -21,14 +21,15 @@
       android:id="@+id/final_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:overScrollMode="always">
+      android:overScrollMode="always"
+      android:importantForAccessibility="yes">
 
       <ImageView
         android:id="@+id/slide_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_portrait_onboarding_3"
+        app:srcCompat="@drawable/ic_portrait_onboarding_3"
         app:layout_constraintDimensionRatio="5:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

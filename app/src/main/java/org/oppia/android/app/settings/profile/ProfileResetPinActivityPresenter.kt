@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileResetPinActivityBinding
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class ProfileResetPinActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<ProfileResetPinViewModel>
+  private val viewModelProvider: ViewModelProvider<ProfileResetPinViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private var inputtedPin = false
   private var inputtedConfirmPin = false
@@ -31,7 +33,6 @@ class ProfileResetPinActivityPresenter @Inject constructor(
   }
 
   fun handleOnCreate() {
-    activity.title = activity.getString(R.string.profile_reset_pin_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
@@ -109,7 +110,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       if (isAdmin) {
         if (pin.length < 5) {
           resetViewModel.pinErrorMsg.set(
-            activity.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.profile_reset_pin_error_admin_pin_length
             )
           )
@@ -118,7 +119,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       } else {
         if (pin.length < 3) {
           resetViewModel.pinErrorMsg.set(
-            activity.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.profile_reset_pin_error_user_pin_length
             )
           )
@@ -127,7 +128,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       }
       if (pin != confirmPin) {
         resetViewModel.confirmErrorMsg.set(
-          activity.resources.getString(
+          resourceHandler.getStringInLocale(
             R.string.add_profile_error_pin_confirm_wrong
           )
         )

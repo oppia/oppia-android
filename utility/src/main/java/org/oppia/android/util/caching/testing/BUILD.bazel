@@ -1,0 +1,48 @@
+"""
+Testing utilities corresponding asset caching utilities.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "caching_test_module",
+    testonly = True,
+    srcs = [
+        "CachingTestModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
+    ],
+)
+
+kt_android_library(
+    name = "asset_test_no_op_module",
+    testonly = True,
+    srcs = [
+        "AssetTestNoOpModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":test_asset_repository",
+    ],
+)
+
+kt_android_library(
+    name = "test_asset_repository",
+    testonly = True,
+    srcs = [
+        "TestNoOpAssetRepository.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+    ],
+)
+
+dagger_rules()

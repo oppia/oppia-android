@@ -9,7 +9,9 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -17,57 +19,21 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ItemSelectionInputIsProperSubsetOfRuleClassifierProvider]. */
+@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
   private val ITEM_SELECTION_12345 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1", "test2", "test3", "test4", "test5")
-    )
-
-  private val ITEM_SELECTION_1 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1")
-    )
-
-  private val ITEM_SELECTION_16 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1", "test6")
-    )
-
-  private val ITEM_SELECTION_12 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1", "test2")
-    )
-
-  private val ITEM_SELECTION_126 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test1", "test2", "test6")
-    )
-
-  private val ITEM_SELECTION_NONE =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList()
-    )
-
-  private val ITEM_SELECTION_6 =
-    InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
-      InteractionObjectTestBuilder
-        .createHtmlStringList("test6")
-    )
-
-  private val ITEM_SELECTION_INVAILD =
-    InteractionObjectTestBuilder.createString(
-      value = "test string"
-    )
+    createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4", "test5")
+  private val ITEM_SELECTION_1 = createSetOfTranslatableHtmlContentIds("test1")
+  private val ITEM_SELECTION_16 = createSetOfTranslatableHtmlContentIds("test1", "test6")
+  private val ITEM_SELECTION_12 = createSetOfTranslatableHtmlContentIds("test1", "test2")
+  private val ITEM_SELECTION_126 = createSetOfTranslatableHtmlContentIds("test1", "test2", "test6")
+  private val ITEM_SELECTION_NONE = createSetOfTranslatableHtmlContentIds()
+  private val ITEM_SELECTION_6 = createSetOfTranslatableHtmlContentIds("test6")
+  private val ITEM_SELECTION_INVAILD = createString(value = "test string")
 
   @Inject
   internal lateinit var itemSelectionInputIsProperSubsetOfRuleClassifierProvider:
@@ -88,7 +54,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -100,7 +67,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -112,7 +80,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -124,7 +93,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_126,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -136,7 +106,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_16,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -148,7 +119,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_NONE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isTrue()
@@ -160,7 +132,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_NONE,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -172,7 +145,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_6,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -184,7 +158,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
       answer = ITEM_SELECTION_12345,
-      inputs = inputs
+      inputs = inputs,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     )
 
     assertThat(matches).isFalse()
@@ -197,13 +172,14 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_12345,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected input value to be of type SET_OF_HTML_STRING not NORMALIZED_STRING")
+      .contains("Expected input value to be of type SET_OF_TRANSLATABLE_HTML_CONTENT_IDS")
   }
 
   @Test
@@ -213,13 +189,14 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_INVAILD,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected answer to be of type SET_OF_HTML_STRING not NORMALIZED_STRING")
+      .contains("Expected answer to be of type SET_OF_TRANSLATABLE_HTML_CONTENT_IDS")
   }
 
   @Test
@@ -229,7 +206,8 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest() {
     val exception = assertThrows(IllegalStateException::class) {
       inputContainsAtLeastOneOfRuleClassifier.matches(
         answer = ITEM_SELECTION_12345,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

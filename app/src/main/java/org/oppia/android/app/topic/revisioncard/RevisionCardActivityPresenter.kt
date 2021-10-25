@@ -11,26 +11,28 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
-import org.oppia.android.app.model.RevisionCard
+import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.databinding.RevisionCardActivityBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
 class RevisionCardActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController
 ) {
 
   private lateinit var revisionCardToolbar: Toolbar
   private lateinit var revisionCardToolbarTitle: TextView
 
-  private var internalProfileId = 0
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private var subtopicId: Int = 0
 
@@ -39,7 +41,7 @@ class RevisionCardActivityPresenter @Inject constructor(
       activity,
       R.layout.revision_card_activity
     )
-    this.internalProfileId = internalProfileId
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     this.topicId = topicId
     this.subtopicId = subtopicId
 
@@ -55,7 +57,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as RevisionCardActivity).finish()
     }
-    binding.revisionCardToolbar.setOnClickListener {
+    binding.revisionCardToolbarTitle.setOnClickListener {
       binding.revisionCardToolbarTitle.isSelected = true
     }
     subscribeToSubtopicTitle()
@@ -63,7 +65,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     if (getReviewCardFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.revision_card_fragment_placeholder,
-        RevisionCardFragment.newInstance(topicId, subtopicId)
+        RevisionCardFragment.newInstance(topicId, subtopicId, profileId)
       ).commitNow()
     }
   }
@@ -73,17 +75,14 @@ class RevisionCardActivityPresenter @Inject constructor(
     return when (item?.itemId) {
       R.id.action_preferences -> {
         val intent = OptionsActivity.createOptionsActivity(
-          activity,
-          internalProfileId,
-          /* isFromNavigationDrawer= */ false
+          activity, profileId.internalId, isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, internalProfileId,
-          /* isFromNavigationDrawer= */false
+          activity, profileId.internalId, isFromNavigationDrawer = false
         )
         activity.startActivity(intent)
         true
@@ -91,6 +90,9 @@ class RevisionCardActivityPresenter @Inject constructor(
       else -> false
     }
   }
+
+  /** Dismisses the concept card fragment if it's currently active in this activity. */
+  fun dismissConceptCard() = getReviewCardFragment()?.dismissConceptCard()
 
   private fun subscribeToSubtopicTitle() {
     subtopicLiveData.observe(
@@ -101,12 +103,12 @@ class RevisionCardActivityPresenter @Inject constructor(
     )
   }
 
-  val subtopicLiveData: LiveData<String> by lazy {
+  private val subtopicLiveData: LiveData<String> by lazy {
     processSubtopicTitleLiveData()
   }
 
-  private val revisionCardResultLiveData: LiveData<AsyncResult<RevisionCard>> by lazy {
-    topicController.getRevisionCard(topicId, subtopicId)
+  private val revisionCardResultLiveData: LiveData<AsyncResult<EphemeralRevisionCard>> by lazy {
+    topicController.getRevisionCard(profileId, topicId, subtopicId).toLiveData()
   }
 
   private fun processSubtopicTitleLiveData(): LiveData<String> {
@@ -114,19 +116,18 @@ class RevisionCardActivityPresenter @Inject constructor(
   }
 
   private fun processSubtopicTitleResult(
-    revisionCardResult: AsyncResult<RevisionCard>
+    revisionCardResult: AsyncResult<EphemeralRevisionCard>
   ): String {
     if (revisionCardResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "RevisionCardActivity",
         "Failed to retrieve Revision Card",
         revisionCardResult.getErrorOrNull()!!
       )
     }
-    val revisionCard = revisionCardResult.getOrDefault(
-      RevisionCard.getDefaultInstance()
-    )
-    return revisionCard.subtopicTitle
+    val ephemeralRevisionCard =
+      revisionCardResult.getOrDefault(EphemeralRevisionCard.getDefaultInstance())
+    return ephemeralRevisionCard.revisionCard.subtopicTitle
   }
 
   private fun getReviewCardFragment(): RevisionCardFragment? {

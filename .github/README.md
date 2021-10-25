@@ -1,5 +1,7 @@
 # [Oppia Android](https://www.oppia.org)
-[![CI Lint and Tests](https://github.com/oppia/oppia-android/workflows/CI%20Lint%20and%20Tests/badge.svg?branch=develop)](https://github.com/oppia/oppia-android/actions?query=workflow%3A%22CI+Lint+and+Tests%22+branch%3Adevelop) [![Gitter](https://img.shields.io/badge/chat-on%20gitter-ff006f.svg)](https://gitter.im/oppia/oppia-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Mailing List](https://img.shields.io/badge/Mailing%20List-Oppia%20Android-dev.svg)](mailto:oppia-android-dev@googlegroups.com) [![Twitter Follow](https://img.shields.io/twitter/follow/oppiaorg.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/oppiaorg) [![GitHub issues by-label](https://img.shields.io/github/issues/oppia/oppia-android/good%20first%20issue.svg)](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+[![Gitter](https://img.shields.io/badge/chat-on%20gitter-ff006f.svg)](https://gitter.im/oppia/oppia-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Mailing List](https://img.shields.io/badge/Mailing%20List-Oppia%20Android-dev.svg)](mailto:oppia-android-dev@googlegroups.com) [![Twitter Follow](https://img.shields.io/twitter/follow/oppiaorg.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/oppiaorg) [![GitHub issues by-label](https://img.shields.io/github/issues-search/oppia/oppia-android?label=Available%20starter%20issues&query=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22%20no%3Aassignee)](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee)
+
+[![Unit Tests (Robolectric -- Gradle)](https://github.com/oppia/oppia-android/actions/workflows/main.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/main.yml) [![Unit Tests (Robolectric - Bazel)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml) [![Build Tests](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml) [![Static Checks](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml)
 
 Oppia is an online learning tool that enables anyone to easily create and share interactive activities (called 'explorations'). These activities simulate a one-on-one conversation with a tutor, making it possible for students to learn by doing while getting feedback.
 
@@ -54,9 +56,22 @@ The Oppia Android code is released under the [Apache v2 license](https://github.
 
 ## Keeping in touch
 
-  * [Blog](https://medium.com/oppia-org)
   * [Discussion forum](http://groups.google.com/group/oppia)
   * [Announcements mailing list](http://groups.google.com/group/oppia-announce)
-  * Social media: [YouTube](https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw), [FB](https://www.facebook.com/oppiaorg), [Twitter](https://twitter.com/oppiaorg)
 
 We also have public chat rooms on Gitter: [https://gitter.im/oppia/oppia-android](https://gitter.im/oppia/oppia-android). Drop by and say hello!
+
+## Social Media
+[<img height="30" src="https://img.shields.io/badge/twitter-1DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white" />][twitter]
+[<img height="30" src="https://img.shields.io/badge/linkedin-0077B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white" />][LinkedIn]
+[<img height="30" src = "https://img.shields.io/badge/facebook-1877F2.svg?&style=for-the-badge&logo=facebook&logoColor=white">][Facebook]
+[<img height="30" src = "https://img.shields.io/badge/medium-12100E.svg?&style=for-the-badge&logo=medium&logoColor=white">][medium]
+[<img height="30" src = "https://img.shields.io/badge/oppia.org%20youtube-FF0000.svg?&style=for-the-badge&logo=youtube&logoColor=white">][oppia-org-youtube]
+[<img height="30" src = "https://img.shields.io/badge/oppia%20dev%20youtube-FF0000.svg?&style=for-the-badge&logo=youtube&logoColor=white">][dev-youtube]
+
+[twitter]: https://twitter.com/oppiaorg
+[linkedIn]: https://www.linkedin.com/company/oppia-org/
+[medium]: https://medium.com/@oppia.org
+[facebook]: https://www.facebook.com/oppiaorg/
+[oppia-org-youtube]: https://www.youtube.com/channel/UC5c1G7BNDCfv1rczcBp9FPw
+[dev-youtube]: https://www.youtube.com/channel/UCsrAX-oeqm0-NIQzQrdiUkQ

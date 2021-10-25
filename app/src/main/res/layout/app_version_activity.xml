@@ -21,13 +21,23 @@
       android:layout_height="?attr/actionBarSize"
       android:background="@color/oppiaPrimaryDark"
       android:textSize="20sp"
-      app:navigationContentDescription="@string/go_to_previous_page"
+      app:navigationContentDescription="@string/navigate_up"
       app:navigationIcon="?attr/homeAsUpIndicator"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
       app:title="@string/administrator_controls_app_version"
       app:titleTextAppearance="@style/ToolbarTextAppearance"
       app:titleTextColor="@color/white" />
   </com.google.android.material.appbar.AppBarLayout>
+
+  <View
+    android:id="@+id/app_version_shadow_view"
+    android:layout_width="0dp"
+    android:layout_height="4dp"
+    android:layout_gravity="top"
+    android:background="@drawable/toolbar_drop_shadow"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/app_version_app_bar_layout" />
 
   <FrameLayout
     android:id="@+id/app_version_fragment_placeholder"

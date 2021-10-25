@@ -1,11 +1,12 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.ObservableBoolean
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /** [ObservableViewModel] for MultipleChoiceInput values or ItemSelectionInput values. */
 class SelectionInteractionContentViewModel(
-  val htmlContent: String,
+  val htmlContent: SubtitledHtml,
   val hasConversationView: Boolean,
   private val itemIndex: Int,
   private val selectionInteractionViewModel: SelectionInteractionViewModel

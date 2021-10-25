@@ -5,32 +5,34 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsDownloadPermissionsViewModel(
   private val fragment: Fragment,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   private val userProfileId: ProfileId,
   deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
 
-  var isTopicWifiUpdatePermission =
+  val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
-  var isTopicAutoUpdatePermission =
+  val isTopicAutoUpdatePermission =
     ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
-  fun onTopicWifiUpdatePermissionChanged(checked: Boolean) {
-    profileManagementController.updateWifiPermissionDeviceSettings(userProfileId, checked)
-      .toLiveData()
+  fun onTopicWifiUpdatePermissionChanged() {
+    profileManagementController.updateWifiPermissionDeviceSettings(
+      userProfileId,
+      !isTopicWifiUpdatePermission.get()!!
+    ).toLiveData()
       .observe(
         fragment,
         Observer {
           if (it.isFailure()) {
-            logger.e(
+            oppiaLogger.e(
               "AdministratorControlsFragment",
               "Failed to update topic update on wifi permission",
               it.getErrorOrNull()!!
@@ -40,15 +42,15 @@ class AdministratorControlsDownloadPermissionsViewModel(
       )
   }
 
-  fun onTopicAutoUpdatePermissionChanged(checked: Boolean) {
+  fun onTopicAutoUpdatePermissionChanged() {
     profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
       userProfileId,
-      checked
+      !isTopicAutoUpdatePermission.get()!!
     ).toLiveData().observe(
       fragment,
       Observer {
         if (it.isFailure()) {
-          logger.e(
+          oppiaLogger.e(
             "AdministratorControlsFragment",
             "Failed to update topic auto update permission",
             it.getErrorOrNull()!!

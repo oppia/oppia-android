@@ -25,20 +25,22 @@ class OptionsActivityPresenter @Inject constructor(
     isFirstOpen: Boolean,
     selectedFragment: String
   ) {
-    activity.setContentView(R.layout.option_activity)
-    val titleTextView =
-      activity.findViewById<TextView>(R.id.options_activity_selected_options_title)
-    if (titleTextView != null) {
-      titleTextView.text = extraOptionsTitle
-    }
-    setUpToolbar()
     if (isFromNavigationDrawer) {
+      activity.setContentView(R.layout.option_activity)
+      setUpToolbar()
       setUpNavigationDrawer()
     } else {
+      activity.setContentView(R.layout.options_without_drawer_activity)
+      setUpToolbar()
       activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
       toolbar.setNavigationOnClickListener {
         activity.finish()
       }
+    }
+    val titleTextView =
+      activity.findViewById<TextView>(R.id.options_activity_selected_options_title)
+    if (titleTextView != null) {
+      titleTextView.text = extraOptionsTitle
     }
     val isMultipane = activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
     val previousFragment = getOptionFragment()

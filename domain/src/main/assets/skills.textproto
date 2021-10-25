@@ -1,0 +1,625 @@
+concept_cards {
+  skill_id: "test_skill_id_0"
+  skill_description: "An important skill"
+  explanation {
+    html: "Hello. Welcome to Oppia."
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "This is the first example."
+    content_id: "test_skill_content_id_1"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+      voiceover_mapping {
+        key: "es"
+        value {
+          file_size_bytes: 456
+          file_name: "fake_spanish_xlated_explanation.mp3"
+        }
+      }
+    }
+  }
+  recorded_voiceover {
+    key: "test_skill_content_id_1"
+    value {
+      voiceover_mapping {
+        key: "es"
+        value {
+          file_size_bytes: 456
+          file_name: "fake_spanish_xlated_example.mp3"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+      translation_mapping {
+        key: "es"
+        value {
+          html: "Hola. Bienvenidos a Oppia."
+        }
+      }
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "Ol\303\241. Bem-vindo ao oppia."
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "\330\243\331\207\331\204\330\247. \331\205\330\261\330\255\330\250\330\247 \330\250\331\203\331\205 \331\201\331\212 \330\243\331\210\331\201\331\212\330\247."
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "test_skill_content_id_1"
+    value {
+      translation_mapping {
+        key: "es"
+        value {
+          html: "Este es el primer ejemplo trabajado."
+        }
+      }
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "Este \303\251 o primeiro exemplo."
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "\331\207\330\260\330\247 \331\207\331\210 \330\247\331\204\331\205\330\253\330\247\331\204 \330\247\331\204\330\243\331\210\331\204."
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "565a49f4-dad4-4a77-bdb0-f4e3b43e7733"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "d4ea0e9a-2c09-4d4d-ae06-2f25037bf5c7"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "252f728b-e63f-448d-9284-e34327532e26"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "question-related-to-test_skill_content_id_1"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+}
+concept_cards {
+  skill_id: "test_skill_id_1"
+  skill_description: "Another important skill"
+  explanation {
+    html: "Explanation with <b>rich text</b>."
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "Worked example with <i>rich text</i>."
+    content_id: "worked_example_1"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "Explica\303\247\303\243o com <b> rico texto </b>."
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "Explanation \331\205\330\271 <b> Rich Text </b>."
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "Exemplo trabalhado com <i> texto rico </i>."
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "\331\205\330\253\330\247\331\204 \330\271\331\205\331\204 \331\205\330\271 <I> \331\206\330\265 \330\261\331\212\330\252\330\264 </I>."
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "99b6bb52-7e4a-4b70-b0ec-a3b25a4c1c5c"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "44e3cbc7-ba12-4126-87dc-bfebd614fbd7"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "110dd366-c6cb-4b39-8409-db9a4d8db078"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "question-related-to-worked_example_1"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+}
+concept_cards {
+  skill_id: "test_skill_id_2"
+  skill_description: "A different skill in a different topic"
+  explanation {
+    html: "Explanation without rich text."
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "Worked example without rich text."
+    content_id: "worked_example_1"
+  }
+  worked_example {
+    html: "Second worked example."
+    content_id: "worked_example_2"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "Explica\303\247\303\243o sem texto rico."
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "\330\252\331\201\330\263\331\212\330\261 \330\257\331\210\331\206 \331\206\330\265 \330\272\331\206\331\212."
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "Exemplo trabalhado sem texto rico."
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "\331\205\330\253\330\247\331\204 \330\271\331\204\331\211 \330\260\331\204\331\203 \330\257\331\210\331\206 \331\206\330\265 \330\272\331\206\331\212."
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "8bb0b74e-5c73-4569-a548-e7460640b280"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "4b2998d6-d4f2-44e1-a489-17dbfd2c0368"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "worked_example_2"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "Segundo exemplo trabalhado."
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "\331\205\330\253\330\247\331\204 \331\212\330\271\331\205\331\204 \330\247\331\204\330\253\330\247\331\206\331\212."
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "76a61e5f-205a-4950-9ce5-483304a36320"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\252\331\207>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "a0848668-d024-44cc-b960-d85af53fe570"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "d9aa4dce-8884-4045-baa7-1fb5520b7da2"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "4b5312f2-6504-49a8-a124-56bc0bf4d72d"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "question-related-to-worked_example_1"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+  written_translation {
+    key: "question-related-to-worked_example_2"
+    value {
+      translation_mapping {
+        key: "pt"
+        value {
+          html: "<Removido>"
+        }
+      }
+      translation_mapping {
+        key: "ar"
+        value {
+          html: "<\330\252\331\205\330\252 \330\245\330\262\330\247\331\204\330\251>"
+        }
+      }
+    }
+  }
+}
+concept_cards {
+  skill_id: "test_skill_id_3"
+  skill_description: "Another important skill 4"
+  explanation {
+    html: "The content for test skill id 3. This is a dummy skill content."
+    content_id: "explanation"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "5RM9KPfQxobH"
+  skill_description: "Given a picture divided into unequal parts, write the fraction."
+  explanation {
+    html: "<p>First, divide the picture into equal parts, so that you can figure out what the denominator (the total number of parts) is.<br>\n<br>\nThen, count the number of equal parts that are shaded/selected. That is the numerator of the fraction.</p>"
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "<p>[Show a picture of a square, divided into quarters, except that two of the quarters are joined to form a single larger \"1/2\" rectangle. One of the quarters is shaded.]</p>\n\n<p>What fraction of this picture is shaded?<br>\n<br>\nAnswer: First, we must divide the picture into equal parts. We can divide the square into four equal parts, like this: [Show picture of square divided into quarters, with the same shading].<br>\n<br>\nNow, there are 4 equal parts and only 1 is shaded, so the fraction shown is <strong>1/4</strong>.</p>"
+    content_id: "worked_example_1"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "UxTGIJqaHMLa"
+  skill_description: "Identify the numerator and denominator of a fraction."
+  explanation {
+    html: "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") the size of each piece.<br>\n<br>\nFor example, in 2/3, the numerator is 2 and the denominator is 3.</p>"
+    content_id: "explanation"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "B39yK4cbHZYI"
+  skill_description: "Explain the conceptual meaning of the terms \"numerator\" and \"denominator\"."
+  explanation {
+    html: "<p>The numerator is the number at the \"top\" of the fraction. It counts (\"enumerates\") how many pieces the fraction represents.<br>\n<br>\nThe denominator is the number at the \"bottom\" of the fraction. It names (\"denominates\") what the size of each piece is, based on how many equal parts the \"whole\" is divided into.</p>"
+    content_id: "explanation"
+  }
+  worked_example {
+    html: "<p>What does the <strong>denominator</strong>&nbsp;of a fraction represent?</p>\n\n<ul>\n\t<li>The total number of parts</li>\n\t<li>The number of unselected parts</li>\n\t<li>The number of selected parts</li>\n</ul>\n\n<p><br>\nAnswer: <strong>The total number of parts</strong>. (The \"denominator\" specifies the total number of parts in the whole, in order to explain what the size of each part is.)</p>"
+    content_id: "worked_example_1"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
+concept_cards {
+  skill_id: "NGZ89uMw0IGV"
+  skill_description: "Derive a ratio from a description or a picture"
+  explanation {
+    html: "<p>A ratio represents a relative relationship between two or more amounts. To write a ratio, start by writing these amounts, separating them by a colon. Remember that the order matters!</p><p>For example, let\'s say you have 9 apples and 6 pears. You can write the ratio of apples to pears as <b> 9 : 6.</b></p>If, instead, you have 3 pears, 5 apples and 9 bananas, you can write the ratio of apples to bananas to pears as <b>5 : 9 : 3.</b> Notice that the order of items in the ratio follows the order that was asked for."
+    content_id: "explanation"
+  }
+  recorded_voiceover {
+    key: "explanation"
+    value {
+    }
+  }
+  recorded_voiceover {
+    key: "worked_example_1"
+    value {
+    }
+  }
+  written_translation {
+    key: "explanation"
+    value {
+    }
+  }
+  written_translation {
+    key: "worked_example_1"
+    value {
+    }
+  }
+}
