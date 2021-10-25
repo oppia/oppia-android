@@ -19,7 +19,7 @@
         "objective": "Learn about oppia app via testing in second exploration.",
         "id": "test_exp_id_1"
       },
-      "outline": "",
+      "outline": "This is  outline/summary for Second Exploration. It is very long but it has to be fully visible. You wil be learning about oppia app in Second Story. Learn about oppia app via testing in second exploration.",
       "title": "Second Exploration",
       "acquired_skill_ids": []
     },

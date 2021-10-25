@@ -21,43 +21,43 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
-  private val ITEM_SELECTION_SET_5 =
+  private val ITEM_SELECTION_12345 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2", "test3", "test4", "test5")
     )
 
-  private val ITEM_SELECTION_SET_SUBSET =
+  private val ITEM_SELECTION_1 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1")
     )
 
-  private val ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT =
+  private val ITEM_SELECTION_16 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test6")
     )
 
-  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT =
+  private val ITEM_SELECTION_12 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2")
     )
 
-  private val ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT =
+  private val ITEM_SELECTION_126 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test1", "test2", "test6")
     )
 
-  private val ITEM_SELECTION_SET_EMPTY =
+  private val ITEM_SELECTION_NONE =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList()
     )
 
-  private val ITEM_SELECTION_SET_EXCLUSIVE =
+  private val ITEM_SELECTION_6 =
     InteractionObjectTestBuilder.createHtmlStringListInteractionObject(
       InteractionObjectTestBuilder
         .createHtmlStringList("test6")
@@ -78,10 +78,10 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_SUBSET)
+    val inputs = mapOf("x" to ITEM_SELECTION_1)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 
@@ -90,10 +90,10 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_ONE_ELEMENT_PRESENT)
+    val inputs = mapOf("x" to ITEM_SELECTION_16)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 
@@ -102,10 +102,10 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_NO_EXTRA_ELEMENT)
+    val inputs = mapOf("x" to ITEM_SELECTION_12)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 
@@ -114,10 +114,10 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_TWO_ELEMENTS_PRESENT_WITH_EXTRA_ELEMENT)
+    val inputs = mapOf("x" to ITEM_SELECTION_126)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 
@@ -126,10 +126,10 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_EMPTY)
+    val inputs = mapOf("x" to ITEM_SELECTION_NONE)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 
@@ -138,10 +138,10 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
 
   @Test
   fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SELECTION_SET_EXCLUSIVE)
+    val inputs = mapOf("x" to ITEM_SELECTION_6)
 
     val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_SET_5,
+      answer = ITEM_SELECTION_12345,
       inputs = inputs
     )
 

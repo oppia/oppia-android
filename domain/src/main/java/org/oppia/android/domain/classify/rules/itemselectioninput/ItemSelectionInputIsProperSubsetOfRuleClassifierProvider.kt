@@ -26,7 +26,6 @@ class ItemSelectionInputIsProperSubsetOfRuleClassifierProvider @Inject construct
     )
   }
 
-  // TODO(#210): Add tests for this classifier.
   override fun matches(answer: StringList, input: StringList): Boolean {
     val answerSet = answer.htmlList.toSet()
     val inputSet = input.htmlList.toSet()

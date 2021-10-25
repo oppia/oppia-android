@@ -22,7 +22,6 @@
     android:background="@drawable/drag_drop_white_background"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:orientation="vertical"
     android:paddingStart="8dp"
     android:paddingTop="8dp"
     android:paddingEnd="8dp"

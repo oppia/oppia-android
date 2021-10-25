@@ -24,13 +24,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -70,6 +68,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -124,7 +123,6 @@ class HomeActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -146,12 +144,30 @@ class HomeActivityTest {
   }
 
   @Test
-  @Ignore(
-    "This test case is incorrect as it depends on internalProfileId " +
-      "which is not guaranteed to be 0 for admin."
-  )
-  fun testHomeActivity_recyclerViewIndex0_withProfileId0_displayProfileName_profileNameDisplayedSuccessfully() { // ktlint-disable max-line-length
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_withAdminProfile_profileNameDisplayedSuccessfully() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(withText("Admin!")))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_withAdminProfile_configChange_profileNameDisplayedSuccessfully() {
+    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.home_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
@@ -216,24 +232,6 @@ class HomeActivityTest {
           R.id.welcome_text_view
         )
       ).check(matches(withText("Good evening,")))
-    }
-  }
-
-  @Test
-  fun testHomeActivity_recyclerViewIndex0_configurationChange_displaysWelcomeMessageCorrectly() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.profile_name_textview
-        )
-      ).check(matches(withText("Admin!")))
     }
   }
 
@@ -549,6 +547,7 @@ class HomeActivityTest {
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

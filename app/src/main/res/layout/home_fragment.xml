@@ -11,8 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="center">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/home_recycler_view"

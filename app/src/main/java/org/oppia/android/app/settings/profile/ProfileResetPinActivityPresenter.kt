@@ -1,15 +1,15 @@
 package org.oppia.android.app.settings.profile
 
 import android.content.Intent
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.profile.ProfileInputView
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileResetPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -57,33 +57,43 @@ class ProfileResetPinActivityPresenter @Inject constructor(
       lifecycleOwner = activity
     }
 
-    binding.inputPin.post {
-      addTextChangedListener(binding.inputPin) { pin ->
-        pin?.let {
-          resetViewModel.inputPin.set(it.toString())
-          resetViewModel.pinErrorMsg.set("")
-          inputtedPin = pin.isNotEmpty()
-          setValidPin()
-        }
-      }
-    }
-    binding.inputConfirmPin.post {
-      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
-        confirmPin?.let {
-          resetViewModel.inputConfirmPin.set(it.toString())
-          resetViewModel.confirmErrorMsg.set("")
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-          setValidPin()
-        }
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.profileResetInputPinEditText.onTextChanged { pin ->
+      pin?.let {
+        resetViewModel.inputPin.set(it)
+        resetViewModel.pinErrorMsg.set("")
+        inputtedPin = pin.isNotEmpty()
+        setValidPin()
       }
     }
 
-    binding.inputPin.setInput(resetViewModel.inputPin.get().toString())
-    binding.inputConfirmPin.setInput(resetViewModel.inputConfirmPin.get().toString())
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.profileResetInputConfirmPinEditText.onTextChanged { confirmPin ->
+      confirmPin?.let {
+        resetViewModel.inputConfirmPin.set(it)
+        resetViewModel.confirmErrorMsg.set("")
+        inputtedConfirmPin = confirmPin.isNotEmpty()
+        setValidPin()
+      }
+    }
+
+    binding.profileResetInputConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+      ) {
+        binding.profileResetSaveButton.callOnClick()
+      }
+      false
+    }
+
+    binding.profileResetInputPinEditText.setText(resetViewModel.inputPin.get().toString())
+    binding.profileResetInputConfirmPinEditText.setText(
+      resetViewModel.inputConfirmPin.get().toString()
+    )
 
     binding.profileResetSaveButton.setOnClickListener {
-      val pin = binding.inputPin.getInput()
-      val confirmPin = binding.inputConfirmPin.getInput()
+      val pin = binding.profileResetInputPinEditText.text.toString()
+      val confirmPin = binding.profileResetInputConfirmPinEditText.text.toString()
       var failed = false
       if (isAdmin) {
         if (pin.length < 5) {
@@ -136,20 +146,6 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     } else {
       resetViewModel.isButtonActive.set(false)
     }
-  }
-
-  private fun addTextChangedListener(
-    profileInputView: ProfileInputView,
-    onTextChanged: (CharSequence?) -> Unit
-  ) {
-    profileInputView.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        onTextChanged(p0)
-      }
-
-      override fun afterTextChanged(p0: Editable?) {}
-      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    })
   }
 
   private fun getProfileResetPinViewModel(): ProfileResetPinViewModel {

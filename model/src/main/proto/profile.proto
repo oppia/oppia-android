@@ -71,10 +71,10 @@ message Profile {
 message ProfileAvatar {
   oneof avatar_type {
     // User selected image or gravatar.
-    string avatar_image_uri = 5;
+    string avatar_image_uri = 1;
 
     // Tint color to be used with a generic profile image.
-    int32 avatar_color_rgb = 6;
+    int32 avatar_color_rgb = 2;
   }
 }
 

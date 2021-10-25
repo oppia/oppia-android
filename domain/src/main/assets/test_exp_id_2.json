@@ -390,7 +390,7 @@
               },
               "training_data": [],
               "rule_types_to_inputs": {
-                "isLessThan": [
+                "IsLessThan": [
                   {
                     "x": 121
                   }
@@ -412,7 +412,7 @@
               },
               "training_data": [],
               "rule_types_to_inputs": {
-                "isGreaterThan": [
+                "IsGreaterThan": [
                   {
                     "x": 121
                   }

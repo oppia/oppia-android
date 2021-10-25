@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario.launch
@@ -25,17 +26,18 @@ import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.firebase.FirebaseApp
+import com.google.android.material.textfield.TextInputLayout
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -68,6 +70,7 @@ import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfiguration
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
@@ -111,7 +114,6 @@ class AdminPinActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    FirebaseApp.initializeApp(context)
   }
 
   @After
@@ -124,50 +126,68 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        1
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminPinActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        1
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
@@ -176,20 +196,30 @@ class AdminPinActivityTest {
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     )
       .use {
         testCoroutineDispatchers.runCurrent()
-        onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        onView(
+          allOf(
+            withId(R.id.admin_pin_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.admin_pin_input_pin))
+          )
+        ).perform(
           editTextInputAction.appendText("12345"),
           closeSoftKeyboard()
         )
         testCoroutineDispatchers.runCurrent()
-        onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        onView(
+          allOf(
+            withId(R.id.admin_pin_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+          )
+        ).perform(
           nestedScrollTo(),
           editTextInputAction.appendText("12345"),
           closeSoftKeyboard()
@@ -201,28 +231,37 @@ class AdminPinActivityTest {
       }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminAuthActivity_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminAuthActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     )
       .use {
-        onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+        onView(
+          allOf(
+            withId(R.id.admin_pin_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.admin_pin_input_pin))
+          )
+        ).perform(
           editTextInputAction.appendText("12345"),
           closeSoftKeyboard()
         )
-        onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+        onView(
+          allOf(
+            withId(R.id.admin_pin_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+          )
+        ).perform(
           nestedScrollTo(),
           editTextInputAction.appendText("12345"),
           pressImeActionButton()
         )
+        testCoroutineDispatchers.runCurrent()
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       }
   }
@@ -231,13 +270,18 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputShortPin_clickIsDisabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
@@ -250,26 +294,33 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
-        matches(
-          withText("")
-        )
-      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -277,58 +328,79 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
-        matches(
-          withText(
-            context.getString(R.string.admin_pin_error_pin_confirm_wrong)
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(
+          matches(
+            hasErrorText(
+              R.string.admin_pin_error_pin_confirm_wrong
+            )
           )
         )
-      )
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          withText(
-            context.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          hasErrorText(
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -339,64 +411,84 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
-        )
-      ).check(matches(withText("")))
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("1234"),
-        pressImeActionButton()
-      )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
       onView(
         allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
-      ).check(matches(withText("")))
+      ).perform(
+        editTextInputAction.appendText("1234"),
+        pressImeActionButton()
+      )
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
+        editTextInputAction.appendText("5"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -404,20 +496,30 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        1
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
@@ -429,29 +531,38 @@ class AdminPinActivityTest {
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAddProfileActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        1
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
@@ -460,55 +571,73 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickSubmit_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputConfirmPin_clickImeActionButton_checkOpensAdministratorControlsActivity() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
   }
@@ -517,14 +646,19 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_clickIsDisabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
@@ -537,27 +671,34 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputShortPin_clickSubmit_inputPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("45"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_pin)))).check(
-        matches(
-          withText("")
-        )
-      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -565,65 +706,82 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          withText(
-            context.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          hasErrorText(
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      testCoroutineDispatchers.advanceUntilIdle()
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("1234"),
         pressImeActionButton()
       )
-      onView(allOf(withId(R.id.error_text), isDescendantOfA(withId(R.id.input_confirm_pin)))).check(
+      testCoroutineDispatchers.advanceUntilIdle()
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
-          withText(
-            context.getString(R.string.admin_pin_error_pin_confirm_wrong)
+          hasErrorText(
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -634,72 +792,92 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickSubmit_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
       onView(withId(R.id.submit_button)).perform(nestedScrollTo(), click())
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
-        )
-      ).check(matches(withText("")))
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminPinActivity_configurationChange_inputPin_inputWrongConfirmPin_clickImeActionButton_inputConfirmPin_checkErrorIsCleared() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       closeSoftKeyboard()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        nestedScrollTo(),
-        editTextInputAction.appendText("1234"),
-        pressImeActionButton()
-      )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
-        nestedScrollTo(),
-        editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
       onView(
         allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
         )
-      ).check(matches(withText("")))
+      ).perform(
+        nestedScrollTo(),
+        editTextInputAction.appendText("1234"),
+        pressImeActionButton()
+      )
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
+        nestedScrollTo(),
+        editTextInputAction.appendText("5"),
+        closeSoftKeyboard()
+      )
+      onView(withId(R.id.admin_pin_input_confirm_pin))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -707,64 +885,83 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickSubmit_configurationChange_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("54321"),
         closeSoftKeyboard()
       )
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).perform(nestedScrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
+        matches(
+          hasErrorText(
+            R.string.admin_pin_error_pin_confirm_wrong
+          )
         )
-      ).check(matches(withText(R.string.admin_pin_error_pin_confirm_wrong)))
+      )
     }
   }
 
-  // TODO(#962): Reenable once IME_ACTIONS work correctly on ProfileInputView.
-  @Ignore("IME_ACTIONS doesn't work properly in ProfileInputView")
   @Test
   fun testAdminPinActivity_inputPin_inputWrongConfirmPin_clickImeActionButton_configurationChange_checkConfirmWrongError() { // ktlint-disable max-line-length
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_confirm_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_confirm_pin))
+        )
+      ).perform(
         nestedScrollTo(),
         editTextInputAction.appendText("54321"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withId(R.id.error_text),
-          isDescendantOfA(withId(R.id.input_confirm_pin))
+      onView(withId(R.id.admin_pin_input_confirm_pin)).check(
+        matches(
+          hasErrorText(
+            R.string.admin_pin_error_pin_confirm_wrong
+          )
         )
-      ).check(matches(withText(R.string.admin_pin_error_pin_confirm_wrong)))
+      )
     }
   }
 
@@ -772,13 +969,18 @@ class AdminPinActivityTest {
   fun testAdminPinActivity_inputShortPin_configurationChange_clicIsDisabled() {
     launch<AdminPinActivity>(
       AdminPinActivity.createAdminPinActivityIntent(
-        context,
-        0,
-        -10710042,
-        0
+        context = context,
+        profileId = 0,
+        colorRgb = -10710042,
+        adminPinEnum = 0
       )
     ).use {
-      onView(allOf(withId(R.id.input), isDescendantOfA(withId(R.id.input_pin)))).perform(
+      onView(
+        allOf(
+          withId(R.id.admin_pin_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_pin_input_pin))
+        )
+      ).perform(
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
@@ -792,11 +994,37 @@ class AdminPinActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        val expectedErrorText = context.resources.getString(expectedErrorTextId)
+        return (view as TextInputLayout).error == expectedErrorText
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("TextInputLayout's error")
+      }
+    }
+  }
+
+  private fun hasNoErrorText(): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        return (view as TextInputLayout).error.isNullOrEmpty()
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("")
+      }
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
+      RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

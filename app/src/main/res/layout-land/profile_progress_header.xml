@@ -14,7 +14,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    android:orientation="vertical"
     android:paddingStart="16dp"
     android:paddingTop="32dp"
     android:paddingEnd="16dp">
@@ -52,7 +51,6 @@
       android:text="@{viewModel.profile.name}"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="28sp"
-      app:layout_constraintStart_toEndOf="@+id/profile_edit_image"
       app:layout_constraintStart_toStartOf="@+id/ongoing_topics_container"
       app:layout_constraintTop_toTopOf="parent" />
 

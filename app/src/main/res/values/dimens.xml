@@ -15,6 +15,8 @@
   <dimen name="divider_margin_top">8dp</dimen>
   <dimen name="divider_margin_bottom">8dp</dimen>
   <dimen name="bottom_white_space">160dp</dimen>
+  <dimen name="text_input_layout_corner_radius">4dp</dimen>
+  <dimen name="text_input_layout_stroke_width">1dp</dimen>
 
   <dimen name="ongoing_story_card_view_is_tablet_margin_top">28dp</dimen>
   <dimen name="ongoing_story_card_view_margin_top_portrait_story_grid_greater_then_2">28dp</dimen>
@@ -299,7 +301,7 @@
 
   <dimen name="story_chapter_card_playable_state_elevation">4dp</dimen>
   <dimen name="ongoing_topic_card_elevation">4dp</dimen>
-  <dimen name="story_chapter_card_not_playable_state_elevation">0dp</dimen>
+  <dimen name="story_chapter_card_not_playable_state_elevation">2dp</dimen>
   <dimen name="profile_chooser_padding_bottom_profile_already_added">224dp</dimen>
 
   <dimen name="continue_item_exploration_split_view_margin_top">72dp</dimen>

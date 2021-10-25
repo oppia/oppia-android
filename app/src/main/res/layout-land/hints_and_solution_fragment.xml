@@ -22,7 +22,6 @@
         android:background="@color/oppiaDarkBlue"
         android:fontFamily="sans-serif"
         android:minHeight="56dp"
-        android:textSize="20sp"
         app:title="@string/hints_toolbar_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -282,6 +282,15 @@ domain_test(
 )
 
 domain_test(
+    name = "ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/itemselectioninput/ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputIsProperSubsetOfRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
     name = "ItemsSelectionInputEqualsRuleClassifierProviderTest",
     srcs = [
         "src/test/java/org/oppia/android/domain/classify/rules/itemselectioninput/ItemsSelectionInputEqualsRuleClassifierProviderTest.kt",
@@ -332,6 +341,15 @@ domain_test(
         "src/test/java/org/oppia/android/domain/classify/rules/textinput/TextInputContainsRuleClassifierProviderTest.kt",
     ],
     test_class = "org.oppia.android.domain.classify.rules.textinput.TextInputContainsRuleClassifierProviderTest",
+    deps = TEST_DEPS,
+)
+
+domain_test(
+    name = "ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
+    srcs = [
+        "src/test/java/org/oppia/android/domain/classify/rules/textinput/ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest.kt",
+    ],
+    test_class = "org.oppia.android.domain.classify.rules.textinput.ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest",
     deps = TEST_DEPS,
 )
 

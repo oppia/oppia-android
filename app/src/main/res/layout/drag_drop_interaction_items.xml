@@ -17,8 +17,7 @@
     android:id="@+id/drag_drop_item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:orientation="horizontal">
+    android:layout_margin="4dp">
 
     <LinearLayout
       android:layout_width="0dp"

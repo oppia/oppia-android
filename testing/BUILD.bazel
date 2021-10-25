@@ -40,6 +40,7 @@ TEST_DEPS = [
     ":dagger",
     "//domain",
     "@robolectric//bazel:android-all",
+    ":assertion_helpers",
     artifact("org.jetbrains.kotlin:kotlin-reflect"),
     artifact("androidx.lifecycle:lifecycle-livedata-ktx"),
     artifact("com.google.truth:truth"),
@@ -79,6 +80,17 @@ testing_test(
     srcs = ["src/test/java/org/oppia/android/testing/profile/ProfileTestHelperTest.kt"],
     test_class = "org.oppia.android.testing.profile.ProfileTestHelperTest",
     deps = TEST_DEPS,
+)
+
+kt_android_library(
+    name = "assertion_helpers",
+    srcs = ["src/main/java/org/oppia/android/testing/AssertionHelpers.kt"],
+    visibility = ["//visibility:public"],
+    testonly = True,
+    deps = [
+        artifact("org.jetbrains.kotlin:kotlin-reflect"),
+        artifact("junit:junit:4.12"),
+    ],
 )
 
 dagger_rules()

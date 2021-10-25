@@ -9,14 +9,12 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.domain.classify.InteractionObjectTestBuilder
+import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [NumericInputIsWithinToleranceRuleClassifierProvider]. */
 @RunWith(AndroidJUnit4::class)
@@ -24,21 +22,36 @@ import kotlin.test.fail
 @Config(manifest = Config.NONE)
 class NumericInputIsWithinToleranceRuleClassifierProviderTest {
 
-  private val POSITIVE_REAL_VALUE_1_5 = createReal(value = 1.5)
-  private val POSITIVE_REAL_VALUE_2_5 = createReal(value = 2.5)
-  private val POSITIVE_REAL_VALUE_3_5 = createReal(value = 3.5)
-  private val ZERO_REAL_VALUE = createReal(value = 0.0)
-  private val NEGATIVE_REAL_VALUE_1_5 = createReal(value = -1.5)
-  private val NEGATIVE_REAL_VALUE_2_5 = createReal(value = -2.5)
-  private val NEGATIVE_REAL_VALUE_3_5 = createReal(value = -3.5)
-  private val STRING_VALUE_1 = createString(value = "test1")
-  private val POSITIVE_INT_VALUE_1 = createInt(value = 1)
-  private val POSITIVE_INT_VALUE_2 = createInt(value = 2)
-  private val POSITIVE_INT_VALUE_3 = createInt(value = 3)
-  private val ZERO_INT_VALUE = createInt(value = 0)
-  private val NEGATIVE_INT_VALUE_1 = createInt(value = -1)
-  private val NEGATIVE_INT_VALUE_2 = createInt(value = -2)
-  private val NEGATIVE_INT_VALUE_3 = createInt(value = -3)
+  private val POSITIVE_REAL_VALUE_1_5 =
+    InteractionObjectTestBuilder.createReal(value = 1.5)
+  private val POSITIVE_REAL_VALUE_2_5 =
+    InteractionObjectTestBuilder.createReal(value = 2.5)
+  private val POSITIVE_REAL_VALUE_3_5 =
+    InteractionObjectTestBuilder.createReal(value = 3.5)
+  private val ZERO_REAL_VALUE =
+    InteractionObjectTestBuilder.createReal(value = 0.0)
+  private val NEGATIVE_REAL_VALUE_1_5 =
+    InteractionObjectTestBuilder.createReal(value = -1.5)
+  private val NEGATIVE_REAL_VALUE_2_5 =
+    InteractionObjectTestBuilder.createReal(value = -2.5)
+  private val NEGATIVE_REAL_VALUE_3_5 =
+    InteractionObjectTestBuilder.createReal(value = -3.5)
+  private val STRING_VALUE_1 =
+    InteractionObjectTestBuilder.createString(value = "test1")
+  private val POSITIVE_INT_VALUE_1 =
+    InteractionObjectTestBuilder.createInt(value = 1)
+  private val POSITIVE_INT_VALUE_2 =
+    InteractionObjectTestBuilder.createInt(value = 2)
+  private val POSITIVE_INT_VALUE_3 =
+    InteractionObjectTestBuilder.createInt(value = 3)
+  private val ZERO_INT_VALUE =
+    InteractionObjectTestBuilder.createInt(value = 0)
+  private val NEGATIVE_INT_VALUE_1 =
+    InteractionObjectTestBuilder.createInt(value = -1)
+  private val NEGATIVE_INT_VALUE_2 =
+    InteractionObjectTestBuilder.createInt(value = -2)
+  private val NEGATIVE_INT_VALUE_3 =
+    InteractionObjectTestBuilder.createInt(value = -3)
 
   @Inject
   internal lateinit var numericInputIsWithinToleranceRuleClassifierProvider:
@@ -469,37 +482,11 @@ class NumericInputIsWithinToleranceRuleClassifierProviderTest {
       .contains("Expected input value to be of type REAL not NORMALIZED_STRING")
   }
 
-  private fun createReal(value: Double): InteractionObject {
-    return InteractionObject.newBuilder().setReal(value).build()
-  }
-
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
-  }
-
-  private fun createInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setReal(value.toDouble()).build()
-  }
-
   private fun setUpTestApplicationComponent() {
     DaggerNumericInputIsWithinToleranceRuleClassifierProviderTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
-  }
-
-  // TODO(#89): Move to a common test library.
-  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-    try {
-      operation()
-      fail("Expected to encounter exception of $type")
-    } catch (t: Throwable) {
-      if (type.isInstance(t)) {
-        return type.cast(t)
-      }
-      // Unexpected exception; throw it.
-      throw t
-    }
   }
 
   // TODO(#89): Move this to a common test application component.

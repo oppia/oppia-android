@@ -28,6 +28,7 @@ class StoryChapterSummaryViewModel(
   val name: String = chapterSummary.name
   val summary: String = chapterSummary.summary
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
+  val missingPrerequisiteChapter: ChapterSummary = chapterSummary.missingPrerequisiteChapter
 
   fun onExplorationClicked() {
     explorationDataController.stopPlayingExploration()

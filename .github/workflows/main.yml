@@ -27,7 +27,7 @@ jobs:
 
     - name: Download Ktlint
       run: |
-        KTLINT="0.37.0"
+        KTLINT="0.37.1"
         echo Using Ktlint $KTLINT
         curl -sSLO https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
         chmod a+x ktlint

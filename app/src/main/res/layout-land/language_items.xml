@@ -29,7 +29,7 @@
 
     <TextView
       android:id="@+id/language_text_view"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"

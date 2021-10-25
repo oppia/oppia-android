@@ -1,10 +1,8 @@
 package org.oppia.android.app.profile
 
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -12,6 +10,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -48,43 +47,29 @@ class AdminPinActivityPresenter @Inject constructor(
       viewModel = adminViewModel
     }
 
-    binding.inputPin.post {
-      addTextChangedListener(binding.inputPin) { pin ->
-        pin?.let {
-          adminViewModel.pinErrorMsg.set("")
-          adminViewModel.savedPin.set(it.toString())
-          inputtedPin = pin.isNotEmpty()
-          setValidPin()
-        }
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.adminPinInputPinEditText.onTextChanged { pin ->
+      pin?.let {
+        adminViewModel.pinErrorMsg.set("")
+        adminViewModel.savedPin.set(it)
+        inputtedPin = pin.isNotEmpty()
+        setValidPin()
       }
     }
 
-    binding.inputConfirmPin.post {
-      addTextChangedListener(binding.inputConfirmPin) { confirmPin ->
-        confirmPin?.let {
-          adminViewModel.confirmPinErrorMsg.set("")
-          adminViewModel.savedConfirmPin.set(it.toString())
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-          setValidPin()
-        }
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.adminPinInputConfirmPinEditText.onTextChanged { confirmPin ->
+      confirmPin?.let {
+        adminViewModel.confirmPinErrorMsg.set("")
+        adminViewModel.savedConfirmPin.set(it)
+        inputtedConfirmPin = confirmPin.isNotEmpty()
+        setValidPin()
       }
     }
-
-    binding.inputPin.setInput(adminViewModel.savedPin.get().toString())
-    binding.inputConfirmPin.setInput(adminViewModel.savedConfirmPin.get().toString())
-
-    binding.inputConfirmPin.addEditorActionListener(
-      TextView.OnEditorActionListener { _, actionId, _ ->
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
-          binding.submitButton.callOnClick()
-        }
-        false
-      }
-    )
 
     binding.submitButton.setOnClickListener {
-      val inputPin = binding.inputPin.getInput()
-      val confirmPin = binding.inputConfirmPin.getInput()
+      val inputPin = binding.adminPinInputPinEditText.text.toString()
+      val confirmPin = binding.adminPinInputConfirmPinEditText.text.toString()
       var failed = false
       if (inputPin.length < 5) {
         adminViewModel.pinErrorMsg.set(
@@ -139,20 +124,23 @@ class AdminPinActivityPresenter @Inject constructor(
         }
       )
     }
-  }
 
-  private fun addTextChangedListener(
-    profileInputView: ProfileInputView,
-    onTextChanged: (CharSequence?) -> Unit
-  ) {
-    profileInputView.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-      override fun afterTextChanged(p0: Editable?) {
-        onTextChanged(p0)
+    binding.adminPinInputConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+      ) {
+        binding.submitButton.callOnClick()
       }
-
-      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    })
+      false
+    }
+    binding.adminPinInputPinEditText.setOnEditorActionListener { _, actionId, event ->
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+      ) {
+        binding.submitButton.callOnClick()
+      }
+      false
+    }
   }
 
   private fun setValidPin() {

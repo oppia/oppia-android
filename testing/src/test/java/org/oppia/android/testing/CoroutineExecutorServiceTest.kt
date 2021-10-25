@@ -18,7 +18,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -42,8 +41,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
 
 /**
  * Tests for [CoroutineExecutorService]. NOTE: significant care should be taken when modifying these
@@ -72,12 +69,16 @@ class CoroutineExecutorServiceTest {
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject lateinit var testDispatcherFactory: TestCoroutineDispatcher.Factory
+  @Inject
+  lateinit var testDispatcherFactory: TestCoroutineDispatcher.Factory
 
-  @Mock lateinit var mockRunnable: Runnable
-  @Mock lateinit var mockCallable: Callable<String>
+  @Mock
+  lateinit var mockRunnable: Runnable
+  @Mock
+  lateinit var mockCallable: Callable<String>
 
   private val testDispatcher by lazy {
     testDispatcherFactory.createDispatcher(
@@ -1091,23 +1092,6 @@ class CoroutineExecutorServiceTest {
     }
   }
 
-  // TODO(#89): Move to a common test library.
-  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-    try {
-      operation()
-      fail("Expected to encounter exception of $type")
-    } catch (t: Throwable) {
-      if (type.isInstance(t)) {
-        return type.cast(t)
-      }
-      // Unexpected exception; throw it.
-      throw t
-    }
-    throw AssertionError(
-      "Reached an impossible state when verifying that an exception was thrown."
-    )
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -1122,7 +1106,10 @@ class CoroutineExecutorServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, TestModule::class, TestLogReportingModule::class
+      TestDispatcherModule::class,
+      TestModule::class,
+      TestLogReportingModule::class,
+      RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

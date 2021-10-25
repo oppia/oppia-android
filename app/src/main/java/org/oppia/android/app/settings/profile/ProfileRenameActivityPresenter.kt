@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -12,6 +14,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.ProfileInputView
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileRenameActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -57,7 +60,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
         Context.INPUT_METHOD_SERVICE
       ) as? InputMethodManager
       imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
-      val name = binding.inputName.getInput()
+      val name = binding.profileRenameInputEditText.text.toString()
       if (name.isEmpty()) {
         renameViewModel.nameErrorMsg.set(
           activity.resources.getString(
@@ -76,16 +79,22 @@ class ProfileRenameActivityPresenter @Inject constructor(
         )
     }
 
-    binding.inputName.post {
-      addTextChangedListener(binding.inputName) { name ->
-        name?.let {
-          renameViewModel.nameErrorMsg.set("")
-          renameViewModel.inputName.set(it.toString())
-        }
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.profileRenameInputEditText.onTextChanged { name ->
+      name?.let {
+        renameViewModel.nameErrorMsg.set("")
+        renameViewModel.inputName.set(it)
       }
     }
 
-    binding.inputName.setInput(renameViewModel.inputName.get().toString())
+    binding.profileRenameInputEditText.setOnEditorActionListener { _, actionId, event ->
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+      ) {
+        binding.profileRenameSaveButton.callOnClick()
+      }
+      false
+    }
   }
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
