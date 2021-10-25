@@ -117,7 +117,7 @@ class RegexPatternValidationCheckTest {
     "Don't use Locale directly. Instead, use LocaleController, or OppiaLocale & its subclasses."
   private val doNotUseKotlinDelegatesErrorMessage =
     "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to" +
-      " null, instead. Delegates uses reflection internally, has a non-trivial initialization" +
+      " null, instead. Delegates uses reflection internally, have a non-trivial initialization" +
       " cost, and can cause breakages on KitKat devices. See #3939 for more context."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
