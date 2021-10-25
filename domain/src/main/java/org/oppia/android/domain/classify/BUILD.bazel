@@ -5,9 +5,10 @@ Package for testing utilities for log uploading functionality.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "answer_classification_controller",
+    name = "classification_controller_and_result",
     srcs = [
         "AnswerClassificationController.kt",
+        "ClassificationResult.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
