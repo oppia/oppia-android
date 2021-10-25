@@ -259,10 +259,10 @@
     <activity
       android:name=".app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.privacypolicytermsofservice.PrivacyPolicySingleActivity"
+    <activity android:name=".app.privacypolicytermsofservice.PrivacyPolicyActivity"
       android:label="@string/privacy_policy_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.privacypolicytermsofservice.TermsOfServiceSingleActivity"
+    <activity android:name=".app.privacypolicytermsofservice.TermsOfServiceActivity"
       android:label="@string/privacy_policy_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity

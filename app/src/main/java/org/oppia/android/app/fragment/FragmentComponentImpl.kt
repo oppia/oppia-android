@@ -3,6 +3,7 @@ package org.oppia.android.app.fragment
 import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.android.app.TermsOfServicetermsofservice.TermsOfServiceFragment
 import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
@@ -45,6 +46,7 @@ import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModu
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
+import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicyFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
@@ -128,6 +130,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(onboardingFragment: OnboardingFragment)
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
+  fun inject(privacyPolicyFragment: PrivacyPolicyFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(profileEditDeletionDialogFragment: ProfileEditDeletionDialogFragment)
   fun inject(profileEditFragment: ProfileEditFragment)
@@ -145,6 +148,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(stateFragment: StateFragment)
   fun inject(stopExplorationDialogFragment: StopExplorationDialogFragment)
   fun inject(storyFragment: StoryFragment)
+  fun inject(termsOfServiceFragment: TermsOfServiceFragment)
   fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
   fun inject(topicFragment: TopicFragment)
   fun inject(topicInfoFragment: TopicInfoFragment)

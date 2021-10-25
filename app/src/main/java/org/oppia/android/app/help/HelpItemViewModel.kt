@@ -35,12 +35,25 @@ class HelpItemViewModel(
         }
       }
       resourceHandler.getStringInLocale(R.string.privacy_policy_activity_title) -> {
-        val routeToPrivacyPolicyListener = activity as RouteToPrivacyPolicySingleListener
-        routeToPrivacyPolicyListener.onRouteToPrivacyPolicySingle()
+        if (isMultipane) {
+          val loadPrivacyPolicyFragmentListener = activity as
+            LoadPrivacyPolicyFragmentListener
+          loadPrivacyPolicyFragmentListener.loadPrivacyPolicyFragment()
+        } else {
+          val routeToPrivacyPolicyListener = activity as RouteToPrivacyPolicySingleListener
+          routeToPrivacyPolicyListener.onRouteToPrivacyPolicySingle()
+        }
       }
+
       resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title) -> {
-        val routeToTermsOfServiceListener = activity as RouteToTermsOfServiceSingleListener
-        routeToTermsOfServiceListener.onRouteToTermsOfServiceSingle()
+        if (isMultipane) {
+          val loadTermsOfServiceFragmentFragmentListener = activity as
+            LoadTermsOfServiceFragmentListener
+          loadTermsOfServiceFragmentFragmentListener.loadTermsOfServiceFragment()
+        } else {
+          val routeToTermsOfServiceListener = activity as RouteToTermsOfServiceListener
+          routeToTermsOfServiceListener.onRouteToTermsOfService()
+        }
       }
     }
   }

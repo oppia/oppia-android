@@ -86,14 +86,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TermsOfServiceSingleActivity]. */
+/** Tests for [TermsOfServiceActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = TermsOfServiceSingleActivityTest.TestApplication::class,
+  application = TermsOfServiceActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class TermsOfServiceSingleActivityTest {
+class TermsOfServiceActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -110,8 +110,8 @@ class TermsOfServiceSingleActivityTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<TermsOfServiceSingleActivity> = ActivityTestRule(
-    TermsOfServiceSingleActivity::class.java, /* initialTouchMode= */
+  var activityTestRule: ActivityTestRule<TermsOfServiceActivity> = ActivityTestRule(
+    TermsOfServiceActivity::class.java, /* initialTouchMode= */
     true, /* launchActivity= */
     false
   )
@@ -143,7 +143,7 @@ class TermsOfServiceSingleActivityTest {
 
   @Test
   fun testTermsOfServiceSingleActivity_checkTermsOfService_isDisplayed() {
-    launch<TermsOfServiceSingleActivity>(createTermsOfServiceSingleActivity()).use {
+    launch<TermsOfServiceActivity>(createTermsOfServiceSingleActivity()).use {
       onView(withId(R.id.terms_of_service_description_text_view)).check(matches(isDisplayed()))
     }
   }
@@ -171,7 +171,7 @@ class TermsOfServiceSingleActivityTest {
   }
 
   private fun createTermsOfServiceSingleActivity(): Intent {
-    return TermsOfServiceSingleActivity.createTermsOfServiceSingleActivityIntent(
+    return TermsOfServiceActivity.createTermsOfServiceActivityIntent(
       ApplicationProvider.getApplicationContext()
     )
   }
@@ -209,7 +209,7 @@ class TermsOfServiceSingleActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(TermsOfServiceSingleActivityTest: TermsOfServiceSingleActivityTest)
+    fun inject(TermsOfServiceSingleActivityTest: TermsOfServiceActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -219,7 +219,7 @@ class TermsOfServiceSingleActivityTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(TermsOfServiceSingleActivityTest: TermsOfServiceSingleActivityTest) {
+    fun inject(TermsOfServiceSingleActivityTest: TermsOfServiceActivityTest) {
       component.inject(TermsOfServiceSingleActivityTest)
     }
 

@@ -1,42 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
-
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/privacy_policy_single_app_bar_layout"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
-
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/privacy_policy_single_activity_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/navigate_up"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/privacy_policy_activity_title"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <FrameLayout
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/privacy_policy_single_app_bar_layout">
 
       <ScrollView
         android:layout_width="match_parent"
@@ -64,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:justificationMode="inter_word"
-            android:textAlignment="viewStart"
             android:textColor="@color/oppiaPrimaryText" />
 
           <TextView
@@ -73,17 +40,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:textAlignment="viewStart"
             android:textColor="@color/oppiaPrimaryText"/>
 
         </LinearLayout>
       </ScrollView>
-
-      <View
-        android:id="@+id/privacy_policy_single_view"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
-    </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

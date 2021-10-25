@@ -136,11 +136,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private fun setTermsAndCondition(binding: OnboardingSlideFinalBinding) {
     val termsOfService: String = resourceHandler.getStringInLocale(R.string.terms_of_service)
     val privacyPolicy: String = resourceHandler.getStringInLocale(R.string.privacy_policy)
-    val completeString: String =
-      resourceHandler.getStringInLocaleWithWrapping(
-        R.string.agree_to_terms,
-        resourceHandler.getStringInLocale(R.string.app_name)
-      ) + termsOfService + " and " + privacyPolicy
+    val completeString: String = resourceHandler.getStringInLocale(R.string.agree_to_terms)
 
     val startIndex = completeString.indexOf(termsOfService)
     val endIndex = startIndex + termsOfService.length
@@ -160,7 +156,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
     val clickOnPrivacy = object : ClickableSpan() {
       override fun onClick(widget: View) {
-        (activity as RouteToPrivacyPolicySingleListener).onRouteToPrivacyPolicySingle()
+        (activity as RouteToPrivacyPolicyListener).onRouteToPrivacyPolicy()
       }
 
       override fun updateDrawState(ds: TextPaint) {

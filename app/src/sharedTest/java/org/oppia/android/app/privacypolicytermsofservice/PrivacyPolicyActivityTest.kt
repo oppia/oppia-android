@@ -87,14 +87,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PrivacyPolicySingleActivity]. */
+/** Tests for [PrivacyPolicyActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PrivacyPolicySingleActivityTest.TestApplication::class,
+  application = PrivacyPolicyActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class PrivacyPolicySingleActivityTest {
+class PrivacyPolicyActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -111,8 +111,8 @@ class PrivacyPolicySingleActivityTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<PrivacyPolicySingleActivity> = ActivityTestRule(
-    PrivacyPolicySingleActivity::class.java, /* initialTouchMode= */
+  var activityTestRule: ActivityTestRule<PrivacyPolicyActivity> = ActivityTestRule(
+    PrivacyPolicyActivity::class.java, /* initialTouchMode= */
     true, /* launchActivity= */
     false
   )
@@ -144,7 +144,7 @@ class PrivacyPolicySingleActivityTest {
 
   @Test
   fun testPrivacyPolicySingleActivity_checkPrivacyPolicy_isDisplayed() {
-    launch<PrivacyPolicySingleActivity>(createPrivacyPolicySingleActivity()).use {
+    launch<PrivacyPolicyActivity>(createPrivacyPolicySingleActivity()).use {
       onView(withId(R.id.privacy_policy_description_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
     }
@@ -173,7 +173,7 @@ class PrivacyPolicySingleActivityTest {
   }
 
   private fun createPrivacyPolicySingleActivity(): Intent {
-    return PrivacyPolicySingleActivity.createPrivacyPolicySingleActivityIntent(
+    return PrivacyPolicyActivity.createPrivacyPolicyActivityIntent(
       ApplicationProvider.getApplicationContext()
     )
   }
@@ -211,7 +211,7 @@ class PrivacyPolicySingleActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(PrivacyPolicySingleActivityTest: PrivacyPolicySingleActivityTest)
+    fun inject(PrivacyPolicySingleActivityTest: PrivacyPolicyActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -221,7 +221,7 @@ class PrivacyPolicySingleActivityTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(privacyPolicySingleActivityTest: PrivacyPolicySingleActivityTest) {
+    fun inject(privacyPolicySingleActivityTest: PrivacyPolicyActivityTest) {
       component.inject(privacyPolicySingleActivityTest)
     }
 
