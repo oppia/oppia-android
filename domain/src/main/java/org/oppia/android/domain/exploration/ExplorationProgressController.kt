@@ -70,7 +70,7 @@ class ExplorationProgressController @Inject constructor(
   private lateinit var hintHandler: HintHandler
 
   /** Resets this controller to begin playing the specified [Exploration]. */
-  internal fun beginExplorationAsync(
+  fun beginExplorationAsync(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
@@ -99,7 +99,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /** Indicates that the current exploration being played is now completed. */
-  internal fun finishExplorationAsync() {
+  fun finishExplorationAsync() {
     explorationProgressLock.withLock {
       check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
         "Cannot finish playing an exploration that hasn't yet been started"

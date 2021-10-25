@@ -74,7 +74,7 @@ class ExplorationCheckpointController @Inject constructor(
    *     [CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT] is returned upon successful
    *     completion of deferred.
    */
-  internal fun recordExplorationCheckpointAsync(
+  fun recordExplorationCheckpointAsync(
     profileId: ProfileId,
     explorationId: String,
     explorationCheckpoint: ExplorationCheckpoint
