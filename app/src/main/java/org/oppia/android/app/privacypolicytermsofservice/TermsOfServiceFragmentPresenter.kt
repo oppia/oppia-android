@@ -64,8 +64,5 @@ class TermsOfServiceFragmentPresenter @Inject constructor(
       privacyPolicyWebLink,
       binding.termsOfServiceWebLinkTextView
     )
-
   }
 }
-
-

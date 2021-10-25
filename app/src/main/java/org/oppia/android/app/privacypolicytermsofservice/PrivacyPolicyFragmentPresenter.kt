@@ -64,6 +64,5 @@ class PrivacyPolicyFragmentPresenter @Inject constructor(
       privacyPolicyWebLink,
       binding.privacyPolicyWebLinkTextView
     )
-
   }
 }
