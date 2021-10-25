@@ -1,0 +1,24 @@
+"""
+Package for testing utilities for log uploading functionality.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "devoptions",
+    srcs = [
+        "ModifyLessonProgressController.kt",
+        "ShowAllHintsAndSolutionController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/topic:story_progress_controller",
+        "//model:profile_java_proto_lite",
+        "//model:topic_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
