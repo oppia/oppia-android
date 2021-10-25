@@ -1,0 +1,16 @@
+"""
+Package for testing utilities for log uploading functionality.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "hint_handler",
+    srcs = [
+        "HintHandler.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:exploration_java_proto_lite",
+    ],
+)
