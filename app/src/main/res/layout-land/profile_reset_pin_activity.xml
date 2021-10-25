@@ -95,8 +95,7 @@
               android:layout_height="wrap_content"
               android:imeOptions="actionNext"
               android:inputType="numberPassword"
-              android:maxLength="@{viewModel.isAdmin ? 5 : 3}"
-              android:textDirection="locale" />
+              android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <com.google.android.material.textfield.TextInputLayout
@@ -120,8 +119,7 @@
               android:layout_height="wrap_content"
               android:imeOptions="actionDone"
               android:inputType="numberPassword"
-              android:maxLength="@{viewModel.isAdmin ? 5 : 3}"
-              android:textDirection="locale" />
+              android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
           </com.google.android.material.textfield.TextInputLayout>
 
           <Button
@@ -133,6 +131,7 @@
             android:layout_marginEnd="168dp"
             android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
             android:clickable="@{viewModel.isButtonActive()}"
+            android:enabled="@{viewModel.isButtonActive()}"
             android:text="@string/profile_rename_save"
             android:textAllCaps="true"
             android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"

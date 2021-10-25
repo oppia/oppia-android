@@ -1,7 +1,6 @@
 package org.oppia.android.app.databinding;
 
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;

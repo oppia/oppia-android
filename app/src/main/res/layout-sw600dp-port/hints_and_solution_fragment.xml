@@ -39,10 +39,10 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:background="@color/hintsAndSolutionBackground"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      android:background="@color/hintsAndSolutionBackground"
       app:layout_constraintTop_toBottomOf="@+id/hints_and_solution_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView

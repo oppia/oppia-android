@@ -2,8 +2,6 @@ package org.oppia.android.app.settings.profile
 
 import android.content.Context
 import android.content.Intent
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -13,7 +11,6 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.profile.ProfileInputView
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileRenameActivityBinding
@@ -82,8 +79,15 @@ class ProfileRenameActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.profileRenameInputEditText.onTextChanged { name ->
       name?.let {
-        renameViewModel.nameErrorMsg.set("")
-        renameViewModel.inputName.set(it)
+        if (
+          renameViewModel.nameErrorMsg.get()?.isNotEmpty()!! &&
+          renameViewModel.inputName.get() == it
+        ) {
+          renameViewModel.inputName.set(it)
+        } else {
+          renameViewModel.nameErrorMsg.set("")
+          renameViewModel.inputName.set(it)
+        }
       }
     }
 
@@ -118,20 +122,6 @@ class ProfileRenameActivityPresenter @Inject constructor(
           )
       }
     }
-  }
-
-  private fun addTextChangedListener(
-    profileInputView: ProfileInputView,
-    onTextChanged: (CharSequence?) -> Unit
-  ) {
-    profileInputView.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        onTextChanged(p0)
-      }
-
-      override fun afterTextChanged(p0: Editable?) {}
-      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    })
   }
 
   private fun getProfileRenameViewModel(): ProfileRenameViewModel {

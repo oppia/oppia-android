@@ -25,6 +25,7 @@
       android:layout_marginTop="24dp"
       android:background="@{isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/state_button_inactive_background}"
       android:clickable="@{isSubmitButtonActive}"
+      android:enabled="@{isSubmitButtonActive}"
       android:fontFamily="sans-serif-medium"
       android:minHeight="36dp"
       android:text="@string/topic_practice_start"

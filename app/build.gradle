@@ -112,6 +112,7 @@ dependencies {
       'androidx.work:work-runtime-ktx:2.4.0',
       'com.chaos.view:pinview:1.4.4',
       'com.github.bumptech.glide:glide:4.11.0',
+      'com.google.android:flexbox:2.0.1',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics:17.5.0',
@@ -121,10 +122,11 @@ dependencies {
       'com.google.guava:guava:28.1-android',
       'com.jackandphantom.android:circularimageview:1.2.0',
       'de.hdodenhof:circleimageview:3.0.1',
+      'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
-      'org.mockito:mockito-core:2.7.22'
+      'org.mockito:mockito-core:2.7.22',
   )
   testImplementation(
       'androidx.test:core:1.2.0',

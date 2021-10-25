@@ -4,7 +4,6 @@ This library contains utilities that all other modules, minus model, depend on.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 load("//utility:utility_test.bzl", "utility_test")
@@ -25,14 +24,14 @@ kt_android_library(
         "//app:crashlytics",
         "//app:crashlytics_deps",
         "//model",
-        artifact("org.jetbrains.kotlinx:kotlinx-coroutines-core"),
-        artifact("androidx.appcompat:appcompat"),
-        artifact("androidx.room:room-runtime"),
-        artifact("androidx.work:work-runtime"),
-        artifact("androidx.work:work-runtime-ktx"),
-        artifact("com.github.bumptech.glide:glide"),
-        artifact("com.google.guava:guava"),
-        artifact("com.caverock:androidsvg-aar"),
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:androidx_room_room-runtime",
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_caverock_androidsvg-aar",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:com_google_guava_guava",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
@@ -53,19 +52,20 @@ kt_android_library(
     ],
 )
 
+# keep sorted
 TEST_DEPS = [
-    ":utility",
     ":dagger",
-    "//testing",
-    "//model",
+    ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
-    "@robolectric//bazel:android-all",
-    artifact("org.jetbrains.kotlin:kotlin-reflect"),
-    artifact("com.google.truth:truth"),
-    artifact("androidx.test.ext:junit"),
-    artifact("org.jetbrains.kotlin:kotlin-test-junit"),
-    artifact("org.mockito:mockito-core"),
+    "//model",
+    "//testing",
+    "//third_party:androidx_test_ext_junit",
+    "//third_party:com_google_truth_truth",
+    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
+    "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    "//third_party:org_mockito_mockito-core",
+    "//third_party:robolectric_android-all",
 ]
 
 utility_test(
@@ -94,6 +94,15 @@ utility_test(
     srcs = ["src/test/java/org/oppia/android/util/datetime/DateTimeUtilTest.kt"],
     test_class = "org.oppia.android.util.datetime.DateTimeUtilTest",
     deps = TEST_DEPS,
+)
+
+utility_test(
+    name = "BundleExtensionsTest",
+    srcs = ["src/test/java/org/oppia/android/util/extensions/BundleExtensionsTest.kt"],
+    test_class = "org.oppia.android.util.extensions.BundleExtensionsTest",
+    deps = TEST_DEPS + [
+        "//model:test_models",
+    ],
 )
 
 utility_test(

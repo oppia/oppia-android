@@ -18,7 +18,7 @@ class BindableAdapterTestFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as TestInjector).inject(this)
   }
 
   override fun onCreateView(
@@ -27,5 +27,10 @@ class BindableAdapterTestFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
     return bindableAdapterTestFragmentPresenter.handleCreateView(inflater, container)
+  }
+
+  /** Test-only injector for the fragment that needs to be set up in the test. */
+  interface TestInjector {
+    fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   }
 }

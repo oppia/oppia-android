@@ -6,10 +6,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
-import org.oppia.android.R;
-import org.oppia.android.util.system.OppiaDateTimeFormatter;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import org.oppia.android.R;
+import org.oppia.android.util.system.OppiaDateTimeFormatter;
 
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
@@ -29,6 +29,7 @@ public final class TextViewBindingAdapters {
     ));
   }
 
+  /** Binds last used with relative timestamp. */
   @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
     String profileLastUsed = textView.getContext().getString(R.string.profile_last_used);

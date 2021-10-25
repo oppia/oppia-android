@@ -6,12 +6,12 @@ on:
   workflow_dispatch:
   pull_request:
   push:
-    branches:    
+    branches:
       # Push events on develop branch
       - develop
 
 # This workflow has the following jobs:
-# linters: Kotlin and Protobuf Linting
+# linters: Java, Kotlin, Protobuf
 # robolectric_tests: Robolectric tests for all modules except the app module
 # app_tests: Non-flaky Robolectric tests for the app module
 jobs:
@@ -25,26 +25,44 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Create oppia android tools directory
+      run: mkdir -p $HOME/oppia-android-tools
+
+    # Java 11 is specifically needed for Checkstyle.
+    - name: Set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.11
+
+    - name: Download Checkstyle
+      run: |
+        cd $HOME/oppia-android-tools
+        bash /home/runner/work/oppia-android/oppia-android/scripts/checkstyle_download.sh
+
     - name: Download Ktlint
       run: |
-        KTLINT="0.37.1"
-        echo Using Ktlint $KTLINT
-        curl -sSLO https://github.com/pinterest/ktlint/releases/download/$KTLINT/ktlint
-        chmod a+x ktlint
-    
-    -  name: Download buf
-       run: |
+        cd $HOME/oppia-android-tools
+        bash /home/runner/work/oppia-android/oppia-android/scripts/ktlint_download.sh
+
+    - name: Download buf
+      run: |
+        cd $HOME/oppia-android-tools
         BUFVERSION="v0.15.0"
         echo Using Bufbuild version $BUFVERSION
         curl -sSL https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m) > buf
         chmod a+x buf
-        
+
+    - name: Java lint check
+      run: |
+        bash /home/runner/work/oppia-android/oppia-android/scripts/checkstyle_lint_check.sh $HOME
+
     - name: Kotlin lint check
-      run: ./ktlint --android domain/src/**/*.kt utility/src/**/*.kt data/src/**/*.kt app/src/**/*.kt testing/src/**/*.kt && echo "Lint completed successfully"
-    
-    -  name: Protobuf lint check
-       run: ./buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
-     
+      run: |
+        bash /home/runner/work/oppia-android/oppia-android/scripts/ktlint_lint_check.sh $HOME
+
+    - name: Protobuf lint check
+      run: $HOME/oppia-android-tools/buf check lint --input=model/src/main/proto --input-config buf.yaml && echo "Protobuf lint check completed successfully"
+
   robolectric_tests:
     name: Robolectric Tests (Non-App Modules)
     runs-on: ${{ matrix.os }}
@@ -58,7 +76,7 @@ jobs:
        with:
          path: ~/.gradle
          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
-         
+
      - name: Set up JDK 1.9
        uses: actions/setup-java@v1
        with:
@@ -67,11 +85,11 @@ jobs:
      - name: Install Dependencies
        if: steps.cache.outputs.cache-hit != 'true'
        run: ./gradlew --full-stacktrace androidDependencies
-     
+
      - name: Build App
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
        run: sudo ./gradlew --full-stacktrace assembleDebug
-    
+
      - name: Utility tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
        run:  sudo ./gradlew --full-stacktrace :utility:testDebugUnitTest
@@ -81,7 +99,7 @@ jobs:
        with:
          name: utility reports
          path: utility/build/reports
-     
+
      - name: Domain tests
        # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
        run:  sudo ./gradlew --full-stacktrace :domain:testDebugUnitTest
@@ -101,7 +119,7 @@ jobs:
        with:
          name: testing reports
          path: testing/build/reports
-  
+
   app_tests:
     name: Robolectric Tests - App Module (Non-Flaky)
     runs-on: ${{ matrix.os }}
@@ -110,17 +128,17 @@ jobs:
         os: [ubuntu-18.04]
     steps:
       - uses: actions/checkout@v2
-      
+
       - uses: actions/cache@v2
         with:
          path: ~/.gradle/caches
          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}
-         
+
       - name: Set up JDK 1.9
         uses: actions/setup-java@v1
         with:
           java-version: 1.9
-      
+
       - name: Robolectric tests - App Module
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
@@ -203,109 +221,3 @@ jobs:
         with:
           name: oppia-bazel-apk
           path: /home/runner/work/oppia-android/oppia-android/oppia.apk
-
-  bazel_compute_affected_targets:
-    name: Compute affected tests
-    runs-on: ubuntu-18.04
-    outputs:
-      matrix: ${{ steps.compute-test-matrix-from-affected.outputs.matrix || steps.compute-test-matrix-from-all.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Clone Oppia Bazel
-        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
-      - name: Unzip Bazel binary
-        run: |
-          cd $HOME/oppia-bazel
-          unzip bazel-build.zip
-          cd $GITHUB_WORKSPACE
-          chmod a+x $HOME/oppia-bazel/bazel
-      - name: Compute test matrix based on affected targets
-        id: compute-test-matrix-from-affected
-        if: "!contains(github.event.pull_request.title, '[RunAllTests]')"
-        # https://unix.stackexchange.com/a/338124 for reference on creating a JSON-friendly
-        # comma-separated list of test targets for the matrix.
-        run: |
-          TEST_TARGET_LIST=$(bash ./scripts/compute_affected_tests.sh $HOME/oppia-bazel/bazel | sed 's/^\|$/"/g' | paste -sd, -)
-          echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
-          echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
-      - name: Compute test matrix based on all tests
-        id: compute-test-matrix-from-all
-        if: "contains(github.event.pull_request.title, '[RunAllTests]')"
-        run: |
-          TEST_TARGET_LIST=$($HOME/oppia-bazel/bazel query "kind(test, //...)" | sed 's/^\|$/"/g' | paste -sd, -)
-          echo "Affected tests (note that this might be all tests if on the develop branch): $TEST_TARGET_LIST"
-          echo "::set-output name=matrix::{\"test-target\":[$TEST_TARGET_LIST]}"
-
-  bazel_run_test:
-    name: Run Bazel Test
-    needs: bazel_compute_affected_targets
-    runs-on: ubuntu-18.04
-    strategy:
-      fail-fast: false
-      matrix: ${{fromJson(needs.bazel_compute_affected_targets.outputs.matrix)}}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Clone Oppia Bazel
-        run: git clone https://github.com/oppia/bazel.git $HOME/oppia-bazel
-      - name: Set up JDK 9
-        uses: actions/setup-java@v1
-        with:
-          java-version: 9
-      - name: Extract Android tools
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/tmp/android_tools
-          cd $HOME/oppia-bazel
-          unzip bazel-tools.zip
-          tar -xf $HOME/oppia-bazel/android_tools.tar.gz -C $GITHUB_WORKSPACE/tmp/android_tools
-      # See explanation in bazel_build_app for how this is installed.
-      - name: Install git-secret (non-fork only)
-        if: github.repository == 'oppia/oppia-android'
-        shell: bash
-        run: |
-          cd $HOME
-          mkdir -p $HOME/gitsecret
-          git clone https://github.com/sobolevn/git-secret.git git-secret
-          cd git-secret && make build
-          PREFIX="$HOME/gitsecret" make install
-          echo "$HOME/gitsecret" >> $GITHUB_PATH
-          echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
-      - name: Decrypt secrets (non-fork only)
-        if: github.repository == 'oppia/oppia-android'
-        env:
-          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
-        run: |
-          cd $HOME
-          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
-          echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
-          gpg --import ./git_secret_private_key.gpg
-          cd $GITHUB_WORKSPACE
-          git secret reveal
-      - name: Unzip Bazel binary
-        run: |
-          cd $HOME/oppia-bazel
-          unzip bazel-build.zip
-          cd $GITHUB_WORKSPACE
-          chmod a+x $HOME/oppia-bazel/bazel
-      - name: Run Oppia Test (with caching, non-fork only)
-        if: github.repository == 'oppia/oppia-android'
-        env:
-          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-        run: $HOME/oppia-bazel/bazel test --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- ${{ matrix.test-target }}
-      - name: Run Oppia Test (without caching, fork only)
-        if: github.repository != 'oppia/oppia-android'
-        env:
-          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
-        run: $HOME/oppia-bazel/bazel test --override_repository=android_tools=$GITHUB_WORKSPACE/tmp/android_tools -- ${{ matrix.test-target }}
-
-  # Reference: https://github.community/t/127354/7.
-  check_test_results:
-      name: Check Bazel Test Results
-      needs: bazel_run_test
-      if: ${{ always() }}
-      runs-on: ubuntu-18.04
-      steps:
-        - name: Check tests passed
-          if: ${{ needs.bazel_run_test.result != 'success' }}
-          run: exit 1

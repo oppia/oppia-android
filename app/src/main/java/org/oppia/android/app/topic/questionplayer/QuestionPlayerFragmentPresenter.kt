@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
@@ -22,6 +23,7 @@ import org.oppia.android.app.model.Solution
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
@@ -43,6 +45,7 @@ import javax.inject.Inject
 class QuestionPlayerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
+  private val context: Context,
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val oppiaLogger: OppiaLogger,
@@ -61,6 +64,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val ephemeralQuestionLiveData: LiveData<AsyncResult<EphemeralQuestion>> by lazy {
     questionAssessmentProgressController.getCurrentQuestion().toLiveData()
   }
+
   private lateinit var binding: QuestionPlayerFragmentBinding
   private lateinit var recyclerViewAssembler: StatePlayerRecyclerViewAssembler
   private lateinit var questionId: String
@@ -75,7 +79,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill"),
-      binding.congratulationsTextView
+      binding.congratulationsTextView,
+      binding.congratulationsTextConfettiView
     )
 
     binding.apply {
@@ -289,7 +294,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         if (result.isCorrectAnswer) {
           recyclerViewAssembler.stopHintsFromShowing()
           questionViewModel.setHintBulbVisibility(false)
-          recyclerViewAssembler.showCongratulationMessageOnCorrectAnswer()
+          recyclerViewAssembler.showCelebrationOnCorrectAnswer()
         } else {
           questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
@@ -397,7 +402,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
-    congratulationsTextView: TextView
+    congratulationsTextView: TextView,
+    congratulationsTextConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
     // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
@@ -413,7 +419,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addReplayButtonSupport()
       .addReturnToTopicSupport()
       .addHintsAndSolutionsSupport()
-      .addCongratulationsForCorrectAnswers(congratulationsTextView)
+      .addCelebrationForCorrectAnswers(
+        congratulationsTextView,
+        congratulationsTextConfettiView,
+        MINI_CONFETTI_BURST
+      )
       .addConceptCardSupport()
       .build()
   }
@@ -424,7 +434,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentCalendar().timeInMillis,
+      oppiaClock.getCurrentTimeMs(),
       EventLog.EventAction.OPEN_QUESTION_PLAYER,
       oppiaLogger.createQuestionContext(
         questionId,

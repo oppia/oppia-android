@@ -21,6 +21,7 @@ import org.oppia.android.testing.TestCoroutineDispatcher
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Executors
@@ -693,7 +694,7 @@ class InMemoryBlockingCacheTest {
     modules = [
       TestModule::class,
       TestDispatcherModule::class,
-      RobolectricModule::class
+      RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

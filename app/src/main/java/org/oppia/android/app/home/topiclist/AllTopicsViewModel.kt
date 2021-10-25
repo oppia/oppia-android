@@ -4,4 +4,4 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.app.home.HomeItemViewModel
 
 /** [ViewModel] all topics text in [HomeFragment]. */
-class AllTopicsViewModel : HomeItemViewModel()
+object AllTopicsViewModel : HomeItemViewModel()

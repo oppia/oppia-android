@@ -3,7 +3,10 @@
   <dimen name="bullet_radius">4dp</dimen>
   <dimen name="bullet_gap_width">16dp</dimen>
   <dimen name="bullet_y_offset">2dp</dimen>
-  <dimen name="bullet_leading_margin">24dp</dimen>
+  <!-- Space between the start of the line and the bullet in a bullet span. -->
+  <dimen name="spacing_before_bullet">20dp</dimen>
+  <!-- Space between bullet and the text in a bullet span. -->
+  <dimen name="spacing_before_text">20dp</dimen>
   <dimen name="maximum_content_item_padding">24dp</dimen>
   <dimen name="minimum_image_size">48dp</dimen>
   <dimen name="maximum_image_size">200dp</dimen>

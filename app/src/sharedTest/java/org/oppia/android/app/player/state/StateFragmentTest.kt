@@ -25,11 +25,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -50,7 +50,6 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -124,6 +123,7 @@ import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -551,6 +551,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonClickable() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -564,6 +565,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -582,6 +584,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -595,7 +598,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
-  fun loadImageRegion_defaultRegionClick_defaultRegionClicked_submitButtonDisabled() {
+  fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -608,6 +611,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -621,6 +625,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -639,6 +644,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -657,6 +663,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
@@ -671,7 +678,8 @@ class StateFragmentTest {
   }
 
   @Test
-  fun loadImageRegion_clickRegion6_clickedRegion5_region5Clicked_correctFeedback() {
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
+  fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
@@ -809,7 +817,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @Ignore("Currently failing due to a regression") // TODO(#1769): Re-enable.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -840,7 +848,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @Ignore("Currently failing due to a regression") // TODO(#1769): Re-enable.
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
@@ -893,7 +901,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_inputRatio_submit_correctAnswerDisplayed() {
+  fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_6).use {
       startPlayingExploration()
       typeRatioExpression("4:5")
@@ -901,7 +909,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(ViewMatchers.withContentDescription("4 to 5")))
+        .check(matches(withContentDescription("4 to 5")))
     }
   }
 
@@ -1401,7 +1409,7 @@ class StateFragmentTest {
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, WorkManagerConfigurationModule::class,
-      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class
+      LogUploadWorkerModule::class, FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

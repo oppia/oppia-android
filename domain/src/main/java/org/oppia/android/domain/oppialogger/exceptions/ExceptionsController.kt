@@ -9,6 +9,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 private const val EXCEPTIONS_CONTROLLER = "Exceptions Controller"
@@ -19,7 +20,8 @@ class ExceptionsController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
-  @ExceptionLogStorageCacheSize private val exceptionLogStorageCacheSize: Int
+  @ExceptionLogStorageCacheSize private val exceptionLogStorageCacheSize: Int,
+  private val oppiaClock: OppiaClock
 ) {
   private val exceptionLogStore =
     cacheStoreFactory.create("exception_logs", OppiaExceptionLogs.getDefaultInstance())
@@ -29,9 +31,13 @@ class ExceptionsController @Inject constructor(
    * Note that exceptions may not actually be logged depending on the network status of the device.
    * Older exceptions will be pruned to make room for newer exceptions.
    *
-   * @param timestampInMillis the time, in milliseconds, when the exception occurred
+   * @param timestampInMillis the time, in milliseconds, when the exception occurred. This defaults
+   *     to the current wall time to capture the moment the log is requested.
    */
-  fun logNonFatalException(exception: Exception, timestampInMillis: Long) {
+  fun logNonFatalException(
+    exception: Exception,
+    timestampInMillis: Long = oppiaClock.getCurrentTimeMs()
+  ) {
     uploadOrCacheExceptionLog(exception, timestampInMillis, ExceptionType.NON_FATAL)
   }
 
@@ -40,9 +46,13 @@ class ExceptionsController @Inject constructor(
    * Note that exceptions may not actually be logged depending on the network status of the device.
    * Older exceptions will be pruned to make room for newer exceptions.
    *
-   * @param timestampInMillis the time, in milliseconds, when the exception occurred
+   * @param timestampInMillis the time, in milliseconds, when the exception occurred. This defaults
+   *     to the current wall time to capture the moment the log is requested.
    */
-  fun logFatalException(exception: Exception, timestampInMillis: Long) {
+  fun logFatalException(
+    exception: Exception,
+    timestampInMillis: Long = oppiaClock.getCurrentTimeMs()
+  ) {
     uploadOrCacheExceptionLog(exception, timestampInMillis, ExceptionType.FATAL)
   }
 

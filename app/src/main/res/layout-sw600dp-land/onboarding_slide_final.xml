@@ -27,7 +27,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/onboarding_slide_3_title"
+        android:importantForAccessibility="no"
         android:src="@drawable/ic_landscape_onboarding_3_tablet"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="40:39"
@@ -36,13 +36,13 @@
 
       <TextView
         android:id="@+id/slide_title_text_view"
+        style="@style/Heading1"
         android:layout_width="0dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
         android:text="@string/onboarding_slide_3_title"
         android:textSize="32sp"
-        style="@style/Heading1"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="@+id/slide_description_text_view"
         app:layout_constraintHorizontal_bias="1.0"
@@ -50,12 +50,12 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
+        style="@style/Subtitle1"
         android:layout_width="0dp"
         android:layout_marginTop="12dp"
         android:gravity="center_horizontal"
         android:text="@string/onboarding_slide_3_description"
         android:textSize="24sp"
-        style="@style/Subtitle1"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toTopOf="@+id/guideline2" />

@@ -40,6 +40,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
       android:fontFamily="sans-serif"
+      android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:text="@{String.format(@string/topic_play_chapter_index, (viewModel.index + 1))}"
       android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
       android:textSize="14sp" />
@@ -52,6 +53,7 @@
       android:layout_marginEnd="4dp"
       android:layout_marginBottom="28dp"
       android:fontFamily="sans-serif"
+      android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:text="@{viewModel.chapterName}"
       android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppiaPrimaryText : @color/oppiaPrimaryText30}"
       android:textSize="14sp" />

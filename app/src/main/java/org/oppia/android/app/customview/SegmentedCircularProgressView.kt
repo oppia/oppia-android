@@ -8,7 +8,10 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.text.TextUtilsCompat
+import androidx.core.view.ViewCompat
 import org.oppia.android.R
+import java.util.Locale
 
 private const val STROKE_DASH_GAP_IN_DEGREE = 12
 
@@ -21,6 +24,8 @@ private const val STROKE_DASH_GAP_IN_DEGREE = 12
 class SegmentedCircularProgressView : View {
   private var sweepAngle = 0f
   private var strokeWidth = 0f
+  private val isRTL = TextUtilsCompat
+    .getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL
 
   private var baseRect: RectF? = null
   private lateinit var chapterFinishedArcPaint: Paint
@@ -74,6 +79,8 @@ class SegmentedCircularProgressView : View {
   }
 
   override fun onDraw(canvas: Canvas) {
+    if (isRTL)
+      rotationY = 180f
     super.onDraw(canvas)
     if (baseRect == null) {
       val centerX = measuredWidth / 2

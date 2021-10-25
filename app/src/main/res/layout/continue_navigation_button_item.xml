@@ -66,23 +66,22 @@
       android:onClick="@{(v) -> buttonViewModel.previousNavigationButtonListener.onPreviousButtonClicked()}"
       android:padding="16dp"
       android:src="@drawable/ic_arrow_back_oppia_dark_blue_24dp"
-      app:layout_constraintTop_toTopOf="parent"
+      android:visibility="@{buttonViewModel.hasPreviousButton ? View.VISIBLE: View.GONE, default=gone}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      android:visibility="@{buttonViewModel.hasPreviousButton ? View.VISIBLE: View.GONE, default=gone}" />
+      app:layout_constraintTop_toTopOf="parent" />
 
     <Button
       android:id="@+id/continue_navigation_button"
       style="@style/StateButtonActive"
-      android:layout_height="0dp"
-      app:layoutMargin="@{buttonViewModel.isSplitView ? @dimen/space_0dp : @dimen/continue_navigation_item_button_non_split_view_margin}"
+      android:layout_height="48dp"
       android:button="@drawable/state_button_primary_background"
       android:onClick="@{(v) -> buttonViewModel.continueNavigationButtonListener.onContinueButtonClicked()}"
       android:text="@string/state_continue_button"
       android:textColor="@color/white"
-      app:layout_constraintHeight_min="48dp"
-      app:layout_constraintTop_toTopOf="parent"
+      app:layoutMargin="@{buttonViewModel.isSplitView ? @dimen/space_0dp : @dimen/continue_navigation_item_button_non_split_view_margin}"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent" />
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

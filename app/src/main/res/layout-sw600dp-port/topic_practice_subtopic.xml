@@ -15,9 +15,7 @@
 
   <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    android:layout_marginBottom="12dp">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="360dp"
@@ -42,8 +40,8 @@
         android:drawableStart="@android:color/transparent"
         android:drawablePadding="20dp"
         android:fontFamily="sans-serif"
-        android:gravity="start"
-        android:minHeight="22dp"
+        android:gravity="start|top"
+        android:paddingBottom="24dp"
         android:text="@{viewModel.subtopic.title}"
         android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- TODO(#59): Make this layout only accessible to tests. -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/text_view_for_string_no_data_binding"
-  android:textColor="@color/colorPrimary"
   android:layout_width="wrap_content"
-  android:layout_height="wrap_content" />
+  android:layout_height="wrap_content"
+  android:textColor="@color/colorPrimary" />

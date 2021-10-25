@@ -59,12 +59,14 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -87,6 +89,7 @@ import javax.inject.Singleton
 class CompletedStoryListActivityTest {
 
   private val internalProfileId = 0
+  private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -97,20 +100,23 @@ class CompletedStoryListActivityTest {
   @Inject
   lateinit var storyProfileTestHelper: StoryProgressTestHelper
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
 
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProfileTestHelper.markFullStoryProgressForFractions(
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProfileTestHelper.markCompletedFractionsStory0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
-    storyProfileTestHelper.markFullStoryPartialTopicProgressForRatios(
+    storyProfileTestHelper.markCompletedRatiosStory0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
   }
 
@@ -449,7 +455,7 @@ class CompletedStoryListActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

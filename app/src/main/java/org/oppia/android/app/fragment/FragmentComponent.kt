@@ -36,7 +36,6 @@ import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryFragment
-import org.oppia.android.app.testing.BindableAdapterTestFragment
 import org.oppia.android.app.testing.ImageRegionSelectionTestFragment
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -78,7 +77,6 @@ interface FragmentComponent {
   fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
-  fun inject(bindableAdapterTestFragment: BindableAdapterTestFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)

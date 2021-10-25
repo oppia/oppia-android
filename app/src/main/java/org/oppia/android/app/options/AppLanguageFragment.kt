@@ -14,7 +14,9 @@ private const val KEY_APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE =
 private const val SELECTED_LANGUAGE_SAVED_KEY = "AppLanguageFragment.selected_language"
 
 /** The fragment to change the language of the app. */
-class AppLanguageFragment : InjectableFragment() {
+class AppLanguageFragment :
+  InjectableFragment(),
+  LanguageRadioButtonListener {
 
   @Inject
   lateinit var appLanguageFragmentPresenter: AppLanguageFragmentPresenter
@@ -62,5 +64,9 @@ class AppLanguageFragment : InjectableFragment() {
       SELECTED_LANGUAGE_SAVED_KEY,
       appLanguageFragmentPresenter.getLanguageSelected()
     )
+  }
+
+  override fun onLanguageSelected(selectedLanguage: String) {
+    appLanguageFragmentPresenter.onLanguageSelected(selectedLanguage)
   }
 }

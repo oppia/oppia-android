@@ -28,7 +28,6 @@ import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -218,7 +217,8 @@ class ProfileManagementController @Inject constructor(
         .setPin(pin)
         .setAllowDownloadAccess(allowDownloadAccess)
         .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
-        .setDateCreatedTimestampMs(Date().time).setIsAdmin(isAdmin)
+        .setDateCreatedTimestampMs(oppiaClock.getCurrentTimeMs())
+        .setIsAdmin(isAdmin)
         .setReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
         .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
         .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
@@ -592,8 +592,8 @@ class ProfileManagementController @Inject constructor(
     return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       val profile = it.profilesMap[profileId.internalId]
         ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
-      val updatedProfile = profile.toBuilder().setLastLoggedInTimestampMs(Date().time)
-        .build()
+      val updatedProfile =
+        profile.toBuilder().setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs()).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile
@@ -709,7 +709,7 @@ class ProfileManagementController @Inject constructor(
           .compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, fos)
       }
     } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e, oppiaClock.getCurrentCalendar().timeInMillis)
+      exceptionsController.logNonFatalException(e)
       logger.e(
         "ProfileManagementController",
         "Failed to store user submitted avatar image",

@@ -23,12 +23,22 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Captor
+import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.application.ActivityComponentFactory
@@ -37,6 +47,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
@@ -44,6 +55,8 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.anyOrNull
+import org.oppia.android.app.utility.capture
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -63,7 +76,6 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.StoryProgressTestHelper
 import org.oppia.android.domain.topic.TEST_STORY_ID_1
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.RobolectricModule
@@ -72,13 +84,17 @@ import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.ImageLoader
 import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.parser.ImageTransformation
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -89,6 +105,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryFragmentTest {
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -101,6 +120,12 @@ class StoryFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Captor
+  lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
 
   @get:Rule
   var activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
@@ -118,7 +143,7 @@ class StoryFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    testCoroutineDispatchers.runCurrent()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   @After
@@ -305,6 +330,65 @@ class StoryFragmentTest {
   }
 
   @Test
+  fun testStoryFragment_chapterMissingPrerequisiteThumbnailIsBlurred() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_thumbnail
+        )
+      ).check { view, noViewFoundException ->
+        var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
+          R.id.chapter_thumbnail
+        )
+        verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
+          anyInt(),
+          anyOrNull(),
+          capture(listCaptor)
+        )
+        assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
+      }
+    }
+  }
+
+  @Test
+  fun testStoryFragment_configChange_chapterMissingPrerequisiteThumbnailIsBlurred() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          R.id.story_chapter_list,
+          2,
+          R.id.chapter_thumbnail
+        )
+      ).check { view, noViewFoundException ->
+        var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
+          R.id.chapter_thumbnail
+        )
+        verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
+          anyInt(),
+          anyOrNull(),
+          capture(listCaptor)
+        )
+        assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
+      }
+    }
+  }
+
+  @Test
   fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -420,9 +504,9 @@ class StoryFragmentTest {
   }
 
   private fun setStoryPartialProgressForFractions() {
-    storyProgressTestHelper.markPartialStoryProgressForFractions(
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanAWeek = false
+      timestampOlderThanOneWeek = false
     )
   }
 
@@ -445,14 +529,14 @@ class StoryFragmentTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       TestAccessibilityModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -478,5 +562,13 @@ class StoryFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  /** Provides test dependencies (including a mock for [ImageLoader] to capture its operations). */
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideMockImageLoader() = mock(ImageLoader::class.java)
   }
 }

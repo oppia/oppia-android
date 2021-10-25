@@ -75,8 +75,7 @@
             android:imeOptions="actionDone"
             android:maxLength="36"
             android:singleLine="true"
-            android:text="@{viewModel.inputName}"
-            android:textDirection="locale" />
+            android:text="@{viewModel.inputName}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -88,6 +87,7 @@
           android:layout_marginEnd="168dp"
           android:background="@{viewModel.inputName.length > 0 ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
           android:clickable="@{viewModel.inputName.length > 0}"
+          android:enabled="@{viewModel.inputName.length > 0}"
           android:text="@string/profile_rename_save"
           android:textAllCaps="true"
           android:textColor="@{viewModel.inputName.length > 0 ? @color/white : @color/submitButtonInactiveText }"

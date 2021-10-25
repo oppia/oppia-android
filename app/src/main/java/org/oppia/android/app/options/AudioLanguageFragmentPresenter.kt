@@ -5,15 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.AudioLanguageFragmentBinding
+import org.oppia.android.databinding.LanguageItemsBinding
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
-class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: Fragment) {
-
+class AudioLanguageFragmentPresenter @Inject constructor(
+  private val fragment: Fragment,
+  private val languageSelectionViewModel: LanguageSelectionViewModel
+) {
   private lateinit var prefSummaryValue: String
-  private lateinit var languageSelectionAdapter: LanguageSelectionAdapter
-
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -25,27 +27,36 @@ class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: F
       container,
       /* attachToRoot= */ false
     )
+    binding.viewModel = languageSelectionViewModel
     prefSummaryValue = prefValue
-    languageSelectionAdapter = LanguageSelectionAdapter(prefKey) {
-      updateAudioLanguage(it)
-    }
+    languageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.audioLanguageRecyclerView.apply {
-      adapter = languageSelectionAdapter
+      adapter = createRecyclerViewAdapter()
     }
 
     binding.audioLanguageToolbar?.setNavigationOnClickListener {
-      val message = languageSelectionAdapter.getSelectedLanguage()
+      val message = languageSelectionViewModel.selectedLanguage.value
       val intent = Intent()
       intent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, message)
       (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
       (fragment.activity as AudioLanguageActivity).finish()
     }
-    createAdapter()
+
     return binding.root
   }
 
-  fun getLanguageSelected(): String {
-    return languageSelectionAdapter.getSelectedLanguage()
+  fun getLanguageSelected(): String? {
+    return languageSelectionViewModel.selectedLanguage.value
+  }
+
+  private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
+    return BindableAdapter.SingleTypeBuilder
+      .newBuilder<LanguageItemViewModel>()
+      .setLifecycleOwner(fragment)
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = LanguageItemsBinding::inflate,
+        setViewModel = LanguageItemsBinding::setViewModel
+      ).build()
   }
 
   private fun updateAudioLanguage(audioLanguage: String) {
@@ -58,15 +69,8 @@ class AudioLanguageFragmentPresenter @Inject constructor(private val fragment: F
     }
   }
 
-  private fun createAdapter() {
-    // TODO(#669): Replace dummy list with actual language list from backend.
-    val languageList = ArrayList<String>()
-    languageList.add("No Audio")
-    languageList.add("English")
-    languageList.add("French")
-    languageList.add("Hindi")
-    languageList.add("Chinese")
-    languageSelectionAdapter.setLanguageList(languageList)
-    languageSelectionAdapter.setDefaultLanguageSelected(prefSummaryValue = prefSummaryValue)
+  fun onLanguageSelected(selectedLanguage: String) {
+    languageSelectionViewModel.selectedLanguage.value = selectedLanguage
+    updateAudioLanguage(selectedLanguage)
   }
 }

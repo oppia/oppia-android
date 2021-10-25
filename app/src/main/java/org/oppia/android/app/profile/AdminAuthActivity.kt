@@ -43,16 +43,6 @@ class AdminAuthActivity : InjectableAppCompatActivity() {
     adminAuthFragmentPresenter.handleOnCreate()
   }
 
-  override fun onSaveInstanceState(outState: Bundle) {
-    adminAuthFragmentPresenter.handleOnSavedInstanceState(outState)
-    super.onSaveInstanceState(outState)
-  }
-
-  override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-    super.onRestoreInstanceState(savedInstanceState)
-    adminAuthFragmentPresenter.handleOnRestoreInstanceState(savedInstanceState!!)
-  }
-
   override fun onSupportNavigateUp(): Boolean {
     finish()
     return false

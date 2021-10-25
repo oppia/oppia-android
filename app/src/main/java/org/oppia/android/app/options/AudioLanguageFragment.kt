@@ -15,7 +15,9 @@ private const val SELECTED_AUDIO_LANGUAGE_SAVED_KEY =
   "AudioLanguageFragment.selected_audio_language"
 
 /** The fragment to change the default audio language of the app. */
-class AudioLanguageFragment : InjectableFragment() {
+class AudioLanguageFragment :
+  InjectableFragment(),
+  LanguageRadioButtonListener {
 
   @Inject
   lateinit var audioLanguageFragmentPresenter: AudioLanguageFragmentPresenter
@@ -67,5 +69,9 @@ class AudioLanguageFragment : InjectableFragment() {
       SELECTED_AUDIO_LANGUAGE_SAVED_KEY,
       audioLanguageFragmentPresenter.getLanguageSelected()
     )
+  }
+
+  override fun onLanguageSelected(selectedLanguage: String) {
+    audioLanguageFragmentPresenter.onLanguageSelected(selectedLanguage)
   }
 }

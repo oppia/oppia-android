@@ -3,6 +3,8 @@ package org.oppia.android.app.home
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -10,6 +12,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -27,6 +30,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -40,13 +46,15 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridColumnCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.HomeInjectionActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.domain.classify.InteractionsModule
@@ -69,11 +77,16 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.RobolectricModule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.story.StoryProgressTestHelper
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -81,7 +94,6 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.parser.GlideImageLoaderModule
 import org.oppia.android.util.parser.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.ImageParsingModule
-import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -109,13 +121,20 @@ class HomeActivityTest {
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  @Inject
   lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val internalProfileId: Int = 1
-  private lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  private val internalProfileId: Int = 0
+  private val internalProfileId1: Int = 1
+  private val longNameInternalProfileId: Int = 3
 
   @Before
   fun setUp() {
@@ -131,156 +150,118 @@ class HomeActivityTest {
     Intents.release()
   }
 
-  private fun getApplicationDependencies() {
-    launch(HomeInjectionActivity::class.java).use {
-      it.onActivity { activity ->
-        oppiaClock = activity.oppiaClock
-      }
-    }
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
-  fun testHomeActivity_withAdminProfile_profileNameDisplayedSuccessfully() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  fun testHomeActivity_withAdminProfile_profileNameIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.profile_name_textview,
+        stringToMatch = "Admin!"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.profile_name_textview
-        )
-      ).check(matches(withText("Admin!")))
     }
   }
 
   @Test
-  fun testHomeActivity_withAdminProfile_configChange_profileNameDisplayedSuccessfully() {
-    launch<HomeActivity>(createHomeActivityIntent(0)).use {
+  fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.profile_name_textview,
+        stringToMatch = "Admin!"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.profile_name_textview
-        )
-      ).check(matches(withText("Admin!")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodMorningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_morningTimestamp_goodMorningMessageIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Good morning,"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Good morning,")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodAfternoonMessageDisplayedSuccessful() { // ktlint-disable max-line-length
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(AFTERNOON_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_afternoonTimestamp_goodAfternoonMessageIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Good afternoon,"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Good afternoon,")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex0_displayGreetingMessageBasedOnTime_goodEveningMessageDisplayedSuccessful() { // ktlint-disable max-line-length
-    getApplicationDependencies()
-    oppiaClock.setCurrentTimeMs(EVENING_TIMESTAMP)
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_eveningTimestamp_goodEveningMessageIsDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+      scrollToPosition(position = 0)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.welcome_text_view,
+        stringToMatch = "Good evening,"
       )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          0,
-          R.id.welcome_text_view
-        )
-      ).check(matches(withText("Good evening,")))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysRecentlyPlayedStoriesText() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recently_played_stories)
       )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_viewAllTextIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.view_all_text_view,
+        stringToMatch = context.getString(R.string.view_all)
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
           1,
-          R.id.recently_played_stories_text_view
-        )
-      ).check(
-        matches(
-          withText(R.string.recently_played_stories)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testHomeActivity_recyclerViewIndex1_displaysViewAllText() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.view_all_text_view)).check(
-        matches(
-          withText(R.string.view_all)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testHomeActivity_recyclerViewIndex1_clickViewAll_opensRecentlyPlayedActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view, 1, R.id.view_all_text_view
+          R.id.view_all_text_view
         )
       ).perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
@@ -288,8 +269,8 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_promotedCard_chapterNameIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_promotedCard_chapterNameIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -303,43 +284,37 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_promotedCard_storyNameIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_promotedCard_storyNameIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
-        matches(
-          withText(containsString("First Story"))
-        )
+      scrollToPosition(position = 1)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.story_name_text_view,
+        stringToMatch = "First Story"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_configurationChange_promotedCard_storyNameIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_configChange_promotedCard_storyNameIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
+      scrollToPosition(position = 1)
       onView(isRoot()).perform(orientationLandscape())
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.story_name_text_view)).check(
-        matches(
-          withText(containsString("First Story"))
-        )
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.story_name_text_view,
+        stringToMatch = "First Story"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_clickPromotedStory_opensTopicActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
+      scrollToPosition(position = 1)
       onView(
         allOf(
           withId(R.id.promoted_story_list_recycler_view),
@@ -349,125 +324,170 @@ class HomeActivityTest {
         )
       ).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
       intended(hasExtra(TopicActivity.getStoryIdKey(), TEST_STORY_ID_0))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex1_promotedCard_topicNameIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_promotedCard_topicNameIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
-      )
-      onView(atPositionOnView(R.id.home_recycler_view, 1, R.id.topic_name_text_view)).check(
-        matches(
-          withText(containsString("FIRST TEST TOPIC"))
-        )
+      scrollToPosition(position = 1)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "FIRST TEST TOPIC"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex3_topicSummary_topicNameIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
-      onView(atPositionOnView(R.id.home_recycler_view, 3, R.id.topic_name_text_view)).check(
-        matches(
-          withText(containsString("First Test Topic"))
-        )
+      scrollToPosition(position = 3)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 3,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "First Test Topic"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex3_topicSummary_lessonCountIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
+      scrollToPosition(position = 3)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 3,
+        targetViewId = R.id.lesson_count_text_view,
+        stringToMatch = "5 Lessons"
       )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_secondTestTopic_topicSummary_topicNameIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 4,
+        targetViewId = R.id.topic_name_text_view,
+        stringToMatch = "Second Test Topic"
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 4,
+        targetViewId = R.id.lesson_count_text_view,
+        stringToMatch = "1 Lesson"
+      )
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "port-mdpi")
+  @Test
+  fun testHomeActivity_longProfileName_welcomeMessageIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
-          3, R.id.lesson_count_text_view
+          0,
+          R.id.profile_name_textview
         )
-      ).check(
-        matches(
-          withText(containsString("5 Lessons"))
-        )
-      )
+      ).check(matches(not(isEllipsized())))
     }
   }
 
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "land-mdpi")
   @Test
-  fun testHomeActivity_recyclerViewIndex4_topicSummary_topicNameIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_configChange_longProfileName_welcomeMessageIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(4)
-      )
-      onView(atPositionOnView(R.id.home_recycler_view, 4, R.id.topic_name_text_view)).check(
-        matches(
-          withText(containsString("Second Test Topic"))
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testHomeActivity_recyclerViewIndex4_topicSummary_lessonCountIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(4)
-      )
+      scrollToPosition(0)
       onView(
         atPositionOnView(
           R.id.home_recycler_view,
-          4, R.id.lesson_count_text_view
+          0,
+          R.id.profile_name_textview
         )
-      ).check(
-        matches(
-          withText(containsString("1 Lesson"))
+      ).check(matches(not(isEllipsized())))
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testHomeActivity_longProfileName_tabletPortraitWelcomeMessageIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
         )
-      )
+      ).check(matches(not(isEllipsized())))
+    }
+  }
+
+  // TODO(#2057): Remove when TextViews are properly measured in Robolectric.
+  @RunOn(TestPlatform.ESPRESSO) // Incorrectly passes on Robolectric and shouldn't be re-enabled
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testHomeActivity_longProfileName_tabletLandscapeWelcomeMessageIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(longNameInternalProfileId)).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          0,
+          R.id.profile_name_textview
+        )
+      ).check(matches(not(isEllipsized())))
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex4_topicSummary_configurationChange_lessonCountIsCorrect() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(4)
-      )
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          4, R.id.lesson_count_text_view
-        )
-      ).check(
-        matches(
-          withText(containsString("1 Lesson"))
-        )
+      scrollToPosition(position = 4)
+      verifyTextOnHomeListItemAtPosition(
+        itemPosition = 4,
+        targetViewId = R.id.lesson_count_text_view,
+        stringToMatch = "1 Lesson"
       )
     }
   }
 
   @Test
-  fun testHomeActivity_recyclerViewIndex3_clickTopicSummary_opensTopicActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.home_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
-      )
+      scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasExtra(TopicActivity.getTopicIdKey(), TEST_TOPIC_ID_0))
@@ -475,8 +495,8 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_showsExitToProfileChooserDialog() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_onBackPressed_exitToProfileChooserDialogIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_message))
@@ -486,8 +506,9 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_orientationChange_showsExitToProfileChooserDialog() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(isRoot()).perform(orientationLandscape())
@@ -498,8 +519,8 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_onBackPressed_clickExit_checkOpensProfileActivity() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_onBackPressed_clickExit_opensProfileActivity() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(withText(R.string.home_activity_back_dialog_exit))
@@ -511,7 +532,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem0_spanSizeIsTwoOrThree() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(3, 0))
@@ -523,27 +544,381 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_checkSpanForItem4_spanSizeIsOne() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
   }
 
   @Test
-  fun testHomeActivity_configurationChange_checkSpanForItem4_spanSizeIsOne() {
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+  fun testHomeActivity_configChange_checkSpanForItem4_spanSizeIsOne() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.home_recycler_view)).check(hasGridItemCount(1, 4))
     }
   }
 
+  @Test
+  fun testHomeActivity_allTopicsCompleted_hidesPromotedStories() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = createProfileId(internalProfileId),
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          2,
+          R.id.promoted_story_list_recycler_view
+        )
+      ).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testHomeActivity_partialProgressForFractionsAndRatios_showsRecentlyPlayedStories() {
+    val profileId = createProfileId(internalProfileId)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.recently_played_stories_text_view,
+        stringToMatch = context.getString(R.string.recently_played_stories)
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_allTopicsCompleted_displaysAllTopicsHeader() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = createProfileId(internalProfileId),
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.all_topics_text_view,
+        stringToMatch = context.getString((R.string.all_topics))
+      )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_allTopicsCompleted_displaysAllTopicCards() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markAllTopicsAsCompleted(
+      profileId = createProfileId(internalProfileId),
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
+    }
+  }
+
+  @Test
+  fun testHomeActivity_noTopicsCompleted_displaysAllTopicsHeader() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.logIntoNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      verifyExactTextOnHomeListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.all_topics_text_view,
+        stringToMatch = context.getString((R.string.all_topics))
+      )
+    }
+  }
+
+  @Config(qualifiers = "port")
+  @Test
+  fun testHomeActivity_noTopicsStarted_mobilePortraitDisplaysTopicsIn2Columns() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.logIntoNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 2)
+
+      scrollToPosition(position = 3)
+      onView(withId(R.id.home_recycler_view))
+        .check(hasGridItemCount(spanCount = 1, position = 3))
+    }
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testHomeActivity_noTopicsStarted_mobileLandscapeDisplaysTopicsIn3Columns() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.logIntoNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+
+      scrollToPosition(position = 3)
+      onView(withId(R.id.home_recycler_view))
+        .check(hasGridItemCount(spanCount = 1, position = 3))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testHomeActivity_noTopicsStarted_tabletPortraitDisplaysTopicsIn3Columns() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.logIntoNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
+
+      scrollToPosition(position = 3)
+      onView(withId(R.id.home_recycler_view))
+        .check(hasGridItemCount(spanCount = 1, position = 3))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testHomeActivity_noTopicsStarted_tabletLandscapeDisplaysTopicsIn4Columns() {
+    // Only new users will have no progress for any topics.
+    profileTestHelper.logIntoNewUser()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      verifyHomeRecyclerViewHasGridColumnCount(columnCount = 4)
+
+      scrollToPosition(position = 3)
+      onView(withId(R.id.home_recycler_view))
+        .check(hasGridItemCount(spanCount = 1, position = 3))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_multipleRecentlyPlayedStories_mobileShows3PromotedStories() {
+    val profileId = createProfileId(internalProfileId)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    val profileId1 = createProfileId(internalProfileId)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId1, timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.home_recycler_view,
+          position = 1,
+          targetViewId = R.id.promoted_story_list_recycler_view
+        )
+      ).check(hasItemCount(count = 3))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testHomeActivity_multipleRecentlyPlayedStories_tabletPortraitShows3PromotedStories() {
+    val profileId = createProfileId(internalProfileId)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    val profileId1 = createProfileId(internalProfileId)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId1, timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.home_recycler_view,
+          position = 1,
+          targetViewId = R.id.promoted_story_list_recycler_view
+        )
+      ).check(hasItemCount(count = 3))
+    }
+  }
+
+  @Config(qualifiers = "sw600dp-land")
+  @Test
+  fun testHomeActivity_multipleRecentlyPlayedStories_tabletLandscapeShows4PromotedStories() {
+    val profileId = createProfileId(internalProfileId)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markRecentlyPlayedTestTopic0Story0Exp2(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markRecentlyPlayedTestTopic1Story2Exp4(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    val profileId1 = createProfileId(internalProfileId)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId1, timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.home_recycler_view,
+          position = 1,
+          targetViewId = R.id.promoted_story_list_recycler_view
+        )
+      ).check(hasItemCount(count = 4))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_onScrollDown_promotedStoryListViewStillShows() {
+    // This test is to catch a bug introduced and then fixed in #2246
+    // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    val profileId = createProfileId(internalProfileId)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(
+      profileId = profileId, timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory1Exp2(
+      profileId = profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 6)
+
+      scrollToPosition(position = 0)
+      onView(withId(R.id.promoted_story_list_recycler_view))
+        .check(hasItemCount(count = 3))
+    }
+  }
+
   private fun createHomeActivityIntent(profileId: Int): Intent {
-    return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
+    return HomeActivity.createHomeActivity(context, profileId)
+  }
+
+  // Refrence - https://stackoverflow.com/a/61455336/12215015
+  private fun isEllipsized() = object : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("with ellipsized text")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view is TextView && with((view).layout) {
+        lineCount > 0 && getEllipsisCount(lineCount - 1) > 0
+      }
+    }
+  }
+
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.home_recycler_view)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+  }
+
+  private fun verifyTextOnHomeListItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.home_recycler_view,
+        itemPosition,
+        targetViewId
+      )
+    ).check(matches(withText(containsString(stringToMatch))))
+  }
+
+  private fun verifyExactTextOnHomeListItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    stringToMatch: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.home_recycler_view,
+        itemPosition,
+        targetViewId
+      )
+    ).check(matches(withText(stringToMatch)))
+  }
+
+  private fun verifyHomeRecyclerViewHasGridColumnCount(columnCount: Int) {
+    onView(withId(R.id.home_recycler_view)).check(hasGridColumnCount(columnCount))
+  }
+
+  private fun createProfileId(internalProfileId: Int): ProfileId {
+    return ProfileId.newBuilder().setInternalId(internalProfileId).build()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
-  // TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
+// TODO(#1675): Add NetworkModule once data module is migrated off of Moshi.
   @Singleton
   @Component(
     modules = [
@@ -560,7 +935,7 @@ class HomeActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

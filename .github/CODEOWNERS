@@ -11,10 +11,6 @@
 #   (See oppia/#10250 for an example.) Please make sure to restore ownership after
 #   the above date passes.
 
-# GitHub Actions & CI workflows.
-.github/*.yaml @BenHenning
-.github/*.yml @BenHenning
-
 # Blanket codeowners
 # This is for the case when new files are created in any directories that aren't
 # covered as a whole, since in these cases, codeowners are not recognized for
@@ -27,69 +23,69 @@
 #                                 Blanket ownership                                 #
 #####################################################################################
 
-# Global ownership (only for cases when new files are added & no other matches occur).
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-* @rt4914
-
 # Codeowners ownership (for adding/changing/removing code owners).
 .github/CODEOWNERS @oppia/owners
 
 # Bazel build files.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/WORKSPACE @rt4914
-*.bzl @rt4914
-*.bazel @rt4914
-BUILD @rt4914
-.bazelrc @rt4914
-/tools/android/ @rt4914
+WORKSPACE @BenHenning
+*.bzl @BenHenning
+*.bazel @BenHenning
+.bazelrc @BenHenning
+/tools/android/ @BenHenning
 
 # Gradle build files.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-*.gradle @rt4914
-gradle.properties @rt4914
-gradlew @rt4914
-gradlew.bat @rt4914
-/gradle/ @rt4914
+*.gradle @BenHenning
+gradle.properties @BenHenning
+gradlew @BenHenning
+gradlew.bat @BenHenning
+/gradle/ @BenHenning
 
 # GitHub configuration files.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-.gitignore @rt4914
-/.github/*.md @rt4914
-/.github/ISSUE_TEMPLATE @rt4914
+.gitignore @BenHenning
+/.github/*.md @BenHenning
+/.github/ISSUE_TEMPLATE @BenHenning
+
+# Git secret files & related configurations.
+/.gitsecret/ @BenHenning
+*.secret @BenHenning
 
 # CI configuration.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/.github/workflows/ @rt4914
+/.github/workflows/ @BenHenning
 
 # All tests.
 *Test.kt @anandwana001
 
-# All layout files.
-layout*/*.xml @rt4914
+# All resource files.
+/app/src/main/res/**/*.xml @rt4914
+/utility/src/main/res/**/*.xml @rt4914
 
-# Proguard configurations.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-*.pro @rt4914
+# Proguard configuration.
+*.pro @BenHenning
 
 # Lesson assets.
-# TODO(#2304): Re-add @BenHenning after 2021-01-05.
-/domain/src/main/assets/ @rt4914
+/domain/src/main/assets/ @BenHenning @rt4914
 
-# Android manifests.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-*Manifest.xml @rt4914
+# Android manifests and top-level app configuration.
+*Manifest.xml @BenHenning
 
-# Linter configurations.
+# Linter configuration.
 buf.yaml @anandwana001
 
 # IDEA IDE configuration.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-.editorconfig @rt4914
-/.idea/ @rt4914
+.editorconfig @BenHenning
+/.idea/ @BenHenning
+
+# Robolectric configuration.
+*.properties @BenHenning
+
+# Firebase configuration.
+/app/google-services.json @BenHenning
+
+# Binary files.
+*.png @BenHenning
 
 # Important codebase files.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-LICENSE @rt4914
+LICENSE @BenHenning
 
 #####################################################################################
 #                                    app module                                     #
@@ -100,45 +96,36 @@ LICENSE @rt4914
 /app/**/*.java @rt4914
 
 # State players.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/*/java/org/oppia/android/app/player/ @rt4914
+/app/src/*/java/org/oppia/android/app/player/ @BenHenning
 
 # Bindable adapter utilities.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.java @rt4914
-/app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java @rt4914
-/app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @rt4914
+/app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt @BenHenning
+/app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java @BenHenning
+/app/src/sharedTest/java/org/oppia/android/app/recyclerview/BindableAdapterTest.kt @BenHenning
 
 # Dagger configuration.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/main/java/org/oppia/android/app/activity/ @rt4914
-/app/src/main/java/org/oppia/android/app/application/ @rt4914
-/app/src/main/java/org/oppia/android/app/fragment/ @rt4914
-/app/src/main/java/org/oppia/android/app/view/ @rt4914
+/app/src/main/java/org/oppia/android/app/activity/ @BenHenning
+/app/src/main/java/org/oppia/android/app/application/ @BenHenning
+/app/src/main/java/org/oppia/android/app/fragment/ @BenHenning
+/app/src/main/java/org/oppia/android/app/view/ @BenHenning
 
 # Databinding adapters.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/main/java/org/oppia/android/app/databinding/ @rt4914
+/app/src/main/java/org/oppia/android/app/databinding/ @BenHenning
 
 # App deprecation functionality.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/*/java/org/oppia/android/app/deprecation/ @rt4914
+/app/src/*/java/org/oppia/android/app/deprecation/ @BenHenning
 
 # Parsing functionality needed for interactions.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/*/java/org/oppia/android/app/parser/ @rt4914
+/app/src/*/java/org/oppia/android/app/parser/ @BenHenning
 
 # Bazel/data-binding shims.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/*/java/org/oppia/android/app/shim/ @rt4914
+/app/src/*/java/org/oppia/android/app/shim/ @BenHenning
 
 # Splash screen.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/*/java/org/oppia/android/app/splash/ @rt4914
+/app/src/*/java/org/oppia/android/app/splash/ @BenHenning
 
 # View model infrastructure.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/app/src/*/java/org/oppia/android/app/viewmodel/ @rt4914
+/app/src/*/java/org/oppia/android/app/viewmodel/ @BenHenning
 
 # App testing infrastructure.
 /app/src/*/java/org/oppia/android/app/testing/ @anandwana001
@@ -148,55 +135,41 @@ LICENSE @rt4914
 #####################################################################################
 
 # Global domain module code ownership.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/domain/**/*.kt @rt4914
-/domain/**/*.java @rt4914
+/domain/**/*.kt @BenHenning
 
 # Questions support.
-# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
-/domain/src/*/java/org/oppia/android/domain/question/ @rt4914
+/domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
 
 # Oppia logging support.
-# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
-/domain/src/main/java/org/oppia/android/domain/oppialogger/ @rt4914
+/domain/src/main/java/org/oppia/android/domain/oppialogger/ @vinitamurthi
 
 #####################################################################################
 #                                  testing module                                   #
 #####################################################################################
 
-# Global testing module code ownership (secondary).
-/testing/**/*.kt @anandwana001
-/testing/**/*.java @anandwana001
-
-# Global testing module code ownership (primary).
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/testing/**/*.kt @rt4914
-/testing/**/*.java @rt4914
+# Global testing module code ownership.
+/testing/**/*.kt @anandwana001 @BenHenning
 
 #####################################################################################
 #                                    data module                                    #
 #####################################################################################
 
 # Global data module code ownership.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/data/**/*.kt @rt4914
-/data/**/*.java @rt4914
+/data/**/*.kt @BenHenning
+/data/src/test/**/*.json @BenHenning
 
 #####################################################################################
 #                                  utility module                                   #
 #####################################################################################
 
 # Global utility module code ownership.
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/utility/**/*.kt @rt4914
-/utility/**/*.java @rt4914
+/utility/**/*.kt @BenHenning
 
 # Accessibility utilities.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
 
 # Core logging infrastructure.
-# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
-/utility/src/*/java/org/oppia/android/util/logging/ @rt4914
+/utility/src/*/java/org/oppia/android/util/logging/ @vinitamurthi
 
 # Miscellaneous statusbar UI utilities.
 /utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914
@@ -206,22 +179,14 @@ LICENSE @rt4914
 #####################################################################################
 
 # Global scripts code ownership.
-# TODO(#2304): Re-add @BenHenning after 2021-01-05.
-/scripts/ @anandwana001
+/scripts/ @anandwana001 @BenHenning
 
 #####################################################################################
 #                                      model                                        #
 #####################################################################################
 
 # Global proto file ownership (for protos outside the model directory since all protos should belong in models).
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
-*.proto @rt4914
+*.proto @BenHenning @vinitamurthi
 
-# Global model ownership (secondary).
-# TODO(#2306): Replace @rt4914 with @vinitamurthi after 2021-01-05
-/model/ @rt4914
-
-# Global model ownership (primary).
-# TODO(#2304): Replace @rt4914 with @BenHenning after 2021-01-05.
-/model/ @rt4914
+# Global model ownership.
+/model/ @vinitamurthi @BenHenning

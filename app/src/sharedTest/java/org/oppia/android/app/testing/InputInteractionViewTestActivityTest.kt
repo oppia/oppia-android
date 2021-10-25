@@ -61,6 +61,7 @@ import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -104,7 +105,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+  fun testFractionInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -118,7 +119,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedNegativeWholeNumberText_hasCorrectPendingAnswer() { // ktlint-disable max-line-length
+  fun testFractionInput_withNegativeNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -136,7 +137,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedWholeNumberText_hasCorrectPendingAnswer() {
+  fun testFractionInput_withWholeNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -154,7 +155,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedFractionText_hasCorrectPendingAnswer() {
+  fun testFractionInput_withFraction_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -177,7 +178,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedNegativeValue_hasCorrectPendingAnswer() {
+  fun testFractionInput_withNegativeFraction_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -200,7 +201,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedWholeNumberValue_hasCorrectPendingAnswer() {
+  fun testFractionInput_withMixedNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -224,7 +225,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedNegativeWholeNumberValue_hasCorrectPendingAnswer() { // ktlint-disable max-line-length
+  fun testFractionInput_withNegativeMixedNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -249,7 +250,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testFractionInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() { // ktlint-disable max-line-length
+  fun testFractionInput_withFraction_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -267,7 +268,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedNegativeSymbolOtherThanAt0_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testFractionInput_withNegativeSignOtherThanAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -286,7 +287,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedNegativeSymbolAt0AndMoreThanOnce_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testFractionInput_withNegativeSignAt0MoreThan1_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -305,7 +306,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedDividerMoreThanOnce_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testFractionInput_withDividerMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -324,7 +325,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedDividerAtStart_numberFormatErrorIsDisplayed() {
+  fun testFractionInput_withDividerAtStart_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -343,7 +344,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedPartialValue_numberFormatErrorIsNotDisplayed() {
+  fun testFractionInput_withPartialMixedNumber_numberFormatErrorIsNotDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -355,7 +356,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedPartialValue_clickSubmitButton_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testFractionInput_withPartialMixedNumberSubmit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -376,7 +377,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedValidValue_clickSubmitButton_noErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testFractionInput_withMixedNumber_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -390,7 +391,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedDivideByZero_errorIsNotDisplayed() {
+  fun testFractionInput_withDivideByZero_errorIsNotDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -402,7 +403,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedDivideByZero_clickSubmitButton_divideByZeroErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testFractionInput_withDivideByZero_submit_divideByZeroErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -423,7 +424,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedInvalidCharacter_invalidCharacterErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testFractionInput_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
@@ -443,7 +444,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testFractionInputInteractionView_withInputtedLongNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testFractionInput_withLong_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
@@ -465,7 +466,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+  fun testNumericInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -477,7 +478,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+  fun testNumericInput_withRealNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -498,7 +499,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedText_hasCorrectPendingAnswerWithDecimalValues() {
+  fun testNumericInput_withRealNumberWithDecimal_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -518,7 +519,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedNegativeDecimal_hasCorrectPendingAnswerWithDecimalValues() { // ktlint-disable max-line-length
+  fun testNumericInput_withNegativeRealNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -540,7 +541,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testNumberInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() { // ktlint-disable max-line-length
+  fun testNumberInput_withText_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -554,7 +555,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedInvalidCharacter_invalidCharacterErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testNumericInput_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -574,7 +575,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedLongNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testNumericInput_withLongNumber_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -596,7 +597,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedLongNonDecimalNumber_clickSubmitButton_numberTooLongErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testNumericInput_withLongInteger_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -618,7 +619,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedMinusSymbol_clickSubmitButton_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testNumericInput_withMinusSymbol_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
         .perform(
@@ -639,7 +640,8 @@ class InputInteractionViewTestActivityTest {
     }
   }
 
-  fun testNumericInputInteractionView_withInputtedNegativeSymbolOtherThanAt0_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  @Test
+  fun testNumericInput_withNegativeSymbolNotAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(editTextInputAction.appendText("55-"))
@@ -654,7 +656,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedNegativeSymbolAt0AndMoreThanOnce_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testNumericInput_withNegativeSignAt0MoreThan1_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
@@ -673,7 +675,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedFloatingPointMoreThanOnce_numberFormatErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testNumericInput_withFloatingPointMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(
@@ -692,7 +694,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testNumericInputInteractionView_withInputtedFloatingPointAtStart_numberStartingWithFloatingPointErrorIsDisplayed() { // ktlint-disable max-line-length
+  fun testNumericInput_withDecimalAtStart_numberStartingWithFloatingPointError() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
       .perform(editTextInputAction.appendText(".5"))
@@ -707,7 +709,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testTextInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+  fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -719,7 +721,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testTextInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+  fun testTextInput_withChar_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -741,7 +743,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testTextInputInteractionView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() { // ktlint-disable max-line-length
+  fun testTextInput_withChar_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -759,7 +761,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withNoInputText_hasCorrectPendingAnswerType() {
+  fun testRatioInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -771,7 +773,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withInputtedText_hasCorrectPendingAnswer() {
+  fun testRatioInput_withRatioOfNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -794,7 +796,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testRatioInputView_withInputtedText_onConfigurationChange_hasCorrectPendingAnswer() {
+  fun testRatioInput_withRatio_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
     )
@@ -812,7 +814,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withInputtedTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
+  fun testRatioInput_withTwoColonsTogether_colonsTogetherFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -834,7 +836,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputInteractionView_withInputtedNegativeRatio_numberFormatErrorIsDisplayed() {
+  fun testRatioInput_withNegativeRatioOfNumber_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -856,7 +858,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withZeroRatio_clickSubmitButton_numberWithZerosErrorIsDisplayed() {
+  fun testRatioInput_withZeroRatio_submit_numberWithZerosErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -879,7 +881,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withInvalidRatioFormat_clickSubmitButton_numberFormatErrorIsDisplayed() {
+  fun testRatioInput_withInvalidRatio_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -904,7 +906,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving4Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
+  fun testRatioInput_withRatioHaving4Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -928,7 +930,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving2Terms_clickSubmitButton_invalidSizeErrorIsDisplayed() {
+  fun testRatioInput_withRatioHaving2Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -952,7 +954,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  fun testRatioInputView_withRatioHaving3Terms_clickSubmitButton_noErrorIsDisplayed() {
+  fun testRatioInput_withRatioHaving3Terms_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.test_ratio_input_interaction_view))
@@ -1004,7 +1006,7 @@ class InputInteractionViewTestActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

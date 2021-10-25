@@ -225,6 +225,10 @@
   <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
+  <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
+  <string name="required_fields_content_description">Fields marked with an * are required.</string>
+  <string name="current_profile_picture_content_description">Current profile picture.</string>
+  <string name="edit_profile_picture_content_description">Edit profile picture.</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_slide_0_title">Welcome to Oppia!</string>
   <string name="onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
@@ -257,6 +261,7 @@
   <string name="admin_settings_cancel">Cancel</string>
   <string name="admin_settings_submit">Submit</string>
   <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
+  <string name="admin_settings_enter_user_new_pin">%1$s\'s New PIN.</string>
   <!-- ResetPinDialogFragment -->
   <string name="reset_pin_enter">Enter a New Pin</string>
   <!-- MyDownloadsActivity -->
@@ -415,6 +420,6 @@
     description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
-
-
+  <string name="smallest_text_size_content_description">Smallest text size</string>
+  <string name="largest_text_size_content_description">Largest text size</string>
 </resources>

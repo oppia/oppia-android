@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.databinding.MyDownloadsFragmentBinding
@@ -30,16 +31,20 @@ class MyDownloadsFragmentPresenter @Inject constructor(private val fragment: Fra
       .root
       .findViewById(
         R.id.my_downloads_tabs_viewpager
-      ) as ViewPager
+      ) as ViewPager2
     setUpViewPager(tabLayout, viewPager)
     return binding.root
   }
 
-  private fun setUpViewPager(tabLayout: TabLayout, viewPager: ViewPager) {
-    val adapter = MyDownloadsViewPagerAdapter(fragment.childFragmentManager)
-    viewPager.adapter = adapter
-    tabLayout.setupWithViewPager(viewPager)
-    tabLayout.getTabAt(0)!!.text = fragment.getString(R.string.tab_downloads)
-    tabLayout.getTabAt(1)!!.text = fragment.getString(R.string.tab_updates)
+  private fun setUpViewPager(tabLayout: TabLayout, viewPager2: ViewPager2) {
+    val adapter = MyDownloadsViewPagerAdapter(fragment)
+    viewPager2.adapter = adapter
+
+    TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+      when (position) {
+        0 -> tab.text = fragment.getString(R.string.tab_downloads)
+        1 -> tab.text = fragment.getString(R.string.tab_updates)
+      }
+    }.attach()
   }
 }

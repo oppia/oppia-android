@@ -1,41 +1,46 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
   <data>
+
     <variable
       name="htmlContent"
-      type="CharSequence"/>
+      type="CharSequence" />
+
     <variable
       name="viewModel"
-      type="org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel"/>
+      type="org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel" />
   </data>
 
   <RelativeLayout
     android:id="@+id/checkbox_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="48dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:gravity="center_vertical"
-    android:onClick="@{(v) -> viewModel.handleItemClicked()}">
+    android:minHeight="48dp"
+    android:onClick="@{(v) -> viewModel.handleItemClicked()}"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
     <androidx.appcompat.widget.AppCompatCheckBox
       android:id="@+id/item_selection_checkbox"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:clickable="false"
       android:checked="@{viewModel.answerSelected}"
-      app:buttonTint="@color/oppiaDarkBlue"/>
+      android:clickable="false"
+      app:buttonTint="@color/oppiaDarkBlue" />
+
     <TextView
       android:id="@+id/item_selection_contents_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_toEndOf="@+id/item_selection_checkbox"
-      android:textSize="16sp"
-      android:fontFamily="sans-serif"
       android:layout_marginStart="4dp"
+      android:layout_toEndOf="@+id/item_selection_checkbox"
+      android:fontFamily="sans-serif"
       android:paddingTop="4dp"
       android:paddingBottom="4dp"
       android:text="@{htmlContent}"
-      android:textColor="@color/oppiaDarkBlue"/>
+      android:textColor="@color/oppiaDarkBlue"
+      android:textSize="16sp" />
   </RelativeLayout>
 </layout>

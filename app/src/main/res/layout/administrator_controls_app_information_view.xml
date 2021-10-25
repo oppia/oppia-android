@@ -15,9 +15,9 @@
 
     <TextView
       android:id="@+id/app_information_text_view"
+      style="@style/Caption"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
-      style="@style/Caption"
       android:paddingStart="16dp"
       android:paddingTop="28dp"
       android:paddingEnd="16dp"
@@ -31,15 +31,15 @@
 
     <TextView
       android:id="@+id/app_version_text_view"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@color/white"
-      style="@style/Subtitle1"
+      android:onClick="@{(v) -> viewModel.onAppVersionClicked()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_app_version"
-      android:onClick="@{(v) -> viewModel.onAppVersionClicked()}"
       android:textColor="@color/oppiaPrimaryTextDark"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

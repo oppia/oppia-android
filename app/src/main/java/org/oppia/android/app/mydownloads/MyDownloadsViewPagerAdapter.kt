@@ -1,15 +1,18 @@
 package org.oppia.android.app.mydownloads
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-/** Adapter to bind fragments to [FragmentStatePagerAdapter] inside [MyDownloadsFragment]. */
+/** Adapter to bind fragments to [FragmentStateAdapter] inside [MyDownloadsFragment]. */
 @Suppress("DEPRECATION")
-class MyDownloadsViewPagerAdapter(fragmentManager: FragmentManager) :
-  FragmentStatePagerAdapter(fragmentManager) {
+class MyDownloadsViewPagerAdapter(fragment: Fragment) :
+  FragmentStateAdapter(fragment) {
 
-  override fun getItem(position: Int): Fragment {
+  override fun getItemCount(): Int {
+    return MyDownloadsTab.values().size
+  }
+
+  override fun createFragment(position: Int): Fragment {
     return when (MyDownloadsTab.getTabForPosition(position)) {
       MyDownloadsTab.DOWNLOADS -> {
         DownloadsTabFragment()
@@ -18,9 +21,5 @@ class MyDownloadsViewPagerAdapter(fragmentManager: FragmentManager) :
         UpdatesTabFragment()
       }
     }
-  }
-
-  override fun getCount(): Int {
-    return MyDownloadsTab.values().size
   }
 }

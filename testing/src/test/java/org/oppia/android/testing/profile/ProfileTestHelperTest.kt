@@ -28,6 +28,7 @@ import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
@@ -131,10 +132,10 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testLoginToAdmin_initializeProfiles_loginToAdmin_checkIsSuccessful() {
+  fun testLogIntoAdmin_initializeProfiles_logIntoAdmin_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
 
-    profileTestHelper.loginToAdmin().observeForever(mockUpdateResultObserver)
+    profileTestHelper.logIntoAdmin().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
@@ -143,15 +144,27 @@ class ProfileTestHelperTest {
   }
 
   @Test
-  fun testLoginToUser_initializeProfiles_loginToUser_checkIsSuccessful() {
+  fun testLogIntoUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
 
-    profileTestHelper.loginToUser().observeForever(mockUpdateResultObserver)
+    profileTestHelper.logIntoUser().observeForever(mockUpdateResultObserver)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
     assertThat(updateResultCaptor.value.isSuccess()).isTrue()
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
+  }
+
+  @Test
+  fun testLogIntoNewUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
+    profileTestHelper.initializeProfiles()
+
+    profileTestHelper.logIntoNewUser().observeForever(mockUpdateResultObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
+    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -183,7 +196,7 @@ class ProfileTestHelperTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

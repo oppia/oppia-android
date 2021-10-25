@@ -21,6 +21,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -56,6 +57,7 @@ import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
@@ -65,6 +67,8 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -87,12 +91,15 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.testing.CoroutineExecutorService
 import org.oppia.android.testing.EditTextInputAction
+import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasActiveConfetti
+import org.oppia.android.testing.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.RobolectricModule
 import org.oppia.android.testing.TestAccessibilityModule
 import org.oppia.android.testing.TestCoroutineDispatchers
 import org.oppia.android.testing.TestDispatcherModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.logging.LoggerModule
@@ -267,6 +274,52 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_portrait_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_landscape_submitCorrectAnswer_correctTextBannerIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_portrait_submitCorrectAnswer_confettiIsActive() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_landscape_submitCorrectAnswer_confettiIsActive() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      onView(withId(R.id.congratulations_text_confetti_view)).check(matches(hasActiveConfetti()))
     }
   }
 
@@ -988,6 +1041,155 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_mobilePortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_mobileLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  // Specify dimensions and mdpi qualifier so Robolectric runs the test on a Pixel C equivalent screen size
+  // for the sw600dp layouts.
+  @Config(qualifiers = "sw600dp-w1600dp-h1200dp-port-mdpi")
+  fun testStateFragment_tabletPortrait_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  // Specify dimensions and mdpi qualifier so Robolectric runs the test on a Pixel C equivalent screen size
+  // for the sw600dp layouts.
+  @Config(qualifiers = "sw600dp-w1600dp-h1200dp-land-mdpi")
+  fun testStateFragment_tabletLandscape_finishExploration_endOfSessionConfettiIsDisplayed() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_finishExploration_changePortToLand_endOfSessionConfettiIsDisplayedAgain() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+
+      onView(isRoot()).perform(orientationLandscape())
+
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_finishExploration_changeLandToPort_endOfSessionConfettiIsDisplayedAgain() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+
+      onView(isRoot()).perform(orientationPortrait())
+
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitCorrectAnswer_endOfSessionConfettiDoesNotStart() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughState1()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_notAtEndOfExploration_endOfSessionConfettiDoesNotStart() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      // Play through all questions but do not reach the last screen of the exploration.
+      playThroughAllStates()
+
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(not(hasActiveConfetti())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_reachEndOfExplorationTwice_endOfSessionConfettiIsDisplayedOnce() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughAllStates()
+      clickContinueButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+
+      clickPreviousStateNavigationButton()
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+      clickNextStateNavigationButton()
+
+      // End of exploration confetti should only render one instance at a time.
+      onView(withId(R.id.full_screen_confetti_view)).check(
+        matches(
+          hasExpectedNumberOfActiveSystems(numSystems = 2)
+        )
+      )
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1016,73 +1218,79 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState2() {
     // Correct answer to 'Matthew gets conned'
     submitFractionAnswer(answerText = "3/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState3() {
     // Correct answer to 'Question 1'
     submitFractionAnswer(answerText = "4/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState4() {
     // Correct answer to 'Question 2'
     submitFractionAnswer(answerText = "1/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState5() {
     // Correct answer to 'Question 3'
     submitFractionAnswer(answerText = "1/8")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState6() {
     // Correct answer to 'Question 4'
     submitFractionAnswer(answerText = "1/2")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState7() {
     // Correct answer to 'Question 5' which redirects the learner to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "2/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState8() {
     // Correct answer to 'Thinking in fractions Q1'
     submitFractionAnswer(answerText = "7/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState9() {
     // Correct answer to 'Thinking in fractions Q2'
     submitFractionAnswer(answerText = "4/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState10() {
     // Correct answer to 'Thinking in fractions Q3'
     submitFractionAnswer(answerText = "5/8")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState11() {
     // Correct answer to 'Thinking in fractions Q4' which redirects the learner to 'Final Test A'
     submitFractionAnswer(answerText = "3/4")
-    clickContinueButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughState12() {
+    // Correct answer to 'Final Test A' redirects learner to 'Happy ending'
+    submitFractionAnswer(answerText = "2/4")
+    clickContinueNavigationButton()
   }
 
   private fun playThroughState12WithWrongAnswer() {
     // Incorrect answer to 'Final Test A' redirects the learner to 'Final Test A second try'
     submitFractionAnswer(answerText = "1/9")
-    clickContinueButton()
+    clickContinueNavigationButton()
   }
 
   private fun playUpToFinalTestSecondTry() {
@@ -1100,11 +1308,43 @@ class StateFragmentLocalTest {
     playThroughState12WithWrongAnswer()
   }
 
-  private fun clickContinueButton() {
+  private fun playThroughAllStates() {
+    playThroughState1()
+    playThroughState2()
+    playThroughState3()
+    playThroughState4()
+    playThroughState5()
+    playThroughState6()
+    playThroughState7()
+    playThroughState8()
+    playThroughState9()
+    playThroughState10()
+    playThroughState11()
+    playThroughState12()
+  }
+
+  private fun clickContinueNavigationButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.continue_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickContinueButton() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.continue_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickNextStateNavigationButton() {
+    onView(withId(R.id.next_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickPreviousStateNavigationButton() {
+    onView(withId(R.id.previous_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.advanceUntilIdle()
   }
 
   private fun openHintsAndSolutionsDialog() {
@@ -1354,7 +1594,7 @@ class StateFragmentLocalTest {
       ViewBindingShimModule::class, RatioInputModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

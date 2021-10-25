@@ -6,7 +6,9 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Path.Direction
 import android.text.Layout
+import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.style.BulletSpan
 import android.text.style.LeadingMarginSpan
 import org.oppia.android.util.R
 
@@ -18,22 +20,20 @@ import org.oppia.android.util.R
  * Reference: https://github.com/davidbilik/bullet-span-sample
  */
 class CustomBulletSpan(context: Context) : LeadingMarginSpan {
-  private var bulletRadius: Int = 0
-  private var gapWidth: Int = 0
-  private var yOffset: Int = 0
-  private var bulletLeadingMargin: Int = 0
-
-  init {
-    bulletRadius = context.resources.getDimensionPixelSize(R.dimen.bullet_radius)
-    gapWidth = context.resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
-    yOffset = context.resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
-    bulletLeadingMargin = context.resources.getDimensionPixelSize(R.dimen.bullet_leading_margin)
-  }
-
-  private var mBulletPath: Path? = null
+  private val resources = context.resources
+  private val bulletRadius = resources.getDimensionPixelSize(R.dimen.bullet_radius)
+  private val gapWidth = resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
+  private val yOffset = resources.getDimensionPixelSize(R.dimen.bullet_y_offset)
+  /** The space between the start of the line and the bullet. */
+  private val spacingBeforeBullet = resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
+  /** The space between the bullet and the text. */
+  private val spacingBeforeText = resources.getDimensionPixelSize(R.dimen.spacing_before_text)
+  /** The total spacing between the start of the line and the text. */
+  private val totalSpacingToTextStart = spacingBeforeBullet + spacingBeforeText + bulletRadius * 2
+  private var bulletPath: Path? = null
 
   override fun getLeadingMargin(first: Boolean): Int {
-    return bulletLeadingMargin
+    return totalSpacingToTextStart
   }
 
   override fun drawLeadingMargin(
@@ -62,23 +62,53 @@ class CustomBulletSpan(context: Context) : LeadingMarginSpan {
       }
       yPosition += yOffset
 
-      val xPosition = (x + dir * bulletRadius).toFloat()
+      val xPosition = (x + dir * bulletRadius).toFloat() + spacingBeforeBullet
 
       if (canvas.isHardwareAccelerated) {
-        if (mBulletPath == null) {
-          mBulletPath = Path()
-          mBulletPath!!.addCircle(0.0f, 0.0f, bulletRadius.toFloat(), Direction.CW)
+        if (bulletPath == null) {
+          bulletPath = Path()
+          bulletPath!!.addCircle(0.0f, 0.0f, bulletRadius.toFloat(), Direction.CW)
         }
 
         canvas.save()
         canvas.translate(xPosition, yPosition)
-        canvas.drawPath(mBulletPath!!, paint)
+        canvas.drawPath(bulletPath!!, paint)
         canvas.restore()
       } else {
         canvas.drawCircle(xPosition, yPosition, bulletRadius.toFloat(), paint)
       }
 
       paint.style = style
+    }
+  }
+
+  /**
+   * Update and return the [SpannableStringBuilder] by replacing all the [BulletSpan]s in the
+   * [SpannableStringBuilder] with [CustomBulletSpan].
+   */
+  companion object {
+    fun replaceBulletSpan(
+      spannableStringBuilder: SpannableStringBuilder,
+      context: Context
+    ): SpannableStringBuilder {
+      val bulletSpans = spannableStringBuilder.getSpans(
+        /* queryStart= */ 0,
+        spannableStringBuilder.length,
+        BulletSpan::class.java
+      )
+
+      bulletSpans.forEach {
+        val start = spannableStringBuilder.getSpanStart(it)
+        val end = spannableStringBuilder.getSpanEnd(it)
+        spannableStringBuilder.removeSpan(it)
+        spannableStringBuilder.setSpan(
+          CustomBulletSpan(context),
+          start,
+          end,
+          Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+      }
+      return spannableStringBuilder
     }
   }
 }

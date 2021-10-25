@@ -1,8 +1,8 @@
 package org.oppia.android.app.profile
 
 import android.app.Dialog
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ResetPinDialogBinding
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -44,21 +45,22 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       lifecycleOwner = fragment
       viewModel = resetViewModel
     }
+    resetViewModel.name.set(name)
 
-    binding.inputPin.setInput(resetViewModel.inputPin.get().toString())
-    binding.inputPin.addTextChangedListener(object : TextWatcher {
-      override fun onTextChanged(confirmPin: CharSequence?, start: Int, before: Int, count: Int) {
-        confirmPin?.let {
-          resetViewModel.inputPin.set(confirmPin.toString())
+    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+    binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
+      confirmPin?.let {
+        // To avoid disappearing Error message due to orientation change.
+        if (
+          resetViewModel.errorMessage.get()?.isNotEmpty()!! && resetViewModel.inputPin.get() == it
+        ) {
+          resetViewModel.inputPin.set(it)
+        } else {
+          resetViewModel.inputPin.set(it)
           resetViewModel.errorMessage.set("")
         }
       }
-
-      override fun afterTextChanged(confirmPin: Editable?) {}
-      override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {}
-    })
-
-    binding.inputPin.setLabel("$name's New PIN")
+    }
 
     val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
       .setTitle(R.string.reset_pin_enter)
@@ -70,9 +72,18 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
       }
       .create()
 
+    binding.resetPinInputPinEditText.setOnEditorActionListener { _, actionId, event ->
+      if (actionId == EditorInfo.IME_ACTION_DONE ||
+        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+      ) {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).callOnClick()
+      }
+      false
+    }
+
     dialog.setOnShowListener {
       dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-        val input = binding.inputPin.getInput()
+        val input = binding.resetPinInputPinEditText.text.toString()
         if (input.isEmpty()) {
           return@setOnClickListener
         }

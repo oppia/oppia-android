@@ -1,10 +1,20 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "********************************"
 echo "Checking code formatting"
 echo "********************************"
 
-java -jar ../oppia-android-tools/ktlint --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt
+github_actions_path=$1
+
+jar_file_path=$?
+
+if [ $# -eq 0 ]; then
+    jar_file_path="../oppia-android-tools/ktlint"
+else
+    jar_file_path="$github_actions_path/oppia-android-tools/ktlint"
+fi
+
+java -jar $jar_file_path --android app/src/**/*.kt data/src/**/*.kt domain/src/**/*.kt testing/src/**/*.kt utility/src/**/*.kt
 
 status=$?
 

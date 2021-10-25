@@ -6521,7 +6521,7 @@
                 "Equals": [
                   {
                     "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>",
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
                       "<oppia-noninteractive-image alt-with-value=\"&amp;quot;1/3 of a cake.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021736_l9i7rnd1r3_height_130_width_109.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   }
@@ -6546,7 +6546,7 @@
                 "Equals": [
                   {
                     "x": [
-                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>"
+                      "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image>"
                     ]
                   },
                   {
@@ -6675,7 +6675,7 @@
             "choices": {
               "value": [
                 {
-                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image><p> </p>",
+                  "html": "<oppia-noninteractive-image alt-with-value=\"&amp;quot;Cake with two of three slices shaded.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20180107_021701_lrik8u8ocs_height_131_width_108.png&amp;quot;\"></oppia-noninteractive-image>",
                   "content_id": "ca_choices_0"
                 },
                 {

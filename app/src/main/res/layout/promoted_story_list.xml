@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -7,7 +8,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.home.topiclist.PromotedStoryListViewModel" />
+      type="org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel" />
   </data>
 
   <LinearLayout
@@ -37,25 +38,31 @@
         android:id="@+id/view_all_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
+        android:minHeight="48dp"
         android:onClick="@{() -> viewModel.clickOnViewAll()}"
         android:text="@string/view_all"
         android:textAllCaps="true"
+        android:visibility="@{viewModel.getButtonVisibility()}"
         android:textColor="@color/oppiaPrimaryDark"
         android:textSize="14sp" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <org.oppia.android.app.home.promotedlist.PromotedStoryListView
       android:id="@+id/promoted_story_list_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:clipToPadding="false"
       android:layout_marginTop="4dp"
+      android:clipToPadding="false"
+      android:orientation="horizontal"
       android:overScrollMode="never"
-      android:scrollbars="none" />
+      android:scrollbars="none"
+      android:paddingStart="@dimen/home_padding_start"
+      android:paddingEnd="@{viewModel.endPadding}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:promotedStoryList="@{viewModel.promotedStoryList}" />
   </LinearLayout>
 </layout>

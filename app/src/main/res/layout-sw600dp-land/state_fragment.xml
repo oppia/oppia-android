@@ -83,12 +83,21 @@
           android:layout_height="wrap_content"
           android:visibility="@{viewModel.isAudioBarVisible ? View.VISIBLE : View.GONE}" />
       </FrameLayout>
+
+      <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/full_screen_confetti_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"></FrameLayout>
+      android:layout_height="match_parent" />
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_container"
@@ -118,20 +127,17 @@
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      android:layout_marginStart="192dp"
-      android:layout_marginTop="8dp"
-      android:layout_marginEnd="192dp"
-      android:layout_marginBottom="24dp"
-      android:elevation="8dp"
-      android:translationZ="4dp">
+      android:layout_gravity="bottom">
 
       <TextView
         android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_marginStart="192dp"
+        android:layout_marginEnd="192dp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
-        android:elevation="8dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="1dp"
@@ -140,6 +146,11 @@
         android:textColor="@color/green_shade"
         android:textSize="20sp"
         android:visibility="invisible" />
+
+      <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/congratulations_text_confetti_view"
+        android:layout_width="match_parent"
+        android:layout_height="132dp"/>
     </FrameLayout>
   </FrameLayout>
 </layout>

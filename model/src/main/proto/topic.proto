@@ -203,6 +203,10 @@ message PromotedStory {
 
   // The thumbnail that should be displayed for this promoted story.
   LessonThumbnail lesson_thumbnail = 9;
+
+  // Indicates whether the topic containing this story is 'learned'
+  // (meaning at least one story was completed).
+  bool is_topic_learned = 10;
 }
 
 // A homescreen summary of a topic.
@@ -257,6 +261,52 @@ message TopicProgress {
 
   // Map from story ID to StoryProgress.
   map<string, StoryProgress> story_progress = 2;
+}
+
+// A structure corresponding to the promoted stories. This structure is set up
+// to properly account for recently played stories, recommended stories
+// and coming soon topics.
+message PromotedActivityList {
+  oneof recommendation_type {
+    PromotedStoryList promoted_story_list = 1;
+    ComingSoonTopicList coming_soon_topic_list = 2;
+  }
+}
+
+// Corresponds to the list of stories the player is currently playing across all topics and recommended stories.
+message PromotedStoryList {
+  // Ongoing stories from within the last 7 days.
+  repeated PromotedStory recently_played_story   = 1;
+
+  // Other ongoing stories from longer than 7 days ago.
+  repeated PromotedStory older_played_story = 2;
+
+  // Stories specifically recommended for the learner to complete next.
+  repeated PromotedStory suggested_story = 3;
+}
+
+// Corresponds to the list of coming soon topics that can be shown on the home screen.
+message ComingSoonTopicList {
+  // Upcoming topics for the learner.
+  repeated UpcomingTopic upcoming_topic = 1;
+}
+
+// Represents topics not yet ready to be played by the learner.
+message UpcomingTopic {
+  // The ID of the topic.
+  string topic_id = 1;
+
+  // The name of the topic.
+  string name = 2;
+
+  // The structural version of the topic.
+  int32 version = 3;
+
+  // The associated thumbnail that should be displayed with this topic.
+  LessonThumbnail lesson_thumbnail = 4;
+
+  // Specifics about whether this topic is playable.
+  TopicPlayAvailability topic_play_availability = 5;
 }
 
 // Represents the story progress.
