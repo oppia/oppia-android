@@ -77,15 +77,12 @@
       <TextView
         android:id="@+id/topic_description_text_view"
         style="@style/Body"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:maxLines="@{viewModel.isDescriptionExpanded() ? @integer/topic_description_expanded : @integer/topic_description_collapsed}"
         android:paddingStart="120dp"
         android:paddingEnd="120dp"
         android:text="@{viewModel.topicDescription}"
-        android:textColor="@color/oppiaPrimaryText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />

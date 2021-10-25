@@ -66,8 +66,7 @@
             style="@style/Body"
             android:layout_marginStart="@dimen/concept_card_explanation_text_margin_start"
             android:layout_marginTop="@dimen/concept_card_explanation_text_margin_top"
-            android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end"
-            android:textColor="@color/oppiaPrimaryText"/>
+            android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end" />
         </LinearLayout>
         <!-- TODO(#352): Show worked examples in Concept Card. -->
       </ScrollView>

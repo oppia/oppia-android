@@ -87,7 +87,6 @@
         android:paddingStart="32dp"
         android:paddingEnd="32dp"
         android:text="@{viewModel.topicDescription}"
-        android:textColor="@color/oppiaPrimaryText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
