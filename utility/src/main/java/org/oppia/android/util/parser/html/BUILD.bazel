@@ -39,7 +39,6 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:androidx_core_core",
         "//third_party:androidx_core_core-ktx",
     ],
 )
@@ -67,7 +66,6 @@ kt_android_library(
         ":custom_html_content_handler",
         ":image_tag_handler",
         ":math_tag_handler",
-        "//third_party:androidx_core_core",
         "//third_party:androidx_core_core-ktx",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
@@ -94,7 +92,6 @@ kt_android_library(
     srcs = [
         "ImageTagHandler.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
     deps = [
         "custom_html_content_handler",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
