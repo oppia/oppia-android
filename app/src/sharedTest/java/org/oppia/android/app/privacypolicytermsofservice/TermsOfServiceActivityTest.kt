@@ -4,17 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.text.Spannable
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
@@ -138,32 +130,7 @@ class TermsOfServiceActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.privacy_policy_activity_title))
-  }
-
-  @Test
-  fun testTermsOfServiceSingleActivity_checkTermsOfService_isDisplayed() {
-    launch<TermsOfServiceActivity>(createTermsOfServiceSingleActivity()).use {
-      onView(withId(R.id.terms_of_service_description_text_view)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testTermsOfServiceSingleActivity_checkTermsOfService_isCorrectlyParsed() {
-    val termsOfServiceTextView = activityTestRule.activity.findViewById(
-      R.id.terms_of_service_description_text_view
-    ) as TextView
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false
-    )
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.terms_of_service_content),
-      termsOfServiceTextView
-    )
-    assertThat(termsOfServiceTextView.text.toString()).isEqualTo(htmlResult.toString())
+    assertThat(title).isEqualTo(context.getString(R.string.terms_of_service_activity_title))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -174,10 +141,6 @@ class TermsOfServiceActivityTest {
     return TermsOfServiceActivity.createTermsOfServiceActivityIntent(
       ApplicationProvider.getApplicationContext()
     )
-  }
-
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -214,7 +177,7 @@ class TermsOfServiceActivityTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTermsOfServiceSingleActivityTest_TestApplicationComponent.builder()
+      DaggerTermsOfServiceActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }

@@ -26,6 +26,7 @@ class TermsOfServiceFragmentPresenter @Inject constructor(
   private lateinit var privacyPolicyDescription: String
   private lateinit var privacyPolicyWebLink: String
 
+  /** Handles onCreate() method of the [TermsOfServiceFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = TermsOfServiceFragmentBinding.inflate(
       inflater,

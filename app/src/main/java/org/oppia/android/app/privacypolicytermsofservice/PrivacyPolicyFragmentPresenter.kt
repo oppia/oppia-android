@@ -26,6 +26,7 @@ class PrivacyPolicyFragmentPresenter @Inject constructor(
   private lateinit var privacyPolicyDescription: String
   private lateinit var privacyPolicyWebLink: String
 
+  /** Handles onCreate() method of the [PrivacyPolicyFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = PrivacyPolicyFragmentBinding.inflate(
       inflater,

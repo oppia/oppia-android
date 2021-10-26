@@ -4,9 +4,18 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.text.Spannable
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
@@ -82,10 +91,10 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PrivacyPolicyActivityTest.TestApplication::class,
+  application = PrivacyPolicyFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class PrivacyPolicyActivityTest {
+class PrivacyPolicyFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -108,9 +117,6 @@ class PrivacyPolicyActivityTest {
     false
   )
 
-  @Inject
-  lateinit var context: Context
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -125,22 +131,51 @@ class PrivacyPolicyActivityTest {
   }
 
   @Test
-  fun testPrivacyPolicySingleActivity_hasCorrectActivityLabel() {
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.privacy_policy_activity_title))
+  fun testPrivacyPolicySingleActivity_checkPrivacyPolicy_isDisplayed() {
+    launch<PrivacyPolicyActivity>(createPrivacyPolicyActivity()).use {
+      onView(withId(R.id.privacy_policy_description_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  @Test
+  fun testPrivacyPolicySingleActivity_checkPrivacyPolicyWebLink_isDisplayed() {
+    launch<PrivacyPolicyActivity>(createPrivacyPolicyActivity()).use {
+      onView(withId(R.id.privacy_policy_web_link_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPrivacyPolicySingleActivity_checkPrivacyPolicy_isCorrectlyParsed() {
+    val privacyPolicyTextView = activityTestRule.activity.findViewById(
+      R.id.privacy_policy_description_text_view
+    ) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      getResources().getString(R.string.privacy_policy_content),
+      privacyPolicyTextView
+    )
+    assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
   private fun createPrivacyPolicyActivity(): Intent {
     return PrivacyPolicyActivity.createPrivacyPolicyActivityIntent(
       ApplicationProvider.getApplicationContext()
     )
+  }
+
+  private fun getResources(): Resources {
+    return ApplicationProvider.getApplicationContext<Context>().resources
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -172,18 +207,18 @@ class PrivacyPolicyActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(PrivacyPolicySingleActivityTest: PrivacyPolicyActivityTest)
+    fun inject(privacyPolicyFragmentTest: PrivacyPolicyFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPrivacyPolicyActivityTest_TestApplicationComponent.builder()
+      DaggerPrivacyPolicyFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(privacyPolicySingleActivityTest: PrivacyPolicyActivityTest) {
-      component.inject(privacyPolicySingleActivityTest)
+    fun inject(privacyPolicyFragmentTest: PrivacyPolicyFragmentTest) {
+      component.inject(privacyPolicyFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
