@@ -277,7 +277,7 @@ jobs:
           BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
         run: |
           # Attempt to build 5 times in case there are flaky builds.
-          # TODO: Remove this once there are no longer app test build failures.
+          # TODO(#3970): Remove this once there are no longer app test build failures.
           i=0
           # Disable exit-on-first-failure.
           set +e
@@ -298,7 +298,7 @@ jobs:
           BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
         run: |
           # Attempt to build 5 times in case there are flaky builds.
-          # TODO: Remove this once there are no longer app test build failures.
+          # TODO(#3970): Remove this once there are no longer app test build failures.
           i=0
           # Disable exit-on-first-failure.
           set +e
