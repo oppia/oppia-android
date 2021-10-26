@@ -3,7 +3,6 @@ package org.oppia.android.app.privacypolicytermsofservice
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.TermsOfServicetermsofservice.TermsOfServiceActivityPresenter
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject

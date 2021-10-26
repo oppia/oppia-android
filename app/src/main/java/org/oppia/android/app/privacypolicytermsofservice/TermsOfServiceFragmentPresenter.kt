@@ -13,7 +13,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
-/** The presenter for [PrivacyPolicyFragment]. */
+/** The presenter for [termsOfServiceFragment]. */
 @FragmentScope
 class TermsOfServiceFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -23,8 +23,8 @@ class TermsOfServiceFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String
 ) {
   private lateinit var binding: TermsOfServiceFragmentBinding
-  private lateinit var privacyPolicyDescription: String
-  private lateinit var privacyPolicyWebLink: String
+  private lateinit var termsOfServiceDescription: String
+  private lateinit var termsOfServiceWebLink: String
 
   /** Handles onCreate() method of the [TermsOfServiceFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -40,29 +40,29 @@ class TermsOfServiceFragmentPresenter @Inject constructor(
 
   private fun setUpContentForTextViews() {
     // NOTE: Here entityType and entityId can be anything as it will actually not get used.
-    // They are needed only for cases where rich-text contains images from server and in PrivacyPolicy
+    // They are needed only for cases where rich-text contains images from server and in termsOfService
     // we do not have images.
-    privacyPolicyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
+    termsOfServiceDescription = resourceHandler.getStringInLocale(R.string.terms_of_service_content)
 
     binding.termsOfServiceDescriptionTextView.text = htmlParserFactory.create(
       resourceBucketName,
-      entityType = "PrivacyPolicy",
+      entityType = "TermsOfService",
       entityId = "oppia",
       imageCenterAlign = false
     ).parseOppiaHtml(
-      privacyPolicyDescription,
+      termsOfServiceDescription,
       binding.termsOfServiceDescriptionTextView
     )
 
-    privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
+    termsOfServiceWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
 
     binding.termsOfServiceWebLinkTextView.text = htmlParserFactory.create(
       resourceBucketName,
-      entityType = "PrivacyPolicy",
+      entityType = "TermsOfService",
       entityId = "oppia",
       imageCenterAlign = false
     ).parseOppiaHtml(
-      privacyPolicyWebLink,
+      termsOfServiceWebLink,
       binding.termsOfServiceWebLinkTextView
     )
   }

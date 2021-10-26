@@ -10,7 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceFragmentPresenter
 import javax.inject.Inject
 
-/** Fragment that contains Privacy Policy flow of the app. */
+/** Fragment that contains Terms Of Service flow of the app. */
 class TermsOfServiceFragment : InjectableFragment() {
   @Inject
   lateinit var termsOfServiceFragmentPresenter: TermsOfServiceFragmentPresenter
