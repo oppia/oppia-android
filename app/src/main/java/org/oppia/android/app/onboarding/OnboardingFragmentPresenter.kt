@@ -136,8 +136,9 @@ class OnboardingFragmentPresenter @Inject constructor(
   private fun setTermsAndCondition(binding: OnboardingSlideFinalBinding) {
     val termsOfService: String = resourceHandler.getStringInLocale(R.string.terms_of_service)
     val privacyPolicy: String = resourceHandler.getStringInLocale(R.string.privacy_policy)
-     val completeString: String =
-      resourceHandler.getStringInLocaleWithWrapping(R.string.agree_to_terms,
+    val completeString: String =
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.agree_to_terms,
         resourceHandler.getStringInLocale(R.string.app_name)
       )
 
