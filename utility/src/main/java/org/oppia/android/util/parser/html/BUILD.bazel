@@ -6,17 +6,29 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "bullet_tag_handler",
+    name = "html_parser",
     srcs = [
-        "BulletTagHandler.kt",
+        "HtmlParser.kt",
     ],
-    deps = [":custom_html_content_handler"],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":custom_bullet_span",
+        ":custom_html_content_handler",
+        ":tag_handlers",
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
+    ],
 )
 
 kt_android_library(
-    name = "concept_card_tag_handler",
+    name = "tag_handlers",
     srcs = [
+        "BulletTagHandler.kt",
         "ConceptCardTagHandler.kt",
+        "ImageTagHandler.kt",
+        "MathTagHandler.kt",
     ],
     deps = [
         ":custom_html_content_handler",
@@ -54,58 +66,16 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "html_parser",
-    srcs = [
-        "HtmlParser.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":bullet_tag_handler",
-        ":concept_card_tag_handler",
-        ":custom_bullet_span",
-        ":custom_html_content_handler",
-        ":image_tag_handler",
-        ":math_tag_handler",
-        "//third_party:androidx_core_core-ktx",
-        "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
-    ],
-)
-
-kt_android_library(
     name = "html_parser_entity_type_module",
     srcs = [
         "HtmlParserEntityTypeModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":concept_card_tag_handler",
         ":custom_html_content_handler",
         ":dagger",
         ":exploration_html_parser_entity_type",
-    ],
-)
-
-kt_android_library(
-    name = "image_tag_handler",
-    srcs = [
-        "ImageTagHandler.kt",
-    ],
-    deps = [
-        "custom_html_content_handler",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
-    ],
-)
-
-kt_android_library(
-    name = "math_tag_handler",
-    srcs = [
-        "MathTagHandler.kt",
-    ],
-    deps = [
-        ":custom_html_content_handler",
-        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        ":tag_handlers",
     ],
 )
 
