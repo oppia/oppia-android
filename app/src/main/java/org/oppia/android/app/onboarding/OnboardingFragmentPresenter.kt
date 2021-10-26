@@ -149,7 +149,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     val spannableStringBuilder = SpannableStringBuilder(completeString)
     val clickOnTerms = object : ClickableSpan() {
       override fun onClick(widget: View) {
-        (activity as RouteToTermsOfServiceSingleListener).onRouteToTermsOfServiceSingle()
+        (activity as RouteToTermsOfServiceListener).onRouteToTermsOfService()
       }
 
       override fun updateDrawState(ds: TextPaint) {

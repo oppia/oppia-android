@@ -40,8 +40,8 @@ class HelpItemViewModel(
             LoadPrivacyPolicyFragmentListener
           loadPrivacyPolicyFragmentListener.loadPrivacyPolicyFragment()
         } else {
-          val routeToPrivacyPolicyListener = activity as RouteToPrivacyPolicySingleListener
-          routeToPrivacyPolicyListener.onRouteToPrivacyPolicySingle()
+          val routeToPrivacyPolicyListener = activity as RouteToPrivacyPolicyListener
+          routeToPrivacyPolicyListener.onRouteToPrivacyPolicy()
         }
       }
 

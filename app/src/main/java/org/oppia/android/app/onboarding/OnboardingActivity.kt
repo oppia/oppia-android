@@ -15,7 +15,7 @@ class OnboardingActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
   RouteToPrivacyPolicyListener,
-  RouteToTermsOfServiceSingleListener {
+  RouteToTermsOfServiceListener {
   @Inject
   lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
 
@@ -44,7 +44,7 @@ class OnboardingActivity :
     )
   }
 
-  override fun onRouteToTermsOfServiceSingle() {
+  override fun onRouteToTermsOfService() {
     startActivity(
       TermsOfServiceActivity.createTermsOfServiceActivityIntent(
         this

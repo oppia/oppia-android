@@ -35,7 +35,7 @@ class HelpActivity :
   InjectableAppCompatActivity(),
   RouteToFAQListListener,
   RouteToFAQSingleListener,
-  RouteToPrivacyPolicySingleListener,
+  RouteToPrivacyPolicyListener,
   RouteToTermsOfServiceListener,
   RouteToThirdPartyDependencyListListener,
   LoadFaqListFragmentListener,
@@ -133,7 +133,7 @@ class HelpActivity :
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }
 
-  override fun onRouteToPrivacyPolicySingle() {
+  override fun onRouteToPrivacyPolicy() {
     startActivity(PrivacyPolicyActivity.createPrivacyPolicyActivityIntent(this))
   }
 
