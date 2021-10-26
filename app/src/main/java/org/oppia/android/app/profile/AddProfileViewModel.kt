@@ -10,7 +10,10 @@ import javax.inject.Inject
 
 /** The ViewModel for [AddProfileActivity]. */
 @ActivityScope
-class AddProfileViewModel @Inject constructor(resourceHandler: AppLanguageResourceHandler, context: Context) : ObservableViewModel() {
+class AddProfileViewModel @Inject constructor(
+  resourceHandler: AppLanguageResourceHandler,
+  context: Context
+) : ObservableViewModel() {
   val validPin = ObservableField(false)
   val pinErrorMsg = ObservableField("")
   val confirmPinErrorMsg = ObservableField("")
