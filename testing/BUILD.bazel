@@ -56,11 +56,6 @@ kt_android_library(
         "//third_party:org_mockito_mockito-core",
         "//third_party:org_robolectric_robolectric",
         "//utility",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:image_tag_handler",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
-        "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
     ],
 )
 
@@ -99,6 +94,11 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handlers",
+    "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
+    "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
+    "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
+    "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
