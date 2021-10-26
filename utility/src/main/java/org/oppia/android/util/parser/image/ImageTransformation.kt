@@ -1,6 +1,6 @@
 package org.oppia.android.util.parser.image
 
-/** a enum class for ImageLoader interface */
+/** Represents transformations for images loaded using [ImageLoader]. */
 enum class ImageTransformation {
   /** Represents Blur Transformation on an [ImageTarget]. */
   BLUR
