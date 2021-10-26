@@ -31,7 +31,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
-        "//model:test_models",
+        "//model/src/main/proto:test_models",
         "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_extensions_truth-liteproto-extension",

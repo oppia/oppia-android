@@ -70,10 +70,10 @@ fun Fraction.toDouble(): Double = toFloat().toDouble()
 fun Fraction.toSimplestForm(): Fraction {
   val commonDenominator = gcd(numerator, denominator)
   return toBuilder()
-      .setWholeNumber(wholeNumber)
-      .setNumerator(numerator / commonDenominator)
+    .setWholeNumber(wholeNumber)
+    .setNumerator(numerator / commonDenominator)
     .setDenominator(denominator / commonDenominator)
-      .build()
+    .build()
 }
 
 /**
@@ -94,9 +94,9 @@ fun Fraction.toImproperForm(): Fraction {
 fun Fraction.toProperForm(): Fraction {
   return toSimplestForm().let {
     it.toBuilder()
-        .setWholeNumber(it.wholeNumber + (it.numerator / it.denominator))
-        .setNumerator(it.numerator % it.denominator)
-        .build()
+      .setWholeNumber(it.wholeNumber + (it.numerator / it.denominator))
+      .setNumerator(it.numerator % it.denominator)
+      .build()
   }
 }
 
@@ -129,11 +129,11 @@ operator fun Fraction.plus(rhs: Fraction): Fraction {
 
   // Finally, compute the new fraction and convert it to proper form to compute its whole number.
   return Fraction.newBuilder()
-      .setIsNegative(isNegative)
-      .setNumerator(newNumerator)
-      .setDenominator(commonDenominator)
-      .build()
-      .toProperForm()
+    .setIsNegative(isNegative)
+    .setNumerator(newNumerator)
+    .setDenominator(commonDenominator)
+    .build()
+    .toProperForm()
 }
 
 /**
@@ -157,11 +157,11 @@ operator fun Fraction.times(rhs: Fraction): Fraction {
   // Third, determine negative (negative is retained if only one is negative).
   val isNegative = leftFraction.isNegative xor rightFraction.isNegative
   return Fraction.newBuilder()
-      .setIsNegative(isNegative)
-      .setNumerator(newNumerator)
-      .setDenominator(newDenominator)
-      .build()
-      .toProperForm()
+    .setIsNegative(isNegative)
+    .setNumerator(newNumerator)
+    .setDenominator(newDenominator)
+    .build()
+    .toProperForm()
 }
 
 /** Returns the proper form of the division from this fraction by the specified fraction. */
@@ -174,9 +174,9 @@ operator fun Fraction.div(rhs: Fraction): Fraction {
 private fun Fraction.toInvertedImproperForm(): Fraction {
   val improper = toImproperForm()
   return improper.toBuilder()
-      .setNumerator(improper.denominator)
-      .setDenominator(improper.numerator)
-      .build()
+    .setNumerator(improper.denominator)
+    .setDenominator(improper.numerator)
+    .build()
 }
 
 /** Returns the negated form of this fraction. */

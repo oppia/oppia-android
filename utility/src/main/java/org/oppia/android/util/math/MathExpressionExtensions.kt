@@ -165,9 +165,9 @@ private fun Polynomial.getConstant(): Real {
 private operator fun Polynomial.unaryMinus(): Polynomial {
   // Negating a polynomial just requires flipping the signs on all coefficients.
   return toBuilder()
-      .clearTerm()
-      .addAllTerm(termList.map { it.toBuilder().setCoefficient(-it.coefficient).build() })
-      .build()
+    .clearTerm()
+    .addAllTerm(termList.map { it.toBuilder().setCoefficient(-it.coefficient).build() })
+    .build()
 }
 
 private operator fun Polynomial.plus(rhs: Polynomial): Polynomial {
@@ -185,9 +185,11 @@ private operator fun Polynomial.times(rhs: Polynomial): Polynomial {
   // TODO: ensure this properly computes trivial cases like (x^2 becoming x-squared) or whether
   //  those cases need to be special cased.
   return Polynomial.newBuilder()
-      .addAllTerm(termList.flatMap { leftTerm ->
+    .addAllTerm(
+      termList.flatMap { leftTerm ->
         rhs.termList.map { rightTerm -> leftTerm * rightTerm }
-      }).build()
+      }
+    ).build()
 }
 
 private operator fun Term.times(rhs: Term): Term {
@@ -210,9 +212,9 @@ private operator fun Term.times(rhs: Term): Term {
   }
 
   return Term.newBuilder()
-      .setCoefficient(combinedCoefficient)
-      .addAllVariable(newVariableList)
-      .build()
+    .setCoefficient(combinedCoefficient)
+    .addAllVariable(newVariableList)
+    .build()
 }
 
 private operator fun Polynomial.div(rhs: Polynomial): Polynomial? {
@@ -265,9 +267,9 @@ private operator fun Term.div(rhs: Term): Term? {
   // Remove variables with powers of 0 since those have been fully divided. Also, divide the
   // coefficients to finish the division.
   return Term.newBuilder()
-      .setCoefficient(coefficient / rhs.coefficient)
-      .addAllVariable(quotientPowerMap.filter { (_, power) -> power > 0 }.toVariableList())
-      .build()
+    .setCoefficient(coefficient / rhs.coefficient)
+    .addAllVariable(quotientPowerMap.filter { (_, power) -> power > 0 }.toVariableList())
+    .build()
 }
 
 private fun List<Variable>.toPowerMap(): Map<String, Int> {
@@ -341,41 +343,41 @@ private fun MathBinaryOperation.collectChildren(): MutableList<ExpressionTreeNod
 
 private fun createSingleTermPolynomial(variableName: String): Polynomial {
   return Polynomial.newBuilder()
-      .addTerm(
-          Term.newBuilder()
-              .setCoefficient(createCoefficientValueOfOne())
-              .addVariable(Variable.newBuilder().setName(variableName).setPower(1))
-      ).build()
+    .addTerm(
+      Term.newBuilder()
+        .setCoefficient(createCoefficientValueOfOne())
+        .addVariable(Variable.newBuilder().setName(variableName).setPower(1))
+    ).build()
 }
 
 private fun createPolynomialFromConstant(constant: Real): Polynomial {
   return Polynomial.newBuilder()
-      .addTerm(Term.newBuilder().setCoefficient(constant))
-      .build()
+    .addTerm(Term.newBuilder().setCoefficient(constant))
+    .build()
 }
 
 private fun createCoefficientValueOf(value: Int): Real {
   return Real.newBuilder()
-      .setRational(Fraction.newBuilder().setWholeNumber(value).setDenominator(1))
-      .build()
+    .setRational(Fraction.newBuilder().setWholeNumber(value).setDenominator(1))
+    .build()
 }
 
 private fun createCoefficientValueOfOne(): Real = createCoefficientValueOf(value = 1)
 
 private sealed class ExpressionTreeNode {
   data class ExpressionNode(
-      val mathExpression: MathExpression,
-      val children: MutableList<ExpressionTreeNode>
-  ): ExpressionTreeNode()
+    val mathExpression: MathExpression,
+    val children: MutableList<ExpressionTreeNode>
+  ) : ExpressionTreeNode()
 
-  data class PolynomialNode(val polynomial: Polynomial): ExpressionTreeNode()
+  data class PolynomialNode(val polynomial: Polynomial) : ExpressionTreeNode()
 
-  data class ConstantNode(val constant: Real): ExpressionTreeNode()
+  data class ConstantNode(val constant: Real) : ExpressionTreeNode()
 }
 
 // TODO: add a faster isReducibleToConstant recursive function since this is used a lot.
 
-//private fun MathExpression.reduceToConstant(): MathExpression? {
+// private fun MathExpression.reduceToConstant(): MathExpression? {
 //  return when (expressionTypeCase) {
 //    CONSTANT -> this
 //    VARIABLE -> null
@@ -383,16 +385,16 @@ private sealed class ExpressionTreeNode {
 //    BINARY_OPERATION -> binaryOperation.reduceToConstant()
 //    else -> null
 //  }
-//}
+// }
 
-//private fun MathUnaryOperation.reduceToConstant(): MathExpression? {
+// private fun MathUnaryOperation.reduceToConstant(): MathExpression? {
 //  return when (operator) {
 //    MathUnaryOperation.Operator.NEGATE -> operand.reduceToConstant()?.transformConstant { -it }
 //    else -> null
 //  }
-//}
+// }
 
-//private fun MathBinaryOperation.reduceToConstant(): MathExpression? {
+// private fun MathBinaryOperation.reduceToConstant(): MathExpression? {
 //  val leftConstant = leftOperand.reduceToConstant()?.constant ?: return null
 //  val rightConstant = rightOperand.reduceToConstant()?.constant ?: return null
 //  return when (operator) {
@@ -403,10 +405,10 @@ private sealed class ExpressionTreeNode {
 //    MathBinaryOperation.Operator.EXPONENTIATE -> fromConstant(leftConstant.pow(rightConstant))
 //    else -> null
 //  }
-//}
+// }
 
 private fun MathExpression.transformConstant(
-    transform: (Real.Builder) -> Real.Builder
+  transform: (Real.Builder) -> Real.Builder
 ): MathExpression {
   return toBuilder().setConstant(transform(constant.toBuilder())).build()
 }
@@ -430,12 +432,13 @@ private fun Real.recompute(transform: (Real.Builder) -> Real.Builder): Real {
 }
 
 private fun combine(
-    lhs: Real,
-    rhs: Real,
-    leftRationalRightRationalOp: (Fraction, Fraction) -> Fraction,
-    leftRationalRightIrrationalOp: (Fraction, Double) -> Double,
-    leftIrrationalRightRationalOp: (Double, Fraction) -> Double,
-    leftIrrationalRightIrrationalOp: (Double, Double) -> Double): Real {
+  lhs: Real,
+  rhs: Real,
+  leftRationalRightRationalOp: (Fraction, Fraction) -> Fraction,
+  leftRationalRightIrrationalOp: (Fraction, Double) -> Double,
+  leftIrrationalRightRationalOp: (Double, Fraction) -> Double,
+  leftIrrationalRightIrrationalOp: (Double, Double) -> Double
+): Real {
   return when (lhs.realTypeCase) {
     Real.RealTypeCase.RATIONAL -> {
       // Left-hand side is Fraction.

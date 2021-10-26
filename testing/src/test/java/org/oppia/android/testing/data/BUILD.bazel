@@ -16,7 +16,7 @@ oppia_android_test(
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_controller",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
-        "//model:languages_java_proto_lite",
+        "//model/src/main/proto:languages_java_proto_lite",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

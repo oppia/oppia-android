@@ -77,9 +77,10 @@ class MathExpressionParser {
               val topPrecedence = top.parsedOperator.precedence
               if (topPrecedence < precedence) break
               if (isUnaryOperator) break // Unary operators do not pop operators.
-              if (topPrecedence == precedence
-                  && parsedOperator is ParsedOperator.BinaryOperator
-                  && parsedOperator.associativity != ParsedOperator.Associativity.LEFT) break
+              if (topPrecedence == precedence &&
+                parsedOperator is ParsedOperator.BinaryOperator &&
+                parsedOperator.associativity != ParsedOperator.Associativity.LEFT
+              ) break
               operatorStack.pop()
               outputQueue += top
             }
@@ -96,11 +97,12 @@ class MathExpressionParser {
               operatorStack.pop()
               outputQueue += top
             }
-            if (operatorStack.isEmpty()
-                || operatorStack.peek() !is ParsedToken.Groupable.OpenParenthesis) {
+            if (operatorStack.isEmpty() ||
+              operatorStack.peek() !is ParsedToken.Groupable.OpenParenthesis
+            ) {
               return ParseResult.Failure(
-                  "Encountered unexpected close parenthesis at index ${token.column} in " +
-                      token.source
+                "Encountered unexpected close parenthesis at index ${token.column} in " +
+                  token.source
               )
             }
             // Discard the open parenthesis since it's be finished.
@@ -117,7 +119,7 @@ class MathExpressionParser {
           !is ParsedToken.Groupable.Computable -> {
             val openParenthesis = top as ParsedToken.Groupable.OpenParenthesis
             return ParseResult.Failure(
-                "Encountered unexpected open parenthesis at index ${openParenthesis.token.column}"
+              "Encountered unexpected open parenthesis at index ${openParenthesis.token.column}"
             )
           }
           else -> {
@@ -150,7 +152,7 @@ class MathExpressionParser {
               val rightOperand = operandStack.pop()
               val leftOperand = operandStack.pop()
               operandStack.push(
-                  parsedToken.parsedOperator.toMathExpression(leftOperand, rightOperand)
+                parsedToken.parsedOperator.toMathExpression(leftOperand, rightOperand)
               )
             }
           }
@@ -169,10 +171,11 @@ class MathExpressionParser {
      * for implied multiplication scenarios.
      */
     private fun tokenize(
-        literalExpression: String, allowedVariables: List<String>
+      literalExpression: String,
+      allowedVariables: List<String>
     ): Iterable<MathTokenizer.Token> {
       return MathTokenizer.tokenize(
-          rawLiteral = literalExpression, allowedIdentifiers = allowedVariables
+        rawLiteral = literalExpression, allowedIdentifiers = allowedVariables
       ).adaptTokenStreamForImpliedMultiplication()
     }
 
@@ -183,13 +186,13 @@ class MathExpressionParser {
      * this is implemented & the cases supported.
      */
     private fun Iterable<MathTokenizer.Token>.adaptTokenStreamForImpliedMultiplication():
-        Iterable<MathTokenizer.Token> {
-      val baseIterable = this
-      return object : Iterable<MathTokenizer.Token> {
-        override fun iterator(): Iterator<MathTokenizer.Token> =
+      Iterable<MathTokenizer.Token> {
+        val baseIterable = this
+        return object : Iterable<MathTokenizer.Token> {
+          override fun iterator(): Iterator<MathTokenizer.Token> =
             ImpliedMultiplicationIteratorAdapter(baseIterable.iterator())
+        }
       }
-    }
 
     /**
      * Returns whether this token, as a previous token (potentially null for the first token of the
@@ -217,15 +220,15 @@ class MathExpressionParser {
          * Returns a new [ParsedToken] for the specified token (& potentially considering the
          * previous token), or null if the token corresponds to an operator that isn't recognized.
          */
-        fun parseToken(token: MathTokenizer.Token, lastToken: MathTokenizer.Token?) : ParsedToken? {
+        fun parseToken(token: MathTokenizer.Token, lastToken: MathTokenizer.Token?): ParsedToken? {
           return when (token) {
             is WholeNumber -> Groupable.Computable.Operand.WholeNumber(token.value)
             is DecimalNumber -> Groupable.Computable.Operand.DecimalNumber(token.value)
             is Identifier -> Groupable.Computable.Operand.Identifier(token.name)
             is Operator ->
               Groupable.Computable.Operator(
-                  ParsedOperator.parseOperator(token, lastToken)
-                      ?: return FailedToken.InvalidOperator(token.operator)
+                ParsedOperator.parseOperator(token, lastToken)
+                  ?: return FailedToken.InvalidOperator(token.operator)
               )
             is OpenParenthesis -> Groupable.OpenParenthesis(token)
             is MathTokenizer.Token.CloseParenthesis -> CloseParenthesis
@@ -242,7 +245,7 @@ class MathExpressionParser {
        *
        * This class exists to simplify error-handling in the shunting-yard algorithm.
        */
-      sealed class Groupable: ParsedToken() {
+      sealed class Groupable : ParsedToken() {
         /**
          * Corresponds to tokens that are computable (that is, can be converted to
          * [MathExpression]s).
@@ -256,20 +259,20 @@ class MathExpressionParser {
             /** An operand that is a whole number (e.g. '2'). */
             data class WholeNumber(private val value: Int) : Operand() {
               override fun toMathExpression(): MathExpression =
-                  MathExpression.newBuilder()
-                      .setConstant(
-                          Real.newBuilder().setRational(
-                              Fraction.newBuilder().setWholeNumber(value).setDenominator(1)
-                          )
-                      ).build()
+                MathExpression.newBuilder()
+                  .setConstant(
+                    Real.newBuilder().setRational(
+                      Fraction.newBuilder().setWholeNumber(value).setDenominator(1)
+                    )
+                  ).build()
             }
 
             /** An operand that's a decimal (e.g. '3.14'). */
             data class DecimalNumber(private val value: Double) : Operand() {
               override fun toMathExpression(): MathExpression =
-                  MathExpression.newBuilder()
-                      .setConstant(Real.newBuilder().setIrrational(value))
-                      .build()
+                MathExpression.newBuilder()
+                  .setConstant(Real.newBuilder().setIrrational(value))
+                  .build()
             }
 
             /**
@@ -278,7 +281,7 @@ class MathExpressionParser {
              */
             data class Identifier(private val name: String) : Operand() {
               override fun toMathExpression(): MathExpression =
-                  MathExpression.newBuilder().setVariable(name).build()
+                MathExpression.newBuilder().setVariable(name).build()
             }
           }
 
@@ -294,10 +297,10 @@ class MathExpressionParser {
       }
 
       /** Corresponds to a close parenthesis token which ends a grouped expression. */
-      object CloseParenthesis: ParsedToken()
+      object CloseParenthesis : ParsedToken()
 
       /** Corresponds to a token that represents a failure during tokenization or parsing. */
-      sealed class FailedToken: ParsedToken() {
+      sealed class FailedToken : ParsedToken() {
         /**
          * Returns the reason the failure token was created. This is not meant to be shown to end
          * users, only developers.
@@ -308,7 +311,7 @@ class MathExpressionParser {
          * Indicates an invalid operator was encountered. This typically means the tokenizer
          * supports operators that the parser does not.
          */
-        data class InvalidOperator(val operator: Char): FailedToken() {
+        data class InvalidOperator(val operator: Char) : FailedToken() {
           override fun getFailureReason(): String = "Encountered unexpected operator: $operator"
         }
 
@@ -316,14 +319,14 @@ class MathExpressionParser {
          * Indicates an identifier was encountered that doesn't correspond to any of the allowed
          * variables passed to the parser during parsing time.
          */
-        data class InvalidIdentifier(val name: String): FailedToken() {
+        data class InvalidIdentifier(val name: String) : FailedToken() {
           override fun getFailureReason(): String = "Encountered invalid identifier: $name"
         }
 
         /** Indicates an invalid token was encountered during tokenization. */
-        data class InvalidToken(private val token: MathTokenizer.Token): FailedToken() {
+        data class InvalidToken(private val token: MathTokenizer.Token) : FailedToken() {
           override fun getFailureReason(): String =
-              "Encountered unexpected symbol at index ${token.column} in ${token.source}"
+            "Encountered unexpected symbol at index ${token.column} in ${token.source}"
         }
       }
     }
@@ -360,78 +363,78 @@ class MathExpressionParser {
 
       /** Corresponds to a binary operation (e.g. 'x + y'). */
       abstract class BinaryOperator(
-          precedence: Int,
-          val associativity: Associativity,
-          private val protoOperator: MathBinaryOperation.Operator
-      ): ParsedOperator(precedence) {
+        precedence: Int,
+        val associativity: Associativity,
+        private val protoOperator: MathBinaryOperation.Operator
+      ) : ParsedOperator(precedence) {
         /** Returns a [MathExpression] representation of this parsed operator. */
         fun toMathExpression(
-            leftOperand: MathExpression,
-            rightOperand: MathExpression
+          leftOperand: MathExpression,
+          rightOperand: MathExpression
         ): MathExpression =
-            MathExpression.newBuilder()
-                .setBinaryOperation(
-                    MathBinaryOperation.newBuilder()
-                        .setOperator(protoOperator)
-                        .setLeftOperand(leftOperand)
-                        .setRightOperand(rightOperand)
-                ).build()
+          MathExpression.newBuilder()
+            .setBinaryOperation(
+              MathBinaryOperation.newBuilder()
+                .setOperator(protoOperator)
+                .setLeftOperand(leftOperand)
+                .setRightOperand(rightOperand)
+            ).build()
       }
 
       /** Corresponds to a unary operation (e.g. '-x'). */
       abstract class UnaryOperator(
-          precedence: Int,
-          private val protoOperator: MathUnaryOperation.Operator
-      ): ParsedOperator(precedence) {
+        precedence: Int,
+        private val protoOperator: MathUnaryOperation.Operator
+      ) : ParsedOperator(precedence) {
         /** Returns a [MathExpression] representation of this parsed operator. */
         fun toMathExpression(operand: MathExpression): MathExpression =
           MathExpression.newBuilder()
-              .setUnaryOperation(
-                  MathUnaryOperation.newBuilder()
-                      .setOperator(protoOperator)
-                      .setOperand(operand)
-              ).build()
+            .setUnaryOperation(
+              MathUnaryOperation.newBuilder()
+                .setOperator(protoOperator)
+                .setOperand(operand)
+            ).build()
       }
 
       /** Corresponds to the addition operation, e.g.: 1 + 2. */
-      object Add: BinaryOperator(
-          precedence = 1,
-          associativity = Associativity.LEFT,
-          protoOperator = MathBinaryOperation.Operator.ADD
+      object Add : BinaryOperator(
+        precedence = 1,
+        associativity = Associativity.LEFT,
+        protoOperator = MathBinaryOperation.Operator.ADD
       )
 
       /** Corresponds to the subtraction operation, e.g.: 1 - 2. */
-      object Subtract: BinaryOperator(
-          precedence = Add.precedence,
-          associativity = Associativity.LEFT,
-          protoOperator = MathBinaryOperation.Operator.SUBTRACT
+      object Subtract : BinaryOperator(
+        precedence = Add.precedence,
+        associativity = Associativity.LEFT,
+        protoOperator = MathBinaryOperation.Operator.SUBTRACT
       )
 
       /** Corresponds to the multiplication operation, e.g.: 1 * 2. */
-      object Multiply: BinaryOperator(
-          precedence = Add.precedence + 1,
-          associativity = Associativity.LEFT,
-          protoOperator = MathBinaryOperation.Operator.MULTIPLY
+      object Multiply : BinaryOperator(
+        precedence = Add.precedence + 1,
+        associativity = Associativity.LEFT,
+        protoOperator = MathBinaryOperation.Operator.MULTIPLY
       )
 
       /** Corresponds to the division operation, e.g.: 1 / 2. */
-      object Divide: BinaryOperator(
-          precedence = Multiply.precedence,
-          associativity = Associativity.LEFT,
-          protoOperator = MathBinaryOperation.Operator.DIVIDE
+      object Divide : BinaryOperator(
+        precedence = Multiply.precedence,
+        associativity = Associativity.LEFT,
+        protoOperator = MathBinaryOperation.Operator.DIVIDE
       )
 
       /** Corresponds to unary negation, e.g.: -1. */
-      object Negate: UnaryOperator(
-          precedence = Multiply.precedence + 1,
-          protoOperator = MathUnaryOperation.Operator.NEGATE
+      object Negate : UnaryOperator(
+        precedence = Multiply.precedence + 1,
+        protoOperator = MathUnaryOperation.Operator.NEGATE
       )
 
       /** Corresponds to the exponentiation operation, e.g.: 1 ^ 2. */
-      object Exponentiate: BinaryOperator(
-          precedence = Negate.precedence + 1,
-          associativity = Associativity.RIGHT,
-          protoOperator = MathBinaryOperation.Operator.EXPONENTIATE
+      object Exponentiate : BinaryOperator(
+        precedence = Negate.precedence + 1,
+        associativity = Associativity.RIGHT,
+        protoOperator = MathBinaryOperation.Operator.EXPONENTIATE
       )
     }
 
@@ -440,8 +443,8 @@ class MathExpressionParser {
      * cases when there's implied multiplication (e.g. 2xy should be interpreted as 2*x*y).
      */
     private class ImpliedMultiplicationIteratorAdapter(
-        private val baseIterator: Iterator<MathTokenizer.Token>
-    ): Iterator<MathTokenizer.Token> {
+      private val baseIterator: Iterator<MathTokenizer.Token>
+    ) : Iterator<MathTokenizer.Token> {
       private var lastToken: MathTokenizer.Token? = null
       private var nextToken: MathTokenizer.Token? = null
 
@@ -453,7 +456,7 @@ class MathExpressionParser {
 
       override fun next(): MathTokenizer.Token {
         val (currentToken, newNextToken) =
-            computeCurrentTokenState(lastToken, nextToken ?: baseIterator.next())
+          computeCurrentTokenState(lastToken, nextToken ?: baseIterator.next())
         nextToken = newNextToken
         lastToken = currentToken
         return currentToken
@@ -469,12 +472,12 @@ class MathExpressionParser {
        * @param nextToken the next token that should be provided to the user
        */
       private fun computeCurrentTokenState(
-          lastToken: MathTokenizer.Token?,
-          nextToken: MathTokenizer.Token
+        lastToken: MathTokenizer.Token?,
+        nextToken: MathTokenizer.Token
       ): NewTokenState {
         return when {
           lastToken.impliesMultiplicationWith(nextToken) -> NewTokenState(
-              currentToken = synthesizeMultiplicationOperatorToken(), nextToken = nextToken
+            currentToken = synthesizeMultiplicationOperatorToken(), nextToken = nextToken
           )
           else -> NewTokenState(currentToken = nextToken, nextToken = null)
         }
@@ -514,7 +517,7 @@ class MathExpressionParser {
        * where multiplication should be implied. See the implementation for specifics.
        */
       private fun MathTokenizer.Token?.impliesMultiplicationWith(
-          nextToken: MathTokenizer.Token
+        nextToken: MathTokenizer.Token
       ): Boolean {
         // Two consecutive tokens imply multiplication iff they are both variables, or one is a
         // variable and the other is a constant. Or, a variable/constant is followed by an open
@@ -537,7 +540,8 @@ class MathExpressionParser {
        * if any, to cache for future calls to the iterator.
        */
       private data class NewTokenState(
-          val currentToken: MathTokenizer.Token, val nextToken: MathTokenizer.Token?
+        val currentToken: MathTokenizer.Token,
+        val nextToken: MathTokenizer.Token?
       )
     }
   }

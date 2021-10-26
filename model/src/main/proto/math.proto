@@ -26,7 +26,7 @@ message MathExpression {
 
 message MathBinaryOperation {
   enum Operator {
-    OPERATOR_UNKNOWN = 0;
+    OPERATOR_UNSPECIFIED = 0;
     // Represents adding two values, e.g.: 1 + x.
     ADD = 1;
     // Represents subtracting two values, e.g.: x - 2.
@@ -46,7 +46,7 @@ message MathBinaryOperation {
 
 message MathUnaryOperation {
   enum Operator {
-    OPERATOR_UNKNOWN = 0;
+    OPERATOR_UNSPECIFIED = 0;
     // Represents negating a value, e.g.: -y.
     NEGATE = 1;
   }

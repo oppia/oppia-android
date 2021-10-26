@@ -1,8 +1,8 @@
 package org.oppia.android.util.math
 
 import java.lang.IllegalStateException
-import java.util.Locale
 import java.util.ArrayDeque
+import java.util.Locale
 
 private const val DECIMAL_POINT = '.'
 private const val LEFT_PARENTHESIS = '('
@@ -15,8 +15,8 @@ private const val FORMAL_DIVISION_SIGN = '÷'
 // Only consider standard horizontal/vertical whitespace.
 private val VALID_WHITESPACE = listOf(' ', '\t', '\n', '\r')
 private val VALID_OPERATORS = listOf(
-    CONVENTIONAL_MULTIPLICATION_SIGN, '-', '+', CONVENTIONAL_DIVISION_SIGN, '^',
-    FORMAL_MULTIPLICATION_SIGN, FORMAL_DIVISION_SIGN
+  CONVENTIONAL_MULTIPLICATION_SIGN, '-', '+', CONVENTIONAL_DIVISION_SIGN, '^',
+  FORMAL_MULTIPLICATION_SIGN, FORMAL_DIVISION_SIGN
 )
 private val VALID_DIGITS = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 
@@ -82,18 +82,18 @@ class MathTokenizer {
 
     /** Corresponds to an invalid identifier that was encountered. */
     data class InvalidIdentifier(
-        override val source: String,
-        override val column: Int,
-        val name: String
+      override val source: String,
+      override val column: Int,
+      val name: String
     ) : Token() {
       override fun toReadableString(): String = "Invalid identifier: $name"
     }
 
     /** Corresponds to an invalid token that was encountered. */
     data class InvalidToken(
-        override val source: String,
-        override val column: Int,
-        val token: String
+      override val source: String,
+      override val column: Int,
+      val token: String
     ) : Token() {
       override fun toReadableString(): String = "Invalid token: $token"
     }
@@ -124,8 +124,8 @@ class MathTokenizer {
      *     can be empty (in which case all encountered identifiers will be presumed invalid).
      */
     fun tokenize(
-        rawLiteral: String,
-        allowedIdentifiers: List<String>
+      rawLiteral: String,
+      allowedIdentifiers: List<String>
     ): Iterable<Token> {
       // Verify that the provided identifiers are all valid.
       for (identifier in allowedIdentifiers) {
@@ -143,7 +143,7 @@ class MathTokenizer {
       }.toSet()
       return object : Iterable<Token> {
         override fun iterator(): Iterator<Token> =
-            Tokenizer(lowercaseLiteral, lowercaseIdentifiers.toList())
+          Tokenizer(lowercaseLiteral, lowercaseIdentifiers.toList())
       }
     }
 
@@ -154,8 +154,8 @@ class MathTokenizer {
      * Note that this class is only safe to access on a single thread.
      */
     private class Tokenizer(
-        private val source: String,
-        private val allowedIdentifiers: List<String>
+      private val source: String,
+      private val allowedIdentifiers: List<String>
     ) : Iterator<Token> {
       private val singleLetterIdentifiers: List<Char> by lazy {
         allowedIdentifiers.filter { it.length == 1 }.map(String::first)
@@ -335,7 +335,8 @@ class MathTokenizer {
           1 -> listOf(parseSingleLetterIdentifier())
           // Complex case: either this is one multi-letter identifier, multiple single-letter
           // identifiers with implied multiplication, or an invalid multi-letter identifier.
-          else -> parseValidMultiLetterIdentifier(nextNonIdentifierIndex)
+          else ->
+            parseValidMultiLetterIdentifier(nextNonIdentifierIndex)
               ?: parseMultipleSingleLetterIdentifiers(nextNonIdentifierIndex)
               ?: listOf(parseInvalidMultiLetterIdentifier(nextNonIdentifierIndex))
         }
@@ -350,7 +351,7 @@ class MathTokenizer {
         val potentialIdentifier = peekCharacter()
         skipToken()
         return maybeParseSingleLetterIdentifier(parsedIndex)
-            ?: Token.InvalidIdentifier(source, parsedIndex, potentialIdentifier.toString())
+          ?: Token.InvalidIdentifier(source, parsedIndex, potentialIdentifier.toString())
       }
 
       /**
@@ -376,8 +377,8 @@ class MathTokenizer {
       private fun parseValidMultiLetterIdentifier(nextNonIdentifierIndex: Int): List<Token>? {
         val parsedIndex = currentIndex
         val potentialIdentifier = extractSubBufferString(
-            startIndex = currentIndex,
-            endIndex = nextNonIdentifierIndex
+          startIndex = currentIndex,
+          endIndex = nextNonIdentifierIndex
         )
         return if (potentialIdentifier in multiLetterIdentifiers) {
           advanceIndexTo(nextNonIdentifierIndex)
@@ -409,9 +410,9 @@ class MathTokenizer {
         val parsedIndex = currentIndex
         advanceIndexTo(nextNonIdentifierIndex)
         return Token.InvalidIdentifier(
-            source,
-            parsedIndex,
-            extractSubBufferString(startIndex = parsedIndex, endIndex = nextNonIdentifierIndex)
+          source,
+          parsedIndex,
+          extractSubBufferString(startIndex = parsedIndex, endIndex = nextNonIdentifierIndex)
         )
       }
 

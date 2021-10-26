@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.util.math.MathTokenizer.Token.CloseParenthesis
 import org.oppia.android.util.math.MathTokenizer.Token.DecimalNumber
 import org.oppia.android.util.math.MathTokenizer.Token.Identifier
@@ -13,9 +14,6 @@ import org.oppia.android.util.math.MathTokenizer.Token.OpenParenthesis
 import org.oppia.android.util.math.MathTokenizer.Token.Operator
 import org.oppia.android.util.math.MathTokenizer.Token.WholeNumber
 import org.robolectric.annotation.LooperMode
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [MathTokenizer]. */
 @RunWith(AndroidJUnit4::class)
@@ -493,7 +491,7 @@ class MathTokenizerTest {
   @Test
   fun testTokenize_complexExpressionWithAllTokenTypes_tokenizesEverythingInOrder() {
     val tokens =
-        MathTokenizer.tokenize("133 + 3.14 * x / (11 - 15) ^ 2 ^ 3", ALLOWED_XYZ_VARIABLES).toList()
+      MathTokenizer.tokenize("133 + 3.14 * x / (11 - 15) ^ 2 ^ 3", ALLOWED_XYZ_VARIABLES).toList()
 
     assertThat(tokens).hasSize(15)
 
@@ -548,19 +546,5 @@ class MathTokenizerTest {
     assertThat(tokens).hasSize(1)
     assertThat(tokens.first()).isInstanceOf(InvalidToken::class.java)
     assertThat((tokens.first() as InvalidToken).token).isEqualTo("∫")
-  }
-
-  // TODO(#89): Move to a common test library.
-  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-    try {
-      operation()
-      fail("Expected to encounter exception of $type")
-    } catch (t: Throwable) {
-      if (type.isInstance(t)) {
-        return type.cast(t)
-      }
-      // Unexpected exception; throw it.
-      throw t
-    }
   }
 }

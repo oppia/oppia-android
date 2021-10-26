@@ -22,13 +22,11 @@ import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.Real
 import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
 import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.util.math.MathExpressionParser.Companion.ParseResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.ParseResult.Failure
 import org.oppia.android.util.math.MathExpressionParser.Companion.ParseResult.Success
 import org.robolectric.annotation.LooperMode
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.test.fail
 
 /** Tests for [MathExpressionParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -126,7 +124,7 @@ class MathExpressionParserTest {
   @Test
   fun testParse_longVariable_returnsExpressionWithVariable() {
     val result =
-        MathExpressionParser.parseExpression("1+lambda", allowedVariables = listOf("lambda"))
+      MathExpressionParser.parseExpression("1+lambda", allowedVariables = listOf("lambda"))
 
     val rootExpression = result.getExpectedSuccessfulExpression()
     val binOp = rootExpression.getExpectedBinaryOperation()
@@ -137,7 +135,7 @@ class MathExpressionParserTest {
   @Test
   fun testParse_mixedLongAndShortVariable_returnsExpressionWithBothVariables() {
     val result =
-        MathExpressionParser.parseExpression("lambda+y", allowedVariables = listOf("y", "lambda"))
+      MathExpressionParser.parseExpression("lambda+y", allowedVariables = listOf("y", "lambda"))
 
     val rootExpression = result.getExpectedSuccessfulExpression()
     val binOp = rootExpression.getExpectedBinaryOperation()
@@ -571,7 +569,7 @@ class MathExpressionParserTest {
     val rightMulNegatedConstant = rightMulNegateOp.operand.getExpectedRationalConstant()
     val leftDivConstant = divOp.leftOperand.getExpectedRationalConstant()
     val rightDivNegateOp = divOp.rightOperand.getExpectedUnaryOperationWithOperator(NEGATE)
-    val rightDivNegatedConstant =  rightDivNegateOp.operand.getExpectedRationalConstant()
+    val rightDivNegatedConstant = rightDivNegateOp.operand.getExpectedRationalConstant()
     assertThat(rightMulNegatedConstant).isEqualTo(createWholeNumberFraction(2))
     assertThat(leftDivConstant).isEqualTo(createWholeNumberFraction(10))
     assertThat(rightDivNegatedConstant).isEqualTo(createWholeNumberFraction(1))
@@ -600,8 +598,8 @@ class MathExpressionParserTest {
   @Test
   fun testParse_complexExpression_followsPemdasWithAssociativity() {
     val result = MathExpressionParser.parseExpression(
-        "1+(13+12)/15+3*2-7/4^2^3*x+-(2*(y-3.14))",
-        allowedVariables = listOf("x", "y")
+      "1+(13+12)/15+3*2-7/4^2^3*x+-(2*(y-3.14))",
+      allowedVariables = listOf("x", "y")
     )
 
     // Look at past tests for associativity & precedence rules that are repeated here. Expect the
@@ -699,7 +697,7 @@ class MathExpressionParserTest {
   @Test
   fun testParse_constantWithLongVariable_withoutOperator_impliesMultiplication() {
     val result = MathExpressionParser.parseExpression(
-        "2lambda", allowedVariables = listOf("lambda")
+      "2lambda", allowedVariables = listOf("lambda")
     )
 
     // Having a constant and a variable right next to each other implies multiplication.
@@ -714,7 +712,7 @@ class MathExpressionParserTest {
   @Test
   fun testParse_constantWithMultipleVariables_ambiguous_withoutOperator_impliesLongVarMult() {
     val result = MathExpressionParser.parseExpression(
-        "2xyz", allowedVariables = listOf("x", "y", "z", "xyz")
+      "2xyz", allowedVariables = listOf("x", "y", "z", "xyz")
     )
 
     // The implied multiplication here is always on long variable since it's otherwise ambiguous.
@@ -729,7 +727,7 @@ class MathExpressionParserTest {
   @Test
   fun testParse_shortAndLongVariable_withoutOperator_failsToParse() {
     val result = MathExpressionParser.parseExpression(
-        "wxyz", allowedVariables = listOf("w", "xyz")
+      "wxyz", allowedVariables = listOf("w", "xyz")
     )
 
     // There can't be implied multiplication here since 'wxyz' looks like 1 variable. Note that if
@@ -778,7 +776,7 @@ class MathExpressionParserTest {
   @Test
   fun testParse_multipleShortVariables_withoutOperators_impliesMultipleMultiplications() {
     val result =
-        MathExpressionParser.parseExpression("xyz", allowedVariables = listOf("x", "y", "z"))
+      MathExpressionParser.parseExpression("xyz", allowedVariables = listOf("x", "y", "z"))
 
     // Having consecutive variables also implies multiplication. In this case, the expression uses
     // left associativity, so expect the following tree:
@@ -799,7 +797,7 @@ class MathExpressionParserTest {
   @Test
   fun testParse_shortVariables_withAmbiguousLongVariable_noOperators_impliesSingleVariable() {
     val result = MathExpressionParser.parseExpression(
-        "xyz", allowedVariables = listOf("x", "y", "z", "xyz")
+      "xyz", allowedVariables = listOf("x", "y", "z", "xyz")
     )
 
     // 'xyz' is ambiguous in this case, but a single variable should be preferred since it's an
@@ -812,7 +810,7 @@ class MathExpressionParserTest {
   @Test
   fun testParse_shortVariables_withAmbiguousLongVariable_withOperator_hasMultipleVariables() {
     val result = MathExpressionParser.parseExpression(
-        "x*yz", allowedVariables = listOf("x", "y", "z", "xyz")
+      "x*yz", allowedVariables = listOf("x", "y", "z", "xyz")
     )
 
     // Unlike the above test, the single operator is sufficient to disambiguate the the x, y, z vs.
@@ -1123,7 +1121,7 @@ class MathExpressionParserTest {
   }
 
   private fun MathExpression.getExpectedUnaryOperationWithOperator(
-      operator: MathUnaryOperation.Operator
+    operator: MathUnaryOperation.Operator
   ): MathUnaryOperation {
     val expectedOp = getExpectedType(MathExpression::getUnaryOperation, UNARY_OPERATION)
     assertThat(expectedOp.operator).isEqualTo(operator)
@@ -1152,19 +1150,5 @@ class MathExpressionParserTest {
 
   private fun createWholeNumberFraction(value: Int): Fraction {
     return Fraction.newBuilder().setWholeNumber(value).setDenominator(1).build()
-  }
-
-  // TODO(#89): Move to a common test library.
-  private fun <T : Throwable> assertThrows(type: KClass<T>, operation: () -> Unit): T {
-    try {
-      operation()
-      fail("Expected to encounter exception of $type")
-    } catch (t: Throwable) {
-      if (type.isInstance(t)) {
-        return type.cast(t)
-      }
-      // Unexpected exception; throw it.
-      throw t
-    }
   }
 }
