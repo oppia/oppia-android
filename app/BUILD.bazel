@@ -98,6 +98,8 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/help/LoadFaqListFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/LoadLicenseListFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/LoadLicenseTextViewerFragmentListener.kt",
+    "src/main/java/org/oppia/android/app/help/LoadPrivacyPolicyFragmentListener.kt",
+    "src/main/java/org/oppia/android/app/help/LoadTermsOfServiceFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/LoadThirdPartyDependencyListFragmentListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToFAQListListener.kt",
     "src/main/java/org/oppia/android/app/help/RouteToPrivacyPolicySingleListener.kt",
