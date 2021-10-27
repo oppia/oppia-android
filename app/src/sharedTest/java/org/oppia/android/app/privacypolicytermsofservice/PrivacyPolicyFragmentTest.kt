@@ -131,7 +131,7 @@ class PrivacyPolicyFragmentTest {
   }
 
   @Test
-  fun testPrivacyPolicySingleActivity_checkPrivacyPolicy_isDisplayed() {
+  fun testPrivacyPolicyFragment_checkPrivacyPolicy_isDisplayed() {
     launch<PrivacyPolicyActivity>(createPrivacyPolicyActivity()).use {
       onView(withId(R.id.privacy_policy_description_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
@@ -139,7 +139,7 @@ class PrivacyPolicyFragmentTest {
   }
 
   @Test
-  fun testPrivacyPolicySingleActivity_checkPrivacyPolicyWebLink_isDisplayed() {
+  fun testPrivacyPolicyFragment_checkPrivacyPolicyWebLink_isDisplayed() {
     launch<PrivacyPolicyActivity>(createPrivacyPolicyActivity()).use {
       onView(withId(R.id.privacy_policy_web_link_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
@@ -147,7 +147,7 @@ class PrivacyPolicyFragmentTest {
   }
 
   @Test
-  fun testPrivacyPolicySingleActivity_checkPrivacyPolicy_isCorrectlyParsed() {
+  fun testPrivacyPolicyFragment_checkPrivacyPolicy_isCorrectlyParsed() {
     val privacyPolicyTextView = activityTestRule.activity.findViewById(
       R.id.privacy_policy_description_text_view
     ) as TextView

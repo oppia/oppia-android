@@ -125,7 +125,7 @@ class PrivacyPolicyActivityTest {
   }
 
   @Test
-  fun testPrivacyPolicySingleActivity_hasCorrectActivityLabel() {
+  fun testPrivacyPolicyActivity_hasCorrectActivityLabel() {
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -172,7 +172,7 @@ class PrivacyPolicyActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(PrivacyPolicySingleActivityTest: PrivacyPolicyActivityTest)
+    fun inject(privacyPolicyActivityTest: PrivacyPolicyActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -182,8 +182,8 @@ class PrivacyPolicyActivityTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(privacyPolicySingleActivityTest: PrivacyPolicyActivityTest) {
-      component.inject(privacyPolicySingleActivityTest)
+    fun inject(privacyPolicyActivityTest: PrivacyPolicyActivityTest) {
+      component.inject(privacyPolicyActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

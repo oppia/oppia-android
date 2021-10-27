@@ -115,7 +115,7 @@ class TermsOfServiceActivityTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
-    val intent = createTermsOfServiceSingleActivity()
+    val intent = createTermsOfServiceActivity()
     launchedActivity = activityTestRule.launchActivity(intent)
   }
 
@@ -125,7 +125,7 @@ class TermsOfServiceActivityTest {
   }
 
   @Test
-  fun testTermsOfServiceSingleActivity_hasCorrectActivityLabel() {
+  fun testTermsOfServiceActivity_hasCorrectActivityLabel() {
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -137,7 +137,7 @@ class TermsOfServiceActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createTermsOfServiceSingleActivity(): Intent {
+  private fun createTermsOfServiceActivity(): Intent {
     return TermsOfServiceActivity.createTermsOfServiceActivityIntent(
       ApplicationProvider.getApplicationContext()
     )
@@ -172,7 +172,7 @@ class TermsOfServiceActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(TermsOfServiceSingleActivityTest: TermsOfServiceActivityTest)
+    fun inject(termsOfServiceActivityTest: TermsOfServiceActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -182,8 +182,8 @@ class TermsOfServiceActivityTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(TermsOfServiceSingleActivityTest: TermsOfServiceActivityTest) {
-      component.inject(TermsOfServiceSingleActivityTest)
+    fun inject(termsOfServiceActivityTest: TermsOfServiceActivityTest) {
+      component.inject(termsOfServiceActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

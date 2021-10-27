@@ -52,7 +52,7 @@ android {
   }
   testOptions {
     // https://developer.android.com/training/testing/junit-runner#ato-gradle
-    execution 'ANDROIDX_TEST_ORCHESTRATOR'
+//    execution 'ANDROIDX_TEST_ORCHESTRATOR'
     unitTests {
       includeAndroidResources = true
       all {

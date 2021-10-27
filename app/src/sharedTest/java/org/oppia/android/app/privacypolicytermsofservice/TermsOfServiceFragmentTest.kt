@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -123,7 +124,7 @@ class TermsOfServiceFragmentTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
-    val intent = createTermsOfServiceSingleActivity()
+    val intent = createTermsOfServiceActivity()
     launchedActivity = activityTestRule.launchActivity(intent)
   }
 
@@ -133,30 +134,23 @@ class TermsOfServiceFragmentTest {
   }
 
   @Test
-  fun testTermsOfServiceSingleActivity_hasCorrectActivityLabel() {
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.privacy_policy_activity_title))
-  }
-
-  @Test
-  fun testTermsOfServiceSingleActivity_checkTermsOfService_isDisplayed() {
-    launch<TermsOfServiceActivity>(createTermsOfServiceSingleActivity()).use {
-      onView(withId(R.id.terms_of_service_description_text_view)).check(matches(isDisplayed()))
+  fun testTermsOfServiceFragment_checkTermsOfService_isDisplayed() {
+    launch<TermsOfServiceActivity>(createTermsOfServiceActivity()).use {
+      onView(withId(R.id.terms_of_service_description_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testTermsOfServiceSingleActivity_checkTermsOfServiceWebLink_isDisplayed() {
-    launch<TermsOfServiceActivity>(createTermsOfServiceSingleActivity()).use {
-      onView(withId(R.id.terms_of_service_web_link_text_view)).check(matches(isDisplayed()))
+  fun testTermsOfServiceFragment_checkTermsOfServiceWebLink_isDisplayed() {
+    launch<TermsOfServiceActivity>(createTermsOfServiceActivity()).use {
+      onView(withId(R.id.terms_of_service_web_link_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testTermsOfServiceSingleActivity_checkTermsOfService_isCorrectlyParsed() {
+  fun testTermsOfServiceFragment_checkTermsOfService_isCorrectlyParsed() {
     val termsOfServiceTextView = activityTestRule.activity.findViewById(
       R.id.terms_of_service_description_text_view
     ) as TextView
@@ -177,7 +171,7 @@ class TermsOfServiceFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createTermsOfServiceSingleActivity(): Intent {
+  private fun createTermsOfServiceActivity(): Intent {
     return TermsOfServiceActivity.createTermsOfServiceActivityIntent(
       ApplicationProvider.getApplicationContext()
     )
