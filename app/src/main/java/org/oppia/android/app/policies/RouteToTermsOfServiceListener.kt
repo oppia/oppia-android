@@ -1,4 +1,4 @@
-package org.oppia.android.app.help
+package org.oppia.android.app.policies
 
 /** Listener for when a selection should result to [TermsOfServiceActivity]. */
 interface RouteToTermsOfServiceListener {

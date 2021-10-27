@@ -17,6 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.policies.RouteToPrivacyPolicyListener
+import org.oppia.android.app.policies.RouteToTermsOfServiceListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider

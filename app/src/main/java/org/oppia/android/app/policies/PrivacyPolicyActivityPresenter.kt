@@ -1,4 +1,4 @@
-package org.oppia.android.app.privacypolicytermsofservice
+package org.oppia.android.app.policies
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity

@@ -1,4 +1,4 @@
-package org.oppia.android.app.onboarding
+package org.oppia.android.app.policies
 
 /** Listener for when a selection should result to [PrivacyPolicyActivity]. */
 interface RouteToPrivacyPolicyListener {

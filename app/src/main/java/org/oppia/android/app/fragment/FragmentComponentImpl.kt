@@ -46,7 +46,7 @@ import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModu
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
-import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicyFragment
+import org.oppia.android.app.policies.PrivacyPolicyFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment

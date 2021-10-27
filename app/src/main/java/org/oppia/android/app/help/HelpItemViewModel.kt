@@ -2,6 +2,8 @@ package org.oppia.android.app.help
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
+import org.oppia.android.app.policies.RouteToPrivacyPolicyListener
+import org.oppia.android.app.policies.RouteToTermsOfServiceListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
@@ -44,7 +46,6 @@ class HelpItemViewModel(
           routeToPrivacyPolicyListener.onRouteToPrivacyPolicy()
         }
       }
-
       resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title) -> {
         if (isMultipane) {
           val loadTermsOfServiceFragmentFragmentListener = activity as

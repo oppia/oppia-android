@@ -1,4 +1,4 @@
-package org.oppia.android.app.privacypolicytermsofservice
+package org.oppia.android.app.policies
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,27 +8,27 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.TermsOfServiceFragmentBinding
+import org.oppia.android.databinding.PrivacyPolicyFragmentBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
-/** The presenter for [termsOfServiceFragment]. */
+/** The presenter for [PrivacyPolicyFragment]. */
 @FragmentScope
-class TermsOfServiceFragmentPresenter @Inject constructor(
+class PrivacyPolicyFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val htmlParserFactory: HtmlParser.Factory,
   private val resourceHandler: AppLanguageResourceHandler,
   @DefaultResourceBucketName private val resourceBucketName: String
 ) {
-  private lateinit var binding: TermsOfServiceFragmentBinding
-  private lateinit var termsOfServiceDescription: String
-  private lateinit var termsOfServiceWebLink: String
+  private lateinit var binding: PrivacyPolicyFragmentBinding
+  private lateinit var privacyPolicyDescription: String
+  private lateinit var privacyPolicyWebLink: String
 
-  /** Handles onCreate() method of the [TermsOfServiceFragment]. */
+  /** Handles onCreate() method of the [PrivacyPolicyFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
-    binding = TermsOfServiceFragmentBinding.inflate(
+    binding = PrivacyPolicyFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
@@ -40,30 +40,30 @@ class TermsOfServiceFragmentPresenter @Inject constructor(
 
   private fun setUpContentForTextViews() {
     // NOTE: Here entityType and entityId can be anything as it will actually not get used.
-    // They are needed only for cases where rich-text contains images from server and in termsOfService
+    // They are needed only for cases where rich-text contains images from server and in PrivacyPolicy
     // we do not have images.
-    termsOfServiceDescription = resourceHandler.getStringInLocale(R.string.terms_of_service_content)
+    privacyPolicyDescription = resourceHandler.getStringInLocale(R.string.privacy_policy_content)
 
-    binding.termsOfServiceDescriptionTextView.text = htmlParserFactory.create(
+    binding.privacyPolicyDescriptionTextView.text = htmlParserFactory.create(
       resourceBucketName,
-      entityType = "TermsOfService",
+      entityType = "PrivacyPolicy",
       entityId = "oppia",
       imageCenterAlign = false
     ).parseOppiaHtml(
-      termsOfServiceDescription,
-      binding.termsOfServiceDescriptionTextView
+      privacyPolicyDescription,
+      binding.privacyPolicyDescriptionTextView
     )
 
-    termsOfServiceWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
+    privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
 
-    binding.termsOfServiceWebLinkTextView.text = htmlParserFactory.create(
+    binding.privacyPolicyWebLinkTextView.text = htmlParserFactory.create(
       resourceBucketName,
-      entityType = "TermsOfService",
+      entityType = "PrivacyPolicy",
       entityId = "oppia",
       imageCenterAlign = false
     ).parseOppiaHtml(
-      termsOfServiceWebLink,
-      binding.termsOfServiceWebLinkTextView
+      privacyPolicyWebLink,
+      binding.privacyPolicyWebLinkTextView
     )
   }
 }

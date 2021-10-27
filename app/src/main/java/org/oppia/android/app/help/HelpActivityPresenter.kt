@@ -17,7 +17,7 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
-import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicyFragment
+import org.oppia.android.app.policies.PrivacyPolicyFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
@@ -314,7 +314,7 @@ class HelpActivityPresenter @Inject constructor(
     selectPrivacyPolicyFragment()
     val previousFragment = getMultipaneOptionsFragment()
     if (previousFragment != null) {
-      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commit()
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.multipane_options_container,
@@ -337,7 +337,7 @@ class HelpActivityPresenter @Inject constructor(
     selectTermsOfServiceFragment()
     val previousFragment = getMultipaneOptionsFragment()
     if (previousFragment != null) {
-      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commit()
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.multipane_options_container,

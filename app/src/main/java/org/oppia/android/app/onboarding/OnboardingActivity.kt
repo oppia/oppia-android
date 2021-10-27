@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicyActivity
-import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceActivity
+import org.oppia.android.app.policies.PrivacyPolicyActivity
+import org.oppia.android.app.policies.RouteToPrivacyPolicyListener
+import org.oppia.android.app.policies.RouteToTermsOfServiceListener
+import org.oppia.android.app.policies.TermsOfServiceActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import javax.inject.Inject
 

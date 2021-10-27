@@ -11,8 +11,10 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicyActivity
-import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceActivity
+import org.oppia.android.app.policies.PrivacyPolicyActivity
+import org.oppia.android.app.policies.RouteToPrivacyPolicyListener
+import org.oppia.android.app.policies.RouteToTermsOfServiceListener
+import org.oppia.android.app.policies.TermsOfServiceActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject

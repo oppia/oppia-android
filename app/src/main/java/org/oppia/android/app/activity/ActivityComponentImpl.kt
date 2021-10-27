@@ -37,8 +37,8 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.android.app.privacypolicytermsofservice.PrivacyPolicyActivity
-import org.oppia.android.app.privacypolicytermsofservice.TermsOfServiceActivity
+import org.oppia.android.app.policies.PrivacyPolicyActivity
+import org.oppia.android.app.policies.TermsOfServiceActivity
 import org.oppia.android.app.profile.AddProfileActivity
 import org.oppia.android.app.profile.AdminAuthActivity
 import org.oppia.android.app.profile.AdminPinActivity

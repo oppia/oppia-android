@@ -1,4 +1,4 @@
-package org.oppia.android.app.privacypolicytermsofservice
+package org.oppia.android.app.TermsOfServicetermsofservice
 
 import android.content.Context
 import android.os.Bundle
@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.policies.TermsOfServiceFragmentPresenter
 import javax.inject.Inject
 
-/** Fragment that contains Privacy Policy flow of the app. */
-class PrivacyPolicyFragment : InjectableFragment() {
+/** Fragment that contains Terms Of Service flow of the app. */
+class TermsOfServiceFragment : InjectableFragment() {
   @Inject
-  lateinit var privacyPolicyFragmentPresenter: PrivacyPolicyFragmentPresenter
+  lateinit var termsOfServiceFragmentPresenter: TermsOfServiceFragmentPresenter
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -24,6 +25,6 @@ class PrivacyPolicyFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return privacyPolicyFragmentPresenter.handleCreateView(inflater, container)
+    return termsOfServiceFragmentPresenter.handleCreateView(inflater, container)
   }
 }
