@@ -1928,7 +1928,7 @@ class StateFragmentLocalTest {
       val positiveButton =
         revealSolutionDialogFragment?.dialog
           ?.findViewById<View>(android.R.id.button1)
-      assertThat(checkNotNull(positiveButton).performClick()).isFalse()
+      assertThat(checkNotNull(positiveButton).performClick()).isTrue()
     }
   }
 
