@@ -1,5 +1,5 @@
 """
-Package for audio controlling
+Domain services & definitions corresponding to managing and playing audio tracks.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
