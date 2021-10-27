@@ -72,8 +72,8 @@
             android:text="@string/add_profile_required"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_name"
-            app:layout_constraintStart_toStartOf="@+id/add_profile_activity_user_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
           <com.google.android.material.textfield.TextInputLayout
