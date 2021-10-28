@@ -797,6 +797,7 @@ TEST_DEPS = [
     "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//domain",
+    "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
