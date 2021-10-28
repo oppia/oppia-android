@@ -97,6 +97,47 @@ def _bundle_module_zip_into_deployable_aab_impl(ctx):
         runfiles = ctx.runfiles(files = [output_file]),
     )
 
+def _package_metadata_into_deployable_aab_impl(ctx):
+    output_aab_file = ctx.outputs.output_aab_file
+    input_aab_file = ctx.attr.input_aab_file.files.to_list()[0]
+    proguard_map_file = ctx.attr.proguard_map_file.files.to_list()[0]
+
+    command = """
+    # Extract deployable AAB to working directory.
+    WORKING_DIR=$(mktemp -d)
+    echo $WORKING_DIR
+    cp {0} $WORKING_DIR/temp.aab || exit 255
+
+    # Change the permissions of the AAB copy so that it can be overwritten later.
+    chmod 755 $WORKING_DIR/temp.aab || exit 255
+
+    # Create directory needed for storing bundle metadata.
+    mkdir -p $WORKING_DIR/BUNDLE-METADATA/com.android.tools.build.obfuscation
+
+    # Copy over the Proguard map file.
+    cp {1} $WORKING_DIR/BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map || exit 255
+
+    $ Repackage the AAB file into the destination.
+    DEST_FILE_PATH="$(pwd)/{2}"
+    cd $WORKING_DIR
+    zip -Dur temp.aab BUNDLE-METADATA || exit 255
+    cp temp.aab $DEST_FILE_PATH || exit 255
+    """.format(input_aab_file.path, proguard_map_file.path, output_aab_file.path)
+
+    # Reference: https://docs.bazel.build/versions/main/skylark/lib/actions.html#run_shell.
+    ctx.actions.run_shell(
+        outputs = [output_aab_file],
+        inputs = ctx.files.input_aab_file + ctx.files.proguard_map_file,
+        tools = [],
+        command = command,
+        mnemonic = "PackageMetadataIntoDeployableAAB",
+        progress_message = "Generating deployable AAB",
+    )
+    return DefaultInfo(
+        files = depset([output_aab_file]),
+        runfiles = ctx.runfiles(files = [output_aab_file]),
+    )
+
 def _generate_apks_and_install_impl(ctx):
     input_file = ctx.attr.input_file.files.to_list()[0]
     debug_keystore_file = ctx.attr.debug_keystore.files.to_list()[0]
@@ -157,7 +198,7 @@ def _generate_apks_and_install_impl(ctx):
 _convert_apk_to_module_aab = rule(
     attrs = {
         "input_file": attr.label(
-            allow_files = True,
+            allow_single_file = True,
             mandatory = True,
         ),
         "output_file": attr.output(
@@ -175,7 +216,7 @@ _convert_apk_to_module_aab = rule(
 _convert_module_aab_to_structured_zip = rule(
     attrs = {
         "input_file": attr.label(
-            allow_files = True,
+            allow_single_file = True,
             mandatory = True,
         ),
         "output_file": attr.output(
@@ -188,11 +229,11 @@ _convert_module_aab_to_structured_zip = rule(
 _bundle_module_zip_into_deployable_aab = rule(
     attrs = {
         "input_file": attr.label(
-            allow_files = True,
+            allow_single_file = True,
             mandatory = True,
         ),
         "config_file": attr.label(
-            allow_files = True,
+            allow_single_file = True,
             mandatory = True,
         ),
         "output_file": attr.output(
@@ -207,14 +248,31 @@ _bundle_module_zip_into_deployable_aab = rule(
     implementation = _bundle_module_zip_into_deployable_aab_impl,
 )
 
+_package_metadata_into_deployable_aab = rule(
+    attrs = {
+        "input_aab_file": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
+        "proguard_map_file": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
+        "output_aab_file": attr.output(
+            mandatory = True,
+        ),
+    },
+    implementation = _package_metadata_into_deployable_aab_impl,
+)
+
 _generate_apks_and_install = rule(
     attrs = {
         "input_file": attr.label(
-            allow_files = True,
+            allow_single_file = True,
             mandatory = True,
         ),
         "debug_keystore": attr.label(
-            allow_files = True,
+            allow_single_file = True,
             mandatory = True,
         ),
         "_bundletool_tool": attr.label(
@@ -227,22 +285,27 @@ _generate_apks_and_install = rule(
     implementation = _generate_apks_and_install_impl,
 )
 
-def oppia_android_application(name, config_file, **kwargs):
+def oppia_android_application(name, config_file, proguard_generate_mapping, **kwargs):
     """
     Creates an Android App Bundle (AAB) binary with the specified name and arguments.
 
     Args:
-        name: str. The name of the Android App Bundle to build. This will corresponding to the name of
-            the generated .aab file.
+        name: str. The name of the Android App Bundle to build. This will corresponding to the name
+            of the generated .aab file.
         config_file: target. The path to the .pb.json bundle configuration file for this build.
-        **kwargs: additional arguments. See android_binary for the exact arguments that are available.
+        proguard_generate_mapping: boolean. Whether to perform a Proguard optimization step &
+            generate Proguard mapping corresponding to the obfuscation step.
+        **kwargs: additional arguments. See android_binary for the exact arguments that are
+            available.
     """
     binary_name = "%s_binary" % name
     module_aab_name = "%s_module_aab" % name
     module_zip_name = "%s_module_zip" % name
+    deployable_aab_name = "%s_deployable" % name
     native.android_binary(
         name = binary_name,
         tags = ["manual"],
+        proguard_generate_mapping = proguard_generate_mapping,
         **kwargs
     )
     _convert_apk_to_module_aab(
@@ -257,13 +320,30 @@ def oppia_android_application(name, config_file, **kwargs):
         output_file = "%s.zip" % module_zip_name,
         tags = ["manual"],
     )
-    _bundle_module_zip_into_deployable_aab(
-        name = name,
-        input_file = ":%s.zip" % module_zip_name,
-        config_file = config_file,
-        output_file = "%s.aab" % name,
-        tags = ["manual"],
-    )
+    if proguard_generate_mapping:
+        _bundle_module_zip_into_deployable_aab(
+            name = deployable_aab_name,
+            input_file = ":%s.zip" % module_zip_name,
+            config_file = config_file,
+            output_file = "%s.aab" % deployable_aab_name,
+            tags = ["manual"],
+        )
+        _package_metadata_into_deployable_aab(
+            name = name,
+            input_aab_file = ":%s.aab" % deployable_aab_name,
+            proguard_map_file = ":%s_proguard.map" % binary_name,
+            output_aab_file = "%s.aab" % name,
+            tags = ["manual"],
+        )
+    else:
+        # No extra package step is needed if there's no Proguard map file.
+        _bundle_module_zip_into_deployable_aab(
+            name = name,
+            input_file = ":%s.zip" % module_zip_name,
+            config_file = config_file,
+            output_file = "%s.aab" % name,
+            tags = ["manual"],
+        )
 
 def declare_deployable_application(name, aab_target):
     """

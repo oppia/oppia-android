@@ -3,7 +3,10 @@ package org.oppia.android.app.resumelesson
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -13,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
@@ -194,6 +198,34 @@ class ResumeLessonFragmentTest {
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
         matches(withText("Matthew learns about fractions."))
       )
+    }
+  }
+
+  @Test
+  fun testResumeLessonFragment_lessonDescriptionIsInRtl_isDisplayedCorrectly() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        testCoroutineDispatchers.runCurrent()
+        val topicDescriptionTextview: TextView = activity.findViewById(
+          R.id.resume_lesson_chapter_description_text_view
+        )
+        assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
+  }
+
+  @Test
+  fun testResumeLessonFragment_lessonDescriptionIsInLtr_isDisplayedCorrectly() {
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
+        testCoroutineDispatchers.runCurrent()
+        val topicDescriptionTextview: TextView = activity.findViewById(
+          R.id.resume_lesson_chapter_description_text_view
+        )
+        assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
     }
   }
 
