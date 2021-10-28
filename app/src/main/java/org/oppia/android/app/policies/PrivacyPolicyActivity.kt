@@ -7,7 +7,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** The Privacy Policy page activity for placement of single PRIVACY_POLICY. */
+/** The activity for displaying the app's privacy policy. */
 class PrivacyPolicyActivity : InjectableAppCompatActivity() {
 
   @Inject
@@ -23,7 +23,7 @@ class PrivacyPolicyActivity : InjectableAppCompatActivity() {
   companion object {
     private const val PRIVACY_POLICY_ACTIVITY = "PrivacyPolicyActivity"
 
-    /** Returns [Intent] for [PrivacyPolicyActivity]. */
+    /** Returns the [Intent] for opening [PrivacyPolicyActivity]. */
     fun createPrivacyPolicyActivityIntent(context: Context): Intent {
       return Intent(context, PrivacyPolicyActivity::class.java)
     }

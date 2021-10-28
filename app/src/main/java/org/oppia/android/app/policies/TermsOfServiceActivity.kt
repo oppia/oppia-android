@@ -7,7 +7,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** The Terms of Service page activity for placement of single Terms_Of_Service. */
+/** The activity for displaying the app's terms of service.  */
 class TermsOfServiceActivity : InjectableAppCompatActivity() {
 
   @Inject

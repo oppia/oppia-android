@@ -9,7 +9,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
-/** Fragment that contains Privacy Policy flow of the app. */
+/** Fragment that contains privacy policy flow of the app. */
 class PrivacyPolicyFragment : InjectableFragment() {
   @Inject
   lateinit var privacyPolicyFragmentPresenter: PrivacyPolicyFragmentPresenter

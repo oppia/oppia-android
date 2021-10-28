@@ -25,6 +25,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -186,8 +187,8 @@ class OnboardingFragmentPresenter @Inject constructor(
         endIndex2,
         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
       )
-    binding.slideTermsofservicePrivacypolicyTextView?.text = spannableStringBuilder
-    binding.slideTermsofservicePrivacypolicyTextView?.movementMethod =
+    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView?.text = spannableStringBuilder
+    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView?.movementMethod =
       LinkMovementMethod.getInstance()
   }
 

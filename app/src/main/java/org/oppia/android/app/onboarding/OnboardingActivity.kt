@@ -39,18 +39,10 @@ class OnboardingActivity :
   }
 
   override fun onRouteToPrivacyPolicy() {
-    startActivity(
-      PrivacyPolicyActivity.createPrivacyPolicyActivityIntent(
-        this
-      )
-    )
+    startActivity(PrivacyPolicyActivity.createPrivacyPolicyActivityIntent(this))
   }
 
   override fun onRouteToTermsOfService() {
-    startActivity(
-      TermsOfServiceActivity.createTermsOfServiceActivityIntent(
-        this
-      )
-    )
+    startActivity(TermsOfServiceActivity.createTermsOfServiceActivityIntent(this))
   }
 }

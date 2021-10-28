@@ -78,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />
 
       <TextView
-        android:id="@+id/slide_termsofservice_privacypolicy_text_view"
+        android:id="@+id/slide_terms_of_service_and_privacy_policy_links_text_view"
         style="@style/Subtitle1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
