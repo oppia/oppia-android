@@ -61,13 +61,9 @@
 
             <TextView
               android:id="@+id/story_progress_percentage"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
+              style="@style/Heading5"
               android:layout_gravity="center"
-              android:fontFamily="sans-serif-medium"
               android:text="@{viewModel.storyProgressPercentageText}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="14sp"
               android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
           </FrameLayout>
 
@@ -100,25 +96,17 @@
 
             <TextView
               android:id="@+id/story_name_text_view"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:fontFamily="sans-serif-medium"
+              style="@style/Heading3"
               android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
               android:paddingTop="24dp"
               android:paddingBottom="4dp"
-              android:text="@{viewModel.storySummary.storyName}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="18sp" />
+              android:text="@{viewModel.storySummary.storyName}" />
 
             <TextView
               android:id="@+id/chapter_count"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:fontFamily="sans-serif"
+              style="@style/Subtitle1"
               android:importantForAccessibility="no"
-              android:text="@{viewModel.computeChapterCountText()}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="16sp" />
+              android:text="@{viewModel.computeChapterCountText()}" />
           </LinearLayout>
 
           <FrameLayout
