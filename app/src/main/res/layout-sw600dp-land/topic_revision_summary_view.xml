@@ -56,7 +56,6 @@
         android:paddingEnd="12dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.subtopic.title}"
-        android:textAlignment="viewStart"
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />
