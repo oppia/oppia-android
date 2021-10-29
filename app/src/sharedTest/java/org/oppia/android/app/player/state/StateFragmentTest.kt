@@ -1324,8 +1324,9 @@ class StateFragmentTest {
       playThroughPrototypeState3()
       playThroughPrototypeState4()
 
-      // Verify that the attributes required for correct accessibility support are present.
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
+
+      // Verify that the attributes required for correct accessibility support are present.
       verifyAccessibilityForItemSelection(position = 1, targetViewId = R.id.item_selection_checkbox)
     }
   }
@@ -1339,7 +1340,6 @@ class StateFragmentTest {
       playThroughPrototypeState3()
       playThroughPrototypeState4()
 
-      // Verify that the attributes required for correct accessibility support are present.
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
     }
@@ -1355,7 +1355,7 @@ class StateFragmentTest {
       playThroughPrototypeState4()
 
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
-      // Verify that the attributes required for correct accessibility support are present.
+
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
     }
@@ -1372,7 +1372,7 @@ class StateFragmentTest {
 
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
-      // Verify that the attributes required for correct accessibility support are present.
+
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
     }
@@ -1389,11 +1389,14 @@ class StateFragmentTest {
 
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
-      // Verify that the attributes required for correct accessibility support are present.
+
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       onView(withId(R.id.selection_interaction_textview)).check(matches(isDisplayed()))
     }
   }
+
+  // TODO(#1594): Add tests to ensure the selection text is properly showing/not showing after a configuration change.
+
 
   @Test
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
