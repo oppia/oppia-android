@@ -45,18 +45,16 @@
 
       <TextView
         android:id="@+id/subtopic_title"
-        style="@style/Subtitle2"
+        style="@style/SummaryText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/oppiaBrownDark"
-        android:ellipsize="end"
         android:lines="3"
         android:paddingStart="8dp"
         android:paddingTop="8dp"
         android:paddingEnd="8dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.subtopic.title}"
-        android:textAlignment="viewStart"
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/subtopic_image_view" />

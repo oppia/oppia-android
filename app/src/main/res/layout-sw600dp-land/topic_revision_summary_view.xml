@@ -46,11 +46,10 @@
 
       <TextView
         android:id="@+id/subtopic_title"
-        style="@style/Subtitle2"
+        style="@style/SummaryText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/oppiaBrownDark"
-        android:ellipsize="end"
         android:lines="3"
         android:paddingStart="12dp"
         android:paddingTop="8dp"
