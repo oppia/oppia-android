@@ -65,7 +65,6 @@ class PoliciesFragmentPresenter @Inject constructor(
       binding.policiesDescriptionTextView
     )
 
-
     binding.policiesWebLinkTextView.text = htmlParserFactory.create(
       resourceBucketName,
       entityType = "Policies",

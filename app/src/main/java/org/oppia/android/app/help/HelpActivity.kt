@@ -40,7 +40,7 @@ class HelpActivity :
   LoadPoliciesFragmentListener,
   LoadThirdPartyDependencyListFragmentListener,
   LoadLicenseListFragmentListener,
-  LoadLicenseTextViewerFragmentListener{
+  LoadLicenseTextViewerFragmentListener {
 
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter

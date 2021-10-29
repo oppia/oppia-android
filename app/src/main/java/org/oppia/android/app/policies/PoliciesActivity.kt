@@ -16,7 +16,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    policiesActivityPresenter.handleOnCreate(intent.getIntExtra(POLICIES_ACTIVITY,-1))
+    policiesActivityPresenter.handleOnCreate(intent.getIntExtra(POLICIES_ACTIVITY, -1))
   }
 
   companion object {
