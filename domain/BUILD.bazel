@@ -100,8 +100,6 @@ kt_android_library(
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
-        #        "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
-        #        "//domain/src/main/java/org/oppia/android/domain/audio:cellular_audio_dialog_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
