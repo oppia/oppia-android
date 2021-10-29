@@ -692,8 +692,20 @@
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
           },
-          "hints": [],
-          "solution": null
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "<p>11 * 11 can be rephrased as 11 * 10, then add 11 at the end.</p>"
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": "",
+            "explanation": {
+              "content_id": "solution",
+              "html": "<p>11 times 11 is 121.</p>"
+            }
+          }
         },
         "classifier_model_id": "",
         "recorded_voiceovers": {
@@ -702,11 +714,37 @@
             "feedback_3": {},
             "feedback_1": {},
             "content": {},
-            "default_outcome": {}
+            "default_outcome": {},
+            "hint_1": {},
+            "solution": {}
           }
         },
         "written_translations": {
           "translations_mapping": {
+            "hint_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 11 * 11 pode ser reformulado como 11 * 10 e, em seguida, adicione 11 no final. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "يمكن إعادة صياغة <p> 11 * 11 على أنها 11 * 10، ثم أضف 11 في النهاية. </p>"},
+                "needs_update": false
+              }
+            },
+            "solution": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 11 vezes 11 é 121. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> 11 مرات 11 هو 121. </p>"},
+                "needs_update": false
+              }
+            },
             "feedback_2": {
               "pt": {
                 "data_format": "html",

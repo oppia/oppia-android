@@ -251,3 +251,9 @@ file_content_checks {
   exempted_file_patterns: "scripts/.+?\\.kt"
   exempted_file_patterns: "utility/src/(?:((main)|(test)))/java/org/oppia/android/util/locale/.+?\\.kt"
 }
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "kotlin\\.properties\\.Delegates"
+  failure_message: "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to null, instead. Delegates uses reflection internally, have a non-trivial initialization cost, and can cause breakages on KitKat devices. See #3939 for more context."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}

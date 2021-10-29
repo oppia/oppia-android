@@ -87,6 +87,11 @@ class HintHandlerProdImplTest {
       "test_single_interactive_state_exp_with_hints_and_solution"
     )
   }
+  private val expWithSolutionMissingCorrectAnswer by lazy {
+    explorationRetriever.loadExploration(
+      "test_single_interactive_state_exp_with_solution_missing_answer"
+    )
+  }
 
   @Before
   fun setUp() {
@@ -1895,6 +1900,48 @@ class HintHandlerProdImplTest {
   @Test
   fun testGetCurrentHelpIndex_onlySolution_triggeredAndRevealed_everythingIsRevealed() {
     val state = expWithNoHintsAndOneSolution.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    waitFor60Seconds()
+    hintHandler.viewSolution()
+
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        everythingRevealed = true
+      }.build()
+    )
+  }
+
+  @Test
+  fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_isEmpty() {
+    val state = expWithSolutionMissingCorrectAnswer.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+
+    assertThat(helpIndex).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_twoWrongAnswers_canShowSolution() {
+    val state = expWithSolutionMissingCorrectAnswer.getInitialState()
+    hintHandler.startWatchingForHintsInNewState(state)
+    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 1)
+    hintHandler.handleWrongAnswerSubmission(wrongAnswerCount = 2)
+
+    val helpIndex = hintHandler.getCurrentHelpIndex()
+
+    assertThat(helpIndex).isEqualTo(
+      HelpIndex.newBuilder().apply {
+        showSolution = true
+      }.build()
+    )
+  }
+
+  @Test
+  fun testGetCurrentHelpIndex_onlySolution_missingCorrectAnswer_triggeredAndShown_allRevealed() {
+    val state = expWithSolutionMissingCorrectAnswer.getInitialState()
     hintHandler.startWatchingForHintsInNewState(state)
     waitFor60Seconds()
     hintHandler.viewSolution()
