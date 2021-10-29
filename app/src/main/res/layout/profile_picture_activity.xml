@@ -15,6 +15,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/profile_picture_activity_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/profile_picture_activity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/oppiaPrimaryDark"
+        android:textSize="20sp"
+        app:navigationContentDescription="@string/navigate_up"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/profile_picture_activity_title"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
     <ImageView
       android:id="@+id/profile_picture_image_view"
       android:layout_width="0dp"
@@ -22,8 +45,19 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_app_bar_layout"
       profile:src="@{viewModel.profileAvatar}"
       tools:src="@drawable/ic_default_avatar" />
+
+    <View
+      android:id="@+id/app_version_shadow_view"
+      android:layout_width="0dp"
+      android:layout_height="6dp"
+      android:layout_gravity="top"
+      android:background="@drawable/toolbar_drop_shadow"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/profile_picture_activity_app_bar_layout" />
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -40,23 +40,11 @@
 
           <TextView
             android:id="@+id/exploration_toolbar_title"
+            style="@style/MarqueeToolbarTitleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
-            android:layout_weight="1"
-            android:minHeight="48dp"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:fadingEdgeLength="20dp"
-            android:focusable="false"
-            android:focusableInTouchMode="true"
-            android:fontFamily="sans-serif"
-            android:marqueeRepeatLimit="1"
-            android:requiresFadingEdge="horizontal"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:layout_weight="1" />
 
           <ImageView
             android:id="@+id/action_audio_player"
@@ -65,7 +53,7 @@
             android:layout_gravity="end"
             android:contentDescription="@{viewModel.isAudioStreamingOn ? @string/audio_player_on : @string/audio_player_off}"
             android:scaleType="center"
-            android:src="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp : @drawable/ic_audio_streaming_off_24dp}"
+            app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_audio_streaming_on_24dp : @drawable/ic_audio_streaming_off_24dp}"
             android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>

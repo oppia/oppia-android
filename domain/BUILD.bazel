@@ -50,6 +50,7 @@ DOMAIN_ASSETS = generate_assets_list_from_text_protos(
         "test_single_interactive_state_exp_with_one_hint_and_solution",
         "test_single_interactive_state_exp_with_one_hint_and_no_solution",
         "test_single_interactive_state_exp_with_only_solution",
+        "test_single_interactive_state_exp_with_solution_missing_answer",
     ],
     skills_file_names = [
         "skills",
@@ -127,16 +128,6 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
-    name = "testing",
-    testonly = True,
-    srcs = glob(["src/main/java/org/oppia/android/domain/testing/**/*.kt"]),
-    deps = [
-        ":domain",
-        "//third_party:androidx_work_work-runtime-ktx",
-    ],
-)
-
 android_library(
     name = "test_resources",
     testonly = True,
@@ -166,7 +157,6 @@ TEST_DEPS = [
     ":dagger",
     ":domain",
     ":interaction_object_test_builder",
-    ":testing",
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
@@ -178,6 +168,7 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:startup_listener",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
+    "//domain/src/main/java/org/oppia/android/domain/testing/oppialogger/loguploader:fake_log_uploader",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/network:network",

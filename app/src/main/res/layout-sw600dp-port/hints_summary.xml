@@ -78,7 +78,7 @@
           android:layout_gravity="center_vertical"
           android:contentDescription="@{viewModel.computeHintListDropDownIconContentDescription()}"
           android:padding="8dp"
-          android:src="@drawable/ic_arrow_drop_down_black_24dp"
+          app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
           app:isRotationAnimationClockwise="@{isListExpanded}"
           app:rotationAnimationAngle="@{180f}" />
       </FrameLayout>

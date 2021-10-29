@@ -368,6 +368,7 @@ VIEW_MODELS = [
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
 
@@ -529,7 +530,6 @@ android_library(
 # Library for layout resource files.
 android_library(
     name = "databinding_resources",
-    srcs = BINDING_ADAPTERS,
     custom_package = "org.oppia.android.app.databinding",
     enable_data_binding = True,
     exports_manifest = True,
@@ -649,6 +649,7 @@ kt_android_library(
         "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         # TODO(#59): Remove 'debug_util_module' once we completely migrate to Bazel from Gradle as
         # we can then directly exclude debug files from the build and thus won't be requiring this module.
@@ -685,6 +686,7 @@ android_library(
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
         "//third_party:circularimageview_circular_image_view",
         "//third_party:com_google_android_material_material",
+        "//third_party:de_hdodenhof_circleimageview",
         "//third_party:io_github_chaosleung_pinview",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
@@ -778,6 +780,7 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
     ],
+    visibility = ["//app:__subpackages__"],
     deps = [
         ":app",
         "//testing",

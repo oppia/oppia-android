@@ -76,17 +76,13 @@
 
       <TextView
         android:id="@+id/topic_description_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Body"
         android:layout_marginTop="16dp"
         android:ellipsize="end"
-        android:fontFamily="sans-serif"
         android:maxLines="@{viewModel.isDescriptionExpanded() ? @integer/topic_description_expanded : @integer/topic_description_collapsed}"
         android:paddingStart="120dp"
         android:paddingEnd="120dp"
         android:text="@{viewModel.topicDescription}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
@@ -118,7 +114,7 @@
         android:layout_height="20dp"
         android:layout_marginStart="120dp"
         android:layout_marginTop="24dp"
-        android:src="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
+        app:srcCompat="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
 

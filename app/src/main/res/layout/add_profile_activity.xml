@@ -45,7 +45,7 @@
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
-            android:src="@drawable/ic_default_avatar"
+            app:srcCompat="@drawable/ic_default_avatar"
             app:add_shadow="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,19 +59,21 @@
             android:contentDescription="@string/edit_profile_picture_content_description"
             android:paddingStart="12dp"
             android:paddingTop="12dp"
-            android:src="@drawable/rounded_white_background_with_shadow"
+            app:srcCompat="@drawable/rounded_white_background_with_shadow"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view" />
 
           <TextView
             android:id="@+id/add_profile_activity_required_heading_text_view"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@string/add_profile_required"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
           <com.google.android.material.textfield.TextInputLayout
@@ -113,7 +115,7 @@
             android:layout_height="48dp"
             android:contentDescription="@string/add_profile_info_content_description"
             android:padding="12dp"
-            android:src="@drawable/ic_info_icon"
+            app:srcCompat="@drawable/ic_info_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/add_profile_activity_pin_check_box" />
 
