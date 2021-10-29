@@ -1397,7 +1397,6 @@ class StateFragmentTest {
 
   // TODO(#1594): Add tests to ensure the selection text is properly showing/not showing after a configuration change.
 
-
   @Test
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
