@@ -11,10 +11,9 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.policies.PrivacyPolicyActivity
-import org.oppia.android.app.policies.RouteToPrivacyPolicyListener
-import org.oppia.android.app.policies.RouteToTermsOfServiceListener
-import org.oppia.android.app.policies.TermsOfServiceActivity
+import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.policies.PoliciesActivity
+import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
@@ -25,8 +24,7 @@ const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
   "HelpActivity.third_party_dependency_index"
 const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
 const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
-const val PRIVACY_POLICY_FRAGMENT_TAG = "PrivacyPolicyFragment.tag"
-const val TERMS_OF_SERVICE_FRAGMENT_TAG = "TermsOfServiceFragment.tag"
+const val POLICIES_FRAGMENT_TAG = "PoliciesFragment.tag"
 const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
 const val LICENSE_LIST_FRAGMENT_TAG = "LicenseListFragment.tag"
 const val LICENSE_TEXT_FRAGMENT_TAG = "LicenseTextFragment.tag"
@@ -36,15 +34,13 @@ class HelpActivity :
   InjectableAppCompatActivity(),
   RouteToFAQListListener,
   RouteToFAQSingleListener,
-  RouteToPrivacyPolicyListener,
-  RouteToTermsOfServiceListener,
+  RouteToPoliciesListener,
   RouteToThirdPartyDependencyListListener,
   LoadFaqListFragmentListener,
-  LoadPrivacyPolicyFragmentListener,
+  LoadPoliciesFragmentListener,
   LoadThirdPartyDependencyListFragmentListener,
   LoadLicenseListFragmentListener,
-  LoadLicenseTextViewerFragmentListener,
-  LoadTermsOfServiceFragmentListener {
+  LoadLicenseTextViewerFragmentListener{
 
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
@@ -132,19 +128,11 @@ class HelpActivity :
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }
 
-  override fun onRouteToPrivacyPolicy() {
-    startActivity(PrivacyPolicyActivity.createPrivacyPolicyActivityIntent(this))
+  override fun onRouteToPolicies(policies: Policies) {
+    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policies))
   }
 
-  override fun onRouteToTermsOfService() {
-    startActivity(TermsOfServiceActivity.createTermsOfServiceActivityIntent(this))
-  }
-
-  override fun loadPrivacyPolicyFragment() {
-    helpActivityPresenter.handleLoadPrivacyPolicyFragment()
-  }
-
-  override fun loadTermsOfServiceFragment() {
-    helpActivityPresenter.handleLoadTermsOfServiceFragment()
+  override fun loadPoliciesFragment(privacyPolicy: Policies) {
+    helpActivityPresenter.handleLoadPoliciesFragment(Policies.PRIVACY_POLICY)
   }
 }

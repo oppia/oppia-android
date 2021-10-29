@@ -4,18 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.text.Spannable
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
@@ -87,14 +78,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TermsOfServiceActivity]. */
+/** Tests for [PoliciesActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = TermsOfServiceFragmentTest.TestApplication::class,
+  application = PoliciesActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class TermsOfServiceFragmentTest {
+class PoliciesActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -111,8 +102,8 @@ class TermsOfServiceFragmentTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<TermsOfServiceActivity> = ActivityTestRule(
-    TermsOfServiceActivity::class.java, /* initialTouchMode= */
+  var activityTestRule: ActivityTestRule<PoliciesActivity> = ActivityTestRule(
+    PoliciesActivity::class.java, /* initialTouchMode= */
     true, /* launchActivity= */
     false
   )
@@ -124,7 +115,7 @@ class TermsOfServiceFragmentTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
-    val intent = createTermsOfServiceActivity()
+    val intent = createpoliciesActivity()
     launchedActivity = activityTestRule.launchActivity(intent)
   }
 
@@ -134,51 +125,23 @@ class TermsOfServiceFragmentTest {
   }
 
   @Test
-  fun testTermsOfServiceFragment_checkTermsOfService_isDisplayed() {
-    launch<TermsOfServiceActivity>(createTermsOfServiceActivity()).use {
-      onView(withId(R.id.terms_of_service_description_text_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-    }
-  }
+  fun testpoliciesActivity_hasCorrectActivityLabel() {
+    val title = activityTestRule.activity.title
 
-  @Test
-  fun testTermsOfServiceFragment_checkTermsOfServiceWebLink_isDisplayed() {
-    launch<TermsOfServiceActivity>(createTermsOfServiceActivity()).use {
-      onView(withId(R.id.terms_of_service_web_link_text_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testTermsOfServiceFragment_checkTermsOfService_isCorrectlyParsed() {
-    val termsOfServiceTextView = activityTestRule.activity.findViewById(
-      R.id.terms_of_service_description_text_view
-    ) as TextView
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false
-    )
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.terms_of_service_content),
-      termsOfServiceTextView
-    )
-    assertThat(termsOfServiceTextView.text.toString()).isEqualTo(htmlResult.toString())
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.privacy_policy_activity_title))
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createTermsOfServiceActivity(): Intent {
-    return TermsOfServiceActivity.createTermsOfServiceActivityIntent(
-      ApplicationProvider.getApplicationContext()
+  private fun createpoliciesActivity(): Intent {
+    return PoliciesActivity.createPoliciesActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      Policies.PRIVACY_POLICY
     )
-  }
-
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -210,18 +173,18 @@ class TermsOfServiceFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(termsOfServiceFragmentTest: TermsOfServiceFragmentTest)
+    fun inject(policiesActivityTest: PoliciesActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTermsOfServiceFragmentTest_TestApplicationComponent.builder()
+      DaggerPoliciesActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(termsOfServiceFragmentTest: TermsOfServiceFragmentTest) {
-      component.inject(termsOfServiceFragmentTest)
+    fun inject(policiesActivityTest: PoliciesActivityTest) {
+      component.inject(policiesActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

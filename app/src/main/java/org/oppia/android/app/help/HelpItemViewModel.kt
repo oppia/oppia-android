@@ -2,8 +2,8 @@ package org.oppia.android.app.help
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.policies.RouteToPrivacyPolicyListener
-import org.oppia.android.app.policies.RouteToTermsOfServiceListener
+import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
@@ -38,22 +38,22 @@ class HelpItemViewModel(
       }
       resourceHandler.getStringInLocale(R.string.privacy_policy_activity_title) -> {
         if (isMultipane) {
-          val loadPrivacyPolicyFragmentListener = activity as
-            LoadPrivacyPolicyFragmentListener
-          loadPrivacyPolicyFragmentListener.loadPrivacyPolicyFragment()
+          val loadpoliciesFragmentListener = activity as
+            LoadPoliciesFragmentListener
+          loadpoliciesFragmentListener.loadPoliciesFragment(Policies.PRIVACY_POLICY)
         } else {
-          val routeToPrivacyPolicyListener = activity as RouteToPrivacyPolicyListener
-          routeToPrivacyPolicyListener.onRouteToPrivacyPolicy()
+          val routeToPoliciesListener = activity as RouteToPoliciesListener
+          routeToPoliciesListener.onRouteToPolicies(Policies.PRIVACY_POLICY)
         }
       }
       resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title) -> {
         if (isMultipane) {
-          val loadTermsOfServiceFragmentFragmentListener = activity as
-            LoadTermsOfServiceFragmentListener
-          loadTermsOfServiceFragmentFragmentListener.loadTermsOfServiceFragment()
+          val loadpoliciesFragmentListener = activity as
+            LoadPoliciesFragmentListener
+          loadpoliciesFragmentListener.loadPoliciesFragment(Policies.TERMS_OF_SERVICE)
         } else {
-          val routeToTermsOfServiceListener = activity as RouteToTermsOfServiceListener
-          routeToTermsOfServiceListener.onRouteToTermsOfService()
+          val routeToPoliciesListener = activity as RouteToPoliciesListener
+          routeToPoliciesListener.onRouteToPolicies(Policies.TERMS_OF_SERVICE)
         }
       }
     }

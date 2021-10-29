@@ -21,7 +21,7 @@
       android:paddingBottom="@dimen/privacy_policy_single_padding_bottom">
 
       <TextView
-        android:id="@+id/privacy_policy_description_text_view"
+        android:id="@+id/policies_description_text_view"
         style="@style/Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         android:textColor="@color/oppiaPrimaryText" />
 
       <TextView
-        android:id="@+id/privacy_policy_web_link_text_view"
+        android:id="@+id/policies_web_link_text_view"
         style="@style/Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

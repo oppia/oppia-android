@@ -10,14 +10,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
-import org.oppia.android.app.TermsOfServicetermsofservice.TermsOfServiceFragment
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
-import org.oppia.android.app.policies.PrivacyPolicyFragment
+import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
@@ -299,49 +299,34 @@ class HelpActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
   }
 
-  private fun selectPrivacyPolicyFragment() {
-    setMultipaneContainerTitle(
-      resourceHandler.getStringInLocale(
-        R.string.privacy_policy_activity_title
+  private fun selectPoliciesFragment(policies: Policies) {
+    when (policies) {
+      Policies.PRIVACY_POLICY -> setMultipaneContainerTitle(
+        resourceHandler.getStringInLocale(
+          R.string.privacy_policy_activity_title
+        )
       )
-    )
+      Policies.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
+        resourceHandler.getStringInLocale(
+          R.string.privacy_policy_activity_title
+        )
+      )
+    }
+
     setMultipaneBackButtonVisibility(View.GONE)
-    selectedFragmentTag = PRIVACY_POLICY_FRAGMENT_TAG
+    selectedFragmentTag = POLICIES_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
 
-  fun handleLoadPrivacyPolicyFragment() {
-    selectPrivacyPolicyFragment()
+  fun handleLoadPoliciesFragment(policies: Policies) {
+    selectPoliciesFragment(policies)
     val previousFragment = getMultipaneOptionsFragment()
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.multipane_options_container,
-      PrivacyPolicyFragment()
-    ).commitNow()
-  }
-
-  private fun selectTermsOfServiceFragment() {
-    setMultipaneContainerTitle(
-      resourceHandler.getStringInLocale(
-        R.string.terms_of_service_activity_title
-      )
-    )
-    setMultipaneBackButtonVisibility(View.GONE)
-    selectedFragmentTag = TERMS_OF_SERVICE_FRAGMENT_TAG
-    selectedHelpOptionTitle = getMultipaneContainerTitle()
-  }
-
-  fun handleLoadTermsOfServiceFragment() {
-    selectTermsOfServiceFragment()
-    val previousFragment = getMultipaneOptionsFragment()
-    if (previousFragment != null) {
-      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.multipane_options_container,
-      TermsOfServiceFragment()
+      PoliciesFragment.newInstance(policies.ordinal)
     ).commitNow()
   }
 }

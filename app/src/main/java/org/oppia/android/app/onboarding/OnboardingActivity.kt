@@ -5,10 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.policies.PrivacyPolicyActivity
-import org.oppia.android.app.policies.RouteToPrivacyPolicyListener
-import org.oppia.android.app.policies.RouteToTermsOfServiceListener
-import org.oppia.android.app.policies.TermsOfServiceActivity
+import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.policies.PoliciesActivity
+import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.profile.ProfileChooserActivity
 import javax.inject.Inject
 
@@ -16,8 +15,7 @@ import javax.inject.Inject
 class OnboardingActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
-  RouteToPrivacyPolicyListener,
-  RouteToTermsOfServiceListener {
+  RouteToPoliciesListener{
   @Inject
   lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
 
@@ -38,11 +36,12 @@ class OnboardingActivity :
     finish()
   }
 
-  override fun onRouteToPrivacyPolicy() {
-    startActivity(PrivacyPolicyActivity.createPrivacyPolicyActivityIntent(this))
-  }
-
-  override fun onRouteToTermsOfService() {
-    startActivity(TermsOfServiceActivity.createTermsOfServiceActivityIntent(this))
+  override fun onRouteToPolicies(privacyPolicy: Policies) {
+    startActivity(
+      PoliciesActivity.createPoliciesActivityIntent(
+        this,
+        Policies.PRIVACY_POLICY
+      )
+    )
   }
 }
