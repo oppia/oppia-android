@@ -36,7 +36,7 @@ class HelpItemViewModel(
           routeToThirdPartyDependencyListListener.onRouteToThirdPartyDependencyList()
         }
       }
-      resourceHandler.getStringInLocale(R.string.privacy_policy_activity_title) -> {
+      resourceHandler.getStringInLocale(R.string.privacy_policy_title) -> {
         if (isMultipane) {
           val loadpoliciesFragmentListener = activity as
             LoadPoliciesFragmentListener
@@ -46,7 +46,7 @@ class HelpItemViewModel(
           routeToPoliciesListener.onRouteToPolicies(Policies.PRIVACY_POLICY)
         }
       }
-      resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title) -> {
+      resourceHandler.getStringInLocale(R.string.terms_of_service_title) -> {
         if (isMultipane) {
           val loadpoliciesFragmentListener = activity as
             LoadPoliciesFragmentListener

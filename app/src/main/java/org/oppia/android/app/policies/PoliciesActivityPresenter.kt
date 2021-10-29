@@ -40,9 +40,9 @@ class PoliciesActivityPresenter @Inject constructor(
 
     when (policies) {
       Policies.PRIVACY_POLICY.ordinal ->
-        toolbar.title = resourceHandler.getStringInLocale(R.string.privacy_policy)
-      Policies.PRIVACY_POLICY.ordinal ->
-        toolbar.title = resourceHandler.getStringInLocale(R.string.terms_of_service)
+        toolbar.title = resourceHandler.getStringInLocale(R.string.privacy_policy_title)
+      Policies.TERMS_OF_SERVICE.ordinal ->
+        toolbar.title = resourceHandler.getStringInLocale(R.string.terms_of_service_title)
     }
     activity.setSupportActionBar(toolbar)
   }

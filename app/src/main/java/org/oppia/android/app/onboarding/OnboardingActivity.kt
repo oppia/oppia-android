@@ -15,7 +15,7 @@ import javax.inject.Inject
 class OnboardingActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
-  RouteToPoliciesListener{
+  RouteToPoliciesListener {
   @Inject
   lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
 
@@ -36,12 +36,7 @@ class OnboardingActivity :
     finish()
   }
 
-  override fun onRouteToPolicies(privacyPolicy: Policies) {
-    startActivity(
-      PoliciesActivity.createPoliciesActivityIntent(
-        this,
-        Policies.PRIVACY_POLICY
-      )
-    )
+  override fun onRouteToPolicies(policies: Policies) {
+    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policies.ordinal))
   }
 }

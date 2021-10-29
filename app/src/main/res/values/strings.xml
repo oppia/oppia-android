@@ -486,12 +486,10 @@
   <string name="home_screen_good_afternoon_greeting_fragment">Good afternoon,</string>
   <string name="home_screen_good_evening_greeting_fragment">Good evening,</string>
   <!--  Privacy Policy -->
-  <string name="privacy_policy_activity_title">Privacy Policy</string>
-  <string name="privacy_policy">Privacy Policy</string>
+  <string name="privacy_policy_title">Privacy Policy</string>
   <string name="privacy_policy_web_link"><![CDATA[Please visit [<a href="https://www.oppia.org/privacy-policy">this page</a>] for the latest version of this policy]]></string>
   <!--  Terms of Service -->
-  <string name="terms_of_service_activity_title">Terms of Service</string>
-  <string name="terms_of_service">Terms of Service</string>
+  <string name="terms_of_service_title">Terms of Service</string>
   <string name="agree_to_terms">By using %s, you agree to our Terms of Service and Privacy Policy.</string>
   <string name="terms_of_service_web_link"><![CDATA[Please visit [<a href="https://www.oppia.org/terms">this page</a>] for the latest version of this terms of service]]></string>
   <!-- Frequently asked questions & generic app help. -->

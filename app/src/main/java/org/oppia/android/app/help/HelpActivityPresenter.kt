@@ -299,16 +299,16 @@ class HelpActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
   }
 
-  private fun selectPoliciesFragment(policies: Policies) {
+  private fun selectPoliciesFragment(policies: Int) {
     when (policies) {
-      Policies.PRIVACY_POLICY -> setMultipaneContainerTitle(
+      Policies.PRIVACY_POLICY.ordinal -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(
-          R.string.privacy_policy_activity_title
+          R.string.privacy_policy_title
         )
       )
-      Policies.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
+      Policies.TERMS_OF_SERVICE.ordinal -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(
-          R.string.privacy_policy_activity_title
+          R.string.terms_of_service_title
         )
       )
     }
@@ -318,7 +318,7 @@ class HelpActivityPresenter @Inject constructor(
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
 
-  fun handleLoadPoliciesFragment(policies: Policies) {
+  fun handleLoadPoliciesFragment(policies: Int) {
     selectPoliciesFragment(policies)
     val previousFragment = getMultipaneOptionsFragment()
     if (previousFragment != null) {
@@ -326,7 +326,7 @@ class HelpActivityPresenter @Inject constructor(
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.multipane_options_container,
-      PoliciesFragment.newInstance(policies.ordinal)
+      PoliciesFragment.newInstance(policies)
     ).commitNow()
   }
 }
