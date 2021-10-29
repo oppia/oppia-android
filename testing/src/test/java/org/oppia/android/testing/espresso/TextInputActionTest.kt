@@ -1,17 +1,50 @@
 package org.oppia.android.testing.espresso
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.espresso.TextInputAction.Companion.ErrorTextExisted
-import org.oppia.android.testing.espresso.TextInputAction.Companion.ErrorTextNotExisted
 import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class TextInputActionTest {
 
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TextInputActionTestActivity>(
+      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
+
+  @Test
+  fun testTextInputAction_ErrorTextExisted_matchesSafelyTrue() {
+    lateinit var context: Context
+    activityRule.scenario.onActivity {
+      context = it.baseContext
+      // context = it.applicationContext
+    }
+
+    val expectedErrorText = "Incorrect Administrator PIN. Please try again."
+    val textInputLayout = TextInputLayout(context)
+
+    textInputLayout.error = "Incorrect Administrator PIN. Please try again."
+
+    val errorTextExisted = ErrorTextExisted(expectedErrorText)
+    val result: Boolean = errorTextExisted.matchesSafely(textInputLayout)
+    assertThat(result).isTrue()
+  }
+
+  /*
+  Please ignore the commented code below.
+  */
+/*
   @Test
   fun testTextInputAction_hasErrorText_correctDescription() {
     val matcher = TextInputAction.hasErrorText("Incorrect Administrator PIN. Please try again.")
@@ -59,4 +92,5 @@ class TextInputActionTest {
     val matcher = ErrorTextExisted("Your PIN should be 5 digits long.")
     assertThat(matcher.toString()).isNotEqualTo(boundedMatcher.toString())
   }
+ */
 }
