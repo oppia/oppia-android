@@ -5,14 +5,23 @@ import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.EXPRESSIONTYPE_NOT_SET
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
+import org.oppia.android.app.model.MathFunctionCall
 import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Polynomial.Term
 import org.oppia.android.app.model.Polynomial.Term.Variable
 import org.oppia.android.app.model.Real
+import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
+import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
+import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
+import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
+import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.sqrt
 
 // TODO: split up this extensions file into multiple, clean it up, reorganize, and add tests.
 
@@ -21,10 +30,63 @@ import kotlin.math.pow
 // x^(2^3) and ((x^2+2x+1)/(x+1)) won't be considered polynomials, but it can be seen that they are
 // indeed after being simplified. This implementation doesn't yet support recognizing binomials
 // (e.g. (x+1)^2) but needs to be updated to. The representation for Polynomial doesn't quite
-// support much outside of general form.
+// support much outside of general form (except negative exponents).
 
-// Consider expressions like x/2 (should be treated like (1/2)x).
-// Consider: (1+2)*x or (1+2)x
+// TODO: Consider expressions like x/2 (should be treated like (1/2)x).
+// TODO: Consider: (1+2)*x or (1+2)x
+// TODO: Make sure that all 'when' cases here do not use 'else' branches to ensure structural
+//  changes require changing logic.
+
+// TODO: add proper error channels for the return value.
+fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
+
+fun MathExpression.evaluate(): Real? {
+  return when (expressionTypeCase) {
+    CONSTANT -> constant
+    VARIABLE -> null // Variables not supported in numeric expressions.
+    BINARY_OPERATION -> binaryOperation.evaluate()
+    UNARY_OPERATION -> unaryOperation.evaluate()
+    FUNCTION_CALL -> functionCall.evaluate()
+    EXPRESSIONTYPE_NOT_SET, null -> null
+  }
+}
+
+private fun MathBinaryOperation.evaluate(): Real? {
+  return when (operator) {
+    MathBinaryOperation.Operator.ADD ->
+      rightOperand.evaluate()?.let { leftOperand.evaluate()?.plus(it) }
+    MathBinaryOperation.Operator.SUBTRACT ->
+      rightOperand.evaluate()?.let { leftOperand.evaluate()?.minus(it) }
+    MathBinaryOperation.Operator.MULTIPLY ->
+      rightOperand.evaluate()?.let { leftOperand.evaluate()?.times(it) }
+    MathBinaryOperation.Operator.DIVIDE ->
+      rightOperand.evaluate()?.let { leftOperand.evaluate()?.div(it) }
+    MathBinaryOperation.Operator.EXPONENTIATE ->
+      rightOperand.evaluate()?.let { leftOperand.evaluate()?.pow(it) }
+    MathBinaryOperation.Operator.OPERATOR_UNSPECIFIED,
+    MathBinaryOperation.Operator.UNRECOGNIZED,
+    null -> null
+  }
+}
+
+private fun MathUnaryOperation.evaluate(): Real? {
+  return when (operator) {
+    MathUnaryOperation.Operator.NEGATE -> operand.evaluate()?.let { -it }
+    MathUnaryOperation.Operator.POSITIVE -> operand.evaluate() // '+2' is the same as just '2'.
+    MathUnaryOperation.Operator.OPERATOR_UNSPECIFIED,
+    MathUnaryOperation.Operator.UNRECOGNIZED,
+    null -> null
+  }
+}
+
+private fun MathFunctionCall.evaluate(): Real? {
+  return when (functionType) {
+    MathFunctionCall.FunctionType.SQUARE_ROOT -> argument.evaluate()?.let { sqrt(it) }
+    MathFunctionCall.FunctionType.FUNCTION_UNSPECIFIED,
+    MathFunctionCall.FunctionType.UNRECOGNIZED,
+    null -> null
+  }
+}
 
 // Also: consider how to perform expression analysis for non-polynomial trees
 
@@ -424,11 +486,16 @@ private fun Real.isApproximatelyEqualTo(value: Double): Boolean {
 private fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
 
 private fun Real.toDouble(): Double {
-  return if (hasRational()) rational.toDouble() else irrational
+  return when (realTypeCase) {
+    RATIONAL -> rational.toDouble()
+    INTEGER -> integer.toDouble()
+    IRRATIONAL -> irrational
+    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
+  }
 }
 
 private fun Real.recompute(transform: (Real.Builder) -> Real.Builder): Real {
-  return transform(toBuilder().clearRational().clearIrrational()).build()
+  return transform(toBuilder().clearRational().clearIrrational().clearInteger()).build()
 }
 
 private fun combine(
@@ -436,47 +503,71 @@ private fun combine(
   rhs: Real,
   leftRationalRightRationalOp: (Fraction, Fraction) -> Fraction,
   leftRationalRightIrrationalOp: (Fraction, Double) -> Double,
+  leftRationalRightIntegerOp: (Fraction, Int) -> Fraction,
   leftIrrationalRightRationalOp: (Double, Fraction) -> Double,
-  leftIrrationalRightIrrationalOp: (Double, Double) -> Double
+  leftIrrationalRightIrrationalOp: (Double, Double) -> Double,
+  leftIrrationalRightIntegerOp: (Double, Int) -> Double,
+  leftIntegerRightRationalOp: (Int, Fraction) -> Fraction,
+  leftIntegerRightIrrationalOp: (Int, Double) -> Double,
+  leftIntegerRightIntegerOp: (Int, Int) -> Real,
 ): Real {
   return when (lhs.realTypeCase) {
-    Real.RealTypeCase.RATIONAL -> {
+    RATIONAL -> {
       // Left-hand side is Fraction.
       when (rhs.realTypeCase) {
-        Real.RealTypeCase.RATIONAL ->
+        RATIONAL ->
           lhs.recompute { it.setRational(leftRationalRightRationalOp(lhs.rational, rhs.rational)) }
-        Real.RealTypeCase.IRRATIONAL ->
+        IRRATIONAL ->
           lhs.recompute {
             it.setIrrational(leftRationalRightIrrationalOp(lhs.rational, rhs.irrational))
           }
-        else -> throw Exception("Invalid real: $rhs.")
+        INTEGER ->
+          lhs.recompute { it.setRational(leftRationalRightIntegerOp(lhs.rational, rhs.integer)) }
+        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
       }
     }
-    Real.RealTypeCase.IRRATIONAL -> {
+    IRRATIONAL -> {
       // Left-hand side is a double.
       when (rhs.realTypeCase) {
-        Real.RealTypeCase.RATIONAL ->
+        RATIONAL ->
           lhs.recompute {
             it.setIrrational(leftIrrationalRightRationalOp(lhs.irrational, rhs.rational))
           }
-        Real.RealTypeCase.IRRATIONAL ->
+        IRRATIONAL ->
           lhs.recompute {
             it.setIrrational(leftIrrationalRightIrrationalOp(lhs.irrational, rhs.irrational))
           }
-        else -> throw Exception("Invalid real: $rhs.")
+        INTEGER ->
+          lhs.recompute {
+            it.setIrrational(leftIrrationalRightIntegerOp(lhs.irrational, rhs.integer))
+          }
+        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
       }
     }
-    else -> throw Exception("Invalid real: $lhs.")
+    INTEGER -> {
+      // Left-hand side is an integer.
+      when (rhs.realTypeCase) {
+        RATIONAL ->
+          lhs.recompute { it.setRational(leftIntegerRightRationalOp(lhs.integer, rhs.rational)) }
+        IRRATIONAL ->
+          lhs.recompute {
+            it.setIrrational(leftIntegerRightIrrationalOp(lhs.integer, rhs.irrational))
+          }
+        INTEGER -> leftIntegerRightIntegerOp(lhs.integer, rhs.integer)
+        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
+      }
+    }
+    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $lhs.")
   }
 }
 
 private fun Real.pow(rhs: Real): Real {
   // Powers can really only be effectively done via floats or whole-number only fractions.
   return when (realTypeCase) {
-    Real.RealTypeCase.RATIONAL -> {
+    RATIONAL -> {
       // Left-hand side is Fraction.
       when (rhs.realTypeCase) {
-        Real.RealTypeCase.RATIONAL -> recompute {
+        RATIONAL -> recompute {
           if (rhs.rational.isOnlyWholeNumber()) {
             // The fraction can be retained.
             it.setRational(rational.pow(rhs.rational.wholeNumber))
@@ -486,62 +577,202 @@ private fun Real.pow(rhs: Real): Real {
             it.setIrrational(rational.toDouble().pow(rhs.rational.toDouble()))
           }
         }
-        Real.RealTypeCase.IRRATIONAL -> recompute { it.setIrrational(rational.pow(rhs.irrational)) }
-        else -> throw Exception("Invalid real: $rhs.")
+        IRRATIONAL -> recompute { it.setIrrational(rational.pow(rhs.irrational)) }
+        INTEGER -> recompute { it.setRational(rational.pow(rhs.integer)) }
+        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
       }
     }
-    Real.RealTypeCase.IRRATIONAL -> {
+    IRRATIONAL -> {
       // Left-hand side is a double.
       when (rhs.realTypeCase) {
-        Real.RealTypeCase.RATIONAL -> recompute { it.setIrrational(irrational.pow(rhs.rational)) }
-        Real.RealTypeCase.IRRATIONAL ->
-          recompute { it.setIrrational(irrational.pow(rhs.irrational)) }
-        else -> throw Exception("Invalid real: $rhs.")
+        RATIONAL -> recompute { it.setIrrational(irrational.pow(rhs.rational)) }
+        IRRATIONAL -> recompute { it.setIrrational(irrational.pow(rhs.irrational)) }
+        INTEGER -> recompute { it.setIrrational(irrational.pow(rhs.integer)) }
+        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
       }
     }
-    else -> throw Exception("Invalid real: $this.")
+    INTEGER -> {
+      // Left-hand side is an integer.
+      when (rhs.realTypeCase) {
+        RATIONAL -> {
+          if (rhs.rational.isOnlyWholeNumber()) {
+            // Whole number-only fractions are effectively just int^int.
+            integer.pow(rhs.rational.wholeNumber)
+          } else {
+            // Otherwise, raising by a fraction will result in an irrational number.
+            recompute { it.setIrrational(integer.toDouble().pow(rhs.rational.toDouble())) }
+          }
+        }
+        IRRATIONAL -> recompute { it.setIrrational(integer.toDouble().pow(rhs.irrational)) }
+        INTEGER -> integer.pow(rhs.integer)
+        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
+      }
+    }
+    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
   }
 }
 
 private operator fun Real.unaryMinus(): Real {
   return when (realTypeCase) {
-    Real.RealTypeCase.RATIONAL -> recompute { it.setRational(-rational) }
-    Real.RealTypeCase.IRRATIONAL -> recompute { it.setIrrational(-irrational) }
-    else -> throw Exception("Invalid real: $this.")
+    RATIONAL -> recompute { it.setRational(-rational) }
+    IRRATIONAL -> recompute { it.setIrrational(-irrational) }
+    INTEGER -> recompute { it.setInteger(-integer) }
+    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
   }
 }
 
 private operator fun Real.plus(rhs: Real): Real {
-  return combine(this, rhs, Fraction::plus, Fraction::plus, Double::plus, Double::plus)
+  return combine(
+    this, rhs, Fraction::plus, Fraction::plus, Fraction::plus, Double::plus, Double::plus,
+    Double::plus, Int::plus, Int::plus, Int::add
+  )
 }
 
 private operator fun Real.minus(rhs: Real): Real {
-  return combine(this, rhs, Fraction::minus, Fraction::minus, Double::minus, Double::minus)
+  return combine(
+    this, rhs, Fraction::minus, Fraction::minus, Fraction::minus, Double::minus, Double::minus,
+    Double::minus, Int::minus, Int::minus, Int::subtract
+  )
 }
 
 private operator fun Real.times(rhs: Real): Real {
-  return combine(this, rhs, Fraction::times, Fraction::times, Double::times, Double::times)
+  return combine(
+    this, rhs, Fraction::times, Fraction::times, Fraction::times, Double::times, Double::times,
+    Double::times, Int::times, Int::times, Int::multiply
+  )
 }
 
 private operator fun Real.div(rhs: Real): Real {
-  return combine(this, rhs, Fraction::div, Fraction::div, Double::div, Double::div)
+  return combine(
+    this, rhs, Fraction::div, Fraction::div, Fraction::div, Double::div, Double::div, Double::div,
+    Int::div, Int::div, Int::divide
+  )
 }
+
+private fun sqrt(real: Real): Real {
+  return when (real.realTypeCase) {
+    RATIONAL -> sqrt(real.rational)
+    IRRATIONAL -> real.recompute { it.setIrrational(sqrt(real.irrational)) }
+    INTEGER -> sqrt(real.integer)
+    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $real.")
+  }
+}
+
+private fun Real.isInteger(): Boolean = realTypeCase == INTEGER
 
 private fun Double.pow(rhs: Fraction): Double = this.pow(rhs.toDouble())
 private fun Fraction.pow(rhs: Double): Double = toDouble().pow(rhs)
 private operator fun Double.plus(rhs: Fraction): Double = this + rhs.toFloat()
 private operator fun Fraction.plus(rhs: Double): Double = toFloat() + rhs
+private operator fun Fraction.plus(rhs: Int): Fraction = this + rhs.toWholeNumberFraction()
+private operator fun Int.plus(rhs: Fraction): Fraction = toWholeNumberFraction() + rhs
 private operator fun Double.minus(rhs: Fraction): Double = this - rhs.toFloat()
 private operator fun Fraction.minus(rhs: Double): Double = toFloat() - rhs
+private operator fun Fraction.minus(rhs: Int): Fraction = this - rhs.toWholeNumberFraction()
+private operator fun Int.minus(rhs: Fraction): Fraction = toWholeNumberFraction() - rhs
 private operator fun Double.times(rhs: Fraction): Double = this * rhs.toFloat()
 private operator fun Fraction.times(rhs: Double): Double = toFloat() * rhs
+private operator fun Fraction.times(rhs: Int): Fraction = this * rhs.toWholeNumberFraction()
+private operator fun Int.times(rhs: Fraction): Fraction = toWholeNumberFraction() * rhs
 private operator fun Double.div(rhs: Fraction): Double = this / rhs.toFloat()
 private operator fun Fraction.div(rhs: Double): Double = toFloat() / rhs
+private operator fun Fraction.div(rhs: Int): Fraction = this / rhs.toWholeNumberFraction()
+private operator fun Int.div(rhs: Fraction): Fraction = toWholeNumberFraction() / rhs
+
+private fun Int.add(rhs: Int): Real = Real.newBuilder().apply { integer = this@add + rhs }.build()
+private fun Int.subtract(rhs: Int): Real = Real.newBuilder().apply {
+  integer = this@subtract - rhs
+}.build()
+private fun Int.multiply(rhs: Int): Real = Real.newBuilder().apply {
+  integer = this@multiply * rhs
+}.build()
+private fun Int.divide(rhs: Int): Real = Real.newBuilder().apply {
+  // If rhs divides this integer, retain the integer.
+  val lhs = this@divide
+  if ((lhs % rhs) == 0) {
+    integer = lhs / rhs
+  } else {
+    // Otherwise, keep precision by turning the division into a fraction.
+    rational = Fraction.newBuilder().apply {
+      isNegative = (lhs < 0) xor (rhs < 0)
+      numerator = abs(lhs)
+      denominator = abs(rhs)
+    }.build()
+  }
+}.build()
 
 private fun Fraction.pow(exp: Int): Fraction {
-  if (exp == 0) return Fraction.newBuilder().setWholeNumber(1).setDenominator(1).build()
-  if (exp == 1) return this
-  var newValue = this
-  for (i in 1 until exp) newValue *= this
-  return newValue
+  return when {
+    exp == 0 -> Fraction.newBuilder().setWholeNumber(1).setDenominator(1).build()
+    exp == 1 -> this
+    // x^-2 == 1/(x^2).
+    exp < 1 -> pow(-exp).toInvertedImproperForm().toProperForm()
+    else -> { // i > 1
+      var newValue = this
+      for (i in 1 until exp) newValue *= this
+      return newValue
+    }
+  }
+}
+
+private fun sqrt(fraction: Fraction): Real {
+  val improper = fraction.toImproperForm()
+
+  // Attempt to take the root of the fraction's numerator & denominator.
+  val numeratorRoot = sqrt(improper.numerator)
+  val denominatorRoot = sqrt(improper.denominator)
+
+  // If both values stayed as integers, the original fraction can be retained. Otherwise, the
+  // fraction must be evaluated by performing a division.
+  return Real.newBuilder().apply {
+    if (numeratorRoot.realTypeCase == denominatorRoot.realTypeCase && numeratorRoot.isInteger()) {
+      val rootedFraction = Fraction.newBuilder().apply {
+        isNegative = improper.isNegative
+        numerator = numeratorRoot.integer
+        denominator = denominatorRoot.integer
+      }.build().toProperForm()
+      if (rootedFraction.isOnlyWholeNumber()) {
+        // If the fractional form doesn't need to be kept, remove it.
+        integer = rootedFraction.toWholeNumber()
+      } else {
+        rational = rootedFraction
+      }
+    } else {
+      irrational = numeratorRoot.toDouble()
+    }
+  }.build()
+}
+
+private fun Int.pow(exp: Int): Real {
+  return when {
+    exp == 0 -> Real.newBuilder().apply { integer = 0 }.build()
+    exp == 1 -> Real.newBuilder().apply { integer = this@pow }.build()
+    exp < 0 -> Real.newBuilder().apply { rational = toWholeNumberFraction().pow(exp) }.build()
+    else -> {
+      // exp > 1
+      var computed = this
+      for (i in 0 until exp - 1) computed *= this
+      Real.newBuilder().apply { integer = computed }.build()
+    }
+  }
+}
+
+private fun sqrt(int: Int): Real {
+  // First, check if the integer is a square. Reference for possible methods:
+  // https://www.researchgate.net/post/How-to-decide-if-a-given-number-will-have-integer-square-root-or-not.
+  var potentialRoot = 2
+  while ((potentialRoot * potentialRoot) < int) {
+    potentialRoot++
+  }
+  if (potentialRoot * potentialRoot == int) {
+    // There's an exact integer representation of the root.
+    return Real.newBuilder().apply {
+      integer = potentialRoot
+    }.build()
+  }
+
+  // Otherwise, compute the irrational square root.
+  return Real.newBuilder().apply {
+    irrational = sqrt(int.toDouble())
+  }.build()
 }

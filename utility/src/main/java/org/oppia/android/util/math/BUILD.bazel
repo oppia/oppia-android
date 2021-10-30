@@ -34,11 +34,37 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "tokenizer",
+    name = "numeric_expression_parser",
     srcs = [
-        "MathTokenizer.kt",
+        "NumericExpressionParser.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":peekable_iterator",
+        ":tokenizer",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "tokenizer",
+    srcs = [
+        "MathTokenizer.kt",
+        "MathTokenizer2.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":peekable_iterator",
+    ],
+)
+
+kt_android_library(
+    name = "peekable_iterator",
+    srcs = [
+        "PeekableIterator.kt",
     ],
 )

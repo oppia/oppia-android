@@ -21,6 +21,7 @@ message MathExpression {
     string variable = 2;
     MathBinaryOperation binary_operation = 3;
     MathUnaryOperation unary_operation = 4;
+    MathFunctionCall function_call = 5;
   }
 }
 
@@ -49,10 +50,22 @@ message MathUnaryOperation {
     OPERATOR_UNSPECIFIED = 0;
     // Represents negating a value, e.g.: -y.
     NEGATE = 1;
+    // Represents indicating a value as positive, e.g.: +y.
+    POSITIVE = 2;
   }
 
   Operator operator = 1;
   MathExpression operand = 2;
+}
+
+message MathFunctionCall {
+  enum FunctionType {
+    FUNCTION_UNSPECIFIED = 0;
+    SQUARE_ROOT = 1;
+  }
+
+  FunctionType function_type = 1;
+  MathExpression argument = 2;
 }
 
 message Real {
@@ -61,7 +74,48 @@ message Real {
     // Represents a decimal value. Technically these can sometimes be rational, but given IEEE-754
     // rounding errors we need to treat these values as irrational and non-factorable.
     double irrational = 2;
+    int32 integer = 3;
   }
+}
+
+message ComparableOperationList {
+  message ComparableOperation {
+    oneof comparison_type {
+      CommutativeAccumulation commutative_accumulation = 1;
+      NonCommutativeOperation non_commutative_operation = 2;
+      Real constant_term = 3;
+      string variable_term = 4;
+    }
+  }
+  message CommutativeAccumulation {
+    enum AccumulationType {
+      ACCUMULATION_TYPE_UNSPECIFIED = 0;
+      SUMMATION = 1;
+      PRODUCT = 2;
+    }
+
+    AccumulationType accumulation_type = 1;
+    repeated ComparableOperation combined_operations = 2;
+  }
+  message NonCommutativeOperation {
+    bool is_negated = 1;
+
+    oneof operation_type {
+      BinaryOperation division = 2;
+      BinaryOperation exponentiation = 3;
+      UnaryOperation square_root = 4;
+    }
+
+    message BinaryOperation {
+      ComparableOperation left_operand = 1;
+      ComparableOperation right_operand = 2;
+    }
+    message UnaryOperation {
+      ComparableOperation operand = 1;
+    }
+  }
+
+  ComparableOperation root_operation = 1;
 }
 
 message Polynomial {
@@ -69,7 +123,7 @@ message Polynomial {
 
   message Term {
     Real coefficient = 1;
-    repeated Variable variable  = 2;
+    repeated Variable variable = 2;
 
     message Variable {
       string name = 1;

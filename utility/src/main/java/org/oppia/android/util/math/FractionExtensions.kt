@@ -1,6 +1,7 @@
 package org.oppia.android.util.math
 
 import org.oppia.android.app.model.Fraction
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 /**
@@ -46,21 +47,24 @@ fun Fraction.isOnlyWholeNumber(): Boolean {
 }
 
 /**
- * Returns a float version of this fraction.
+ * Returns this fraction as a whole number. Note that this will not return a value that is
+ * mathematically equivalent to this fraction unless [isOnlyWholeNumber] returns true.
+ */
+fun Fraction.toWholeNumber(): Int = if (isNegative) -wholeNumber else wholeNumber
+
+/** [Float] version of [toDouble]. */
+fun Fraction.toFloat(): Float = toDouble().toFloat()
+
+/**
+ * Returns a [Double] version of this fraction.
  *
  * See: https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L73.
  */
-fun Fraction.toFloat(): Float {
-  val totalParts = ((wholeNumber * denominator) + numerator).toFloat()
-  val floatVal = totalParts / denominator.toFloat()
+fun Fraction.toDouble(): Double {
+  val totalParts = ((wholeNumber.toDouble() * denominator.toDouble()) + numerator.toDouble())
+  val floatVal = totalParts / denominator.toDouble()
   return if (isNegative) -floatVal else floatVal
 }
-
-/**
- * Double version of [toFloat] (note that this doesn't actually guarantee additional precision over
- * toFloat().
- */
-fun Fraction.toDouble(): Double = toFloat().toDouble()
 
 /**
  * Returns this fraction in its most simplified form.
@@ -171,7 +175,7 @@ operator fun Fraction.div(rhs: Fraction): Fraction {
 }
 
 /** Returns the inverse improper fraction representation of this fraction. */
-private fun Fraction.toInvertedImproperForm(): Fraction {
+fun Fraction.toInvertedImproperForm(): Fraction {
   val improper = toImproperForm()
   return improper.toBuilder()
     .setNumerator(improper.denominator)
@@ -182,6 +186,17 @@ private fun Fraction.toInvertedImproperForm(): Fraction {
 /** Returns the negated form of this fraction. */
 operator fun Fraction.unaryMinus(): Fraction {
   return toBuilder().setIsNegative(!isNegative).build()
+}
+
+/** Returns the [Fraction] representation of this integer (as a whole number fraction). */
+fun Int.toWholeNumberFraction(): Fraction {
+  val intValue = this
+  return Fraction.newBuilder().apply {
+    isNegative = intValue < 0
+    wholeNumber = abs(intValue)
+    numerator = 0
+    denominator = 1
+  }.build()
 }
 
 /** Returns the greatest common divisor between two integers. */

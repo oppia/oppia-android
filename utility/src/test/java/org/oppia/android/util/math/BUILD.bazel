@@ -2,7 +2,6 @@
 TODO: add docs
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
@@ -12,7 +11,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.math.MathExpressionParserTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//model/src/main/proto:math_java_proto_lite",
         "//testing:assertion_helpers",
         "//third_party:androidx_test_ext_junit",
@@ -31,7 +29,6 @@ oppia_android_test(
     test_class = "org.oppia.android.util.math.MathTokenizerTest",
     test_manifest = "//utility:test_manifest",
     deps = [
-        ":dagger",
         "//model/src/main/proto:math_java_proto_lite",
         "//testing:assertion_helpers",
         "//third_party:androidx_test_ext_junit",
@@ -43,4 +40,21 @@ oppia_android_test(
     ],
 )
 
-dagger_rules()
+oppia_android_test(
+    name = "NumericExpressionParserTest",
+    srcs = ["NumericExpressionParserTest.kt"],
+    custom_package = "org.oppia.android.util.math",
+    test_class = "org.oppia.android.util.math.NumericExpressionParserTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing:assertion_helpers",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:numeric_expression_parser",
+    ],
+)
