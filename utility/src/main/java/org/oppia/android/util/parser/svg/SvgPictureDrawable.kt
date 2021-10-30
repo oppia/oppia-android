@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser.svg
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -9,6 +10,7 @@ import android.graphics.Picture
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.TextPaint
 import org.oppia.android.util.parser.image.BitmapBlurrer
 import org.oppia.android.util.parser.image.ImageTransformation
@@ -41,7 +43,7 @@ abstract class SvgPictureDrawable(
       // Save current transformation state.
       save()
 
-      if (scalableVectorGraphic.hasTransformations()) {
+      if (scalableVectorGraphic.shouldBeRenderedAsBitmap()) {
         bitmap?.let { bitmap ->
           drawBitmap(bitmap, /* src= */ null, bounds, bitmapPaint)
         }
@@ -90,7 +92,7 @@ abstract class SvgPictureDrawable(
       scalableVectorGraphic.renderToTextPicture(it)
     } ?: scalableVectorGraphic.renderToBlockPicture()
     intrinsicSize = scalableVectorGraphic.computeSizeSpecs(textPaint)
-    if (scalableVectorGraphic.hasTransformations()) {
+    if (scalableVectorGraphic.shouldBeRenderedAsBitmap()) {
       recomputeBitmap()
     }
   }
@@ -120,4 +122,13 @@ abstract class SvgPictureDrawable(
   }
 }
 
+private fun ScalableVectorGraphic.shouldBeRenderedAsBitmap() =
+  hasTransformations() || isUsingAndroidSdkWithSvgRenderingIssues()
+
 private fun ScalableVectorGraphic.hasTransformations() = transformations.isNotEmpty()
+
+// TODO(#3961): Remove this & instead rely on native SVG rendering for older SDK versions.
+// See #3938 for context on why these OS versions are being forced to bitmap rendering.
+@SuppressLint("ObsoleteSdkInt") // Incorrect warning.
+private fun isUsingAndroidSdkWithSvgRenderingIssues() =
+  Build.VERSION.SDK_INT <= Build.VERSION_CODES.M
