@@ -6,12 +6,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -69,7 +67,6 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -92,15 +89,6 @@ class PoliciesActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
-  private lateinit var launchedActivity: Activity
-
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
   @get:Rule
   var activityTestRule: ActivityTestRule<PoliciesActivity> = ActivityTestRule(
     PoliciesActivity::class.java, /* initialTouchMode= */
@@ -114,18 +102,11 @@ class PoliciesActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    Intents.init()
-    val intent = createpoliciesActivity()
-    launchedActivity = activityTestRule.launchActivity(intent)
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   @Test
-  fun testpoliciesActivity_hasCorrectActivityLabel() {
+  fun testPoliciesActivity_hasCorrectPrivacyPolicyActivityLabel() {
+    activityTestRule.launchActivity(createPoliciesActivity(Policies.PRIVACY_POLICY))
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -133,15 +114,35 @@ class PoliciesActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.privacy_policy_title))
   }
 
+  @Test
+  fun testPoliciesActivity_hasCorrectTermsOfServiceActivityLabel() {
+    activityTestRule.launchActivity(createPoliciesActivity(Policies.TERMS_OF_SERVICE))
+    val title = activityTestRule.activity.title
+
+    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+    // correct string when it's read out.
+    assertThat(title).isEqualTo(context.getString(R.string.terms_of_service_title))
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createpoliciesActivity(): Intent {
-    return PoliciesActivity.createPoliciesActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      Policies.PRIVACY_POLICY
-    )
+  private fun createPoliciesActivity(policies: Policies): Intent {
+    return when (policies) {
+      Policies.PRIVACY_POLICY -> {
+        PoliciesActivity.createPoliciesActivityIntent(
+          ApplicationProvider.getApplicationContext(),
+          Policies.PRIVACY_POLICY.ordinal
+        )
+      }
+      Policies.TERMS_OF_SERVICE -> {
+        PoliciesActivity.createPoliciesActivityIntent(
+          ApplicationProvider.getApplicationContext(),
+          Policies.TERMS_OF_SERVICE.ordinal
+        )
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
