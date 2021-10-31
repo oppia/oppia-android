@@ -3,8 +3,17 @@ package org.oppia.android.app.policies
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
+import android.text.Spannable
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
@@ -59,12 +68,14 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -77,15 +88,22 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = PoliciesActivityTest.TestApplication::class,
+  application = PoliciesFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class PoliciesActivityTest {
+class PoliciesFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
+
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
+
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
 
   @get:Rule
   var activityTestRule: ActivityTestRule<PoliciesActivity> = ActivityTestRule(
@@ -94,37 +112,82 @@ class PoliciesActivityTest {
     false
   )
 
-  @Inject
-  lateinit var context: Context
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
   @Test
-  fun testPoliciesActivity_hasCorrectPrivacyPolicyActivityLabel() {
-    activityTestRule.launchActivity(createPoliciesActivity(Policies.PRIVACY_POLICY))
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.privacy_policy_title))
+  fun testPrivacyPolicyFragment_checkPrivacyPolicy_isDisplayed() {
+    launch<PoliciesActivity>(createPoliciesActivity(Policies.PRIVACY_POLICY)).use {
+      onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
   }
 
   @Test
-  fun testPoliciesActivity_hasCorrectTermsOfServiceActivityLabel() {
+  fun testPrivacyPolicyFragment_checkPrivacyPolicyWebLink_isDisplayed() {
+    launch<PoliciesActivity>(createPoliciesActivity(Policies.PRIVACY_POLICY)).use {
+      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+
+  @Test
+  fun testPrivacyPolicyFragment_checkTermsOfService_isDisplayed() {
+    launch<PoliciesActivity>(createPoliciesActivity(Policies.TERMS_OF_SERVICE)).use {
+      onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPrivacyPolicyFragment_checkTermsOfServiceWebLink_isDisplayed() {
+    launch<PoliciesActivity>(createPoliciesActivity(Policies.TERMS_OF_SERVICE)).use {
+      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPrivacyPolicyFragment_checkPrivacyPolicy_isCorrectlyParsed() {
+    activityTestRule.launchActivity(createPoliciesActivity(Policies.PRIVACY_POLICY))
+    val privacyPolicyTextView = activityTestRule.activity.findViewById(
+      R.id.policies_description_text_view
+    ) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      getResources().getString(R.string.privacy_policy_content),
+      privacyPolicyTextView
+    )
+    assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
+  }
+
+  @Test
+  fun testPrivacyPolicyFragment_checkTermsOfService_isCorrectlyParsed() {
     activityTestRule.launchActivity(createPoliciesActivity(Policies.TERMS_OF_SERVICE))
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.terms_of_service_title))
+    val privacyPolicyTextView = activityTestRule.activity.findViewById(
+      R.id.policies_description_text_view
+    ) as TextView
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false
+    )
+    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+      getResources().getString(R.string.terms_of_service_content),
+      privacyPolicyTextView
+    )
+    assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
 
   private fun createPoliciesActivity(policies: Policies): Intent {
     return when (policies) {
@@ -141,6 +204,14 @@ class PoliciesActivityTest {
         )
       }
     }
+  }
+
+  private fun getResources(): Resources {
+    return ApplicationProvider.getApplicationContext<Context>().resources
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -172,18 +243,18 @@ class PoliciesActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(policiesActivityTest: PoliciesActivityTest)
+    fun inject(privacyPolicyFragmentTest: PoliciesFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPoliciesActivityTest_TestApplicationComponent.builder()
+      DaggerPoliciesFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(policiesActivityTest: PoliciesActivityTest) {
-      component.inject(policiesActivityTest)
+    fun inject(privacyPolicyFragmentTest: PoliciesFragmentTest) {
+      component.inject(privacyPolicyFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
