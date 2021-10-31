@@ -298,6 +298,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/player/stopplaying/
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/stopplaying/UnsavedExplorationDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/stopplaying/StopStatePlayingSessionListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/stopplaying/StopStatePlayingSessionWithSavedProgressListener.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/policies/Policies.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/policies/PoliciesActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/policies/PoliciesFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/policies/RouteToPoliciesListener.kt"
