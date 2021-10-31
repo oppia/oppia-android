@@ -133,7 +133,6 @@ class PoliciesFragmentTest {
     }
   }
 
-
   @Test
   fun testPrivacyPolicyFragment_checkTermsOfService_isDisplayed() {
     launch<PoliciesActivity>(createPoliciesActivity(Policies.TERMS_OF_SERVICE)).use {
@@ -187,7 +186,6 @@ class PoliciesFragmentTest {
     )
     assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
   }
-
 
   private fun createPoliciesActivity(policies: Policies): Intent {
     return when (policies) {
