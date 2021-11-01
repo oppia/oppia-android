@@ -42,6 +42,7 @@ kt_android_library(
     srcs = [
         "CustomBulletSpan.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = ["//utility"],
 )
 
