@@ -163,11 +163,6 @@ class HomeActivityTest {
 
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<HomeActivity> = ActivityTestRule(
-    HomeActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
   
   val oppiaTestRule = OppiaTestRule()
 
