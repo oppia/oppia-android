@@ -38,11 +38,11 @@ class PoliciesActivityPresenter @Inject constructor(
   private fun setUpToolbar(policies: Int) {
     toolbar = activity.findViewById<View>(R.id.policies_activity_toolbar) as Toolbar
 
-    when (policies) {
+    toolbar.title = when (policies) {
       Policies.PRIVACY_POLICY.ordinal ->
-        toolbar.title = resourceHandler.getStringInLocale(R.string.privacy_policy_title)
+        resourceHandler.getStringInLocale(R.string.privacy_policy_title)
       Policies.TERMS_OF_SERVICE.ordinal ->
-        toolbar.title = resourceHandler.getStringInLocale(R.string.terms_of_service_title)
+        resourceHandler.getStringInLocale(R.string.terms_of_service_title)
     }
     activity.setSupportActionBar(toolbar)
   }
