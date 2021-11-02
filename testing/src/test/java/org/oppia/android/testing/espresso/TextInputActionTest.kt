@@ -42,7 +42,7 @@ class TextInputActionTest {
     val expectedErrorText = "Incorrect Administrator PIN. Please try again."
     val textInputLayout = TextInputLayout(context)
 
-    textInputLayout.error = "Incorrect Administrator PIN. Please try a2gain."
+    textInputLayout.error = "Incorrect Administrator PIN. Please try again."
 
     val errorTextExisted = ErrorTextExisted(expectedErrorText)
     val result: Boolean = errorTextExisted.matchesSafely(textInputLayout)
