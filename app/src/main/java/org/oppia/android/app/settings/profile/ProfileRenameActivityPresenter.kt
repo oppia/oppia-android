@@ -1,23 +1,13 @@
 package org.oppia.android.app.settings.profile
 
-import android.content.Context
-import android.content.Intent
-import android.view.KeyEvent
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileRenameActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [ProfileRenameActivity]. */
@@ -51,7 +41,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
     binding.profileRenameToolbar.setNavigationOnClickListener {
       (activity as ProfileRenameActivity).finish()
     }
-
+/*
     binding.profileRenameSaveButton.setOnClickListener {
       renameViewModel.nameErrorMsg.set("")
       val imm = activity.getSystemService(
@@ -100,31 +90,33 @@ class ProfileRenameActivityPresenter @Inject constructor(
       }
       false
     }
+    */
   }
 
-  private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
-    if (result.isSuccess()) {
-      val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      activity.startActivity(intent)
-    } else if (result.isFailure()) {
-      when (result.getErrorOrNull()) {
-        is ProfileManagementController.ProfileNameNotUniqueException ->
-          renameViewModel.nameErrorMsg.set(
-            resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_not_unique
+  /*
+    private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
+      if (result.isSuccess()) {
+        val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        activity.startActivity(intent)
+      } else if (result.isFailure()) {
+        when (result.getErrorOrNull()) {
+          is ProfileManagementController.ProfileNameNotUniqueException ->
+            renameViewModel.nameErrorMsg.set(
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_not_unique
+              )
             )
-          )
-        is ProfileManagementController.ProfileNameOnlyLettersException ->
-          renameViewModel.nameErrorMsg.set(
-            resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_only_letters
+          is ProfileManagementController.ProfileNameOnlyLettersException ->
+            renameViewModel.nameErrorMsg.set(
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_only_letters
+              )
             )
-          )
+        }
       }
     }
-  }
-
+  */
   private fun getProfileRenameViewModel(): ProfileRenameViewModel {
     return viewModelProvider.getForActivity(activity, ProfileRenameViewModel::class.java)
   }
