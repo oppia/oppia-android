@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 class TextInputActionTestActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    setTheme(R.style.Theme_AppCompat_Light)
   }
 
   companion object {
