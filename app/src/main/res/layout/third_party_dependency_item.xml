@@ -34,6 +34,7 @@
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
+        android:textAlignment="viewStart"
         android:text="@{viewModel.dependencyName}" />
 
       <TextView
@@ -46,6 +47,7 @@
         android:paddingBottom="16dp"
         android:textColor="@color/accessible_grey"
         android:text="@{viewModel.dependencyVersion}"
+        android:textAlignment="viewStart"
         android:textSize="12sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
