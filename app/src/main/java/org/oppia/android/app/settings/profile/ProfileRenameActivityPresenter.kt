@@ -45,7 +45,6 @@ class ProfileRenameActivityPresenter @Inject constructor(
       val profileRenameFragment = ProfileRenameFragment.newInstance(profileId)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.profile_rename_fragment_placeholder, profileRenameFragment).commitNow()
-
     }
 /*
     binding.profileRenameSaveButton.setOnClickListener {
@@ -125,7 +124,10 @@ class ProfileRenameActivityPresenter @Inject constructor(
   */
 
   private fun getProfileRenameFragment(): ProfileRenameFragment? {
-    return activity.supportFragmentManager.findFragmentById(R.id.profile_rename_fragment_placeholder) as ProfileRenameFragment?
+    return activity.supportFragmentManager
+      .findFragmentById(
+        R.id.profile_rename_fragment_placeholder
+      ) as ProfileRenameFragment?
   }
 
   private fun getProfileRenameViewModel(): ProfileRenameViewModel {
