@@ -22,7 +22,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
     getProfileRenameViewModel()
   }
 
-  fun handleOnCreate() {
+  fun handleOnCreate(profileId: Int) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
@@ -31,7 +31,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
         activity,
         R.layout.profile_rename_activity
       )
-    val profileId = activity.intent.getIntExtra(PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, 0)
+//    val profileId = activity.intent.getIntExtra(PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, 0)
 
     binding.apply {
       viewModel = renameViewModel
@@ -40,6 +40,12 @@ class ProfileRenameActivityPresenter @Inject constructor(
 
     binding.profileRenameToolbar.setNavigationOnClickListener {
       (activity as ProfileRenameActivity).finish()
+    }
+    if (getProfileRenameFragment() == null) {
+      val profileRenameFragment = ProfileRenameFragment.newInstance(profileId)
+      activity.supportFragmentManager.beginTransaction()
+        .add(R.id.profile_rename_fragment_placeholder, profileRenameFragment).commitNow()
+
     }
 /*
     binding.profileRenameSaveButton.setOnClickListener {
@@ -117,6 +123,11 @@ class ProfileRenameActivityPresenter @Inject constructor(
       }
     }
   */
+
+  private fun getProfileRenameFragment(): ProfileRenameFragment? {
+    return activity.supportFragmentManager.findFragmentById(R.id.profile_rename_fragment_placeholder) as ProfileRenameFragment?
+  }
+
   private fun getProfileRenameViewModel(): ProfileRenameViewModel {
     return viewModelProvider.getForActivity(activity, ProfileRenameViewModel::class.java)
   }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
@@ -36,5 +37,14 @@
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+      android:id="@+id/profile_rename_fragment_placeholder"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/profile_rename_app_bar_layout"></FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

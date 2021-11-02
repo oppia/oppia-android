@@ -14,16 +14,15 @@ class ProfileRenameFragment : InjectableFragment() {
   lateinit var profileRenameFragmentPresenter: ProfileRenameFragmentPresenter
 
   companion object {
-    private const val PROFILE_RENAME_FRAGMENT_DEPENDENCY_INDEX =
-      "ProfileRenameFragment.dependency_index"
-    private const val PROFILE_RENAME_FRAGMENT_PROFILE_INDEX =
-      "ProfileRenameFragment.profile_index"
-
-    fun newInstance(dependencyIndex: Int, renameIndex: Int): ProfileRenameFragment {
+    //    private const val PROFILE_RENAME_FRAGMENT_DEPENDENCY_INDEX =
+//      "ProfileRenameFragment.dependency_index"
+//    private const val PROFILE_RENAME_FRAGMENT_PROFILE_INDEX =
+//      "ProfileRenameFragment.profile_index"
+    private const val PROFILE_ID = "Profile_Id"
+    fun newInstance(profileId: Int): ProfileRenameFragment {
       val profileRenameFragment = ProfileRenameFragment()
       val args = Bundle()
-      args.putInt(PROFILE_RENAME_FRAGMENT_DEPENDENCY_INDEX, dependencyIndex)
-      args.putInt(PROFILE_RENAME_FRAGMENT_PROFILE_INDEX, renameIndex)
+      args.putInt(PROFILE_ID, profileId)
       profileRenameFragment.arguments = args
       return profileRenameFragment
     }
@@ -41,8 +40,7 @@ class ProfileRenameFragment : InjectableFragment() {
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileRenameFragment" }
-    val dependencyIndex = args.getInt(PROFILE_RENAME_FRAGMENT_DEPENDENCY_INDEX)
-    val renameIndex = args.getInt(PROFILE_RENAME_FRAGMENT_PROFILE_INDEX)
+    val profileId = args.getInt(PROFILE_ID)
     return profileRenameFragmentPresenter.handleCreateView(
       inflater,
       container,
