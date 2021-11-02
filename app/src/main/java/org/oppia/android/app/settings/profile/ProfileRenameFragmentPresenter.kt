@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
@@ -19,6 +18,7 @@ import org.oppia.android.databinding.ProfileRenameFragmentBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 @FragmentScope
 class ProfileRenameFragmentPresenter @Inject constructor(
@@ -51,7 +51,13 @@ class ProfileRenameFragmentPresenter @Inject constructor(
     binding.profileRenameSaveButton.setOnClickListener {
       renameViewModel.nameErrorMsg.set("")
       if (binding.profileRenameInputEditText.text.toString().isEmpty()) {
-        renameViewModel.nameErrorMsg.set(resourceHandler.getStringInLocale(R.string.add_profile_error_name_empty))
+        renameViewModel
+          .nameErrorMsg
+          .set(
+            resourceHandler.getStringInLocale(
+              R.string.add_profile_error_name_empty
+            )
+          )
         return@setOnClickListener
       }
       profileManagementController
