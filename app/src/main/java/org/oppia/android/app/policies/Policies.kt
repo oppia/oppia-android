@@ -1,6 +1,6 @@
 package org.oppia.android.app.policies
 
-/** Enum class containing the policies. */
+/** Represents pages to view different policies, such as the app's Privacy Policy. */
 enum class Policies {
   /** Corresponds to Privacy Policy page. */
   PRIVACY_POLICY,
