@@ -6,8 +6,10 @@ If you'd like to help out with the Android project, please follow the following 
 1. Sign the CLA, so that we can accept your contributions. If you're contributing as an individual, use the [individual CLA](https://goo.gl/forms/AttNH80OV0). If your company owns the copyright to your contributions, a company representative should sign the [corporate CLA](https://goo.gl/forms/xDq9gK3Zcv).
 2. Fill in the [Oppia contributor survey](https://goo.gl/forms/otv30JV3Ihv0dT3C3) to let us know what your interests are. (You can always change your responses later.) **Make sure to indicate prominently that you are interested in helping out with Android.**
 3. Download/Install the latest version of [Android Studio](https://developer.android.com/studio/?gclid=EAIaIQobChMI8fX3n5Lb6AIVmH8rCh24JQsxEAAYASAAEgL4L_D_BwE&gclsrc=aw.ds#downloads). 
-4. Install **Java 8** using the links from [the Java website](https://www.java.com/en/download/).
+4. Download and Install **Java 8** using the links from [the Java website](https://www.java.com/en/download/).
    - **Note for Windows users:** Make sure to also set up the PATH system variable correctly for `Java`, following [these instructions](https://www.java.com/en/download/help/path.html).
+   - [Instructions](https://www.java.com/en/download/help/linux_install.html) for Linux users.
+   - [Instructions](https://www.java.com/en/download/help/mac_install.html) for Mac users.
 5. In Android Studio, open Tools > SDK Manager.
    - In the "SDK Platforms" tab (which is the default), select `API Level 28`.
    - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 31" and select 29.0.2 (this is needed for Bazel support).
