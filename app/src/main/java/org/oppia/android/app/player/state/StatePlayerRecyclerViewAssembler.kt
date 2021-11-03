@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
+import org.oppia.android.R
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
@@ -472,7 +473,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     createBannerConfetti(confettiView, confettiConfig)
     animateCongratulationsTextView(textView)
-    textView.announceForAccessibility("Correct")
+    textView.announceForAccessibility(context.getString(R.string.correct))
   }
 
   /** Shows confetti when the learner reaches the end of an exploration session. */
