@@ -294,7 +294,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/TextInputViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/StateViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/testing/StateFragmentTestViewModel.kt",
-    "src/main/java/org/oppia/android/app/policies/Policies.kt",
     "src/main/java/org/oppia/android/app/profile/AddProfileViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/AdminAuthViewModel.kt",
     "src/main/java/org/oppia/android/app/profile/AdminPinViewModel.kt",

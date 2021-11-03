@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -151,7 +151,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     val spannableStringBuilder = SpannableStringBuilder(completeString)
     val clickOnTerms = object : ClickableSpan() {
       override fun onClick(widget: View) {
-        (activity as RouteToPoliciesListener).onRouteToPolicies(Policies.TERMS_OF_SERVICE)
+        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.TERMS_OF_SERVICE)
       }
 
       override fun updateDrawState(ds: TextPaint) {
@@ -162,7 +162,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
     val clickOnPrivacy = object : ClickableSpan() {
       override fun onClick(widget: View) {
-        (activity as RouteToPoliciesListener).onRouteToPolicies(Policies.PRIVACY_POLICY)
+        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
       }
 
       override fun updateDrawState(ds: TextPaint) {

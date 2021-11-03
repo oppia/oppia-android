@@ -16,7 +16,8 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
-import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.model.PoliciesActivityArguments
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
@@ -299,32 +300,38 @@ class HelpActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
   }
 
-  fun handleLoadPoliciesFragment(policies: Policies) {
-    selectPoliciesFragment(policies)
+  fun handleLoadPoliciesFragment(policyPage: PolicyPage) {
+    selectPoliciesFragment(policyPage)
+
+    val policiesActivityArguments =
+      PoliciesActivityArguments
+        .newBuilder()
+        .setPolicyPage(policyPage)
+        .build()
     val previousFragment = getMultipaneOptionsFragment()
     if (previousFragment != null) {
       activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.multipane_options_container,
-      PoliciesFragment.newInstance(policies)
+      PoliciesFragment.newInstance(policiesActivityArguments)
     ).commitNow()
   }
 
-  private fun selectPoliciesFragment(policies: Policies) {
-    when (policies) {
-      Policies.PRIVACY_POLICY -> setMultipaneContainerTitle(
+  private fun selectPoliciesFragment(policyPage: PolicyPage) {
+    when (policyPage) {
+      PolicyPage.PRIVACY_POLICY -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(
           R.string.privacy_policy_title
         )
       )
-      Policies.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
+      PolicyPage.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(
           R.string.terms_of_service_title
         )
       )
+      else -> PolicyPage.UNRECOGNIZED
     }
-
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = POLICIES_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()

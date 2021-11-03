@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.PoliciesActivityArguments
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val POLICIES = "policies"
+private const val POLICIES_ARGUMENT_PROTO = "policies"
 
 /** Fragment that contains policies flow of the app. */
 class PoliciesFragment : InjectableFragment() {
@@ -18,9 +21,9 @@ class PoliciesFragment : InjectableFragment() {
 
   companion object {
     /** Returns instance of [PoliciesFragment]. */
-    fun newInstance(policies: Policies): PoliciesFragment {
+    fun newInstance(policiesActivityArguments: PoliciesActivityArguments): PoliciesFragment {
       val args = Bundle()
-      args.putInt(POLICIES, policies)
+      args.putProto(POLICIES_ARGUMENT_PROTO, policiesActivityArguments)
       val fragment = PoliciesFragment()
       fragment.arguments = args
       return fragment
@@ -40,7 +43,7 @@ class PoliciesFragment : InjectableFragment() {
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to PoliciesFragment"
     }
-    val policies = args.getInt(POLICIES)
+    val policies = args.getProto(POLICIES_ARGUMENT_PROTO, PoliciesActivityArguments.getDefaultInstance())
     return policiesFragmentPresenter.handleCreateView(inflater, container, policies)
   }
 }

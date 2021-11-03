@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -36,7 +36,7 @@ class OnboardingActivity :
     finish()
   }
 
-  override fun onRouteToPolicies(policies: Policies) {
-    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policies.ordinal))
+  override fun onRouteToPolicies(policyPage: PolicyPage) {
+    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policyPage))
   }
 }

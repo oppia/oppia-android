@@ -1,6 +1,6 @@
 package org.oppia.android.app.help
 
-import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.model.PolicyPage
 
 /**
  * Listener for when a selection should result in displaying a policy page (e.g. the Privacy Policy)
@@ -8,5 +8,5 @@ import org.oppia.android.app.policies.Policies
  */
 interface LoadPoliciesFragmentListener {
   /**  Called when the user wants to view an app policy. */
-  fun loadPoliciesFragment(policies: Policies)
+  fun loadPoliciesFragment(policyPage: PolicyPage)
 }

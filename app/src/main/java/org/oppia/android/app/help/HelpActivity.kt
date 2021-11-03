@@ -11,7 +11,7 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.policies.Policies
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -128,11 +128,11 @@ class HelpActivity :
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }
 
-  override fun onRouteToPolicies(policies: Policies) {
-    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policies))
+  override fun onRouteToPolicies(policyPage: PolicyPage) {
+    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policyPage))
   }
 
-  override fun loadPoliciesFragment(policies: Policies) {
-    helpActivityPresenter.handleLoadPoliciesFragment(policies)
+  override fun loadPoliciesFragment(policyPage: PolicyPage) {
+    helpActivityPresenter.handleLoadPoliciesFragment(policyPage)
   }
 }
