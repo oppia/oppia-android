@@ -260,6 +260,7 @@
       android:name=".app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.policies.PoliciesActivity"
+      android:label="@string/privacy_policy_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.resumelesson.ResumeLessonActivity"

@@ -129,10 +129,10 @@ class HelpActivity :
   }
 
   override fun onRouteToPolicies(policies: Policies) {
-    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policies.ordinal))
+    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policies))
   }
 
   override fun loadPoliciesFragment(policies: Policies) {
-    helpActivityPresenter.handleLoadPoliciesFragment(policies.ordinal)
+    helpActivityPresenter.handleLoadPoliciesFragment(policies)
   }
 }

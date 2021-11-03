@@ -299,14 +299,26 @@ class HelpActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
   }
 
-  private fun selectPoliciesFragment(policies: Int) {
+  fun handleLoadPoliciesFragment(policies: Policies) {
+    selectPoliciesFragment(policies)
+    val previousFragment = getMultipaneOptionsFragment()
+    if (previousFragment != null) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.multipane_options_container,
+      PoliciesFragment.newInstance(policies)
+    ).commitNow()
+  }
+
+  private fun selectPoliciesFragment(policies: Policies) {
     when (policies) {
-      Policies.PRIVACY_POLICY.ordinal -> setMultipaneContainerTitle(
+      Policies.PRIVACY_POLICY -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(
           R.string.privacy_policy_title
         )
       )
-      Policies.TERMS_OF_SERVICE.ordinal -> setMultipaneContainerTitle(
+      Policies.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(
           R.string.terms_of_service_title
         )
@@ -318,15 +330,4 @@ class HelpActivityPresenter @Inject constructor(
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
 
-  fun handleLoadPoliciesFragment(policies: Int) {
-    selectPoliciesFragment(policies)
-    val previousFragment = getMultipaneOptionsFragment()
-    if (previousFragment != null) {
-      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.multipane_options_container,
-      PoliciesFragment.newInstance(policies)
-    ).commitNow()
-  }
 }

@@ -18,7 +18,7 @@ class PoliciesFragment : InjectableFragment() {
 
   companion object {
     /** Returns instance of [PoliciesFragment]. */
-    fun newInstance(policies: Int): PoliciesFragment {
+    fun newInstance(policies: Policies): PoliciesFragment {
       val args = Bundle()
       args.putInt(POLICIES, policies)
       val fragment = PoliciesFragment()

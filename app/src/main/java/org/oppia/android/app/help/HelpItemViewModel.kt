@@ -37,25 +37,22 @@ class HelpItemViewModel(
         }
       }
       resourceHandler.getStringInLocale(R.string.privacy_policy_title) -> {
-        if (isMultipane) {
-          val loadpoliciesFragmentListener = activity as
-            LoadPoliciesFragmentListener
-          loadpoliciesFragmentListener.loadPoliciesFragment(Policies.PRIVACY_POLICY)
-        } else {
-          val routeToPoliciesListener = activity as RouteToPoliciesListener
-          routeToPoliciesListener.onRouteToPolicies(Policies.PRIVACY_POLICY)
-        }
+        loadPolicyPage(Policies.PRIVACY_POLICY)
       }
       resourceHandler.getStringInLocale(R.string.terms_of_service_title) -> {
-        if (isMultipane) {
-          val loadpoliciesFragmentListener = activity as
-            LoadPoliciesFragmentListener
-          loadpoliciesFragmentListener.loadPoliciesFragment(Policies.TERMS_OF_SERVICE)
-        } else {
-          val routeToPoliciesListener = activity as RouteToPoliciesListener
-          routeToPoliciesListener.onRouteToPolicies(Policies.TERMS_OF_SERVICE)
-        }
+        loadPolicyPage(Policies.TERMS_OF_SERVICE)
       }
+    }
+  }
+
+  private fun loadPolicyPage(policies: Policies) {
+    if (isMultipane) {
+      val loadPoliciesFragmentListener = activity as
+        LoadPoliciesFragmentListener
+      loadPoliciesFragmentListener.loadPoliciesFragment(policies)
+    } else {
+      val routeToPoliciesListener = activity as RouteToPoliciesListener
+      routeToPoliciesListener.onRouteToPolicies(policies)
     }
   }
 }

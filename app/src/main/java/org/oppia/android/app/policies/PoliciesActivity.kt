@@ -23,7 +23,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
     private const val POLICIES_ACTIVITY = "PoliciesActivity"
 
     /** Returns the [Intent] for opening [PoliciesActivity]. */
-    fun createPoliciesActivityIntent(context: Context, policies: Int): Intent {
+    fun createPoliciesActivityIntent(context: Context, policies: Policies): Intent {
       val intent = Intent(context, PoliciesActivity::class.java)
       intent.putExtra(POLICIES_ACTIVITY, policies)
       return intent
