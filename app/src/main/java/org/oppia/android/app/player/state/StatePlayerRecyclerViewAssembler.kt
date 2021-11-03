@@ -473,7 +473,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     createBannerConfetti(confettiView, confettiConfig)
     animateCongratulationsTextView(textView)
-    textView.announceForAccessibility(context.getString(R.string.correct))
+    textView.announceForAccessibility(resourceHandler.getStringInLocale(R.string.correct))
   }
 
   /** Shows confetti when the learner reaches the end of an exploration session. */
