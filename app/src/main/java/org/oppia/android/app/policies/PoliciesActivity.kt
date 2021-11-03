@@ -7,7 +7,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
-/** The activity for displaying the app's policies. */
+/** Activity for displaying the app policies. */
 class PoliciesActivity : InjectableAppCompatActivity() {
 
   @Inject
