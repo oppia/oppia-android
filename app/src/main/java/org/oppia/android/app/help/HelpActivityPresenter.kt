@@ -329,5 +329,4 @@ class HelpActivityPresenter @Inject constructor(
     selectedFragmentTag = POLICIES_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
-
 }
