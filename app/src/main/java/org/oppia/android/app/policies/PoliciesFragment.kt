@@ -43,7 +43,8 @@ class PoliciesFragment : InjectableFragment() {
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to PoliciesFragment"
     }
-    val policies = args.getProto(POLICIES_ARGUMENT_PROTO, PoliciesActivityArguments.getDefaultInstance())
+    val policies =
+      args.getProto(POLICIES_ARGUMENT_PROTO, PoliciesActivityArguments.getDefaultInstance())
     return policiesFragmentPresenter.handleCreateView(inflater, container, policies)
   }
 }
