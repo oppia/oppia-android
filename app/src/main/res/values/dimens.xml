@@ -578,8 +578,8 @@
   <dimen name="profile_reset_pin_activity_profile_reset_save_button_margin_end">28dp</dimen>
 
   <!-- SectionTitleFragment -->
-  <dimen name="section_title_divider_view_layout_marginTop">32dp</dimen>
-  <dimen name="section_title_text_view_layout_marginStart">28dp</dimen>
-  <dimen name="section_title_text_view_layout_marginTop">28dp</dimen>
-  <dimen name="section_title_text_view_layout_marginEnd">32dp</dimen>
+  <dimen name="section_title_divider_view_layout_margin_top">32dp</dimen>
+  <dimen name="section_title_text_view_layout_margin_start">28dp</dimen>
+  <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
+  <dimen name="section_title_text_view_layout_margin_end">32dp</dimen>
 </resources>
