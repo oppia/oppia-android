@@ -35,9 +35,9 @@ class TextInputAction {
      * Class which inherits [BoundedMatcher] and overrides [matchesSafely] function to match the
      * [expectedErrorText] with the TextInputLayout's error text.
      */
-    class ErrorTextExistsMatcher(private val expectedErrorText: String) :
+    private class ErrorTextExistsMatcher(private val expectedErrorText: String) :
       BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
-      public override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
         return textInputLayout.error == expectedErrorText
       }
 
@@ -50,7 +50,7 @@ class TextInputAction {
      * Class which inherits [BoundedMatcher] and overrides [matchesSafely] function to check if the
      * error text is null of empty.
      */
-    class ErrorTextDoesNotExistMatcher :
+    private class ErrorTextDoesNotExistMatcher :
       BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
       override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
         return textInputLayout.error.isNullOrEmpty()
