@@ -395,4 +395,5 @@
   <dimen name="section_title_text_view_layout_margin_start">96dp</dimen>
   <dimen name="section_title_text_view_layout_margin_top">32dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">96dp</dimen>
+
 </resources>
