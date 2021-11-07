@@ -1302,15 +1302,63 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_interactions_radioItemSelection_selectionTextIsNotDisplayed() {
+  fun testStateFragment_interactions_noRadioItemSelected_selectionTextIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
       playThroughPrototypeState3()
 
-      // Verify that the user is now on the fourth state.
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_singleRadioItemSelected_selectionTextIsNotDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Red")
+
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_multipleRadioItemSelected_selectionTextIsNotDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Red")
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Blue")
+
+      onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_interactions_correctRadioItemSelected_selectionTextIsNotDisplayed() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+
+      selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
+
       onView(withId(R.id.selection_interaction_textview)).check(matches(not(isDisplayed())))
     }
   }
