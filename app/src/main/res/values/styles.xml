@@ -232,10 +232,26 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
+  <style name="SubtitleLight1" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-light</item>
+    <item name="android:textSize">16sp</item>
+    <item name="android:textStyle">italic</item>
+    <item name="fontFamily">sans-serif-light</item>
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="SubtitleLight2" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-light</item>
+    <item name="android:textSize">12sp</item>
+    <item name="android:textStyle">italic</item>
+    <item name="fontFamily">sans-serif-light</item>
+  </style>
+
   <style name="TextFieldLabel" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
+    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="Body" parent="TextView.Common1">
@@ -247,10 +263,15 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
+  <style name="TextInfo" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">12sp</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
   <style name="SummaryText1" parent="TextView.Common1">
     <item name="android:ellipsize">end</item>
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">wrap_content</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textAlignment">viewStart</item>
     <item name="android:textSize">14sp</item>
@@ -258,8 +279,21 @@
   </style>
 
   <style name="SummaryText2" parent="TextView.Common1">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">wrap_content</item>
+    <item name="android:fontFamily">sans-serif-light</item>
+    <item name="android:textAlignment">viewStart</item>
+    <item name="android:textSize">14sp</item>
+    <item name="fontFamily">sans-serif-light</item>
+  </style>
+
+  <style name="CardTitle1" parent="TextView.Common1">
+    <item name="android:ellipsize">end</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textAlignment">viewStart</item>
+    <item name="android:textSize">14sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="CardTitle2" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-light</item>
     <item name="android:textAlignment">viewStart</item>
     <item name="android:textSize">14sp</item>
@@ -293,6 +327,16 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
+  <style name="PinPasswordErrorTextView" parent="Widget.AppCompat.TextView">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textColor">@color/editTextError</item>
+    <item name="android:textSize">16sp</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
   <style name="InputInteractionErrorTextView" parent="Widget.AppCompat.TextView">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
@@ -300,6 +344,7 @@
     <item name="android:textColor">@color/editTextError</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
+    <item name="android:textAlignment">viewStart</item>
   </style>
   <!-- This style should not be used in layout/*.xml files.-->
   <style name="TextView.Common1" parent="Widget.AppCompat.TextView">
