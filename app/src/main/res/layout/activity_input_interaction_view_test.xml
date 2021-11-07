@@ -58,15 +58,12 @@
 
     <TextView
       android:id="@+id/fraction_input_error"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      style="@style/InputInteractionErrorTextView"
       android:layout_marginStart="16dp"
       android:layout_marginEnd="8dp"
-      android:fontFamily="sans-serif"
       android:minHeight="32dp"
       android:text="@{fractionInteractionViewModel.errorMessage}"
       android:textColor="@color/editTextError"
-      android:textSize="12sp"
       android:visibility="@{fractionInteractionViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
     <org.oppia.android.app.customview.interaction.RatioInputInteractionView
@@ -94,15 +91,12 @@
 
     <TextView
       android:id="@+id/ratio_input_error"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      style="@style/InputInteractionErrorTextView"
       android:layout_marginStart="16dp"
       android:layout_marginEnd="8dp"
-      android:fontFamily="sans-serif"
       android:minHeight="32dp"
       android:text="@{ratioInteractionInputViewModel.errorMessage}"
       android:textColor="@color/editTextError"
-      android:textSize="12sp"
       android:visibility="@{ratioInteractionInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
     <org.oppia.android.app.customview.interaction.NumericInputInteractionView
@@ -122,15 +116,12 @@
 
     <TextView
       android:id="@+id/number_input_error"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      style="@style/InputInteractionErrorTextView"
       android:layout_marginStart="16dp"
       android:layout_marginEnd="8dp"
-      android:fontFamily="sans-serif"
       android:minHeight="32dp"
       android:text="@{numericInputViewModel.errorMessage}"
       android:textColor="@color/editTextError"
-      android:textSize="12sp"
       android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
     <org.oppia.android.app.customview.interaction.TextInputInteractionView

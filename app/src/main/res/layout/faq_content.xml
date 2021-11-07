@@ -25,18 +25,16 @@
 
       <TextView
         android:id="@+id/faq_question_text_view"
+        style="@style/Heading5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/faq_content_margin_start"
         android:layout_marginEnd="@dimen/faq_content_margin_end"
-        android:fontFamily="sans-serif-medium"
         android:onClick="@{(v) -> viewModel.clickOnFAQQuestion()}"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.question}"
-        android:textAlignment="viewStart"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="14sp" />
+        android:textAlignment="viewStart" />
 
       <View
         android:id="@+id/faq_question_divider_view"

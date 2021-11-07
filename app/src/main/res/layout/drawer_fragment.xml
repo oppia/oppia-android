@@ -69,14 +69,13 @@
             android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlightedDeveloperOptionsNavMenuItem : @color/oppiaPrimaryTextDark}"/>
 
           <TextView
+            style="@style/Heading5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="12dp"
-            android:fontFamily="sans-serif-medium"
             android:text="@string/developer_options"
-            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlightedDeveloperOptionsNavMenuItem : @color/oppiaPrimaryTextDark}"
-            android:textSize="14sp" />
+            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlightedDeveloperOptionsNavMenuItem : @color/oppiaPrimaryTextDark}" />
         </LinearLayout>
 
         <LinearLayout
@@ -100,14 +99,13 @@
             android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}" />
 
           <TextView
+            style="@style/Heading5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="12dp"
-            android:fontFamily="sans-serif-medium"
             android:text="@string/administrator_controls"
-            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}"
-            android:textSize="14sp" />
+            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}" />
         </LinearLayout>
       </LinearLayout>
     </androidx.core.widget.NestedScrollView>

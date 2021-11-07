@@ -30,14 +30,12 @@
 
       <TextView
         android:id="@+id/hint_title"
+        style="@style/Heading2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="44dp"
-        android:fontFamily="sans-serif-medium"
         android:paddingBottom="28dp"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,12 +94,10 @@
 
       <TextView
         android:id="@+id/hints_and_solution_summary"
+        style="@style/Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp" />
+        android:layout_gravity="start"/>
     </LinearLayout>
   </LinearLayout>
 </layout>

@@ -50,17 +50,14 @@
 
     <TextView
       android:id="@+id/previous_responses_header_text"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/Heading5"
       app:drawableEndCompat="@{viewModel.isExpanded ? @drawable/ic_arrow_down_grey_24dp : @drawable/ic_arrow_right_grey_24dp}"
-      android:fontFamily="sans-serif-medium"
       android:gravity="center_vertical"
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
       android:text="@{viewModel.computePreviousResponsesHeaderText()}"
       android:textAllCaps="true"
       android:textColor="@color/mid_grey"
-      android:textSize="14sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

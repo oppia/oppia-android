@@ -56,23 +56,19 @@
 
         <TextView
           android:id="@+id/add_profile_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-medium"
+          style="@style/Heading2"
           android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
-          android:textColor="@color/white"
-          android:textSize="20sp" />
+          android:textColor="@color/white" />
 
         <TextView
           android:id="@+id/add_profile_description_text"
+          style="@style/Body"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
           android:layout_marginTop="4dp"
-          android:fontFamily="sans-serif"
           android:text="@string/set_up_multiple_profiles_description"
           android:textColor="@color/white"
-          android:textSize="16sp"
           android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
       </LinearLayout>
     </LinearLayout>

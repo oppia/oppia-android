@@ -65,13 +65,12 @@
 
           <TextView
             android:id="@+id/add_profile_activity_required_heading_text_view"
+            style="@style/TextFieldLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@string/add_profile_required"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
@@ -187,6 +186,7 @@
 
               <TextView
                 android:id="@+id/add_profile_activity_allow_download_heading_text_view"
+                style="@style/Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
@@ -198,12 +198,11 @@
 
               <TextView
                 android:id="@+id/add_profile_activity_allow_download_text_view"
+                style="@style/SummaryText1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_sub"
                 android:textColor="@color/accessible_light_grey"
-                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
                 app:layout_constraintWidth_percent=".8" />

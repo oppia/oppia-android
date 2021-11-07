@@ -16,17 +16,14 @@
 
       <TextView
         android:id="@+id/app_version_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Body"
         android:background="@drawable/selector_app_version"
-        android:fontFamily="sans-serif"
         android:paddingStart="@dimen/app_version_text_view_padding_start"
         android:paddingTop="20dp"
         android:paddingEnd="@dimen/app_version_text_view_padding_end"
         android:paddingBottom="20dp"
         android:text="@{viewModel.computeVersionNameText()}"
         android:textColor="@color/oppiaPrimaryTextDark"
-        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,15 +40,14 @@
 
       <TextView
         android:id="@+id/app_last_update_date_text_view"
+        style="@style/TextInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="@dimen/app_version_text_view_margin_end"
-        android:fontFamily="sans-serif"
         android:text="@{viewModel.computeLastUpdatedDateText()}"
         android:textColor="@color/oppiaSecondaryText"
-        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/app_info_image_view"

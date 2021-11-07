@@ -72,29 +72,21 @@
 
         <TextView
           android:id="@+id/profile_last_visited"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/SubtitleLight1"
           android:layout_marginTop="4dp"
-          android:fontFamily="sans-serif-light"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
           android:textColor="@color/white"
-          android:textSize="16sp"
-          android:textStyle="italic"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_last_visited_margin_top_profile_already_added : @dimen/profile_chooser_profile_view_last_visited_margin_top_profile_not_added}"
           profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
         <TextView
           android:id="@+id/profile_is_admin_text"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/SubtitleLight1"
           android:layout_marginTop="4dp"
-          android:fontFamily="sans-serif-light"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
           android:text="@string/profile_chooser_admin"
           android:textColor="@color/white"
-          android:textSize="16sp"
-          android:textStyle="italic"
           android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_is_admin_margin_top_profile_already_added : @dimen/space_0dp}" />
       </LinearLayout>
