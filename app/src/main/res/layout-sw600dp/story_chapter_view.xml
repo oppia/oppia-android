@@ -124,17 +124,16 @@
 
             <TextView
               android:id="@+id/chapter_title"
+              style="@style/Heading3"
               android:layout_width="0dp"
               android:layout_height="wrap_content"
               android:layout_marginStart="8dp"
               android:layout_marginTop="4dp"
               android:layout_marginEnd="8dp"
               android:ellipsize="end"
-              android:fontFamily="sans-serif-medium"
               android:maxLines="2"
               android:text="@{viewModel.computeChapterTitleText()}"
-              android:textColor="@color/oppiaPrimaryText"
-              android:textSize="18sp"
+              android:textAlignment="viewStart"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toTopOf="parent" />
