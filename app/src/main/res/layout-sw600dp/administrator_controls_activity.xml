@@ -46,13 +46,12 @@
 
       <TextView
         android:id="@+id/extra_controls_title"
+        style="@style/Heading3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="18sp"
+        android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/administrator_controls_guideline"
         app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />

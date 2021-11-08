@@ -46,12 +46,11 @@
 
     <TextView
       android:id="@+id/drag_drop_grouping_hint_text_view"
+      style="@style/SubtitleLight2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:paddingBottom="8dp"
       android:text="@string/drag_and_drop_interaction_group_merge_hint"
-      android:textSize="14sp"
-      android:textStyle="italic"
       android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}" />
 
     <org.oppia.android.app.player.state.DragDropSortInteractionView

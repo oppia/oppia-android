@@ -39,7 +39,7 @@
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
-        style="@style/DescriptionText"
+        style="@style/DescriptionText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"

@@ -302,10 +302,16 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
-  <style name="DescriptionText" parent="TextView.Common1">
+  <style name="DescriptionText1" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="DescriptionText2" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">12sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
   </style>
 
   <style name="SummaryText1" parent="TextView.Common1">

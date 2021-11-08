@@ -104,7 +104,7 @@
 
       <TextView
         android:id="@+id/question_progress_text"
-        style="@style/DescriptionText"
+        style="@style/DescriptionText1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/question_player_progress_bar_text_margin_top"
