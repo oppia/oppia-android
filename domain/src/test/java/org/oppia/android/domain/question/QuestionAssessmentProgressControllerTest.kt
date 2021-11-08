@@ -1389,7 +1389,7 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion0()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val skill0Mastery = 0.2
+    val skill0Mastery = 0.3
     val skill1Mastery = 0.0
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
@@ -1418,7 +1418,7 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion0()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val skill0Mastery = 0.2
+    val skill0Mastery = 0.25
     val skill1Mastery = 0.0
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))

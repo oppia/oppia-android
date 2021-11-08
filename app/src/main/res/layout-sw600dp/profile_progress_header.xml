@@ -11,9 +11,11 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/profile_progress_header_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
+    android:importantForAccessibility="no"
     android:paddingTop="92dp">
 
     <com.jackandphantom.circularimageview.CircleImage
@@ -21,6 +23,7 @@
       android:layout_width="160dp"
       android:layout_height="160dp"
       android:layout_marginStart="@dimen/profile_edit_image_layout_margin_start"
+      android:background="@color/whiteLight"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"
@@ -38,9 +41,9 @@
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="12dp"
       android:paddingTop="12dp"
-      app:srcCompat="@drawable/rounded_white_background_with_shadow"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
-      app:layout_constraintEnd_toEndOf="@+id/profile_edit_image" />
+      app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"
+      app:srcCompat="@drawable/rounded_white_background_with_shadow" />
 
     <TextView
       android:id="@+id/profile_name_text_view"
@@ -67,6 +70,7 @@
       android:layout_weight="1"
       android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.ongoingTopicCount > 0}"
+      android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnOngoingTopicCount()}"
       app:cardElevation="4dp"
       app:contentPadding="8dp"
@@ -112,6 +116,7 @@
       android:layout_weight="1"
       android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.completedStoryCount > 0}"
+      android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnCompletedStoryCount()}"
       app:cardElevation="4dp"
       app:contentPadding="8dp"
@@ -152,7 +157,7 @@
 
     <TextView
       android:id="@+id/recently_played_stories_text_view"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/recently_played_stories_text_view_layout_margin_start"
       android:layout_marginTop="76dp"
@@ -163,6 +168,8 @@
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="18sp"
       android:visibility="@{viewModel.headerTextVisibility}"
+      app:layout_constraintEnd_toStartOf="@+id/view_all_text_view"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
 

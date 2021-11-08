@@ -3,6 +3,7 @@
 * Carolintaschi
 * Eduardoaddad
 * Leosls
+* Svjatysberega
 -->
 <resources>
   <string name="nav_header_desc">Cabeçalho de navegação</string>
@@ -222,6 +223,8 @@
   <string name="pin_password_hello">Olá, %s!</string>
   <string name="pin_password_admin_enter">Por favor, insira o PIN do Administrador.</string>
   <string name="pin_password_user_enter">Por favor, insira seu PIN.</string>
+  <string name="input_pin_password_as_admin">PIN de 5 dígitos do administrador.</string>
+  <string name="input_pin_password_as_user">PIN de 3 dígitos do usuário.</string>
   <string name="pin_password_forgot_pin">Eu esqueci meu pin.</string>
   <string name="pin_password_incorrect_pin">PIN incorreto.</string>
   <string name="pin_password_show">Mostrar</string>
@@ -235,6 +238,7 @@
   <string name="password_shown_icon">Ícone de mostrar a senha</string>
   <string name="password_hidden_icon">Ícone de esconder a senha</string>
   <string name="enter_your_pin">Insira seu PIN</string>
+  <string name="pin_password_toolbar_title">Insira o PIN</string>
   <string name="admin_settings_label">PIN do Administrador</string>
   <string name="admin_settings_heading">Acesso às Configurações do Administrador</string>
   <string name="admin_settings_sub">PIN do administrador necessário para alterar o PIN do usuário</string>
@@ -261,6 +265,7 @@
   <string name="profile_edit_delete_dialog_negative">Cancelar</string>
   <string name="profile_edit_allow_download_heading">Permitir Acesso a Download</string>
   <string name="profile_edit_allow_download_sub">O usuário pode baixar e apagar conteúdo sem senha de Administrador</string>
+  <string name="profile_picture_activity_title">Foto do Perfil</string>
   <string name="profile_progress_edit_dialog_title">Imagem de perfil</string>
   <string name="profile_picture_edit_alert_dialog_cancel_button">Cancelar</string>
   <string name="profile_picture_edit_alert_dialog_view_profile_picture">Visualizar Foto do Perfil</string>

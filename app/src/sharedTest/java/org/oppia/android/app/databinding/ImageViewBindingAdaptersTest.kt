@@ -1,28 +1,27 @@
-package org.oppia.android.app.resumelesson
+package org.oppia.android.app.databinding
 
+import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.content.Intent
-import android.view.View
-import android.widget.TextView
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -31,14 +30,15 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setPlayStateDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -61,17 +61,12 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
-import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
-import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -87,170 +82,109 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Test for [ResumeLessonFragment]. */
+/** Tests for [ImageViewBindingAdaptersTest]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = ResumeLessonFragmentTest.TestApplication::class,
+  application = ImageViewBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class ResumeLessonFragmentTest {
+class ImageViewBindingAdaptersTest {
+
+  // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  private val internalProfileId: Int = 1
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
   @get:Rule
-  val resumeLessonActivityTestRule = ActivityTestRule(
-    ResumeLessonActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @get:Rule
-  val accessibilityTestRule = AccessibilityTestRule()
+  var activityRule: ActivityScenarioRule<ImageViewBindingAdaptersTestActivity> =
+    ActivityScenarioRule(
+      Intent(
+        ApplicationProvider.getApplicationContext(),
+        ImageViewBindingAdaptersTestActivity::class.java
+      )
+    )
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
+    Intents.init()
   }
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
+  }
+
+  @Test
+  fun testSetPlayStateDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
+    activityRule.scenario.runWithActivity {
+      val imageView: ImageView = getImageView(it)
+      setPlayStateDrawable(imageView, ChapterPlayState.COMPLETED)
+      onView(withId(R.id.image_view_for_data_binding)).check(
+        matches(withDrawable(R.drawable.circular_solid_color_primary_32dp))
+      )
+    }
+  }
+
+  @Test
+  fun testSetPlayStateDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
+    activityRule.scenario.runWithActivity {
+      val imageView: ImageView = getImageView(it)
+      setPlayStateDrawable(imageView, ChapterPlayState.NOT_STARTED)
+      onView(withId(R.id.image_view_for_data_binding)).check(
+        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
+      )
+    }
+  }
+
+  @Test
+  fun testSetPlayStateDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
+    activityRule.scenario.runWithActivity {
+      val imageView: ImageView = getImageView(it)
+      setPlayStateDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
+      onView(withId(R.id.image_view_for_data_binding)).check(
+        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
+      )
+    }
+  }
+
+  @Test
+  fun testSetPlayStateDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
+    activityRule.scenario.runWithActivity {
+      val imageView: ImageView = getImageView(it)
+      setPlayStateDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
+      onView(withId(R.id.image_view_for_data_binding)).check(
+        matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
+      )
+    }
+  }
+
+  private fun getImageView(
+    imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity
+  ): ImageView {
+    return imageViewBindingAdaptersTestActivity.findViewById(R.id.image_view_for_data_binding)
+  }
+
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
+    crossinline action: (A) -> V
+  ): V {
+    // Use Mockito to ensure the routine is actually executed before returning the result.
+    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
+    val fakeMock: ImageViewBindingAdaptersTest.Consumer<V> =
+      mock(ImageViewBindingAdaptersTest.Consumer::class.java)
+        as ImageViewBindingAdaptersTest.Consumer<V>
+    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
+    onActivity { fakeMock.consume(action(it)) }
+    verify(fakeMock).consume(valueCaptor.capture())
+    return valueCaptor.value
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  @Config(qualifiers = "port")
-  @Test
-  fun testResumeLessonFragment_lessonThumbnailIsDisplayed() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
-        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
-      )
-    }
-  }
-
-  @Config(qualifiers = "sw600dp-port")
-  @Test
-  fun testResumeLessonFragment_onTablet_lessonThumbnailIsDisplayed() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
-        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
-      )
-    }
-  }
-
-  @Config(qualifiers = "sw600dp-port")
-  @Test
-  fun testResumeLessonFragment_onTablet_configChange_lessonThumbnailIsDisplayed() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
-        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
-      )
-    }
-  }
-
-  @Test
-  fun testResumeLessonFragment_lessonTitleIsDisplayed() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.resume_lesson_chapter_title_text_view)).check(
-        matches(withText("What is a Fraction?"))
-      )
-    }
-  }
-
-  @Test
-  fun testResumeLessonFragment_configChange_lessonTitleIsDisplayed() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.resume_lesson_chapter_title_text_view)).check(
-        matches(withText("What is a Fraction?"))
-      )
-    }
-  }
-
-  @Test
-  fun testResumeLessonFragment_lessonDescriptionIsDisplayed() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withText("Matthew learns about fractions."))
-      )
-    }
-  }
-
-  @Test
-  fun testResumeLessonFragment_lessonDescriptionIsInRtl_isDisplayedCorrectly() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
-      scenario.onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
-        testCoroutineDispatchers.runCurrent()
-        val topicDescriptionTextview: TextView = activity.findViewById(
-          R.id.resume_lesson_chapter_description_text_view
-        )
-        assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
-      }
-    }
-  }
-
-  @Test
-  fun testResumeLessonFragment_lessonDescriptionIsInLtr_isDisplayedCorrectly() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
-      scenario.onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
-        testCoroutineDispatchers.runCurrent()
-        val topicDescriptionTextview: TextView = activity.findViewById(
-          R.id.resume_lesson_chapter_description_text_view
-        )
-        assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
-      }
-    }
-  }
-
-  @Test
-  fun testResumeLessonFragment_configChange_lessonDescriptionIsDisplayed() {
-    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withText("Matthew learns about fractions."))
-      )
-    }
-  }
-
-  private fun createResumeLessonActivityIntent(): Intent {
-    return ResumeLessonActivity.createResumeLessonActivityIntent(
-      context,
-      internalProfileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      backflowScreen = null,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
+    ApplicationProvider.getApplicationContext<ImageViewBindingAdaptersTest.TestApplication>()
+      .inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -278,22 +212,30 @@ class ResumeLessonFragmentTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
+  /** Create a TestApplicationComponent. */
   interface TestApplicationComponent : ApplicationComponent {
+    /** Build the TestApplicationComponent. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(resumeLessonFragmentTest: ResumeLessonFragmentTest)
+    /** Inject [ImageViewBindingAdaptersTest] in TestApplicationComponent . */
+    fun inject(imageViewBindingAdaptersTest: ImageViewBindingAdaptersTest)
   }
 
+  /**
+   * Class to override a dependency throughout the test application, instead of overriding the
+   * dependencies in every test class, we can just do it once by extending the Application class.
+   */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerResumeLessonFragmentTest_TestApplicationComponent.builder()
+      DaggerImageViewBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(resumeLessonFragmentTest: ResumeLessonFragmentTest) {
-      component.inject(resumeLessonFragmentTest)
+    /** Inject [ImageViewBindingAdaptersTest] in TestApplicationComponent . */
+    fun inject(imageViewBindingAdaptersTest: ImageViewBindingAdaptersTest) {
+      component.inject(imageViewBindingAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
@@ -301,5 +243,10 @@ class ResumeLessonFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private interface Consumer<T> {
+    /** Represents an operation that accepts a single input argument and returns no result. */
+    fun consume(value: T)
   }
 }

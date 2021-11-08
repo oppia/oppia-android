@@ -54,9 +54,12 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "debug_impl",
+    name = "debug_event_logger",
     srcs = [
         "DebugEventLogger.kt",
+    ],
+    visibility = [
+        "//app:__pkg__",
     ],
     deps = [
         "//model:event_logger_java_proto_lite",
@@ -73,7 +76,7 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
-        ":debug_impl",
+        ":debug_event_logger",
         ":firebase_exception_logger",
     ],
 )

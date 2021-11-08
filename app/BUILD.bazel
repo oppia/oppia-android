@@ -368,6 +368,7 @@ VIEW_MODELS = [
 VIEWS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
+    "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
 ]
 
@@ -577,6 +578,7 @@ kt_android_library(
     custom_package = "org.oppia.android.app",
     deps = [
         ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/audio:cellular_audio_dialog_controller",
         "//model:question_java_proto_lite",
         "//model:topic_java_proto_lite",
         "//third_party:androidx_recyclerview_recyclerview",
@@ -643,11 +645,13 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
         "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
         "//third_party:androidx_core_core",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         # TODO(#59): Remove 'debug_util_module' once we completely migrate to Bazel from Gradle as
         # we can then directly exclude debug files from the build and thus won't be requiring this module.
@@ -778,6 +782,7 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
     ],
+    visibility = ["//app:__subpackages__"],
     deps = [
         ":app",
         "//testing",
@@ -794,6 +799,7 @@ TEST_DEPS = [
     "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//domain",
+    "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",

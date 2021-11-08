@@ -81,6 +81,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif-light"
           android:maxLines="1"
+          android:textAlignment="viewStart"
           android:text="@{viewModel.ongoingStory.topicName}"
           android:textAllCaps="true"
           app:layout_constraintBottom_toBottomOf="parent"

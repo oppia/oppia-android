@@ -50,6 +50,7 @@ DOMAIN_ASSETS = generate_assets_list_from_text_protos(
         "test_single_interactive_state_exp_with_one_hint_and_solution",
         "test_single_interactive_state_exp_with_one_hint_and_no_solution",
         "test_single_interactive_state_exp_with_only_solution",
+        "test_single_interactive_state_exp_with_solution_missing_answer",
     ],
     skills_file_names = [
         "skills",
@@ -161,6 +162,8 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+    "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
+    "//domain/src/main/java/org/oppia/android/domain/audio:cellular_audio_dialog_controller",
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
