@@ -46,7 +46,7 @@
 
     <TextView
       android:id="@+id/profile_list_admin_text"
-      style="@style/TextInfo"
+      style="@style/DescriptionText"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="20dp"

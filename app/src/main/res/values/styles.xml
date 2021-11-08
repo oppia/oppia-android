@@ -220,6 +220,24 @@
     <item name="fontFamily">sans-serif-medium</item>
   </style>
 
+  <style name="Heading6" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">28sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
+  </style>
+
+  <style name="Heading7" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">20sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Heading8" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">24sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
+  </style>
+
   <style name="Subtitle1" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">16sp</item>
@@ -229,6 +247,12 @@
   <style name="Subtitle2" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">14sp</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Subtitle3" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">10sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
 
@@ -242,6 +266,14 @@
 
   <style name="SubtitleLight2" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-light</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:textStyle">italic</item>
+    <item name="fontFamily">sans-serif-light</item>
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="SubtitleLight3" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-light</item>
     <item name="android:textSize">12sp</item>
     <item name="android:textStyle">italic</item>
     <item name="fontFamily">sans-serif-light</item>
@@ -254,6 +286,13 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
+  <style name="TextFieldLabelBlack" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-black</item>
+    <item name="android:textSize">16sp</item>
+    <item name="fontFamily">sans-serif-black</item>
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
   <style name="Body" parent="TextView.Common1">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
@@ -263,11 +302,10 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
-  <style name="TextInfo" parent="TextView.Common1">
+  <style name="DescriptionText" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
-    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="SummaryText1" parent="TextView.Common1">
@@ -279,6 +317,7 @@
   </style>
 
   <style name="SummaryText2" parent="TextView.Common1">
+    <item name="android:ellipsize">end</item>
     <item name="android:fontFamily">sans-serif-light</item>
     <item name="android:textAlignment">viewStart</item>
     <item name="android:textSize">14sp</item>
@@ -294,6 +333,7 @@
   </style>
 
   <style name="CardTitle2" parent="TextView.Common1">
+    <item name="android:ellipsize">end</item>
     <item name="android:fontFamily">sans-serif-light</item>
     <item name="android:textAlignment">viewStart</item>
     <item name="android:textSize">14sp</item>

@@ -39,6 +39,7 @@
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
+        style="@style/DescriptionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
@@ -47,8 +48,7 @@
         android:paddingBottom="16dp"
         android:textColor="@color/accessible_grey"
         android:text="@{viewModel.dependencyVersion}"
-        android:textAlignment="viewStart"
-        android:textSize="12sp" />
+        android:textAlignment="viewStart" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

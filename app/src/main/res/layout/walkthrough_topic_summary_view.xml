@@ -57,31 +57,27 @@
 
         <TextView
           android:id="@+id/walkthrough_topic_name_text_view"
+          style="@style/Caption"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginBottom="6dp"
           android:ellipsize="end"
-          android:fontFamily="sans-serif-medium"
-          android:gravity="top"
           android:maxLines="2"
           android:minLines="2"
           android:text="@{viewModel.name}"
+          android:textAlignment="viewStart"
           android:textColor="@color/white"
-          android:textSize="14sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/walkthrough_lesson_count_text_view"
+          style="@style/SubtitleLight2"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:fontFamily="sans-serif-light"
           android:lines="1"
           android:text="@{viewModel.computeWalkthroughLessonCountText()}"
           android:textColor="@color/white_80"
-          android:textSize="14sp"
-          android:textStyle="italic"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/walkthrough_topic_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>

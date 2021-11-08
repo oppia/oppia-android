@@ -37,15 +37,12 @@
 
     <TextView
       android:id="@+id/selection_interaction_textview"
+      style="@style/SubtitleLight2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="4dp"
       android:layout_marginBottom="4dp"
-      android:fontFamily="sans-serif-light"
       android:text="@string/item_selection_text"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="14sp"
-      android:textStyle="italic"
       android:visibility="@{viewModel.getSelectionItemInputType() == SelectionItemInputType.RADIO_BUTTONS ? View.GONE : View. VISIBLE}" />
 
     <org.oppia.android.app.player.state.SelectionInteractionView
