@@ -61,7 +61,7 @@
 
         <TextView
           android:id="@+id/profile_last_visited"
-          style="@style/SubtitleLight2"
+          style="@style/SubtitleLight3"
           android:gravity="center"
           android:textColor="@color/white"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
@@ -69,7 +69,7 @@
 
         <TextView
           android:id="@+id/profile_is_admin_text"
-          style="@style/SubtitleLight2"
+          style="@style/SubtitleLight3"
           android:gravity="center"
           android:text="@string/profile_chooser_admin"
           android:textColor="@color/white"

@@ -73,8 +73,6 @@
         <TextView
           android:id="@+id/profile_last_visited"
           style="@style/SubtitleLight1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
           android:textColor="@color/white"
@@ -84,8 +82,6 @@
         <TextView
           android:id="@+id/profile_is_admin_text"
           style="@style/SubtitleLight1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
           android:text="@string/profile_chooser_admin"
