@@ -44,14 +44,13 @@
 
     <TextView
       android:id="@+id/submitted_answer_text_view"
+      style="@style/Body"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
       android:contentDescription="@{viewModel.submittedAnswerContentDescription}"
       android:padding="12dp"
       android:text="@{viewModel.submittedAnswer}"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="16sp"
       android:visibility="gone"
       app:layout_constrainedWidth="true"
       app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? @id/answer_tick_guideline : ConstraintSet.PARENT_ID}"
