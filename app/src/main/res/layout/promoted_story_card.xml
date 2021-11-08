@@ -77,11 +77,10 @@
 
         <TextView
           android:id="@+id/topic_name_text_view"
-          style="@style/SummaryText2"
+          style="@style/CardTitle2"
           android:layout_marginStart="16dp"
           android:layout_marginTop="@dimen/promoted_story_card_margin_top"
           android:layout_marginEnd="16dp"
-          android:ellipsize="end"
           android:maxLines="1"
           android:paddingBottom="8dp"
           android:text="@{viewModel.promotedStory.topicName}"

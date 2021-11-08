@@ -198,10 +198,12 @@
 
               <TextView
                 android:id="@+id/add_profile_activity_allow_download_text_view"
-                style="@style/SummaryText1"
+                style="@style/Subtitle2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:text="@string/add_profile_allow_download_sub"
+                android:textAlignment="viewStart"
                 android:textColor="@color/accessible_light_grey"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
