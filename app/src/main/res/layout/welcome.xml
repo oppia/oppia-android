@@ -29,22 +29,14 @@
 
       <TextView
         android:id="@+id/welcome_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Heading1"
         android:layout_marginEnd="@dimen/home_welcome_text_view_margin_end"
-        android:fontFamily="sans-serif"
-        android:text="@{viewModel.greeting}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="24sp" />
+        android:text="@{viewModel.greeting}" />
 
       <TextView
         android:id="@+id/profile_name_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@{viewModel.computeProfileNameText()}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="24sp" />
+        style="@style/Heading1"
+        android:text="@{viewModel.computeProfileNameText()}" />
     </com.google.android.flexbox.FlexboxLayout>
 
     <View

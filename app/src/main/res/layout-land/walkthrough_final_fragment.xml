@@ -51,24 +51,19 @@
         app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">
 
         <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/Heading4"
           android:layout_gravity="center_horizontal"
-          android:fontFamily="sans-serif"
           android:text="@string/no"
-          android:textColor="@color/oppiaPrimaryText"
           android:textSize="20sp" />
 
         <TextView
+          style="@style/TextFieldLabel"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
           android:layout_marginTop="40dp"
-          android:fontFamily="sans-serif"
           android:text="@string/pick_a_different_topic"
-          android:textAlignment="center"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="12sp" />
+          android:textAlignment="center" />
       </com.google.android.material.card.MaterialCardView>
 
       <com.google.android.material.card.MaterialCardView
@@ -84,37 +79,29 @@
         app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">
 
         <TextView
+          style="@style/Heading7"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
-          android:fontFamily="sans-serif"
           android:text="@string/yes"
-          android:textColor="@color/oppiaPrimaryDark"
-          android:textSize="20sp" />
+          android:textColor="@color/oppiaPrimaryDark" />
 
         <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/TextFieldLabel"
           android:layout_gravity="center_horizontal"
           android:layout_marginTop="40dp"
-          android:fontFamily="sans-serif"
           android:text="@string/lets_get_started"
           android:textAlignment="center"
-          android:textColor="@color/oppiaPrimaryDark"
-          android:textSize="12sp" />
+          android:textColor="@color/oppiaPrimaryDark" />
       </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <TextView
       android:id="@+id/walkthrough_final_topic_text_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/Heading7"
       android:layout_marginTop="4dp"
-      android:fontFamily="sans-serif"
       android:text="@{viewModel.topicTitle}"
       android:textAlignment="center"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="20sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
       app:layout_constraintTop_toBottomOf="@+id/walkthrough_final_title_text_view"
@@ -122,12 +109,8 @@
 
     <TextView
       android:id="@+id/walkthrough_final_title_text_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:fontFamily="sans-serif"
+      style="@style/Heading1"
       android:text="@string/great"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
       app:layout_constraintTop_toTopOf="@+id/walkthrough_final_image_view" />

@@ -23,30 +23,24 @@
 
       <TextView
         android:id="@+id/end_session_header_text_view"
+        style="@style/Heading1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="192dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="192dp"
-        android:fontFamily="sans-serif"
         android:text="@string/question_training_session_finished_header"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="24sp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/end_session_body_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Body"
         android:layout_marginStart="192dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="192dp"
-        android:fontFamily="sans-serif"
         android:text="@string/question_training_session_finished_message"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/end_session_header_text_view" />
@@ -110,15 +104,13 @@
 
       <TextView
         android:id="@+id/question_progress_text"
+        style="@style/DescriptionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/question_player_progress_bar_text_margin_top"
         android:layout_marginEnd="@dimen/question_player_progress_bar_text_margin_end"
         android:layout_marginBottom="@dimen/question_player_progress_bar_text_margin_bottom"
-        android:fontFamily="sans-serif"
         android:text="@{viewModel.questionProgressText}"
-        android:textColor="@color/oppiaPrimaryText"
-        android:textSize="12sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -171,6 +163,7 @@
 
       <TextView
         android:id="@+id/congratulations_text_view"
+        style="@style/Heading2"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_gravity="bottom"
@@ -178,13 +171,11 @@
         android:layout_marginEnd="192dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/congratulations_text_background_shadow"
-        android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="1dp"
         android:text="@string/correct"
         android:textAllCaps="true"
         android:textColor="@color/green_shade"
-        android:textSize="20sp"
         android:visibility="invisible" />
 
       <nl.dionsegijn.konfetti.KonfettiView

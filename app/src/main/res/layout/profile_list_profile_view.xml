@@ -32,15 +32,13 @@
 
     <TextView
       android:id="@+id/profile_list_name"
+      style="@style/Body"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="20dp"
       android:layout_marginEnd="20dp"
-      android:fontFamily="sans-serif"
       android:text="@{profile.name}"
       android:textColor="@color/oppiaPrimaryTextDark"
-      android:textAlignment="viewStart"
-      android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/profile_list_image"
@@ -48,15 +46,13 @@
 
     <TextView
       android:id="@+id/profile_list_admin_text"
+      style="@style/DescriptionText"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="20dp"
       android:layout_marginEnd="20dp"
-      android:fontFamily="sans-serif"
       android:text="@string/profile_chooser_admin"
       android:textColor="@color/accessible_light_grey"
-      android:textAlignment="viewStart"
-      android:textSize="12sp"
       android:textStyle="italic"
       android:visibility="@{profile.isAdmin ? View.VISIBLE : View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"

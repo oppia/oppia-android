@@ -52,12 +52,8 @@
 
         <TextView
           android:id="@+id/topic_name_text_view"
-          style="@style/SummaryText1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/CardTitle1"
           android:layout_marginTop="8dp"
-          android:ellipsize="end"
-          android:fontFamily="sans-serif"
           android:gravity="top"
           android:maxLines="2"
           android:minLines="2"
@@ -71,14 +67,13 @@
 
         <TextView
           android:id="@+id/lesson_count_text_view"
-          style="@style/SummaryText2"
+          style="@style/SubtitleLight2"
           android:layout_marginStart="8dp"
           android:layout_marginTop="4dp"
           android:layout_marginEnd="8dp"
           android:paddingBottom="12dp"
           android:text="@{viewModel.computeLessonCountText()}"
           android:textColor="@color/white_80"
-          android:textStyle="italic"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/topic_name_text_view" />
       </androidx.constraintlayout.widget.ConstraintLayout>
