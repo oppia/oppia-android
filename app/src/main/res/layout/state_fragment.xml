@@ -133,7 +133,6 @@
 
       <TextView
         android:id="@+id/congratulations_text_view"
-        style="@style/Heading2"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_gravity="bottom"
@@ -141,11 +140,13 @@
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/congratulations_text_background_shadow"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="1dp"
         android:text="@string/correct"
         android:textAllCaps="true"
         android:textColor="@color/green_shade"
+        android:textSize="20sp"
         android:visibility="invisible" />
 
       <nl.dionsegijn.konfetti.KonfettiView
