@@ -93,7 +93,7 @@
 
         <TextView
           android:id="@+id/ongoing_topics_description_text_view"
-          style="@style/DescriptionText"
+          style="@style/DescriptionText1"
           android:layout_width="60dp"
           android:layout_height="wrap_content"
           android:gravity="center"
@@ -135,7 +135,7 @@
 
         <TextView
           android:id="@+id/completed_stories_description_text_view"
-          style="@style/DescriptionText"
+          style="@style/DescriptionText1"
           android:layout_width="60dp"
           android:layout_height="wrap_content"
           android:gravity="center"

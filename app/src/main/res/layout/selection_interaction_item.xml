@@ -43,6 +43,7 @@
       android:layout_marginTop="4dp"
       android:layout_marginBottom="4dp"
       android:text="@string/item_selection_text"
+      android:textAlignment="viewStart"
       android:visibility="@{viewModel.getSelectionItemInputType() == SelectionItemInputType.RADIO_BUTTONS ? View.GONE : View. VISIBLE}" />
 
     <org.oppia.android.app.player.state.SelectionInteractionView
