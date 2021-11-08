@@ -269,7 +269,6 @@
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">italic</item>
     <item name="fontFamily">sans-serif-light</item>
-    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="SubtitleLight3" parent="TextView.Common1">

@@ -51,6 +51,7 @@
       android:layout_height="wrap_content"
       android:paddingBottom="8dp"
       android:text="@string/drag_and_drop_interaction_group_merge_hint"
+      android:textAlignment="viewStart"
       android:visibility="@{viewModel.getGroupingStatus()? View.VISIBLE : View.GONE}" />
 
     <org.oppia.android.app.player.state.DragDropSortInteractionView
