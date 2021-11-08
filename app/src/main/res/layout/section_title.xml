@@ -25,10 +25,14 @@
 
     <TextView
       android:id="@+id/section_title_text_view"
-      style="@style/Heading3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_marginStart="28dp"
       android:layout_marginTop="28dp"
       android:layout_marginEnd="32dp"
-      android:text="@{viewModel.sectionTitleText}" />
+      android:fontFamily="sans-serif-medium"
+      android:text="@{viewModel.sectionTitleText}"
+      android:textColor="@color/oppiaPrimaryText"
+      android:textSize="18sp" />
   </LinearLayout>
 </layout>
