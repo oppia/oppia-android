@@ -10,8 +10,7 @@
 
   <TextView
     android:id="@+id/text_view_for_live_data_no_data_binding"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/Heading3"
     android:text="@{viewModel.boundLiveDataValue}"
     android:textColor="@color/colorPrimary" />
 </layout>

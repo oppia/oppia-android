@@ -5,6 +5,5 @@
 
   <TextView
     android:id="@+id/test_html_content_text_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    style="@style/Body" />
 </FrameLayout>
