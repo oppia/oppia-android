@@ -2,8 +2,8 @@ package org.oppia.android.app.settings.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.activity.ActivityScope
 import javax.inject.Inject
 
 /** The presenter for [ProfileListActivity]. */

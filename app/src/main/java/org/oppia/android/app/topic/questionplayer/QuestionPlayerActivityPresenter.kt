@@ -4,8 +4,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
-import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController

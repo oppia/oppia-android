@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import org.oppia.android.R
+import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
-import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 /** Activity for revision card. */

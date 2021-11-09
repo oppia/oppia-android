@@ -3,9 +3,9 @@ package org.oppia.android.app.help.faq
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
-import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import javax.inject.Inject
 
 /** The FAQ page activity for placement of different FAQs. */

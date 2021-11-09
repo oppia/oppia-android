@@ -3,12 +3,12 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.testing.activity.TestActivity
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
 
 /**
  * Test Activity for testing view models on the [HomeFragment].

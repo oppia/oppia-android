@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
+import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
-import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 
 /** Activity for testing [MarkStoriesCompletedFragment]. */
 class MarkStoriesCompletedTestActivity : InjectableAppCompatActivity() {

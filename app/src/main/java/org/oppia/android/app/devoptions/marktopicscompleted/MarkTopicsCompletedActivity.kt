@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** Activity for Mark Topics Completed. */

@@ -3,9 +3,9 @@ package org.oppia.android.app.onboarding
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
-import org.oppia.android.app.profile.ProfileChooserActivity
 import javax.inject.Inject
 
 /** Activity that contains the onboarding flow for learners. */
