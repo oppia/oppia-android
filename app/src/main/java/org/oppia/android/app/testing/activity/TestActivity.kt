@@ -2,8 +2,8 @@ package org.oppia.android.app.testing.activity
 
 import android.content.Context
 import android.content.Intent
-import org.oppia.android.app.activity.ActivityIntentFactories
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.utility.activity.ActivityIntentFactories
+import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil

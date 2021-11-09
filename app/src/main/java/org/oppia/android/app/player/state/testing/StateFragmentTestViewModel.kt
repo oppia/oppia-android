@@ -2,7 +2,7 @@ package org.oppia.android.app.player.state.testing
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 

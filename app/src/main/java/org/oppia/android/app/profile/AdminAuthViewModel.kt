@@ -3,7 +3,7 @@ package org.oppia.android.app.profile
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.ObservableField
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 

@@ -116,7 +116,7 @@ class TestFileCheckTest {
       "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app", "activity"
     )
     tempFolder.newFile(
-      "testfiles/app/src/main/java/org/oppia/android/app/activity/ActivityModule.kt"
+      "testfiles/app/src/main/java/org/oppia/android/app/utility/activity/ActivityModule.kt"
     )
 
     runScript()

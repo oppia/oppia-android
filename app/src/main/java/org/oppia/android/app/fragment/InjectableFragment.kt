@@ -9,7 +9,7 @@ import org.oppia.android.app.view.ViewComponentFactory
 
 /**
  * A fragment that facilitates field injection to children. This fragment can only be used with
- * [org.oppia.android.app.activity.InjectableAppCompatActivity] contexts.
+ * [org.oppia.android.app.utility.activity.InjectableAppCompatActivity] contexts.
  */
 abstract class InjectableFragment : Fragment(), ViewComponentFactory {
   /**

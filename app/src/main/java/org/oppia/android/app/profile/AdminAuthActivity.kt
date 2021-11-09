@@ -3,8 +3,8 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 const val ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY = "AdminAuthActivity.admin_auth_admin_pin"

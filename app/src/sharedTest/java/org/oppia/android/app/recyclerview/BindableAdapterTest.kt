@@ -28,11 +28,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.activity.ActivityComponentFactory
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.ActivityIntentFactoriesModule
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityComponent
+import org.oppia.android.app.utility.activity.ActivityComponentFactory
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.ActivityIntentFactoriesModule
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationContext
 import org.oppia.android.app.application.ApplicationInjector

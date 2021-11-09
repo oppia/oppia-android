@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import javax.inject.Singleton
 
 /** Provides core infrastructure needed to support all other dependencies in the app. */

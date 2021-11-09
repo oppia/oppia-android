@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.databinding.DeveloperOptionsActivityBinding
 import javax.inject.Inject

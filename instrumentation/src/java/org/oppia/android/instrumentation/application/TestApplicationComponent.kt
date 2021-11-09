@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.work.Configuration
 import dagger.BindsInstance
 import dagger.Component
-import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule

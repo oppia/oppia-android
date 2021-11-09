@@ -6,7 +6,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged

@@ -3,9 +3,9 @@ package org.oppia.android.app.splash
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.activity.ActivityComponentFactory
-import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.ActivityComponent
+import org.oppia.android.app.utility.activity.ActivityComponentFactory
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
 import org.oppia.android.app.deprecation.DeprecationNoticeExitAppListener
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector

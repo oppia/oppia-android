@@ -1,4 +1,4 @@
-package org.oppia.android.app.activity
+package org.oppia.android.app.utility.activity
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +12,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.activity.ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
-import org.oppia.android.app.activity.ActivityIntentFactories.TopicActivityIntentFactory
+import org.oppia.android.app.utility.activity.ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
+import org.oppia.android.app.utility.activity.ActivityIntentFactories.TopicActivityIntentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider

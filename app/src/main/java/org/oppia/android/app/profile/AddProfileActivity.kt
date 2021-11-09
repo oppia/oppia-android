@@ -3,8 +3,8 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"

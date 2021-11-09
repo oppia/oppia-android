@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.ProfileId

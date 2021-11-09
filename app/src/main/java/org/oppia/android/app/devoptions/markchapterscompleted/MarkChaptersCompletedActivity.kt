@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 

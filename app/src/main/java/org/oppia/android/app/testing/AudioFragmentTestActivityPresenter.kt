@@ -2,7 +2,7 @@ package org.oppia.android.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Voiceover

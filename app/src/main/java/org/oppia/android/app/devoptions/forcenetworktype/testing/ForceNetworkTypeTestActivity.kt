@@ -2,8 +2,8 @@ package org.oppia.android.app.devoptions.forcenetworktype.testing
 
 import android.os.Bundle
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 
 /** Activity for testing [ForceNetworkTypeFragment]. */

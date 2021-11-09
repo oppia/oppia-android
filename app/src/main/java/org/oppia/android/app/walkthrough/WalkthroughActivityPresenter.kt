@@ -3,7 +3,7 @@ package org.oppia.android.app.walkthrough
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityScope
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment

@@ -8,13 +8,13 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 oppia_android_test(
     name = "ActivityIntentFactoriesTest",
     srcs = ["ActivityIntentFactoriesTest.kt"],
-    custom_package = "org.oppia.android.app.activity",
-    test_class = "org.oppia.android.app.activity.ActivityIntentFactoriesTest",
+    custom_package = "org.oppia.android.app.utility.activity",
+    test_class = "org.oppia.android.app.utility.activity.ActivityIntentFactoriesTest",
     test_manifest = "//app:test_manifest",
     deps = [
         ":dagger",
         "//app",
-        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//testing",

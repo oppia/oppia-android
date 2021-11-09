@@ -1,4 +1,4 @@
-exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponentImpl.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/activity/ActivityComponentImpl.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsFragment.kt"

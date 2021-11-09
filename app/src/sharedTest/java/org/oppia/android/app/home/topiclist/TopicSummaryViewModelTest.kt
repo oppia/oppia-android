@@ -1,4 +1,4 @@
-package org.oppia.android.app.home
+package org.oppia.android.app.home.topiclist
 
 import android.app.Application
 import android.content.Context
@@ -12,8 +12,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.utility.activity.ActivityComponent
+import org.oppia.android.app.utility.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -74,6 +74,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.home.HomeFragment
 
 private const val TEST_FRAGMENT_TAG = "topic_summary_view_model_test_fragment"
 

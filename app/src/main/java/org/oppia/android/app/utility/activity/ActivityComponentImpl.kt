@@ -1,4 +1,4 @@
-package org.oppia.android.app.activity
+package org.oppia.android.app.utility.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import dagger.BindsInstance

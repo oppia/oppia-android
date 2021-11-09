@@ -1,4 +1,4 @@
-package org.oppia.android.app.activity
+package org.oppia.android.app.utility.activity
 
 import dagger.Module
 import org.oppia.android.app.fragment.FragmentComponentImpl

@@ -2,8 +2,8 @@ package org.oppia.android.app.shim
 
 import android.content.Context
 import android.content.Intent
-import org.oppia.android.app.activity.ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
-import org.oppia.android.app.activity.ActivityIntentFactories.TopicActivityIntentFactory
+import org.oppia.android.app.utility.activity.ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
+import org.oppia.android.app.utility.activity.ActivityIntentFactories.TopicActivityIntentFactory
 import org.oppia.android.app.model.ProfileId
 import javax.inject.Inject
 

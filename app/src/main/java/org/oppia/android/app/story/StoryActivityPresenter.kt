@@ -2,7 +2,7 @@ package org.oppia.android.app.story
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.utility.activity.ActivityScope
 import javax.inject.Inject
 
 /** The presenter for [StoryActivity]. */

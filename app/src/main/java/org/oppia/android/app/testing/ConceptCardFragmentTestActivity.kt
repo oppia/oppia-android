@@ -3,8 +3,8 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener

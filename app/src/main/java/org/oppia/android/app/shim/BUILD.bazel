@@ -62,7 +62,7 @@ kt_android_library(
         ":intent_factory_shim",
         ":view_binding_shim",
         "//app:databinding_resources",
-        "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:activity_intent_factories_shim",
         "//utility",
     ],
 )

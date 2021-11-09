@@ -1,4 +1,4 @@
-package org.oppia.android.app.activity
+package org.oppia.android.app.utility.activity
 
 import org.oppia.android.app.translation.AppLanguageActivityInjector
 import org.oppia.android.app.utility.datetime.DateTimeUtil

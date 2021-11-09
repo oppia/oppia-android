@@ -3,8 +3,8 @@ package org.oppia.android.app.settings.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.utility.activity.ActivityComponentImpl
+import org.oppia.android.app.utility.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 const val PROFILE_RENAME_PROFILE_ID_EXTRA_KEY = "ProfileRenameActivity.profile_rename_profile_id"

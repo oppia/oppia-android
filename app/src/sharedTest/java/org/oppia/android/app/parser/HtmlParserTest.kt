@@ -41,8 +41,8 @@ import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.utility.activity.ActivityComponent
+import org.oppia.android.app.utility.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider

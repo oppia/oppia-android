@@ -1,4 +1,4 @@
-package org.oppia.android.app.activity
+package org.oppia.android.app.utility.activity
 
 import android.content.Intent
 import org.oppia.android.app.model.ProfileId

@@ -91,7 +91,7 @@ kt_android_library(
         "AppLanguageActivityInjector.kt",
     ],
     visibility = [
-        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:__pkg__",
     ],
     deps = [
         ":app_language_resource_handler",
@@ -106,7 +106,7 @@ kt_android_library(
     ],
     visibility = [
         "//app:__pkg__",
-        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:__pkg__",
     ],
     deps = [
         ":app_language_activity_injector",
@@ -119,7 +119,7 @@ kt_android_library(
         "AppLanguageApplicationInjector.kt",
     ],
     visibility = [
-        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:__pkg__",
     ],
     deps = [
         ":app_language_locale_handler",
@@ -132,7 +132,7 @@ kt_android_library(
         "AppLanguageApplicationInjectorProvider.kt",
     ],
     visibility = [
-        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:__pkg__",
     ],
     deps = [
         ":app_language_application_injector",
