@@ -118,7 +118,7 @@
 
         <TextView
           android:id="@+id/solution_correct_answer"
-          style="@style/Body"
+          style="@style/Content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp" />
@@ -140,7 +140,7 @@
 
         <TextView
           android:id="@+id/solution_summary"
-          style="@style/Body"
+          style="@style/Content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="start" />

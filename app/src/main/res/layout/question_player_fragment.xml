@@ -36,7 +36,7 @@
 
       <TextView
         android:id="@+id/end_session_body_text_view"
-        style="@style/Body"
+        style="@style/Content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
