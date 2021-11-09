@@ -20,8 +20,6 @@
     <TextView
       android:id="@+id/master_skills_text_view"
       style="@style/Heading2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
       android:text="@string/topic_practice_master_these_skills"
       android:textAlignment="viewStart"
       app:layout_constraintStart_toStartOf="parent"
@@ -30,8 +28,6 @@
     <TextView
       android:id="@+id/skills_description_text_view"
       style="@style/Subtitle1"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
       android:layout_marginTop="4dp"
       android:text="@string/topic_practice_skills_description"
       android:textColor="@color/oppiaSecondaryText"
