@@ -26,7 +26,13 @@ If you are running Oppia on a local Android device, you can take a screenshot us
 
 <img width="1000" height="500" alt="Screenshot 2021-11-09 at 7 50 53 PM" src="https://user-images.githubusercontent.com/53938155/140941142-92fbd8e6-fbd7-4d79-9ce3-0a856706ca35.png">
 
-* You can then save your image from the Screenshot Editor.
+* Optionally change the image:
+> *  **Recapture**: Take a new screenshot.
+> *  **Rotate Left**: Rotate the image 90 degrees counter-clockwise.
+> *  **Rotate Right**: Rotate the image 90 degrees clockwise.
+> *  **Frame Screenshot**: Choose a device to wrap your screenshot with real device artwork.
+* Click Save, specify the location and filename, and then click OK to save the screenshot. 
+
 
 For more details, see the [Android documentation](https://developer.android.com/studio/debug/am-screenshot)
 
