@@ -136,7 +136,7 @@ kt_android_library(
     deps = [
         ":image_asset_fetcher",
         ":repository_model_loader",
-        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:glide_compiler",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
