@@ -27,7 +27,6 @@
         android:id="@+id/resume_lesson_chapter_title_text_view"
         style="@style/Heading1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
@@ -46,7 +45,6 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:ellipsize="end"
-        android:textColor="@color/oppiaPrimaryText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/resume_lesson_chapter_title_text_view" />

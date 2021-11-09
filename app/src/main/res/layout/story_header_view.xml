@@ -12,8 +12,6 @@
   <TextView
     android:id="@+id/story_progress_chapter_completed_text"
     style="@style/Heading3"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/story_header_view_layout_margin_start"
     android:layout_marginTop="32dp"
     android:layout_marginEnd="@dimen/story_header_view_layout_margin_end"
