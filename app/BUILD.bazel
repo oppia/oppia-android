@@ -54,8 +54,8 @@ filegroup(
 # of EXCLUDED_APP_LIB_FILES.
 # keep sorted
 MIGRATED_SOURCE_FILES = glob([
-    "src/main/java/org/oppia/android/app/utility/activity/*.kt",
     "src/main/java/org/oppia/android/app/fragment/*.kt",
+    "src/main/java/org/oppia/android/app/utility/activity/*.kt",
     "src/main/java/org/oppia/android/app/utility/datetime/*.kt",
 ]) + [
     "src/main/java/org/oppia/android/app/viewmodel/ObservableArrayList.kt",
@@ -619,8 +619,8 @@ kt_android_library(
     custom_package = "org.oppia.android.app",
     deps = [
         ":dagger",
-        "//app/src/main/java/org/oppia/android/app/utility/activity:activity_scope",
         "//app/src/main/java/org/oppia/android/app/fragment:fragment_scope",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:activity_scope",
     ],
 )
 
@@ -700,12 +700,12 @@ android_library(
 kt_android_library(
     name = "app",
     srcs = APP_FILES + [
-        "//app/src/main/java/org/oppia/android/app/utility/activity:ActivityComponentImpl.kt",
-        "//app/src/main/java/org/oppia/android/app/utility/activity:ActivityIntentFactoriesModule.kt",
-        "//app/src/main/java/org/oppia/android/app/utility/activity:ActivityModule.kt",
         "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentBuilderModule.kt",
         "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentImpl.kt",
         "//app/src/main/java/org/oppia/android/app/fragment:FragmentModule.kt",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:ActivityComponentImpl.kt",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:ActivityIntentFactoriesModule.kt",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:ActivityModule.kt",
         "//app/src/main/java/org/oppia/android/app/view:ViewComponentBuilderModule.kt",
     ],
     custom_package = "org.oppia.android.app.ui",
@@ -718,13 +718,13 @@ kt_android_library(
         ":databinding_resources",
         ":resources",
         ":view_models",
-        ":views",
-        "//app/src/main/java/org/oppia/android/app/utility/activity:activity_intent_factories_shim",
-        "//app/src/main/java/org/oppia/android/app/utility/activity:injectable_app_compat_activity",
+        ":views",,
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
         "//app/src/main/java/org/oppia/android/app/translation:prod_module",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/utility/activity:injectable_app_compat_activity"
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
