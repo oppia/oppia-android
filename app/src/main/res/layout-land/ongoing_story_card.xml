@@ -58,7 +58,6 @@
         <TextView
           android:id="@+id/story_name_text_view"
           style="@style/Body"
-          android:layout_width="match_parent"
           android:layout_marginStart="8dp"
           android:layout_marginTop="8dp"
           android:layout_marginEnd="8dp"

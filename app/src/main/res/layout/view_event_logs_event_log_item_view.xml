@@ -43,7 +43,6 @@
       <TextView
         android:id="@+id/view_event_logs_priority_text_view"
         style="@style/Subtitle2"
-        android:layout_width="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_rect_large_border_radius"

@@ -59,8 +59,6 @@
           <TextView
             android:id="@+id/mark_chapters_completed_all_text_view"
             style="@style/Heading5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:text="@string/modify_lesson_progress_all"
             android:textColor="@color/white"
@@ -87,8 +85,6 @@
         <TextView
           android:id="@+id/mark_chapters_completed_mark_completed_text_view"
           style="@style/Heading5"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
           android:layout_marginEnd="16dp"
           android:gravity="center_vertical"
           android:minWidth="48dp"

@@ -67,7 +67,6 @@
             android:id="@+id/add_profile_activity_required_heading_text_view"
             style="@style/TextFieldLabel"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@string/add_profile_required"

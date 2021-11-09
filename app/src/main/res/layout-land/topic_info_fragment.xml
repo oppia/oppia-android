@@ -68,7 +68,6 @@
         android:id="@+id/see_more_text_view"
         style="@style/Body"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
         android:layout_marginEnd="72dp"
         android:gravity="start"

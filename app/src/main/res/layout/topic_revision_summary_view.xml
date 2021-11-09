@@ -48,7 +48,6 @@
         android:id="@+id/subtopic_title"
         style="@style/Subtitle2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:background="@color/oppiaBrownDark"
         android:ellipsize="end"
         android:maxLines="3"

@@ -25,7 +25,6 @@
         android:id="@+id/faq_question_text_view"
         style="@style/Heading3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/faq_item_header_margin_start"
         android:layout_marginTop="@dimen/faq_item_header_margin_top"
         android:layout_marginEnd="@dimen/faq_item_header_margin_end"
