@@ -19,7 +19,13 @@ The default location for the screenshot, video and gif would be on Desktop.
 If you are running Oppia on a local Android device, you can take a screenshot using the Logcat window of Android Studio. 
 * Go to Tools > Windows > Logcat. You will see the Logcat window open up at the bottom.
 * On the left hand side there is a column of icons, hover on the expand icon at the bottom and you will see a camera icon: <img width="16" src="https://user-images.githubusercontent.com/11780495/68518784-71e2af80-0242-11ea-9ce4-81702ddadb48.png">.
-* Click on that and Android studio will take a screenshot and open up a Screenshot Editor
+
+<img width="1000" height="300" alt="Screenshot 2021-11-09 at 7 54 36 PM" src="https://user-images.githubusercontent.com/53938155/140941814-290e1406-40f6-440e-bd67-e59fa9871c3e.png">
+
+* Click on that and Android studio will take a screenshot and open up a Screenshot Editor.
+
+<img width="1000" height="500" alt="Screenshot 2021-11-09 at 7 50 53 PM" src="https://user-images.githubusercontent.com/53938155/140941142-92fbd8e6-fbd7-4d79-9ce3-0a856706ca35.png">
+
 * You can then save your image from the Screenshot Editor.
 
 For more details, see the [Android documentation](https://developer.android.com/studio/debug/am-screenshot)
@@ -29,4 +35,4 @@ If you would like to take a screenshot but cannot use Android Studio, you can in
 * Run the following command: `adb shell screencap -p /sdcard/screenshot.png`
 * This creates a screenshot called screenshot.png and stores it on your Android device.
 * To pull it on to your computer, you can run `adb pull /sdcard/screenshot.png`. This will copy the image from the device to your local machine (on the path in which you ran the command).
-* You can now upload the image on to Github
+* You can now upload the image on to Github.
