@@ -196,6 +196,33 @@ class NumericExpressionParserTest {
 
     expectFailureWhenParsing("73 2")
 
+    // Verify order of operations between higher & lower precedent operators.
+    val expression32 = parseExpression("3+4^7")
+    assertThat(expression32).hasStructureThatMatches {
+      addition {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(3)
+          }
+        }
+        rightOperand {
+          exponentiation {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(4)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(7)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression32).evaluatesToIntegerThat().isEqualTo(16387)
+
     val expression7 = parseExpression("3*2-3+4^7*8/3*2+7")
     assertThat(expression7).hasStructureThatMatches {
       // To better visualize the precedence & order of operations, see this grouped version:
@@ -335,31 +362,8 @@ class NumericExpressionParserTest {
     }
     assertThat(expression8).evaluatesToIntegerThat().isEqualTo(21)
 
-    val expression9 = parseExpression("(1+2)2")
-    assertThat(expression9).hasStructureThatMatches {
-      multiplication {
-        leftOperand {
-          addition {
-            leftOperand {
-              constant {
-                withIntegerValueThat().isEqualTo(1)
-              }
-            }
-            rightOperand {
-              constant {
-                withIntegerValueThat().isEqualTo(2)
-              }
-            }
-          }
-        }
-        rightOperand {
-          constant {
-            withIntegerValueThat().isEqualTo(2)
-          }
-        }
-      }
-    }
-    assertThat(expression9).evaluatesToIntegerThat().isEqualTo(6)
+    // Right implicit multiplication of numbers isn't allowed.
+    expectFailureWhenParsing("(1+2)2")
 
     val expression10 = parseExpression("2(1+2)")
     assertThat(expression10).hasStructureThatMatches {
@@ -387,26 +391,8 @@ class NumericExpressionParserTest {
     }
     assertThat(expression10).evaluatesToIntegerThat().isEqualTo(6)
 
-    val expression11 = parseExpression("sqrt(2)3")
-    assertThat(expression11).hasStructureThatMatches {
-      multiplication {
-        leftOperand {
-          functionCallTo(SQUARE_ROOT) {
-            argument {
-              constant {
-                withIntegerValueThat().isEqualTo(2)
-              }
-            }
-          }
-        }
-        rightOperand {
-          constant {
-            withIntegerValueThat().isEqualTo(3)
-          }
-        }
-      }
-    }
-    assertThat(expression11).evaluatesToIrrationalThat().isWithin(1e-5).of(3.0 * sqrt(2.0))
+    // Right implicit multiplication of numbers isn't allowed.
+    expectFailureWhenParsing("sqrt(2)3")
 
     val expression12 = parseExpression("3sqrt(2)")
     assertThat(expression12).hasStructureThatMatches {
@@ -431,7 +417,6 @@ class NumericExpressionParserTest {
 
     expectFailureWhenParsing("xsqrt(2)")
 
-    // TODO: add version with implicit multiplication (has wrong associativity today).
     val expression13 = parseExpression("sqrt(2)*(1+2)*(3-2^5)")
     assertThat(expression13).hasStructureThatMatches {
       multiplication {
@@ -488,6 +473,63 @@ class NumericExpressionParserTest {
       }
     }
     assertThat(expression13).evaluatesToIrrationalThat().isWithin(1e-5).of(-123.036579926)
+
+    val expression58 = parseExpression("sqrt(2)(1+2)(3-2^5)")
+    assertThat(expression58).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          multiplication {
+            leftOperand {
+              functionCallTo(SQUARE_ROOT) {
+                argument {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+            rightOperand {
+              addition {
+                leftOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(1)
+                  }
+                }
+                rightOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+          }
+        }
+        rightOperand {
+          subtraction {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+            rightOperand {
+              exponentiation {
+                leftOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+                rightOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(5)
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression58).evaluatesToIrrationalThat().isWithin(1e-5).of(-123.036579926)
 
     val expression14 = parseExpression("((3))")
     assertThat(expression14).hasStructureThatMatches {
@@ -627,24 +669,16 @@ class NumericExpressionParserTest {
     expectFailureWhenParsing("1+2 asdf")
 
     val expression21 = parseExpression("sqrt(2)sqrt(3)sqrt(4)")
+    // Note that this tree demonstrates left associativity.
     assertThat(expression21).hasStructureThatMatches {
       multiplication {
         leftOperand {
-          functionCallTo(SQUARE_ROOT) {
-            argument {
-              constant {
-                withIntegerValueThat().isEqualTo(2)
-              }
-            }
-          }
-        }
-        rightOperand {
           multiplication {
             leftOperand {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withIntegerValueThat().isEqualTo(2)
                   }
                 }
               }
@@ -653,9 +687,18 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(4)
+                    withIntegerValueThat().isEqualTo(3)
                   }
                 }
+              }
+            }
+          }
+        }
+        rightOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(4)
               }
             }
           }
@@ -671,22 +714,24 @@ class NumericExpressionParserTest {
     assertThat(expression22).hasStructureThatMatches {
       multiplication {
         leftOperand {
-          addition {
+          multiplication {
             leftOperand {
-              constant {
-                withIntegerValueThat().isEqualTo(1)
+              // 1+2
+              addition {
+                leftOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(1)
+                  }
+                }
+                rightOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
               }
             }
             rightOperand {
-              constant {
-                withIntegerValueThat().isEqualTo(2)
-              }
-            }
-          }
-        }
-        rightOperand {
-          multiplication {
-            leftOperand {
+              // 3-7^2
               subtraction {
                 leftOperand {
                   constant {
@@ -709,20 +754,21 @@ class NumericExpressionParserTest {
                 }
               }
             }
+          }
+        }
+        rightOperand {
+          // 5+-17
+          addition {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(5)
+              }
+            }
             rightOperand {
-              addition {
-                leftOperand {
+              negation {
+                operand {
                   constant {
-                    withIntegerValueThat().isEqualTo(5)
-                  }
-                }
-                rightOperand {
-                  negation {
-                    operand {
-                      constant {
-                        withIntegerValueThat().isEqualTo(17)
-                      }
-                    }
+                    withIntegerValueThat().isEqualTo(17)
                   }
                 }
               }
@@ -834,7 +880,6 @@ class NumericExpressionParserTest {
 
     // "Hard" order of operation problems loosely based on & other problems that can often stump
     // people: https://www.basic-mathematics.com/hard-order-of-operations-problems.html.
-    // TODO: test implicit version (currently broken in parser)
     val expression29 = parseExpression("3÷2*(3+4)")
     assertThat(expression29).hasStructureThatMatches {
       multiplication {
@@ -870,7 +915,823 @@ class NumericExpressionParserTest {
     }
     assertThat(expression29).evaluatesToRationalThat().evaluatesToRealThat().isWithin(1e-5).of(10.5)
 
-    // TODO: add others
+    val expression59 = parseExpression("3÷2(3+4)")
+    assertThat(expression59).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          division {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+        rightOperand {
+          addition {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(4)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression59).evaluatesToRationalThat().evaluatesToRealThat().isWithin(1e-5).of(10.5)
+
+    // Numbers cannot have implicit multiplication unless they are in groups.
+    expectFailureWhenParsing("2 2")
+
+    expectFailureWhenParsing("2 2^2")
+
+    expectFailureWhenParsing("2^2 2")
+
+    val expression31 = parseExpression("(3)(4)(5)")
+    assertThat(expression31).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          multiplication {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(4)
+              }
+            }
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(5)
+          }
+        }
+      }
+    }
+    assertThat(expression31).evaluatesToIntegerThat().isEqualTo(60)
+
+    val expression33 = parseExpression("2^(3)")
+    assertThat(expression33).hasStructureThatMatches {
+      exponentiation {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+    assertThat(expression33).evaluatesToIntegerThat().isEqualTo(8)
+
+    // Verify that implicit multiple has lower precedence than exponentiation.
+    val expression34 = parseExpression("2^(3)(4)")
+    assertThat(expression34).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          exponentiation {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(4)
+          }
+        }
+      }
+    }
+    assertThat(expression34).evaluatesToIntegerThat().isEqualTo(32)
+
+    // An exponentiation can never be an implicit right operand.
+    expectFailureWhenParsing("2^(3)2^2")
+
+    val expression35 = parseExpression("2^(3)*2^2")
+    assertThat(expression35).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          exponentiation {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+        rightOperand {
+          exponentiation {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression35).evaluatesToIntegerThat().isEqualTo(32)
+
+    // An exponentiation can be a right operand of an implicit mult if it's grouped.
+    val expression36 = parseExpression("2^(3)(2^2)")
+    assertThat(expression36).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          exponentiation {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+        rightOperand {
+          exponentiation {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression36).evaluatesToIntegerThat().isEqualTo(32)
+
+    // An exponentiation can never be an implicit right operand.
+    expectFailureWhenParsing("2^3(4)2^3")
+
+    val expression38 = parseExpression("2^3(4)*2^3")
+    assertThat(expression38).hasStructureThatMatches {
+      // 2^3(4)*2^3
+      multiplication {
+        leftOperand {
+          // 2^3(4)
+          multiplication {
+            leftOperand {
+              // 2^3
+              exponentiation {
+                leftOperand {
+                  // 2
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+                rightOperand {
+                  // 3
+                  constant {
+                    withIntegerValueThat().isEqualTo(3)
+                  }
+                }
+              }
+            }
+            rightOperand {
+              // 4
+              constant {
+                withIntegerValueThat().isEqualTo(4)
+              }
+            }
+          }
+        }
+        rightOperand {
+          // 2^3
+          exponentiation {
+            leftOperand {
+              // 2
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              // 3
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression38).evaluatesToIntegerThat().isEqualTo(256)
+
+    expectFailureWhenParsing("2^2 2^2")
+    expectFailureWhenParsing("(3) 2^2")
+    expectFailureWhenParsing("sqrt(3) 2^2")
+    expectFailureWhenParsing("√2 2^2")
+    expectFailureWhenParsing("2^2 3")
+
+    expectFailureWhenParsing("-2 3")
+
+    val expression39 = parseExpression("-(1+2)")
+    assertThat(expression39).hasStructureThatMatches {
+      negation {
+        operand {
+          addition {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(1)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression39).evaluatesToIntegerThat().isEqualTo(-3)
+
+    // Should pass for algebra.
+    expectFailureWhenParsing("-2 x")
+
+    val expression40 = parseExpression("-2 (1+2)")
+    assertThat(expression40).hasStructureThatMatches {
+      // The negation happens last for parity with other common calculators.
+      negation {
+        operand {
+          multiplication {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              addition {
+                leftOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(1)
+                  }
+                }
+                rightOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression40).evaluatesToIntegerThat().isEqualTo(-6)
+
+    val expression41 = parseExpression("-2^3(4)")
+    assertThat(expression41).hasStructureThatMatches {
+      negation {
+        operand {
+          multiplication {
+            leftOperand {
+              exponentiation {
+                leftOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+                rightOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(3)
+                  }
+                }
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(4)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression41).evaluatesToIntegerThat().isEqualTo(-32)
+
+    val expression43 = parseExpression("√2^2(3)")
+    assertThat(expression43).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          exponentiation {
+            leftOperand {
+              functionCallTo(SQUARE_ROOT) {
+                argument {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+    assertThat(expression43).evaluatesToIrrationalThat().isWithin(1e-5).of(6.0)
+
+    val expression60 = parseExpression("√(2^2(3))")
+    assertThat(expression60).hasStructureThatMatches {
+      functionCallTo(SQUARE_ROOT) {
+        argument {
+          multiplication {
+            leftOperand {
+              exponentiation {
+                leftOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+                rightOperand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression60).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt(12.0))
+
+    val expression42 = parseExpression("-2*-2")
+    // Note that the following structure is not the same as (-2)*(-2) since unary negation has
+    // higher precedence than multiplication, so it's first & recurses to include the entire
+    // multiplication expression.
+    assertThat(expression42).hasStructureThatMatches {
+      negation {
+        operand {
+          multiplication {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              negation {
+                operand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression42).evaluatesToIntegerThat().isEqualTo(4)
+
+    val expression44 = parseExpression("2(2)")
+    assertThat(expression44).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+      }
+    }
+    assertThat(expression44).evaluatesToIntegerThat().isEqualTo(4)
+
+    val expression45 = parseExpression("2sqrt(2)")
+    assertThat(expression45).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+        rightOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression45).evaluatesToIrrationalThat().isWithin(1e-5).of(2.0 * sqrt(2.0))
+
+    val expression46 = parseExpression("2√2")
+    assertThat(expression46).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+        rightOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression46).evaluatesToIrrationalThat().isWithin(1e-5).of(2.0 * sqrt(2.0))
+
+    val expression47 = parseExpression("(2)(2)")
+    assertThat(expression47).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+      }
+    }
+    assertThat(expression47).evaluatesToIntegerThat().isEqualTo(4)
+
+    val expression48 = parseExpression("sqrt(2)(2)")
+    assertThat(expression48).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+      }
+    }
+    assertThat(expression48).evaluatesToIrrationalThat().isWithin(1e-5).of(2.0 * sqrt(2.0))
+
+    val expression49 = parseExpression("sqrt(2)sqrt(2)")
+    assertThat(expression49).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+        rightOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression49).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt(2.0) * sqrt(2.0))
+
+    val expression50 = parseExpression("√2√2")
+    assertThat(expression50).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+        rightOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression50).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt(2.0) * sqrt(2.0))
+
+    val expression51 = parseExpression("(2)(2)(2)")
+    assertThat(expression51).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          multiplication {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+      }
+    }
+    assertThat(expression51).evaluatesToIntegerThat().isEqualTo(8)
+
+    val expression52 = parseExpression("sqrt(2)sqrt(2)sqrt(2)")
+    assertThat(expression52).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          multiplication {
+            leftOperand {
+              functionCallTo(SQUARE_ROOT) {
+                argument {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+            rightOperand {
+              functionCallTo(SQUARE_ROOT) {
+                argument {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+          }
+        }
+        rightOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    val sqrt2 = sqrt(2.0)
+    assertThat(expression52).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt2 * sqrt2 * sqrt2)
+
+    val expression53 = parseExpression("√2√2√2")
+    assertThat(expression53).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          multiplication {
+            leftOperand {
+              functionCallTo(SQUARE_ROOT) {
+                argument {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+            rightOperand {
+              functionCallTo(SQUARE_ROOT) {
+                argument {
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+          }
+        }
+        rightOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression53).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt2 * sqrt2 * sqrt2)
+
+    // Should fail for algebra.
+    expectFailureWhenParsing("x7")
+
+    // Should pass for algebra.
+    expectFailureWhenParsing("2x^2")
+
+    val expression54 = parseExpression("2*2/-4+7*2")
+    assertThat(expression54).hasStructureThatMatches {
+      // 2*2/-4+7*2 -> ((2*2)/(-4))+(7*2)
+      addition {
+        leftOperand {
+          // 2*2/-4
+          division {
+            leftOperand {
+              // 2*2
+              multiplication {
+                leftOperand {
+                  // 2
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+                rightOperand {
+                  // 2
+                  constant {
+                    withIntegerValueThat().isEqualTo(2)
+                  }
+                }
+              }
+            }
+            rightOperand {
+              // -4
+              negation {
+                // 4
+                operand {
+                  constant {
+                    withIntegerValueThat().isEqualTo(4)
+                  }
+                }
+              }
+            }
+          }
+        }
+        rightOperand {
+          // 7*2
+          multiplication {
+            leftOperand {
+              // 7
+              constant {
+                withIntegerValueThat().isEqualTo(7)
+              }
+            }
+            rightOperand {
+              // 2
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression54).evaluatesToIntegerThat().isEqualTo(13)
+
+    val expression55 = parseExpression("(3/(1-2))")
+    assertThat(expression55).hasStructureThatMatches {
+      division {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(3)
+          }
+        }
+        rightOperand {
+          subtraction {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(1)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression55).evaluatesToIntegerThat().isEqualTo(-3)
+
+    val expression56 = parseExpression("(3)/(1-2)")
+    assertThat(expression56).hasStructureThatMatches {
+      division {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(3)
+          }
+        }
+        rightOperand {
+          subtraction {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(1)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression56).evaluatesToIntegerThat().isEqualTo(-3)
+
+    val expression57 = parseExpression("3/((1-2))")
+    assertThat(expression57).hasStructureThatMatches {
+      division {
+        leftOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(3)
+          }
+        }
+        rightOperand {
+          subtraction {
+            leftOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(1)
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+      }
+    }
+    assertThat(expression57).evaluatesToIntegerThat().isEqualTo(-3)
+
+    // TODO: add others, including tests for malformed expressions throughout the parser &
+    //  tokenizer.
   }
 
   @DslMarker
