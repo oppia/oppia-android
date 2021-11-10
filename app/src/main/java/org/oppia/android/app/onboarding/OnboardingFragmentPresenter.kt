@@ -90,8 +90,21 @@ class OnboardingFragmentPresenter @Inject constructor(
           }
           selectDot(position)
           onboardingStatusBarColorUpdate(position)
+          setAccessibilityFocusToViewPager()
         }
       })
+  }
+
+  private fun setAccessibilityFocusToViewPager() {
+//    binding.root.announceForAccessibility(null)
+//
+//    binding.onboardingSlideViewPager.announceForAccessibility(null)
+//
+//    binding.onboardingSlideViewPager.requestFocus()
+//
+//    binding.onboardingSlideViewPager.sendAccessibilityEvent(TYPE_VIEW_CLICKED)
+//
+//    binding.onboardingFragmentNextImageView.sendAccessibilityEvent(TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED)
   }
 
   private fun createViewPagerAdapter(): BindableAdapter<OnboardingViewPagerViewModel> {
