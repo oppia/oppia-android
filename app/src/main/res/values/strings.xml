@@ -2,6 +2,17 @@
 <resources>
 
   <string name="exploration_activity_title">Exploration Player</string>
+  <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
+  <string name="home_activity_back_dialog_cancel">Cancel</string>
+  <string name="home_activity_back_dialog_exit">Exit</string>
+  <string name="nav_header_desc">Navigation header</string>
+  <string name="menu_options">Options</string>
+  <string name="menu_my_downloads">My Downloads</string>
+  <string name="menu_help">Help</string>
+  <string name="menu_switch_profile">Switch Profile</string>
+  <string name="developer_options">Developer Options</string>
+  <string name="drawer_open_content_description">Navigation Menu Open</string>
+  <string name="drawer_close_content_description">Navigation Menu Close</string>
   <string name="help_activity_title">Help</string>
   <string name="administrator_controls">Administrator Controls</string>
   <string name="audio_play_description">Play audio</string>
@@ -283,18 +294,6 @@
   <string name="tab_updates">Updates (2)</string>
   <!-- HomeActivity -->
   <string name="home_activity_title">Home</string>
-  <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
-  <string name="home_activity_back_dialog_cancel">Cancel</string>
-  <string name="home_activity_back_dialog_exit">Exit</string>
-  <string name="nav_header_desc">Navigation header</string>
-  <string name="menu_home">Home</string>
-  <string name="menu_options">Options</string>
-  <string name="menu_my_downloads">My Downloads</string>
-  <string name="menu_help">Help</string>
-  <string name="menu_switch_profile">Switch Profile</string>
-  <string name="developer_options">Developer Options</string>
-  <string name="drawer_open_content_description">Navigation Menu Open</string>
-  <string name="drawer_close_content_description">Navigation Menu Close</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->

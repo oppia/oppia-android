@@ -6,7 +6,7 @@
 -->
 <resources>
   <string name="nav_header_desc">Cabeçalho de navegação</string>
-  <string name="menu_home">Início</string>
+  <string name="home_activity_title">Início</string>
   <string name="menu_options">Opções</string>
   <string name="menu_my_downloads">Meus Downloads</string>
   <string name="menu_help">Ajuda</string>
