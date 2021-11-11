@@ -202,10 +202,25 @@
     <item name="fontFamily">sans-serif-medium</item>
   </style>
 
-  <style name="Heading3" parent="TextView.Common1">
+  <style name="HeadingViewStart2" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">20sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="HeadingCenter3" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="HeadingViewStart3" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">18sp</item>
+    <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="Heading4" parent="TextView.Common1">
@@ -224,6 +239,13 @@
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">16sp</item>
     <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="SubtitleViewStart1" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">16sp</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="Subtitle2" parent="TextView.Common1">
