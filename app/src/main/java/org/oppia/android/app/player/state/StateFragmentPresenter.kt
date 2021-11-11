@@ -368,7 +368,7 @@ class StateFragmentPresenter @Inject constructor(
           moveToNextState()
         } else {
           if (result.labelledAsCorrectAnswer) {
-            recyclerViewAssembler.showCelebrationOnCorrectAnswer()
+            recyclerViewAssembler.showCelebrationOnCorrectAnswer(result.feedback)
           } else {
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }

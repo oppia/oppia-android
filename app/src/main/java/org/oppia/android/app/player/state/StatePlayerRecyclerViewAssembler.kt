@@ -457,7 +457,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * Shows a celebratory animation with a congratulations message and confetti when the learner submits
    * a correct answer.
    */
-  fun showCelebrationOnCorrectAnswer() {
+  fun showCelebrationOnCorrectAnswer(feedback: SubtitledHtml) {
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
@@ -470,10 +470,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val confettiConfig = checkNotNull(congratulationsTextConfettiConfig) {
       "Expected non-null reference to confetti animation configuration"
     }
-
     createBannerConfetti(confettiView, confettiConfig)
     animateCongratulationsTextView(textView)
-    textView.announceForAccessibility(resourceHandler.getStringInLocale(R.string.correct))
+    if (feedback.html.isBlank()) {
+      textView.announceForAccessibility(resourceHandler.getStringInLocale(R.string.correct))
+    }
   }
 
   /** Shows confetti when the learner reaches the end of an exploration session. */

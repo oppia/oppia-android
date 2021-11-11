@@ -269,7 +269,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
           questionViewModel.setHintBulbVisibility(false)
-          recyclerViewAssembler.showCelebrationOnCorrectAnswer()
+          recyclerViewAssembler.showCelebrationOnCorrectAnswer(result.feedback)
         } else {
           questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
