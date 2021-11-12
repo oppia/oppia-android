@@ -25,6 +25,7 @@
       android:paddingBottom="20dp"
       android:text="@{viewModel.storyName}"
       android:textColor="@color/oppiaPrimaryTextDark"
+      android:textAlignment="viewStart"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
