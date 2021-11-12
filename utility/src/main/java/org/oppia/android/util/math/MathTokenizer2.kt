@@ -51,6 +51,7 @@ class MathTokenizer2 private constructor() {
         // Another integer must follow the ".".
         val integerPart2 = parseInteger(chars) ?: return Token.InvalidToken
 
+        // TODO: validate that the result isn't NaN or INF.
         val doubleValue = "$integerPart1.$integerPart2".toDoubleOrNull()
           ?: return Token.InvalidToken
         Token.PositiveRealNumber(doubleValue)
