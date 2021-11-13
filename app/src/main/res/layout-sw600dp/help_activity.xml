@@ -44,7 +44,7 @@
 
       <TextView
         android:id="@+id/help_multipane_options_title_textview"
-        style="@style/HeadingCenter3"
+        style="@style/Heading3ViewCenterVertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"

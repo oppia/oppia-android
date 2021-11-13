@@ -61,10 +61,10 @@
 
         <TextView
           android:id="@+id/profile_last_visited"
+          style="@style/TextViewCenter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-light"
-          android:gravity="center"
           android:textColor="@color/white"
           android:textSize="12sp"
           android:textStyle="italic"
@@ -73,10 +73,10 @@
 
         <TextView
           android:id="@+id/profile_is_admin_text"
+          style="@style/TextViewCenter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-light"
-          android:gravity="center"
           android:text="@string/profile_chooser_admin"
           android:textColor="@color/white"
           android:textSize="12sp"

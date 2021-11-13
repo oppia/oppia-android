@@ -43,8 +43,7 @@
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          style="@style/Subtitle1"
-          android:gravity="center"
+          style="@style/Subtitle1ViewCenterVertical"
           android:minHeight="48dp"
           android:paddingTop="20dp"
           android:text="@string/profile_chooser_language"

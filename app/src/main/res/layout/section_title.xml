@@ -25,7 +25,7 @@
 
     <TextView
       android:id="@+id/section_title_text_view"
-      style="@style/HeadingViewStart3"
+      style="@style/Heading3ViewStart"
       android:layout_marginStart="28dp"
       android:layout_marginTop="28dp"
       android:layout_marginEnd="32dp"

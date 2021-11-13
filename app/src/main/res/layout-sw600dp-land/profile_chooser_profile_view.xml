@@ -72,6 +72,7 @@
 
         <TextView
           android:id="@+id/profile_last_visited"
+          style="@style/TextViewCenter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
@@ -86,6 +87,7 @@
 
         <TextView
           android:id="@+id/profile_is_admin_text"
+          style="@style/TextViewCenter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="4dp"

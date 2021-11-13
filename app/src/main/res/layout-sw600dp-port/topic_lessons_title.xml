@@ -17,9 +17,8 @@
 
     <TextView
       android:id="@+id/topic_play_text_view"
-      style="@style/Heading2"
+      style="@style/Heading2ViewCenterVertical"
       android:layout_width="528dp"
-      android:text="@string/stories_you_can_play"
-      android:layout_gravity="center" />
+      android:text="@string/stories_you_can_play" />
   </FrameLayout>
 </layout>
