@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-  <string name="exploration_activity_title">Exploration Player</string>
-  <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
-  <string name="home_activity_back_dialog_cancel">Cancel</string>
-  <string name="home_activity_back_dialog_exit">Exit</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
+  <string name="exploration_activity_title">Exploration Player</string>
   <string name="menu_help">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="developer_options">Developer Options</string>
@@ -292,6 +288,10 @@
   <string name="my_downloads">My Downloads</string>
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
+  <!-- HomeActivityBackDialog -->
+  <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
+  <string name="home_activity_back_dialog_cancel">Cancel</string>
+  <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- HomeActivity -->
   <string name="home_activity_title">Home</string>
   <!-- ProfileListActivity -->
