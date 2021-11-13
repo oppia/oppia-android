@@ -9,7 +9,7 @@ kt_android_library(
     srcs = [
         "BlockPictureDrawable.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
     deps = [
         ":scalable_vector_graphic",
         ":svg_picture_drawable",
