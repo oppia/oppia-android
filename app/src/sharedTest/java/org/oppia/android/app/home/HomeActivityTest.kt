@@ -160,6 +160,7 @@ class HomeActivityTest {
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
+  @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject

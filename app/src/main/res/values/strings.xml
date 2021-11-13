@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-  <string name="exploration_activity_title">Exploration Player</string>
-  <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
-  <string name="home_activity_back_dialog_cancel">Cancel</string>
-  <string name="home_activity_back_dialog_exit">Exit</string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
+  <string name="exploration_activity_title">Exploration Player</string>
+  <string name="help_activity_title">Help</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="developer_options">Developer Options</string>
+  <string name="administrator_controls">Administrator Controls</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">Navigation Menu Close</string>
-  <string name="help_activity_title">Help</string>
-  <string name="administrator_controls">Administrator Controls</string>
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
   <string name="audio_language_select_dialog_okay_button">OK</string>
@@ -55,7 +51,7 @@
   <string name="state_submit_button">Submit</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
-  <string name="previous_responses_header">Previous Responses (%s)</string>
+  <string name="previous_responses_header">Previous Responses (%d)</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="state_learn_again_button">Learn Again</string>
   <string name="topic_download_text">(%s)</string>
@@ -103,7 +99,7 @@
   <string name="topic_downloaded">Topic Downloaded</string>
   <string name="downloaded">Downloaded</string>
   <string name="question_player_title">Practice Mode</string>
-  <string name="question_training_session_progress">Question %s of %s</string>
+  <string name="question_training_session_progress">Question %d of %d</string>
   <string name="question_training_session_progress_finished">Complete</string>
   <string name="question_training_session_finished_header">Finished</string>
   <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
@@ -138,10 +134,10 @@
     Ratios cannot have 0 as an element.
   </string>
   <string name="unknown_size">Unknown size</string>
-  <string name="size_bytes">%s Bytes</string>
-  <string name="size_kb">%s KB</string>
-  <string name="size_mb">%s MB</string>
-  <string name="size_gb">%s GB</string>
+  <string name="size_bytes">%d Bytes</string>
+  <string name="size_kb">%d KB</string>
+  <string name="size_mb">%d MB</string>
+  <string name="size_gb">%d GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%s!</string>
@@ -151,7 +147,7 @@
       1 Chapter
     </item>
     <item quantity="other">
-      %s Chapters
+      %d Chapters
     </item>
   </plurals>
   <plurals name="story_count">
@@ -159,19 +155,19 @@
       1 Story
     </item>
     <item quantity="other">
-      %s Stories
+      %d Stories
     </item>
   </plurals>
   <plurals name="story_total_chapters">
-    <item quantity="one">%s of %s Chapter Completed</item>
-    <item quantity="other">%s of %s Chapters Completed</item>
+    <item quantity="one">%d of %d Chapter Completed</item>
+    <item quantity="other">%d of %d Chapters Completed</item>
   </plurals>
   <plurals name="lesson_count">
     <item quantity="one">
       1 Lesson
     </item>
     <item quantity="other">
-      %s Lessons
+      %d Lessons
     </item>
   </plurals>
   <plurals name="completed_story_count">
@@ -179,10 +175,10 @@
       1 Story Completed
     </item>
     <item quantity="other">
-      %s Stories Completed
+      %d Stories Completed
     </item>
     <item quantity="zero">
-      %s Stories Completed
+      %d Stories Completed
     </item>
   </plurals>
   <plurals name="ongoing_topic_count">
@@ -190,10 +186,10 @@
       1 Topic in Progress
     </item>
     <item quantity="other">
-      %s Topics in Progress
+      %d Topics in Progress
     </item>
     <item quantity="zero">
-      %s Topics in Progress
+      %d Topics in Progress
     </item>
   </plurals>
   <string name="bar_separator">\u0020|\u0020</string>
@@ -260,7 +256,7 @@
   <string name="skip">Skip</string>
   <string name="next_arrow">Next</string>
   <string name="get_started">Get Started</string>
-  <string name="onboarding_slide_dots_content_description">Slide %s of %s</string>
+  <string name="onboarding_slide_dots_content_description">Slide %d of %d</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
@@ -292,8 +288,12 @@
   <string name="my_downloads">My Downloads</string>
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
+  <!-- HomeActivityBackDialog -->
+  <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
+  <string name="home_activity_back_dialog_cancel">Cancel</string>
+  <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- HomeActivity -->
-  <string name="home_activity_title">Home</string>
+  <string name="home_activity_title" translatable="false">Home</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
@@ -406,24 +406,24 @@
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
-  <string name="link_to_item_below">Link to item %s</string>
-  <string name="unlink_items">Unlink items at %s</string>
-  <string name="move_item_down_content_description">Move item down to %s</string>
-  <string name="move_item_up_content_description">Move item up to %s</string>
+  <string name="link_to_item_below">Link to item %d</string>
+  <string name="unlink_items">Unlink items at %d</string>
+  <string name="move_item_down_content_description">Move item down to %d</string>
+  <string name="move_item_up_content_description">Move item up to %d</string>
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
   <plurals name="minutes">
     <item quantity="one">a minute</item>
-    <item quantity="other">%s minutes</item>
+    <item quantity="other">%d minutes</item>
   </plurals>
   <plurals name="hours">
     <item quantity="one">an hour</item>
-    <item quantity="other">%s hours</item>
+    <item quantity="other">%d hours</item>
   </plurals>
   <plurals name="days">
     <item quantity="one">a day</item>
-    <item quantity="other">%s days</item>
+    <item quantity="other">%d days</item>
   </plurals>
   <!-- ViewTags -->
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
