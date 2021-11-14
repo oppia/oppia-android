@@ -4,7 +4,7 @@ There are lots of ways to help out and become an Oppia contributor, from joining
 
 To make it easier to get started, we've catalogued some of the different ways to help out. Please feel free to take a look through them, and see if any interest you:
 
-  * [Coders](https://github.com/oppia/oppia-android/wiki/Contributing-code-to-Oppia-android)
+  * [Coders](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android)
 
 If you are interested in working on Oppia's web repository, you should also take a look at the [oppia/oppia repository](https://github.com/oppia/oppia).
 
