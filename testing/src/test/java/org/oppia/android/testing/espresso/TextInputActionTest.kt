@@ -1,6 +1,5 @@
 package org.oppia.android.testing.espresso
 
-import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -8,11 +7,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import org.hamcrest.Description
 import org.hamcrest.StringDescription
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.R
 import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
@@ -28,42 +25,36 @@ class TextInputActionTest {
       TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  lateinit var context: Context
+  @Test
+  fun testTextExistsMatcher_errorMatchesExpectedText_matchesSafelyReturnsTrue() {
+    activityRule.scenario.onActivity { activity ->
+      val expectedErrorText = "Incorrect Administrator PIN. Please try again."
+      val textInputLayout = TextInputLayout(activity)
 
-  @Before
-  fun setUp() {
-    activityRule.scenario.onActivity {
-      context = it.baseContext
+      textInputLayout.error = "Incorrect Administrator PIN. Please try again."
+
+      val errorTextExisted = hasErrorText(expectedErrorText)
+      val result: Boolean = errorTextExisted.matches(textInputLayout)
+      assertThat(result).isTrue()
     }
-    context.setTheme(R.style.Theme_AppCompat_Light)
   }
 
   @Test
-  fun testTextInputAction_ErrorTextExistsMatcher_matchesSafelyTrue() {
-    val expectedErrorText = "Incorrect Administrator PIN. Please try again."
-    val textInputLayout = TextInputLayout(context)
+  fun testTextExistsMatcher_errorDoesNotMatchesExpectedText_matchesSafelyReturnsFalse() {
+    activityRule.scenario.onActivity { activity ->
+      val expectedErrorText = "Incorrect Administrator PIN. Please try again."
+      val textInputLayout = TextInputLayout(activity)
 
-    textInputLayout.error = "Incorrect Administrator PIN. Please try again."
+      textInputLayout.error = "This name is already in use by another profile."
 
-    val errorTextExisted = hasErrorText(expectedErrorText)
-    val result: Boolean = errorTextExisted.matchesSafely(textInputLayout)
-    assertThat(result).isTrue()
+      val errorTextExisted = hasErrorText(expectedErrorText)
+      val result: Boolean = errorTextExisted.matches(textInputLayout)
+      assertThat(result).isFalse()
+    }
   }
 
   @Test
-  fun testTextInputAction_ErrorTextExistsMatcher_matchesSafelyFalse() {
-    val expectedErrorText = "Incorrect Administrator PIN. Please try again."
-    val textInputLayout = TextInputLayout(context)
-
-    textInputLayout.error = "This name is already in use by another profile."
-
-    val errorTextExisted = hasErrorText(expectedErrorText)
-    val result: Boolean = errorTextExisted.matchesSafely(textInputLayout)
-    assertThat(result).isFalse()
-  }
-
-  @Test
-  fun testTextInputAction_ErrorTextExistsMatcher_describeToCorrect() {
+  fun testTextExistsMatcher_descMatchesExpectedDesc_isEqualToReturnsTrue() {
     val expectedErrorText = "Incorrect Administrator PIN. Please try again."
     val expectedDescription =
       "The expected error text is 'Incorrect Administrator PIN. Please try again.'"
@@ -76,7 +67,7 @@ class TextInputActionTest {
   }
 
   @Test
-  fun testTextInputAction_ErrorTextExistsMatcher_describeToIncorrect() {
+  fun testTextExistsMatcher_descNotMatchesExpectedDesc_isNotEqualToReturnsTrue() {
     val expectedErrorText = "This name is already in use by another profile."
     val expectedDescription =
       "The expected error text is 'Incorrect Administrator PIN. Please try again.'"
@@ -89,26 +80,30 @@ class TextInputActionTest {
   }
 
   @Test
-  fun testTextInputAction_ErrorTextDoesNotExistMatcher_matchesSafelyTrue() {
-    val textInputLayout = TextInputLayout(context)
-    val errorTextNotExisted = hasNoErrorText()
+  fun testTextDoesNotExistMatcher_errorTextIsEmpty_matchesSafelyReturnsTrue() {
+    activityRule.scenario.onActivity { activity ->
+      val textInputLayout = TextInputLayout(activity)
+      val errorTextNotExisted = hasNoErrorText()
 
-    val result: Boolean = errorTextNotExisted.matchesSafely(textInputLayout)
-    assertThat(result).isTrue()
+      val result: Boolean = errorTextNotExisted.matches(textInputLayout)
+      assertThat(result).isTrue()
+    }
   }
 
   @Test
-  fun testTextInputAction_ErrorTextDoesNotExistMatcher_matchesSafelyFalse() {
-    val textInputLayout = TextInputLayout(context)
-    textInputLayout.error = "Error text is not empty"
-    val errorTextNotExisted = hasNoErrorText()
+  fun testTextDoesNotExistMatcher_errorTextIsNotEmpty_matchesSafelyReturnsFalse() {
+    activityRule.scenario.onActivity { activity ->
+      val textInputLayout = TextInputLayout(activity)
+      textInputLayout.error = "Error text is not empty"
+      val errorTextNotExisted = hasNoErrorText()
 
-    val result: Boolean = errorTextNotExisted.matchesSafely(textInputLayout)
-    assertThat(result).isFalse()
+      val result: Boolean = errorTextNotExisted.matches(textInputLayout)
+      assertThat(result).isFalse()
+    }
   }
 
   @Test
-  fun testTextInputAction_ErrorTextDoesNotExistMatcher_describeToCorrect() {
+  fun testTextDoesNotExistMatcher_descMatchesExpectedDesc_isEqualToReturnsTrue() {
     val expectedDescription = "There is no error text."
 
     val errorTextNotExisted = hasNoErrorText()
@@ -119,7 +114,7 @@ class TextInputActionTest {
   }
 
   @Test
-  fun testTextInputAction_ErrorTextDoesNotExistMatcher_describeToIncorrect() {
+  fun testTextDoesNotExistMatcher_descNotMatchesExpectedDesc_isNotEqualToReturnsTrue() {
     val expectedDescription = "Incorrect description"
 
     val errorTextNotExisted = hasNoErrorText()

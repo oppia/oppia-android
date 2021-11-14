@@ -15,7 +15,7 @@ class TextInputAction {
     /**
      * Checks that the TextInputLayout view has the [expectedErrorText] error text.
      *
-     * @returns a [BoundedMatcher] that matches the [expectedErrorText] with the TextInputLayout's
+     * @return a [BoundedMatcher] that matches the [expectedErrorText] with the TextInputLayout's
      *     error text
      */
     fun hasErrorText(expectedErrorText: String): BoundedMatcher<View, TextInputLayout> {
@@ -25,7 +25,7 @@ class TextInputAction {
     /**
      * Checks that the TextInputLayout view has an empty error text.
      *
-     * @returns a [BoundedMatcher] that matches if error text is null or empty
+     * @return a [BoundedMatcher] that matches if error text is null or empty
      */
     fun hasNoErrorText(): BoundedMatcher<View, TextInputLayout> {
       return ErrorTextDoesNotExistMatcher()
