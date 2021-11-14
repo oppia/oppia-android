@@ -67,6 +67,7 @@ kt_android_library(
     deps = [
         "//third_party:androidx_test_espresso_espresso-core",
         "//third_party:com_google_android_material_material",
+        "//testing:text_input_action_test_activity",
     ],
 )
 
