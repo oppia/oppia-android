@@ -32,6 +32,8 @@ import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class NumericExpressionParserTest {
+  // TODO: split into multiple grammar-specific test suites with a simple high-level one for the class itself.
+
   @Test
   fun testLotsOfCasesForNumericExpression() {
     // TODO: split this up
