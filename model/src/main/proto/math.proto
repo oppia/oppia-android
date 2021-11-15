@@ -25,6 +25,11 @@ message MathExpression {
   }
 }
 
+message MathEquation {
+  MathExpression left_side = 1;
+  MathExpression right_side = 2;
+}
+
 message MathBinaryOperation {
   enum Operator {
     OPERATOR_UNSPECIFIED = 0;

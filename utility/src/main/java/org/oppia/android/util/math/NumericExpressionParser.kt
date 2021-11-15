@@ -1,12 +1,14 @@
 package org.oppia.android.util.math
 
 import org.oppia.android.app.model.MathBinaryOperation
+import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.MathFunctionCall
 import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.Real
 import org.oppia.android.util.math.MathTokenizer2.Companion.Token
 import org.oppia.android.util.math.MathTokenizer2.Companion.Token.DivideSymbol
+import org.oppia.android.util.math.MathTokenizer2.Companion.Token.EqualsSymbol
 import org.oppia.android.util.math.MathTokenizer2.Companion.Token.ExponentiationSymbol
 import org.oppia.android.util.math.MathTokenizer2.Companion.Token.FunctionName
 import org.oppia.android.util.math.MathTokenizer2.Companion.Token.LeftParenthesisSymbol
@@ -18,6 +20,8 @@ import org.oppia.android.util.math.MathTokenizer2.Companion.Token.PositiveRealNu
 import org.oppia.android.util.math.MathTokenizer2.Companion.Token.RightParenthesisSymbol
 import org.oppia.android.util.math.MathTokenizer2.Companion.Token.SquareRootSymbol
 import org.oppia.android.util.math.MathTokenizer2.Companion.Token.VariableName
+import org.oppia.android.util.math.NumericExpressionParser.ParseContext.AlgebraicExpressionContext
+import org.oppia.android.util.math.NumericExpressionParser.ParseContext.NumericExpressionContext
 
 class NumericExpressionParser private constructor(
   private val rawExpression: String,
@@ -35,12 +39,31 @@ class NumericExpressionParser private constructor(
 
   // TODO: document that 'generic' means either 'numeric' or 'algebraic' (ie that the expression is syntactically the same between both grammars).
 
-  private fun parseGeneric(): MathExpression {
-    return parseGenericExpression().also {
-      // Make sure all tokens were consumed (otherwise there are trailing tokens which invalidate
-      // the whole expression).
-      if (tokens.hasNext()) throw ParseException()
-    }
+  private fun parseGenericEquationGrammar(): MathEquation {
+    // generic_equation_grammar = generic_equation ;
+    return parseGenericEquation().also { ensureNoRemainingTokens() }
+  }
+
+  private fun parseGenericExpressionGrammar(): MathExpression {
+    // generic_expression_grammar = generic_expression ;
+    return parseGenericExpression().also { ensureNoRemainingTokens() }
+  }
+
+  private fun ensureNoRemainingTokens() {
+    // Make sure all tokens were consumed (otherwise there are trailing tokens which invalidate the
+    // whole grammar).
+    if (tokens.hasNext()) throw ParseException()
+  }
+
+  private fun parseGenericEquation(): MathEquation {
+    // algebraic_equation = generic_expression , equals_operator , generic_expression ;
+    val lhs = parseGenericExpression()
+    consumeTokenOfType<EqualsSymbol>()
+    val rhs = parseGenericExpression()
+    return MathEquation.newBuilder().apply {
+      leftSide = lhs
+      rightSide = rhs
+    }.build()
   }
 
   private fun parseGenericExpression(): MathExpression {
@@ -148,8 +171,8 @@ class NumericExpressionParser private constructor(
 
   private fun hasNextGenericImplicitMultExpressionRhs(): Boolean {
     return when (parseContext) {
-      ParseContext.NumericExpressionContext -> hasNextNumericImplicitMultExpressionRhs()
-      is ParseContext.AlgebraicExpressionContext -> hasNextAlgebraicImplicitMultOrExpExpressionRhs()
+      NumericExpressionContext -> hasNextNumericImplicitMultExpressionRhs()
+      is AlgebraicExpressionContext -> hasNextAlgebraicImplicitMultOrExpExpressionRhs()
     }
   }
 
@@ -157,8 +180,8 @@ class NumericExpressionParser private constructor(
     // generic_implicit_mult_expression_rhs is either numeric_implicit_mult_expression_rhs or
     // algebraic_implicit_mult_or_exp_expression_rhs depending on the current parser context.
     return when (parseContext) {
-      ParseContext.NumericExpressionContext -> parseNumericImplicitMultExpressionRhs()
-      is ParseContext.AlgebraicExpressionContext -> parseAlgebraicImplicitMultOrExpExpressionRhs()
+      NumericExpressionContext -> parseNumericImplicitMultExpressionRhs()
+      is AlgebraicExpressionContext -> parseAlgebraicImplicitMultOrExpExpressionRhs()
     }
   }
 
@@ -220,8 +243,8 @@ class NumericExpressionParser private constructor(
 
   private fun hasNextGenericTermWithoutUnaryWithoutNumber(): Boolean {
     return when (parseContext) {
-      ParseContext.NumericExpressionContext -> hasNextNumericTermWithoutUnaryWithoutNumber()
-      is ParseContext.AlgebraicExpressionContext -> hasNextAlgebraicTermWithoutUnaryWithoutNumber()
+      NumericExpressionContext -> hasNextNumericTermWithoutUnaryWithoutNumber()
+      is AlgebraicExpressionContext -> hasNextAlgebraicTermWithoutUnaryWithoutNumber()
     }
   }
 
@@ -229,8 +252,8 @@ class NumericExpressionParser private constructor(
     // generic_term_without_unary_without_number is either numeric_term_without_unary_without_number
     // or algebraic_term_without_unary_without_number based the current parser context.
     return when (parseContext) {
-      ParseContext.NumericExpressionContext -> parseNumericTermWithoutUnaryWithoutNumber()
-      is ParseContext.AlgebraicExpressionContext -> parseAlgebraicTermWithoutUnaryWithoutNumber()
+      NumericExpressionContext -> parseNumericTermWithoutUnaryWithoutNumber()
+      is AlgebraicExpressionContext -> parseAlgebraicTermWithoutUnaryWithoutNumber()
     }
   }
 
@@ -405,16 +428,23 @@ class NumericExpressionParser private constructor(
 
   companion object {
     fun parseNumericExpression(rawExpression: String): MathExpression =
-      NumericExpressionParser(rawExpression, ParseContext.NumericExpressionContext).parseGeneric()
+      createNumericParser(rawExpression).parseGenericExpressionGrammar()
 
     fun parseAlgebraicExpression(
       rawExpression: String, allowedVariables: List<String>
-    ): MathExpression {
-      val parser =
-        NumericExpressionParser(
-          rawExpression, ParseContext.AlgebraicExpressionContext(allowedVariables)
-        )
-      return parser.parseGeneric()
-    }
+    ): MathExpression =
+      createAlgebraicParser(rawExpression, allowedVariables).parseGenericExpressionGrammar()
+
+    fun parseAlgebraicEquation(
+      rawExpression: String,
+      allowedVariables: List<String>
+    ): MathEquation =
+      createAlgebraicParser(rawExpression, allowedVariables).parseGenericEquationGrammar()
+
+    private fun createNumericParser(rawExpression: String) =
+      NumericExpressionParser(rawExpression, NumericExpressionContext)
+
+    private fun createAlgebraicParser(rawExpression: String, allowedVariables: List<String>) =
+      NumericExpressionParser(rawExpression, AlgebraicExpressionContext(allowedVariables))
   }
 }

@@ -26,6 +26,7 @@ import org.oppia.android.app.model.Real
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.LooperMode
 import kotlin.math.sqrt
+import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 
 /** Tests for [MathExpressionParser]. */
@@ -3587,6 +3588,181 @@ class NumericExpressionParserTest {
     //  tokenizer.
   }
 
+  @Test
+  fun testLotsOfCasesForAlgebraicEquation() {
+    expectFailureWhenParsingAlgebraicEquation(" x =")
+    expectFailureWhenParsingAlgebraicEquation(" = y")
+
+    val equation1 = parseAlgebraicEquation("x = 1")
+    assertThat(equation1).hasLeftHandSideThat().hasStructureThatMatches {
+      variable {
+        withNameThat().isEqualTo("x")
+      }
+    }
+    assertThat(equation1).hasRightHandSideThat().evaluatesToIntegerThat().isEqualTo(1)
+
+    val equation2 =
+      parseAlgebraicEquation("y = mx + b", allowedVariables = listOf("x", "y", "b", "m"))
+    assertThat(equation2).hasLeftHandSideThat().hasStructureThatMatches {
+      variable {
+        withNameThat().isEqualTo("y")
+      }
+    }
+    assertThat(equation2).hasRightHandSideThat().hasStructureThatMatches {
+      addition {
+        leftOperand {
+          multiplication {
+            leftOperand {
+              variable {
+                withNameThat().isEqualTo("m")
+              }
+            }
+            rightOperand {
+              variable {
+                withNameThat().isEqualTo("x")
+              }
+            }
+          }
+        }
+        rightOperand {
+          variable {
+            withNameThat().isEqualTo("b")
+          }
+        }
+      }
+    }
+
+    val equation3 = parseAlgebraicEquation("y = (x+1)^2")
+    assertThat(equation3).hasLeftHandSideThat().hasStructureThatMatches {
+      variable {
+        withNameThat().isEqualTo("y")
+      }
+    }
+    assertThat(equation3).hasRightHandSideThat().hasStructureThatMatches {
+      exponentiation {
+        leftOperand {
+          addition {
+            leftOperand {
+              variable {
+                withNameThat().isEqualTo("x")
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(1)
+              }
+            }
+          }
+        }
+        rightOperand {
+          constant {
+            withIntegerValueThat().isEqualTo(2)
+          }
+        }
+      }
+    }
+
+    val equation4 = parseAlgebraicEquation("y = (x+1)(x-1)")
+    assertThat(equation4).hasLeftHandSideThat().hasStructureThatMatches {
+      variable {
+        withNameThat().isEqualTo("y")
+      }
+    }
+    assertThat(equation4).hasRightHandSideThat().hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          addition {
+            leftOperand {
+              variable {
+                withNameThat().isEqualTo("x")
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(1)
+              }
+            }
+          }
+        }
+        rightOperand {
+          subtraction {
+            leftOperand {
+              variable {
+                withNameThat().isEqualTo("x")
+              }
+            }
+            rightOperand {
+              constant {
+                withIntegerValueThat().isEqualTo(1)
+              }
+            }
+          }
+        }
+      }
+    }
+
+    expectFailureWhenParsingAlgebraicEquation("y = (x+1)(x-1) 2")
+    expectFailureWhenParsingAlgebraicEquation("y 2 = (x+1)(x-1)")
+
+    val equation5 =
+      parseAlgebraicEquation("a*x^2 + b*x + c = 0", allowedVariables = listOf("x", "a", "b", "c"))
+    assertThat(equation5).hasLeftHandSideThat().hasStructureThatMatches {
+      addition {
+        leftOperand {
+          addition {
+            leftOperand {
+              multiplication {
+                leftOperand {
+                  variable {
+                    withNameThat().isEqualTo("a")
+                  }
+                }
+                rightOperand {
+                  exponentiation {
+                    leftOperand {
+                      variable {
+                        withNameThat().isEqualTo("x")
+                      }
+                    }
+                    rightOperand {
+                      constant {
+                        withIntegerValueThat().isEqualTo(2)
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            rightOperand {
+              multiplication {
+                leftOperand {
+                  variable {
+                    withNameThat().isEqualTo("b")
+                  }
+                }
+                rightOperand {
+                  variable {
+                    withNameThat().isEqualTo("x")
+                  }
+                }
+              }
+            }
+          }
+        }
+        rightOperand {
+          variable {
+            withNameThat().isEqualTo("c")
+          }
+        }
+      }
+    }
+    assertThat(equation5).hasRightHandSideThat().hasStructureThatMatches {
+      constant {
+        withIntegerValueThat().isEqualTo(0)
+      }
+    }
+  }
+
   @DslMarker
   private annotation class ExpressionComparatorMarker
 
@@ -3791,6 +3967,15 @@ class NumericExpressionParserTest {
     }
   }
 
+  private class MathEquationSubject(
+    metadata: FailureMetadata,
+    private val actual: MathEquation
+  ) : Subject(metadata, actual) {
+    fun hasLeftHandSideThat(): MathExpressionSubject = assertThat(actual.leftSide)
+
+    fun hasRightHandSideThat(): MathExpressionSubject = assertThat(actual.rightSide)
+  }
+
   // TODO: move this to a common location.
   private class FractionSubject(
     metadata: FailureMetadata,
@@ -3831,8 +4016,24 @@ class NumericExpressionParserTest {
       return NumericExpressionParser.parseAlgebraicExpression(expression, allowedVariables)
     }
 
+    private fun parseAlgebraicEquation(
+      expression: String,
+      allowedVariables: List<String> = listOf("x", "y", "z")
+    ): MathEquation {
+      return NumericExpressionParser.parseAlgebraicEquation(expression, allowedVariables)
+    }
+
+    private fun expectFailureWhenParsingAlgebraicEquation(expression: String) {
+      assertThrows(NumericExpressionParser.ParseException::class) {
+        parseAlgebraicEquation(expression)
+      }
+    }
+
     private fun assertThat(actual: MathExpression): MathExpressionSubject =
       assertAbout(::MathExpressionSubject).that(actual)
+
+    private fun assertThat(actual: MathEquation): MathEquationSubject =
+      assertAbout(::MathEquationSubject).that(actual)
 
     private fun assertThat(actual: Fraction): FractionSubject =
       assertAbout(::FractionSubject).that(actual)
