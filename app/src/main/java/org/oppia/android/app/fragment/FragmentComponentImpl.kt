@@ -54,6 +54,7 @@ import org.oppia.android.app.resumelesson.ResumeLessonFragment
 import org.oppia.android.app.settings.profile.ProfileEditDeletionDialogFragment
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
+import org.oppia.android.app.settings.profile.ProfileResetPinFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryFragment
@@ -134,6 +135,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(profileListFragment: ProfileListFragment)
   fun inject(profilePictureEditDialogFragment: ProfilePictureEditDialogFragment)
   fun inject(profileProgressFragment: ProfileProgressFragment)
+  fun inject(profileResetPinFragment: ProfileResetPinFragment)
   fun inject(progressDatabaseFullDialogFragment: ProgressDatabaseFullDialogFragment)
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
