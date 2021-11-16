@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <!-- Story Fragment dimens. -->
+  <dimen name="padding_bottom">160dp</dimen>
+  <dimen name="custom_match_parent">-1px</dimen>
+  <dimen name="vertical_border_height">@dimen/custom_match_parent</dimen>
+  <dimen name="story_padding_end">1dp</dimen>
+
   <!-- Default screen margins, per the Android Design guidelines. -->
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>

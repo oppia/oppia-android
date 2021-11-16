@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <!-- Story Fragment- land dimens. -->
+  <dimen name="padding_bottom">60dp</dimen>
+  <dimen name="custom_match_parent">-1px</dimen>
+  <dimen name="vertical_border_height">@dimen/custom_match_parent</dimen>
+  <dimen name="story_padding_end">1dp</dimen>
+
   <dimen name="home_padding_end">64dp</dimen>
   <dimen name="home_padding_start">64dp</dimen>
   <dimen name="home_outer_margin">72dp</dimen>
