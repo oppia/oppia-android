@@ -27,18 +27,21 @@ class PolicyPageTagHandler(
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val spannableBuilder = SpannableStringBuilder("Privacy Policy")
-      spannableBuilder.setSpan(
-        object : ClickableSpan() {
-          override fun onClick(view: View) {
-            consoleLogger.e("PolicyPageTagHandler", "Clicked")
+    spannableBuilder.setSpan(
+      object : ClickableSpan() {
+        override fun onClick(view: View) {
+          consoleLogger.e("PolicyPageTagHandler", "Clicked")
 
-            listener.onPolicyPageLinkClicked(PolicyPage.PRIVACY_POLICY)
-          }
-        },
-        /* start= */ 0, /* end= */ "Privacy Policy".length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-      )
-      output.replace(openIndex, closeIndex, spannableBuilder)
-     consoleLogger.e("PolicyPageTagHandler", "Failed to parse concept card tag"+ PolicyPage.PRIVACY_POLICY.name)
+          listener.onPolicyPageLinkClicked(PolicyPage.PRIVACY_POLICY)
+        }
+      },
+      /* start= */ 0, /* end= */ "Privacy Policy".length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+    )
+    output.replace(openIndex, closeIndex, spannableBuilder)
+    consoleLogger.e(
+      "PolicyPageTagHandler",
+      "Failed to parse policy tag" + PolicyPage.PRIVACY_POLICY.name
+    )
   }
 
   /** Listener called when policy page links are clicked. */
