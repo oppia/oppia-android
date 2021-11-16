@@ -1,18 +1,12 @@
 package org.oppia.android.app.onboarding
 
-import android.graphics.Typeface
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
@@ -25,6 +19,8 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -35,8 +31,10 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>,
-  private val resourceHandler: AppLanguageResourceHandler
-) : OnboardingNavigationListener {
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val htmlParserFactory: HtmlParser.Factory,
+  @DefaultResourceBucketName private val resourceBucketName: String
+) : OnboardingNavigationListener, HtmlParser.PolicyOppiaTagActionListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
 
@@ -143,52 +141,68 @@ class OnboardingFragmentPresenter @Inject constructor(
         R.string.agree_to_terms,
         resourceHandler.getStringInLocale(R.string.app_name)
       )
+    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.text = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "Policies",
+      entityId = "oppia",
+      imageCenterAlign = false
+    ).parseOppiaHtml(
+      completeString,
+      binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView,
+      supportsLinks = true,
+      supportsConceptCards = true
+    )
 
-    val startIndex = completeString.indexOf(termsOfService)
-    val endIndex = startIndex + termsOfService.length
-    val startIndex2 = completeString.indexOf(privacyPolicy)
-    val endIndex2 = startIndex2 + privacyPolicy.length
-    val spannableStringBuilder = SpannableStringBuilder(completeString)
-    val clickOnTerms = object : ClickableSpan() {
-      override fun onClick(widget: View) {
-        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.TERMS_OF_SERVICE)
-      }
+//    val startIndex = completeString.indexOf(termsOfService)
+//    val endIndex = startIndex + termsOfService.length
+//    val startIndex2 = completeString.indexOf(privacyPolicy)
+//    val endIndex2 = startIndex2 + privacyPolicy.length
+//    val spannableStringBuilder = SpannableStringBuilder(completeString)
+//    val clickOnTerms = object : ClickableSpan() {
+//      override fun onClick(widget: View) {
+//        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.TERMS_OF_SERVICE)
+//      }
+//
+//      override fun updateDrawState(ds: TextPaint) {
+//        super.updateDrawState(ds)
+//        ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
+//        ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
+//      }
+//    }
+//    val clickOnPrivacy = object : ClickableSpan() {
+//      override fun onClick(widget: View) {
+//        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
+//      }
+//
+//      override fun updateDrawState(ds: TextPaint) {
+//        super.updateDrawState(ds)
+//        ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
+//        ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
+//      }
+//    }
+//
+//    if (startIndex > 0)
+//      spannableStringBuilder.setSpan(
+//        clickOnTerms,
+//        startIndex,
+//        endIndex,
+//        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//      )
+//    if (startIndex2 > 0)
+//      spannableStringBuilder.setSpan(
+//        clickOnPrivacy,
+//        startIndex2,
+//        endIndex2,
+//        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//      )
+//    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.text = spannableStringBuilder
+//    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.movementMethod =
+//      LinkMovementMethod.getInstance()
+  }
 
-      override fun updateDrawState(ds: TextPaint) {
-        super.updateDrawState(ds)
-        ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
-        ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
-      }
-    }
-    val clickOnPrivacy = object : ClickableSpan() {
-      override fun onClick(widget: View) {
-        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
-      }
-
-      override fun updateDrawState(ds: TextPaint) {
-        super.updateDrawState(ds)
-        ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
-        ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
-      }
-    }
-
-    if (startIndex > 0)
-      spannableStringBuilder.setSpan(
-        clickOnTerms,
-        startIndex,
-        endIndex,
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
-    if (startIndex2 > 0)
-      spannableStringBuilder.setSpan(
-        clickOnPrivacy,
-        startIndex2,
-        endIndex2,
-        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
-    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.text = spannableStringBuilder
-    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.movementMethod =
-      LinkMovementMethod.getInstance()
+  override fun onPolicyPageLinkClicked(policyPage: PolicyPage) {
+    Log.e("PolicyPageTagHandler", "Failed to parse policy ")
+    (activity as RouteToPoliciesListener).onRouteToPolicies(policyPage)
   }
 
   private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {

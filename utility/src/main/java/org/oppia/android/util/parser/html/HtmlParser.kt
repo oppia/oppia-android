@@ -9,6 +9,7 @@ import android.text.style.URLSpan
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
@@ -21,13 +22,25 @@ class HtmlParser private constructor(
   private val entityId: String,
   private val imageCenterAlign: Boolean,
   private val consoleLogger: ConsoleLogger,
-  customOppiaTagActionListener: CustomOppiaTagActionListener?
+  customOppiaTagActionListener: CustomOppiaTagActionListener?,
+  policyOppiaTagActionListener: PolicyOppiaTagActionListener?
 ) {
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
       object : ConceptCardTagHandler.ConceptCardLinkClickListener {
         override fun onConceptCardLinkClicked(view: View, skillId: String) {
           customOppiaTagActionListener?.onConceptCardLinkClicked(view, skillId)
+        }
+      },
+      consoleLogger
+    )
+  }
+
+  private val policyPageTagHandler by lazy {
+    PolicyPageTagHandler(
+      object : PolicyPageTagHandler.PolicyPageLinkClickListener {
+        override fun onPolicyPageLinkClicked(policyPage: PolicyPage) {
+          policyOppiaTagActionListener?.onPolicyPageLinkClicked(policyPage)
         }
       },
       consoleLogger
@@ -107,7 +120,7 @@ class HtmlParser private constructor(
    * Searches for all URLSpans in current text replaces them with our own ClickableSpans
    * forwards clicks to provided function.
    */
-  fun TextView.handleUrlClicks(onClicked: ((String) -> Unit)? = null) {
+  private fun TextView.handleUrlClicks(onClicked: ((String) -> Unit)? = null) {
     // create span builder and replaces current text with it
     text = SpannableStringBuilder.valueOf(text).apply {
       // search for all URL spans and replace all spans with our own clickable spans
@@ -141,6 +154,8 @@ class HtmlParser private constructor(
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
+    handlersMap[CUSTOM_PRIVACY_POLICY_PAGE_TAG] = policyPageTagHandler
+//    handlersMap[CUSTOM_POLICY_PAGE_TAG] = policyPageTagHandler
     return handlersMap
   }
 
@@ -173,6 +188,15 @@ class HtmlParser private constructor(
     fun onConceptCardLinkClicked(view: View, skillId: String)
   }
 
+  /** Listener that's called when a custom tag triggers an event. */
+  interface PolicyOppiaTagActionListener {
+    /**
+     * Called when an policy page link is clicked that corresponds to the page that should be shown.
+     */
+
+    fun onPolicyPageLinkClicked(policyPage: PolicyPage)
+  }
+
   /** Factory for creating new [HtmlParser]s. */
   class Factory @Inject constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
@@ -187,7 +211,8 @@ class HtmlParser private constructor(
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean,
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
+      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
     ): HtmlParser {
       return HtmlParser(
         urlImageParserFactory,
@@ -196,7 +221,8 @@ class HtmlParser private constructor(
         entityId,
         imageCenterAlign,
         consoleLogger,
-        customOppiaTagActionListener
+        customOppiaTagActionListener,
+        policyOppiaTagActionListener
       )
     }
   }

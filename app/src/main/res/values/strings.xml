@@ -490,7 +490,8 @@
   <string name="privacy_policy_web_link"><![CDATA[Please visit [<a href="https://www.oppia.org/privacy-policy">this page</a>] for the latest version of this policy]]></string>
   <!--  Terms of Service -->
   <string name="terms_of_service_title">Terms of Service</string>
-  <string name="agree_to_terms">By using %s, you agree to our Terms of Service and Privacy Policy.</string>
+<!--  <string name="agree_to_terms">By using %s, you agree to our Terms of Service and Privacy Policy.</string>-->
+  <string name="agree_to_terms"><![CDATA[By using %s, you agree to our <link-to-terms-of-service> Terms of Service</link-to-terms-of-service> and <link-to-privacy-policy>Privacy Policy</link-to-privacy-policy>.]]></string>
   <string name="terms_of_service_web_link"><![CDATA[Please visit [<a href="https://www.oppia.org/terms">this page</a>] for the latest version of this terms of service]]></string>
   <!-- Frequently asked questions & generic app help. -->
   <string name="faq_question_1">How can I create a new profile?</string>
