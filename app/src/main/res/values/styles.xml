@@ -300,11 +300,27 @@
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
+
   <style name="Subtitle2ViewStart" parent="Subtitle2">
     <item name="android:textAlignment">viewStart</item>
   </style>
+
   <style name="Subtitle2ViewCenter" parent="Subtitle2">
     <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="SubtitleLight" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-light</item>
+    <item name="android:textStyle">italic</item>
+    <item name="fontFamily">sans-serif-light</item>
+  </style>
+
+  <style name="SubtitleLight1" parent="SubtitleLight">
+    <item name="android:textSize">12sp</item>
+  </style>
+
+  <style name="SubtitleLight2" parent="SubtitleLight">
+    <item name="android:textSize">16sp</item>
   </style>
 
   <style name="TextFieldLabel" parent="TextView.Common1">
@@ -331,6 +347,7 @@
   <style name="CaptionViewStart" parent="Caption">
     <item name="android:textAlignment">viewStart</item>
   </style>
+
   <style name="CaptionViewCenter" parent="Caption">
     <item name="android:gravity">center_vertical</item>
   </style>
