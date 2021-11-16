@@ -62,11 +62,15 @@
 
           <TextView
             android:id="@+id/profile_reset_pin_main"
-            style="@style/Body"
+            style="@style/TextViewStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:paddingStart="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_start"
             android:paddingEnd="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_end"
             android:text="@string/profile_reset_pin_main"
+            android:textColor="@color/oppiaPrimaryText"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

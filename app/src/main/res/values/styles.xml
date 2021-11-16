@@ -200,6 +200,10 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
+  <style name="Heading1ViewCenter" parent="Heading1">
+    <item name="android:gravity">center</item>
+  </style>
+
   <style name="Heading1ViewCenterVertical" parent="Heading1">
     <item name="android:gravity">center_vertical</item>
   </style>
@@ -277,6 +281,10 @@
 
   <style name="Subtitle1ViewStart" parent="Subtitle1">
     <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="Subtitle1ViewCenter" parent="Subtitle1">
+    <item name="android:gravity">center</item>
   </style>
 
   <style name="Subtitle1ViewCenterVertical" parent="Subtitle1">

@@ -39,7 +39,7 @@
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          style="@style/Subtitle1ViewCenterVertical"
+          style="@style/Subtitle1ViewCenter"
           android:minHeight="48dp"
           android:paddingTop="20dp"
           android:text="@string/profile_chooser_language"
@@ -99,7 +99,7 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
-        style="@style/Subtitle1ViewCenterVertical"
+        style="@style/Subtitle1ViewCenter"
         android:layout_marginBottom="24dp"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
