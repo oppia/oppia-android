@@ -54,29 +54,16 @@ class TextInputActionTest {
   }
 
   @Test
-  fun testTextExistsMatcher_descMatchesExpectedDesc_isEqualToReturnsTrue() {
-    val expectedErrorText = "Incorrect Administrator PIN. Please try again."
+  fun testTextExistsMatcher_descriptionMatchesExpectedDescription_isEqualToReturnsTrue() {
+    val errorText = "Incorrect Administrator PIN. Please try again."
     val expectedDescription =
       "The expected error text is 'Incorrect Administrator PIN. Please try again.'"
 
-    val errorTextExisted = hasErrorText(expectedErrorText)
+    val errorTextExisted = hasErrorText(errorText)
     var description: Description = StringDescription()
     errorTextExisted.describeTo(description)
 
     assertThat(description.toString()).isEqualTo(expectedDescription)
-  }
-
-  @Test
-  fun testTextExistsMatcher_descNotMatchesExpectedDesc_isNotEqualToReturnsTrue() {
-    val expectedErrorText = "This name is already in use by another profile."
-    val expectedDescription =
-      "The expected error text is 'Incorrect Administrator PIN. Please try again.'"
-
-    val errorTextExisted = hasErrorText(expectedErrorText)
-    var description: Description = StringDescription()
-    errorTextExisted.describeTo(description)
-
-    assertThat(description.toString()).isNotEqualTo(expectedDescription)
   }
 
   @Test
@@ -103,7 +90,7 @@ class TextInputActionTest {
   }
 
   @Test
-  fun testTextDoesNotExistMatcher_descMatchesExpectedDesc_isEqualToReturnsTrue() {
+  fun testTextDoesNotExistMatcher_descriptionMatchesExpectedDescription_isEqualToReturnsTrue() {
     val expectedDescription = "There is no error text."
 
     val errorTextNotExisted = hasNoErrorText()
@@ -111,16 +98,5 @@ class TextInputActionTest {
     errorTextNotExisted.describeTo(description)
 
     assertThat(description.toString()).isEqualTo(expectedDescription)
-  }
-
-  @Test
-  fun testTextDoesNotExistMatcher_descNotMatchesExpectedDesc_isNotEqualToReturnsTrue() {
-    val expectedDescription = "Incorrect description"
-
-    val errorTextNotExisted = hasNoErrorText()
-    var description: Description = StringDescription()
-    errorTextNotExisted.describeTo(description)
-
-    assertThat(description.toString()).isNotEqualTo(expectedDescription)
   }
 }
