@@ -54,113 +54,113 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     }
 
     binding.apply {
-      viewModel = resetViewModel
+//      viewModel = resetViewModel
       lifecycleOwner = activity
     }
 
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
-    binding.profileResetInputPinEditText.onTextChanged { pin ->
-      pin?.let {
-        if (
-          resetViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
-          resetViewModel.inputPin.get() == it
-        ) {
-          resetViewModel.inputPin.set(it)
-          inputtedPin = pin.isNotEmpty()
-        } else {
-          resetViewModel.inputPin.set(it)
-          resetViewModel.pinErrorMsg.set("")
-          inputtedPin = pin.isNotEmpty()
-          setValidPin()
-        }
-      }
-    }
-
-    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
-    binding.profileResetInputConfirmPinEditText.onTextChanged { confirmPin ->
-      confirmPin?.let {
-        if (
-          resetViewModel.confirmErrorMsg.get()?.isNotEmpty()!! &&
-          resetViewModel.inputConfirmPin.get() == it
-        ) {
-          resetViewModel.inputConfirmPin.set(it)
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-        } else {
-          resetViewModel.inputConfirmPin.set(it)
-          resetViewModel.confirmErrorMsg.set("")
-          inputtedConfirmPin = confirmPin.isNotEmpty()
-          setValidPin()
-        }
-      }
-    }
-
-    binding.profileResetInputConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
-      ) {
-        binding.profileResetSaveButton.callOnClick()
-      }
-      false
-    }
-
-    binding.profileResetSaveButton.setOnClickListener {
-      val pin = binding.profileResetInputPinEditText.text.toString()
-      val confirmPin = binding.profileResetInputConfirmPinEditText.text.toString()
-      var failed = false
-      if (isAdmin) {
-        if (pin.length < 5) {
-          resetViewModel.pinErrorMsg.set(
-            resourceHandler.getStringInLocale(
-              R.string.profile_reset_pin_error_admin_pin_length
-            )
-          )
-          failed = true
-        }
-      } else {
-        if (pin.length < 3) {
-          resetViewModel.pinErrorMsg.set(
-            resourceHandler.getStringInLocale(
-              R.string.profile_reset_pin_error_user_pin_length
-            )
-          )
-          failed = true
-        }
-      }
-      if (pin != confirmPin) {
-        resetViewModel.confirmErrorMsg.set(
-          resourceHandler.getStringInLocale(
-            R.string.add_profile_error_pin_confirm_wrong
-          )
-        )
-        failed = true
-      }
-      if (failed) {
-        return@setOnClickListener
-      }
-      profileManagementController
-        .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin).toLiveData()
-        .observe(
-          activity,
-          Observer {
-            if (it.isSuccess()) {
-              val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              activity.startActivity(intent)
-            }
-          }
-        )
-    }
+//    binding.profileResetInputPinEditText.onTextChanged { pin ->
+//      pin?.let {
+//        if (
+//          resetViewModel.pinErrorMsg.get()?.isNotEmpty()!! &&
+//          resetViewModel.inputPin.get() == it
+//        ) {
+//          resetViewModel.inputPin.set(it)
+//          inputtedPin = pin.isNotEmpty()
+//        } else {
+//          resetViewModel.inputPin.set(it)
+//          resetViewModel.pinErrorMsg.set("")
+//          inputtedPin = pin.isNotEmpty()
+//          setValidPin()
+//        }
+//      }
+//    }
+//
+//    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+//    binding.profileResetInputConfirmPinEditText.onTextChanged { confirmPin ->
+//      confirmPin?.let {
+//        if (
+//          resetViewModel.confirmErrorMsg.get()?.isNotEmpty()!! &&
+//          resetViewModel.inputConfirmPin.get() == it
+//        ) {
+//          resetViewModel.inputConfirmPin.set(it)
+//          inputtedConfirmPin = confirmPin.isNotEmpty()
+//        } else {
+//          resetViewModel.inputConfirmPin.set(it)
+//          resetViewModel.confirmErrorMsg.set("")
+//          inputtedConfirmPin = confirmPin.isNotEmpty()
+//          setValidPin()
+//        }
+//      }
+//    }
+//
+//    binding.profileResetInputConfirmPinEditText.setOnEditorActionListener { _, actionId, event ->
+//      if (actionId == EditorInfo.IME_ACTION_DONE ||
+//        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+//      ) {
+//        binding.profileResetSaveButton.callOnClick()
+//      }
+//      false
+//    }
+//
+//    binding.profileResetSaveButton.setOnClickListener {
+//      val pin = binding.profileResetInputPinEditText.text.toString()
+//      val confirmPin = binding.profileResetInputConfirmPinEditText.text.toString()
+//      var failed = false
+//      if (isAdmin) {
+//        if (pin.length < 5) {
+//          resetViewModel.pinErrorMsg.set(
+//            resourceHandler.getStringInLocale(
+//              R.string.profile_reset_pin_error_admin_pin_length
+//            )
+//          )
+//          failed = true
+//        }
+//      } else {
+//        if (pin.length < 3) {
+//          resetViewModel.pinErrorMsg.set(
+//            resourceHandler.getStringInLocale(
+//              R.string.profile_reset_pin_error_user_pin_length
+//            )
+//          )
+//          failed = true
+//        }
+//      }
+//      if (pin != confirmPin) {
+//        resetViewModel.confirmErrorMsg.set(
+//          resourceHandler.getStringInLocale(
+//            R.string.add_profile_error_pin_confirm_wrong
+//          )
+//        )
+//        failed = true
+//      }
+//      if (failed) {
+//        return@setOnClickListener
+//      }
+//      profileManagementController
+//        .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), pin).toLiveData()
+//        .observe(
+//          activity,
+//          Observer {
+//            if (it.isSuccess()) {
+//              val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
+//              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+//              activity.startActivity(intent)
+//            }
+//          }
+//        )
+//    }
   }
-
-  private fun setValidPin() {
-    if (inputtedPin && inputtedConfirmPin) {
-      resetViewModel.isButtonActive.set(true)
-    } else {
-      resetViewModel.isButtonActive.set(false)
-    }
-  }
-
-  private fun getProfileResetPinViewModel(): ProfileResetPinViewModel {
-    return viewModelProvider.getForActivity(activity, ProfileResetPinViewModel::class.java)
-  }
+//
+//  private fun setValidPin() {
+//    if (inputtedPin && inputtedConfirmPin) {
+//      resetViewModel.isButtonActive.set(true)
+//    } else {
+//      resetViewModel.isButtonActive.set(false)
+//    }
+//  }
+//
+//  private fun getProfileResetPinViewModel(): ProfileResetPinViewModel {
+//    return viewModelProvider.getForActivity(activity, ProfileResetPinViewModel::class.java)
+//  }
 }
