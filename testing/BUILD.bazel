@@ -65,7 +65,6 @@ TEST_DEPS = [
     ":assertion_helpers",
     ":dagger",
     ":testing",
-    ":text_input_action_test_activity",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
     "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
@@ -121,17 +120,6 @@ kt_android_library(
     deps = [
         "//third_party:junit_junit",
         "//third_party:org_jetbrains_kotlin_kotlin-reflect",
-    ],
-)
-
-kt_android_library(
-    name = "text_input_action_test_activity",
-    testonly = True,
-    srcs = ["testing/src/main/java/org/oppia/android/testing/TextInputActionTestActivity.kt"],
-    visibility = ["//visibility:public"],
-    deps = [
-    "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
-    "//app/src/main/java/org/oppia/android/app/activity:activity_component_factory",
     ],
 )
 
