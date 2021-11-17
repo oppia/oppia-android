@@ -40,6 +40,8 @@ class HtmlParser private constructor(
     PolicyPageTagHandler(
       object : PolicyPageTagHandler.PolicyPageLinkClickListener {
         override fun onPolicyPageLinkClicked(policyPage: PolicyPage) {
+          consoleLogger.e("PolicyPageTagHandler", "Clicked2"+policyPage.name)
+
           policyOppiaTagActionListener?.onPolicyPageLinkClicked(policyPage)
         }
       },
@@ -154,7 +156,7 @@ class HtmlParser private constructor(
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
-    handlersMap[CUSTOM_TERMS_OF_SERVICE_PAGE_TAG] = policyPageTagHandler
+//    handlersMap[CUSTOM_TERMS_OF_SERVICE_PAGE_TAG] = policyPageTagHandler
     handlersMap[CUSTOM_PRIVACY_POLICY_PAGE_TAG] = policyPageTagHandler
     return handlersMap
   }
