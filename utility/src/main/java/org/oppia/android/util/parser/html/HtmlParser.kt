@@ -40,7 +40,7 @@ class HtmlParser private constructor(
     PolicyPageTagHandler(
       object : PolicyPageTagHandler.PolicyPageLinkClickListener {
         override fun onPolicyPageLinkClicked(policyPage: PolicyPage) {
-          consoleLogger.e("PolicyPageTagHandler", "Clicked2"+policyPage.name)
+          consoleLogger.e("PolicyPageTagHandler", "Clicked2" + policyPage.name)
 
           policyOppiaTagActionListener?.onPolicyPageLinkClicked(policyPage)
         }

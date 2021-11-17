@@ -49,7 +49,6 @@ class PolicyPageTagHandler(
                 listener.onPolicyPageLinkClicked(PolicyPage.PRIVACY_POLICY)
               }
             }
-
           }
         },
         /* start= */ 0, /* end= */ text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
