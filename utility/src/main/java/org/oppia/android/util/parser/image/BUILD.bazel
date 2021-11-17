@@ -91,6 +91,7 @@ kt_android_library(
     srcs = [
         "ImageParsingAnnotations.kt",
     ],
+    visibility = ["//domain:__pkg__"],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],

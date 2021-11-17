@@ -62,6 +62,7 @@ kt_android_library(
     srcs = [
         "ExplorationHtmlParserEntityType.kt",
     ],
+    visibility = ["//domain:__pkg__"],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
