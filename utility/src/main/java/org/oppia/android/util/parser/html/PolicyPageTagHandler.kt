@@ -6,7 +6,6 @@ import android.text.SpannableStringBuilder
 import android.text.style.ClickableSpan
 import android.view.View
 import org.oppia.android.app.model.PolicyPage
-import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [PolicyPageTagHandler]. */
@@ -14,10 +13,12 @@ const val CUSTOM_PRIVACY_POLICY_PAGE_TAG = "oppia-noninteractive-policy"
 private const val PRIVACY_POLICY_PAGE = "Privacy Policy"
 private const val TERMS_OF_SERVICE_PAGE = "Terms of Service"
 
-// https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
+/**
+ * A custom tag handler for supporting custom Oppia policies page parsed with
+ * [CustomHtmlContentHandler].
+ */
 class PolicyPageTagHandler(
-  private val listener: PolicyPageLinkClickListener,
-  private val consoleLogger: ConsoleLogger
+  private val listener: PolicyPageLinkClickListener
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -27,20 +28,12 @@ class PolicyPageTagHandler(
     imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
-
-    consoleLogger.e(
-      "PolicyPageTagHandler",
-      "Failed to parse policy tag" + attributes.getJsonStringValue("link")
-    )
-
     val text = attributes.getJsonStringValue("link")
     val spannableBuilder = SpannableStringBuilder(text)
     if (text != null) {
       spannableBuilder.setSpan(
         object : ClickableSpan() {
           override fun onClick(view: View) {
-            consoleLogger.e("PolicyPageTagHandler", "Clicked")
-
             when (text) {
               TERMS_OF_SERVICE_PAGE -> {
                 listener.onPolicyPageLinkClicked(PolicyPage.TERMS_OF_SERVICE)
