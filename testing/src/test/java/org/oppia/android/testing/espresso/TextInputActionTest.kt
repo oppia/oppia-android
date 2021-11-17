@@ -54,7 +54,7 @@ class TextInputActionTest {
   }
 
   @Test
-  fun testTextExistsMatcher_descriptionMatchesExpectedDescription_isEqualToReturnsTrue() {
+  fun testTextExistsMatcher_descriptionMatchesExpectedDescription() {
     val errorText = "Incorrect Administrator PIN. Please try again."
     val expectedDescription =
       "The expected error text is 'Incorrect Administrator PIN. Please try again.'"
@@ -90,7 +90,7 @@ class TextInputActionTest {
   }
 
   @Test
-  fun testTextDoesNotExistMatcher_descriptionMatchesExpectedDescription_isEqualToReturnsTrue() {
+  fun testTextDoesNotExistMatcher_descriptionMatchesExpectedDescription() {
     val expectedDescription = "There is no error text."
 
     val errorTextNotExisted = hasNoErrorText()
