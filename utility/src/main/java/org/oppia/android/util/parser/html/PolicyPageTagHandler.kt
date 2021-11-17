@@ -30,7 +30,7 @@ class PolicyPageTagHandler(
 
     consoleLogger.e(
       "PolicyPageTagHandler",
-      "Failed to parse policy tag" +attributes.getJsonStringValue("link")
+      "Failed to parse policy tag" + attributes.getJsonStringValue("link")
     )
 
     val text = attributes.getJsonStringValue("link")
