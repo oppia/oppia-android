@@ -28,6 +28,7 @@ import org.robolectric.annotation.LooperMode
 import kotlin.math.sqrt
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
+import org.oppia.android.util.math.NumericExpressionParser.Companion.MathParsingResult
 
 /** Tests for [MathExpressionParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -3993,40 +3994,59 @@ class NumericExpressionParserTest {
   }
 
   private companion object {
+    // TODO: fix helper API.
+
     private fun expectFailureWhenParsingNumericExpression(expression: String) {
-      assertThrows(NumericExpressionParser.ParseException::class) {
-        parseNumericExpression(expression)
-      }
+      assertThat(parseNumericExpressionInternal(expression))
+        .isInstanceOf(MathParsingResult.Failure::class.java)
     }
 
     private fun parseNumericExpression(expression: String): MathExpression {
+      return (parseNumericExpressionInternal(expression) as MathParsingResult.Success<MathExpression>).result
+    }
+
+    private fun parseNumericExpressionInternal(
+      expression: String
+    ): MathParsingResult<MathExpression> {
       return NumericExpressionParser.parseNumericExpression(expression)
     }
 
     private fun expectFailureWhenParsingAlgebraicExpression(expression: String) {
-      assertThrows(NumericExpressionParser.ParseException::class) {
-        parseAlgebraicExpression(expression)
-      }
+      assertThat(parseAlgebraicExpressionInternal(expression))
+        .isInstanceOf(MathParsingResult.Failure::class.java)
     }
 
     private fun parseAlgebraicExpression(
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathExpression {
+      return (parseAlgebraicExpressionInternal(expression, allowedVariables) as MathParsingResult.Success<MathExpression>).result
+    }
+
+    private fun parseAlgebraicExpressionInternal(
+      expression: String,
+      allowedVariables: List<String> = listOf("x", "y", "z")
+    ): MathParsingResult<MathExpression> {
       return NumericExpressionParser.parseAlgebraicExpression(expression, allowedVariables)
+    }
+
+    private fun expectFailureWhenParsingAlgebraicEquation(expression: String) {
+      assertThat(parseAlgebraicEquationInternal(expression))
+        .isInstanceOf(MathParsingResult.Failure::class.java)
     }
 
     private fun parseAlgebraicEquation(
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathEquation {
-      return NumericExpressionParser.parseAlgebraicEquation(expression, allowedVariables)
+      return (parseAlgebraicEquationInternal(expression, allowedVariables) as MathParsingResult.Success<MathEquation>).result
     }
 
-    private fun expectFailureWhenParsingAlgebraicEquation(expression: String) {
-      assertThrows(NumericExpressionParser.ParseException::class) {
-        parseAlgebraicEquation(expression)
-      }
+    private fun parseAlgebraicEquationInternal(
+      expression: String,
+      allowedVariables: List<String> = listOf("x", "y", "z")
+    ): MathParsingResult<MathEquation> {
+      return NumericExpressionParser.parseAlgebraicEquation(expression, allowedVariables)
     }
 
     private fun assertThat(actual: MathExpression): MathExpressionSubject =
