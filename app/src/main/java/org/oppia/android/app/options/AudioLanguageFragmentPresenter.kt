@@ -34,14 +34,6 @@ class AudioLanguageFragmentPresenter @Inject constructor(
       adapter = createRecyclerViewAdapter()
     }
 
-    binding.audioLanguageToolbar?.setNavigationOnClickListener {
-      val message = languageSelectionViewModel.selectedLanguage.value
-      val intent = Intent()
-      intent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, message)
-      (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
-      (fragment.activity as AudioLanguageActivity).finish()
-    }
-
     return binding.root
   }
 
