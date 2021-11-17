@@ -1,6 +1,5 @@
 package org.oppia.android.app.onboarding
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -134,8 +133,6 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   private fun setTermsAndCondition(binding: OnboardingSlideFinalBinding) {
-    val termsOfService: String = resourceHandler.getStringInLocale(R.string.terms_of_service_title)
-    val privacyPolicy: String = resourceHandler.getStringInLocale(R.string.privacy_policy_title)
     val completeString: String =
       resourceHandler.getStringInLocaleWithWrapping(
         R.string.agree_to_terms,
@@ -148,60 +145,11 @@ class OnboardingFragmentPresenter @Inject constructor(
       imageCenterAlign = false
     ).parseOppiaHtml(
       completeString,
-      binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView,
-      supportsLinks = true,
-      supportsConceptCards = true
+      binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView
     )
-
-//    val startIndex = completeString.indexOf(termsOfService)
-//    val endIndex = startIndex + termsOfService.length
-//    val startIndex2 = completeString.indexOf(privacyPolicy)
-//    val endIndex2 = startIndex2 + privacyPolicy.length
-//    val spannableStringBuilder = SpannableStringBuilder(completeString)
-//    val clickOnTerms = object : ClickableSpan() {
-//      override fun onClick(widget: View) {
-//        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.TERMS_OF_SERVICE)
-//      }
-//
-//      override fun updateDrawState(ds: TextPaint) {
-//        super.updateDrawState(ds)
-//        ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
-//        ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
-//      }
-//    }
-//    val clickOnPrivacy = object : ClickableSpan() {
-//      override fun onClick(widget: View) {
-//        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
-//      }
-//
-//      override fun updateDrawState(ds: TextPaint) {
-//        super.updateDrawState(ds)
-//        ds.color = ContextCompat.getColor(activity, R.color.oppiaPrimaryTextDark)
-//        ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
-//      }
-//    }
-//
-//    if (startIndex > 0)
-//      spannableStringBuilder.setSpan(
-//        clickOnTerms,
-//        startIndex,
-//        endIndex,
-//        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-//      )
-//    if (startIndex2 > 0)
-//      spannableStringBuilder.setSpan(
-//        clickOnPrivacy,
-//        startIndex2,
-//        endIndex2,
-//        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-//      )
-//    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.text = spannableStringBuilder
-//    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.movementMethod =
-//      LinkMovementMethod.getInstance()
   }
 
   override fun onPolicyPageLinkClicked(policyPage: PolicyPage) {
-    Log.e("PolicyPageTagHandler", "Failed to parse policy ")
     (activity as RouteToPoliciesListener).onRouteToPolicies(policyPage)
   }
 

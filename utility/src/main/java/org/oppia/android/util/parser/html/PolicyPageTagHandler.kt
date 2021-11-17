@@ -26,6 +26,10 @@ class PolicyPageTagHandler(
     imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
+    consoleLogger.e(
+      "PolicyPageTagHandler",
+      "Failed to parse policy tag" +attributes.getJsonObjectValue(CUSTOM_PRIVACY_POLICY_PAGE_TAG)
+    )
     val spannableBuilder = SpannableStringBuilder("Privacy Policy")
     spannableBuilder.setSpan(
       object : ClickableSpan() {
