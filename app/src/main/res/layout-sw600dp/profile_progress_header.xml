@@ -89,6 +89,7 @@
 
         <TextView
           android:id="@+id/ongoing_topics_count"
+          style="@style/TextViewCenter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"

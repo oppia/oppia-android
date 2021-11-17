@@ -50,6 +50,7 @@
 
         <TextView
           android:id="@+id/add_profile_text"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-medium"
@@ -59,6 +60,7 @@
 
         <TextView
           android:id="@+id/add_profile_description_text"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"

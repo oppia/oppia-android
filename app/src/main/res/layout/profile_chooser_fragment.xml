@@ -101,7 +101,6 @@
       <TextView
         style="@style/Subtitle1ViewCenter"
         android:layout_marginBottom="24dp"
-        android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
         android:textColor="@color/profileChooserGreyTextColor" />

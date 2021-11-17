@@ -70,6 +70,7 @@
           android:textColor="@color/white"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_name_margin_top_profile_already_added : @dimen/space_0dp}" />
 
+        <!-- Note: The style set here is without the Gravity property, as the gravity set for this TextView is conditional and its not doable through styles. -->
         <TextView
           android:id="@+id/profile_last_visited"
           style="@style/SubtitleLight2"

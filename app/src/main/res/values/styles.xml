@@ -319,6 +319,10 @@
     <item name="android:textSize">12sp</item>
   </style>
 
+  <style name="SubtitleLight1Center" parent="SubtitleLight1">
+    <item name="android:gravity">center</item>
+  </style>
+
   <style name="SubtitleLight2" parent="SubtitleLight">
     <item name="android:textSize">16sp</item>
   </style>
@@ -348,7 +352,7 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
-  <style name="CaptionViewCenter" parent="Caption">
+  <style name="CaptionViewCenterVertical" parent="Caption">
     <item name="android:gravity">center_vertical</item>
   </style>
 
