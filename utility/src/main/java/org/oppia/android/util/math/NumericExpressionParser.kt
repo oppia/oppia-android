@@ -118,38 +118,26 @@ class NumericExpressionParser private constructor(
     return parseGenericAddSubExpression()
   }
 
-  // TODO: consider consolidating this with other binary parsing to reduce the overall parser.
   private fun parseGenericAddSubExpression(): MathParsingResult<MathExpression> {
     // generic_add_sub_expression =
     //     generic_mult_div_expression , { generic_add_sub_expression_rhs } ;
-    var lastLhsResult = parseGenericMultDivExpression()
-    while (!lastLhsResult.isFailure()) {
-      // generic_add_sub_expression_rhs = generic_add_expression_rhs | generic_sub_expression_rhs ;
-      val (operator, rhsResult) = when (tokens.peek()) {
-        is PlusSymbol ->
-          MathBinaryOperation.Operator.ADD to parseGenericAddExpressionRhs()
-        is MinusSymbol ->
-          MathBinaryOperation.Operator.SUBTRACT to parseGenericSubExpressionRhs()
-        is PositiveInteger, is PositiveRealNumber, is DivideSymbol, is EqualsSymbol,
-        is ExponentiationSymbol, is FunctionName, is InvalidToken, is LeftParenthesisSymbol,
-        is MultiplySymbol, is RightParenthesisSymbol, is SquareRootSymbol, is VariableName, null ->
-          break // Not a match to the expression.
+    return parseGenericBinaryExpression(
+      parseLhs = this::parseGenericMultDivExpression,
+      parseRhs = { nextToken ->
+        // generic_add_sub_expression_rhs =
+        //     generic_add_expression_rhs | generic_sub_expression_rhs ;
+        when (nextToken) {
+          is PlusSymbol ->
+            MathBinaryOperation.Operator.ADD to parseGenericAddExpressionRhs()
+          is MinusSymbol ->
+            MathBinaryOperation.Operator.SUBTRACT to parseGenericSubExpressionRhs()
+          is PositiveInteger, is PositiveRealNumber, is DivideSymbol, is EqualsSymbol,
+          is ExponentiationSymbol, is FunctionName, is InvalidToken, is LeftParenthesisSymbol,
+          is MultiplySymbol, is RightParenthesisSymbol, is SquareRootSymbol, is VariableName,
+          null -> null
+        }
       }
-
-      lastLhsResult = lastLhsResult.combineWith(rhsResult) { lhs, rhs ->
-        // Compute the next LHS if there is further addition/subtraction.
-        MathExpression.newBuilder().apply {
-          parseStartIndex = lhs.parseStartIndex
-          parseEndIndex = rhs.parseEndIndex
-          binaryOperation = MathBinaryOperation.newBuilder().apply {
-            this.operator = operator
-            leftOperand = lhs
-            rightOperand = rhs
-          }.build()
-        }.build()
-      }
-    }
-    return lastLhsResult
+    )
   }
 
   private fun parseGenericAddExpressionRhs(): MathParsingResult<MathExpression> {
@@ -169,42 +157,30 @@ class NumericExpressionParser private constructor(
   private fun parseGenericMultDivExpression(): MathParsingResult<MathExpression> {
     // generic_mult_div_expression =
     //     generic_exp_expression , { generic_mult_div_expression_rhs } ;
-    var lastLhsResult = parseGenericExpExpression()
-    while (!lastLhsResult.isFailure()) {
-      // generic_mult_div_expression_rhs =
-      //     generic_mult_expression_rhs
-      //     | generic_div_expression_rhs
-      //     | generic_implicit_mult_expression_rhs ;
-      val (operator, rhsResult) = when (tokens.peek()) {
-        is MultiplySymbol ->
-          MathBinaryOperation.Operator.MULTIPLY to parseGenericMultExpressionRhs()
-        is DivideSymbol -> MathBinaryOperation.Operator.DIVIDE to parseGenericDivExpressionRhs()
-        is FunctionName, is LeftParenthesisSymbol, is SquareRootSymbol ->
-          MathBinaryOperation.Operator.MULTIPLY to parseGenericImplicitMultExpressionRhs()
-        is VariableName -> {
-          if (parseContext is AlgebraicExpressionContext) {
+    return parseGenericBinaryExpression(
+      parseLhs = this::parseGenericExpExpression,
+      parseRhs = { nextToken ->
+        // generic_mult_div_expression_rhs =
+        //     generic_mult_expression_rhs
+        //     | generic_div_expression_rhs
+        //     | generic_implicit_mult_expression_rhs ;
+        when (nextToken) {
+          is MultiplySymbol ->
+            MathBinaryOperation.Operator.MULTIPLY to parseGenericMultExpressionRhs()
+          is DivideSymbol -> MathBinaryOperation.Operator.DIVIDE to parseGenericDivExpressionRhs()
+          is FunctionName, is LeftParenthesisSymbol, is SquareRootSymbol ->
             MathBinaryOperation.Operator.MULTIPLY to parseGenericImplicitMultExpressionRhs()
-          } else break
+          is VariableName -> {
+            if (parseContext is AlgebraicExpressionContext) {
+              MathBinaryOperation.Operator.MULTIPLY to parseGenericImplicitMultExpressionRhs()
+            } else null
+          }
+          // Not a match to the expression.
+          is PositiveInteger, is PositiveRealNumber, is EqualsSymbol, is ExponentiationSymbol,
+          is InvalidToken, is MinusSymbol, is PlusSymbol, is RightParenthesisSymbol, null -> null
         }
-        // Not a match to the expression.
-        is PositiveInteger, is PositiveRealNumber, is EqualsSymbol, is ExponentiationSymbol,
-        is InvalidToken, is MinusSymbol, is PlusSymbol, is RightParenthesisSymbol, null -> break
       }
-
-      // Compute the next LHS if there is further multiplication/division.
-      lastLhsResult = lastLhsResult.combineWith(rhsResult) { lhs, rhs ->
-        MathExpression.newBuilder().apply {
-          parseStartIndex = lhs.parseStartIndex
-          parseEndIndex = rhs.parseEndIndex
-          binaryOperation = MathBinaryOperation.newBuilder().apply {
-            this.operator = operator
-            leftOperand = lhs
-            rightOperand = rhs
-          }.build()
-        }.build()
-      }
-    }
-    return lastLhsResult
+    )
   }
 
   private fun parseGenericMultExpressionRhs(): MathParsingResult<MathExpression> {
@@ -503,6 +479,29 @@ class NumericExpressionParser private constructor(
         variable = variableName.parsedName
       }.build()
     }
+  }
+
+  private fun parseGenericBinaryExpression(
+    parseLhs: () -> MathParsingResult<MathExpression>,
+    parseRhs: (Token?) -> Pair<MathBinaryOperation.Operator, MathParsingResult<MathExpression>>?
+  ): MathParsingResult<MathExpression> {
+    var lastLhsResult = parseLhs()
+    while (!lastLhsResult.isFailure()) {
+      // Compute the next LHS if there are further RHS expressions.
+      val (operator, rhsResult) = parseRhs(tokens.peek()) ?: break // Not a match to the expression.
+      lastLhsResult = lastLhsResult.combineWith(rhsResult) { lhs, rhs ->
+        MathExpression.newBuilder().apply {
+          parseStartIndex = lhs.parseStartIndex
+          parseEndIndex = rhs.parseEndIndex
+          binaryOperation = MathBinaryOperation.newBuilder().apply {
+            this.operator = operator
+            leftOperand = lhs
+            rightOperand = rhs
+          }.build()
+        }.build()
+      }
+    }
+    return lastLhsResult
   }
 
   private fun PositiveInteger.toReal(): Real = Real.newBuilder().apply {
