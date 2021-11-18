@@ -36,6 +36,12 @@ message PoliciesActivityArguments {
   PolicyPage policy_page = 1;
 }
 
+// Arguments needed to open the policy page.
+message PoliciesFragmentArguments {
+  // The specific policy page that should be displayed.
+  PolicyPage policy_page = 1;
+}
+
 // Represents the type of policy page.
 enum PolicyPage {
   // The policy page is unknown.

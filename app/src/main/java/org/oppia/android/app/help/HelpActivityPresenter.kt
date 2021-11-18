@@ -330,7 +330,7 @@ class HelpActivityPresenter @Inject constructor(
           R.string.terms_of_service_title
         )
       )
-      else -> PolicyPage.UNRECOGNIZED
+      else -> PolicyPage.POLICY_PAGE_UNSPECIFIED
     }
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = POLICIES_FRAGMENT_TAG

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.PoliciesActivityArguments
+import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.PoliciesFragmentBinding
@@ -32,14 +32,14 @@ class PoliciesFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    policiesActivityArguments: PoliciesActivityArguments
+    policiesFragmentArguments: PoliciesFragmentArguments
   ): View {
     binding = PoliciesFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    setUpContentForTextViews(policiesActivityArguments.policyPage)
+    setUpContentForTextViews(policiesFragmentArguments.policyPage)
 
     return binding.root
   }
@@ -59,7 +59,7 @@ class PoliciesFragmentPresenter @Inject constructor(
           resourceHandler.getStringInLocale(R.string.terms_of_service_content)
         privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
       }
-      else -> PolicyPage.UNRECOGNIZED
+      else -> PolicyPage.POLICY_PAGE_UNSPECIFIED
     }
 
     binding.policiesDescriptionTextView.text = htmlParserFactory.create(
