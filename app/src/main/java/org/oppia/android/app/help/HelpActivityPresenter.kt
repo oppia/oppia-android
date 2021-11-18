@@ -235,7 +235,7 @@ class HelpActivityPresenter @Inject constructor(
     selectedFragmentTag = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
-  
+
   private fun selectLicenseListFragment(dependencyIndex: Int) {
     setMultipaneContainerTitle(
       resourceHandler.getStringInLocale(R.string.license_list_activity_title)
