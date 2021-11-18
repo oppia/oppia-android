@@ -5,7 +5,7 @@
 -->
 <resources>
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
-  <string name="menu_home">الصفحة الرئيسية</string>
+  <string name="home_activity_title">الصفحة الرئيسية</string>
   <string name="menu_options">خيارات</string>
   <string name="menu_my_downloads">التنزيلات</string>
   <string name="menu_help">مساعدة</string>
