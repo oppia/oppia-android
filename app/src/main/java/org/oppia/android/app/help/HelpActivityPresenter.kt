@@ -20,6 +20,7 @@ import org.oppia.android.app.model.PoliciesActivityArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** The presenter for [HelpActivity]. */
@@ -35,18 +36,24 @@ class HelpActivityPresenter @Inject constructor(
   private lateinit var selectedHelpOptionTitle: String
   private var selectedDependencyIndex: Int? = null
   private var selectedLicenseIndex: Int? = null
+  private var internalPolicyPage: PolicyPage = PolicyPage.POLICY_PAGE_UNSPECIFIED
 
   fun handleOnCreate(
     helpOptionsTitle: String,
     isFromNavigationDrawer: Boolean,
     selectedFragment: String,
     dependencyIndex: Int,
-    licenseIndex: Int
+    licenseIndex: Int,
+    policiesActivityArguments: PoliciesActivityArguments?
   ) {
     selectedFragmentTag = selectedFragment
     selectedDependencyIndex = dependencyIndex
     selectedLicenseIndex = licenseIndex
     selectedHelpOptionTitle = helpOptionsTitle
+    if (policiesActivityArguments != null) {
+      internalPolicyPage = policiesActivityArguments.policyPage
+    }
+
     if (isFromNavigationDrawer) {
       activity.setContentView(R.layout.help_activity)
       setUpToolbar()
@@ -144,6 +151,12 @@ class HelpActivityPresenter @Inject constructor(
     outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragmentTag)
     selectedDependencyIndex?.let { outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, it) }
     selectedLicenseIndex?.let { outState.putInt(LICENSE_INDEX_SAVED_KEY, it) }
+    val policiesActivityArguments =
+      PoliciesActivityArguments
+        .newBuilder()
+        .setPolicyPage(internalPolicyPage)
+        .build()
+    outState.putProto(POLICIES_ARGUMENT_PROTO, policiesActivityArguments)
   }
 
   private fun setUpToolbar() {
@@ -197,6 +210,7 @@ class HelpActivityPresenter @Inject constructor(
   ) {
     when (selectedFragment) {
       FAQ_LIST_FRAGMENT_TAG -> handleLoadFAQListFragment()
+      POLICIES_FRAGMENT_TAG -> handleLoadPoliciesFragment(internalPolicyPage)
       THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG -> handleLoadThirdPartyDependencyListFragment()
       LICENSE_LIST_FRAGMENT_TAG -> handleLoadLicenseListFragment(dependencyIndex)
       LICENSE_TEXT_FRAGMENT_TAG -> handleLoadLicenseTextViewerFragment(
@@ -221,6 +235,7 @@ class HelpActivityPresenter @Inject constructor(
     selectedFragmentTag = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
+
 
   private fun selectLicenseListFragment(dependencyIndex: Int) {
     setMultipaneContainerTitle(
@@ -301,6 +316,7 @@ class HelpActivityPresenter @Inject constructor(
   }
 
   fun handleLoadPoliciesFragment(policyPage: PolicyPage) {
+    internalPolicyPage = policyPage
     selectPoliciesFragment(policyPage)
 
     val policiesActivityArguments =
