@@ -2,6 +2,7 @@ package org.oppia.android.domain.classify.rules.dragAndDropSortInput
 
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -31,7 +32,8 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   override fun matches(
     answer: ListOfSetsOfTranslatableHtmlContentIds,
-    input: ListOfSetsOfTranslatableHtmlContentIds
+    input: ListOfSetsOfTranslatableHtmlContentIds,
+    writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
     val answerStringSets = answer.contentIdListsList
     val inputStringSets = input.contentIdListsList

@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.content.Context
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -9,8 +8,10 @@ import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
@@ -23,7 +24,8 @@ class ImageRegionSelectionInteractionViewModel(
   interaction: Interaction,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   val isSplitView: Boolean,
-  val context: Context
+  private val writtenTranslationContext: WrittenTranslationContext,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
@@ -66,17 +68,18 @@ class ImageRegionSelectionInteractionViewModel(
     }
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     val answerTextString = answerText.toString()
-    userAnswerBuilder.answer =
-      InteractionObject.newBuilder().setClickOnImage(parseClickOnImage(answerTextString)).build()
-    userAnswerBuilder.plainAnswer = context.getString(
+    answer = InteractionObject.newBuilder().apply {
+      clickOnImage = parseClickOnImage(answerTextString)
+    }.build()
+    plainAnswer = resourceHandler.getStringInLocaleWithWrapping(
       R.string.image_interaction_answer_text,
       answerTextString
     )
-    return userAnswerBuilder.build()
-  }
+    this.writtenTranslationContext =
+      this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
+  }.build()
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }

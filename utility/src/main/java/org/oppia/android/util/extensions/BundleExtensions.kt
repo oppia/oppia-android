@@ -1,5 +1,6 @@
 package org.oppia.android.util.extensions
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.protobuf.ByteString
 import com.google.protobuf.InvalidProtocolBufferException
@@ -42,3 +43,29 @@ fun <T : MessageLite> Bundle.getProto(name: String, defaultValue: T): T {
     }
   } ?: defaultValue
 }
+
+/**
+ * Puts the specified proto as an extra in this [Intent], initializing the intent's extras if they
+ * aren't already, under the specified name.
+ *
+ * The proto can be retrieved using [getProtoExtra].
+ */
+fun <T : MessageLite> Intent.putProtoExtra(name: String, message: T) {
+  // Ensure the extras Bundle is fully initialized before adding the proto.
+  replaceExtras((extras ?: Bundle()).also { it.putProto(name, message) })
+}
+
+/**
+ * Returns the proto corresponding to the specified key from this [Intent]'s extras, or
+ * [defaultValue] if the intent doesn't have its extras initialized. See also [getProto] for other
+ * scenarios in which the default value is returned.
+ */
+fun <T : MessageLite> Intent.getProtoExtra(name: String, defaultValue: T): T {
+  return extras?.getProto(name, defaultValue) ?: defaultValue
+}
+
+/**
+ * Returns the string from this [Bundle] corresponding to the specified key, or null if there isn't
+ * one.
+ */
+fun Bundle.getStringFromBundle(key: String): String? = getString(key)

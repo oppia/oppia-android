@@ -9,6 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createSetOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -52,7 +53,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val matches =
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -65,7 +67,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val matches =
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -78,7 +81,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val matches =
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -91,7 +95,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val matches =
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -104,7 +109,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val matches =
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_UPPERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isTrue()
@@ -117,7 +123,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val matches =
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_MIXED_UPPERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -130,7 +137,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val matches =
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_UPPERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -143,7 +151,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val matches =
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
 
     assertThat(matches).isFalse()
@@ -156,7 +165,8 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
     val exception = assertThrows(IllegalStateException::class) {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
-        inputs = inputs
+        inputs = inputs,
+        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
       )
     }
 

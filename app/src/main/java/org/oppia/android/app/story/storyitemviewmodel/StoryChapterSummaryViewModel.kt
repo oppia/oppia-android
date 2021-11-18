@@ -2,12 +2,14 @@ package org.oppia.android.app.story.storyitemviewmodel
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import org.oppia.android.R
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.story.ExplorationSelectionListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -15,6 +17,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 /** Chapter summary view model for the recycler view in [StoryFragment]. */
 class StoryChapterSummaryViewModel(
   val index: Int,
+  val totalChapters: Int,
   private val fragment: Fragment,
   private val explorationSelectionListener: ExplorationSelectionListener,
   val explorationCheckpointController: ExplorationCheckpointController,
@@ -22,11 +25,12 @@ class StoryChapterSummaryViewModel(
   val topicId: String,
   val storyId: String,
   val chapterSummary: ChapterSummary,
-  val entityType: String
+  val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StoryItemViewModel() {
 
   val explorationId: String = chapterSummary.explorationId
-  val name: String = chapterSummary.name
+  private val name: String = chapterSummary.name
   val summary: String = chapterSummary.summary
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
   val missingPrerequisiteChapter: ChapterSummary = chapterSummary.missingPrerequisiteChapter
@@ -42,7 +46,9 @@ class StoryChapterSummaryViewModel(
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.getDefaultInstance(),
+          ProfileId.newBuilder().apply {
+            internalId = internalProfileId
+          }.build(),
           explorationId
         ).toLiveData()
 
@@ -90,5 +96,11 @@ class StoryChapterSummaryViewModel(
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
     }
+  }
+
+  fun computeChapterTitleText(): String {
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.chapter_name, (index + 1).toString(), name
+    )
   }
 }

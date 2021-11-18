@@ -28,6 +28,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@{viewModel.licenseName}"
+      android:textAlignment="viewStart"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>

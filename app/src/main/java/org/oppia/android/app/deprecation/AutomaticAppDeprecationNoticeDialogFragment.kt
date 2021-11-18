@@ -3,6 +3,7 @@ package org.oppia.android.app.deprecation
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class AutomaticAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

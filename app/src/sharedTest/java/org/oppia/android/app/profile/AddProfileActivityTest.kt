@@ -9,14 +9,13 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.provider.MediaStore
-import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -36,14 +35,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -52,7 +48,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -62,6 +58,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -83,20 +80,26 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -116,6 +119,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AddProfileActivityTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val accessibilityTestRule = AccessibilityTestRule()
 
@@ -431,7 +437,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            )
+          )
+        )
     }
   }
 
@@ -453,7 +465,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            )
+          )
+        )
     }
   }
 
@@ -542,7 +560,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_only_letters)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_only_letters)
+            )
+          )
+        )
     }
   }
 
@@ -565,7 +589,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_only_letters)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_only_letters)
+            )
+          )
+        )
     }
   }
 
@@ -664,7 +694,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_length)
+            )
+          )
+        )
     }
   }
 
@@ -704,7 +740,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_length)
+            )
+          )
+        )
     }
   }
 
@@ -816,7 +858,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            )
+          )
+        )
     }
   }
 
@@ -877,7 +925,13 @@ class AddProfileActivityTest {
         )
       ).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            )
+          )
+        )
     }
   }
 
@@ -981,6 +1035,42 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(matches(hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputCorrectPinAndConfirmPin_actionDone_buttonIsVisible() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("test"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_pin))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("123"),
+        pressImeActionButton()
+      )
+      onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_create_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -1383,7 +1473,13 @@ class AddProfileActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            )
+          )
+        )
     }
   }
 
@@ -1497,7 +1593,13 @@ class AddProfileActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            )
+          )
+        )
     }
   }
 
@@ -1575,31 +1677,6 @@ class AddProfileActivityTest {
     )
   }
 
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
-    }
-  }
-
   private fun createGalleryPickActivityResultStub(): ActivityResult {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
@@ -1618,7 +1695,7 @@ class AddProfileActivityTest {
   @Component(
     modules = [
       RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      PlatformParameterModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -1633,7 +1710,8 @@ class AddProfileActivityTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -15,18 +15,20 @@ annotation class ExceptionLogStorageCacheSize
 class LogStorageModule {
 
   /**
-   * Provides the number of records that can be stored in EventLog's cache storage.
-   * The current [EventLogStorageCacheSize] is set to be 5000 records.
-   * Taking 70 bytes per record, it is expected to occupy around 350000 bytes of disk space.
+   * Provides the maximum number of event logs that can be cached on disk.
+   *
+   * At a configured cache size of 50k records & estimating 70 bytes per record, it's expected that
+   * no more than 3.33MB will be required for cache disk space.
    */
   @Provides
   @EventLogStorageCacheSize
-  fun provideEventLogStorageCacheSize(): Int = 5000
+  fun provideEventLogStorageCacheSize(): Int = 50_000
 
   /**
-   * Provides the number of records that can be stored in ExceptionLog's cache storage.
-   * The current [ExceptionLogStorageCacheSize] is set to be 25 records.
-   * Taking 130 bytes per record, it is expected to occupy around 3250 bytes of disk space.
+   * Provides the maximum number of exception logs that can be cached on disk.
+   *
+   * At a configured cache size of 25 records & estimating 130 bytes per record, it's expected that
+   * no more than 3.17KB will be required for cache disk space.
    */
   @Provides
   @ExceptionLogStorageCacheSize

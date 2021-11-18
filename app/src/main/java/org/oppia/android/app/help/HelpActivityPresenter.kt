@@ -16,19 +16,22 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 /** The presenter for [HelpActivity]. */
 @ActivityScope
-class HelpActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class HelpActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
+) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var toolbar: Toolbar
 
   private lateinit var selectedFragmentTag: String
   private lateinit var selectedHelpOptionTitle: String
-  private var selectedDependencyIndex by Delegates.notNull<Int>()
-  private var selectedLicenseIndex by Delegates.notNull<Int>()
+  private var selectedDependencyIndex: Int? = null
+  private var selectedLicenseIndex: Int? = null
 
   fun handleOnCreate(
     helpOptionsTitle: String,
@@ -56,7 +59,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
     val titleTextView =
       activity.findViewById<TextView>(R.id.options_activity_selected_options_title)
     if (titleTextView != null) {
-      setMultipaneContainerTitle(helpOptionsTitle!!)
+      setMultipaneContainerTitle(helpOptionsTitle)
     }
     val isMultipane = activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
     if (isMultipane) {
@@ -136,8 +139,8 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       outState.putString(HELP_OPTIONS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragmentTag)
-    outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, selectedDependencyIndex)
-    outState.putInt(LICENSE_INDEX_SAVED_KEY, selectedLicenseIndex)
+    selectedDependencyIndex?.let { outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, it) }
+    selectedLicenseIndex?.let { outState.putInt(LICENSE_INDEX_SAVED_KEY, it) }
   }
 
   private fun setUpToolbar() {
@@ -152,7 +155,13 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       val currentFragment = getMultipaneOptionsFragment()
       if (currentFragment != null) {
         when (currentFragment) {
-          is LicenseTextViewerFragment -> handleLoadLicenseListFragment(selectedDependencyIndex)
+          is LicenseTextViewerFragment -> {
+            handleLoadLicenseListFragment(
+              checkNotNull(selectedDependencyIndex) {
+                "Expected dependency index to be selected & defined"
+              }
+            )
+          }
           is LicenseListFragment -> handleLoadThirdPartyDependencyListFragment()
         }
       }
@@ -195,7 +204,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   }
 
   private fun selectFAQListFragment() {
-    setMultipaneContainerTitle(activity.getString(R.string.faq_activity_title))
+    setMultipaneContainerTitle(resourceHandler.getStringInLocale(R.string.faq_activity_title))
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = FAQ_LIST_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
@@ -203,7 +212,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
 
   private fun selectThirdPartyDependencyListFragment() {
     setMultipaneContainerTitle(
-      activity.getString(R.string.third_party_dependency_list_activity_title)
+      resourceHandler.getStringInLocale(R.string.third_party_dependency_list_activity_title)
     )
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG
@@ -211,7 +220,9 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   }
 
   private fun selectLicenseListFragment(dependencyIndex: Int) {
-    setMultipaneContainerTitle(activity.getString(R.string.license_list_activity_title))
+    setMultipaneContainerTitle(
+      resourceHandler.getStringInLocale(R.string.license_list_activity_title)
+    )
     setMultipaneBackButtonVisibility(View.VISIBLE)
     setHelpBackButtonContentDescription(LICENSE_LIST_FRAGMENT_TAG)
     selectedFragmentTag = LICENSE_LIST_FRAGMENT_TAG
@@ -237,7 +248,7 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
       dependencyIndex,
       /* defValue= */ 0
     )
-    val licenseNamesArray = activity.resources.getStringArray(licenseNamesArrayId)
+    val licenseNamesArray = resourceHandler.getStringArrayInLocale(licenseNamesArrayId)
     thirdPartyDependencyLicenseNamesArray.recycle()
     return licenseNamesArray[licenseIndex]
   }
@@ -251,21 +262,21 @@ class HelpActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun setHelpBackButtonContentDescription(fragmentTag: String) {
     when (fragmentTag) {
       LICENSE_LIST_FRAGMENT_TAG -> {
-        val thirdPartyDependenciesList = activity.getString(
+        val thirdPartyDependenciesList = resourceHandler.getStringInLocale(
           R.string.help_activity_third_party_dependencies_list
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = activity.getString(
+          .contentDescription = resourceHandler.getStringInLocaleWithoutWrapping(
           R.string.help_activity_back_arrow_description,
           thirdPartyDependenciesList
         )
       }
       LICENSE_TEXT_FRAGMENT_TAG -> {
-        val copyrightLicensesList = activity.getString(
+        val copyrightLicensesList = resourceHandler.getStringInLocale(
           R.string.help_activity_copyright_licenses_list
         )
         activity.findViewById<ImageButton>(R.id.help_multipane_options_back_button)
-          .contentDescription = activity.getString(
+          .contentDescription = resourceHandler.getStringInLocaleWithoutWrapping(
           R.string.help_activity_back_arrow_description,
           copyrightLicensesList
         )

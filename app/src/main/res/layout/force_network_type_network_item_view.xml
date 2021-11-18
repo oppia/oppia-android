@@ -31,6 +31,7 @@
       android:paddingBottom="20dp"
       android:text="@{viewModel.networkTypeString}"
       android:textColor="@color/oppiaPrimaryTextDark"
+      android:textAlignment="viewStart"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +43,7 @@
       android:layout_marginEnd="18dp"
       android:layout_marginBottom="4dp"
       android:contentDescription="@{@string/force_network_type_network_selected}"
-      android:src="@drawable/ic_check_24dp"
+      app:srcCompat="@drawable/ic_check_24dp"
       android:visibility="@{isNetworkSelected ? View.VISIBLE : View.GONE }"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

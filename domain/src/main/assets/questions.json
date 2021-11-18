@@ -11,7 +11,7 @@
         "id": "TextInput",
         "customization_args": {
           "rows": {
-            "value": 1.0
+            "value": 1
           },
           "placeholder": {
             "value": {
@@ -25,7 +25,7 @@
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "90d3aef0-213b-45d5-b1f0-1c2655079c7e",
                 "normalizedStrSet": ["1/4"]
               }
             }
@@ -33,43 +33,43 @@
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "96835528-a82c-486b-83fb-26e0e527b7c5",
                 "normalizedStrSet": ["2/8"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>Yes, that's correct. Well done!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "8cbef3d6-4b7c-434e-9d39-ee0534e0507b",
                 "normalizedStrSet": ["1/5"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "5RM9KPfQxobH-0"
         }, {
@@ -77,34 +77,34 @@
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "11e221ba-cc2d-4501-984c-89b13d7af5e7",
                 "normalizedStrSet": ["1/9"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>No, that's not correct. \"1/9\" is just an example to show you how to enter the fraction, but you need to type in the fraction represented by the shaded part of the picture. Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": "<p>No, that's not correct. Did you forget to divide the picture into equal parts first?</p>"
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -121,7 +121,7 @@
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -163,7 +163,7 @@
         "id": "TextInput",
         "customization_args": {
           "rows": {
-            "value": 1.0
+            "value": 1
           },
           "placeholder": {
             "value": {
@@ -177,78 +177,78 @@
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "5e835fef-1f4e-4419-b17a-07a2e8ec65b5",
                 "normalizedStrSet": ["1/4"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>Yes, that's right! Well done, this was a hard question :-)</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "4b167750-8e57-44ac-a8b5-6c2e94746c8f",
                 "normalizedStrSet": ["1/8"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>No, that's not correct. \"1/8\" is just an example to show you how to write the fraction, but you need to write the actual fraction that the red part represents.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "fc96a01d-4537-4617-ad7c-96dfbba55930",
                 "normalizedStrSet": ["1/2"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "5RM9KPfQxobH-0"
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": "<p>No, that's not correct. Try again. Remember that the picture needs to be divided into equal parts before you write the fraction.</p>"
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -265,7 +265,7 @@
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -307,7 +307,7 @@
         "id": "TextInput",
         "customization_args": {
           "rows": {
-            "value": 1.0
+            "value": 1
           },
           "placeholder": {
             "value": {
@@ -321,7 +321,7 @@
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "d631bcec-736b-4424-aed4-aa48d6414fc7",
                 "normalizedStrSet": ["3/4"]
               }
             }
@@ -329,51 +329,51 @@
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "8a591c46-ae39-4cd7-89f3-7e8027d54828",
                 "normalizedStrSet": ["6/8"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>Yes, that's right! Well done.</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "3d875b53-f5bf-4cdf-9d10-dee7882b327c",
                 "normalizedStrSet": ["1/8"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>No, that's not correct. \"1/8\" is just an example of how to enter the fraction. You should enter the fraction representing the green part.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "ad458dd1-260d-4e91-9323-3e53bb0b3500",
                 "normalizedStrSet": ["4/6"]
               }
             }
@@ -381,34 +381,34 @@
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "ed460737-225c-4b81-92e9-c6bc56017e7f",
                 "normalizedStrSet": ["2/3"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that's not correct. What do you need to do to the picture first before writing any fraction?</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "5RM9KPfQxobH-0"
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": "<p>No, that's not correct. Remember to start by dividing the picture into equal parts.</p>"
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -425,7 +425,7 @@
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -468,17 +468,17 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>Yes, because there are three parts and only one is shaded.</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>Yes, because there are three parts and only one is shaded.</p>"
             }, {
-              "html": "<p>No. There are three parts and two of them are white, so the correct fraction is 2/3.</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>No. There are three parts and two of them are white, so the correct fraction is 2/3.</p>"
             }, {
-              "html": "<p>No. Amir needs to divide the picture into equal-sized&nbsp;triangles before writing the fraction.</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>No. Amir needs to divide the picture into equal-sized&nbsp;triangles before writing the fraction.</p>"
             }, {
-              "html": "<p>No. Amir has mixed up the numerator and denominator. The correct fraction is 3/1.</p>",
-              "content_id": "ca_choices_3"
+              "content_id": "ca_choices_3",
+              "html": "<p>No. Amir has mixed up the numerator and denominator. The correct fraction is 3/1.</p>"
             }]
           }
         },
@@ -490,17 +490,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>That's correct! Amir can divide the picture into 4 equal triangles.&nbsp;Two of these are shaded, so the actual answer is 2/4.</p><oppia-noninteractive-image alt-with-value=\"&amp;quot;The same right triangle, divided into four equal pieces.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_005819_k314avzr7t_height_121_width_116.png&amp;quot;\"></oppia-noninteractive-image>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -509,15 +509,15 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that's not correct. Amir forgot a step.</p>\n\n<p>To&nbsp;write the denominator of a fraction, you need to know how many pieces there are in the entire object, since the denominator \"names\" the size of each piece. But, first, you need all the pieces to be the same size. That's not true in this case.</p>\n\n<p>Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "5RM9KPfQxobH-0"
         }, {
@@ -528,17 +528,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>No, that's not right. Read the question again -- Amir is trying to write down the fraction of the part that is shaded <strong>black</strong>,&nbsp;not white. Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -547,28 +547,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_4",
               "html": "<p>No, that's not correct. It looks like you've forgotten what a numerator and denominator are. To refresh your memory, take a look at this <oppia-noninteractive-skillreview skill_id-with-value=\"UxTGIJqaHMLa\" text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -578,7 +578,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -592,11 +592,23 @@
       },
       "written_translations": {
         "translations_mapping": {
-          "content": {},
+          "content": {
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<p> أمير يقول أن الجزء الأسود المظلل من الصورة أدناه يمثل الكسر 1/3. </p>\n\n<oppia-noninteractive-image alt-with-value=\"&amp;quot;مثلث قائم الزاوية متساوي الساقين به مربع منقوش عليه. المربع مظلل باللون الأسود.&amp;quot;\" caption-with-value=\"&amp;quot;&amp;quot;\" filepath-with-value=\"&amp;quot;img_20191031_005807_mxdmul529r_height_121_width_116.png&amp;quot;\"></oppia-noninteractive-image>\n\n<p> هل أمير محق؟ </p>"},
+              "needs_update": false
+            }
+          },
           "feedback_2": {},
           "feedback_3": {},
           "feedback_1": {},
-          "hint_1": {},
+          "hint_1": {
+            "ar": {
+              "data_format": "html",
+              "translation": {"translation" : "<p> لكتابة كسر ، عليك معرفة مقامه ، وهو إجمالي عدد القطع في الكل. يجب أن تكون كل هذه القطع بنفس الحجم. </p>"},
+              "needs_update": false
+            }
+          },
           "feedback_4": {},
           "default_outcome": {}
         }
@@ -621,20 +633,20 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>Correct</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>Correct</p>"
             }, {
-              "html": "<p>Wrong 1</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>Wrong 1</p>"
             }, {
-              "html": "<p>Wrong 2</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>Wrong 2</p>"
             }, {
-              "html": "<p>Wrong 3</p>",
-              "content_id": "ca_choices_3"
+              "content_id": "ca_choices_3",
+              "html": "<p>Wrong 3</p>"
             }, {
-              "html": "<p>Wrong 4</p>",
-              "content_id": "ca_choices_4"
+              "content_id": "ca_choices_4",
+              "html": "<p>Wrong 4</p>"
             }]
           }
         },
@@ -646,17 +658,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>Good</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -665,15 +677,15 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that's not correct. What do you need to do first, before writing any fraction?</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "5RM9KPfQxobH-0"
         }, {
@@ -684,15 +696,15 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>No, that's not correct. The denominator (second number) describes the size of each piece. So, it should be the <strong>total&nbsp;</strong>number of pieces. Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "T8kGrGsZWhEy-0"
         }, {
@@ -703,15 +715,15 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_4",
               "html": "<p>No, that's not correct. The denominator (second number) describes the size of each piece. So, it should be the&nbsp;<strong>total</strong> number of pieces. Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "T8kGrGsZWhEy-1"
         }, {
@@ -722,28 +734,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_5",
               "html": "<p>No, that's not correct. The numerator (first number) should be the total count of only the shaded pieces, but you've written the total number of all the pieces instead. Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "T8kGrGsZWhEy-2"
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -753,7 +765,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -804,17 +816,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>Yes, that's right!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -823,28 +835,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that's not correct. The first number in a fraction is the <strong>numerator</strong>&nbsp;-- it counts, or \"enumerates\", the number of selected parts.&nbsp;Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "UxTGIJqaHMLa-0"
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": "<p>No, that's not correct. Your answer should be one of the numbers in the fraction. Try again.</p>"
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -854,14 +866,14 @@
         }],
         "solution": {
           "answer_is_exclusive": true,
-          "correct_answer": 3.0,
+          "correct_answer": "",
           "explanation": {
             "content_id": "solution",
             "html": "<p>The denominator of a fraction is the second number in the fraction. (It counts the total number of pieces in the whole.)</p>\n\n<p>So, for 2/3, the denominator is <strong>3</strong>.</p>"
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -902,17 +914,17 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>The first (or top) number.</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>The first (or top) number.</p>"
             }, {
-              "html": "<p>The second (or bottom) number.</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>The second (or bottom) number.</p>"
             }, {
-              "html": "<p>The larger number.</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>The larger number.</p>"
             }, {
-              "html": "<p>The smaller number.</p>",
-              "content_id": "ca_choices_3"
+              "content_id": "ca_choices_3",
+              "html": "<p>The smaller number.</p>"
             }]
           }
         },
@@ -924,17 +936,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>Yes, that's correct!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -943,15 +955,15 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that's not correct. The first number is&nbsp;the <strong>numerator</strong>, not the denominator. It \"enumerates\" (counts) the number of selected pieces.</p>\n\n<p>Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "UxTGIJqaHMLa-0"
         }, {
@@ -967,28 +979,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>No, that's not correct. The name of a number in a fraction is based on <strong>its position in the fraction</strong>, not whether&nbsp;it is bigger or smaller than the other number.</p>\n\n<p>Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -998,7 +1010,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -1045,17 +1057,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>Yes, that is correct! Well done.</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -1064,28 +1076,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that is not correct. The numerator is always the <strong>first</strong> number in the fraction. It counts the number of selected pieces.</p>\n\n<p>Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "UxTGIJqaHMLa-0"
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": "<p>No, that's not correct. Your answer should be one of the numbers in the fraction. Try again.</p>"
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -1095,14 +1107,14 @@
         }],
         "solution": {
           "answer_is_exclusive": true,
-          "correct_answer": 8.0,
+          "correct_answer": "",
           "explanation": {
             "content_id": "solution",
             "html": "<p>The numerator, which counts the number of pieces in the fraction, is always the <strong>first</strong>&nbsp;number in the fraction. So, for the fraction 8/5, the numerator is <strong>8</strong>.</p>"
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -1143,14 +1155,14 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>The number of selected parts.</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>The number of selected parts.</p>"
             }, {
-              "html": "<p>The number of non-selected parts.</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>The number of non-selected parts.</p>"
             }, {
-              "html": "<p>The total number of parts in the whole object.</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>The total number of parts in the whole object.</p>"
             }]
           }
         },
@@ -1162,17 +1174,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>Yes, that's right!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -1186,28 +1198,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>No, that's not correct. Try again. You may need to review the&nbsp;<strong>concept card on numerators and denominators.</strong></p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "B39yK4cbHZYI-0"
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -1217,7 +1229,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -1256,14 +1268,14 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>The number of selected parts.</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>The number of selected parts.</p>"
             }, {
-              "html": "<p>The total number of parts in the whole.</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>The total number of parts in the whole.</p>"
             }, {
-              "html": "<p>The number of non-selected parts.</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>The number of non-selected parts.</p>"
             }]
           }
         },
@@ -1275,17 +1287,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>Yes, that's right!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -1294,15 +1306,15 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>No, that's not correct. That's what the <strong>numerator</strong> represents (since it \"enumerates\", or counts, the parts).</p>\n\n<p>Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "B39yK4cbHZYI-0"
         }, {
@@ -1313,28 +1325,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>No, that's not correct. In general, when writing a fraction, you don't need to count the number of non-selected parts. Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -1344,7 +1356,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -1385,17 +1397,17 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>The number of selected parts.</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>The number of selected parts.</p>"
             }, {
-              "html": "<p>The total number of parts that the whole is divided into.</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>The total number of parts that the whole is divided into.</p>"
             }, {
-              "html": "<p>The number of parts that are not selected.</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>The number of parts that are not selected.</p>"
             }, {
-              "html": "<p>The number of selected parts + The number of non-selected parts.</p>",
-              "content_id": "ca_choices_3"
+              "content_id": "ca_choices_3",
+              "html": "<p>The number of selected parts + The number of non-selected parts.</p>"
             }]
           }
         },
@@ -1407,17 +1419,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>Yes, that's correct!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -1426,15 +1438,15 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>No, that's not correct. That is what the <strong>denominator</strong>&nbsp;of the fraction represents.</p>\n\n<p>Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "B39yK4cbHZYI-0"
         }, {
@@ -1450,28 +1462,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>No, that's not correct. In general, none of the numbers in a fraction require counting the number of non-selected&nbsp;parts.</p>\n\n<p>Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -1481,7 +1493,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -1522,20 +1534,20 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>9:6</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>9:6</p>"
             }, {
-              "html": "<p>9:3</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>9:3</p>"
             }, {
-              "html": "<p>3:9</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>3:9</p>"
             }, {
-              "html": "<p>6:9</p>",
-              "content_id": "ca_choices_3"
+              "content_id": "ca_choices_3",
+              "html": "<p>6:9</p>"
             }, {
-              "html": "<p>12:9</p>",
-              "content_id": "ca_choices_4"
+              "content_id": "ca_choices_4",
+              "html": "<p>12:9</p>"
             }]
           }
         },
@@ -1547,17 +1559,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>Yes, that's correct! Well done.</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -1566,17 +1578,17 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>No, that's not correct. Bobby ate 3 pears, so the number of pears would change. Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }, {
           "rule_specs": [{
             "rule_type": "Equals",
@@ -1595,28 +1607,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_3",
               "html": "<p>No, that's not correct. Be careful to make sure that the order of the terms in the ratio follows what the question asks for. Try again.</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -1626,7 +1638,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -1672,7 +1684,7 @@
             }
           },
           "rows": {
-            "value": 1.0
+            "value": 1
           }
         },
         "answer_groups": [{
@@ -1680,57 +1692,56 @@
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "51b2cc07-4214-43c8-9b1b-adcbf0ecf5e8",
                 "normalizedStrSet": ["1/4"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>That's correct!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
-        },
-        {
+          "tagged_skill_misconception_id": ""
+        }, {
           "rule_specs": [{
             "rule_type": "Equals",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "68354fee-8964-4ecb-96d1-a4d985b93e65",
                 "normalizedStrSet": ["123/456"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_2",
               "html": "<p>Try again!</p>"
             },
             "labelled_as_correct": false,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
           "tagged_skill_misconception_id": "test_skill_id_1-0"
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -1747,12 +1758,13 @@
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
           "solution": {},
           "feedback_1": {},
+          "feedback_2": {},
           "ca_placeholder_0": {},
           "hint_1": {},
           "default_outcome": {}
@@ -1763,6 +1775,7 @@
           "content": {},
           "solution": {},
           "feedback_1": {},
+          "feedback_2": {},
           "ca_placeholder_0": {},
           "hint_1": {},
           "default_outcome": {}
@@ -1788,14 +1801,14 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>The number of pieces of cake I want.</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>The number of pieces of cake I want.</p>"
             }, {
-              "html": "<p>The number of pieces the whole cake is cut into.</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>The number of pieces the whole cake is cut into.</p>"
             }, {
-              "html": "<p>None of the above.</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>None of the above.</p>"
             }]
           }
         },
@@ -1807,36 +1820,35 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>That's correct!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
             "content_id": "hint_1",
             "html": "<p>Hint text will appear here</p>"
           }
-        },
-        {
+        }, {
           "hint_content": {
             "content_id": "hint_2",
             "html": "<p>Second hint text will appear here</p>"
@@ -1844,7 +1856,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -1854,18 +1866,26 @@
           "ca_choices_1": {},
           "ca_choices_2": {},
           "hint_1": {},
+          "hint_2": {},
           "default_outcome": {}
         }
       },
       "written_translations": {
         "translations_mapping": {
-          "content": {},
+          "content": {
+            "ar": {
+              "data_format": "html",
+              "translation": { "translation": "<p> إذا تحدثنا عن الرغبة في 4/7 من الكعكة ، فماذا يمثل السبعة؟ </p>" },
+              "needs_update": false
+            }
+          },
           "solution": {},
           "feedback_1": {},
           "ca_choices_0": {},
           "ca_choices_1": {},
           "ca_choices_2": {},
           "hint_1": {},
+          "hint_2": {},
           "default_outcome": {}
         }
       },
@@ -1896,28 +1916,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>That's correct!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -1934,7 +1954,7 @@
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -1978,7 +1998,7 @@
             }
           },
           "rows": {
-            "value": 1.0
+            "value": 1
           }
         },
         "answer_groups": [{
@@ -1986,34 +2006,34 @@
             "rule_type": "Contains",
             "inputs": {
               "x": {
-                "contentId": "<unknown>",
+                "contentId": "9f7f33c3-3d76-47d2-b6b0-819be70cafa4",
                 "normalizedStrSet": ["1/2"]
               }
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>That's correct!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -2030,7 +2050,7 @@
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -2069,14 +2089,14 @@
         "customization_args": {
           "choices": {
             "value": [{
-              "html": "<p>The number of pieces of cake I want.</p>",
-              "content_id": "ca_choices_0"
+              "content_id": "ca_choices_0",
+              "html": "<p>The number of pieces of cake I want.</p>"
             }, {
-              "html": "<p>The number of pieces the whole cake is cut into.</p>",
-              "content_id": "ca_choices_1"
+              "content_id": "ca_choices_1",
+              "html": "<p>The number of pieces the whole cake is cut into.</p>"
             }, {
-              "html": "<p>None of the above.</p>",
-              "content_id": "ca_choices_2"
+              "content_id": "ca_choices_2",
+              "html": "<p>None of the above.</p>"
             }]
           }
         },
@@ -2088,28 +2108,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>That's correct!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": "Incorrect. Try again."
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -2119,7 +2139,7 @@
         }],
         "solution": null
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},
@@ -2165,28 +2185,28 @@
             }
           }],
           "outcome": {
-            "dest": null,
+            "dest": "",
             "feedback": {
               "content_id": "feedback_1",
               "html": "<p>That's correct!</p>"
             },
             "labelled_as_correct": true,
             "param_changes": [],
-            "refresher_exploration_id": null,
-            "missing_prerequisite_skill_id": null
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": null
+          "tagged_skill_misconception_id": ""
         }],
         "default_outcome": {
-          "dest": null,
+          "dest": "",
           "feedback": {
             "content_id": "default_outcome",
             "html": ""
           },
           "labelled_as_correct": false,
           "param_changes": [],
-          "refresher_exploration_id": null,
-          "missing_prerequisite_skill_id": null
+          "refresher_exploration_id": "",
+          "missing_prerequisite_skill_id": ""
         },
         "hints": [{
           "hint_content": {
@@ -2196,14 +2216,14 @@
         }],
         "solution": {
           "answer_is_exclusive": false,
-          "correct_answer": 5.0,
+          "correct_answer": "",
           "explanation": {
             "content_id": "solution",
             "html": "<p>The solution comes out to be 5/6 and the numerator of that is 5.</p>"
           }
         }
       },
-      "classifier_model_id": null,
+      "classifier_model_id": "",
       "recorded_voiceovers": {
         "voiceovers_mapping": {
           "content": {},

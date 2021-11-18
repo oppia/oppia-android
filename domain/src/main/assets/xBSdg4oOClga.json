@@ -1,29 +1,29 @@
 {
   "story_nodes": [{
-    "description": "Ratios Story 2 Node 1",
+    "description": "<unknown>",
     "exploration_id": "k2bQ7z5XHNbK",
-    "destination_node_ids": ["node_2"],
+    "destination_node_ids": [],
     "thumbnail_filename": "",
-    "outline_is_finalized": false,
-    "id": "node_1",
+    "outline_is_finalized": true,
+    "id": "k2bQ7z5XHNbK",
     "prerequisite_skill_ids": [],
-    "thumbnail_bg_color": "#F68F78",
+    "thumbnail_bg_color": "#f68f78",
     "outline": "",
     "title": "Equivalent Ratios",
     "acquired_skill_ids": []
   }, {
-    "description": "Ratios Story 2 Node 2",
+    "description": "<unknown>",
     "exploration_id": "tIoSb3HZFN6e",
     "destination_node_ids": [],
     "thumbnail_filename": "",
-    "outline_is_finalized": false,
-    "id": "node_2",
+    "outline_is_finalized": true,
+    "id": "tIoSb3HZFN6e",
     "prerequisite_skill_ids": [],
-    "thumbnail_bg_color": "#F68F78",
+    "thumbnail_bg_color": "#f68f78",
     "outline": "",
     "title": "Writing Ratios in Simplest Form",
     "acquired_skill_ids": []
   }],
   "story_title": "Ratios: Part 2",
-  "story_description": ""
+  "story_description": "<removed>"
 }
