@@ -43,7 +43,7 @@ class HomeActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     homeActivityPresenter.handleOnCreate()
-    title = resourceHandler.getStringInLocale(R.string.menu_home)
+    title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 
   override fun onRestart() {
