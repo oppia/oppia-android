@@ -22,7 +22,7 @@ sealed class MathParsingError {
     val rawExpression: String, val expression: MathExpression
   ): MathParsingError()
 
-  data class UnnecessarySymbolsError(val invalidCharacter: Char): MathParsingError()
+  data class UnnecessarySymbolsError(val invalidSymbol: String): MathParsingError()
 
   data class NumberAfterVariableError(val number: Real, val variable: String): MathParsingError()
 

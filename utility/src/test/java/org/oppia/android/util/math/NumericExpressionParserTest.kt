@@ -27,11 +27,16 @@ import org.robolectric.annotation.LooperMode
 import kotlin.math.sqrt
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
+import org.oppia.android.util.math.MathParsingError.DisabledVariablesInUseError
+import org.oppia.android.util.math.MathParsingError.HangingSquareRootError
 import org.oppia.android.util.math.MathParsingError.MultipleRedundantParenthesesError
+import org.oppia.android.util.math.MathParsingError.NumberAfterVariableError
 import org.oppia.android.util.math.MathParsingError.RedundantParenthesesForIndividualTermsError
 import org.oppia.android.util.math.MathParsingError.SingleRedundantParenthesesError
 import org.oppia.android.util.math.MathParsingError.SpacesBetweenNumbersError
 import org.oppia.android.util.math.MathParsingError.UnbalancedParenthesesError
+import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
+import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
 import org.oppia.android.util.math.NumericExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.NumericExpressionParser.Companion.MathParsingResult
 
@@ -93,6 +98,51 @@ class NumericExpressionParserTest {
 
     val failure12 = expectFailureWhenParsingNumericExpression("sqrt((2))")
     assertThat(failure12).isInstanceOf(RedundantParenthesesForIndividualTermsError::class.java)
+
+    val failure16 = expectFailureWhenParsingNumericExpression("$2")
+    assertThat(failure16).isInstanceOf(UnnecessarySymbolsError::class.java)
+    assertThat((failure16 as UnnecessarySymbolsError).invalidSymbol).isEqualTo("$")
+
+    val failure17 = expectFailureWhenParsingNumericExpression("5%")
+    assertThat(failure17).isInstanceOf(UnnecessarySymbolsError::class.java)
+    assertThat((failure17 as UnnecessarySymbolsError).invalidSymbol).isEqualTo("%")
+
+    val failure18 = expectFailureWhenParsingAlgebraicExpression("x5")
+    assertThat(failure18).isInstanceOf(NumberAfterVariableError::class.java)
+    assertThat((failure18 as NumberAfterVariableError).number.integer).isEqualTo(5)
+    assertThat(failure18.variable).isEqualTo("x")
+
+    val failure19 = expectFailureWhenParsingAlgebraicExpression("2+y 3.14*7")
+    assertThat(failure19).isInstanceOf(NumberAfterVariableError::class.java)
+    assertThat((failure19 as NumberAfterVariableError).number.irrational).isWithin(1e-5).of(3.14)
+    assertThat(failure19.variable).isEqualTo("y")
+
+    // SubsequentBinaryOperatorsError
+
+    // SubsequentUnaryOperatorsError -> analysis
+
+    // NoVariableOrNumberBeforeBinaryOperatorError
+    // NoVariableOrNumberAfterBinaryOperatorError
+
+    // ExponentIsVariableExpressionError -> analysis
+    // ExponentTooLargeError -> analysis
+    // NestedExponentsError -> analysis
+
+    val failure20 = expectFailureWhenParsingNumericExpression("2√")
+    assertThat(failure20).isInstanceOf(HangingSquareRootError::class.java)
+
+    // TermDividedByZeroError -> analysis
+
+    val failure21 = expectFailureWhenParsingNumericExpression("x+y")
+    assertThat(failure21).isInstanceOf(VariableInNumericExpressionError::class.java)
+
+    // DisabledVariablesInUseError -> analysis
+
+    // EquationHasWrongNumberOfEqualsError
+    // EquationMissingLhsOrRhsError
+    // InvalidFunctionInUseError
+
+    // FunctionNameUsedAsVariables -> analysis
 
     // TODO: Other cases: sqrt(, sqrt(), sqrt 2
   }
@@ -4274,9 +4324,10 @@ class NumericExpressionParserTest {
       return NumericExpressionParser.parseNumericExpression(expression, errorCheckingMode)
     }
 
-    private fun expectFailureWhenParsingAlgebraicExpression(expression: String) {
-      assertThat(parseAlgebraicExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS))
-        .isInstanceOf(MathParsingResult.Failure::class.java)
+    private fun expectFailureWhenParsingAlgebraicExpression(expression: String): MathParsingError {
+      val result = parseAlgebraicExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS)
+      assertThat(result).isInstanceOf(MathParsingResult.Failure::class.java)
+      return (result as MathParsingResult.Failure<MathExpression>).error
     }
 
     private fun parseAlgebraicExpressionWithoutOptionalErrors(
