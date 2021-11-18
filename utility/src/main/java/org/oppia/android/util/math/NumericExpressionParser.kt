@@ -3,6 +3,13 @@ package org.oppia.android.util.math
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.EXPRESSIONTYPE_NOT_SET
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.MathFunctionCall
 import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.Real
@@ -37,30 +44,97 @@ class NumericExpressionParser private constructor(
   //  - Rename this to be a generic parser, update the public API, add documentation, remove the old classes, and split up the big test routines into actual separate tests.
 
   // TODO: implement specific errors.
+  // TODO: verify remaining GenericErrors are correct.
 
   // TODO: document that 'generic' means either 'numeric' or 'algebraic' (ie that the expression is syntactically the same between both grammars).
 
   private fun parseGenericEquationGrammar(): MathParsingResult<MathEquation> {
     // generic_equation_grammar = generic_equation ;
-    return parseGenericEquation().maybeFail { ensureNoRemainingTokens() }
+    return parseGenericEquation().maybeFail { equation ->
+      checkForLearnerErrors(equation.leftSide) ?: checkForLearnerErrors(equation.rightSide)
+    }
   }
 
   private fun parseGenericExpressionGrammar(): MathParsingResult<MathExpression> {
     // generic_expression_grammar = generic_expression ;
-    return parseGenericExpression().maybeFail { ensureNoRemainingTokens() }
+    return parseGenericExpression().maybeFail { expression -> checkForLearnerErrors(expression) }
+  }
+
+  private fun checkForLearnerErrors(expression: MathExpression): MathParsingError? {
+    val firstMultiRedundantGroup = expression.findFirstMultiRedundantGroup()
+    val nextRedundantGroup = expression.findNextRedundantGroup()
+    // Note that the order of checks here is important since errors have precedence, and some are
+    // redundant and, in the wrong order, may cause the wrong error to be returned.
+    val includeOptionalErrors = parseContext.errorCheckingMode.includesOptionalErrors()
+    return when {
+      includeOptionalErrors && firstMultiRedundantGroup != null -> {
+        val subExpression =
+          parseContext.rawExpression.substring(
+            firstMultiRedundantGroup.parseStartIndex, firstMultiRedundantGroup.parseEndIndex
+          )
+        MathParsingError.MultipleRedundantParenthesesError(subExpression, firstMultiRedundantGroup)
+      }
+      includeOptionalErrors && expression.expressionTypeCase == GROUP ->
+        MathParsingError.SingleRedundantParenthesesError(parseContext.rawExpression, expression)
+      includeOptionalErrors && nextRedundantGroup != null -> {
+        val subExpression =
+          parseContext.rawExpression.substring(
+            nextRedundantGroup.parseStartIndex, nextRedundantGroup.parseEndIndex
+          )
+        MathParsingError.RedundantParenthesesForIndividualTermsError(
+          subExpression, nextRedundantGroup
+        )
+      }
+      else -> ensureNoRemainingTokens()
+    }
+  }
+
+  private fun MathExpression.findFirstMultiRedundantGroup(): MathExpression? {
+    return when (expressionTypeCase) {
+      BINARY_OPERATION -> {
+        binaryOperation.leftOperand.findFirstMultiRedundantGroup()
+          ?: binaryOperation.rightOperand.findFirstMultiRedundantGroup()
+      }
+      UNARY_OPERATION -> unaryOperation.operand.findFirstMultiRedundantGroup()
+      FUNCTION_CALL -> functionCall.argument.findFirstMultiRedundantGroup()
+      GROUP -> group.takeIf { it.expressionTypeCase == GROUP } ?: group.findFirstMultiRedundantGroup()
+      CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> null
+    }
+  }
+
+  private fun MathExpression.findNextRedundantGroup(): MathExpression? {
+    return when (expressionTypeCase) {
+      BINARY_OPERATION -> {
+        binaryOperation.leftOperand.findNextRedundantGroup()
+          ?: binaryOperation.rightOperand.findNextRedundantGroup()
+      }
+      UNARY_OPERATION -> unaryOperation.operand.findNextRedundantGroup()
+      FUNCTION_CALL -> functionCall.argument.findNextRedundantGroup()
+      GROUP -> {
+        group.takeIf { it.expressionTypeCase in listOf(CONSTANT, VARIABLE) }
+          ?: group.findNextRedundantGroup()
+      }
+      CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> null
+    }
   }
 
   private fun ensureNoRemainingTokens(): MathParsingError? {
     // Make sure all tokens were consumed (otherwise there are trailing tokens which invalidate the
     // whole grammar).
     return if (tokens.hasNext()) {
-      MathParsingError.GenericError
+      when (tokens.peek()) {
+        is LeftParenthesisSymbol, is RightParenthesisSymbol ->
+          MathParsingError.UnbalancedParenthesesError
+        else -> MathParsingError.GenericError
+      }
     } else null
   }
 
   private fun parseGenericEquation(): MathParsingResult<MathEquation> {
     // algebraic_equation = generic_expression , equals_operator , generic_expression ;
-    val lhsResult = parseGenericExpression().also { consumeTokenOfType<EqualsSymbol>() }
+    val lhsResult = parseGenericExpression().also {
+      consumeTokenOfType<EqualsSymbol> { MathParsingError.GenericError }
+    }
     val rhsResult = lhsResult.flatMap { parseGenericExpression() }
     return lhsResult.combineWith(rhsResult) { lhs, rhs ->
       MathEquation.newBuilder().apply {
@@ -87,12 +161,14 @@ class NumericExpressionParser private constructor(
           MathBinaryOperation.Operator.ADD to parseGenericAddExpressionRhs()
         hasNextGenericSubExpressionRhs() ->
           MathBinaryOperation.Operator.SUBTRACT to parseGenericSubExpressionRhs()
-        else -> return MathParsingResult.Failure(MathParsingError.GenericError)
+        else -> return MathParsingError.GenericError.toFailure()
       }
 
       lastLhsResult = lastLhsResult.combineWith(rhsResult) { lhs, rhs ->
         // Compute the next LHS if there is further addition/subtraction.
         MathExpression.newBuilder().apply {
+          parseStartIndex = lhs.parseStartIndex
+          parseEndIndex = rhs.parseEndIndex
           binaryOperation = MathBinaryOperation.newBuilder().apply {
             this.operator = operator
             leftOperand = lhs
@@ -104,14 +180,16 @@ class NumericExpressionParser private constructor(
     return lastLhsResult
   }
 
-  private fun hasNextGenericAddSubExpressionRhs() = hasNextGenericAddExpressionRhs()
-    || hasNextGenericSubExpressionRhs()
+  private fun hasNextGenericAddSubExpressionRhs() =
+    hasNextGenericAddExpressionRhs() || hasNextGenericSubExpressionRhs()
 
   private fun hasNextGenericAddExpressionRhs(): Boolean = tokens.peek() is PlusSymbol
 
   private fun parseGenericAddExpressionRhs(): MathParsingResult<MathExpression> {
     // generic_add_expression_rhs = plus_operator , generic_mult_div_expression ;
-    return consumeTokenOfType<PlusSymbol>().flatMap {
+    return consumeTokenOfType<PlusSymbol> {
+      MathParsingError.GenericError
+    }.flatMap {
       parseGenericMultDivExpression()
     }
   }
@@ -120,7 +198,9 @@ class NumericExpressionParser private constructor(
 
   private fun parseGenericSubExpressionRhs(): MathParsingResult<MathExpression> {
     // generic_sub_expression_rhs = minus_operator , generic_mult_div_expression ;
-    return consumeTokenOfType<MinusSymbol>().flatMap {
+    return consumeTokenOfType<MinusSymbol> {
+      MathParsingError.GenericError
+    }.flatMap {
       parseGenericMultDivExpression()
     }
   }
@@ -141,12 +221,14 @@ class NumericExpressionParser private constructor(
           MathBinaryOperation.Operator.DIVIDE to parseGenericDivExpressionRhs()
         hasNextGenericImplicitMultExpressionRhs() ->
           MathBinaryOperation.Operator.MULTIPLY to parseGenericImplicitMultExpressionRhs()
-        else -> return MathParsingResult.Failure(MathParsingError.GenericError)
+        else -> return MathParsingError.GenericError.toFailure()
       }
 
       // Compute the next LHS if there is further multiplication/division.
       lastLhsResult = lastLhsResult.combineWith(rhsResult) { lhs, rhs ->
         MathExpression.newBuilder().apply {
+          parseStartIndex = lhs.parseStartIndex
+          parseEndIndex = rhs.parseEndIndex
           binaryOperation = MathBinaryOperation.newBuilder().apply {
             this.operator = operator
             leftOperand = lhs
@@ -167,7 +249,9 @@ class NumericExpressionParser private constructor(
 
   private fun parseGenericMultExpressionRhs(): MathParsingResult<MathExpression> {
     // generic_mult_expression_rhs = multiplication_operator , generic_exp_expression ;
-    return consumeTokenOfType<MultiplySymbol>().flatMap {
+    return consumeTokenOfType<MultiplySymbol> {
+      MathParsingError.GenericError
+    }.flatMap {
       parseGenericExpExpression()
     }
   }
@@ -176,14 +260,16 @@ class NumericExpressionParser private constructor(
 
   private fun parseGenericDivExpressionRhs(): MathParsingResult<MathExpression> {
     // generic_div_expression_rhs = division_operator , generic_exp_expression ;
-    return consumeTokenOfType<DivideSymbol>().flatMap {
+    return consumeTokenOfType<DivideSymbol> {
+      MathParsingError.GenericError
+    }.flatMap {
       parseGenericExpExpression()
     }
   }
 
   private fun hasNextGenericImplicitMultExpressionRhs(): Boolean {
     return when (parseContext) {
-      NumericExpressionContext -> hasNextNumericImplicitMultExpressionRhs()
+      is NumericExpressionContext -> hasNextNumericImplicitMultExpressionRhs()
       is AlgebraicExpressionContext -> hasNextAlgebraicImplicitMultOrExpExpressionRhs()
     }
   }
@@ -192,7 +278,7 @@ class NumericExpressionParser private constructor(
     // generic_implicit_mult_expression_rhs is either numeric_implicit_mult_expression_rhs or
     // algebraic_implicit_mult_or_exp_expression_rhs depending on the current parser context.
     return when (parseContext) {
-      NumericExpressionContext -> parseNumericImplicitMultExpressionRhs()
+      is NumericExpressionContext -> parseNumericImplicitMultExpressionRhs()
       is AlgebraicExpressionContext -> parseAlgebraicImplicitMultOrExpExpressionRhs()
     }
   }
@@ -236,12 +322,14 @@ class NumericExpressionParser private constructor(
     // generic_exp_expression_tail = exponentiation_operator , generic_exp_expression ;
     val rhsResult =
       lhsResult.flatMap {
-        consumeTokenOfType<ExponentiationSymbol>()
+        consumeTokenOfType<ExponentiationSymbol> { MathParsingError.GenericError }
       }.flatMap {
         parseGenericExpExpression()
       }
     return lhsResult.combineWith(rhsResult) { lhs, rhs ->
       MathExpression.newBuilder().apply {
+        parseStartIndex = lhs.parseStartIndex
+        parseEndIndex = rhs.parseEndIndex
         binaryOperation = MathBinaryOperation.newBuilder().apply {
           operator = MathBinaryOperation.Operator.EXPONENTIATE
           leftOperand = lhs
@@ -256,15 +344,17 @@ class NumericExpressionParser private constructor(
     //    number | generic_term_without_unary_without_number | generic_plus_minus_unary_term ;
     return when {
       hasNextGenericPlusMinusUnaryTerm() -> parseGenericPlusMinusUnaryTerm()
-      hasNextNumber() -> parseNumber()
+      hasNextNumber() -> parseNumber().takeUnless {
+        hasNextNumber()
+      } ?: MathParsingError.SpacesBetweenNumbersError.toFailure()
       hasNextGenericTermWithoutUnaryWithoutNumber() -> parseGenericTermWithoutUnaryWithoutNumber()
-      else -> MathParsingResult.Failure(MathParsingError.GenericError)
+      else -> MathParsingError.GenericError.toFailure()
     }
   }
 
   private fun hasNextGenericTermWithoutUnaryWithoutNumber(): Boolean {
     return when (parseContext) {
-      NumericExpressionContext -> hasNextNumericTermWithoutUnaryWithoutNumber()
+      is NumericExpressionContext -> hasNextNumericTermWithoutUnaryWithoutNumber()
       is AlgebraicExpressionContext -> hasNextAlgebraicTermWithoutUnaryWithoutNumber()
     }
   }
@@ -273,7 +363,7 @@ class NumericExpressionParser private constructor(
     // generic_term_without_unary_without_number is either numeric_term_without_unary_without_number
     // or algebraic_term_without_unary_without_number based the current parser context.
     return when (parseContext) {
-      NumericExpressionContext -> parseNumericTermWithoutUnaryWithoutNumber()
+      is NumericExpressionContext -> parseNumericTermWithoutUnaryWithoutNumber()
       is AlgebraicExpressionContext -> parseAlgebraicTermWithoutUnaryWithoutNumber()
     }
   }
@@ -290,7 +380,7 @@ class NumericExpressionParser private constructor(
       hasNextGenericFunctionExpression() -> parseGenericFunctionExpression()
       hasNextGenericGroupExpression() -> parseGenericGroupExpression()
       hasNextGenericRootedTerm() -> parseGenericRootedTerm()
-      else -> MathParsingResult.Failure(MathParsingError.GenericError)
+      else -> MathParsingError.GenericError.toFailure()
     }
   }
 
@@ -308,7 +398,7 @@ class NumericExpressionParser private constructor(
       hasNextGenericGroupExpression() -> parseGenericGroupExpression()
       hasNextGenericRootedTerm() -> parseGenericRootedTerm()
       hasNextVariable() -> parseVariable()
-      else -> MathParsingResult.Failure(MathParsingError.GenericError)
+      else -> MathParsingError.GenericError.toFailure()
     }
   }
 
@@ -316,29 +406,58 @@ class NumericExpressionParser private constructor(
 
   private fun parseGenericFunctionExpression(): MathParsingResult<MathExpression> {
     // generic_function_expression = function_name , left_paren , generic_expression , right_paren ;
-    val functionNameResult = consumeTokenOfType<FunctionName>().maybeFail { functionName ->
-      if (functionName.parsedName != "sqrt") {
+    val funcNameResult =
+      consumeTokenOfType<FunctionName> {
         MathParsingError.GenericError
-      } else null
-    }.also { consumeTokenOfType<LeftParenthesisSymbol>() }
-    val argumentResult = functionNameResult.flatMap { parseGenericExpression() }
-    return argumentResult.map { arg ->
+      }.maybeFail { functionName ->
+        if (functionName.parsedName != "sqrt") {
+          MathParsingError.GenericError
+        } else null
+      }.also {
+        consumeTokenOfType<LeftParenthesisSymbol> { MathParsingError.GenericError }
+      }
+    val argResult = funcNameResult.flatMap { parseGenericExpression() }
+    val rightParenResult =
+      argResult.flatMap {
+        consumeTokenOfType<RightParenthesisSymbol> { MathParsingError.UnbalancedParenthesesError }
+      }
+    return funcNameResult.combineWith(argResult, rightParenResult) { funcName, arg, rightParen ->
       MathExpression.newBuilder().apply {
+        parseStartIndex = funcName.startIndex
+        parseEndIndex = rightParen.endIndex
         functionCall = MathFunctionCall.newBuilder().apply {
           functionType = MathFunctionCall.FunctionType.SQUARE_ROOT
           argument = arg
         }.build()
       }.build()
-    }.also { consumeTokenOfType<RightParenthesisSymbol>() }
+    }
   }
 
   private fun hasNextGenericGroupExpression(): Boolean = tokens.peek() is LeftParenthesisSymbol
 
   private fun parseGenericGroupExpression(): MathParsingResult<MathExpression> {
     // generic_group_expression = left_paren , generic_expression , right_paren ;
-    return consumeTokenOfType<LeftParenthesisSymbol>().flatMap {
-      parseGenericExpression()
-    }.also { consumeTokenOfType<RightParenthesisSymbol>() }
+    val leftParenResult =
+      consumeTokenOfType<LeftParenthesisSymbol> {
+        MathParsingError.GenericError
+      }
+    val expResult =
+      leftParenResult.flatMap {
+        if (tokens.hasNext()) {
+          parseGenericExpression()
+        } else MathParsingError.UnbalancedParenthesesError.toFailure()
+      }
+    val rightParenResult =
+      expResult.flatMap {
+        consumeTokenOfType<RightParenthesisSymbol> { MathParsingError.UnbalancedParenthesesError }
+      }
+    return leftParenResult.combineWith(expResult, rightParenResult) { leftParen, exp, rightParen ->
+      MathExpression.newBuilder().apply {
+        parseStartIndex = leftParen.startIndex
+        parseEndIndex = rightParen.endIndex
+        group = exp
+      }.build()
+    }
   }
 
   private fun hasNextGenericPlusMinusUnaryTerm(): Boolean =
@@ -349,7 +468,7 @@ class NumericExpressionParser private constructor(
     return when {
       hasNextGenericNegatedTerm() -> parseGenericNegatedTerm()
       hasNextGenericPositiveTerm() -> parseGenericPositiveTerm()
-      else -> MathParsingResult.Failure(MathParsingError.GenericError)
+      else -> MathParsingError.GenericError.toFailure()
     }
   }
 
@@ -357,10 +476,12 @@ class NumericExpressionParser private constructor(
 
   private fun parseGenericNegatedTerm(): MathParsingResult<MathExpression> {
     // generic_negated_term = minus_operator , generic_mult_div_expression ;
-    return consumeTokenOfType<MinusSymbol>().flatMap {
-      parseGenericMultDivExpression()
-    }.map { op ->
+    val minusResult = consumeTokenOfType<MinusSymbol> { MathParsingError.GenericError }
+    val expResult = minusResult.flatMap { parseGenericMultDivExpression() }
+    return minusResult.combineWith(expResult) { minus, op ->
       MathExpression.newBuilder().apply {
+        parseStartIndex = minus.startIndex
+        parseEndIndex = op.parseEndIndex
         unaryOperation = MathUnaryOperation.newBuilder().apply {
           operator = MathUnaryOperation.Operator.NEGATE
           operand = op
@@ -373,8 +494,12 @@ class NumericExpressionParser private constructor(
 
   private fun parseGenericPositiveTerm(): MathParsingResult<MathExpression> {
     // generic_positive_term = plus_operator , generic_mult_div_expression ;
-    return consumeTokenOfType<PlusSymbol>().flatMap { parseGenericMultDivExpression() }.map { op ->
+    val plusResult = consumeTokenOfType<PlusSymbol> { MathParsingError.GenericError }
+    val expResult = plusResult.flatMap { parseGenericMultDivExpression() }
+    return plusResult.combineWith(expResult) { plus, op ->
       MathExpression.newBuilder().apply {
+        parseStartIndex = plus.startIndex
+        parseEndIndex = op.parseEndIndex
         unaryOperation = MathUnaryOperation.newBuilder().apply {
           operator = MathUnaryOperation.Operator.POSITIVE
           operand = op
@@ -387,9 +512,12 @@ class NumericExpressionParser private constructor(
 
   private fun parseGenericRootedTerm(): MathParsingResult<MathExpression> {
     // generic_rooted_term = square_root_operator , generic_term_with_unary ;
-    consumeTokenOfType<SquareRootSymbol>()
-    return parseGenericTermWithUnary().map { op ->
+    val sqrtResult = consumeTokenOfType<SquareRootSymbol> { MathParsingError.GenericError }
+    val expResult = sqrtResult.flatMap { parseGenericTermWithUnary() }
+    return sqrtResult.combineWith(expResult) { sqrtSymbol, op ->
       MathExpression.newBuilder().apply {
+        parseStartIndex = sqrtSymbol.startIndex
+        parseEndIndex = op.parseEndIndex
         functionCall = MathFunctionCall.newBuilder().apply {
           functionType = MathFunctionCall.FunctionType.SQUARE_ROOT
           argument = op
@@ -404,8 +532,12 @@ class NumericExpressionParser private constructor(
     // number = positive_real_number | positive_integer ;
     return when {
       hasNextPositiveInteger() -> {
-        consumeTokenOfType<PositiveInteger>().map { int ->
+        consumeTokenOfType<PositiveInteger> {
+          MathParsingError.GenericError
+        }.map { int ->
           MathExpression.newBuilder().apply {
+            parseStartIndex = int.startIndex
+            parseEndIndex = int.endIndex
             constant = Real.newBuilder().apply {
               integer = int.parsedValue
             }.build()
@@ -413,8 +545,12 @@ class NumericExpressionParser private constructor(
         }
       }
       hasNextPositiveRealNumber() -> {
-        consumeTokenOfType<PositiveRealNumber>().map { real ->
+        consumeTokenOfType<PositiveRealNumber> {
+          MathParsingError.GenericError
+        }.map { real ->
           MathExpression.newBuilder().apply {
+            parseStartIndex = real.startIndex
+            parseEndIndex = real.endIndex
             constant = Real.newBuilder().apply {
               irrational = real.parsedValue
             }.build()
@@ -423,7 +559,7 @@ class NumericExpressionParser private constructor(
       }
       // TODO: add error that one of the above was expected. Other error handling should maybe
       //  happen in the same way.
-      else -> MathParsingResult.Failure(MathParsingError.GenericError)
+      else -> MathParsingError.GenericError.toFailure()
     }
   }
 
@@ -434,66 +570,111 @@ class NumericExpressionParser private constructor(
   private fun hasNextVariable(): Boolean = tokens.peek() is VariableName
 
   private fun parseVariable(): MathParsingResult<MathExpression> {
-    val variableNameResult = consumeTokenOfType<VariableName>().maybeFail { variableName ->
-      if (!parseContext.allowsVariable(variableName.parsedName)) {
+    val variableNameResult =
+      consumeTokenOfType<VariableName> {
         MathParsingError.GenericError
-      } else null
-    }
+      }.maybeFail { variableName ->
+        if (!parseContext.allowsVariable(variableName.parsedName)) {
+          MathParsingError.GenericError
+        } else null
+      }
     return variableNameResult.map { variableName ->
       MathExpression.newBuilder().apply {
+        parseStartIndex = variableName.startIndex
+        parseEndIndex = variableName.endIndex
         variable = variableName.parsedName
       }.build()
     }
   }
 
-  private inline fun <reified T : Token> consumeTokenOfType(): MathParsingResult<T> {
+  private inline fun <reified T : Token> consumeTokenOfType(
+    missingError: () -> MathParsingError
+  ): MathParsingResult<T> {
     val maybeToken = tokens.expectNextMatches { it is T } as? T
     return maybeToken?.let { token ->
       MathParsingResult.Success(token)
-    } ?: MathParsingResult.Failure(MathParsingError.GenericError)
+    } ?: missingError().toFailure()
   }
 
-  private sealed class ParseContext {
+  private sealed class ParseContext(val rawExpression: String) {
+    abstract val errorCheckingMode: ErrorCheckingMode
+
     abstract fun allowsVariable(variableName: String): Boolean
 
-    object NumericExpressionContext : ParseContext() {
+    class NumericExpressionContext(
+      rawExpression: String, override val errorCheckingMode: ErrorCheckingMode
+    ) : ParseContext(rawExpression) {
       // Numeric expressions never allow variables.
       override fun allowsVariable(variableName: String): Boolean = false
     }
 
-    data class AlgebraicExpressionContext(
-      private val allowedVariables: List<String>
-    ) : ParseContext() {
+    class AlgebraicExpressionContext(
+      rawExpression: String,
+      private val allowedVariables: List<String>,
+      override val errorCheckingMode: ErrorCheckingMode
+    ) : ParseContext(rawExpression) {
       override fun allowsVariable(variableName: String): Boolean = variableName in allowedVariables
     }
   }
 
   companion object {
+    enum class ErrorCheckingMode {
+      REQUIRED_ONLY,
+      ALL_ERRORS
+    }
+
     sealed class MathParsingResult<T> {
       data class Success<T>(val result: T) : MathParsingResult<T>()
 
       data class Failure<T>(val error: MathParsingError) : MathParsingResult<T>()
     }
 
-    fun parseNumericExpression(rawExpression: String): MathParsingResult<MathExpression> =
-      createNumericParser(rawExpression).parseGenericExpressionGrammar()
+    fun parseNumericExpression(
+      rawExpression: String, errorCheckingMode: ErrorCheckingMode = ErrorCheckingMode.ALL_ERRORS
+    ): MathParsingResult<MathExpression> =
+      createNumericParser(rawExpression, errorCheckingMode).parseGenericExpressionGrammar()
 
     fun parseAlgebraicExpression(
-      rawExpression: String, allowedVariables: List<String>
-    ): MathParsingResult<MathExpression> =
-      createAlgebraicParser(rawExpression, allowedVariables).parseGenericExpressionGrammar()
+      rawExpression: String,
+      allowedVariables: List<String>,
+      errorCheckingMode: ErrorCheckingMode = ErrorCheckingMode.ALL_ERRORS
+    ): MathParsingResult<MathExpression> {
+      return createAlgebraicParser(
+        rawExpression, allowedVariables, errorCheckingMode
+      ).parseGenericExpressionGrammar()
+    }
 
     fun parseAlgebraicEquation(
       rawExpression: String,
-      allowedVariables: List<String>
-    ): MathParsingResult<MathEquation> =
-      createAlgebraicParser(rawExpression, allowedVariables).parseGenericEquationGrammar()
+      allowedVariables: List<String>,
+      errorCheckingMode: ErrorCheckingMode = ErrorCheckingMode.ALL_ERRORS
+    ): MathParsingResult<MathEquation> {
+      return createAlgebraicParser(
+        rawExpression, allowedVariables, errorCheckingMode
+      ).parseGenericEquationGrammar()
+    }
 
-    private fun createNumericParser(rawExpression: String) =
-      NumericExpressionParser(rawExpression, NumericExpressionContext)
+    private fun createNumericParser(
+      rawExpression: String, errorCheckingMode: ErrorCheckingMode
+    ): NumericExpressionParser {
+      return NumericExpressionParser(
+        rawExpression, NumericExpressionContext(rawExpression, errorCheckingMode)
+      )
+    }
 
-    private fun createAlgebraicParser(rawExpression: String, allowedVariables: List<String>) =
-      NumericExpressionParser(rawExpression, AlgebraicExpressionContext(allowedVariables))
+    private fun createAlgebraicParser(
+      rawExpression: String, allowedVariables: List<String>, errorCheckingMode: ErrorCheckingMode
+    ): NumericExpressionParser {
+      return NumericExpressionParser(
+        rawExpression,
+        AlgebraicExpressionContext(rawExpression, allowedVariables, errorCheckingMode)
+      )
+    }
+
+    private fun ErrorCheckingMode.includesOptionalErrors() = this == ErrorCheckingMode.ALL_ERRORS
+
+    private fun <T> MathParsingError.toFailure(): MathParsingResult<T> =
+      MathParsingResult.Failure(this)
 
     private fun <T> MathParsingResult<T>.isFailure() = this is MathParsingResult.Failure
 
@@ -525,7 +706,7 @@ class NumericExpressionParser private constructor(
     ): MathParsingResult<T2> {
       return when (this) {
         is MathParsingResult.Success -> operation(result)
-        is MathParsingResult.Failure -> MathParsingResult.Failure(error)
+        is MathParsingResult.Failure -> error.toFailure()
       }
     }
 
@@ -542,11 +723,7 @@ class NumericExpressionParser private constructor(
      */
     private fun <T> MathParsingResult<T>.maybeFail(
       operation: (T) -> MathParsingError?
-    ): MathParsingResult<T> = flatMap { result ->
-      operation(result)?.let { error ->
-        MathParsingResult.Failure(error)
-      } ?: this
-    }
+    ): MathParsingResult<T> = flatMap { result -> operation(result)?.toFailure() ?: this }
 
     /**
      * Calls an operation if [this] operation isn't already failing, and returns a failure only if
@@ -565,7 +742,7 @@ class NumericExpressionParser private constructor(
     ): MathParsingResult<T1> = flatMap {
       when (val other = operation()) {
         is MathParsingResult.Success -> this
-        is MathParsingResult.Failure -> MathParsingResult.Failure(other.error)
+        is MathParsingResult.Failure -> other.error.toFailure()
       }
     }
 
@@ -585,10 +762,26 @@ class NumericExpressionParser private constructor(
       combine: (I1, I2) -> O,
     ): MathParsingResult<O> {
       return flatMap { result ->
-        when (other) {
-          is MathParsingResult.Success ->
-            MathParsingResult.Success(combine(result, other.result))
-          is MathParsingResult.Failure -> MathParsingResult.Failure(other.error)
+        other.map { otherResult ->
+          combine(result, otherResult)
+        }
+      }
+    }
+
+    /**
+     * Performs the same operation as the other [combineWith] function, except with three
+     * [MathParsingResult]s, instead.
+     */
+    private fun <O, I1, I2, I3> MathParsingResult<I1>.combineWith(
+      other1: MathParsingResult<I2>,
+      other2: MathParsingResult<I3>,
+      combine: (I1, I2, I3) -> O,
+    ): MathParsingResult<O> {
+      return flatMap { result ->
+        other1.flatMap { otherResult1 ->
+          other2.map { otherResult2 ->
+            combine(result, otherResult1, otherResult2)
+          }
         }
       }
     }

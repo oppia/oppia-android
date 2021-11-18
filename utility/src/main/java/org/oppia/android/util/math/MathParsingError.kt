@@ -19,7 +19,7 @@ sealed class MathParsingError {
   ): MathParsingError()
 
   data class RedundantParenthesesForIndividualTermsError(
-    val rawExpression: String
+    val rawExpression: String, val expression: MathExpression
   ): MathParsingError()
 
   data class UnnecessarySymbolsError(val invalidCharacter: Char): MathParsingError()

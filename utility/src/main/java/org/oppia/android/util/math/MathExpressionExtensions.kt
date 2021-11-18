@@ -22,6 +22,7 @@ import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
 
 // TODO: split up this extensions file into multiple, clean it up, reorganize, and add tests.
 
@@ -47,6 +48,7 @@ fun MathExpression.evaluate(): Real? {
     BINARY_OPERATION -> binaryOperation.evaluate()
     UNARY_OPERATION -> unaryOperation.evaluate()
     FUNCTION_CALL -> functionCall.evaluate()
+    GROUP -> group.evaluate()
     EXPRESSIONTYPE_NOT_SET, null -> null
   }
 }

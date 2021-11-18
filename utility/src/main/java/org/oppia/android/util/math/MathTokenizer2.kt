@@ -22,59 +22,94 @@ class MathTokenizer2 private constructor() {
         when (chars.peek()) {
           in '0'..'9' -> tokenizeIntegerOrRealNumber(chars)
           in 'a'..'z', in 'A'..'Z' -> tokenizeVariableOrFunctionName(chars)
-          '√' -> tokenizeSymbol(chars) { Token.SquareRootSymbol }
-          '+' -> tokenizeSymbol(chars) { Token.PlusSymbol }
+          '√' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.SquareRootSymbol(startIndex, endIndex)
+          }
+          '+' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.PlusSymbol(startIndex, endIndex)
+          }
           // TODO: add tests for different subtraction/minus symbols.
-          '-', '−' -> tokenizeSymbol(chars) { Token.MinusSymbol }
-          '*', '×' -> tokenizeSymbol(chars) { Token.MultiplySymbol }
-          '/', '÷' -> tokenizeSymbol(chars) { Token.DivideSymbol }
-          '^' -> tokenizeSymbol(chars) { Token.ExponentiationSymbol }
-          '=' -> tokenizeSymbol(chars) { Token.EqualsSymbol }
-          '(' -> tokenizeSymbol(chars) { Token.LeftParenthesisSymbol }
-          ')' -> tokenizeSymbol(chars) { Token.RightParenthesisSymbol }
+          '-', '−' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.MinusSymbol(startIndex, endIndex)
+          }
+          '*', '×' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.MultiplySymbol(startIndex, endIndex)
+          }
+          '/', '÷' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.DivideSymbol(startIndex, endIndex)
+          }
+          '^' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.ExponentiationSymbol(startIndex, endIndex)
+          }
+          '=' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.EqualsSymbol(startIndex, endIndex)
+          }
+          '(' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.LeftParenthesisSymbol(startIndex, endIndex)
+          }
+          ')' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.RightParenthesisSymbol(startIndex, endIndex)
+          }
           null -> null // End of stream.
-          else -> { // Invalid character.
-            chars.next() // Parse the invalid character.
-            Token.InvalidToken
+          // Invalid character.
+          else -> tokenizeSymbol(chars) { startIndex, endIndex ->
+            Token.InvalidToken(startIndex, endIndex)
           }
         }
       }
     }
 
     private fun tokenizeIntegerOrRealNumber(chars: PeekableIterator<Char>): Token {
-      val integerPart1 = parseInteger(chars) ?: return Token.InvalidToken
+      val startIndex = chars.getRetrievalCount()
+      val integerPart1 =
+        parseInteger(chars)
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
       chars.consumeWhitespace() // Whitespace is allowed between digits and the '.'.
       return if (chars.peek() == '.') {
         chars.next() // Parse the "." since it will be re-added later.
         chars.consumeWhitespace() // Whitespace is allowed between the '.' and following digits.
 
         // Another integer must follow the ".".
-        val integerPart2 = parseInteger(chars) ?: return Token.InvalidToken
+        val integerPart2 = parseInteger(chars)
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
 
         // TODO: validate that the result isn't NaN or INF.
         val doubleValue = "$integerPart1.$integerPart2".toDoubleOrNull()
-          ?: return Token.InvalidToken
-        Token.PositiveRealNumber(doubleValue)
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+        Token.PositiveRealNumber(doubleValue, startIndex, endIndex = chars.getRetrievalCount())
       } else {
-        Token.PositiveInteger(integerPart1.toIntOrNull() ?: return Token.InvalidToken)
+        Token.PositiveInteger(
+          integerPart1.toIntOrNull()
+            ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount()),
+          startIndex,
+          endIndex = chars.getRetrievalCount()
+        )
       }
     }
 
     private fun tokenizeVariableOrFunctionName(chars: PeekableIterator<Char>): Token {
+      val startIndex = chars.getRetrievalCount()
       val firstChar = chars.next()
       val nextChar = chars.peek()
       return if (firstChar == 's' && nextChar == 'q') {
         // With 'sq' next to each other, 'rt' is expected to follow.
-        chars.expectNextValue { 'q' } ?: return Token.InvalidToken
-        chars.expectNextValue { 'r' } ?: return Token.InvalidToken
-        chars.expectNextValue { 't' } ?: return Token.InvalidToken
-        Token.FunctionName("sqrt")
-      } else Token.VariableName(firstChar.toString())
+        chars.expectNextValue { 'q' }
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+        chars.expectNextValue { 'r' }
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+        chars.expectNextValue { 't' }
+          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+        Token.FunctionName("sqrt", startIndex, endIndex = chars.getRetrievalCount())
+      } else {
+        Token.VariableName(firstChar.toString(), startIndex, endIndex = chars.getRetrievalCount())
+      }
     }
 
-    private fun tokenizeSymbol(chars: PeekableIterator<Char>, factory: () -> Token): Token {
+    private fun tokenizeSymbol(chars: PeekableIterator<Char>, factory: (Int, Int) -> Token): Token {
+      val startIndex = chars.getRetrievalCount()
       chars.next() // Parse the symbol.
-      return factory()
+      val endIndex = chars.getRetrievalCount()
+      return factory(startIndex, endIndex)
     }
 
     private fun parseInteger(chars: PeekableIterator<Char>): String? {
@@ -88,34 +123,52 @@ class MathTokenizer2 private constructor() {
     }
 
     sealed class Token {
-      class PositiveInteger(val parsedValue: Int) : Token()
+      /** The index in the input stream at which point this token begins. */
+      abstract val startIndex: Int
 
-      class PositiveRealNumber(val parsedValue: Double) : Token()
+      /** The (exclusive) index in the input stream at which point this token ends. */
+      abstract val endIndex: Int
 
-      class VariableName(val parsedName: String) : Token()
+      class PositiveInteger(
+        val parsedValue: Int, override val startIndex: Int, override val endIndex: Int
+      ) : Token()
 
-      class FunctionName(val parsedName: String) : Token()
+      class PositiveRealNumber(
+        val parsedValue: Double, override val startIndex: Int, override val endIndex: Int
+      ) : Token()
 
-      object MinusSymbol : Token()
+      class VariableName(
+        val parsedName: String, override val startIndex: Int, override val endIndex: Int
+      ) : Token()
 
-      object SquareRootSymbol : Token()
+      class FunctionName(
+        val parsedName: String, override val startIndex: Int, override val endIndex: Int
+      ) : Token()
 
-      object PlusSymbol : Token()
+      class MinusSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
-      object MultiplySymbol : Token()
+      class SquareRootSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
-      object DivideSymbol : Token()
+      class PlusSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
-      object ExponentiationSymbol : Token()
+      class MultiplySymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
-      object EqualsSymbol : Token()
+      class DivideSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
-      object LeftParenthesisSymbol : Token()
+      class ExponentiationSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
-      object RightParenthesisSymbol : Token()
+      class EqualsSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
+
+      class LeftParenthesisSymbol(
+        override val startIndex: Int, override val endIndex: Int
+      ) : Token()
+
+      class RightParenthesisSymbol(
+        override val startIndex: Int, override val endIndex: Int
+      ) : Token()
 
       // TODO: add context to line & index, and enum for context on failure.
-      object InvalidToken : Token()
+      class InvalidToken(override val startIndex: Int, override val endIndex: Int) : Token()
     }
 
     // TODO: consider whether to use the more correct & expensive Java Char.isWhitespace().

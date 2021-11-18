@@ -16,12 +16,18 @@ message Fraction {
 // Represents a mathematical expression such as 1+2. The only expression currently supported is a
 // binary operation.
 message MathExpression {
+  // TODO: document inclusive
+  int32 parse_start_index = 1;
+  // TODO: document exclusive
+  int32 parse_end_index = 2;
+
   oneof expression_type {
-    Real constant = 1;
-    string variable = 2;
-    MathBinaryOperation binary_operation = 3;
-    MathUnaryOperation unary_operation = 4;
-    MathFunctionCall function_call = 5;
+    Real constant = 3;
+    string variable = 4;
+    MathBinaryOperation binary_operation = 5;
+    MathUnaryOperation unary_operation = 6;
+    MathFunctionCall function_call = 7;
+    MathExpression group = 8;
   }
 }
 
