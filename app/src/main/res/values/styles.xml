@@ -352,8 +352,8 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
-  <style name="CaptionViewCenterVertical" parent="Caption">
-    <item name="android:gravity">center_vertical</item>
+  <style name="CaptionViewCenter" parent="Caption">
+    <item name="android:gravity">center</item>
   </style>
 
   <style name="InputInteractionEditText" parent="Widget.AppCompat.EditText">

@@ -70,7 +70,7 @@
 
         <TextView
           android:id="@+id/profile_is_admin_text"
-          style="@style/SubtitleLight1"
+          style="@style/SubtitleLight1Center"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/profile_chooser_admin"
