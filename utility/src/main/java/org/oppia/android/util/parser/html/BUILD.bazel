@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "HtmlParser.kt",
     ],
-    visibility = ["//app:__pkg__"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":custom_bullet_span",
         ":custom_html_content_handler",
@@ -29,10 +29,6 @@ kt_android_library(
         "ConceptCardTagHandler.kt",
         "ImageTagHandler.kt",
         "MathTagHandler.kt",
-    ],
-    visibility = [
-        "//domain:__pkg__",
-        "//testing:__pkg__",
     ],
     deps = [
         ":custom_html_content_handler",

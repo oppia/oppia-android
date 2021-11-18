@@ -61,6 +61,7 @@ kt_android_library(
     visibility = [
         "//app:__pkg__",
         "//domain:__pkg__",
+        "//testing:__pkg__",
     ],
     deps = [
         ":dagger",

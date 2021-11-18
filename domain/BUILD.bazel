@@ -196,7 +196,6 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
-    "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handlers",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
