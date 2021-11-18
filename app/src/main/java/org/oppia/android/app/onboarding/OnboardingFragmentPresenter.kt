@@ -1,5 +1,6 @@
 package org.oppia.android.app.onboarding
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -142,10 +143,13 @@ class OnboardingFragmentPresenter @Inject constructor(
       resourceBucketName,
       entityType = "Policies",
       entityId = "oppia",
-      imageCenterAlign = false
+      imageCenterAlign = false,
+      policyOppiaTagActionListener = this
     ).parseOppiaHtml(
       completeString,
-      binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView
+      binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView,
+      supportsLinks = true,
+      supportsConceptCards = false
     )
   }
 
