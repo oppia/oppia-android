@@ -225,6 +225,16 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_hasCorrectActivityLabel() {
+    launch(HomeActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+        assertThat(title).isEqualTo(context.getString(R.string.home_activity_title))
+      }
+    }
+  }
+
+  @Test
   fun testHomeActivity_withAdminProfile_configChange_profileNameIsDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
