@@ -43,8 +43,7 @@
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          style="@style/Subtitle1"
-          android:gravity="center"
+          style="@style/Subtitle1ViewCenter"
           android:minHeight="48dp"
           android:paddingTop="20dp"
           android:text="@string/profile_chooser_language"
@@ -108,9 +107,8 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
-        style="@style/Heading1"
+        style="@style/Heading1ViewCenter"
         android:layout_marginBottom="28dp"
-        android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
         android:textColor="@color/profileChooserGreyTextColor" />
