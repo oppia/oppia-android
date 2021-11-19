@@ -68,7 +68,7 @@ class HelpActivity :
     val selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
     selectedHelpOptionsTitle = savedInstanceState?.getStringFromBundle(HELP_OPTIONS_TITLE_SAVED_KEY)
       ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
-    val policyPage = savedInstanceState?.getProto(
+    val policiesActivityArguments = savedInstanceState?.getProto(
       POLICIES_ARGUMENT_PROTO,
       PoliciesActivityArguments.getDefaultInstance()
     )
@@ -78,7 +78,7 @@ class HelpActivity :
       selectedFragment,
       selectedDependencyIndex,
       selectedLicenseIndex,
-      policyPage
+      policiesActivityArguments
     )
     title = resourceHandler.getStringInLocale(R.string.menu_help)
   }

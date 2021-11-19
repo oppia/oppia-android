@@ -30,7 +30,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
-    private const val POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesActivity.policyPage"
+    private const val POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
 
     /** Returns the [Intent] for opening [PoliciesActivity]. */
     fun createPoliciesActivityIntent(context: Context, policyPage: PolicyPage): Intent {
