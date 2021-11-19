@@ -47,7 +47,6 @@ kt_android_library(
         "//utility:__pkg__",
     ],
     deps = [
-        "//:oppia_testing_visibility",
         "//utility",
     ],
 )
