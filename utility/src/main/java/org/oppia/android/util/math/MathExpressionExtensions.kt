@@ -487,7 +487,7 @@ private fun Real.isApproximatelyEqualTo(value: Double): Boolean {
 
 private fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
 
-private fun Real.toDouble(): Double {
+fun Real.toDouble(): Double {
   return when (realTypeCase) {
     RATIONAL -> rational.toDouble()
     INTEGER -> integer.toDouble()

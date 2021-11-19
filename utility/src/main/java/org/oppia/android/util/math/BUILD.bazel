@@ -42,6 +42,7 @@ kt_android_library(
         "//:oppia_testing_visibility",
     ],
     deps = [
+        ":extensions",
         ":math_parsing_error",
         ":peekable_iterator",
         ":tokenizer",
@@ -60,6 +61,7 @@ kt_android_library(
     ],
     deps = [
         ":peekable_iterator",
+        "//model/src/main/proto:math_java_proto_lite",
     ],
 )
 

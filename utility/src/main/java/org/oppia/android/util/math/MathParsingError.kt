@@ -1,7 +1,6 @@
 package org.oppia.android.util.math
 
 import org.oppia.android.app.model.MathBinaryOperation
-import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.Real
 
@@ -34,11 +33,11 @@ sealed class MathParsingError {
   object SubsequentUnaryOperatorsError : MathParsingError()
 
   data class NoVariableOrNumberBeforeBinaryOperatorError(
-    val operator: MathBinaryOperation.Operator, val operatorSymbol: String
+    val operator: MathBinaryOperation.Operator
   ): MathParsingError()
 
   data class NoVariableOrNumberAfterBinaryOperatorError(
-    val operator: MathBinaryOperation.Operator, val operatorSymbol: String
+    val operator: MathBinaryOperation.Operator
   ): MathParsingError()
 
   object ExponentIsVariableExpressionError : MathParsingError()
@@ -61,7 +60,7 @@ sealed class MathParsingError {
 
   data class InvalidFunctionInUseError(val functionName: String) : MathParsingError()
 
-  data class FunctionNameUsedAsVariables(val expectedFunctionName: String) : MathParsingError()
+  object FunctionNameIncompleteError : MathParsingError()
 
   object GenericError : MathParsingError()
 }
