@@ -52,12 +52,11 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewCenterHorizontal"
         android:layout_width="0dp"
         android:layout_marginStart="192dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="192dp"
-        android:gravity="center_horizontal"
         android:maxLines="2"
         android:minLines="2"
         android:text="@string/onboarding_slide_3_description"
