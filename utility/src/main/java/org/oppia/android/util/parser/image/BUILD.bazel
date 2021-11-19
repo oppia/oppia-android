@@ -132,9 +132,9 @@ kt_android_library(
     srcs = [
         "ImageTargets.kt",
     ],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":image_asset_fetcher",
-        "//:oppia_testing_visibility",
         "//third_party:com_github_bumptech_glide_glide",
     ],
 )
