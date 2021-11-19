@@ -1,0 +1,12 @@
+# Reference: https://devbots.xyz/documentation/vacation/.
+enabled: true
+pull-comment: >
+    Thanks for submitting this pull request! Some main reviewers
+    have taken time off for the next few weeks, so it may take a
+    little while before we can look at this PR. We appreciate your
+    patience while some of our team members recharge.
+issue-comment: >
+    Thanks for filing this issue! Please note that some team members
+    are currently taking time off to recharge, so it might be a
+    while before we respond or triage this issue.
+period: 2021-11-19 - 2021-12-06
