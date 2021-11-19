@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- Story Fragment dimens. -->
-  <dimen name="padding_bottom">160dp</dimen>
-  <dimen name="custom_match_parent">528dp</dimen>
-  <dimen name="vertical_border_height">@dimen/custom_match_parent</dimen>
-  <dimen name="story_padding_end">64dp</dimen>
 
   <dimen name="home_padding_end">96dp</dimen>
   <dimen name="home_padding_start">120dp</dimen>
@@ -397,5 +392,8 @@
   <dimen name="solution_summary_margin_top_linear_layout">0dp</dimen>
   <dimen name="solution_summary_margin_bottom_linear_layout">32dp</dimen>
   <dimen name="solution_summary_margin_top_solution_summary_label">16dp</dimen>
+
+  <!-- Story Fragment dimens. -->
+  <dimen name="story_fragment_activity_padding_bottom">160dp</dimen>
 
 </resources>
