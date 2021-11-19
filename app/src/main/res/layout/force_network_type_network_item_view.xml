@@ -22,7 +22,7 @@
 
     <TextView
       android:id="@+id/network_type_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:paddingStart="16dp"

@@ -14,7 +14,6 @@ import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
 const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
@@ -45,8 +44,6 @@ class HelpActivity :
 
   private lateinit var selectedFragment: String
   private lateinit var selectedHelpOptionsTitle: String
-  private var selectedDependencyIndex by Delegates.notNull<Int>()
-  private var selectedLicenseIndex by Delegates.notNull<Int>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -57,9 +54,9 @@ class HelpActivity :
     )
     selectedFragment =
       savedInstanceState?.getStringFromBundle(SELECTED_FRAGMENT_SAVED_KEY) ?: FAQ_LIST_FRAGMENT_TAG
-    selectedDependencyIndex =
+    val selectedDependencyIndex =
       savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY) ?: 0
-    selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
+    val selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
     selectedHelpOptionsTitle = savedInstanceState?.getStringFromBundle(HELP_OPTIONS_TITLE_SAVED_KEY)
       ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
     helpActivityPresenter.handleOnCreate(

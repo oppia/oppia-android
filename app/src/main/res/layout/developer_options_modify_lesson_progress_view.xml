@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/modify_lesson_progress_text_view"
-      style="@style/Heading5"
+      style="@style/Heading5ViewStart"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
       android:paddingStart="16dp"
@@ -31,7 +31,7 @@
 
     <TextView
       android:id="@+id/mark_chapters_completed_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onMarkChaptersCompletedClicked()}"
@@ -58,7 +58,7 @@
 
     <TextView
       android:id="@+id/mark_stories_completed_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onMarkStoriesCompletedClicked()}"
@@ -85,7 +85,7 @@
 
     <TextView
       android:id="@+id/mark_topics_completed_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onMarkTopicsCompletedClicked()}"

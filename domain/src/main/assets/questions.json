@@ -1730,7 +1730,7 @@
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
           },
-          "tagged_skill_misconception_id": ""
+          "tagged_skill_misconception_id": "test_skill_id_1-0"
         }],
         "default_outcome": {
           "dest": "",
