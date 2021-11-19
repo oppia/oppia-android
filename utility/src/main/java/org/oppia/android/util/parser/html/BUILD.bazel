@@ -46,7 +46,10 @@ kt_android_library(
         "//:oppia_testing_visibility",
         "//utility:__pkg__",
     ],
-    deps = ["//utility"],
+    deps = [
+        "//:oppia_testing_visibility",
+        "//utility",
+    ],
 )
 
 kt_android_library(
@@ -55,6 +58,7 @@ kt_android_library(
         "CustomHtmlContentHandler.kt",
     ],
     visibility = [
+        "//:oppia_testing_visibility",
         "//utility:__pkg__",
         "//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__",
     ],
@@ -68,7 +72,10 @@ kt_android_library(
     srcs = [
         "ExplorationHtmlParserEntityType.kt",
     ],
-    visibility = ["//domain:__pkg__"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//domain:__pkg__",
+    ],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
@@ -79,7 +86,10 @@ kt_android_library(
     srcs = [
         "HtmlParserEntityTypeModule.kt",
     ],
-    visibility = ["//app:__pkg__"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//app:__pkg__",
+    ],
     deps = [
         ":custom_html_content_handler",
         ":dagger",

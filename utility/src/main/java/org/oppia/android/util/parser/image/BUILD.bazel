@@ -34,6 +34,7 @@ kt_android_library(
         "GlideImageLoader.kt",
     ],
     visibility = [
+        "//:oppia_testing_visibility",
         "//app:__pkg__",
         "//utility:__pkg__",
     ],
@@ -59,9 +60,9 @@ kt_android_library(
         "GlideImageLoaderModule.kt",
     ],
     visibility = [
+        "//:oppia_testing_visibility",
         "//app:__pkg__",
         "//domain:__pkg__",
-        "//testing:__pkg__",
     ],
     deps = [
         ":dagger",
@@ -101,6 +102,7 @@ kt_android_library(
         "ImageParsingAnnotations.kt",
     ],
     visibility = [
+        "//:oppia_testing_visibility",
         "//domain:__pkg__",
     ],
     deps = [
@@ -114,6 +116,7 @@ kt_android_library(
         "ImageParsingModule.kt",
     ],
     visibility = [
+        "//:oppia_testing_visibility",
         "//app:__pkg__",
         "//testing:__pkg__",
     ],
@@ -131,6 +134,7 @@ kt_android_library(
     ],
     deps = [
         ":image_asset_fetcher",
+        "//:oppia_testing_visibility",
         "//third_party:com_github_bumptech_glide_glide",
     ],
 )
@@ -141,6 +145,7 @@ kt_android_library(
         "ImageTransformation.kt",
     ],
     visibility = [
+        "//:oppia_testing_visibility",
         "//app:__pkg__",
         "//utility/src/main/java/org/oppia/android/util/parser/svg:__pkg__",
     ],
@@ -194,8 +199,8 @@ kt_android_library(
         "ImageLoader.kt",
     ],
     visibility = [
+        "//:oppia_testing_visibility",
         "//app:__pkg__",
-        "//testing:__pkg__",
     ],
     deps = [
         ":image_targets",
@@ -211,7 +216,10 @@ kt_android_library(
     srcs = [
         "UrlImageParser.kt",
     ],
-    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/html:__pkg__"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:__pkg__",
+    ],
     deps = [
         ":image_loader",
         ":image_parsing_annonations",
