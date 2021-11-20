@@ -35,8 +35,6 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//app:__pkg__",
-        "//utility:__pkg__",
     ],
     deps = [
         ":image_asset_fetcher",
@@ -61,8 +59,6 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//app:__pkg__",
-        "//domain:__pkg__",
     ],
     deps = [
         ":dagger",
@@ -103,7 +99,6 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//domain:__pkg__",
     ],
     deps = [
         "//third_party:javax_inject_javax_inject",
@@ -117,8 +112,6 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//app:__pkg__",
-        "//testing:__pkg__",
     ],
     deps = [
         ":dagger",
@@ -146,8 +139,6 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//app:__pkg__",
-        "//utility/src/main/java/org/oppia/android/util/parser/svg:__pkg__",
     ],
 )
 
@@ -200,7 +191,6 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//app:__pkg__",
     ],
     deps = [
         ":image_targets",
@@ -218,7 +208,6 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:__pkg__",
     ],
     deps = [
         ":image_loader",
