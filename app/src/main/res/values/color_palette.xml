@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <color name="oppia_primary_color">@color/colorPrimary</color>
+  <color name="oppia_primary_color_dark">@color/colorPrimaryDark</color>
+  <color name="oppia_accent_color">@color/colorAccent</color>
+  <color name="oppia_onboarding_background_color">@color/oppiaBackgroundYellowIvory</color>
 </resources>
