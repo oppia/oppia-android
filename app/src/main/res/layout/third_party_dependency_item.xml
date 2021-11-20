@@ -27,18 +27,18 @@
 
       <TextView
         android:id="@+id/third_party_dependency_name_text_view"
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
-        android:textAlignment="viewStart"
         android:text="@{viewModel.dependencyName}" />
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
+        style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
@@ -47,7 +47,6 @@
         android:paddingBottom="16dp"
         android:textColor="@color/accessible_grey"
         android:text="@{viewModel.dependencyVersion}"
-        android:textAlignment="viewStart"
         android:textSize="12sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

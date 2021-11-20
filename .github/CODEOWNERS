@@ -47,6 +47,9 @@ gradlew.bat @BenHenning
 /.github/workflows/ @BenHenning
 /.github/stale.yml @BenHenning
 
+# Devbots configurations.
+/.devbots/ @BenHenning
+
 # All tests.
 *Test.kt @anandwana001
 
