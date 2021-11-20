@@ -65,13 +65,16 @@
 
           <TextView
             android:id="@+id/add_profile_activity_required_heading_text_view"
-            android:layout_width="match_parent"
+            style="@style/TextViewStart"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@string/add_profile_required"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
           <com.google.android.material.textfield.TextInputLayout
@@ -185,6 +188,7 @@
 
               <TextView
                 android:id="@+id/add_profile_activity_allow_download_heading_text_view"
+                style="@style/TextViewStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
@@ -196,6 +200,7 @@
 
               <TextView
                 android:id="@+id/add_profile_activity_allow_download_text_view"
+                style="@style/TextViewStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"

@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/override_app_behaviors_text_view"
-      style="@style/Heading5"
+      style="@style/Heading5ViewStart"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
       android:paddingStart="16dp"
@@ -46,7 +46,7 @@
 
       <TextView
         android:id="@+id/show_all_hints_solution_text_view"
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewStart"
         android:layout_width="0dp"
         android:background="@color/white"
         android:text="@string/developer_options_show_all_hints_solution"
@@ -86,7 +86,7 @@
 
     <TextView
       android:id="@+id/force_network_type_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onForceNetworkTypeClicked()}"
@@ -113,7 +113,7 @@
 
     <TextView
       android:id="@+id/force_crash_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onForceCrashClicked()}"
