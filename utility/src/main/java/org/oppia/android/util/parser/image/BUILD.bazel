@@ -80,8 +80,7 @@ kt_android_library(
         "TestGlideImageLoader.kt",
     ],
     visibility = [
-        "//app:__pkg__",
-        "//testing:__pkg__",
+        "//:oppia_testing_visibility",
     ],
     deps = [
         ":glide_image_loader",
