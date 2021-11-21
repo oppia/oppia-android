@@ -16,14 +16,10 @@
 
     <TextView
       android:id="@+id/topic_play_text_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/Heading2ViewStart"
       android:layout_marginStart="100dp"
       android:layout_marginTop="32dp"
       android:layout_marginEnd="100dp"
-      android:fontFamily="sans-serif-medium"
-      android:text="@string/stories_you_can_play"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="20sp" />
+      android:text="@string/stories_you_can_play" />
   </FrameLayout>
 </layout>

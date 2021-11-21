@@ -7,7 +7,6 @@
 -->
 <resources>
   <string name="nav_header_desc">Cabeçalho de navegação</string>
-  <string name="menu_home">Início</string>
   <string name="menu_options">Opções</string>
   <string name="menu_my_downloads">Meus Downloads</string>
   <string name="menu_help">Ajuda</string>
@@ -253,6 +252,7 @@
   <string name="home_activity_back_dialog_message">Você gostaria de sair do seu perfil?</string>
   <string name="home_activity_back_dialog_cancel">Cancelar</string>
   <string name="home_activity_back_dialog_exit">Sair</string>
+  <string name="home_activity_title">Início</string>
   <string name="profile_list_activity_title">Perfis</string>
   <string name="profile_edit_created">Criado em %s</string>
   <string name="profile_last_used">Usado por último</string>
