@@ -62,6 +62,7 @@
 
           <TextView
             android:id="@+id/profile_reset_pin_main"
+            style="@style/TextViewStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
