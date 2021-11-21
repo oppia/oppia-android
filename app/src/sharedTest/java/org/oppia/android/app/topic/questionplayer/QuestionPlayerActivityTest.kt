@@ -471,6 +471,7 @@ class QuestionPlayerActivityTest {
        onView(withId(R.id.content_text_view)).check(doesNotExist())
      }
    }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
