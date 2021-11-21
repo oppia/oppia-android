@@ -4,4 +4,6 @@
   <color name="oppia_primary_color_dark">@color/colorPrimaryDark</color>
   <color name="oppia_accent_color">@color/colorAccent</color>
   <color name="oppia_onboarding_background_color">@color/oppiaBackgroundYellowIvory</color>
+  <color name="oppia_primary_text_color">@color/oppiaPrimaryText</color>
+  <color name="oppia_heading_text_color">@color/oppiaPrimaryText</color>
 </resources>

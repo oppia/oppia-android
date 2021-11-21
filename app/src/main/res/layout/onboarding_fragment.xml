@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/oppiaPrimaryText"
+        android:background="@color/onboarding_fragment_divider_view_color"
         app:layout_constraintBottom_toTopOf="@+id/slide_dots_container" />
 
       <LinearLayout
