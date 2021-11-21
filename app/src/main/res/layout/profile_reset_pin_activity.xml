@@ -37,11 +37,10 @@
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <fragment
+    <FrameLayout
       android:id="@+id/profile_reset_pin_fragment_placeholder"
       android:layout_width="0dp"
       android:layout_height="0dp"
-
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

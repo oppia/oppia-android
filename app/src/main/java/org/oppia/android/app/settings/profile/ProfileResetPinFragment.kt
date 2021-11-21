@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.domain.profile.ProfileManagementController
 
 /** Fragment that resets the profile pin of the user
  */
@@ -16,23 +17,26 @@ class ProfileResetPinFragment : InjectableFragment() {
   lateinit var profileResetPinFragmentPresenter: ProfileResetPinFragmentPresenter
 
   companion object {
+    private lateinit var profileManagementController: ProfileManagementController
     private const val PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY =
       "ProfileResetPinActivity.profile_reset_pin_profile_id"
     private const val PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY =
       "ProfileResetPinActivity.profile_reset_pin_is_admin"
-  }
 
-  /** Returns instance of [ProfileResetPinFragment]. */
-  fun newInstance(
-    profileResetPinProfileId: Int,
-    profileResetPinIsAdmin: Int
-  ): ProfileResetPinFragment {
-    val fragment = ProfileResetPinFragment()
-    val args = Bundle()
-    args.putInt(PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY, profileResetPinProfileId)
-    args.putInt(PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY, profileResetPinIsAdmin)
-    fragment.arguments = args
-    return fragment
+    /** Returns instance of [ProfileResetPinFragment]. */
+    fun newInstance(
+      profileResetPinProfileId: Int,
+      profileResetPinIsAdmin: Boolean,
+      profileManagementController: ProfileManagementController
+    ): ProfileResetPinFragment {
+      val fragment = ProfileResetPinFragment()
+      val args = Bundle()
+      this.profileManagementController = profileManagementController
+      args.putInt(PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY, profileResetPinProfileId)
+      args.putBoolean(PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY, profileResetPinIsAdmin)
+      fragment.arguments = args
+      return fragment
+    }
   }
 
   override fun onAttach(context: Context) {
@@ -49,13 +53,14 @@ class ProfileResetPinFragment : InjectableFragment() {
       "Expected arguments to be passed to ProfileResetPinFragment"
     }
     val profileResetPinProfileId = args.getInt(PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY)
-    val profileResetPinIsAdmin = args.getInt(PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY)
-    return profileResetPinFragmentPresenter.handleCreateView(
-      inflater,
-      container,
-      profileResetPinProfileId,
-      profileResetPinIsAdmin
-    )
+    val profileResetPinIsAdmin = args.getBoolean(PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY)
+    return profileResetPinFragmentPresenter
+      .handleCreateView(
+        inflater,
+        container,
+        profileManagementController,
+        profileResetPinProfileId,
+        profileResetPinIsAdmin
+      )
   }
-}
 }

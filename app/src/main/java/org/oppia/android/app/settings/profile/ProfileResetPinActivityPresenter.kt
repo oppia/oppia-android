@@ -28,10 +28,11 @@ class ProfileResetPinActivityPresenter @Inject constructor(
   private var inputtedPin = false
   private var inputtedConfirmPin = false
 
+  /*
   private val resetViewModel: ProfileResetPinViewModel by lazy {
     getProfileResetPinViewModel()
   }
-
+*/
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
@@ -47,7 +48,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     val isAdmin = activity.intent.getBooleanExtra(
       PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY, false
     )
-    resetViewModel.isAdmin.set(isAdmin)
+//    resetViewModel.isAdmin.set(isAdmin)
 
     binding.profileResetPinToolbar.setNavigationOnClickListener {
       (activity as ProfileResetPinActivity).finish()
@@ -57,7 +58,13 @@ class ProfileResetPinActivityPresenter @Inject constructor(
 //      viewModel = resetViewModel
       lifecycleOwner = activity
     }
-
+    if (getProfileResetPinFragment() == null) {
+      val profileResetPinFragment =
+        ProfileResetPinFragment.newInstance(profileId, isAdmin, profileManagementController)
+      activity.supportFragmentManager.beginTransaction()
+        .add(R.id.profile_reset_pin_fragment_placeholder, profileResetPinFragment).commitNow()
+    }
+/*
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
 //    binding.profileResetInputPinEditText.onTextChanged { pin ->
 //      pin?.let {
@@ -160,7 +167,15 @@ class ProfileResetPinActivityPresenter @Inject constructor(
 //    }
 //  }
 //
-//  private fun getProfileResetPinViewModel(): ProfileResetPinViewModel {
+*/
+
+  }
+
+  //  private fun getProfileResetPinViewModel(): ProfileResetPinViewModel {
 //    return viewModelProvider.getForActivity(activity, ProfileResetPinViewModel::class.java)
 //  }
+  private fun getProfileResetPinFragment(): ProfileResetPinFragment? {
+    return activity.supportFragmentManager
+      .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment?
+  }
 }
