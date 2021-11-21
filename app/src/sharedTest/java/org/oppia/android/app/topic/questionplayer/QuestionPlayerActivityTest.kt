@@ -452,25 +452,25 @@ class QuestionPlayerActivityTest {
     }
   }
 
-   @Test
-   @DisableAccessibilityChecks // TODO(#3927): Feedback item should be min 48dp in height.
-   fun testQuestionPlayer_terminalState_recyclerView_contentItem_isNotEmpty(){
-     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
-     launchForSkillList(SKILL_ID_LIST).use {
-       selectMultipleChoiceOption(optionPosition = 2)
-       clickContinueNavigationButton()
+  @Test
+  @DisableAccessibilityChecks // TODO(#3927): Feedback item should be min 48dp in height.
+  fun testQuestionPlayer_terminalState_recyclerView_contentItem_isNotEmpty() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      selectMultipleChoiceOption(optionPosition = 2)
+      clickContinueNavigationButton()
 
-       typeTextInput("1/4")
-       clickSubmitAnswerButton()
-       clickContinueNavigationButton()
+      typeTextInput("1/4")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
 
-       typeTextInput("3/4")
-       clickSubmitAnswerButton()
-       clickContinueNavigationButton()
+      typeTextInput("3/4")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
 
-       onView(withId(R.id.content_text_view)).check(doesNotExist())
-     }
-   }
+      onView(withId(R.id.content_text_view)).check(doesNotExist())
+    }
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
