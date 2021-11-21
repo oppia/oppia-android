@@ -15,6 +15,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -451,6 +452,25 @@ class QuestionPlayerActivityTest {
     }
   }
 
+   @Test
+   @DisableAccessibilityChecks // TODO(#3927): Feedback item should be min 48dp in height.
+   fun testQuestionPlayer_terminalState_recyclerView_contentItem_isNotEmpty(){
+     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+     launchForSkillList(SKILL_ID_LIST).use {
+       selectMultipleChoiceOption(optionPosition = 2)
+       clickContinueNavigationButton()
+
+       typeTextInput("1/4")
+       clickSubmitAnswerButton()
+       clickContinueNavigationButton()
+
+       typeTextInput("3/4")
+       clickSubmitAnswerButton()
+       clickContinueNavigationButton()
+
+       onView(withId(R.id.content_text_view)).check(doesNotExist())
+     }
+   }
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
