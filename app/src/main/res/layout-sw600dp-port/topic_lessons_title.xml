@@ -19,6 +19,7 @@
       android:id="@+id/topic_play_text_view"
       style="@style/Heading2ViewStart"
       android:layout_width="528dp"
+      android:layout_gravity="center"
       android:text="@string/stories_you_can_play" />
   </FrameLayout>
 </layout>
