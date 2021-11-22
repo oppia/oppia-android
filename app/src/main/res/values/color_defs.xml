@@ -149,10 +149,9 @@
   <color name="comingSoonEndColor">#674172</color>
   <color name="comingSoonStartColor">#7659B6</color>
   <!-- DARK MODE COLORS -->
-  <color name="colorPrimary_DarkMode">#3bd1c4</color>
-  <color name="colorPrimaryDark_DarkMode">#03635B</color>
-  <color name="colorAccent_DarkMode">#2B5F73</color>
-  <color name="background_DarkMode">#24282b</color>
-  <color name="headingText_DarkMode">#FFFFFF</color>
-  <color name="subText_DarkMode">#C4C4C4</color>
+  <color name="oppia_primary_2">#3bd1c4</color>
+  <color name="oppia_primary_dark_2">#03635B</color>
+  <color name="oppia_accent_2">#2B5F73</color>
+  <color name="background_black">#24282b</color>
+  <color name="oppia_primary_text_white">#C4C4C4</color>
 </resources>

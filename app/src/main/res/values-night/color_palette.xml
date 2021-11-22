@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="oppia_primary_color">@color/colorPrimary_DarkMode</color>
-  <color name="oppia_primary_color_dark">@color/colorPrimaryDark_DarkMode</color>
-  <color name="oppia_accent_color">@color/colorAccent_DarkMode</color>
-  <color name="oppia_onboarding_background_color">@color/background_DarkMode</color>
-  <color name="oppia_primary_text_color">@color/subText_DarkMode</color>
-  <color name="oppia_heading_text_color">@color/headingText_DarkMode</color>
+  <color name="oppia_primary_color">@color/oppia_primary_2</color>
+  <color name="oppia_primary_color_dark">@color/oppia_primary_dark_2</color>
+  <color name="oppia_accent_color">@color/oppia_accent_2</color>
+  <color name="oppia_onboarding_background_color">@color/background_black</color>
+  <color name="oppia_primary_text_color">@color/oppia_primary_text_white</color>
+  <color name="oppia_heading_text_color">@color/white</color>
 </resources>
