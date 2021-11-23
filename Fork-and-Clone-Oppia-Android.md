@@ -1,6 +1,13 @@
+
 _For a detailed explanation of the fork-and-clone process, please see this [GitHub help page](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#platform-linux)._
 
-## How to fork and clone the Oppia Android repository
+## Fork and clone the Oppia Android repository
+
+To make code changes, please follow the following instructions
+- [Using the terminal](https://gist.github.com/MaskedCarrot/ea0933311b95a108f99e3c6c106ea101#using-the-terminal)
+- [Using android studio's UI based github workflow](https://gist.github.com/MaskedCarrot/ea0933311b95a108f99e3c6c106ea101#using-android-studios-ui-based-github-workflow)
+
+### Using the terminal
 
 1. Make sure that you are in the `opensource/` folder on your local machine.
 
@@ -16,6 +23,19 @@ _For a detailed explanation of the fork-and-clone process, please see this [GitH
    - `git remote -v` (this lists your current remote repositories)
    - `git remote add upstream https://github.com/oppia/oppia-android` (this adds oppia/oppia-android as an upstream repo)
 
-## Updating your local repository
+### Using android studio's UI based GitHub workflow
+1. Navigate to your fork, e.g. ``https://github.com/<your_username>/oppia-android``.
+Click on **Clone or download** and copy the link (the URL will look different since you should be using your fork, **not** https://github.com/oppia/oppia-android).
 
-If you need to update your local branch with the latest changes in the main Oppia Android repository on develop (e.g. in cases when your PR is showing extra commits that you didn't create), follow the steps listed [here](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/syncing-a-fork). Note that Oppia Android uses 'develop' not 'main' for its mainline branch.
+<img width="1680" alt="1" src="https://user-images.githubusercontent.com/53938155/136960580-446eecd5-2903-4a3d-99bb-d4df18eee3e0.png">
+
+2. Now, go to **Android Studio**>**File**>**New**>**Project from Version Control**>**Git**
+
+<img width="1680" alt="2" src="https://user-images.githubusercontent.com/54615666/72599230-51685d00-3937-11ea-8020-485cd0111566.png">
+
+3. Log in GitHub with your credentials.
+
+4. Paste the **URL** and click on **Clone** button.
+Wait for a few minutes until Gradle build completes. 
+
+<img width="1680" alt="4" src="https://user-images.githubusercontent.com/54615666/72599231-51685d00-3937-11ea-9850-796700298af2.png">
