@@ -2,6 +2,8 @@ package org.oppia.android.app.settings.profile
 
 import android.app.Application
 import android.content.Context
+import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -21,10 +23,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -71,8 +77,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
-import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -271,13 +275,7 @@ class ProfileRenameActivityTest {
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
-            )
-          )
-        )
+        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
     }
   }
 
@@ -326,13 +324,7 @@ class ProfileRenameActivityTest {
       onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_only_letters)
-            )
-          )
-        )
+        .check(matches(hasErrorText(R.string.add_profile_error_name_only_letters)))
     }
   }
 
@@ -421,13 +413,7 @@ class ProfileRenameActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
-            )
-          )
-        )
+        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
     }
   }
 
@@ -443,6 +429,31 @@ class ProfileRenameActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
+    }
+  }
+
+  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        val expectedErrorText = context.resources.getString(expectedErrorTextId)
+        return (view as TextInputLayout).error == expectedErrorText
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("TextInputLayout's error")
+      }
+    }
+  }
+
+  private fun hasNoErrorText(): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        return (view as TextInputLayout).error.isNullOrEmpty()
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("")
+      }
     }
   }
 

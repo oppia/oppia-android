@@ -31,9 +31,9 @@
 
       <TextView
         android:id="@+id/hint_title"
-        style="@style/TextViewCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
@@ -103,9 +103,9 @@
 
       <TextView
         android:id="@+id/hints_and_solution_summary"
-        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:fontFamily="sans-serif"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="16sp" />

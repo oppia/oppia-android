@@ -45,7 +45,6 @@
 
       <TextView
         android:id="@+id/subtopic_title"
-        style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/oppiaBrownDark"
@@ -57,6 +56,7 @@
         android:paddingEnd="8dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.subtopic.title}"
+        android:textAlignment="viewStart"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold"

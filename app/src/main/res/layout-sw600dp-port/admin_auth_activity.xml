@@ -54,7 +54,7 @@
 
         <TextView
           android:id="@+id/admin_auth_heading_textview"
-          style="@style/Heading2ViewStart"
+          style="@style/Heading2"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginTop="48dp"
@@ -66,7 +66,7 @@
 
         <TextView
           android:id="@+id/admin_auth_sub_text"
-          style="@style/Subtitle1ViewStart"
+          style="@style/Subtitle1"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_marginTop="12dp"

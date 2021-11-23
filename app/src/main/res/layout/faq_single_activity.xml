@@ -58,20 +58,20 @@
 
           <TextView
             android:id="@+id/faq_question_text_view"
-            style="@style/TextViewStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
+            android:textAlignment="viewStart"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="18sp" />
 
           <TextView
             android:id="@+id/faq_answer_text_view"
-            style="@style/TextViewStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="sans-serif"
+            android:textAlignment="viewStart"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp" />
         </LinearLayout>

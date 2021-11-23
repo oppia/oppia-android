@@ -25,7 +25,6 @@
 
       <TextView
         android:id="@+id/walkthrough_welcome_title_text_view"
-        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
@@ -39,7 +38,6 @@
 
       <TextView
         android:id="@+id/walkthrough_welcome_description_text_view"
-        style="@style/TextViewCenter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
@@ -47,6 +45,7 @@
         android:layout_marginEnd="56dp"
         android:fontFamily="sans-serif"
         android:text="@string/walkthrough_welcome_description"
+        android:textAlignment="center"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

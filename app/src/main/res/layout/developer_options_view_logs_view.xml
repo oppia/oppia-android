@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/view_logs_text_view"
-      style="@style/Heading5ViewStart"
+      style="@style/Heading5"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
       android:paddingStart="16dp"
@@ -23,6 +23,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/developer_options_view_logs_label"
+      android:textAlignment="viewStart"
       android:textColor="@color/colorPrimary"
       app:layout_constraintBottom_toTopOf="@id/event_logs_text_view"
       app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +32,7 @@
 
     <TextView
       android:id="@+id/event_logs_text_view"
-      style="@style/Subtitle1ViewStart"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onEventLogsClicked()}"
@@ -40,6 +41,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/developer_options_event_logs"
+      android:textAlignment="viewStart"
       android:textColor="@color/oppiaPrimaryTextDark"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

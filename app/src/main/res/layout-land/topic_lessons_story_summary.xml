@@ -61,7 +61,6 @@
 
             <TextView
               android:id="@+id/story_progress_percentage"
-              style="@style/TextViewCenter"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center"
@@ -73,7 +72,6 @@
           </FrameLayout>
 
           <TextView
-            style="@style/TextViewCenterHorizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -102,7 +100,6 @@
 
             <TextView
               android:id="@+id/story_name_text_view"
-              style="@style/TextViewStart"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif-medium"
@@ -115,7 +112,6 @@
 
             <TextView
               android:id="@+id/chapter_count"
-              style="@style/TextViewStart"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"

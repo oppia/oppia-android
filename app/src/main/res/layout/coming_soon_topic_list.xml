@@ -21,7 +21,6 @@
 
     <TextView
       android:id="@+id/coming_soon_topic_text_view"
-      style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"

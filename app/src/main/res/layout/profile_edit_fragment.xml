@@ -149,7 +149,6 @@
 
         <TextView
           android:id="@+id/profile_edit_allow_download_heading"
-          style="@style/TextViewStart"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
@@ -166,7 +165,6 @@
 
         <TextView
           android:id="@+id/profile_edit_allow_download_sub"
-          style="@style/TextViewStart"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"

@@ -58,7 +58,6 @@
 
     <TextView
       android:id="@+id/fraction_input_error"
-      style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
@@ -95,7 +94,6 @@
 
     <TextView
       android:id="@+id/ratio_input_error"
-      style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
@@ -124,7 +122,6 @@
 
     <TextView
       android:id="@+id/number_input_error"
-      style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"

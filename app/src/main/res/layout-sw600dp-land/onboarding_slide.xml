@@ -36,9 +36,10 @@
 
       <TextView
         android:id="@+id/slide_title_text_view"
-        style="@style/Heading2ViewCenterHorizontal"
+        style="@style/Heading2"
         android:layout_width="0dp"
         android:layout_marginBottom="12dp"
+        android:gravity="center_horizontal"
         android:text="@{viewModel.title}"
         android:textSize="32sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
@@ -47,9 +48,10 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
-        style="@style/Heading1ViewCenterHorizontal"
+        style="@style/Heading1"
         android:layout_width="0dp"
         android:layout_marginTop="12dp"
+        android:gravity="center_horizontal"
         android:text="@{viewModel.description}"
         app:layout_constraintEnd_toEndOf="@+id/slide_title_text_view"
         app:layout_constraintStart_toStartOf="@+id/slide_title_text_view"

@@ -9,7 +9,8 @@
 
   <TextView
     android:id="@+id/drag_drop_content_text_view"
-    style="@style/Subtitle1ViewCenterVertical"
+    style="@style/Subtitle1"
+    android:gravity="center_vertical"
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
     android:text="@{htmlContent}" />

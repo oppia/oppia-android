@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.test.core.app.ActivityScenario.launch
@@ -30,11 +31,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -82,8 +87,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
-import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -406,9 +409,7 @@ class AdminPinActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(
-                R.string.admin_pin_error_pin_confirm_wrong
-              )
+              R.string.admin_pin_error_pin_confirm_wrong
             )
           )
         )
@@ -448,7 +449,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -800,7 +801,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -843,7 +844,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -979,7 +980,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -1020,7 +1021,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            R.string.admin_pin_error_pin_confirm_wrong
           )
         )
       )
@@ -1054,6 +1055,31 @@ class AdminPinActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        val expectedErrorText = context.resources.getString(expectedErrorTextId)
+        return (view as TextInputLayout).error == expectedErrorText
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("TextInputLayout's error")
+      }
+    }
+  }
+
+  private fun hasNoErrorText(): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(view: View): Boolean {
+        return (view as TextInputLayout).error.isNullOrEmpty()
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("")
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

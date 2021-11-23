@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/account_actions_text_view"
-      style="@style/CaptionViewStart"
+      style="@style/Caption"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
       android:paddingStart="16dp"
@@ -31,7 +31,7 @@
 
     <TextView
       android:id="@+id/log_out_text_view"
-      style="@style/Subtitle1ViewStart"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onLogOutClicked()}"

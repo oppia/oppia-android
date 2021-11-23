@@ -39,22 +39,22 @@
 
       <TextView
         android:id="@+id/add_profile_text"
-        style="@style/TextViewCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="sans-serif-medium"
+        android:gravity="center"
         android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
         android:textColor="@color/white"
         android:textSize="14sp" />
 
       <TextView
         android:id="@+id/add_profile_description_text"
-        style="@style/TextViewCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="sans-serif"
+        android:gravity="center"
         android:text="@string/set_up_multiple_profiles_description"
         android:textColor="@color/white"
         android:textSize="12sp"

@@ -46,7 +46,6 @@
 
     <TextView
       android:id="@+id/drag_drop_grouping_hint_text_view"
-      style="@style/TextViewStart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:paddingBottom="8dp"

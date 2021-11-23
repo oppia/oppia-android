@@ -30,7 +30,7 @@
 
       <TextView
         android:id="@+id/view_event_logs_time_text_view"
-        style="@style/Subtitle2ViewStart"
+        style="@style/Subtitle2"
         android:layout_weight="1"
         android:background="@color/white"
         android:paddingStart="16dp"
@@ -42,7 +42,7 @@
 
       <TextView
         android:id="@+id/view_event_logs_priority_text_view"
-        style="@style/Subtitle2ViewCenter"
+        style="@style/Subtitle2"
         android:layout_width="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="16dp"
@@ -58,7 +58,7 @@
 
     <TextView
       android:id="@+id/view_event_logs_context_text_view"
-      style="@style/Subtitle1ViewStart"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:paddingStart="16dp"
@@ -75,7 +75,7 @@
 
     <TextView
       android:id="@+id/view_event_logs_action_name_text_view"
-      style="@style/Subtitle1ViewStart"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:paddingStart="16dp"

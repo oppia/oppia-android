@@ -44,7 +44,6 @@
 
       <TextView
         android:id="@+id/topic_name_text_view"
-        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="120dp"
@@ -61,7 +60,6 @@
 
       <TextView
         android:id="@+id/story_count_text_view"
-        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="120dp"
@@ -91,12 +89,12 @@
 
       <TextView
         android:id="@+id/see_more_text_view"
-        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="120dp"
         android:layout_marginEnd="120dp"
         android:fontFamily="sans-serif"
+        android:gravity="start"
         android:minHeight="48dp"
         android:onClick="@{(v) -> viewModel.clickSeeMore()}"
         android:paddingTop="8dp"
@@ -122,7 +120,6 @@
 
       <TextView
         android:id="@+id/download_story_count_text_view"
-        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -137,7 +134,6 @@
 
       <TextView
         android:id="@+id/download_size_text_view"
-        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

@@ -19,7 +19,7 @@
 
     <TextView
       android:id="@+id/app_information_text_view"
-      style="@style/CaptionViewStart"
+      style="@style/Caption"
       android:layout_width="match_parent"
       android:background="@color/oppiaGreyBackground"
       android:paddingStart="16dp"
@@ -35,7 +35,7 @@
 
     <TextView
       android:id="@+id/app_version_text_view"
-      style="@style/Subtitle1ViewStart"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex? @color/adminHighlighted : @color/white}"
       android:onClick="@{(v) -> viewModel.onAppVersionClicked()}"

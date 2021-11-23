@@ -22,7 +22,7 @@
 
     <TextView
       android:id="@+id/network_type_text_view"
-      style="@style/Subtitle1ViewStart"
+      style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:paddingStart="16dp"
@@ -31,6 +31,7 @@
       android:paddingBottom="20dp"
       android:text="@{viewModel.networkTypeString}"
       android:textColor="@color/oppiaPrimaryTextDark"
+      android:textAlignment="viewStart"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

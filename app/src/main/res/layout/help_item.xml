@@ -11,7 +11,7 @@
 
   <TextView
     android:id="@+id/help_item_text_view"
-    style="@style/Subtitle1ViewStart"
+    style="@style/Subtitle1"
     android:layout_width="match_parent"
     android:background="@drawable/general_item_background_border"
     android:onClick="@{() -> viewModel.onClick(viewModel.title)}"
@@ -20,6 +20,7 @@
     android:paddingEnd="16dp"
     android:paddingBottom="20dp"
     android:text="@{viewModel.title}"
+    android:textAlignment="viewStart"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 </layout>

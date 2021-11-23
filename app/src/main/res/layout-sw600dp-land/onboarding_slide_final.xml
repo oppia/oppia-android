@@ -37,10 +37,11 @@
 
       <TextView
         android:id="@+id/slide_title_text_view"
-        style="@style/Heading1ViewCenterHorizontal"
+        style="@style/Heading1"
         android:layout_width="0dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
         android:text="@string/onboarding_slide_3_title"
         android:textSize="32sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
@@ -50,9 +51,10 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
-        style="@style/Subtitle1ViewCenterHorizontal"
+        style="@style/Subtitle1"
         android:layout_width="0dp"
         android:layout_marginTop="12dp"
+        android:gravity="center_horizontal"
         android:text="@string/onboarding_slide_3_description"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"

@@ -32,7 +32,7 @@
 
       <TextView
         android:id="@+id/admin_pin_main_text"
-        style="@style/Subtitle1ViewStart"
+        style="@style/Subtitle1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
@@ -45,7 +45,7 @@
 
       <TextView
         android:id="@+id/admin_pin_warning_text"
-        style="@style/Subtitle1ViewStart"
+        style="@style/Subtitle1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
