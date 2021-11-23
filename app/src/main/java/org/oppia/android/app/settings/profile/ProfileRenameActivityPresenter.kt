@@ -4,10 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileRenameActivityBinding
-import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /** The presenter for [ProfileRenameActivity]. */
