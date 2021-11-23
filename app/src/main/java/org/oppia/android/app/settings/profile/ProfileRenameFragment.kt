@@ -9,16 +9,15 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/** Fragment that provides functionality for renaming the profile name. */
 class ProfileRenameFragment : InjectableFragment() {
   @Inject
   lateinit var profileRenameFragmentPresenter: ProfileRenameFragmentPresenter
 
   companion object {
-    //    private const val PROFILE_RENAME_FRAGMENT_DEPENDENCY_INDEX =
-//      "ProfileRenameFragment.dependency_index"
-//    private const val PROFILE_RENAME_FRAGMENT_PROFILE_INDEX =
-//      "ProfileRenameFragment.profile_index"
     private const val PROFILE_ID = "Profile_Id"
+
+    /** Returns the instance of [ProfileRenameFragment]. */
     fun newInstance(profileId: Int): ProfileRenameFragment {
       val profileRenameFragment = ProfileRenameFragment()
       val args = Bundle()

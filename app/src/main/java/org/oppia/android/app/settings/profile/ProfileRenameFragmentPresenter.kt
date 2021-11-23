@@ -20,6 +20,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
+/** The Presenter for [ProfileRenameFragment]. */
 @FragmentScope
 class ProfileRenameFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -34,6 +35,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
 
   private lateinit var binding: ProfileRenameFragmentBinding
 
+  /** Handlers onCreateView() method of [ProfileRenameFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
