@@ -18,6 +18,8 @@ class ProfileResetPinActivity : InjectableAppCompatActivity() {
   lateinit var profileResetPinActivityPresenter: ProfileResetPinActivityPresenter
 
   companion object {
+
+    /** returns [Intent] for [ProfileResetPinActivity]. */
     fun createProfileResetPinActivity(context: Context, profileId: Int, isAdmin: Boolean): Intent {
       val intent = Intent(context, ProfileResetPinActivity::class.java)
       intent.putExtra(PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY, profileId)
