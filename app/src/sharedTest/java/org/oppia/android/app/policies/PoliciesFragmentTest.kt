@@ -32,6 +32,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -119,7 +120,7 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPrivacyPolicyFragment_checkPrivacyPolicy_isDisplayed() {
-    launch<PoliciesActivity>(createPoliciesActivity(Policies.PRIVACY_POLICY)).use {
+    launch<PoliciesActivity>(createPoliciesActivity(PolicyPage.PRIVACY_POLICY)).use {
       onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
     }
@@ -127,7 +128,7 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPrivacyPolicyFragment_checkPrivacyPolicyWebLink_isDisplayed() {
-    launch<PoliciesActivity>(createPoliciesActivity(Policies.PRIVACY_POLICY)).use {
+    launch<PoliciesActivity>(createPoliciesActivity(PolicyPage.PRIVACY_POLICY)).use {
       onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
     }
@@ -135,7 +136,7 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPrivacyPolicyFragment_checkTermsOfService_isDisplayed() {
-    launch<PoliciesActivity>(createPoliciesActivity(Policies.TERMS_OF_SERVICE)).use {
+    launch<PoliciesActivity>(createPoliciesActivity(PolicyPage.TERMS_OF_SERVICE)).use {
       onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
     }
@@ -143,7 +144,7 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPrivacyPolicyFragment_checkTermsOfServiceWebLink_isDisplayed() {
-    launch<PoliciesActivity>(createPoliciesActivity(Policies.TERMS_OF_SERVICE)).use {
+    launch<PoliciesActivity>(createPoliciesActivity(PolicyPage.TERMS_OF_SERVICE)).use {
       onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
     }
@@ -151,7 +152,7 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPrivacyPolicyFragment_checkPrivacyPolicy_isCorrectlyParsed() {
-    activityTestRule.launchActivity(createPoliciesActivity(Policies.PRIVACY_POLICY))
+    activityTestRule.launchActivity(createPoliciesActivity(PolicyPage.PRIVACY_POLICY))
     val privacyPolicyTextView = activityTestRule.activity.findViewById(
       R.id.policies_description_text_view
     ) as TextView
@@ -170,7 +171,7 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPrivacyPolicyFragment_checkTermsOfService_isCorrectlyParsed() {
-    activityTestRule.launchActivity(createPoliciesActivity(Policies.TERMS_OF_SERVICE))
+    activityTestRule.launchActivity(createPoliciesActivity(PolicyPage.TERMS_OF_SERVICE))
     val privacyPolicyTextView = activityTestRule.activity.findViewById(
       R.id.policies_description_text_view
     ) as TextView
@@ -187,20 +188,24 @@ class PoliciesFragmentTest {
     assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
-  private fun createPoliciesActivity(policies: Policies): Intent {
+  private fun createPoliciesActivity(policies: PolicyPage): Intent {
     return when (policies) {
-      Policies.PRIVACY_POLICY -> {
+      PolicyPage.PRIVACY_POLICY -> {
         PoliciesActivity.createPoliciesActivityIntent(
           ApplicationProvider.getApplicationContext(),
-          Policies.PRIVACY_POLICY.ordinal
+          PolicyPage.PRIVACY_POLICY
         )
       }
-      Policies.TERMS_OF_SERVICE -> {
+      PolicyPage.TERMS_OF_SERVICE -> {
         PoliciesActivity.createPoliciesActivityIntent(
           ApplicationProvider.getApplicationContext(),
-          Policies.TERMS_OF_SERVICE.ordinal
+          PolicyPage.TERMS_OF_SERVICE
         )
       }
+      else -> PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.POLICY_PAGE_UNSPECIFIED
+      )
     }
   }
 

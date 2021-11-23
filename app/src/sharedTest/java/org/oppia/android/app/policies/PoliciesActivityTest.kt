@@ -24,6 +24,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -105,7 +106,7 @@ class PoliciesActivityTest {
 
   @Test
   fun testPoliciesActivity_hasCorrectPrivacyPolicyActivityLabel() {
-    activityTestRule.launchActivity(createPoliciesActivity(Policies.PRIVACY_POLICY))
+    activityTestRule.launchActivity(createPoliciesActivity(PolicyPage.PRIVACY_POLICY))
     val titleToolbar =
       activityTestRule.activity.findViewById<Toolbar>(R.id.policies_activity_toolbar)
 
@@ -116,7 +117,7 @@ class PoliciesActivityTest {
 
   @Test
   fun testPoliciesActivity_hasCorrectTermsOfServiceActivityLabel() {
-    activityTestRule.launchActivity(createPoliciesActivity(Policies.TERMS_OF_SERVICE))
+    activityTestRule.launchActivity(createPoliciesActivity(PolicyPage.TERMS_OF_SERVICE))
     val titleToolbar =
       activityTestRule.activity.findViewById<Toolbar>(R.id.policies_activity_toolbar)
 
@@ -129,20 +130,22 @@ class PoliciesActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createPoliciesActivity(policies: Policies): Intent {
-    return when (policies) {
-      Policies.PRIVACY_POLICY -> {
+  private fun createPoliciesActivity(policyPage: PolicyPage): Intent {
+    return when (policyPage) {
+      PolicyPage.PRIVACY_POLICY -> {
         PoliciesActivity.createPoliciesActivityIntent(
           ApplicationProvider.getApplicationContext(),
-          Policies.PRIVACY_POLICY.ordinal
+          PolicyPage.PRIVACY_POLICY
         )
       }
-      Policies.TERMS_OF_SERVICE -> {
+      PolicyPage.TERMS_OF_SERVICE -> {
         PoliciesActivity.createPoliciesActivityIntent(
           ApplicationProvider.getApplicationContext(),
-          Policies.TERMS_OF_SERVICE.ordinal
+          PolicyPage.TERMS_OF_SERVICE
         )
       }
+      PolicyPage.POLICY_PAGE_UNSPECIFIED -> TODO()
+      PolicyPage.UNRECOGNIZED -> TODO()
     }
   }
 

@@ -45,6 +45,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -1079,6 +1080,231 @@ class HelpFragmentTest {
       intended(hasComponent(ThirdPartyDependencyListActivity::class.java.name))
     }
   }
+
+  @Test
+  fun testHelpFragment_configChanged_privacyPolicyTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(matches(withText(R.string.privacy_policy_title)))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_configChanged_termsOfServiceTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(matches(withText(R.string.terms_of_service_title)))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_defaultTabletConfig_displaysTermsOfService() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 3,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.terms_of_service_title)
+        )
+      )
+      onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_tabletConfigChanged_displaysTermsOfService() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 3,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+       onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.terms_of_service_title)
+        )
+      )
+      onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_privacyPolicyTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(
+        matches(withText(R.string.privacy_policy_title))
+      )
+    }
+  }
+
+  @Test
+  fun testHelpFragment_termsOfServiceTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(
+        matches(withText(R.string.terms_of_service_title))
+      )
+    }
+  }
+
+  @Test
+  fun openHelpActivity_selectPrivacyPolicyActivity_showPrivacyPolicyActivity() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2
+        )
+      ).perform(click())
+      intended(hasComponent(PoliciesActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun openHelpActivity_selectPrivacyPolicyActivity_showTermsOfServiceActivity() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3
+        )
+      ).perform(click())
+      intended(hasComponent(PoliciesActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_selectPolicies_displaysPolicy() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.privacy_policy_title)
+        )
+      )
+      onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_selectPolicies_tabletConfigChanged_displaysPolicy() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.privacy_policy_title)
+        )
+      )
+      onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
 
   @Test
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
