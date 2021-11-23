@@ -14,6 +14,8 @@ class ProfileResetPinActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
 ) {
+
+  /** Handles onCreate() method of the [ProfileResetPinActivity]. */
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)

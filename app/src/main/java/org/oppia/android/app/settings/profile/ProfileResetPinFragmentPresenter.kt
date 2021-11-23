@@ -18,6 +18,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
+/** The presenter for [ProfileResetPinFragment]. */
 class ProfileResetPinFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,

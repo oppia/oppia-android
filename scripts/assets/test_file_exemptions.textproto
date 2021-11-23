@@ -351,6 +351,8 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/Pr
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileRenameActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileRenameViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinActivityPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinFragment.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/shim/IntentFactoryShim.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/shim/IntentFactoryShimImpl.kt"
