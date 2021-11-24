@@ -1158,7 +1158,7 @@ class HelpFragmentTest {
         isFromNavigationDrawer = true
       )
     ).use {
-       onView(
+      onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 3
@@ -1304,7 +1304,6 @@ class HelpFragmentTest {
       onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
     }
   }
-
 
   @Test
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
