@@ -189,9 +189,8 @@ class HtmlParser private constructor(
   /** Listener that's called when a custom tag triggers an event. */
   interface PolicyOppiaTagActionListener {
     /**
-     * Called when an policy page link is clicked that corresponds to the page that should be shown.
+     * Called when a policy page link is clicked that corresponds to the page that should be shown.
      */
-
     fun onPolicyPageLinkClicked(policyPage: PolicyPage)
   }
 

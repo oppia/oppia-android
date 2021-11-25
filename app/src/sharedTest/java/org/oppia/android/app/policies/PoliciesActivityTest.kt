@@ -144,8 +144,12 @@ class PoliciesActivityTest {
           PolicyPage.TERMS_OF_SERVICE
         )
       }
-      PolicyPage.POLICY_PAGE_UNSPECIFIED -> TODO()
-      PolicyPage.UNRECOGNIZED -> TODO()
+      else -> {
+        PoliciesActivity.createPoliciesActivityIntent(
+          ApplicationProvider.getApplicationContext(),
+          PolicyPage.POLICY_PAGE_UNSPECIFIED
+        )
+      }
     }
   }
 
