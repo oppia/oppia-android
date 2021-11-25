@@ -5,7 +5,6 @@
 -->
 <resources>
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
-  <string name="home_activity_title">الصفحة الرئيسية</string>
   <string name="menu_options">خيارات</string>
   <string name="menu_my_downloads">التنزيلات</string>
   <string name="menu_help">مساعدة</string>
@@ -270,6 +269,7 @@
   <string name="home_activity_back_dialog_message">هل تريد الخروج من ملفك الشخصي؟</string>
   <string name="home_activity_back_dialog_cancel">إلغاء</string>
   <string name="home_activity_back_dialog_exit">خروج</string>
+  <string name="home_activity_title">الصفحة الرئيسية</string>
   <string name="profile_list_activity_title">الملفات الشخصية</string>
   <string name="profile_edit_created">تم الإنشاء في %s</string>
   <string name="profile_last_used">آخر استخدام</string>
