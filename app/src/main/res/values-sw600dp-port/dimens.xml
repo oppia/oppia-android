@@ -392,4 +392,10 @@
   <dimen name="solution_summary_margin_bottom_linear_layout">32dp</dimen>
   <dimen name="solution_summary_margin_top_solution_summary_label">16dp</dimen>
 
+  <!-- profile_chooser_profile_view -->
+  <dimen name="profile_chooser_profile_divider_view_layout_margin_top">28dp</dimen>
+  <dimen name="profile_chooser_profile_text_view_layout_margin_start">72dp</dimen>
+  <dimen name="profile_chooser_profile_text_view_layout_margin_top">28dp</dimen>
+  <dimen name="profile_chooser_profile_text_view_layout_margin_end">72dp</dimen>
+
 </resources>
