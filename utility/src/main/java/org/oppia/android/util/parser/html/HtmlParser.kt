@@ -153,7 +153,7 @@ class HtmlParser private constructor(
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
-    handlersMap[CUSTOM_PRIVACY_POLICY_PAGE_TAG] = policyPageTagHandler
+    handlersMap[CUSTOM_POLICY_PAGE_TAG] = policyPageTagHandler
     return handlersMap
   }
 

@@ -9,7 +9,7 @@ import org.oppia.android.app.model.PolicyPage
 import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [PolicyPageTagHandler]. */
-const val CUSTOM_PRIVACY_POLICY_PAGE_TAG = "oppia-noninteractive-policy"
+const val CUSTOM_POLICY_PAGE_TAG = "oppia-noninteractive-policy"
 private const val PRIVACY_POLICY_PAGE = "Privacy Policy"
 private const val TERMS_OF_SERVICE_PAGE = "Terms of Service"
 
