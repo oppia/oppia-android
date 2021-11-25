@@ -30,6 +30,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
 
     /** Returns the [Intent] for opening [PoliciesActivity]. */
