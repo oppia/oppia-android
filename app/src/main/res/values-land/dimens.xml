@@ -384,7 +384,7 @@
   <dimen name="profile_rename_activity_profile_rename_input_margin_end">168dp</dimen>
   <dimen name="profile_rename_activity_profile_rename_save_button_margin_end">168dp</dimen>
 
-  <!-- profile_chooser_profile_view -->
+  <!-- Profile Chooser Profile View -->
   <dimen name="profile_chooser_profile_divider_view_layout_margin_top">28dp</dimen>
   <dimen name="profile_chooser_profile_text_view_layout_margin_start">72dp</dimen>
   <dimen name="profile_chooser_profile_text_view_layout_margin_top">28dp</dimen>
