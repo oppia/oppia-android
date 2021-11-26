@@ -43,6 +43,7 @@ class ProfileRenameFragment : InjectableFragment() {
     return profileRenameFragmentPresenter.handleCreateView(
       inflater,
       container,
+      profileId
     )
   }
 }

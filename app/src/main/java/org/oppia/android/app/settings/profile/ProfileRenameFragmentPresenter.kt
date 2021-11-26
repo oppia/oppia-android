@@ -39,13 +39,13 @@ class ProfileRenameFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
+    profileId: Int
   ): View? {
     binding = ProfileRenameFragmentBinding.inflate(
       inflater,
       container,
       false
     )
-    val profileId = activity.intent.getIntExtra(PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, 0)
     binding.apply {
       viewModel = renameViewModel
       lifecycleOwner = fragment
