@@ -62,7 +62,7 @@
         android:background="@color/white"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="@dimen/story_fragment_activity_padding_bottom"
+        android:paddingBottom="@dimen/story_fragment_padding_bottom"
         android:paddingStart="64dp"
         android:paddingEnd="64dp"
         android:scrollbars="none"
