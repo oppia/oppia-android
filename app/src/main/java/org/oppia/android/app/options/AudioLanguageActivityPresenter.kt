@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
+import org.oppia.android.databinding.AudioLanguageActivityBinding
 
 /** The presenter for [AudioLanguageActivity]. */
 @ActivityScope
@@ -13,8 +14,9 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
   private lateinit var prefSummaryValue: String
 
   fun handleOnCreate(prefKey: String, prefValue: String) {
-    activity.setContentView(R.layout.audio_language_activity)
-    val toolbar: androidx.appcompat.widget.Toolbar = activity.findViewById(R.id.audio_language_toolbar)
+    val binding = AudioLanguageActivityBinding.inflate(activity.layoutInflater, null, false)
+    activity.setContentView(binding.root)
+    val toolbar = binding.audioLanguageToolbar
     toolbar.setNavigationOnClickListener {
       val intent = Intent().apply {
         putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, prefSummaryValue)
