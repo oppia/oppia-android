@@ -9,6 +9,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -119,6 +121,7 @@ class ProfileRenameFragmentTest {
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -150,6 +153,7 @@ class ProfileRenameFragmentTest {
       Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
         .perform(ViewActions.click())
       testCoroutineDispatchers.runCurrent()
+       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
@@ -172,6 +176,7 @@ class ProfileRenameFragmentTest {
       )
       testCoroutineDispatchers.runCurrent()
     }
+     intended(hasComponent(ProfileEditActivity::class.java.name))
   }
 
   @Test
