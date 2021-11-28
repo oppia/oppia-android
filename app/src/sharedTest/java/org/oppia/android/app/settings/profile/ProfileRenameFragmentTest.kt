@@ -153,7 +153,7 @@ class ProfileRenameFragmentTest {
       Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
         .perform(ViewActions.click())
       testCoroutineDispatchers.runCurrent()
-       intended(hasComponent(ProfileEditActivity::class.java.name))
+      intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
@@ -176,7 +176,7 @@ class ProfileRenameFragmentTest {
       )
       testCoroutineDispatchers.runCurrent()
     }
-     intended(hasComponent(ProfileEditActivity::class.java.name))
+    intended(hasComponent(ProfileEditActivity::class.java.name))
   }
 
   @Test
