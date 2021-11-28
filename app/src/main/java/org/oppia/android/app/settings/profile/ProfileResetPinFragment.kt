@@ -54,11 +54,11 @@ class ProfileResetPinFragment : InjectableFragment() {
     val profileResetPinProfileId = args.getInt(PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY)
     val profileResetPinIsAdmin = args.getBoolean(PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY)
     return profileResetPinFragmentPresenter.handleCreateView(
-        inflater,
-        container,
-        profileManagementController,
-        profileResetPinProfileId,
-        profileResetPinIsAdmin
-      )
+      inflater,
+      container,
+      profileManagementController,
+      profileResetPinProfileId,
+      profileResetPinIsAdmin
+    )
   }
 }
