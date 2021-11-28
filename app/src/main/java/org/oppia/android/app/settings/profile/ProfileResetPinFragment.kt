@@ -10,18 +10,17 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
-/** Fragment that resets the profile pin of the user
- */
+/** Fragment that resets the profile pin of the user. */
 class ProfileResetPinFragment : InjectableFragment() {
   @Inject
   lateinit var profileResetPinFragmentPresenter: ProfileResetPinFragmentPresenter
 
   companion object {
     private lateinit var profileManagementController: ProfileManagementController
-    private const val PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY =
-      "ProfileResetPinActivity.profile_reset_pin_profile_id"
-    private const val PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY =
-      "ProfileResetPinActivity.profile_reset_pin_is_admin"
+    private const val PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY =
+      "ProfileResetPinActivity.profile_id"
+    private const val PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY =
+      "ProfileResetPinActivity.is_admin"
 
     /** Returns instance of [ProfileResetPinFragment]. */
     fun newInstance(
@@ -32,8 +31,8 @@ class ProfileResetPinFragment : InjectableFragment() {
       val fragment = ProfileResetPinFragment()
       val args = Bundle()
       this.profileManagementController = profileManagementController
-      args.putInt(PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY, profileResetPinProfileId)
-      args.putBoolean(PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY, profileResetPinIsAdmin)
+      args.putInt(PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY, profileResetPinProfileId)
+      args.putBoolean(PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY, profileResetPinIsAdmin)
       fragment.arguments = args
       return fragment
     }
@@ -52,10 +51,9 @@ class ProfileResetPinFragment : InjectableFragment() {
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to ProfileResetPinFragment"
     }
-    val profileResetPinProfileId = args.getInt(PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY)
-    val profileResetPinIsAdmin = args.getBoolean(PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY)
-    return profileResetPinFragmentPresenter
-      .handleCreateView(
+    val profileResetPinProfileId = args.getInt(PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY)
+    val profileResetPinIsAdmin = args.getBoolean(PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY)
+    return profileResetPinFragmentPresenter.handleCreateView(
         inflater,
         container,
         profileManagementController,
