@@ -47,7 +47,7 @@
 
       <TextView
         android:id="@+id/profile_edit_name"
-        style="@style/Heading2"
+        style="@style/Heading2ViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -60,7 +60,7 @@
 
       <TextView
         android:id="@+id/profile_edit_created"
-        style="@style/Subtitle2"
+        style="@style/Subtitle2ViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
@@ -149,6 +149,7 @@
 
         <TextView
           android:id="@+id/profile_edit_allow_download_heading"
+          style="@style/TextViewStart"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
@@ -165,6 +166,7 @@
 
         <TextView
           android:id="@+id/profile_edit_allow_download_sub"
+          style="@style/TextViewStart"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"

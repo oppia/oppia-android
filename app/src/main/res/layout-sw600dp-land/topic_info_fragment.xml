@@ -57,29 +57,25 @@
 
         <TextView
           android:id="@+id/topic_description_text_view"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/Body"
           android:layout_marginTop="16dp"
           android:ellipsize="end"
-          android:fontFamily="sans-serif"
           android:maxLines="@{viewModel.isDescriptionExpanded() ? @integer/topic_description_expanded : @integer/topic_description_collapsed}"
           android:paddingStart="64dp"
           android:paddingEnd="64dp"
           android:text="@{viewModel.topicDescription}"
-          android:textColor="@color/oppiaPrimaryText"
-          android:textSize="16sp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/story_count_text_view" />
 
         <TextView
           android:id="@+id/see_more_text_view"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="64dp"
           android:layout_marginEnd="64dp"
           android:fontFamily="sans-serif"
-          android:gravity="start"
           android:minHeight="48dp"
           android:onClick="@{(v) -> viewModel.clickSeeMore()}"
           android:paddingTop="8dp"
@@ -106,11 +102,11 @@
 
         <TextView
           android:id="@+id/download_story_count_text_view"
+          style="@style/TextViewCenterVertical"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="12dp"
           android:fontFamily="sans-serif"
-          android:gravity="center_vertical"
           android:text="@string/topic_downloaded"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="18sp"

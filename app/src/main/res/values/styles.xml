@@ -196,16 +196,53 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
+  <style name="Heading1ViewStart" parent="Heading1">
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="Heading1ViewCenter" parent="Heading1">
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="Heading1ViewCenterVertical" parent="Heading1">
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Heading1ViewCenterHorizontal" parent="Heading1">
+    <item name="android:gravity">center_horizontal</item>
+  </style>
+
   <style name="Heading2" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">20sp</item>
     <item name="fontFamily">sans-serif-medium</item>
   </style>
 
+  <style name="Heading2ViewStart" parent="Heading2">
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="Heading2ViewCenterVertical" parent="Heading2">
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Heading2ViewCenterHorizontal" parent="Heading2">
+    <item name="android:gravity">center_horizontal</item>
+  </style>
+
   <style name="Heading3" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Heading3ViewCenterVertical" parent="Heading3">
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Heading3ViewStart" parent="Heading3">
+    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="Heading4" parent="TextView.Common1">
@@ -214,10 +251,26 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
+  <style name="Heading4ViewCenterVertical" parent="Heading4">
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Heading4ViewStart" parent="Heading4">
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
   <style name="Heading5" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif-medium</item>
+  </style>
+
+  <style name="Heading5ViewCenterVertical" parent="Heading5">
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Heading5ViewStart" parent="Heading5">
+    <item name="android:textAlignment">viewStart</item>
   </style>
 
   <style name="Subtitle1" parent="TextView.Common1">
@@ -226,10 +279,52 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
+  <style name="Subtitle1ViewStart" parent="Subtitle1">
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="Subtitle1ViewCenter" parent="Subtitle1">
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="Subtitle1ViewCenterVertical" parent="Subtitle1">
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Subtitle1ViewCenterHorizontal" parent="Subtitle1">
+    <item name="android:gravity">center_horizontal</item>
+  </style>
+
   <style name="Subtitle2" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <style name="Subtitle2ViewStart" parent="Subtitle2">
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="Subtitle2ViewCenter" parent="Subtitle2">
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="SubtitleLight" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif-light</item>
+    <item name="android:textStyle">italic</item>
+    <item name="fontFamily">sans-serif-light</item>
+  </style>
+
+  <style name="SubtitleLight1" parent="SubtitleLight">
+    <item name="android:textSize">12sp</item>
+  </style>
+
+  <style name="SubtitleLight1Center" parent="SubtitleLight1">
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="SubtitleLight2" parent="SubtitleLight">
+    <item name="android:textSize">16sp</item>
   </style>
 
   <style name="TextFieldLabel" parent="TextView.Common1">
@@ -239,7 +334,10 @@
   </style>
 
   <style name="Body" parent="TextView.Common1">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
     <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textAlignment">viewStart</item>
     <item name="android:textSize">16sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
@@ -248,6 +346,14 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif-medium</item>
+  </style>
+
+  <style name="CaptionViewStart" parent="Caption">
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="CaptionViewCenter" parent="Caption">
+    <item name="android:gravity">center</item>
   </style>
 
   <style name="InputInteractionEditText" parent="Widget.AppCompat.EditText">
@@ -317,4 +423,40 @@
     <item name="android:textColor">@color/white</item>
     <item name="android:textSize">14sp</item>
   </style>
+
+  <style name="MarqueeToolbarTitleTextView" parent="TextView.Common1">
+    <item name="android:ellipsize">marquee</item>
+    <item name="android:fadingEdge">horizontal</item>
+    <item name="android:fadingEdgeLength">20dp</item>
+    <item name="android:focusable">false</item>
+    <item name="android:focusableInTouchMode">true</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:marqueeRepeatLimit">1</item>
+    <item name="android:minHeight">48dp</item>
+    <item name="android:textAlignment">viewStart</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textSize">20sp</item>
+    <item name="android:requiresFadingEdge">horizontal</item>
+    <item name="android:scrollHorizontally">true</item>
+    <item name="android:singleLine">true</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="textAllCaps">false</item>
+  </style>
+
+  <style name="TextViewStart" parent="TextView.Common1">
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+
+  <style name="TextViewCenter" parent="TextView.Common1">
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="TextViewCenterVertical" parent="TextView.Common1">
+    <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="TextViewCenterHorizontal" parent="TextView.Common1">
+    <item name="android:gravity">center_horizontal</item>
+  </style>
+
 </resources>
