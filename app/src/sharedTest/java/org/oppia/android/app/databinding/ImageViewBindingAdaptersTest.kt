@@ -2,7 +2,9 @@ package org.oppia.android.app.databinding
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -10,10 +12,14 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -83,6 +89,11 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.hamcrest.CoreMatchers.allOf
+import org.oppia.android.app.utility.EspressoTestsMatchers
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.testing.profile.ProfileTestHelper
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 
 /** Tests for [ImageViewBindingAdaptersTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -98,6 +109,15 @@ class ImageViewBindingAdaptersTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
   @get:Rule
   var activityRule: ActivityScenarioRule<ImageViewBindingAdaptersTestActivity> =
     ActivityScenarioRule(
@@ -111,12 +131,53 @@ class ImageViewBindingAdaptersTest {
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
+    testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
   }
 
   @After
   fun tearDown() {
     Intents.release()
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
+
+  @Test
+  fun testImageViewBindingAdapters_imageView_has_correctDrawableByResourceId() {
+    activityRule.scenario.runWithActivity {
+      testCoroutineDispatchers.runCurrent()
+      val imageView = getImageView(it)
+      testCoroutineDispatchers.runCurrent()
+      ImageViewBindingAdapters.setImageDrawableCompat(
+        imageView,
+        R.drawable.ic_portrait_onboarding_0
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(allOf(withId(R.id.image_view_for_data_binding)))
+        .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.ic_portrait_onboarding_0)))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.image_view_for_data_binding)))
+        .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.ic_portrait_onboarding_0)))
+    }
+  }
+
+  @Test
+  fun testImageViewBindingAdapters_imageView_has_correctDrawableByDrawable() {
+    activityRule.scenario.runWithActivity {
+      val imageView = getImageView(it)
+      val drawable = it.getDrawable(R.drawable.ic_portrait_onboarding_0)
+      ImageViewBindingAdapters.setImageDrawableCompat(imageView, drawable)
+      onView(allOf(withId(R.id.image_view_for_data_binding)))
+        .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.ic_portrait_onboarding_0)))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.image_view_for_data_binding)))
+        .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.ic_portrait_onboarding_0)))
+    }
+  }
+
+//  @Test
+//  fun testImageViewBindingAdapters_imageView_setProfileImage() {
+//
+//  }
 
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
