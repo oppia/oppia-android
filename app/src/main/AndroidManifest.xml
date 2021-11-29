@@ -6,7 +6,6 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
-
   <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".app.application.OppiaApplication"
@@ -16,10 +15,6 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
-    <activity
-      android:name=".app.testing.ImageViewBindingAdaptersTestActivity"
-      android:exported="true" />
-
     <meta-data
       android:name="firebase_analytics_collection_deactivated"
       android:value="true" />
@@ -157,8 +152,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.splash.SplashActivity"
-      android:screenOrientation="portrait"
       android:label="@string/app_name"
+      android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
