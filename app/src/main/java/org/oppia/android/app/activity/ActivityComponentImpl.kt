@@ -179,5 +179,4 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
-  fun inject(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity)
 }
