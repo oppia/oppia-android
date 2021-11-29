@@ -41,7 +41,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
     }
     if (getProfileResetPinFragment() == null) {
       val profileResetPinFragment =
-        ProfileResetPinFragment.newInstance(profileId, isAdmin, profileManagementController)
+        ProfileResetPinFragment.newInstance(profileId, isAdmin)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.profile_reset_pin_fragment_placeholder, profileResetPinFragment).commitNow()
     }

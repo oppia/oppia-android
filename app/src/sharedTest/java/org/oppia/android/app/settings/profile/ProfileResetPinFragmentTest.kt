@@ -138,7 +138,7 @@ class ProfileResetPinFragmentTest {
   }
 
   @Test
-  fun testProfileResetPin_withAdmin_inputBothPin_save_opensProfileEditActivity() {
+  fun testProfileResetPin_withAdmin_inputBothPin_save_opensprofileResetPinFragment() {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
@@ -173,7 +173,7 @@ class ProfileResetPinFragmentTest {
   }
 
   @Test
-  fun testProfileResetPin_withAdmin_inputBothPin_imeAction_opensProfileEditActivity() {
+  fun testProfileResetPin_withAdmin_inputBothPin_imeAction_opensprofileResetPinFragment() {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
@@ -206,7 +206,7 @@ class ProfileResetPinFragmentTest {
   }
 
   @Test
-  fun testProfileResetPin_withAdmin_configChange_inputBothPin_save_opensProfileEditActivity() {
+  fun testProfileResetPin_withAdmin_configChange_inputBothPin_save_opensprofileResetPinFragment() {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,
@@ -246,7 +246,7 @@ class ProfileResetPinFragmentTest {
   }
 
   @Test
-  fun testProfileResetPin_withUser_inputBothPin_save_opensProfileEditActivity() {
+  fun testProfileResetPin_withUser_inputBothPin_save_opensprofileResetPinFragment() {
     ActivityScenario.launch<ProfileResetPinActivity>(
       ProfileResetPinActivity.createProfileResetPinActivity(
         context = context,

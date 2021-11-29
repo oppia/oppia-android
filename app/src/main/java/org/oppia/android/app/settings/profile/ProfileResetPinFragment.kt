@@ -16,7 +16,6 @@ class ProfileResetPinFragment : InjectableFragment() {
   lateinit var profileResetPinFragmentPresenter: ProfileResetPinFragmentPresenter
 
   companion object {
-    private lateinit var profileManagementController: ProfileManagementController
     private const val PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY =
       "ProfileResetPinActivity.profile_id"
     private const val PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY =
@@ -26,11 +25,9 @@ class ProfileResetPinFragment : InjectableFragment() {
     fun newInstance(
       profileResetPinProfileId: Int,
       profileResetPinIsAdmin: Boolean,
-      profileManagementController: ProfileManagementController
     ): ProfileResetPinFragment {
       val fragment = ProfileResetPinFragment()
       val args = Bundle()
-      this.profileManagementController = profileManagementController
       args.putInt(PROFILE_RESET_PIN_PROFILE_ID_ARGUMENT_KEY, profileResetPinProfileId)
       args.putBoolean(PROFILE_RESET_PIN_IS_ADMIN_ARGUMENT_KEY, profileResetPinIsAdmin)
       fragment.arguments = args
@@ -56,7 +53,6 @@ class ProfileResetPinFragment : InjectableFragment() {
     return profileResetPinFragmentPresenter.handleCreateView(
       inflater,
       container,
-      profileManagementController,
       profileResetPinProfileId,
       profileResetPinIsAdmin
     )
