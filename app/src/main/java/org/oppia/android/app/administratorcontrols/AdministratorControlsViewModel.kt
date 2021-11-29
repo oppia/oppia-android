@@ -64,10 +64,17 @@ class AdministratorControlsViewModel @Inject constructor(
   private fun processAdministratorControlsList(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
+//    val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
+//      AdministratorControlsGeneralViewModel()
+//    )
+//    itemViewModelList.add(
+//      AdministratorControlsProfileViewModel(
+//        routeToProfileListListener,
+//        loadProfileListListener
+//      )
+//    )
+
     val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
-      AdministratorControlsGeneralViewModel()
-    )
-    itemViewModelList.add(
       AdministratorControlsProfileViewModel(
         routeToProfileListListener,
         loadProfileListListener
