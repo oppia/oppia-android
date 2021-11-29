@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 
 /** Fragment that resets the profile pin of the user. */
