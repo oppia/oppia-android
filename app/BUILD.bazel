@@ -640,6 +640,7 @@ kt_android_library(
         ":listeners",
         ":resources",
         "//app/src/main/java/org/oppia/android/app/shim:intent_factory_shim",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_array_list",
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",

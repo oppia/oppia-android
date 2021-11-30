@@ -111,6 +111,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.android.synthetic.main.add_profile_activity.*
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -169,6 +170,19 @@ class AddProfileActivityTest {
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(label).isEqualTo(context.getString(R.string.add_profile_activity_label))
+  }
+
+  @Test
+  fun testAddProfileActivity_required_heading_text_view_hasCorrectRequiredString() {
+    launch(
+      AddProfileActivity::class.java
+    ).use {
+      onView(allOf(withId(R.id.add_profile_activity_required_heading_text_view))).check(
+        matches(
+          withText("*" + context.getString(R.string.add_profile_required))
+        )
+      )
+    }
   }
 
   @Test
