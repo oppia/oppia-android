@@ -16,7 +16,6 @@ All ``DataProvider``s are convertible to ``LiveData`` using an extension functio
 
 ### Best practices/antipractices
 
-Best practices:
 - Prefer to start with a ``DataProvider`` (e.g. in-memory, file-provided, or network-provided) and then transform/combine it as needed rather than creating new dispatchers
 - Never use coroutines outside of the domain layer
 - Never perform any multi-threading operations outside of coroutines (except when unavoidable--see the 'other cases for background processing' section)
