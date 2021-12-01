@@ -23,6 +23,7 @@ class ProfileListFragmentPresenter @Inject constructor(
 
   private var isMultipane = false
 
+  /** Handles the onCreateView of [ProfileListFragment]. */
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,

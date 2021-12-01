@@ -7,8 +7,11 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/** Argument key for Profile Id for resetting the pin. */
 const val PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY =
   "ProfileResetPinActivity.profile_reset_pin_profile_id"
+
+/**Argument key for confirming profile is admin. */
 const val PROFILE_RESET_PIN_IS_ADMIN_EXTRA_KEY =
   "ProfileResetPinActivity.profile_reset_pin_is_admin"
 

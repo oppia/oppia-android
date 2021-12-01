@@ -17,6 +17,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
+/** Argument key for Profile Deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
 
 /** The presenter for [ProfileEditFragment]. */
@@ -31,6 +32,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
   @Inject
   lateinit var profileEditViewModel: ProfileEditViewModel
 
+  /** This handles OnCreateView() of [ProfileEditFragment]. */
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -113,6 +115,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_PROFILE_DELETION_DIALOG)
   }
 
+  /** This function is responsible for the deletion of the profile in [ProfileEditFragment]. */
   fun deleteProfile(internalProfileId: Int) {
     profileManagementController
       .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()

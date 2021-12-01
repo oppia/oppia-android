@@ -19,6 +19,8 @@ class ProfileListViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val machineLocale: OppiaLocale.MachineLocale
 ) : ObservableViewModel() {
+
+  /** A live data List for managing the users displayed in the [ProifleListFragment]. */
   val profiles: LiveData<List<Profile>> by lazy {
     Transformations.map(
       profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult

@@ -16,6 +16,7 @@ class ProfileEditActivityPresenter @Inject constructor(
 
   private lateinit var toolbar: Toolbar
 
+  /** This handles the Intent creation of the [ProfileEditActivity]. */
   fun handleOnCreate() {
     activity.setContentView(R.layout.profile_edit_activity)
     setUpToolbar()

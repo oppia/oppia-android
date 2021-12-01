@@ -26,6 +26,7 @@ class ProfileEditViewModel @Inject constructor(
   /** Specifies whether download access has been enabled by the user. */
   val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
 
+  /** live data for managing profile. */
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
       profileManagementController.getProfile(profileId).toLiveData(),
@@ -33,12 +34,15 @@ class ProfileEditViewModel @Inject constructor(
     )
   }
 
+  /** verifies whether the user has admin rights or not. */
   var isAdmin = false
 
+  /** sets the profile id of all the users. */
   fun setProfileId(id: Int) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
   }
 
+  /** this fetches the profile of a user asynchronously. */
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       oppiaLogger.e(
