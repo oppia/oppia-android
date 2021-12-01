@@ -153,7 +153,7 @@ class OnboardingFragmentPresenter @Inject constructor(
         false
       )
       else -> StatusBarColor.statusBarColorUpdate(
-        R.color.colorPrimaryDark,
+        R.color.oppia_primary_dark,
         activity,
         false
       )

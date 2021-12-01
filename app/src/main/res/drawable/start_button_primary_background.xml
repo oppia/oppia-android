@@ -10,7 +10,7 @@
       </item>
       <item android:bottom="2dp">
         <shape>
-          <solid android:color="@color/colorPrimary" />
+          <solid android:color="@color/oppia_primary" />
           <corners android:radius="4dp" />
         </shape>
       </item>

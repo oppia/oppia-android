@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="colorPrimary">#00645C</color>
-  <color name="colorPrimaryDark">#003933</color>
-  <color name="colorAccent">#2D4A9D</color>
-  <color name="progressBackgroundTint">#081661</color>
-  <color name="colorConceptCardBackground">#FFFFF0</color>
-  <color name="colorConceptToolbarBackground">#BE563C</color>
-  <color name="colorConceptToolbarHeading">#A6503A</color>
+  <color name="oppia_primary">#00645C</color>
+  <color name="oppia_primary_dark">#003933</color>
+  <color name="oppia_accent">#2D4A9D</color>
+  <color name="progress_background_tint">#081661</color>
+  <color name="concept_card_background">#FFFFF0</color>
+  <color name="concept_toolbar_background">#BE563C</color>
+  <color name="concept_toolbar_heading">#A6503A</color>
   <color name="ic_launcher_background">#26A69A</color>
   <!-- OPPIA COLORS -->
   <color name="oppiaDarkBlue">#2D4A9D</color>

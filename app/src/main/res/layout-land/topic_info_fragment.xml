@@ -84,7 +84,7 @@
         android:onClick="@{(v) -> viewModel.clickSeeMore()}"
         android:paddingTop="8dp"
         android:text="@{viewModel.isDescriptionExpanded() ? @string/see_less : @string/see_more}"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/oppia_primary"
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="@{viewModel.isSeeMoreVisible() ? View.VISIBLE : View.GONE}"

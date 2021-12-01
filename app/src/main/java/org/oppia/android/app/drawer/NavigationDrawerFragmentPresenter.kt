@@ -421,7 +421,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
-            R.color.colorPrimaryDark,
+            R.color.oppia_primary_dark,
             activity,
             false
           )
@@ -458,7 +458,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           super.onDrawerClosed(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
-            R.color.colorPrimaryDark,
+            R.color.oppia_primary_dark,
             activity,
             false
           )

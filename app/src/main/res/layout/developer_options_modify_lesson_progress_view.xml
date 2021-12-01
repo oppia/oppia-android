@@ -23,7 +23,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/developer_options_modify_lesson_progress_label"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/oppia_primary"
       app:layout_constraintBottom_toTopOf="@id/mark_chapters_completed_text_view"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

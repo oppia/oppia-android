@@ -23,7 +23,7 @@
       android:paddingEnd="36dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_account_actions_label"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/oppia_primary"
       app:layout_constraintBottom_toTopOf="@id/log_out_text_view"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
