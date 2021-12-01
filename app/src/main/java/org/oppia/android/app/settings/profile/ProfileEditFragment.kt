@@ -15,11 +15,14 @@ class ProfileEditFragment : InjectableFragment(), ProfileEditDialogInterface {
   lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
   companion object {
+    const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
     fun newInstance(
-      internalProfileId: Int
+      internalProfileId: Int,
+      isMultipane: Boolean
     ): ProfileEditFragment {
       val args = Bundle()
       args.putInt(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, internalProfileId)
+      args.putBoolean(IS_MULTIPANE_EXTRA_KEY, isMultipane)
       val fragment = ProfileEditFragment()
       fragment.arguments = args
       return fragment
@@ -40,10 +43,12 @@ class ProfileEditFragment : InjectableFragment(), ProfileEditDialogInterface {
       "Expected variables to be passed to ProfileEditFragment"
     }
     val internalProfileId = args.getInt(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY)
+    val isMultipane = args.getBoolean(IS_MULTIPANE_EXTRA_KEY)
     return profileEditFragmentPresenter.handleOnCreateView(
       inflater,
       container,
-      internalProfileId
+      internalProfileId,
+      isMultipane
     )
   }
 

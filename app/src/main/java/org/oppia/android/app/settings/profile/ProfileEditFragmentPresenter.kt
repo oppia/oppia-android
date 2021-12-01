@@ -34,7 +34,8 @@ class ProfileEditFragmentPresenter @Inject constructor(
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    internalProfileId: Int,
+    isMultipane: Boolean
   ): View? {
     val binding = ProfileEditFragmentBinding.inflate(
       inflater,
