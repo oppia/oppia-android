@@ -9,12 +9,11 @@
   <color name="concept_toolbar_heading">#A6503A</color>
   <color name="ic_launcher_background">#26A69A</color>
   <!-- OPPIA COLORS -->
-  <color name="oppiaDarkBlue">#2D4A9D</color>
-  <color name="oppiaPrimaryText">#333333</color>
-  <color name="oppiaPrimaryLight">#009688</color>
-  <color name="oppiaPrimaryText30">#4D333333</color>
-  <color name="oppiaPrimaryTextDark">#DE000000</color>
-  <color name="oppiaPrimaryDark">#00645C</color>
+  <color name="oppia_dark_blue">#2D4A9D</color>
+  <color name="oppia_primary_text">#333333</color>
+  <color name="oppia_primary_light">#009688</color>
+  <color name="oppia_primary_text_30">#4D333333</color>
+  <color name="oppia_primary_text_dark">#DE000000</color>
   <color name="oppiaSecondaryText">#666666</color>
   <color name="oppiaLightGreen">#F0FFFF</color>
   <color name="oppiaLightYellow">#FFFFF0</color>
@@ -57,7 +56,7 @@
   <color name="confetti_yellow">#FFE558</color>
   <color name="confetti_blue">#2D4A9D</color>
   <!-- AUDIO COMPONENT -->
-  <color name="audioComponentBackground">@color/oppiaDarkBlue</color>
+  <color name="audioComponentBackground">@color/oppia_dark_blue</color>
   <!-- PROFILE COMPONENT -->
   <color name="avatarBorder">#707070</color>
   <color name="addProfileBackground">#FFFFF0</color>

@@ -53,7 +53,7 @@
         android:background="@color/white"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_update_on_wifi_title"
-        android:textColor="@color/oppiaPrimaryTextDark"
+        android:textColor="@color/oppia_primary_text_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -120,7 +120,7 @@
         android:background="@color/white"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_auto_update_title"
-        android:textColor="@color/oppiaPrimaryTextDark"
+        android:textColor="@color/oppia_primary_text_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -58,7 +58,7 @@
             android:layout_marginEnd="@dimen/concept_card_heading_text_margin_end"
             android:fontFamily="sans-serif-medium"
             android:text="@{viewModel.conceptCardLiveData.conceptCard.skillDescription}"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="20sp" />
 
           <TextView

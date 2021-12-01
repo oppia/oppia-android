@@ -34,7 +34,7 @@
         android:layout_marginEnd="@dimen/home_welcome_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.greeting}"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="24sp" />
 
       <TextView
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.computeProfileNameText()}"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="24sp" />
     </com.google.android.flexbox.FlexboxLayout>
 

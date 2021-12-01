@@ -95,7 +95,7 @@
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
             android:text="@{viewModel.computeChapterTitleText()}"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

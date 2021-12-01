@@ -169,13 +169,13 @@
     <item name="boxCornerRadiusBottomStart">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopEnd">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopStart">@dimen/text_input_layout_corner_radius</item>
-    <item name="boxStrokeColor">@color/oppiaPrimaryText</item>
+    <item name="boxStrokeColor">@color/oppia_primary_text</item>
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
     <item name="errorEnabled">true</item>
     <item name="errorIconTint">@color/oppiaRed</item>
     <item name="errorTextColor">@color/oppiaRed</item>
     <item name="boxStrokeErrorColor">@color/oppiaRed</item>
-    <item name="hintTextColor">@color/oppiaPrimaryText</item>
+    <item name="hintTextColor">@color/oppia_primary_text</item>
     <item name="android:textAlignment">viewStart</item>
   </style>
 
@@ -183,7 +183,7 @@
     <item name="fontFamily">sans-serif</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="textAllCaps">false</item>
-    <item name="android:textColor">@color/oppiaPrimaryText</item>
+    <item name="android:textColor">@color/oppia_primary_text</item>
     <item name="android:textCursorDrawable">@drawable/color_cursor</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">normal</item>
@@ -370,7 +370,7 @@
     <item name="android:paddingStart">12dp</item>
     <item name="android:paddingTop">8dp</item>
     <item name="android:singleLine">true</item>
-    <item name="android:textColor">@color/oppiaPrimaryText</item>
+    <item name="android:textColor">@color/oppia_primary_text</item>
     <item name="android:textColorHint">@color/editTextHint</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">italic</item>
@@ -390,7 +390,7 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textAllCaps">false</item>
-    <item name="android:textColor">@color/oppiaPrimaryText</item>
+    <item name="android:textColor">@color/oppia_primary_text</item>
   </style>
   <!-- Start Over Lesson Button -->
   <style name="StartOverLessonButton" parent="TextAppearance.AppCompat.Widget.Button">
@@ -402,9 +402,9 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="drawableStartCompat">@drawable/ic_start_over_24dp</item>
     <item name="android:drawablePadding">4dp</item>
-    <item name="drawableTint">@color/oppiaPrimaryDark</item>
+    <item name="drawableTint">@color/oppia_primary</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/oppiaPrimaryDark</item>
+    <item name="android:textColor">@color/oppia_primary</item>
     <item name="android:textSize">14sp</item>
   </style>
   <!-- Continue Lesson Button -->

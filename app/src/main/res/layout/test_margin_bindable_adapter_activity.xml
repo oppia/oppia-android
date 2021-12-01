@@ -13,7 +13,7 @@
       android:text="@string/all_topics"
       android:padding="10dp"
       android:background="@color/oppiaStrokeBlue"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="18sp" />
   </FrameLayout>
 </layout>

@@ -35,7 +35,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.question}"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="14sp" />
 
       <View

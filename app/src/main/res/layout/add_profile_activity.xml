@@ -71,7 +71,7 @@
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@string/add_profile_required"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -193,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@{viewModel.validPin ? @color/oppiaPrimaryTextDark : @color/accessible_grey}"
+                android:textColor="@{viewModel.validPin ? @color/oppia_primary_text_dark : @color/accessible_grey}"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
