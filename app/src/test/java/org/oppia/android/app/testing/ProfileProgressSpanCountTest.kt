@@ -1,7 +1,9 @@
-package org.oppia.android.app.testing.player.split
+package org.oppia.android.app.testing
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,6 +14,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -21,12 +24,12 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.profileprogress.ProfileProgressActivity
+import org.oppia.android.app.profileprogress.ProfileProgressFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.ExplorationTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -69,12 +72,13 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
-// Devices reference: https://material.io/resources/devices/
 @RunWith(AndroidJUnit4::class)
-@Config(application = PlayerSplitScreenTesting.TestApplication::class)
-class PlayerSplitScreenTesting {
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(application = ProfileProgressSpanCountTest.TestApplication::class)
+class ProfileProgressSpanCountTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -88,82 +92,50 @@ class PlayerSplitScreenTesting {
     Intents.release()
   }
 
+  private fun getProfileProgressSpanCount(activity: ProfileProgressActivity): Int {
+    val profileProgressFragment =
+      activity.supportFragmentManager
+        .findFragmentById(R.id.profile_progress_fragment_placeholder) as ProfileProgressFragment
+    val profileProgressRecyclerView =
+      profileProgressFragment.view?.findViewById<RecyclerView>(R.id.profile_progress_list)
+    return (profileProgressRecyclerView?.layoutManager as GridLayoutManager).spanCount
+  }
+
   @Test
-  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_continueInteraction_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
+  fun testProfileProgress_checkRecyclerViewSpanCount_spanIsCorrect() {
+    launch<ProfileProgressActivity>(ProfileProgressActivity::class.java).use {
+      it.onActivity { activity ->
+        assertThat(getProfileProgressSpanCount(activity)).isEqualTo(2)
       }
     }
   }
 
   @Test
-  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_dragInteraction_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
+  @Config(qualifiers = "land")
+  fun testProfileProgress_checkRecyclerViewSpanCount_land_spanIsCorrect() {
+    launch<ProfileProgressActivity>(ProfileProgressActivity::class.java).use {
+      it.onActivity { activity ->
+        assertThat(getProfileProgressSpanCount(activity)).isEqualTo(3)
       }
     }
   }
 
   @Test
-  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_continueInteraction_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
+  @Config(qualifiers = "sw600dp-port")
+  fun testProfileProgress_checkRecyclerViewSpanCount_tabletPort_spanIsCorrect() {
+    launch<ProfileProgressActivity>(ProfileProgressActivity::class.java).use {
+      it.onActivity { activity ->
+        assertThat(getProfileProgressSpanCount(activity)).isEqualTo(3)
       }
     }
   }
 
   @Test
-  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_dragInteraction_split() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isTrue()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w411dp-h731dp-xxxhdpi") // 5.5 (inch)
-  fun testSplitScreen_411x731_xxxhdpi_dragInteraction_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_imageClickInput_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_imageClickInput_split() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isTrue()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w411dp-h731dp-xxxhdpi") // 5.5 (inch)
-  fun testSplitScreen_411x731_xxxhdpi_imageClickInput_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
+  @Config(qualifiers = "sw600dp-land")
+  fun testProfileProgress_checkRecyclerViewSpanCount_tabletLand_spanIsCorrect() {
+    launch<ProfileProgressActivity>(ProfileProgressActivity::class.java).use {
+      it.onActivity { activity ->
+        assertThat(getProfileProgressSpanCount(activity)).isEqualTo(4)
       }
     }
   }
@@ -197,18 +169,18 @@ class PlayerSplitScreenTesting {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(playerSplitScreenTesting: PlayerSplitScreenTesting)
+    fun inject(profileProgressSpanCountTest: ProfileProgressSpanCountTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlayerSplitScreenTesting_TestApplicationComponent.builder()
+      DaggerProfileProgressSpanCount_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(playerSplitScreenTesting: PlayerSplitScreenTesting) {
-      component.inject(playerSplitScreenTesting)
+    fun inject(profileProgressSpanCountTest: ProfileProgressSpanCountTest) {
+      component.inject(profileProgressSpanCountTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
