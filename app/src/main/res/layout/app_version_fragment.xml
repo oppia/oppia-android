@@ -50,7 +50,7 @@
         android:layout_marginEnd="@dimen/app_version_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.computeLastUpdatedDateText()}"
-        android:textColor="@color/oppiaSecondaryText"
+        android:textColor="@color/oppia_secondary_text"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"

@@ -44,7 +44,7 @@
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/faq_content_margin_start"
         android:layout_marginEnd="@dimen/faq_content_margin_end"
-        android:background="@color/oppiaFAQDivider" />
+        android:background="@color/oppia_faq_divider" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

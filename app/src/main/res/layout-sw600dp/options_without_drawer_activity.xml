@@ -16,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/oppiaGreyBackground">
+      android:background="@color/oppia_grey_background">
 
       <FrameLayout
         android:id="@+id/options_fragment_placeholder"
@@ -62,7 +62,7 @@
         android:id="@+id/options_separator"
         android:layout_width="1dp"
         android:layout_height="0dp"
-        android:background="@color/oppiaOnboardingDivider"
+        android:background="@color/oppia_onboarding_divider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/multipane_guideline"
         app:layout_constraintTop_toTopOf="parent" />

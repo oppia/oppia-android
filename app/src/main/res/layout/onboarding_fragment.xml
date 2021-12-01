@@ -18,7 +18,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppiaBackgroundYellowIvory">
+    android:background="@color/oppia_background_yellow_ivory">
 
     <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/onboarding_slide_view_pager"

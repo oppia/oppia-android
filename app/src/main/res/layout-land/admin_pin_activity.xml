@@ -19,7 +19,7 @@
       android:id="@+id/admin_auth_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/oppiaBackgroundYellowIvory"
+      android:background="@color/oppia_background_yellow_ivory"
       android:paddingBottom="108dp">
 
       <View

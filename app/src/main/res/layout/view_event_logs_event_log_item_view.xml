@@ -38,7 +38,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="6dp"
         android:text="@{viewModel.processDateAndTime()}"
-        android:textColor="@color/oppiaSecondaryText" />
+        android:textColor="@color/oppia_secondary_text" />
 
       <TextView
         android:id="@+id/view_event_logs_priority_text_view"

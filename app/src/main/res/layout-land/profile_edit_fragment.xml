@@ -229,7 +229,7 @@
         android:paddingEnd="16dp"
         android:text="@string/profile_edit_delete"
         android:textAllCaps="false"
-        android:textColor="@color/oppiaRed"
+        android:textColor="@color/oppia_red"
         android:textSize="16sp"
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toTopOf="@+id/view5"

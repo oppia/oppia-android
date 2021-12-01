@@ -172,9 +172,9 @@
     <item name="boxStrokeColor">@color/oppia_primary_text</item>
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
     <item name="errorEnabled">true</item>
-    <item name="errorIconTint">@color/oppiaRed</item>
-    <item name="errorTextColor">@color/oppiaRed</item>
-    <item name="boxStrokeErrorColor">@color/oppiaRed</item>
+    <item name="errorIconTint">@color/oppia_red</item>
+    <item name="errorTextColor">@color/oppia_red</item>
+    <item name="boxStrokeErrorColor">@color/oppia_red</item>
     <item name="hintTextColor">@color/oppia_primary_text</item>
     <item name="android:textAlignment">viewStart</item>
   </style>
