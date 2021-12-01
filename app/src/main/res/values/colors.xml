@@ -48,7 +48,7 @@
   <color name="black_12">#1F000000</color>
   <color name="black_26">#42000000</color>
   <color name="black_54">#8A000000</color>
-  <color name="whiteLight">#F9F9F9</color>
+  <color name="white_light">#F9F9F9</color>
   <color name="accessible_grey">#333333</color>
   <color name="accessible_light_grey">#555555</color>
   <!--  CONFETTI COLORS -->
@@ -56,30 +56,29 @@
   <color name="confetti_yellow">#FFE558</color>
   <color name="confetti_blue">#2D4A9D</color>
   <!-- AUDIO COMPONENT -->
-  <color name="audioComponentBackground">@color/oppia_dark_blue</color>
+  <color name="audio_component_background">@color/oppia_dark_blue</color>
   <!-- PROFILE COMPONENT -->
-  <color name="avatarBorder">#707070</color>
-  <color name="addProfileBackground">#FFFFF0</color>
-  <color name="hintsAndSolutionBackground">#E4F2F1</color>
-  <color name="profileChooserBackground">#212121</color>
-  <color name="profileChooserGreyTextColor">#999999</color>
-  <color name="profileEditBackground">#E5E5E5</color>
-  <color name="generalNavigationBackground">#E5E5E5</color>
-  <color name="appVersionBackground">#E5E5E5</color>
-  <color name="navigationGeneralBackground">#E5E5E5</color>
-  <color name="highlightedNavMenuItem">#BE563C</color>
-  <color name="highlightedDeveloperOptionsNavMenuItem">#00609C</color>
-  <color name="navBarHeaderBackground">#264653</color>
+  <color name="avatar_border">#707070</color>
+  <color name="add_profile_background">#FFFFF0</color>
+  <color name="hints_and_solution_background">#E4F2F1</color>
+  <color name="profile_chooser_background">#212121</color>
+  <color name="profile_chooser_grey_text">#999999</color>
+  <color name="profile_edit_background">#E5E5E5</color>
+  <color name="general_navigation_background">#E5E5E5</color>
+  <color name="app_version_background">#E5E5E5</color>
+  <color name="highlighted_nav_menu_item">#BE563C</color>
+  <color name="highlighted_developer_options_nav_menu_item">#00609C</color>
+  <color name="navbar_header_background">#264653</color>
   <!-- SUBMIT BUTTON INACTIVE -->
-  <color name="audioLanguageActivityRadioButton">#00A89F</color>
-  <color name="submitButtonInactive">#61999999</color>
-  <color name="submitButtonTextInactive">#61000000</color>
-  <color name="submitButtonInactiveText">#61000000</color>
+  <color name="audio_language_activity_radio_button">#00A89F</color>
+  <color name="submit_button_inactive">#61999999</color>
+  <color name="submit_button_text_inactive">#61000000</color>
+  <color name="submit_button_inactive_text">#61000000</color>
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->
   <color name="mtrl_textinput_default_box_stroke_color">#666666</color>
-  <color name="editTextError">#923026</color>
-  <color name="editTextHint">#80333333</color>
+  <color name="edit_text_error">#923026</color>
+  <color name="edit_text_hint">#80333333</color>
   <color name="light_grey">#61000000</color>
   <color name="mid_grey">#ff333333</color>
   <color name="mid_grey_05">#0D000000</color>
@@ -90,10 +89,10 @@
   <color name="grey_shade_20">#D6D6D6</color>
   <color name="blue_shade_100">#0F0086FB</color>
   <color name="blue_shade_200">#6B0086FB</color>
-  <color name="chapterCardShadow">#AAFFFFFF</color>
-  <color name="chapterCardGreyBorder">#666666</color>
+  <color name="chapter_card_shadow">#AAFFFFFF</color>
+  <color name="chapter_card_grey_border">#666666</color>
   <color name="divider">#61000000</color>
-  <color name="toolbarDropShadow">#3D000000</color>
+  <color name="toolbar_drop_shadow">#3D000000</color>
   <color name="green_shade">#44A85A</color>
   <color name="green_shade_80">#CC44A85A</color>
   <color name="light_green">#D9F3E7</color>
@@ -128,12 +127,12 @@
   <color name="avatar_background_23">#CC29B1</color>
   <color name="avatar_background_24">#CC2970</color>
   <!-- ReadingTextSizeActivity -->
-  <color name="seekbarDivider">#707070</color>
-  <color name="topicThumbnailBackground">#C6DCDA</color>
-  <color name="topicTitleBackground">#2F6687</color>
+  <color name="seekbar_divider">#707070</color>
+  <color name="topic_thumbnail_background">#C6DCDA</color>
+  <color name="topic_title_background">#2F6687</color>
   <!-- STATUS BAR COLORS -->
   <color name="profileStatusBar">#000000</color>
-  <color name="hintFullDialogStatusBar">#00236E</color>
+  <color name="hint_full_dialog_status_bar">#00236E</color>
   <color name="slideDrawerOpenStatusBar">#001F2A</color>
   <color name="walkthroughStatusBar">#CCCCCC</color>
   <color name="onboarding1StatusBar">#00847A</color>
@@ -141,10 +140,10 @@
   <color name="onboarding3StatusBar">#AD8500</color>
   <color name="onboarding4StatusBar">#3B5893</color>
   <!-- ICON COLORS -->
-  <color name="mergeIconEnabled">#FF000000</color>
-  <color name="mergeIconDisabled">#999999</color>
+  <color name="merge_icon_enabled">#FF000000</color>
+  <color name="merge_icon_disabled">#999999</color>
   <!-- HIGHLIGHTED COLORS -->
-  <color name="adminHighlighted">#A5D3EC</color>
-  <color name="comingSoonEndColor">#674172</color>
-  <color name="comingSoonStartColor">#7659B6</color>
+  <color name="admin_highlighted">#A5D3EC</color>
+  <color name="coming_soon_end">#674172</color>
+  <color name="coming_soon_start">#7659B6</color>
 </resources>

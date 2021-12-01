@@ -47,7 +47,7 @@
 
   <style name="FullScreenHintDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
-    <item name="colorPrimaryDark">@color/hintFullDialogStatusBar</item>
+    <item name="colorPrimaryDark">@color/hint_full_dialog_status_bar</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowIsFloating">false</item>
@@ -371,7 +371,7 @@
     <item name="android:paddingTop">8dp</item>
     <item name="android:singleLine">true</item>
     <item name="android:textColor">@color/oppia_primary_text</item>
-    <item name="android:textColorHint">@color/editTextHint</item>
+    <item name="android:textColorHint">@color/edit_text_hint</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">italic</item>
     <item name="fontFamily">sans-serif</item>
@@ -381,7 +381,7 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:fontFamily">sans-serif</item>
-    <item name="android:textColor">@color/editTextError</item>
+    <item name="android:textColor">@color/edit_text_error</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>

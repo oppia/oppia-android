@@ -13,7 +13,7 @@
     android:id="@+id/admin_auth_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/addProfileBackground">
+    android:background="@color/add_profile_background">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/admin_auth_app_bar_layout"
@@ -119,7 +119,7 @@
             android:enabled="@{viewModel.isSubmitButtonActive}"
             android:minHeight="48dp"
             android:text="@string/admin_auth_submit"
-            android:textColor="@{viewModel.isSubmitButtonActive ? @color/white : @color/submitButtonInactiveText }"
+            android:textColor="@{viewModel.isSubmitButtonActive ? @color/white : @color/submit_button_inactive_text }"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
             app:layout_constraintHorizontal_bias="1.0"

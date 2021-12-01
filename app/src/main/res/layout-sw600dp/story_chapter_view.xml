@@ -178,7 +178,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/chapterCardShadow"
+        android:background="@color/chapter_card_shadow"
         android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
     </FrameLayout>
   </LinearLayout>
