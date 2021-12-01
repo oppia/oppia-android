@@ -411,7 +411,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
-            R.color.slideDrawerOpenStatusBar,
+            R.color.slide_drawer_open_status_bar,
             activity,
             false
           )
@@ -448,7 +448,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           super.onDrawerOpened(drawerView)
           fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
-            R.color.slideDrawerOpenStatusBar,
+            R.color.slide_drawer_open_status_bar,
             activity,
             false
           )

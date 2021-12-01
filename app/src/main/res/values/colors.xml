@@ -25,9 +25,9 @@
   <color name="oppia_stroke_blue">#4D395FD0</color>
   <color name="oppia_solid_blue">#4DA5D3EC</color>
   <color name="oppia_stroke_black">#CC333333</color>
-  <color name="oppiaProgressChapterFinished">#E76F51</color>
-  <color name="oppiaProgressChapterInProgress">#E7AC9B</color>
-  <color name="oppiaProgressChapterNotFinished">#999999</color>
+  <color name="oppia_progress_chapter_finished">#E76F51</color>
+  <color name="oppia_progress_chapter_in_progress">#E7AC9B</color>
+  <color name="oppia_progress_chapter_not_finished">#999999</color>
   <color name="oppia_admin_auth_secondary_text">#555555</color>
   <color name="oppia_onboarding_divider">#707070</color>
   <color name="oppia_disabled_button_background">#33999999</color>
@@ -131,14 +131,14 @@
   <color name="topic_thumbnail_background">#C6DCDA</color>
   <color name="topic_title_background">#2F6687</color>
   <!-- STATUS BAR COLORS -->
-  <color name="profileStatusBar">#000000</color>
+  <color name="profile_status_bar">#000000</color>
   <color name="hint_full_dialog_status_bar">#00236E</color>
-  <color name="slideDrawerOpenStatusBar">#001F2A</color>
-  <color name="walkthroughStatusBar">#CCCCCC</color>
-  <color name="onboarding1StatusBar">#00847A</color>
-  <color name="onboarding2StatusBar">#8B2A15</color>
-  <color name="onboarding3StatusBar">#AD8500</color>
-  <color name="onboarding4StatusBar">#3B5893</color>
+  <color name="slide_drawer_open_status_bar">#001F2A</color>
+  <color name="walkthrough_status_bar">#CCCCCC</color>
+  <color name="onboarding_1_status_bar">#00847A</color>
+  <color name="onboarding_2_status_bar">#8B2A15</color>
+  <color name="onboarding_3_status_bar">#AD8500</color>
+  <color name="onboarding_4_status_bar">#3B5893</color>
   <!-- ICON COLORS -->
   <color name="merge_icon_enabled">#FF000000</color>
   <color name="merge_icon_disabled">#999999</color>
