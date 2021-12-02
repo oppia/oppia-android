@@ -588,4 +588,9 @@
   <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">32dp</dimen>
 
+  <!-- Topic Practice Fragment -->
+  <dimen name="topic_practice_fragment_padding_bottom">172dp</dimen>
+  <dimen name="topic_practice_fragment_padding_start">0dp</dimen>
+  <dimen name="topic_practice_fragment_padding_end">0dp</dimen>
+
 </resources>
