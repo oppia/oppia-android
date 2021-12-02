@@ -30,6 +30,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.oppia.android.util.parser.html.PolicyPageTagHandler.PolicyPageLinkClickListener
@@ -40,8 +41,9 @@ import kotlin.reflect.KClass
 
 private const val POLICY_PAGE_LINK_MARKUP_1 =
   "By using %s, you agree to our <br> <oppia-noninteractive-policy " +
-    "link=\"Terms of Service\"> Terms of Service</oppia-noninteractive-policy> and" +
-    " <oppia-noninteractive-policy link=\"Privacy Policy\">Privacy Policy" +
+    "terms-of-service-link=\"Terms of Service\"> Terms of Service" +
+    "</oppia-noninteractive-policy> and <oppia-noninteractive-policy " +
+    "privacy-policy-link=\"Privacy Policy\">Privacy Policy" +
     "</oppia-noninteractive-policy>."
 
 /** Tests for [PolicyPageTagHandler]. */
@@ -63,6 +65,7 @@ class PolicyPageTagHandlerTest {
 
   @Inject
   lateinit var context: Context
+  @Inject lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithPolicyPageSupport: Map<String, CustomTagHandler>
@@ -74,7 +77,8 @@ class PolicyPageTagHandlerTest {
     noTagHandlers = mapOf()
     tagHandlersWithPolicyPageSupport = mapOf(
       CUSTOM_POLICY_PAGE_TAG to PolicyPageTagHandler(
-        mockPolicyPageLinkClickListener
+        mockPolicyPageLinkClickListener,
+        consoleLogger
       )
     )
     testView = TextView(context)
