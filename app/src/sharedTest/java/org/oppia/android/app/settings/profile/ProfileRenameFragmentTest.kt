@@ -5,17 +5,14 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasErrorText
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -261,9 +258,9 @@ class ProfileRenameFragmentTest {
       onView(withId(R.id.profile_rename_save_button))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(withId(R.id.profile_rename_input))
         .check(
-          ViewAssertions.matches(
+          matches(
             TextInputAction.hasErrorText(
               context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
@@ -318,9 +315,9 @@ class ProfileRenameFragmentTest {
       onView(withId(R.id.profile_rename_save_button))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(withId(R.id.profile_rename_input))
         .check(
-          ViewAssertions.matches(
+          matches(
             TextInputAction.hasErrorText(
               context.resources.getString(R.string.add_profile_error_name_only_letters)
             )
@@ -415,9 +412,9 @@ class ProfileRenameFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(withId(R.id.profile_rename_input))
         .check(
-          ViewAssertions.matches(
+          matches(
             TextInputAction.hasErrorText(
               context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
