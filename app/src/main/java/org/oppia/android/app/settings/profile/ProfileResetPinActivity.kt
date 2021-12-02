@@ -3,9 +3,9 @@ package org.oppia.android.app.settings.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import javax.inject.Inject
 
 /** Argument key for Profile Id for resetting the pin. */
 const val PROFILE_RESET_PIN_PROFILE_ID_EXTRA_KEY =

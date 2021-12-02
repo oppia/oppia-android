@@ -16,7 +16,7 @@ class ProfileEditFragment : InjectableFragment(), ProfileEditDialogInterface {
 
   companion object {
 
-    /** This Creates the new instance of [ProfileEditFragment]. */
+    /** This creates the new instance of [ProfileEditFragment]. */
     fun newInstance(
       internalProfileId: Int
     ): ProfileEditFragment {

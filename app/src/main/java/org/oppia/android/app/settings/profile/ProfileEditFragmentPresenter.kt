@@ -17,7 +17,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-/** Argument key for Profile Deletion dialog in [ProfileEditFragment]. */
+/** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
 
 /** The presenter for [ProfileEditFragment]. */
