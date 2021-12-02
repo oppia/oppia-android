@@ -25,6 +25,7 @@
 
       <TextView
         android:id="@+id/faq_question_text_view"
+        style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/faq_content_margin_start"
@@ -34,7 +35,6 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.question}"
-        android:textAlignment="viewStart"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="14sp" />
 

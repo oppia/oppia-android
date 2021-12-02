@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="nav_header_desc">Navigation header</string>
-  <string name="menu_home">Home</string>
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
   <string name="menu_help">Help</string>
@@ -296,6 +295,8 @@
   <string name="home_activity_back_dialog_message">Would you like to exit your profile?</string>
   <string name="home_activity_back_dialog_cancel">Cancel</string>
   <string name="home_activity_back_dialog_exit">Exit</string>
+  <!-- HomeActivity -->
+  <string name="home_activity_title">Home</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->

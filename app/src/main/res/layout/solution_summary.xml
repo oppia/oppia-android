@@ -31,6 +31,7 @@
 
       <TextView
         android:id="@+id/solution_title"
+        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -112,9 +113,9 @@
 
         <TextView
           android:id="@+id/solution_correct_answer_label"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="start"
           android:fontFamily="sans-serif-black"
           android:text="@string/the_only_solution_is"
           android:textColor="@color/oppiaPrimaryText"
@@ -122,6 +123,7 @@
 
         <TextView
           android:id="@+id/solution_correct_answer"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
@@ -137,9 +139,9 @@
 
         <TextView
           android:id="@+id/solution_summary_label"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="start"
           android:layout_marginTop="@dimen/solution_summary_margin_top_solution_summary_label"
           android:fontFamily="sans-serif-black"
           android:text="@string/explanation"
@@ -148,9 +150,9 @@
 
         <TextView
           android:id="@+id/solution_summary"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="start"
           android:fontFamily="sans-serif"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />

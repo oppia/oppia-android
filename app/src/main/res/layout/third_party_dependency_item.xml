@@ -27,7 +27,7 @@
 
       <TextView
         android:id="@+id/third_party_dependency_name_text_view"
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
@@ -38,6 +38,7 @@
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
+        style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
