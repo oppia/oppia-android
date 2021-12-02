@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/general_item_background_border"
-        android:paddingBottom="32dp"
+        android:paddingBottom="@dimen/profile_rename_activity_constraint_layout"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout

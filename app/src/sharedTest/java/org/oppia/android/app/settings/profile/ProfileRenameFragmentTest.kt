@@ -6,16 +6,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasErrorText
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.Component
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
+import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,7 +46,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -62,7 +74,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -85,6 +97,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.espresso.TextInputAction
 
 /** Tests for [ProfileRenameFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -143,15 +156,15 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("James"))
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .perform(ViewActions.click())
+      onView(withId(R.id.profile_rename_save_button))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
@@ -165,14 +178,14 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(
         editTextInputAction.appendText("James"),
-        ViewActions.pressImeActionButton()
+        pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
     }
@@ -187,17 +200,17 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("James"))
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .check(ViewAssertions.matches(ViewMatchers.isEnabled()))
+      onView(withId(R.id.profile_rename_save_button))
+        .check(matches(isEnabled()))
     }
   }
 
@@ -209,23 +222,23 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("James"))
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).check(
-        ViewAssertions.matches(
-          ViewMatchers.withText("James")
+        matches(
+          withText("James")
         )
       )
     }
@@ -239,14 +252,14 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("Admin"))
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .perform(ViewActions.click())
+      onView(withId(R.id.profile_rename_save_button))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       Espresso.onView(ViewMatchers.withId(R.id.profile_rename_input))
         .check(
@@ -267,23 +280,23 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("Admin"))
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .perform(ViewActions.click())
+      onView(withId(R.id.profile_rename_save_button))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText(" "))
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_input))
-        .check(ViewAssertions.matches(TextInputAction.hasNoErrorText()))
+      onView(withId(R.id.profile_rename_input))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -295,15 +308,15 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .perform(ViewActions.click())
+      onView(withId(R.id.profile_rename_save_button))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       Espresso.onView(ViewMatchers.withId(R.id.profile_rename_input))
         .check(
@@ -324,25 +337,25 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .perform(ViewActions.click())
+      onView(withId(R.id.profile_rename_save_button))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText(" "))
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_input))
-        .check(ViewAssertions.matches(TextInputAction.hasNoErrorText()))
+      onView(withId(R.id.profile_rename_input))
+        .check(matches(hasNoErrorText()))
     }
   }
 
@@ -354,26 +367,26 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(
         editTextInputAction.appendText("test"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).check(
-        ViewAssertions.matches(
-          ViewMatchers.withText("test")
+        matches(
+          withText("test")
         )
       )
     }
@@ -387,20 +400,20 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_rename_input_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_rename_input))
+      onView(
+        allOf(
+          withId(R.id.profile_rename_input_edit_text),
+          isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(
         editTextInputAction.appendText("Admin"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .perform(ViewActions.click())
+      onView(withId(R.id.profile_rename_save_button))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       Espresso.onView(ViewMatchers.withId(R.id.profile_rename_input))
         .check(
@@ -421,12 +434,12 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.profile_rename_save_button))
+        .check(matches(not(isClickable())))
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.profile_rename_save_button))
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
+      onView(withId(R.id.profile_rename_save_button))
+        .check(matches(not(isClickable())))
     }
   }
 
