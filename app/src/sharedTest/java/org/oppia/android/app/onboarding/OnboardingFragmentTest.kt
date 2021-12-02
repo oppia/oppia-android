@@ -710,8 +710,8 @@ class OnboardingFragmentTest {
 
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "By using %s, you agree to our <br> <oppia-noninteractive-policy " +
-          "link=\"Terms of Service\"> Terms of Service</oppia-noninteractive-policy> and" +
-          " <oppia-noninteractive-policy link=\"Privacy Policy\">Privacy Policy" +
+          "terms-of-service-link=\"Terms of Service\"> Terms of Service</oppia-noninteractive-policy> and" +
+          " <oppia-noninteractive-policy privacy-policy-link=\"Privacy Policy\">Privacy Policy" +
           "</oppia-noninteractive-policy>.",
         textView,
         supportsLinks = true,

@@ -42,7 +42,8 @@ class HtmlParser private constructor(
         override fun onPolicyPageLinkClicked(policyPage: PolicyPage) {
           policyOppiaTagActionListener?.onPolicyPageLinkClicked(policyPage)
         }
-      }
+      },
+      consoleLogger
     )
   }
   private val bulletTagHandler by lazy { BulletTagHandler() }

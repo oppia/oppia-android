@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.model.PoliciesActivityArguments
+import org.oppia.android.app.model.PoliciesArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProto
@@ -24,25 +24,25 @@ class PoliciesActivity : InjectableAppCompatActivity() {
     policiesActivityPresenter.handleOnCreate(
       intent.getProtoExtra(
         POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO,
-        PoliciesActivityArguments.getDefaultInstance()
+        PoliciesArguments.getDefaultInstance()
       )
     )
   }
 
   companion object {
-    /** Argument key for policy page in [PoliciesActivity] */
+    /** Argument key for policy page in [PoliciesActivity]. */
     const val POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
 
     /** Returns the [Intent] for opening [PoliciesActivity]. */
     fun createPoliciesActivityIntent(context: Context, policyPage: PolicyPage): Intent {
       val intent = Intent(context, PoliciesActivity::class.java)
-      val policiesActivityArguments =
-        PoliciesActivityArguments
+      val policiesArguments =
+        PoliciesArguments
           .newBuilder()
           .setPolicyPage(policyPage)
           .build()
       val args = Bundle()
-      args.putProto(POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO, policiesActivityArguments)
+      args.putProto(POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO, policiesArguments)
       intent.putExtras(args)
       return intent
     }

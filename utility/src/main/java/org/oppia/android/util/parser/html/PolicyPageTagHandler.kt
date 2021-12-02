@@ -6,19 +6,19 @@ import android.text.SpannableStringBuilder
 import android.text.style.ClickableSpan
 import android.view.View
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [PolicyPageTagHandler]. */
 const val CUSTOM_POLICY_PAGE_TAG = "oppia-noninteractive-policy"
-private const val PRIVACY_POLICY_PAGE = "Privacy Policy"
-private const val TERMS_OF_SERVICE_PAGE = "Terms of Service"
 
 /**
  * A custom tag handler for supporting custom Oppia policies page parsed with
  * [CustomHtmlContentHandler].
  */
 class PolicyPageTagHandler(
-  private val listener: PolicyPageLinkClickListener
+  private val listener: PolicyPageLinkClickListener,
+  private val consoleLogger: ConsoleLogger
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -28,25 +28,48 @@ class PolicyPageTagHandler(
     imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
-    val text = attributes.getJsonStringValue("link")
-    val spannableBuilder = SpannableStringBuilder(text)
-    if (text != null) {
-      spannableBuilder.setSpan(
-        object : ClickableSpan() {
-          override fun onClick(view: View) {
-            when (text) {
-              TERMS_OF_SERVICE_PAGE -> {
-                listener.onPolicyPageLinkClicked(PolicyPage.TERMS_OF_SERVICE)
-              }
-              PRIVACY_POLICY_PAGE -> {
-                listener.onPolicyPageLinkClicked(PolicyPage.PRIVACY_POLICY)
-              }
-            }
-          }
-        },
-        /* start= */ 0, /* end= */ text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-      )
+    val termsOfServiceLink = attributes.getJsonStringValue("terms-of-service-link")
+    val privacyPolicyLink = attributes.getJsonStringValue("privacy-policy-link")
+
+    when {
+      termsOfServiceLink != null -> {
+        clickableSpanBuilder(
+          termsOfServiceLink,
+          output,
+          openIndex,
+          closeIndex,
+          PolicyPage.TERMS_OF_SERVICE
+        )
+      }
+      privacyPolicyLink != null -> {
+        clickableSpanBuilder(
+          privacyPolicyLink,
+          output,
+          openIndex,
+          closeIndex,
+          PolicyPage.PRIVACY_POLICY
+        )
+      }
+      else -> consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
     }
+  }
+
+  private fun clickableSpanBuilder(
+    policyLink: String,
+    output: Editable,
+    openIndex: Int,
+    closeIndex: Int,
+    policyPage: PolicyPage
+  ) {
+    val spannableBuilder = SpannableStringBuilder(policyLink)
+    spannableBuilder.setSpan(
+      object : ClickableSpan() {
+        override fun onClick(view: View) {
+          listener.onPolicyPageLinkClicked(policyPage)
+        }
+      },
+      /* start= */ 0, /* end= */ policyLink.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+    )
     output.replace(openIndex, closeIndex, spannableBuilder)
   }
 

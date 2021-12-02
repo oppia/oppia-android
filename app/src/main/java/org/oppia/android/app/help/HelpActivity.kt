@@ -11,7 +11,7 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.model.PoliciesActivityArguments
+import org.oppia.android.app.model.PoliciesArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
@@ -32,7 +32,7 @@ const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFr
 const val LICENSE_LIST_FRAGMENT_TAG = "LicenseListFragment.tag"
 const val LICENSE_TEXT_FRAGMENT_TAG = "LicenseTextFragment.tag"
 
-/** The help page activity for FAQs and third-party dependencies. */
+/** The help page activity for FAQs, third-party dependencies and policies page. */
 class HelpActivity :
   InjectableAppCompatActivity(),
   RouteToFAQListListener,
@@ -68,9 +68,9 @@ class HelpActivity :
     val selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
     selectedHelpOptionsTitle = savedInstanceState?.getStringFromBundle(HELP_OPTIONS_TITLE_SAVED_KEY)
       ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
-    val policiesActivityArguments = savedInstanceState?.getProto(
+    val policiesArguments = savedInstanceState?.getProto(
       POLICIES_ARGUMENT_PROTO,
-      PoliciesActivityArguments.getDefaultInstance()
+      PoliciesArguments.getDefaultInstance()
     )
     helpActivityPresenter.handleOnCreate(
       selectedHelpOptionsTitle,
@@ -78,7 +78,7 @@ class HelpActivity :
       selectedFragment,
       selectedDependencyIndex,
       selectedLicenseIndex,
-      policiesActivityArguments
+      policiesArguments
     )
     title = resourceHandler.getStringInLocale(R.string.menu_help)
   }

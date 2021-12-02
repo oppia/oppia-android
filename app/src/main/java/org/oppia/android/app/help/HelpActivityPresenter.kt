@@ -16,7 +16,7 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
-import org.oppia.android.app.model.PoliciesActivityArguments
+import org.oppia.android.app.model.PoliciesArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -44,14 +44,14 @@ class HelpActivityPresenter @Inject constructor(
     selectedFragment: String,
     dependencyIndex: Int,
     licenseIndex: Int,
-    policiesActivityArguments: PoliciesActivityArguments?
+    policiesArguments: PoliciesArguments?
   ) {
     selectedFragmentTag = selectedFragment
     selectedDependencyIndex = dependencyIndex
     selectedLicenseIndex = licenseIndex
     selectedHelpOptionTitle = helpOptionsTitle
-    if (policiesActivityArguments != null) {
-      internalPolicyPage = policiesActivityArguments.policyPage
+    if (policiesArguments != null) {
+      internalPolicyPage = policiesArguments.policyPage
     }
 
     if (isFromNavigationDrawer) {
@@ -151,12 +151,12 @@ class HelpActivityPresenter @Inject constructor(
     outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragmentTag)
     selectedDependencyIndex?.let { outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, it) }
     selectedLicenseIndex?.let { outState.putInt(LICENSE_INDEX_SAVED_KEY, it) }
-    val policiesActivityArguments =
-      PoliciesActivityArguments
+    val policiesArguments =
+      PoliciesArguments
         .newBuilder()
         .setPolicyPage(internalPolicyPage)
         .build()
-    outState.putProto(POLICIES_ARGUMENT_PROTO, policiesActivityArguments)
+    outState.putProto(POLICIES_ARGUMENT_PROTO, policiesArguments)
   }
 
   private fun setUpToolbar() {
@@ -318,8 +318,8 @@ class HelpActivityPresenter @Inject constructor(
     internalPolicyPage = policyPage
     selectPoliciesFragment(policyPage)
 
-    val policiesActivityArguments =
-      PoliciesActivityArguments
+    val policiesArguments =
+      PoliciesArguments
         .newBuilder()
         .setPolicyPage(policyPage)
         .build()
@@ -329,7 +329,7 @@ class HelpActivityPresenter @Inject constructor(
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.multipane_options_container,
-      PoliciesFragment.newInstance(policiesActivityArguments)
+      PoliciesFragment.newInstance(policiesArguments)
     ).commitNow()
   }
 

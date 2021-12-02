@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.PoliciesFragmentArguments
+import org.oppia.android.app.model.PoliciesArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.PoliciesFragmentBinding
@@ -32,14 +32,14 @@ class PoliciesFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    policiesFragmentArguments: PoliciesFragmentArguments
+    policiesArguments: PoliciesArguments
   ): View {
     binding = PoliciesFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    setUpContentForTextViews(policiesFragmentArguments.policyPage)
+    setUpContentForTextViews(policiesArguments.policyPage)
 
     return binding.root
   }

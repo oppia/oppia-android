@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.PoliciesActivityArguments
+import org.oppia.android.app.model.PoliciesArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
@@ -18,9 +18,9 @@ class PoliciesActivityPresenter @Inject constructor(
 ) {
 
   /** Handles onCreate() method of the [PoliciesActivity]. */
-  fun handleOnCreate(policiesActivityArguments: PoliciesActivityArguments) {
+  fun handleOnCreate(policiesArguments: PoliciesArguments) {
     activity.setContentView(R.layout.policies_activity)
-    val toolbar = setUpToolbar(policiesActivityArguments.policyPage)
+    val toolbar = setUpToolbar(policiesArguments.policyPage)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
     toolbar.setNavigationOnClickListener {
@@ -30,7 +30,7 @@ class PoliciesActivityPresenter @Inject constructor(
     if (getPoliciesFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.policies_fragment_placeholder,
-        PoliciesFragment.newInstance(policiesActivityArguments)
+        PoliciesFragment.newInstance(policiesArguments)
       ).commitNow()
     }
   }

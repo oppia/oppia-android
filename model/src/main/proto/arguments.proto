@@ -31,13 +31,7 @@ enum HighlightItem {
 }
 
 // Arguments needed to open the policy page.
-message PoliciesActivityArguments {
-  // The specific policy page that should be displayed.
-  PolicyPage policy_page = 1;
-}
-
-// Arguments needed to open the policy page.
-message PoliciesFragmentArguments {
+message PoliciesArguments {
   // The specific policy page that should be displayed.
   PolicyPage policy_page = 1;
 }
