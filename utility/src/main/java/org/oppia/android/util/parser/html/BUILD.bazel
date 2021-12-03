@@ -12,7 +12,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-            "//model:arguments_java_proto_lite"
+            "//model:arguments_java_proto_lite",
         ],
 )
 
