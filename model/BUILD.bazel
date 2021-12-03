@@ -46,6 +46,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "arguments_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":arguments_proto"],
 )
 
@@ -60,6 +61,18 @@ java_lite_proto_library(
     deps = [":event_logger_proto"],
 )
 
+format_import_proto_library(
+    name = "exploration_checkpoint",
+    src = "src/main/proto/exploration_checkpoint.proto",
+    deps = [":exploration_proto"],
+)
+
+java_lite_proto_library(
+    name = "exploration_checkpoint_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":exploration_checkpoint_proto"],
+)
+
 proto_library(
     name = "interaction_object_proto",
     srcs = ["src/main/proto/interaction_object.proto"],
@@ -69,6 +82,18 @@ java_lite_proto_library(
     name = "interaction_object_java_proto_lite",
     visibility = ["//visibility:public"],
     deps = [":interaction_object_proto"],
+)
+
+proto_library(
+    name = "languages_proto",
+    srcs = ["src/main/proto/languages.proto"],
+    visibility = ["//visibility:public"],
+)
+
+java_lite_proto_library(
+    name = "languages_java_proto_lite",
+    visibility = ["//visibility:public"],
+    deps = [":languages_proto"],
 )
 
 proto_library(
@@ -100,6 +125,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "subtitled_html_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":subtitled_html_proto"],
 )
 
@@ -110,6 +136,7 @@ proto_library(
 
 java_lite_proto_library(
     name = "subtitled_unicode_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
     deps = [":subtitled_unicode_proto"],
 )
 
@@ -222,13 +249,15 @@ java_lite_proto_library(
     deps = [":exploration_proto"],
 )
 
-android_library(
-    name = "model",
-    visibility = ["//visibility:public"],
-    exports = [
-        ":arguments_java_proto_lite",
-        ":subtitled_unicode_java_proto_lite",
-    ],
+format_import_proto_library(
+    name = "platform_parameter",
+    src = "src/main/proto/platform_parameter.proto",
+)
+
+java_lite_proto_library(
+    name = "platform_parameter_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":platform_parameter_proto"],
 )
 
 android_library(

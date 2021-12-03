@@ -57,6 +57,7 @@
 
         <TextView
           android:id="@+id/topic_name_text_view"
+          style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
@@ -64,11 +65,9 @@
           android:layout_marginEnd="8dp"
           android:ellipsize="end"
           android:fontFamily="sans-serif"
-          android:gravity="start"
           android:maxLines="2"
           android:minLines="2"
           android:text="@{viewModel.topic.name}"
-          android:textAlignment="viewStart"
           android:textColor="@color/white"
           android:textSize="14sp"
           android:textStyle="bold"
@@ -77,6 +76,7 @@
 
         <TextView
           android:id="@+id/story_count_text_view"
+          style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
@@ -84,8 +84,7 @@
           android:layout_marginEnd="8dp"
           android:fontFamily="sans-serif-light"
           android:paddingBottom="12dp"
-          android:text="@{@plurals/lesson_count(viewModel.topic.storyCount, viewModel.topic.storyCount)}"
-          android:textAlignment="viewStart"
+          android:text="@{viewModel.computeStoryCountText()}"
           android:textColor="@color/white_80"
           android:textSize="14sp"
           android:textStyle="italic"

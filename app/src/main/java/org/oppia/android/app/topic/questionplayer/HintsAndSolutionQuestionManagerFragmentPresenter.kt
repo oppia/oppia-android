@@ -6,17 +6,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralQuestion
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /** The presenter for [HintsAndSolutionQuestionManagerFragment]. */
 @FragmentScope
 class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val questionProgressController: QuestionAssessmentProgressController
 ) {
 
@@ -41,7 +41,7 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralQuestion>) {
     if (result.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "HintsAndSolutionQuestionManagerFragmentPresenter",
         "Failed to retrieve ephemeral state", result.getErrorOrNull()!!
       )
@@ -56,7 +56,8 @@ class HintsAndSolutionQuestionManagerFragmentPresenter @Inject constructor(
     // Check if hints are available for this state.
     if (ephemeralQuestionState.ephemeralState.state.interaction.hintList.size != 0) {
       (activity as HintsAndSolutionQuestionManagerListener).onQuestionStateLoaded(
-        ephemeralQuestionState.ephemeralState.state
+        ephemeralQuestionState.ephemeralState.state,
+        ephemeralQuestionState.ephemeralState.writtenTranslationContext
       )
     }
   }

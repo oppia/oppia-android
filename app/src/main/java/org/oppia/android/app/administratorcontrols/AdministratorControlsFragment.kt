@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
@@ -14,10 +15,10 @@ class AdministratorControlsFragment : InjectableFragment() {
   lateinit var administratorControlsFragmentPresenter: AdministratorControlsFragmentPresenter
 
   companion object {
-    private const val IS_MULTIPANE_KEY = "IS_MULTIPANE_KEY"
+    private const val IS_MULTIPANE_ARGUMENT_KEY = "AdministratorControlsFragment.is_multipane"
     fun newInstance(isMultipane: Boolean): AdministratorControlsFragment {
       val args = Bundle()
-      args.putBoolean(IS_MULTIPANE_KEY, isMultipane)
+      args.putBoolean(IS_MULTIPANE_ARGUMENT_KEY, isMultipane)
       val fragment = AdministratorControlsFragment()
       fragment.arguments = args
       return fragment
@@ -26,7 +27,7 @@ class AdministratorControlsFragment : InjectableFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreateView(
@@ -38,7 +39,7 @@ class AdministratorControlsFragment : InjectableFragment() {
       checkNotNull(arguments) {
         "Expected arguments to be passed to AdministratorControlsFragment"
       }
-    val isMultipane = args.getBoolean(IS_MULTIPANE_KEY)
+    val isMultipane = args.getBoolean(IS_MULTIPANE_ARGUMENT_KEY)
     return administratorControlsFragmentPresenter
       .handleCreateView(inflater, container, isMultipane)
   }

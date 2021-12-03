@@ -9,22 +9,27 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 import org.oppia.android.app.model.TopicSummary
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -36,24 +41,35 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -69,6 +85,11 @@ private const val TEST_FRAGMENT_TAG = "topic_summary_view_model_test_fragment"
   manifest = Config.NONE
 )
 class TopicSummaryViewModelTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var context: Context
@@ -187,14 +208,16 @@ class TopicSummaryViewModelTest {
           topicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
-          position = 5
+          position = 5,
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
         val topicSummaryViewModelTopicSummary2 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
           topicSummary = topicSummary2,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
-          position = 5
+          position = 5,
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
 
         assertThat(topicSummaryViewModelTopicSummary1)
@@ -215,14 +238,16 @@ class TopicSummaryViewModelTest {
           topicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
-          position = 5
+          position = 5,
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
         val topicSummaryViewModelEntity2 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
           topicSummary = topicSummary1,
           entityType = "entity_2",
           topicSummaryClickListener = testFragment,
-          position = 5
+          position = 5,
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
 
         assertThat(topicSummaryViewModelEntity1).isNotEqualTo(topicSummaryViewModelEntity2)
@@ -242,14 +267,16 @@ class TopicSummaryViewModelTest {
           topicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
-          position = 4
+          position = 4,
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
         val topicSummaryViewModelPosition5 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
           topicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
-          position = 5
+          position = 5,
+          homeFragmentTestActivity.appLanguageResourceHandler
         )
 
         assertThat(topicSummaryViewModelPosition4).isNotEqualTo(topicSummaryViewModelPosition5)
@@ -300,13 +327,16 @@ class TopicSummaryViewModelTest {
       .commitNow()
   }
 
-  private fun createBasicTopicSummaryViewModel(activity: AppCompatActivity): TopicSummaryViewModel {
+  private fun createBasicTopicSummaryViewModel(
+    activity: HomeFragmentTestActivity
+  ): TopicSummaryViewModel {
     return TopicSummaryViewModel(
       activity = activity,
       topicSummary = topicSummary1,
       entityType = "entity",
       topicSummaryClickListener = testFragment,
-      position = 5
+      position = 5,
+      activity.appLanguageResourceHandler
     )
   }
 
@@ -314,9 +344,9 @@ class TopicSummaryViewModelTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      TestDispatcherModule::class, PlatformParameterModule::class, ApplicationModule::class,
+      RobolectricModule::class, LoggerModule::class, ContinueModule::class,
+      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
@@ -326,7 +356,12 @@ class TopicSummaryViewModelTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NetworkConfigProdModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

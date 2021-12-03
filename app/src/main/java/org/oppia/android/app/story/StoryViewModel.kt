@@ -11,12 +11,13 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
-import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.StoryHtmlParserEntityType
+import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ViewModel for StoryFragment. */
@@ -24,9 +25,10 @@ import javax.inject.Inject
 class StoryViewModel @Inject constructor(
   private val fragment: Fragment,
   private val topicController: TopicController,
-  private val explorationDataController: ExplorationDataController,
-  private val logger: ConsoleLogger,
-  @StoryHtmlParserEntityType val entityType: String
+  private val explorationCheckpointController: ExplorationCheckpointController,
+  private val oppiaLogger: OppiaLogger,
+  @StoryHtmlParserEntityType val entityType: String,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -69,7 +71,7 @@ class StoryViewModel @Inject constructor(
 
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
     if (storyResult.isFailure()) {
-      logger.e(
+      oppiaLogger.e(
         "StoryFragment",
         "Failed to retrieve Story: ",
         storyResult.getErrorOrNull()!!
@@ -93,7 +95,7 @@ class StoryViewModel @Inject constructor(
 
     // List with only the header
     val itemViewModelList: MutableList<StoryItemViewModel> = mutableListOf(
-      StoryHeaderViewModel(completedCount, chapterList.size) as StoryItemViewModel
+      StoryHeaderViewModel(completedCount, chapterList.size, resourceHandler) as StoryItemViewModel
     )
 
     // Add the rest of the list
@@ -101,15 +103,16 @@ class StoryViewModel @Inject constructor(
       chapterList.mapIndexed { index, chapter ->
         StoryChapterSummaryViewModel(
           index,
+          chapterList.size,
           fragment,
           explorationSelectionListener,
-          explorationDataController,
-          logger,
+          explorationCheckpointController,
           internalProfileId,
           topicId,
           storyId,
           chapter,
-          entityType
+          entityType,
+          resourceHandler
         )
       }
     )

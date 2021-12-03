@@ -23,7 +23,7 @@
       android:layout_width="180dp"
       android:layout_height="180dp"
       android:layout_marginStart="28dp"
-      android:src="@drawable/ic_portrait_onboarding_0"
+      app:srcCompat="@drawable/ic_portrait_onboarding_0"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -60,13 +60,13 @@
           android:textSize="20sp" />
 
         <TextView
+          style="@style/TextViewCenter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
           android:layout_marginTop="40dp"
           android:fontFamily="sans-serif"
           android:text="@string/pick_a_different_topic"
-          android:textAlignment="center"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="12sp" />
       </com.google.android.material.card.MaterialCardView>
@@ -93,13 +93,13 @@
           android:textSize="20sp" />
 
         <TextView
+          style="@style/TextViewCenter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
           android:layout_marginTop="40dp"
           android:fontFamily="sans-serif"
           android:text="@string/lets_get_started"
-          android:textAlignment="center"
           android:textColor="@color/oppiaPrimaryDark"
           android:textSize="12sp" />
       </com.google.android.material.card.MaterialCardView>
@@ -107,12 +107,12 @@
 
     <TextView
       android:id="@+id/walkthrough_final_topic_text_view"
+      style="@style/TextViewCenter"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="4dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.topicTitle}"
-      android:textAlignment="center"
       android:textColor="@color/oppiaPrimaryText"
       android:textSize="20sp"
       app:layout_constraintEnd_toEndOf="parent"

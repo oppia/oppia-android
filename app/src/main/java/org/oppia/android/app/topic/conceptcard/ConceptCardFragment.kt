@@ -6,10 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val KEY_SKILL_ID = "SKILL_ID"
+private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
+private const val PROFILE_ID_ARGUMENT_KEY = "ConceptCardFragment.profile_id"
 
 /* Fragment that displays a fullscreen dialog for concept cards */
 class ConceptCardFragment : InjectableDialogFragment() {
@@ -19,16 +25,19 @@ class ConceptCardFragment : InjectableDialogFragment() {
     const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
     /**
-     * Creates a new instance of a DialogFragment to display content
-     * @param skillId Used in TopicController to get correct concept card data.
-     * @return [ConceptCardFragment]: DialogFragment
+     * Creates a new fragment to show a concept card.
+     *
+     * @param skillId the skill ID for which a concept card should be loaded
+     * @param profileId the profile in which the concept card will be shown
+     * @return a new [ConceptCardFragment] to display the specified concept card
      */
-    fun newInstance(skillId: String): ConceptCardFragment {
-      val conceptCardFrag = ConceptCardFragment()
-      val args = Bundle()
-      args.putString(KEY_SKILL_ID, skillId)
-      conceptCardFrag.arguments = args
-      return conceptCardFrag
+    fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
+      return ConceptCardFragment().apply {
+        arguments = Bundle().apply {
+          putString(SKILL_ID_ARGUMENT_KEY, skillId)
+          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+        }
+      }
     }
   }
 
@@ -37,7 +46,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    fragmentComponent.inject(this)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,10 +64,11 @@ class ConceptCardFragment : InjectableDialogFragment() {
       "Expected arguments to be passed to ConceptCardFragment"
     }
     val skillId =
-      checkNotNull(args.getString(KEY_SKILL_ID)) {
+      checkNotNull(args.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)) {
         "Expected skillId to be passed to ConceptCardFragment"
       }
-    return conceptCardFragmentPresenter.handleCreateView(inflater, container, skillId)
+    val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    return conceptCardFragmentPresenter.handleCreateView(inflater, container, skillId, profileId)
   }
 
   override fun onStart() {

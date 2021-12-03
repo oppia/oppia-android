@@ -1,6 +1,7 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.util.networking.NetworkConnectionUtil
@@ -16,6 +17,6 @@ class ExplorationInjectionActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
   }
 }

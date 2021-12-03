@@ -173,7 +173,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "71b5c0d8-2c30-4bf8-ac21-dd42774c4b95"
                 normalized_strings: "2:1"
               }
             }
@@ -194,7 +194,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "4d5dbaff-8f03-4b9e-b3e6-241ec4a8827b"
                 normalized_strings: "3"
               }
             }
@@ -215,7 +215,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "4992c409-75ec-4729-b7f0-d4a7d18b5c92"
                 normalized_strings: "1:2"
               }
             }
@@ -240,8 +240,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X:Y"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X:Y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -484,7 +484,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "8d2b9eea-c973-4bd6-a7e0-b1a7ae5603be"
                 normalized_strings: "2:3"
               }
             }
@@ -505,7 +505,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "c3c47717-3fdb-4d8d-9bfe-3dc72d19b8da"
                 normalized_strings: "2 to 3"
               }
             }
@@ -526,7 +526,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "a2431f83-2e3a-433c-8863-fe9dc3a75b98"
                 normalized_strings: "3:2"
               }
             }
@@ -547,7 +547,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "428fab4b-2a57-40e5-b025-9ffc11def1f4"
                 normalized_strings: "1"
               }
             }
@@ -578,8 +578,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X:Y"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X:Y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -834,7 +834,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "20c3a4f5-b4c7-4fe6-9780-f7e01b0e532c"
                 normalized_strings: "2:4:3:2"
               }
             }
@@ -855,7 +855,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "75b41c64-7309-4a2e-a78e-45a0ca35ffab"
                 normalized_strings: "2:4:3:1"
               }
             }
@@ -886,8 +886,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter the correct ratio."
+            subtitled_unicode {
+              unicode_str: "Enter the correct ratio."
               content_id: "ca_placeholder_0"
             }
           }
@@ -1100,7 +1100,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "fe13e3d8-4fc6-4863-a3ce-98c710a1ec82"
                 normalized_strings: "2:1:3"
               }
             }
@@ -1121,7 +1121,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "cb9437b2-2931-4cc7-9cbe-ecb31ac22ad0"
                 normalized_strings: "2:1"
               }
             }
@@ -1142,7 +1142,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "9ce00383-554d-4606-abcb-31d020799768"
                 normalized_strings: "1:3"
               }
             }
@@ -1163,7 +1163,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "0fe368d4-5459-4535-94de-4c311afbfda1"
                 normalized_strings: "1:2:3"
               }
             }
@@ -1175,7 +1175,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "b9eb65eb-8f9f-4c5b-80cf-c92c5fa6141f"
                 normalized_strings: "1:3:2"
               }
             }
@@ -1187,7 +1187,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "468469f4-2a78-4e6c-abff-5004a158eae5"
                 normalized_strings: "2:3:1"
               }
             }
@@ -1199,7 +1199,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "d61214b1-8e64-4f9a-bdcb-3f0c56e60960"
                 normalized_strings: "3:1:2"
               }
             }
@@ -1211,7 +1211,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "150ad47d-cdce-4292-a2ac-17075efeb4a4"
                 normalized_strings: "3:2:1"
               }
             }
@@ -1236,8 +1236,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X:Y:Z"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X:Y:Z"
               content_id: "ca_placeholder_0"
             }
           }
@@ -1575,7 +1575,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "866a20f8-a118-4058-933b-b6a91afd73b2"
                 normalized_strings: "2:3"
               }
             }
@@ -1597,7 +1597,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "75c4e32d-2357-46c8-8a1c-74dce83593fa"
                 normalized_strings: "2 : 3"
               }
             }
@@ -1609,7 +1609,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "fb41c73e-a2e7-47ea-90f2-26319ca611cc"
                 normalized_strings: "2: 3"
               }
             }
@@ -1621,7 +1621,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "156e3d22-7dfa-457d-b1d2-7ab26366349b"
                 normalized_strings: "2 :3"
               }
             }
@@ -1642,7 +1642,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "c33e0c96-28f8-4656-8760-f9684f61469f"
                 normalized_strings: "3:2"
               }
             }
@@ -1663,7 +1663,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "412b761e-74df-4161-a122-ad3bbe3908c2"
                 normalized_strings: "to"
               }
             }
@@ -1684,7 +1684,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "ab884bed-5685-4031-b9d2-0dd085b43f50"
                 normalized_strings: "X"
               }
             }
@@ -1696,7 +1696,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "068691b9-2fcd-4d50-987b-a8e588b0a0c8"
                 normalized_strings: "Y"
               }
             }
@@ -1717,7 +1717,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "763bf316-e64c-4196-993d-71df36487bdd"
                 normalized_strings: ":"
               }
             }
@@ -1742,8 +1742,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer in the form X:Y"
+            subtitled_unicode {
+              unicode_str: "Enter your answer in the form X:Y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -2513,7 +2513,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "783afa39-0a6e-4eaa-9876-9a9833f1705c"
                 normalized_strings: "2 to 5"
               }
             }
@@ -2525,7 +2525,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "3c2eb40b-911e-4023-8667-dc6a82b038c7"
                 normalized_strings: "2:5"
               }
             }
@@ -2537,7 +2537,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "4819cb3d-38c6-46ab-86fa-fba0f61ef821"
                 normalized_strings: "\"2 to 5\""
               }
             }
@@ -2558,7 +2558,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "cccb5b43-3764-4378-a7dd-de2151819128"
                 normalized_strings: "5 to 2"
               }
             }
@@ -2579,7 +2579,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "6cf25801-0344-466d-86b1-3fd0b3cb4373"
                 normalized_strings: "2to5"
               }
             }
@@ -2591,7 +2591,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "d649fc32-9e83-4ef6-a152-42f978ab9eee"
                 normalized_strings: "2 to5"
               }
             }
@@ -2603,7 +2603,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "f7783e38-65cd-4c09-8612-a28f24a5ec37"
                 normalized_strings: "2to 5"
               }
             }
@@ -2624,7 +2624,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "bba5b144-9374-40b4-8297-5aa3741d77ac"
                 normalized_strings: "X"
               }
             }
@@ -2636,7 +2636,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "b1e5f523-fe35-470d-a094-28dd1da45c8d"
                 normalized_strings: "Y"
               }
             }
@@ -2657,7 +2657,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "7c26d744-cfef-4184-a42a-a8412133ee1f"
                 normalized_strings: "to"
               }
             }
@@ -2682,8 +2682,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X to Y"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X to Y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -2961,7 +2961,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "9f99e701-3efe-4254-8fdc-3827d9ba498a"
                 normalized_strings: "50:20"
               }
             }
@@ -2973,7 +2973,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "1bdb2184-acc7-4b05-a024-5a975a796067"
                 normalized_strings: "5:2"
               }
             }
@@ -2994,7 +2994,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "724f7a4a-70aa-4a42-aab0-e1497424f465"
                 normalized_strings: "50 to 20"
               }
             }
@@ -3006,7 +3006,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "14186351-eee4-40fa-8f20-960306cfe465"
                 normalized_strings: "5 to 2"
               }
             }
@@ -3027,7 +3027,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "63181669-ee99-438e-8088-7308bcb55e95"
                 normalized_strings: "20:50"
               }
             }
@@ -3039,7 +3039,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "515833f7-3e0e-4eb4-a12e-629d95c43478"
                 normalized_strings: "2:5"
               }
             }
@@ -3060,7 +3060,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "54af7fbe-67fb-43d7-946c-920648a0a414"
                 normalized_strings: "50: 20"
               }
             }
@@ -3072,7 +3072,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "074938e1-b391-4d08-8d5f-ac14567cb05c"
                 normalized_strings: "50 :20"
               }
             }
@@ -3084,7 +3084,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "f9d87552-db3c-40a1-a9b6-d4748dc3c51b"
                 normalized_strings: "50 : 20"
               }
             }
@@ -3096,7 +3096,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "84be357c-d3f7-46c1-9b5a-527bbbb96058"
                 normalized_strings: "5: 2"
               }
             }
@@ -3108,7 +3108,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "5101996c-3a50-4dbe-8ffc-dfb8f0ee564e"
                 normalized_strings: "5 :2"
               }
             }
@@ -3120,7 +3120,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "d3299662-c092-44cb-95b3-b07dc0cf50fa"
                 normalized_strings: "5 : 2"
               }
             }
@@ -3145,8 +3145,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer in the form \"X:Y\""
+            subtitled_unicode {
+              unicode_str: "Enter your answer in the form \"X:Y\""
               content_id: "ca_placeholder_0"
             }
           }
@@ -3389,7 +3389,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "c2b0772b-c38a-44c5-a14a-fe680a65a9e8"
                 normalized_strings: "3 to 1"
               }
             }
@@ -3401,7 +3401,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "bac00fc3-4953-4049-9dbe-52b04b2e85cf"
                 normalized_strings: "3:1"
               }
             }
@@ -3413,7 +3413,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "29006547-391f-474a-ac64-dbb2ab0de333"
                 normalized_strings: "\"3 to 1\""
               }
             }
@@ -3434,7 +3434,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "3bc9759f-b033-4dbf-a550-4670da8ecf3b"
                 normalized_strings: "1 to 3"
               }
             }
@@ -3455,7 +3455,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "992b6fb4-4550-4278-a083-8e3f8580410e"
                 normalized_strings: "3to1"
               }
             }
@@ -3467,7 +3467,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "c78bf24e-b510-4bac-a107-28a03dfa1c22"
                 normalized_strings: "3 to1"
               }
             }
@@ -3479,7 +3479,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "338cb82a-5e6f-460a-8fa0-5a2510c1a31e"
                 normalized_strings: "3to 1"
               }
             }
@@ -3500,7 +3500,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "7e96afac-4b8d-4a10-94bb-a146c5078c94"
                 normalized_strings: "X"
               }
             }
@@ -3512,7 +3512,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "1c480baf-c5a9-43e3-a746-27febfe4e818"
                 normalized_strings: "Y"
               }
             }
@@ -3533,7 +3533,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "930b1d9c-2b0e-4c89-8247-a0665db536af"
                 normalized_strings: "to"
               }
             }
@@ -3558,8 +3558,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer in the form \"X to Y\""
+            subtitled_unicode {
+              unicode_str: "Enter your answer in the form \"X to Y\""
               content_id: "ca_placeholder_0"
             }
           }
@@ -3772,7 +3772,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "d4f1cd28-f796-4b32-9080-cf2c283039bf"
                 normalized_strings: "2:1"
               }
             }
@@ -3784,7 +3784,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "4161eeb4-38ae-43ca-8d06-3f62f6318c75"
                 normalized_strings: "1:1/2"
               }
             }
@@ -3796,7 +3796,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "72c48438-98eb-4cd5-b6dc-dca3034c98d5"
                 normalized_strings: "1:0.5"
               }
             }
@@ -3817,7 +3817,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "30bfedac-7ea5-44b9-95ef-3aeb08ba5d07"
                 normalized_strings: "1"
               }
             }
@@ -3838,7 +3838,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "1bfd83da-8e96-488a-84c6-985d1367af6e"
                 normalized_strings: "2: 1"
               }
             }
@@ -3859,7 +3859,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "44624b4f-5531-4e6f-8a91-539354be9596"
                 normalized_strings: "2:"
               }
             }
@@ -3884,8 +3884,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X:Y"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X:Y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -4068,7 +4068,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "9188484d-a59e-4932-9936-6d54e287f152"
                 normalized_strings: "1:4"
               }
             }
@@ -4080,7 +4080,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "1abb261a-14b8-4d67-850e-a1f173e0c824"
                 normalized_strings: "2:8"
               }
             }
@@ -4101,7 +4101,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "9e160745-9991-4651-b1f3-fc46922b1d92"
                 normalized_strings: "to"
               }
             }
@@ -4132,8 +4132,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X:Y"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X:Y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -5920,7 +5920,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "2218f74f-cb3d-4b3d-8f7f-48901af0f33d"
                 normalized_strings: "1:4"
               }
             }
@@ -5941,7 +5941,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "f498979c-a3cf-4a31-889a-b86aed44cfb5"
                 normalized_strings: "1 to 4"
               }
             }
@@ -5962,7 +5962,7 @@ states {
             key: "x"
             value {
               translatable_set_of_normalized_string {
-                content_id: "<unknown>"
+                content_id: "1520f528-b819-49ef-bf04-734bfb918cc4"
                 normalized_strings: "4:1"
               }
             }
@@ -5987,8 +5987,8 @@ states {
         key: "placeholder"
         value {
           custom_schema_value {
-            subtitled_html {
-              html: "Enter your answer as X:Y"
+            subtitled_unicode {
+              unicode_str: "Enter your answer as X:Y"
               content_id: "ca_placeholder_0"
             }
           }
@@ -6001,3 +6001,4 @@ init_state_name: "Introduction"
 objective: "Learn about how ratios can be used to show the relative relationship between quantities."
 title: "What is a Ratio?"
 language_code: "en"
+version: 123

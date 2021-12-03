@@ -14,10 +14,12 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.viewmodel.ObservableArrayList
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** [ViewModel] for [OptionsFragment]. */
@@ -25,7 +27,8 @@ import javax.inject.Inject
 class OptionControlsViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger,
+  @EnableLanguageSelectionUi private val enableLanguageSelectionUi: PlatformParameterValue<Boolean>
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
@@ -71,7 +74,7 @@ class OptionControlsViewModel @Inject constructor(
 
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
     if (profile.isFailure()) {
-      logger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
+      oppiaLogger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
     }
     return profile.getOrDefault(Profile.getDefaultInstance())
   }
@@ -96,7 +99,9 @@ class OptionControlsViewModel @Inject constructor(
 
     itemViewModelList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
 
-    itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
+    if (enableLanguageSelectionUi.value) {
+      itemViewModelList.add(optionsAppLanguageViewModel as OptionsItemViewModel)
+    }
 
     itemViewModelList.add(optionAudioViewViewModel as OptionsItemViewModel)
 

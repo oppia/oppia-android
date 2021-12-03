@@ -31,7 +31,8 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
-        android:paddingTop="@{viewModel.isSplitView() ? (viewModel.isAudioBarVisible ? @dimen/state_fragment_split_view_with_audio_bar_visible_padding_top : @dimen/space_0dp) : (viewModel.isAudioBarVisible ? @dimen/state_fragment_non_split_view_with_audio_bar_visible_padding_top : @dimen/space_0dp)}"
+        android:paddingTop="@{viewModel.isAudioBarVisible ? @dimen/state_fragment_with_audio_bar_visible_padding_top : @dimen/space_0dp}"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         android:scrollbars="none"
         app:data="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -47,6 +48,7 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:overScrollMode="never"
+        android:paddingBottom="@dimen/general_screen_padding_bottom"
         android:scrollbars="none"
         android:visibility="@{viewModel.isSplitView ? View.VISIBLE : View.GONE}"
         app:data="@{viewModel.rightItemList}"
@@ -69,8 +71,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        app:layoutMarginEnd="@{viewModel.isSplitView() ? @dimen/state_fragment_split_view_margin_end : @dimen/state_fragment_non_split_view_margin_end}"
-        app:layoutMarginStart="@{viewModel.isSplitView() ? @dimen/state_fragment_split_view_margin_start : @dimen/state_fragment_non_split_view_margin_start}"
+        app:layoutMarginEnd="@{viewModel.isSplitView() ? @dimen/audio_player_split_view_margin_end : @dimen/audio_player_non_split_view_margin_end}"
+        app:layoutMarginStart="@{viewModel.isSplitView() ? @dimen/audio_player_split_view_margin_start : @dimen/audio_player_non_split_view_margin_start}"
         app:layout_constraintEnd_toStartOf="@id/center_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -95,8 +97,7 @@
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
-    </FrameLayout>
+      android:layout_height="match_parent" />
 
     <FrameLayout
       android:id="@+id/hints_and_solution_fragment_container"
@@ -112,7 +113,8 @@
         android:layout_height="6dp"
         android:layout_gravity="top|end"
         android:layout_margin="8dp"
-        android:src="@drawable/ic_dot_yellow_24dp"
+        android:contentDescription="@string/new_hint_available"
+        app:srcCompat="@drawable/ic_dot_yellow_24dp"
         android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
 
       <ImageView
@@ -120,7 +122,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:src="@drawable/ic_hint_bulb_white_24dp" />
+        android:contentDescription="@string/show_hints_and_solution"
+        app:srcCompat="@drawable/ic_hint_bulb_white_24dp" />
     </FrameLayout>
 
     <FrameLayout
@@ -130,15 +133,15 @@
 
       <TextView
         android:id="@+id/congratulations_text_view"
+        style="@style/TextViewCenter"
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_gravity="bottom"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="16dp"
-        android:layout_gravity="bottom"
         android:background="@drawable/congratulations_text_background_shadow"
         android:fontFamily="sans-serif-medium"
-        android:gravity="center"
         android:lineSpacingExtra="1dp"
         android:text="@string/correct"
         android:textAllCaps="true"

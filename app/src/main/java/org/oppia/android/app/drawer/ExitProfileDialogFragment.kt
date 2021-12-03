@@ -9,6 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -16,7 +18,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 
 /** [DialogFragment] that gives option to either cancel or exit current profile. */
-class ExitProfileDialogFragment : DialogFragment() {
+class ExitProfileDialogFragment : InjectableDialogFragment() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
@@ -40,6 +42,11 @@ class ExitProfileDialogFragment : DialogFragment() {
 
   lateinit var exitProfileDialogInterface: ExitProfileDialogInterface
 
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
+  }
+
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val args =
       checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
@@ -51,18 +58,19 @@ class ExitProfileDialogFragment : DialogFragment() {
 
     val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItem) {
       HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
+      HighlightItem.DEVELOPER_OPTIONS_ITEM,
       HighlightItem.LAST_CHECKED_MENU_ITEM -> true
       else -> false
     }
 
     val alertDialog = AlertDialog
-      .Builder(ContextThemeWrapper(activity as Context, R.style.AlertDialogTheme))
+      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaAlertDialogTheme))
       .setMessage(R.string.home_activity_back_dialog_message)
       .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
         dialog.dismiss()
       }
       .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        // TODO(#322): Need to start intent for ProfileChooserActivity to get update. Change to finish when live data bug is fixed.
+        // TODO(#3641): Investigate on using finish instead of intent.
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
         if (!restoreLastCheckedItem) {
           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -86,6 +94,7 @@ class ExitProfileDialogFragment : DialogFragment() {
 
     val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItem) {
       HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
+      HighlightItem.DEVELOPER_OPTIONS_ITEM,
       HighlightItem.LAST_CHECKED_MENU_ITEM -> true
       else -> false
     }
@@ -96,6 +105,8 @@ class ExitProfileDialogFragment : DialogFragment() {
       exitProfileDialogInterface.unhighlightSwitchProfileMenuItem()
       if (exitProfileDialogArguments.highlightItem == HighlightItem.LAST_CHECKED_MENU_ITEM) {
         exitProfileDialogInterface.highlightLastCheckedMenuItem()
+      } else if (exitProfileDialogArguments.highlightItem == HighlightItem.DEVELOPER_OPTIONS_ITEM) {
+        exitProfileDialogInterface.highlightDeveloperOptionsItem()
       } else {
         exitProfileDialogInterface.highlightAdministratorControlsItem()
       }

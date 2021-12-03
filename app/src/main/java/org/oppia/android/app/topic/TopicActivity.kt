@@ -3,10 +3,16 @@ package org.oppia.android.app.topic
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
@@ -21,6 +27,7 @@ class TopicActivity :
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
   RouteToExplorationListener,
+  RouteToResumeLessonListener,
   RouteToRevisionCardListener {
 
   private var internalProfileId: Int = -1
@@ -32,8 +39,8 @@ class TopicActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
-    internalProfileId = intent?.getIntExtra(KEY_NAVIGATION_PROFILE_ID, -1)!!
+    (activityComponent as ActivityComponentImpl).inject(this)
+    internalProfileId = intent?.getIntExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, -1)!!
     topicId = checkNotNull(intent?.getStringExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected topic ID to be included in intent for TopicActivity."
     }
@@ -45,7 +52,8 @@ class TopicActivity :
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
-        skillIdList
+        skillIdList,
+        ProfileId.newBuilder().setInternalId(internalProfileId).build()
       )
     )
   }
@@ -77,7 +85,8 @@ class TopicActivity :
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isCheckpointingEnabled: Boolean
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -86,7 +95,29 @@ class TopicActivity :
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        isCheckpointingEnabled
+      )
+    )
+  }
+
+  override fun routeToResumeLesson(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
+  ) {
+    startActivity(
+      ResumeLessonActivity.createResumeLessonActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen,
+        explorationCheckpoint
       )
     )
   }
@@ -95,10 +126,20 @@ class TopicActivity :
     finish()
   }
 
+  class TopicActivityIntentFactoryImpl @Inject constructor(
+    private val activity: AppCompatActivity
+  ) : ActivityIntentFactories.TopicActivityIntentFactory {
+    override fun createIntent(profileId: ProfileId, topicId: String): Intent =
+      createTopicActivityIntent(activity, profileId.internalId, topicId)
+
+    override fun createIntent(profileId: ProfileId, topicId: String, storyId: String): Intent =
+      createTopicPlayStoryActivityIntent(activity, profileId.internalId, topicId, storyId)
+  }
+
   companion object {
 
     fun getProfileIdKey(): String {
-      return KEY_NAVIGATION_PROFILE_ID
+      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
 
     fun getTopicIdKey(): String {
@@ -115,10 +156,10 @@ class TopicActivity :
       internalProfileId: Int,
       topicId: String
     ): Intent {
-      val intent = Intent(context, TopicActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
-      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      return intent
+      return Intent(context, TopicActivity::class.java).apply {
+        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+        putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+      }
     }
 
     /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
@@ -128,11 +169,9 @@ class TopicActivity :
       topicId: String,
       storyId: String
     ): Intent {
-      val intent = Intent(context, TopicActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, internalProfileId)
-      intent.putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      intent.putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      return intent
+      return createTopicActivityIntent(context, internalProfileId, topicId).apply {
+        putExtra(TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+      }
     }
   }
 }

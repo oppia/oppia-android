@@ -9,10 +9,12 @@ import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.viewmodel.ObservableArrayList
+import org.oppia.android.domain.translation.TranslationController
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -27,7 +29,9 @@ class SelectionInteractionViewModel(
   interaction: Interaction,
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
+  val writtenTranslationContext: WrittenTranslationContext,
+  private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -71,11 +75,14 @@ class SelectionInteractionViewModel(
     return maxAllowableSelectionCount > 1
   }
 
-  override fun getPendingAnswer(): UserAnswer {
-    val userAnswerBuilder = UserAnswer.newBuilder()
+  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
+    val translationContext = this@SelectionInteractionViewModel.writtenTranslationContext
     val selectedItemSubtitledHtmls = selectedItems.map(choiceItems::get).map { it.htmlContent }
+    val itemHtmls = selectedItemSubtitledHtmls.map { subtitledHtml ->
+      translationController.extractString(subtitledHtml, translationContext)
+    }
     if (interactionId == "ItemSelectionInput") {
-      userAnswerBuilder.answer = InteractionObject.newBuilder().apply {
+      answer = InteractionObject.newBuilder().apply {
         setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
           addAllContentIds(
             selectedItemSubtitledHtmls.map { subtitledHtml ->
@@ -86,23 +93,23 @@ class SelectionInteractionViewModel(
           )
         }.build()
       }.build()
-      userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemSubtitledHtmls)
+      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
     } else if (selectedItems.size == 1) {
-      userAnswerBuilder.answer =
-        InteractionObject.newBuilder().setNonNegativeInt(selectedItems.first()).build()
-      userAnswerBuilder.htmlAnswer = convertSelectedItemsToHtmlString(selectedItemSubtitledHtmls)
+      answer = InteractionObject.newBuilder().apply {
+        nonNegativeInt = selectedItems.first()
+      }.build()
+      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
     }
-    return userAnswerBuilder.build()
-  }
+    writtenTranslationContext = translationContext
+  }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
-  private fun convertSelectedItemsToHtmlString(subtitledHtmls: Collection<SubtitledHtml>): String {
-    return when (subtitledHtmls.size) {
+  private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {
+    return when (itemHtmls.size) {
       0 -> ""
-      1 -> subtitledHtmls.first().html
+      1 -> itemHtmls.first()
       else -> {
-        val htmlList = subtitledHtmls.map { it.html }
-        "<ul><li>${htmlList.joinToString(separator = "</li><li>")}</li></ul>"
+        "<ul><li>${itemHtmls.joinToString(separator = "</li><li>")}</li></ul>"
       }
     }
   }
@@ -127,7 +134,7 @@ class SelectionInteractionViewModel(
         }
         return false
       } else if (selectedItems.size < maxAllowableSelectionCount) {
-        // TODO(#32): Add warning to user when they exceed the number of allowable selections or are under the minimum
+        // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
         //  number required.
         selectedItems += itemIndex
         val wasSelectedItemListEmpty = isAnswerAvailable.get()

@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminSettingsDialogBinding
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class AdminSettingsDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val viewModelProvider: ViewModelProvider<AdminSettingsViewModel>
+  private val viewModelProvider: ViewModelProvider<AdminSettingsViewModel>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val adminViewModel by lazy {
     getAdminSettingsViewModel()
@@ -55,7 +57,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    val dialog = AlertDialog.Builder(activity, R.style.AlertDialogTheme)
+    val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.admin_settings_heading)
       .setView(binding.root)
       .setMessage(R.string.admin_settings_sub)
@@ -78,13 +80,18 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
     dialog.setOnShowListener {
       dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
         if (binding.adminSettingsInputPinEditText.text?.isEmpty()!!) {
+          adminViewModel.errorMessage.set(
+            resourceHandler.getStringInLocale(
+              R.string.admin_auth_null
+            )
+          )
           return@setOnClickListener
         }
         if (binding.adminSettingsInputPinEditText.text.toString() == adminPin) {
           routeDialogInterface.routeToResetPinDialog()
         } else {
           adminViewModel.errorMessage.set(
-            fragment.resources.getString(
+            resourceHandler.getStringInLocale(
               R.string.admin_settings_incorrect
             )
           )

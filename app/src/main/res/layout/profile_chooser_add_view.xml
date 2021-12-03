@@ -35,7 +35,7 @@
         android:id="@+id/profile_add_button"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:src="@drawable/ic_add_profile"
+        app:srcCompat="@{@drawable/ic_add_profile}"
         app:civ_border_color="@color/avatarBorder"
         app:civ_border_width="1dp" />
 
@@ -45,10 +45,12 @@
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
-        app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
+        android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}"
+        android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
 
         <TextView
           android:id="@+id/add_profile_text"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-medium"
@@ -58,9 +60,9 @@
 
         <TextView
           android:id="@+id/add_profile_description_text"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="center"
           android:layout_marginTop="4dp"
           android:fontFamily="sans-serif"
           android:text="@string/set_up_multiple_profiles_description"

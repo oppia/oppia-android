@@ -19,23 +19,24 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="32dp"
+    android:layout_marginTop="@dimen/solution_summary_margin_top_linear_layout_first"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="28dp"
-      android:layout_marginEnd="28dp"
-      android:layout_marginBottom="20dp">
+      android:layout_marginStart="@dimen/solution_summary_margin_start"
+      android:layout_marginEnd="@dimen/solution_summary_margin_end"
+      android:layout_marginBottom="@dimen/solution_summary_margin_bottom">
 
       <TextView
         android:id="@+id/solution_title"
+        style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="@dimen/solution_summary_margin_top_solution_title"
+        android:layout_marginBottom="@dimen/solution_summary_margin_bottom_solution_title"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="20sp"
@@ -49,8 +50,8 @@
         android:minWidth="160dp"
         android:minHeight="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="@dimen/solution_summary_margin_top_reveal_solution_button"
+        android:layout_marginBottom="@dimen/solution_summary_margin_bottom_reveal_solution_button"
         android:layout_marginEnd="8dp"
         android:background="@drawable/reveal_solution_brown_background"
         android:padding="4dp"
@@ -67,11 +68,12 @@
         android:id="@+id/expand_list_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:minWidth="48dp"
-        android:minHeight="48dp"
+        android:layout_marginStart="@dimen/solution_summary_margin_start_expand_list_icon"
+        android:layout_marginEnd="@dimen/solution_summary_margin_end_expand_list_icon"
+        android:layout_marginBottom="@dimen/solution_summary_margin_bottom_expand_list_icon"
+        android:minWidth="@dimen/solution_summary_min_width_expand_list_icon"
+        android:minHeight="@dimen/solution_summary_min_height_expand_list_icon"
+        android:layout_marginTop="@dimen/solution_summary_margin_top_expand_list_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.966"
@@ -86,8 +88,8 @@
           android:layout_height="48dp"
           android:padding="8dp"
           android:layout_gravity="center_vertical"
-          android:contentDescription="@{@string/show_hide_solution_list(viewModel.solutionSummary)}"
-          android:src="@drawable/ic_arrow_drop_down_black_24dp"
+          android:contentDescription="@string/show_hide_solution_list"
+          app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
           app:isRotationAnimationClockwise="@{isListExpanded}"
           app:rotationAnimationAngle="@{180f}" />
       </FrameLayout>
@@ -98,10 +100,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:layout_marginStart="40dp"
-      android:layout_marginEnd="40dp"
-      android:layout_marginTop="8dp"
-      android:layout_marginBottom="32dp"
+      android:layout_marginStart="@dimen/solution_summary_margin_start_linear_layout"
+      android:layout_marginEnd="@dimen/solution_summary_margin_end_linear_layout"
+      android:layout_marginTop="@dimen/solution_summary_margin_top_linear_layout"
+      android:layout_marginBottom="@dimen/solution_summary_margin_bottom_linear_layout"
       android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
       <LinearLayout
@@ -111,9 +113,9 @@
 
         <TextView
           android:id="@+id/solution_correct_answer_label"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="start"
           android:fontFamily="sans-serif-black"
           android:text="@string/the_only_solution_is"
           android:textColor="@color/oppiaPrimaryText"
@@ -121,6 +123,7 @@
 
         <TextView
           android:id="@+id/solution_correct_answer"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
@@ -136,10 +139,10 @@
 
         <TextView
           android:id="@+id/solution_summary_label"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="start"
-          android:layout_marginTop="12dp"
+          android:layout_marginTop="@dimen/solution_summary_margin_top_solution_summary_label"
           android:fontFamily="sans-serif-black"
           android:text="@string/explanation"
           android:textColor="@color/oppiaPrimaryText"
@@ -147,9 +150,9 @@
 
         <TextView
           android:id="@+id/solution_summary"
+          style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="start"
           android:fontFamily="sans-serif"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="16sp" />

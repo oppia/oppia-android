@@ -6,28 +6,29 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
-import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
-private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
 /** The starting point for exploration. */
 class ExplorationActivity :
   InjectableAppCompatActivity(),
-  StopStatePlayingSessionListener,
+  StopStatePlayingSessionWithSavedProgressListener,
   StateKeyboardButtonListener,
   AudioButtonListener,
   HintsAndSolutionListener,
@@ -45,23 +46,28 @@ class ExplorationActivity :
   private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var state: State
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
   private var backflowScreen: Int? = null
+  private var isCheckpointingEnabled: Boolean = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
     topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
     storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
     explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
     backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
+    isCheckpointingEnabled =
+      intent.getBooleanExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, false)
     explorationActivityPresenter.handleOnCreate(
       this,
       internalProfileId,
       topicId,
       storyId,
       explorationId,
-      backflowScreen
+      backflowScreen,
+      isCheckpointingEnabled
     )
   }
 
@@ -77,6 +83,8 @@ class ExplorationActivity :
       "ExplorationActivity.exploration_id"
     const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
       "ExplorationActivity.backflow_screen"
+    const val EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY =
+      "ExplorationActivity.is_checkpointing_enabled_key"
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -84,7 +92,8 @@ class ExplorationActivity :
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowScreen: Int?
+      backflowScreen: Int?,
+      isCheckpointingEnabled: Boolean
     ): Intent {
       val intent = Intent(context, ExplorationActivity::class.java)
       intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
@@ -92,25 +101,21 @@ class ExplorationActivity :
       intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
       intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
       intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
+      intent.putExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, isCheckpointingEnabled)
       return intent
     }
   }
 
   override fun onBackPressed() {
-    showStopExplorationDialogFragment()
+    explorationActivityPresenter.backButtonPressed()
   }
 
-  private fun showStopExplorationDialogFragment() {
-    val previousFragment = supportFragmentManager.findFragmentByTag(TAG_STOP_EXPLORATION_DIALOG)
-    if (previousFragment != null) {
-      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val dialogFragment = StopExplorationDialogFragment.newInstance()
-    dialogFragment.showNow(supportFragmentManager, TAG_STOP_EXPLORATION_DIALOG)
+  override fun deleteCurrentProgressAndStopSession() {
+    explorationActivityPresenter.deleteCurrentProgressAndStopExploration()
   }
 
-  override fun stopSession() {
-    explorationActivityPresenter.stopExploration()
+  override fun deleteOldestProgressAndStopSession() {
+    explorationActivityPresenter.deleteOldestSavedProgressAndStopExploration()
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -142,8 +147,8 @@ class ExplorationActivity :
     explorationActivityPresenter.onKeyboardAction(actionCode)
   }
 
-  override fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    explorationActivityPresenter.revealHint(saveUserChoice, hintIndex)
+  override fun revealHint(hintIndex: Int) {
+    explorationActivityPresenter.revealHint(hintIndex)
   }
 
   override fun revealSolution() = explorationActivityPresenter.revealSolution()
@@ -156,16 +161,15 @@ class ExplorationActivity :
 
   override fun routeToHintsAndSolution(
     explorationId: String,
-    newAvailableHintIndex: Int,
-    allHintsExhausted: Boolean
+    helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
         explorationId,
-        newAvailableHintIndex,
-        allHintsExhausted
+        state,
+        helpIndex,
+        writtenTranslationContext
       )
-      hintsAndSolutionDialogFragment.loadState(state)
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
@@ -178,8 +182,12 @@ class ExplorationActivity :
     explorationActivityPresenter.loadExplorationFragment(readingTextSize)
   }
 
-  override fun onExplorationStateLoaded(state: State) {
+  override fun onExplorationStateLoaded(
+    state: State,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
     this.state = state
+    this.writtenTranslationContext = writtenTranslationContext
   }
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()

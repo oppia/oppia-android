@@ -21,13 +21,14 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
 import org.oppia.android.domain.audio.CellularAudioDialogController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
 
@@ -45,7 +46,8 @@ class AudioFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -142,7 +144,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
     if (profileResult.isFailure()) {
-      logger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+      oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
     }
     return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
   }
@@ -212,8 +214,8 @@ class AudioFragmentPresenter @Inject constructor(
     this.feedbackId = feedbackId
     if (shouldEnableAudioPlayback) {
       when (networkConnectionUtil.getCurrentConnectionStatus()) {
-        NetworkConnectionUtil.ConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
-        NetworkConnectionUtil.ConnectionStatus.CELLULAR -> {
+        NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> setAudioFragmentVisible(true)
+        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> {
           if (showCellularDataDialog) {
             setAudioFragmentVisible(false)
             showCellularDataDialogFragment()
@@ -225,7 +227,7 @@ class AudioFragmentPresenter @Inject constructor(
             }
           }
         }
-        NetworkConnectionUtil.ConnectionStatus.NONE -> {
+        NetworkConnectionUtil.ProdConnectionStatus.NONE -> {
           showOfflineDialog()
           setAudioFragmentVisible(false)
         }
@@ -281,10 +283,12 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun showOfflineDialog() {
-    AlertDialog.Builder(activity, R.style.AlertDialogTheme)
-      .setTitle(context.getString(R.string.audio_dialog_offline_title))
-      .setMessage(context.getString(R.string.audio_dialog_offline_message))
-      .setPositiveButton(context.getString(R.string.audio_dialog_offline_positive)) { dialog, _ ->
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setTitle(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_title))
+      .setMessage(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_message))
+      .setPositiveButton(
+        resourceHandler.getStringInLocale(R.string.audio_dialog_offline_positive)
+      ) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
   }

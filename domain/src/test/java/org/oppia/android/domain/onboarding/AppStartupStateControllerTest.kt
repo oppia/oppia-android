@@ -31,6 +31,7 @@ import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -39,10 +40,13 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.text.SimpleDateFormat
@@ -83,6 +87,8 @@ class AppStartupStateControllerTest {
   @Captor
   lateinit var appStartupStateCaptor: ArgumentCaptor<AsyncResult<AppStartupState>>
 
+  // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
+  //  package to generate these strings).
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
   @Test
@@ -426,8 +432,10 @@ class AppStartupStateControllerTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      LogStorageModule::class, RobolectricModule::class,
       TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      OppiaClockModule::class, LocaleProdModule::class,
       ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
     ]
   )

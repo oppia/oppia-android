@@ -3,6 +3,7 @@ package org.oppia.android.app.settings.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
@@ -31,20 +32,8 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
-    profileEditActivityPresenter.handleOnCreate(savedInstanceState)
-  }
-
-  override fun onSupportNavigateUp(): Boolean {
-    val isMultipane = intent.extras!!.getBoolean(IS_MULTIPANE_EXTRA_KEY, false)
-    if (isMultipane) {
-      super.onBackPressed()
-    } else {
-      val intent = Intent(this, ProfileListActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      startActivity(intent)
-    }
-    return false
+    (activityComponent as ActivityComponentImpl).inject(this)
+    profileEditActivityPresenter.handleOnCreate()
   }
 
   override fun onBackPressed() {
@@ -56,10 +45,5 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       startActivity(intent)
     }
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    profileEditActivityPresenter.handleOnSaveInstanceState(outState)
   }
 }

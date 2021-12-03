@@ -31,28 +31,35 @@ import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.not
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent // ktlint-disable max-line-length
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -64,31 +71,49 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -102,29 +127,57 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class RevisionCardFragmentTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  private val internalProfileId = 1
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
     Intents.init()
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   @Test
   fun testRevisionCardTest_overflowMenu_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       openActionBarOverflowOrOptionsMenu(context)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
       onView(withText(context.getString(R.string.menu_help)))
         .check(matches(isDisplayed()))
@@ -135,14 +188,19 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTest_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       openActionBarOverflowOrOptionsMenu(context)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText(context.getString(R.string.menu_help))).perform(ViewActions.click())
+      testCoroutineDispatchers.runCurrent()
+
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasExtra(
@@ -157,14 +215,19 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTest_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       openActionBarOverflowOrOptionsMenu(context)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText(context.getString(R.string.menu_options))).perform(ViewActions.click())
+      testCoroutineDispatchers.runCurrent()
+
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
         hasExtra(
@@ -179,12 +242,14 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_toolbar_title))
         .check(matches(withText("What is a Fraction?")))
     }
@@ -194,12 +259,14 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID_2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("Description of subtopic is here."))))
     }
@@ -209,12 +276,14 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_return_button))
         .check(matches(withText(R.string.return_to_topic)))
     }
@@ -224,13 +293,17 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_toolbar_title))
         .check(matches(withText("What is a Fraction?")))
     }
@@ -240,13 +313,17 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID_2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("Description of subtopic is here."))))
     }
@@ -256,13 +333,17 @@ class RevisionCardFragmentTest {
   fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId1_checkReturnToTopicButtonIsDisplayedSuccessfully() { // ktlint-disable max-line-length
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_return_button))
         .check(matches(withText(R.string.return_to_topic)))
     }
@@ -272,12 +353,14 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_showsLinkTextForConceptCard() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(withText(containsString("Learn more")))
       )
@@ -288,13 +371,17 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_landscape_showsLinkTextForConceptCard() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text)).check(
         matches(withText(containsString("Learn more")))
       )
@@ -305,13 +392,17 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_clickConceptCardLinkText_opensConceptCard() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
@@ -323,14 +414,19 @@ class RevisionCardFragmentTest {
   fun testRevisionCard_landscape_clickConceptCardLinkText_opensConceptCard() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        context,
+        profileId.internalId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
       onView(withId(R.id.concept_card_heading_text))
         .inRoot(isDialog())
@@ -338,9 +434,67 @@ class RevisionCardFragmentTest {
     }
   }
 
-  @After
-  fun tearDown() {
-    Intents.release()
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testRevisionCard_englishContentLang_pageContentsAreInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        "test_topic_id_0",
+        subtopicId = 1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(matches(withText(containsString("sample subtopic with dummy content"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testRevisionCard_englishContentLang_switchToArabic_pageContentsAreInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        "test_topic_id_0",
+        subtopicId = 1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Switch to Arabic after opening the card. It should trigger an update to the text with the
+      // correct translation shown.
+      updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testRevisionCard_withArabicContentLang_pageContentsAreInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launch<RevisionCardActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        "test_topic_id_0",
+        subtopicId = 1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.revision_card_explanation_text))
+        .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
+    }
   }
 
   /** See the version in StateFragmentTest for documentation details. */
@@ -384,6 +538,16 @@ class RevisionCardFragmentTest {
     text: String
   ): ClickableSpan? = find { text in it.first }?.second
 
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
   @Module
   class TestModule {
     @Provides
@@ -408,7 +572,7 @@ class RevisionCardFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class,
+      TestModule::class, RobolectricModule::class, PlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -418,10 +582,15 @@ class RevisionCardFragmentTest {
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

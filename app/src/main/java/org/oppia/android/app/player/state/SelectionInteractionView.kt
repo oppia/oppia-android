@@ -7,14 +7,16 @@ import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.shim.ViewBindingShim
-import org.oppia.android.app.shim.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.HtmlParser
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
 
 /**
@@ -44,11 +46,14 @@ class SelectionInteractionView @JvmOverloads constructor(
   lateinit var bindingInterface: ViewBindingShim
 
   private lateinit var entityId: String
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    (FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory)
-      .createViewComponent(this).inject(this)
+
+    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    viewComponent.inject(this)
   }
 
   fun setAllOptionsItemInputType(selectionItemInputType: SelectionItemInputType) {
@@ -64,6 +69,15 @@ class SelectionInteractionView @JvmOverloads constructor(
   //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
   fun setEntityId(entityId: String) {
     this.entityId = entityId
+  }
+
+  /**
+   * Sets the [WrittenTranslationContext] used to translate strings in this view.
+   *
+   * This must be called during view initialization.
+   */
+  fun setWrittenTranslationContext(writtenTranslationContext: WrittenTranslationContext) {
+    this.writtenTranslationContext = writtenTranslationContext
   }
 
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
@@ -86,7 +100,8 @@ class SelectionInteractionView @JvmOverloads constructor(
                 htmlParserFactory,
                 resourceBucketName,
                 entityType,
-                entityId
+                entityId,
+                writtenTranslationContext
               )
             }
           )
@@ -109,7 +124,8 @@ class SelectionInteractionView @JvmOverloads constructor(
                 htmlParserFactory,
                 resourceBucketName,
                 entityType,
-                entityId
+                entityId,
+                writtenTranslationContext
               )
             }
           )
@@ -124,3 +140,10 @@ fun setEntityId(
   selectionInteractionView: SelectionInteractionView,
   entityId: String
 ) = selectionInteractionView.setEntityId(entityId)
+
+/** Sets the translation context for a specific [SelectionInteractionView] via data-binding. */
+@BindingAdapter("writtenTranslationContext")
+fun setWrittenTranslationContext(
+  selectionInteractionView: SelectionInteractionView,
+  writtenTranslationContext: WrittenTranslationContext
+) = selectionInteractionView.setWrittenTranslationContext(writtenTranslationContext)

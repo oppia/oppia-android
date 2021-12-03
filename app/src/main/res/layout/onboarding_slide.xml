@@ -19,14 +19,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:importantForAccessibility="yes">
 
       <ImageView
         android:id="@+id/slide_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
-        android:src="@{viewModel.slideImage}"
+        app:srcCompat="@{viewModel.slideImage}"
         app:layout_constraintDimensionRatio="5:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,12 +51,11 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewCenterHorizontal"
         android:layout_width="0dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="48dp"
-        android:gravity="center_horizontal"
         android:maxLines="2"
         android:minLines="2"
         android:text="@{viewModel.description}"

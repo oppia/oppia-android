@@ -20,14 +20,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/final_layout"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:importantForAccessibility="yes">
 
       <ImageView
         android:id="@+id/slide_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_portrait_onboarding_3"
+        app:srcCompat="@drawable/ic_portrait_onboarding_3"
         app:layout_constraintDimensionRatio="5:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,12 +52,11 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewCenterHorizontal"
         android:layout_width="0dp"
         android:layout_marginStart="192dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="192dp"
-        android:gravity="center_horizontal"
         android:maxLines="2"
         android:minLines="2"
         android:text="@string/onboarding_slide_3_description"

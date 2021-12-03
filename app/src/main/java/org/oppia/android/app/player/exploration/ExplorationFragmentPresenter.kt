@@ -54,8 +54,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     getStateFragment()?.handleKeyboardAction()
   }
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
-    getStateFragment()?.revealHint(saveUserChoice, hintIndex)
+  fun revealHint(hintIndex: Int) {
+    getStateFragment()?.revealHint(hintIndex)
   }
 
   fun revealSolution() {
@@ -63,6 +63,8 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
+
+  fun getExplorationCheckpointState() = getStateFragment()?.getExplorationCheckpointState()
 
   private fun getStateFragment(): StateFragment? {
     return fragment

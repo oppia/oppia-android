@@ -1,10 +1,14 @@
 package org.oppia.android.data.backends.gae
 
+import android.annotation.SuppressLint
+import android.os.Build
+import com.google.common.base.Optional
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import org.oppia.android.data.backends.gae.api.ClassroomService
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
+import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.data.backends.gae.api.TopicService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -17,57 +21,60 @@ import javax.inject.Singleton
  */
 @Module
 class NetworkModule {
-
-  /**
-   * Provides the Retrofit object.
-   * @return the Retrofit object
-   */
+  @SuppressLint("ObsoleteSdkInt") // AS warning is incorrect in this context.
   @OppiaRetrofit
   @Provides
   @Singleton
   fun provideRetrofitInstance(
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
-    remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
-  ): Retrofit {
-    val client = OkHttpClient.Builder()
-      .addInterceptor(jsonPrefixNetworkInterceptor)
-      .addInterceptor(remoteAuthNetworkInterceptor)
-      .build()
+    remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
+    @BaseUrl baseUrl: String
+  ): Optional<Retrofit> {
+    // TODO(#1720): Make this a compile-time dep once Hilt provides it as an option.
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      val client = OkHttpClient.Builder()
+        .addInterceptor(jsonPrefixNetworkInterceptor)
+        .addInterceptor(remoteAuthNetworkInterceptor)
+        .build()
 
-    return Retrofit.Builder()
-      .baseUrl(NetworkSettings.getBaseUrl())
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client)
-      .build()
+      Optional.of(
+        Retrofit.Builder()
+          .baseUrl(baseUrl)
+          .addConverterFactory(MoshiConverterFactory.create())
+          .client(client)
+          .build()
+      )
+    } else Optional.absent()
   }
 
-  /**
-   * Provides the Topic service implementation.
-   * @param retrofit the Retrofit object used to instantiate the service
-   * @return the Topic service implementation.
-   */
   @Provides
   @Singleton
-  fun provideTopicService(@OppiaRetrofit retrofit: Retrofit): TopicService {
-    return retrofit.create(TopicService::class.java)
+  fun provideTopicService(@OppiaRetrofit retrofit: Optional<Retrofit>): Optional<TopicService> {
+    return retrofit.map { it.create(TopicService::class.java) }
   }
 
-  /**
-   * Provides the Classroom service implementation.
-   * @param retrofit the Retrofit object used to instantiate the service
-   * @return the Classroom service implementation.
-   */
   @Provides
   @Singleton
-  fun provideClassroomService(@OppiaRetrofit retrofit: Retrofit): ClassroomService {
-    return retrofit.create(ClassroomService::class.java)
+  fun provideClassroomService(
+    @OppiaRetrofit retrofit: Optional<Retrofit>
+  ): Optional<ClassroomService> {
+    return retrofit.map { it.create(ClassroomService::class.java) }
   }
 
-  // Provides the Feedback Reporting service implementation.
   @Provides
   @Singleton
-  fun provideFeedbackReportingService(@OppiaRetrofit retrofit: Retrofit): FeedbackReportingService {
-    return retrofit.create(FeedbackReportingService::class.java)
+  fun provideFeedbackReportingService(
+    @OppiaRetrofit retrofit: Optional<Retrofit>
+  ): Optional<FeedbackReportingService> {
+    return retrofit.map { it.create(FeedbackReportingService::class.java) }
+  }
+
+  @Provides
+  @Singleton
+  fun providePlatformParameterService(
+    @OppiaRetrofit retrofit: Optional<Retrofit>
+  ): Optional<PlatformParameterService> {
+    return retrofit.map { it.create(PlatformParameterService::class.java) }
   }
 
   // Provides the API key to use in authenticating remote messages sent or received. This will be
@@ -75,4 +82,9 @@ class NetworkModule {
   @Provides
   @NetworkApiKey
   fun provideNetworkApiKey(): String = ""
+
+  private companion object {
+    private fun <T, V> Optional<T>.map(mapFunc: (T) -> V): Optional<V> =
+      transform { mapFunc(checkNotNull(it)) } // Paylaod should never actually be null.
+  }
 }

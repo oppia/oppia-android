@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:playState="http://schemas.android.com/tools">
 
   <data>
 
     <import type="android.view.View" />
-
     <import type="org.oppia.android.app.model.ChapterPlayState" />
+    <import type="org.oppia.android.app.model.ChapterSummary" />
 
     <variable
       name="htmlContent"
@@ -17,136 +18,168 @@
       type="org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
 
-  <FrameLayout
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="@{viewModel.index == 0 ? @dimen/story_chapter_view_margin_top_first_item : @dimen/space_0dp}">
 
-    <com.google.android.material.card.MaterialCardView
-      android:id="@+id/story_chapter_card"
+    <FrameLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_marginEnd="24dp">
+
+      <org.oppia.android.app.customview.VerticalDashedLineView
+        android:id="@+id/verticalDashedLineView"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:visibility="@{viewModel.index == (viewModel.totalChapters - 1) ? View.INVISIBLE : View.VISIBLE}"
+        app:color="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? @color/grey : @color/colorPrimary}" />
+
+      <ImageView
+        android:id="@+id/progress_image_view"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:importantForAccessibility="no"
+        playState:image="@{viewModel.chapterSummary.chapterPlayState}" />
+
+      <ImageView
+        android:id="@+id/completed_chapter_image_view"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:importantForAccessibility="no"
+        android:padding="8dp"
+        android:visibility="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? View.GONE : View.VISIBLE}"
+        app:srcCompat="@drawable/ic_lessons_icon_24dp" />
+    </FrameLayout>
+
+    <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="28dp"
-      android:layout_marginTop="16dp"
-      android:layout_marginEnd="28dp"
-      android:layout_marginBottom="16dp"
-      android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
-      android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
-      app:cardCornerRadius="4dp"
-      app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}">
+      android:layout_height="wrap_content">
 
-      <androidx.constraintlayout.widget.ConstraintLayout
+      <com.google.android.material.card.MaterialCardView
+        android:id="@+id/story_chapter_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="true"
-        android:contentDescription="@{viewModel.name}">
-
-        <org.oppia.android.app.customview.LessonThumbnailImageView
-          android:id="@+id/chapter_thumbnail"
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:scaleType="centerInside"
-          app:entityId="@{viewModel.storyId}"
-          app:entityType="@{viewModel.entityType}"
-          app:isBlurred="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
-          app:layout_constraintDimensionRatio="16:9"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          app:lessonThumbnail="@{viewModel.chapterThumbnail}" />
-
-        <View
-          android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:alpha="0.5"
-          android:background="@{viewModel.chapterThumbnail.backgroundColorRgb}"
-          android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
-          app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
-          app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
-          app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
-          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
-
-        <ImageView
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:scaleType="center"
-          android:src="@drawable/ic_baseline_lock_24"
-          android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
-          app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
-          app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
-          app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
-          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="32dp"
+        android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
+        android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:minHeight="140dp"
-          android:padding="8dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/chapter_thumbnail">
+          android:clipToPadding="true">
 
-          <TextView
-            android:id="@+id/chapter_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:maxLines="2"
-            android:text="@{String.format(@string/chapter_name, (viewModel.index + 1), viewModel.name)}"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="18sp"
+          <org.oppia.android.app.customview.LessonThumbnailImageView
+            android:id="@+id/chapter_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:entityId="@{viewModel.storyId}"
+            app:entityType="@{viewModel.entityType}"
+            app:isBlurred="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
+            app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:lessonThumbnail="@{viewModel.chapterThumbnail}" />
 
-          <TextView
-            android:id="@+id/chapter_summary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
-            android:fontFamily="sans-serif"
-            android:text="@{htmlContent}"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textColorLink="@color/colorPrimary"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/chapter_title"
-            app:layout_constraintVertical_bias="0.0" />
+          <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:alpha="0.5"
+            android:background="@{viewModel.chapterThumbnail.backgroundColorRgb}"
+            android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
 
           <ImageView
-            android:id="@+id/chapter_completed_tick"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/chapter_thumbnail"
+            app:srcCompat="@drawable/ic_baseline_lock_24" />
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
-            android:contentDescription="@{String.format(@string/chapter_completed, (viewModel.index + 1), viewModel.name)}"
-            android:src="@drawable/ic_check_24dp"
-            android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED ? View.VISIBLE : View.GONE}"
+            android:minHeight="140dp"
+            android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chapter_summary"
-            app:layout_constraintVertical_bias="1.0" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-      </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chapter_thumbnail">
 
-    <FrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_marginStart="28dp"
-      android:layout_marginTop="16dp"
-      android:layout_marginEnd="28dp"
-      android:layout_marginBottom="16dp"
-      android:background="@color/chapterCardShadow"
-      android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
-  </FrameLayout>
+            <TextView
+              android:id="@+id/chapter_title"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="8dp"
+              android:layout_marginTop="4dp"
+              android:layout_marginEnd="8dp"
+              android:ellipsize="end"
+              android:fontFamily="sans-serif-medium"
+              android:maxLines="2"
+              android:text="@{viewModel.computeChapterTitleText()}"
+              android:textColor="@color/oppiaPrimaryText"
+              android:textSize="18sp"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+              android:id="@+id/chapter_summary"
+              style="@style/Body"
+              android:layout_marginStart="8dp"
+              android:layout_marginTop="8dp"
+              android:layout_marginEnd="8dp"
+              android:layout_marginBottom="4dp"
+              android:text="@{htmlContent}"
+              android:textColorLink="@color/colorPrimary"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@id/chapter_title"
+              app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+              android:id="@+id/chapter_completed_tick"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="8dp"
+              android:layout_marginBottom="4dp"
+              android:contentDescription="@{@string/chapter_completed}"
+              android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED ? View.VISIBLE : View.GONE}"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/chapter_summary"
+              app:layout_constraintVertical_bias="1.0"
+              app:srcCompat="@drawable/ic_check_24dp" />
+          </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </com.google.android.material.card.MaterialCardView>
+
+      <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/chapterCardShadow"
+        android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
+    </FrameLayout>
+  </LinearLayout>
 </layout>

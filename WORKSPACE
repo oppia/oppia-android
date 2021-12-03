@@ -3,7 +3,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 """
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
@@ -12,6 +12,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 android_sdk_repository(
     name = "androidsdk",
     api_level = 28,
+    build_tools_version = "29.0.2",
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -116,7 +117,7 @@ google_services_workspace_dependencies()
 
 git_repository(
     name = "circularimageview",
-    commit = "8a65ba42b3fee21b5e19ca5c8690185f7c60f65d",
+    commit = "35d08ba88a4a22e6e9ac96bdc5a68be27b55d09f",
     remote = "https://github.com/oppia/CircularImageview",
 )
 
@@ -141,14 +142,41 @@ http_archive(
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
+ATS_TAG = "1edfdab3134a7f01b37afabd3eebfd2c5bb05151"
+
+ATS_SHA256 = "dcd1ff76aef1a26329d77863972780c8fe1fc8ff625747342239f0489c2837ec"
+
+http_archive(
+    name = "android_test_support",
+    sha256 = ATS_SHA256,
+    strip_prefix = "android-test-%s" % ATS_TAG,
+    urls = ["https://github.com/android/android-test/archive/%s.tar.gz" % ATS_TAG],
+)
+
+load("@android_test_support//:repo.bzl", "android_test_repositories")
+
+android_test_repositories()
+
+# Android bundle tool.
+http_jar(
+    name = "android_bundletool",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["sha"],
+    url = "https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["version"]),
+)
+
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    fail_if_repin_required = True,
     fetch_sources = True,
+    maven_install_json = "//third_party:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
-        "https://jcenter.bintray.com/",
         "https://maven.fabric.io/public",
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
     ],
 )
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()

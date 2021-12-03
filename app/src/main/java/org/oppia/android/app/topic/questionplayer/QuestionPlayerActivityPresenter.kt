@@ -3,13 +3,13 @@ package org.oppia.android.app.topic.questionplayer
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 const val TAG_QUESTION_PLAYER_FRAGMENT = "TAG_QUESTION_PLAYER_FRAGMENT"
@@ -20,9 +20,13 @@ private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_
 class QuestionPlayerActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val questionTrainingController: QuestionTrainingController,
-  private val logger: ConsoleLogger
+  private val oppiaLogger: OppiaLogger
 ) {
-  fun handleOnCreate() {
+  private lateinit var profileId: ProfileId
+
+  fun handleOnCreate(profileId: ProfileId) {
+    this.profileId = profileId
+
     val binding = DataBindingUtil.setContentView<QuestionPlayerActivityBinding>(
       activity,
       R.layout.question_player_activity
@@ -42,7 +46,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       startTrainingSessionWithCallback {
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment(),
+          QuestionPlayerFragment.newInstance(profileId),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
@@ -77,7 +81,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         // Re-add the player fragment when the new session is ready.
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment(),
+          QuestionPlayerFragment.newInstance(profileId),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }
@@ -87,16 +91,18 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
     val skillIds =
       activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
-    questionTrainingController.startQuestionTrainingSession(skillIds).observe(
+    val startDataProvider =
+      questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
+    startDataProvider.toLiveData().observe(
       activity,
-      Observer {
+      {
         when {
-          it.isPending() -> logger.d(
+          it.isPending() -> oppiaLogger.d(
             "QuestionPlayerActivity",
             "Starting training session"
           )
           it.isFailure() -> {
-            logger.e(
+            oppiaLogger.e(
               "QuestionPlayerActivity",
               "Failed to start training session",
               it.getErrorOrNull()!!
@@ -104,7 +110,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
             activity.finish() // Can't recover from the session failing to start.
           }
           else -> {
-            logger.d("QuestionPlayerActivity", "Successfully started training session")
+            oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
             callback()
           }
         }
@@ -113,16 +119,16 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
-    questionTrainingController.stopQuestionTrainingSession().observe(
+    questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
       activity,
-      Observer<AsyncResult<Any?>> {
+      {
         when {
-          it.isPending() -> logger.d(
+          it.isPending() -> oppiaLogger.d(
             "QuestionPlayerActivity",
             "Stopping training session"
           )
           it.isFailure() -> {
-            logger.e(
+            oppiaLogger.e(
               "QuestionPlayerActivity",
               "Failed to stop training session",
               it.getErrorOrNull()!!
@@ -130,7 +136,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
             activity.finish() // Can't recover from the session failing to stop.
           }
           else -> {
-            logger.d("QuestionPlayerActivity", "Successfully stopped training session")
+            oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
             callback()
           }
         }
@@ -155,12 +161,12 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     ) as QuestionPlayerFragment?
   }
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) {
+  fun revealHint(hintIndex: Int) {
     val questionPlayerFragment =
       activity.supportFragmentManager.findFragmentByTag(
         TAG_QUESTION_PLAYER_FRAGMENT
       ) as QuestionPlayerFragment
-    questionPlayerFragment.revealHint(saveUserChoice, hintIndex)
+    questionPlayerFragment.revealHint(hintIndex)
   }
 
   fun revealSolution() {

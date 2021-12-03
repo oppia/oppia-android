@@ -1,11 +1,16 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.RouteToQuestionPlayerListener
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.RouteToStoryListener
 import org.oppia.android.app.topic.TopicActivityPresenter
@@ -21,6 +26,7 @@ class TopicTestActivityForStory :
   InjectableAppCompatActivity(),
   RouteToQuestionPlayerListener,
   RouteToStoryListener,
+  RouteToResumeLessonListener,
   RouteToExplorationListener,
   RouteToRevisionCardListener {
 
@@ -29,7 +35,7 @@ class TopicTestActivityForStory :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
       internalProfileId = 0,
       topicId = TEST_TOPIC_ID_0,
@@ -40,7 +46,7 @@ class TopicTestActivityForStory :
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this, skillIdList
+        this, skillIdList, ProfileId.getDefaultInstance()
       )
     )
   }
@@ -56,12 +62,34 @@ class TopicTestActivityForStory :
     )
   }
 
+  override fun routeToResumeLesson(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
+  ) {
+    startActivity(
+      ResumeLessonActivity.createResumeLessonActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen,
+        explorationCheckpoint
+      )
+    )
+  }
+
   override fun routeToExploration(
     profileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isCheckpointingEnabled: Boolean
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -70,7 +98,8 @@ class TopicTestActivityForStory :
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        isCheckpointingEnabled
       )
     )
   }

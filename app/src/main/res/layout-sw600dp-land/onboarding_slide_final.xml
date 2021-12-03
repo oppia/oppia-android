@@ -20,7 +20,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/final_layout"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:importantForAccessibility="yes">
 
       <ImageView
         android:id="@+id/slide_image_view"
@@ -28,7 +29,7 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_landscape_onboarding_3_tablet"
+        app:srcCompat="@drawable/ic_landscape_onboarding_3_tablet"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="40:39"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,11 +37,10 @@
 
       <TextView
         android:id="@+id/slide_title_text_view"
-        style="@style/Heading1"
+        style="@style/Heading1ViewCenterHorizontal"
         android:layout_width="0dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
         android:text="@string/onboarding_slide_3_title"
         android:textSize="32sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
@@ -50,10 +50,9 @@
 
       <TextView
         android:id="@+id/slide_description_text_view"
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewCenterHorizontal"
         android:layout_width="0dp"
         android:layout_marginTop="12dp"
-        android:gravity="center_horizontal"
         android:text="@string/onboarding_slide_3_description"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"

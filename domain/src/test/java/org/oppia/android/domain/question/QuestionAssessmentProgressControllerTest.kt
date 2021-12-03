@@ -2,34 +2,41 @@ package org.oppia.android.domain.question
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
+import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
-import org.oppia.android.app.model.Hint
+import org.oppia.android.app.model.FractionGrade
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.Solution
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.UserAssessmentPerformance
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -41,46 +48,64 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.hintsandsolution.isHintRevealed
+import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.topic.TEST_SKILL_ID_2
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TOLERANCE = 1e-5
+
 /** Tests for [QuestionAssessmentProgressController]. */
+// FunctionName: test names are conventionally named with underscores.
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = QuestionAssessmentProgressControllerTest.TestApplication::class)
 class QuestionAssessmentProgressControllerTest {
-  private val TEST_SKILL_ID_LIST_012 =
-    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 1, 2, 3, 4, 5
-  private val TEST_SKILL_ID_LIST_02 =
-    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 0, 1, 2, 4, 5
-  private val TEST_SKILL_ID_LIST_01 =
-    listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
-  private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 2, 4, 5
-
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var questionTrainingController: QuestionTrainingController
@@ -94,11 +119,16 @@ class QuestionAssessmentProgressControllerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Mock
-  lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
+  // TODO(#3813): Migrate all tests in this suite to use this factory.
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var translationController: TranslationController
 
   @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<Any>>
+  lateinit var mockScoreAndMasteryLiveDataObserver:
+    Observer<AsyncResult<UserAssessmentPerformance>>
 
   @Mock
   lateinit var mockAsyncNullableResultLiveDataObserver: Observer<AsyncResult<Any?>>
@@ -107,16 +137,13 @@ class QuestionAssessmentProgressControllerTest {
   lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnsweredQuestionOutcome>>
 
   @Mock
-  lateinit var mockAsyncHintObserver: Observer<AsyncResult<Hint>>
-
-  @Mock
-  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<Solution>>
-
-  @Captor
-  lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
+  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<*>>
 
   @Captor
   lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any>>
+
+  @Captor
+  lateinit var performanceCalculationCaptor: ArgumentCaptor<AsyncResult<UserAssessmentPerformance>>
 
   @Captor
   lateinit var asyncNullableResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
@@ -124,90 +151,60 @@ class QuestionAssessmentProgressControllerTest {
   @Captor
   lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
 
-  // TODO(#2738): Add tests for score and mastery calculations
+  private lateinit var profileId1: ProfileId
+
+  @Before
+  fun setUp() {
+    profileId1 = ProfileId.newBuilder().setInternalId(1).build()
+  }
 
   @Test
-  fun testGetCurrentQuestion_noSessionStarted_returnsPendingResult() {
+  fun testGetCurrentQuestion_noSessionStarted_throwsException() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
-    val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    // Can't retrieve the current question until the training session is started.
+    assertThrows(UninitializedPropertyAccessException::class) {
+      questionAssessmentProgressController.getCurrentQuestion()
+    }
+  }
 
-    verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isPending()).isTrue()
+  @Test
+  fun testStartTrainingSession_withEmptyQuestionList_fails() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+
+    val error = startFailureTrainingSession(skillIdList = listOf())
+
+    assertThat(error).hasCauseThat().hasMessageThat().contains("Expected at least 1 question")
   }
 
   @Test
   fun testGetCurrentQuestion_sessionStarted_withEmptyQuestionList_fails() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(listOf())
+    startFailureTrainingSession(skillIdList = listOf())
 
-    val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val questionDataProvider = questionAssessmentProgressController.getCurrentQuestion()
 
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isFailure()).isTrue()
-    assertThat(currentQuestionResultCaptor.value.getErrorOrNull())
-      .hasCauseThat()
-      .hasMessageThat()
-      .contains("Expected at least 1 question")
+    val error = monitorFactory.waitForNextFailureResult(questionDataProvider)
+    assertThat(error).hasCauseThat().hasMessageThat().contains("Expected at least 1 question")
   }
 
   @Test
   fun testStartTrainingSession_succeeds() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
-    val resultLiveData =
-      questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
-    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val initiationDataProvider =
+      questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_012)
 
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  @Test
-  fun testGetCurrentQuestion_playSession_returnsPendingResultFromLoadingSession() {
-    setUpTestApplicationWithSeed(questionSeed = 0)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    startTrainingSession(TEST_SKILL_ID_LIST_012)
-
-    // The second-to-latest result stays pending since the session was loading (the actual result is
-    // the fully loaded session). This is only true if the observer begins before starting to load
-    // the session.
-    verify(mockCurrentQuestionLiveDataObserver, Mockito.atLeast(2)).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    val results = currentQuestionResultCaptor.allValues
-    assertThat(results[results.size - 2].isPending()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(initiationDataProvider)
   }
 
   @Test
   fun testGetCurrentQuestion_playSession_loaded_returnsInitialQuestionPending() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    startTrainingSession(TEST_SKILL_ID_LIST_012)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
 
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
 
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
     assertThat(ephemeralQuestion.totalQuestionCount).isGreaterThan(0)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
@@ -219,23 +216,15 @@ class QuestionAssessmentProgressControllerTest {
   fun testGetCurrentQuestion_playInvalidSession_thenPlayValidExp_returnsInitialPendingQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     // Start with starting an invalid training session.
-    startTrainingSession(listOf())
+    startFailureTrainingSession(listOf())
     endTrainingSession()
 
     // Then a valid one.
-    startTrainingSession(TEST_SKILL_ID_LIST_012)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
 
     // The latest result should correspond to the valid ID, and the progress controller should
     // gracefully recover.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
     assertThat(ephemeralQuestion.totalQuestionCount).isGreaterThan(0)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
@@ -247,13 +236,10 @@ class QuestionAssessmentProgressControllerTest {
   fun testStopTrainingSession_withoutStartingSession_fails() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
-    val resultLiveData =
-      questionTrainingController.stopQuestionTrainingSession()
-    testCoroutineDispatchers.runCurrent()
+    val stopDataProvider = questionTrainingController.stopQuestionTrainingSession()
 
-    assertThat(resultLiveData.value).isNotNull()
-    assertThat(resultLiveData.value!!.isFailure()).isTrue()
-    assertThat(resultLiveData.value!!.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(stopDataProvider)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot stop a new training session which wasn't started")
   }
@@ -261,15 +247,13 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testStartTrainingSession_withoutFinishingPrevious_fails() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
+    questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_012)
 
-    val resultLiveData =
-      questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_02)
-    testCoroutineDispatchers.runCurrent()
+    val initiationDataProvider =
+      questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_02)
 
-    assertThat(resultLiveData.value).isNotNull()
-    assertThat(resultLiveData.value!!.isFailure()).isTrue()
-    assertThat(resultLiveData.value!!.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(initiationDataProvider)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot start a new training session until the previous one is completed")
   }
@@ -277,36 +261,26 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testStopTrainingSession_afterStartingPreviousSession_succeeds() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(TEST_SKILL_ID_LIST_012)
+    questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_012)
 
-    val resultLiveData =
-      questionTrainingController.stopQuestionTrainingSession()
-    testCoroutineDispatchers.runCurrent()
+    val stopDataProvider = questionTrainingController.stopQuestionTrainingSession()
 
-    assertThat(resultLiveData.value).isNotNull()
-    assertThat(resultLiveData.value!!.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(stopDataProvider)
   }
 
   @Test
   fun testGetCurrentQuestion_playSecondSession_afterFinishingPrev_loaded_returnsInitialQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     // Start with playing a valid session, then stop.
-    startTrainingSession(TEST_SKILL_ID_LIST_012)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
     endTrainingSession()
 
     // Then another valid one.
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
 
     // The latest result should correspond to the valid ID, and the progress controller should
     // gracefully recover.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
     assertThat(ephemeralQuestion.totalQuestionCount).isGreaterThan(0)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
@@ -336,8 +310,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(1))
@@ -355,8 +329,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_returnsOutcomeWithTransition() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(1))
@@ -376,8 +350,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultipleChoice_wrongAnswer_succeeds() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -395,8 +369,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testSubmitAnswer_forMultChoice_wrongAnswer_providesDefaultFeedbackAndNewQuestionTransition() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
@@ -416,20 +390,13 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentQuestion_afterSubmittingCorrectMultiChoiceAnswer_becomesCompletedQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
-    submitMultipleChoiceAnswer(1)
+    val ephemeralQuestion = submitMultipleChoiceAnswer(1)
 
     // Verify that the current state updates. It should stay pending, and the wrong answer should be
     // appended.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
     assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
@@ -441,20 +408,13 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentQuestion_afterSubmittingWrongMultiChoiceAnswer_updatesPendingQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
-    submitMultipleChoiceAnswer(0)
+    val ephemeralQuestion = submitMultipleChoiceAnswer(0)
 
     // Verify that the current state updates. It should stay pending, and the wrong answer should be
     // appended.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
     assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
@@ -466,19 +426,14 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentQuestion_afterSubmitWrongThenRightAnswer_updatesToQuestionWithBothAnswers() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitMultipleChoiceAnswer(0)
 
-    submitMultipleChoiceAnswer(1)
+    val ephemeralQuestion = submitMultipleChoiceAnswer(1)
 
     // Verify that the current state updates. It should now be completed with both the wrong and
     // correct answers.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(0)
     assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
@@ -509,8 +464,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testMoveToNext_forPendingInitialQuestion_failsWithError() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val moveToStateResult =
       questionAssessmentProgressController.moveToNextQuestion()
@@ -530,8 +485,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testMoveToNext_forCompletedQuestion_succeeds() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitMultipleChoiceAnswer(1)
 
     val moveToStateResult =
@@ -548,27 +503,20 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testMoveToNext_forCompletedQuestion_movesToNextQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitMultipleChoiceAnswer(1)
 
-    moveToNextQuestion()
+    val ephemeralQuestion = moveToNextQuestion()
 
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.ephemeralState.state.content.html).contains("1/2 + 1/4")
+    assertThat(ephemeralQuestion.ephemeralState.state.content.html).contains("1/2 + 1/4")
   }
 
   @Test
   fun testMoveToNext_afterMovingFromCompletedQuestion_failsWithError() {
     setUpTestApplicationWithSeed(questionSeed = 6)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitMultipleChoiceAnswer(1)
     moveToNextQuestion()
 
@@ -591,8 +539,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_correctAnswer_returnsOutcomeWithTransition() {
     setUpTestApplicationWithSeed(questionSeed = 2)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createTextInputAnswer("1/4"))
@@ -612,8 +560,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome() {
     setUpTestApplicationWithSeed(questionSeed = 2)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createTextInputAnswer("2/4"))
@@ -634,8 +582,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentQuestion_secondQuestion_submitRightAnswer_pendingQuestionBecomesCompleted() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
 
     val result =
@@ -645,26 +593,21 @@ class QuestionAssessmentProgressControllerTest {
 
     // Verify that the current state updates. It should stay pending, and the wrong answer should be
     // appended.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    val currentQuestion = waitForGetCurrentQuestionSuccessfulLoad()
     assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
     assertThat(currentQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = currentQuestion.ephemeralState.completedState
     assertThat(completedState.answerCount).isEqualTo(1)
-    assertThat(completedState.getAnswer(0).userAnswer.answer.real)
-      .isWithin(1e-5).of(5.0)
+    assertThat(completedState.getAnswer(0).userAnswer.answer.real).isWithin(TOLERANCE).of(5.0)
     assertThat(completedState.getAnswer(0).feedback.html).contains("That's correct!")
   }
 
   @Test
   fun testGetCurrentQuestion_secondQuestion_submitWrongAnswer_updatePendingQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
 
     val result =
@@ -673,26 +616,21 @@ class QuestionAssessmentProgressControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. It should now be completed with the correct answer.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    val currentQuestion = waitForGetCurrentQuestionSuccessfulLoad()
     assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
     assertThat(currentQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     val pendingState = currentQuestion.ephemeralState.pendingState
     assertThat(pendingState.wrongAnswerCount).isEqualTo(1)
-    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.real)
-      .isWithin(1e-5).of(4.0)
+    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.real).isWithin(TOLERANCE).of(4.0)
     assertThat(pendingState.getWrongAnswer(0).feedback.html).isEmpty()
   }
 
   @Test
   fun testSubmitAnswer_forNumericInput_correctAnswer_returnsOutcomeWithTransition() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(3.0))
@@ -712,8 +650,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testSubmitAnswer_forNumericInput_wrongAnswer_returnsOutcomeWithTransition() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
@@ -733,21 +671,14 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentQuestion_thirdQuestion_isTerminalQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
     submitNumericInputAnswerAndMoveToNextQuestion(5.0)
 
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+    val currentQuestion = submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
     // Verify that the third state is terminal.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(currentQuestion.currentQuestionIndex).isEqualTo(3)
     assertThat(currentQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
@@ -756,8 +687,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testMoveToNext_onFinalQuestion_failsWithError() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
     submitNumericInputAnswerAndMoveToNextQuestion(5.0)
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
@@ -780,55 +711,41 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testGetCurrentQuestion_afterPlayingSecondSession_returnsTerminalQuestion() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
 
-    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1) // question 1
     submitNumericInputAnswerAndMoveToNextQuestion(3.0) // question 2
-    submitTextInputAnswerAndMoveToNextQuestion("1/2") // question 3
+    val ephemeralQuestion = submitTextInputAnswerAndMoveToNextQuestion("1/2") // question 3
 
     // Verify that we're now on the final state.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(TERMINAL_STATE)
   }
 
   @Test
   fun testGetCurrentQuestion_afterPlayingThroughPrevSessions_returnsQuestionFromSecondSession() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     playThroughSessionWithSkillList2()
 
-    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
-    submitMultipleChoiceAnswerAndMoveToNextQuestion(1) // question 1
+    val ephemeralQuestion = submitMultipleChoiceAnswerAndMoveToNextQuestion(1) // question 1
 
     // Verify that we're on the second-to-last state of the second session.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(currentQuestion.currentQuestionIndex).isEqualTo(2)
-    assertThat(currentQuestion.totalQuestionCount).isEqualTo(3)
-    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralQuestion.currentQuestionIndex).isEqualTo(2)
+    assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
+    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     // This question is not in the other test session.
-    assertThat(currentQuestion.ephemeralState.state.content.html)
+    assertThat(ephemeralQuestion.ephemeralState.state.content.html)
       .contains("What fraction does 'half'")
   }
 
   @Test
   fun testMoveToNext_onFinalQuestion_failsWithError_logsException() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
     submitNumericInputAnswerAndMoveToNextQuestion(5.0)
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
@@ -863,8 +780,8 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    subscribeToCurrentQuestionToAllowSessionToLoad()
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
 
     val result =
       questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
@@ -880,21 +797,9 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
     assertThat(answerOutcome.feedback.html).isEmpty()
 
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-
+    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
-
     val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
   }
@@ -902,96 +807,712 @@ class QuestionAssessmentProgressControllerTest {
   @Test
   fun testRevealHint_forWrongAnswer_showHint_returnHintIsRevealed() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     playThroughSessionWithSkillList2()
 
-    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitTextInputAnswerAndMoveToNextQuestion("1/4") // question 0
     submitMultipleChoiceAnswerAndMoveToNextQuestion(2) // question 1
+    // question 1 (again--second wrong answer)
+    val currentQuestion = submitMultipleChoiceAnswerAndMoveToNextQuestion(2)
 
     // Verify that we're on the second-to-last state of the second session.
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
-    )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
     assertThat(currentQuestion.currentQuestionIndex).isEqualTo(1)
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     // This question is not in the other test session.
     assertThat(currentQuestion.ephemeralState.state.content.html)
       .contains("If we talk about wanting")
 
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val ephemeralQuestion = currentQuestionResultCaptor.value.getOrThrow()
-
-    assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount)
-      .isEqualTo(1)
-
-    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount)
+      .isEqualTo(2)
+    val hintAndSolution = currentQuestion.ephemeralState.state.interaction.getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
-
-    val result = questionAssessmentProgressController.submitHintIsRevealed(
-      ephemeralQuestion.ephemeralState.state,
-      /* hintIsRevealed= */ true,
-      /* hintIndex= */ 0
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
-    result.observeForever(mockAsyncHintObserver)
-    testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. Hint revealed is true.
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val updatedState = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(updatedState.ephemeralState.state.interaction.getHint(0).hintIsRevealed)
-      .isTrue()
+    val updatedState = waitForGetCurrentQuestionSuccessfulLoad()
+    assertThat(updatedState.ephemeralState.isHintRevealed(0)).isTrue()
   }
 
   @Test
   fun testRevealSolution_forWrongAnswer_showSolution_returnSolutionIsRevealed() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    val currentQuestionLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    currentQuestionLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
     playThroughSessionWithSkillList2()
 
-    startTrainingSession(TEST_SKILL_ID_LIST_01)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
-
-    verify(mockCurrentQuestionLiveDataObserver, atLeastOnce()).onChanged(
-      currentQuestionResultCaptor.capture()
+    submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val currentQuestion = currentQuestionResultCaptor.value.getOrThrow()
+    submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+    val currentQuestion = waitForGetCurrentQuestionSuccessfulLoad()
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+    assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(3)
 
     val hintAndSolution = currentQuestion.ephemeralState.state.interaction.solution
     assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("1/4")
 
-    val result = questionAssessmentProgressController.submitSolutionIsRevealed(
-      currentQuestion.ephemeralState.state
-    )
-    result.observeForever(mockAsyncSolutionObserver)
-    testCoroutineDispatchers.runCurrent()
+    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
 
     // Verify that the current state updates. Hint revealed is true.
-    verify(
-      mockCurrentQuestionLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    val updatedState = currentQuestionResultCaptor.value.getOrThrow()
-    assertThat(updatedState.ephemeralState.state.interaction.solution.solutionIsRevealed).isTrue()
+    val updatedState = waitForGetCurrentQuestionSuccessfulLoad()
+    assertThat(updatedState.ephemeralState.isSolutionRevealed()).isTrue()
+  }
+
+  @Test
+  fun testRevealedSolution_forWrongAnswer_returnScore2OutOf3() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2(submitIncorrectAnswerForQuestion2(4.0))
+    submitIncorrectAnswerForQuestion2(4.0)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewSolutionForQuestion2(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion2()
+
+    // Question 5
+    submitCorrectAnswerForQuestion5()
+
+    // Question 4
+    submitCorrectAnswerForQuestion4()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
+    val grade = FractionGrade.newBuilder().apply {
+      pointsReceived = 2.0
+      totalPointsAvailable = 3.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
+      .isEqualTo(grade)
+  }
+
+  @Test
+  fun testRevealedHintAndSolution_forWrongAnswer_returnScore2OutOf3() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2(submitIncorrectAnswerForQuestion2(4.0))
+    submitIncorrectAnswerForQuestion2(4.0)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewSolutionForQuestion2(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion2()
+
+    // Question 5
+    submitCorrectAnswerForQuestion5()
+
+    // Question 4
+    submitCorrectAnswerForQuestion4()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
+    val grade = FractionGrade.newBuilder().apply {
+      pointsReceived = 2.0
+      totalPointsAvailable = 3.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
+      .isEqualTo(grade)
+  }
+
+  @Test
+  fun testRevealedHint_for5WrongAnswers_returnScore2Point4OutOf3() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 2
+    // Submit question 2 wrong answers
+    submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2(submitIncorrectAnswerForQuestion2(4.0))
+    submitCorrectAnswerForQuestion2()
+
+    // Question 5
+    submitCorrectAnswerForQuestion5()
+
+    // Question 4
+    submitCorrectAnswerForQuestion4()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
+    val grade = FractionGrade.newBuilder().apply {
+      pointsReceived = 2.4
+      totalPointsAvailable = 3.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
+      .isEqualTo(grade)
+  }
+
+  @Test
+  fun noHints_noWrongAnswers_noSolutionsViewed_returnPerfectScore() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 5
+    submitCorrectAnswerForQuestion5()
+
+    // Question 4
+    submitCorrectAnswerForQuestion4()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
+    val grade = FractionGrade.newBuilder().apply {
+      pointsReceived = 3.0
+      totalPointsAvailable = 3.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
+      .isEqualTo(grade)
+  }
+
+  @Test
+  fun hintViewed_solutionViewed_wrongAnswersSubmitted_for2Skills_returnDifferingSkillScores() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    // Submit question 1 wrong answers
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2(submitIncorrectAnswerForQuestion2(4.0))
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    // Submit question 3 wrong answer
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitIncorrectAnswerForQuestion3("3/4")
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewSolutionForQuestion3(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val totalScore = FractionGrade.newBuilder().apply {
+      pointsReceived = 1.4
+      totalPointsAvailable = 3.0
+    }.build()
+    val skill0Score = FractionGrade.newBuilder().apply {
+      pointsReceived = 1.4
+      totalPointsAvailable = 2.0
+    }.build()
+    val skill1Score = FractionGrade.newBuilder().apply {
+      pointsReceived = 0.0
+      totalPointsAvailable = 1.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Score)
+  }
+
+  @Test
+  fun solutionViewedForAllQuestions_returnZeroScore() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    // Submit question 1 wrong answer (a few extra wrong answers are added to reduce points).
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(submitIncorrectAnswerForQuestion1(2), index = 0)
+    submitIncorrectAnswerForQuestion1(2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewHintForQuestion1(waitForGetCurrentQuestionSuccessfulLoad(), index = 1)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2(submitIncorrectAnswerForQuestion2(4.0))
+    submitIncorrectAnswerForQuestion2(4.0)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewSolutionForQuestion2(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    // Submit question 3 wrong answer
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitIncorrectAnswerForQuestion3("3/4")
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewSolutionForQuestion3(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val totalScore = FractionGrade.newBuilder().apply {
+      pointsReceived = 0.0
+      totalPointsAvailable = 3.0
+    }.build()
+    val skill0Score = FractionGrade.newBuilder().apply {
+      pointsReceived = 0.0
+      totalPointsAvailable = 2.0
+    }.build()
+    val skill1Score = FractionGrade.newBuilder().apply {
+      pointsReceived = 0.0
+      totalPointsAvailable = 1.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Score)
+  }
+
+  @Test
+  fun hintViewed_for2QuestionsWithWrongAnswer_returnScore2Point4Outof3() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    // Submit question 1 wrong answer
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(submitIncorrectAnswerForQuestion1(2), index = 0)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val totalScore = FractionGrade.newBuilder().apply {
+      pointsReceived = 2.4
+      totalPointsAvailable = 3.0
+    }.build()
+    val skill0Score = FractionGrade.newBuilder().apply {
+      pointsReceived = 1.4
+      totalPointsAvailable = 2.0
+    }.build()
+    val skill1Score = FractionGrade.newBuilder().apply {
+      pointsReceived = 1.0
+      totalPointsAvailable = 1.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Score)
+  }
+
+  @Test
+  fun multipleHintsViewed_forQuestionsWithWrongAnswer_returnScore2Point5Outof3() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    // Submit question 1 wrong answer
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(submitIncorrectAnswerForQuestion1(2), index = 0)
+    submitIncorrectAnswerForQuestion1(2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewHintForQuestion1(waitForGetCurrentQuestionSuccessfulLoad(), index = 1)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val totalScore = FractionGrade.newBuilder().apply {
+      pointsReceived = 2.5
+      totalPointsAvailable = 3.0
+    }.build()
+    val skill0Score = FractionGrade.newBuilder().apply {
+      pointsReceived = 1.5
+      totalPointsAvailable = 2.0
+    }.build()
+    val skill1Score = FractionGrade.newBuilder().apply {
+      pointsReceived = 1.0
+      totalPointsAvailable = 1.0
+    }.build()
+    assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
+    assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isEqualTo(skill0Score)
+    assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isEqualTo(skill1Score)
+  }
+
+  @Test
+  fun solutionViewedForAllQuestions_returnMaxMasteryLossPerQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    // Submit question 1 wrong answer
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(submitIncorrectAnswerForQuestion1(2), index = 0)
+    submitIncorrectAnswerForQuestion1(2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewHintForQuestion1(waitForGetCurrentQuestionSuccessfulLoad(), index = 1)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2(submitIncorrectAnswerForQuestion2(4.0))
+    submitIncorrectAnswerForQuestion2(4.0)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewSolutionForQuestion2(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    // Submit question 3 wrong answer
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitIncorrectAnswerForQuestion3("3/4")
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewSolutionForQuestion3(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = -0.19
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isWithin(TOLERANCE).of(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isWithin(TOLERANCE).of(skill1Mastery)
+  }
+
+  @Test
+  fun correctAnswerOnFirstTryForAllQuestions_returnMaxMasteryGainPerQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.2
+    val skill1Mastery = 0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isWithin(TOLERANCE).of(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isWithin(TOLERANCE).of(skill1Mastery)
+  }
+
+  @Test
+  fun hintsAndSolutionsViewedWithWrongAnswers_noMisconceptions_returnDifferingMasteryDegrees() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    // Submit question 1 wrong answers
+    submitIncorrectAnswerForQuestion1(2)
+    submitIncorrectAnswerForQuestion1(2)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    // Submit question 2 wrong answer
+    submitIncorrectAnswerForQuestion2(4.0)
+    viewHintForQuestion2(submitIncorrectAnswerForQuestion2(4.0))
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    // Submit question 3 wrong answer
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    submitIncorrectAnswerForQuestion3("3/4")
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewSolutionForQuestion3(waitForGetCurrentQuestionSuccessfulLoad())
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = -0.02
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isWithin(TOLERANCE).of(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isWithin(TOLERANCE).of(skill1Mastery)
+  }
+
+  @Test
+  fun maxMasteryLossPerQuestionSurpassed_returnMaxMasteryLossForQuestion() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    // Submit question 3 wrong answers (surpass max mastery loss lower bound for this question)
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitIncorrectAnswerForQuestion3("3/4")
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.2
+    val skill1Mastery = -0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isWithin(TOLERANCE).of(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isWithin(TOLERANCE).of(skill1Mastery)
+  }
+
+  @Test
+  fun multipleHintsViewed_forQuestionWithWrongAnswer_returnMastery0Point01ForLinkedSkill() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 3 (skill 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    // Submit question 1 wrong answer
+    submitIncorrectAnswerForQuestion1(2)
+    viewHintForQuestion1(submitIncorrectAnswerForQuestion1(2), index = 0)
+    submitIncorrectAnswerForQuestion1(2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+    viewHintForQuestion1(waitForGetCurrentQuestionSuccessfulLoad(), index = 1)
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 3
+    submitCorrectAnswerForQuestion3()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.01
+    val skill1Mastery = 0.1
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isWithin(TOLERANCE).of(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isWithin(TOLERANCE).of(skill1Mastery)
+  }
+
+  @Test
+  fun wrongAnswersAllSubmittedWithMisconception_onlyMisconceptionSkillIdMasteryDegreesAffected() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 0
+    // Submit question 0 wrong answers
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitCorrectAnswerForQuestion0()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.3
+    val skill1Mastery = 0.0
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isWithin(TOLERANCE).of(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isWithin(TOLERANCE).of(skill1Mastery)
+  }
+
+  @Test
+  fun someWrongAnswersSubmittedWithTaggedMisconceptionSkillId() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    // This will generate question 1 (skill 0), question 2 (skill 0), and question 0 (skill 0, 1)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
+    waitForGetCurrentQuestionSuccessfulLoad()
+
+    // Question 1
+    submitCorrectAnswerForQuestion1()
+
+    // Question 2
+    submitCorrectAnswerForQuestion2()
+
+    // Question 0
+    // Submit question 0 wrong answers
+    submitIncorrectAnswerForQuestion0("4/5")
+    submitIncorrectAnswerForQuestion0("123/456")
+    submitCorrectAnswerForQuestion0()
+
+    val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
+    val skill0Mastery = 0.25
+    val skill1Mastery = 0.0
+    assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
+      .isWithin(TOLERANCE).of(skill0Mastery)
+    assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
+      .isWithin(TOLERANCE).of(skill1Mastery)
+  }
+
+  /* Localization-based tests. */
+
+  @Test
+  fun testGetCurrentState_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    forceDefaultLocale(Locale.US)
+    startSuccessfulTrainingSession(profileId1, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // The context should be the default instance for English since the default strings of the
+    // lesson are expected to be in English.
+    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testGetCurrentState_arabicLocale_defaultContentLang_includesTranslationContextForArabic() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    startSuccessfulTrainingSession(profileId1, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // Arabic translations should be included per the locale.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  fun testGetCurrentState_turkishLocale_defaultContentLang_includesDefaultTranslationContext() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    forceDefaultLocale(TURKEY_TURKISH_LOCALE)
+    startSuccessfulTrainingSession(profileId1, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // No translations match to an unsupported language, so default to the built-in strings.
+    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    startSuccessfulTrainingSession(englishProfileId, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // English translations mean no context.
+    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testGetCurrentState_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    startSuccessfulTrainingSession(englishProfileId, TEST_SKILL_ID_LIST_01)
+    val monitor =
+      monitorFactory.createMonitor(questionAssessmentProgressController.getCurrentQuestion())
+    monitor.waitForNextSuccessResult()
+
+    // Update the content language & wait for the ephemeral state to update.
+    updateContentLanguage(englishProfileId, OppiaLanguage.ARABIC)
+    val ephemeralState = monitor.ensureNextResultIsSuccess().ephemeralState
+
+    // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
+  fun testGetCurrentState_arabicLangProfile_includesTranslationContextForArabic() {
+    setUpTestApplicationWithSeed(questionSeed = 1)
+    val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()
+    val arabicProfileId = ProfileId.newBuilder().apply { internalId = 3 }.build()
+    updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
+    updateContentLanguage(arabicProfileId, OppiaLanguage.ARABIC)
+    startSuccessfulTrainingSession(arabicProfileId, TEST_SKILL_ID_LIST_01)
+
+    val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
+
+    // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
   private fun setUpTestApplicationWithSeed(questionSeed: Long) {
@@ -999,64 +1520,81 @@ class QuestionAssessmentProgressControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  /**
-   * Creates a blank subscription to the current state to ensure that requests to load the session
-   * complete, otherwise post-load operations may fail. An observer is required since the current
-   * LiveData-DataProvider interop implementation will only lazily load data based on whether
-   * there's an active subscription.
-   */
-  private fun subscribeToCurrentQuestionToAllowSessionToLoad() {
-    questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-      .observeForever(mockCurrentQuestionLiveDataObserver)
+  private fun waitForGetCurrentQuestionSuccessfulLoad(): EphemeralQuestion {
+    return monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.getCurrentQuestion()
+    )
   }
 
-  private fun startTrainingSession(skillIdList: List<String>) {
-    questionTrainingController.startQuestionTrainingSession(skillIdList)
-    testCoroutineDispatchers.runCurrent()
+  private fun subscribeToScoreAndMasteryCalculations(skillIdList: List<String>) {
+    questionAssessmentProgressController.calculateScores(skillIdList).toLiveData()
+      .observeForever(mockScoreAndMasteryLiveDataObserver)
   }
 
-  private fun submitMultipleChoiceAnswer(choiceIndex: Int) {
-    questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(choiceIndex))
-    testCoroutineDispatchers.runCurrent()
+  private fun startSuccessfulTrainingSession(skillIdList: List<String>) {
+    startSuccessfulTrainingSession(profileId1, skillIdList)
   }
 
-  private fun submitTextInputAnswer(textAnswer: String) {
-    questionAssessmentProgressController.submitAnswer(createTextInputAnswer(textAnswer))
-    testCoroutineDispatchers.runCurrent()
+  private fun startSuccessfulTrainingSession(profileId: ProfileId, skillIdList: List<String>) {
+    monitorFactory.waitForNextSuccessfulResult(
+      questionTrainingController.startQuestionTrainingSession(profileId, skillIdList)
+    )
   }
 
-  private fun submitNumericInputAnswer(numericAnswer: Double) {
-    questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(numericAnswer))
-    testCoroutineDispatchers.runCurrent()
+  private fun startFailureTrainingSession(skillIdList: List<String>): Throwable {
+    return monitorFactory.waitForNextFailureResult(
+      questionTrainingController.startQuestionTrainingSession(profileId1, skillIdList)
+    )
   }
 
-  private fun submitMultipleChoiceAnswerAndMoveToNextQuestion(choiceIndex: Int) {
+  private fun submitMultipleChoiceAnswer(choiceIndex: Int): EphemeralQuestion {
+    return submitAnswer(createMultipleChoiceAnswer(choiceIndex))
+  }
+
+  private fun submitTextInputAnswer(textAnswer: String): EphemeralQuestion {
+    return submitAnswer(createTextInputAnswer(textAnswer))
+  }
+
+  private fun submitNumericInputAnswer(numericAnswer: Double): EphemeralQuestion {
+    return submitAnswer(createNumericInputAnswer(numericAnswer))
+  }
+
+  private fun submitAnswer(answer: UserAnswer): EphemeralQuestion {
+    questionAssessmentProgressController.submitAnswer(answer)
+    return waitForGetCurrentQuestionSuccessfulLoad()
+  }
+
+  private fun submitMultipleChoiceAnswerAndMoveToNextQuestion(choiceIndex: Int): EphemeralQuestion {
     submitMultipleChoiceAnswer(choiceIndex)
-    moveToNextQuestion()
+    return moveToNextQuestion()
   }
 
-  private fun submitTextInputAnswerAndMoveToNextQuestion(textAnswer: String) {
+  private fun submitTextInputAnswerAndMoveToNextQuestion(textAnswer: String): EphemeralQuestion {
     submitTextInputAnswer(textAnswer)
-    moveToNextQuestion()
+    return moveToNextQuestion()
   }
 
-  private fun submitNumericInputAnswerAndMoveToNextQuestion(numericAnswer: Double) {
+  private fun submitNumericInputAnswerAndMoveToNextQuestion(
+    numericAnswer: Double
+  ): EphemeralQuestion {
     submitNumericInputAnswer(numericAnswer)
-    moveToNextQuestion()
+    return moveToNextQuestion()
   }
 
-  private fun moveToNextQuestion() {
+  private fun moveToNextQuestion(): EphemeralQuestion {
     questionAssessmentProgressController.moveToNextQuestion()
     testCoroutineDispatchers.runCurrent()
+    return waitForGetCurrentQuestionSuccessfulLoad()
   }
 
   private fun endTrainingSession() {
-    questionTrainingController.stopQuestionTrainingSession()
-    testCoroutineDispatchers.runCurrent()
+    val stopDataProvider = questionTrainingController.stopQuestionTrainingSession()
+    monitorFactory.waitForNextSuccessfulResult(stopDataProvider)
   }
 
   private fun playThroughSessionWithSkillList2() {
-    startTrainingSession(TEST_SKILL_ID_LIST_2)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
+    waitForGetCurrentQuestionSuccessfulLoad()
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
     submitNumericInputAnswerAndMoveToNextQuestion(5.0)
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
@@ -1082,6 +1620,129 @@ class QuestionAssessmentProgressControllerTest {
       .setAnswer(InteractionObject.newBuilder().setReal(numericAnswer).build())
       .setPlainAnswer(numericAnswer.toString())
       .build()
+  }
+
+  private fun submitCorrectAnswerForQuestion0(): EphemeralQuestion {
+    return submitTextInputAnswerAndMoveToNextQuestion("1/2")
+  }
+
+  private fun submitIncorrectAnswerForQuestion0(answer: String): EphemeralQuestion {
+    return submitTextInputAnswerAndMoveToNextQuestion(answer)
+  }
+
+  private fun submitCorrectAnswerForQuestion1(): EphemeralQuestion {
+    return submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+  }
+
+  private fun submitIncorrectAnswerForQuestion1(answer: Int): EphemeralQuestion {
+    return submitMultipleChoiceAnswerAndMoveToNextQuestion(answer)
+  }
+
+  private fun viewHintForQuestion1(ephemeralQuestion: EphemeralQuestion, index: Int) {
+    val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(index)
+    if (index == 0) {
+      assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
+    } else if (index == 1) {
+      assertThat(hint.hintContent.html).contains("<p>Second hint text will appear here</p>")
+    }
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = index)
+    )
+  }
+
+  private fun submitCorrectAnswerForQuestion2(): EphemeralQuestion {
+    return submitNumericInputAnswerAndMoveToNextQuestion(3.0)
+  }
+
+  private fun submitIncorrectAnswerForQuestion2(answer: Double): EphemeralQuestion {
+    return submitNumericInputAnswerAndMoveToNextQuestion(answer)
+  }
+
+  private fun viewHintForQuestion2(ephemeralQuestion: EphemeralQuestion) {
+    val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
+    verifyOperationSucceeds(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+  }
+
+  private fun viewSolutionForQuestion2(ephemeralQuestion: EphemeralQuestion) {
+    val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
+    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3.0")
+    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
+  }
+
+  private fun submitCorrectAnswerForQuestion3(): EphemeralQuestion {
+    return submitTextInputAnswerAndMoveToNextQuestion("1/2")
+  }
+
+  private fun submitIncorrectAnswerForQuestion3(answer: String): EphemeralQuestion {
+    return submitTextInputAnswerAndMoveToNextQuestion(answer)
+  }
+
+  private fun viewSolutionForQuestion3(ephemeralQuestion: EphemeralQuestion) {
+    val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
+    assertThat(solution.correctAnswer.correctAnswer).isEqualTo("1/2")
+    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
+  }
+
+  private fun submitCorrectAnswerForQuestion4(): EphemeralQuestion {
+    return submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
+  }
+
+  private fun submitCorrectAnswerForQuestion5(): EphemeralQuestion {
+    return submitNumericInputAnswerAndMoveToNextQuestion(5.0)
+  }
+
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  private fun EphemeralState.isHintRevealed(hintIndex: Int): Boolean {
+    return pendingState.helpIndex.isHintRevealed(hintIndex, state.interaction.hintList)
+  }
+
+  private fun EphemeralState.isSolutionRevealed(): Boolean =
+    pendingState.helpIndex.isSolutionRevealed()
+
+  private fun getExpectedGrade(skillIdList: List<String>): UserAssessmentPerformance {
+    subscribeToScoreAndMasteryCalculations(skillIdList)
+    testCoroutineDispatchers.runCurrent()
+    verify(
+      mockScoreAndMasteryLiveDataObserver,
+      atLeastOnce()
+    ).onChanged(performanceCalculationCaptor.capture())
+    return performanceCalculationCaptor.value.getOrThrow()
+  }
+
+  /**
+   * Verifies that the specified live data provides at least one successful operation. This will
+   * change test-wide mock state, and synchronizes background execution.
+   */
+  private fun <T : Any?> verifyOperationSucceeds(liveData: LiveData<AsyncResult<T>>) {
+    reset(mockAsyncResultLiveDataObserver)
+    liveData.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    asyncResultCaptor.value.apply {
+      // This bit of conditional logic is used to add better error reporting when failures occur.
+      if (isFailure()) {
+        throw AssertionError("Operation failed", getErrorOrNull())
+      }
+      assertThat(isSuccess()).isTrue()
+    }
+    reset(mockAsyncResultLiveDataObserver)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1121,6 +1782,42 @@ class QuestionAssessmentProgressControllerTest {
     @Provides
     @QuestionTrainingSeed
     fun provideQuestionTrainingSeed(): Long = questionSeed
+
+    @Provides
+    @ViewHintScorePenalty
+    fun provideViewHintScorePenalty(): Int = 1
+
+    @Provides
+    @WrongAnswerScorePenalty
+    fun provideWrongAnswerScorePenalty(): Int = 1
+
+    @Provides
+    @MaxScorePerQuestion
+    fun provideMaxScorePerQuestion(): Int = 10
+
+    @Provides
+    @InternalScoreMultiplyFactor
+    fun provideInternalScoreMultiplyFactor(): Int = 10
+
+    @Provides
+    @MaxMasteryGainPerQuestion
+    fun provideMaxMasteryGainPerQuestion(): Int = 10
+
+    @Provides
+    @MaxMasteryLossPerQuestion
+    fun provideMaxMasteryLossPerQuestion(): Int = -10
+
+    @Provides
+    @ViewHintMasteryPenalty
+    fun provideViewHintMasteryPenalty(): Int = 2
+
+    @Provides
+    @WrongAnswerMasteryPenalty
+    fun provideWrongAnswerMasteryPenalty(): Int = 5
+
+    @Provides
+    @InternalMasteryMultiplyFactor
+    fun provideInternalMasteryMultiplyFactor(): Int = 100
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1133,7 +1830,9 @@ class QuestionAssessmentProgressControllerTest {
       InteractionsModule::class, DragDropSortInputModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      CachingTestModule::class
+      CachingTestModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
+      AssetModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -1160,5 +1859,18 @@ class QuestionAssessmentProgressControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+  }
+
+  private companion object {
+    private val TEST_SKILL_ID_LIST_012 =
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, TEST_SKILL_ID_2) // questions 0, 1, 2, 3, 4, 5
+    private val TEST_SKILL_ID_LIST_02 =
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_2) // questions 0, 1, 2, 4, 5
+    private val TEST_SKILL_ID_LIST_01 =
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1) // questions 0, 1, 2, 3
+    private val TEST_SKILL_ID_LIST_2 = listOf(TEST_SKILL_ID_2) // questions 2, 4, 5
+
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
   }
 }

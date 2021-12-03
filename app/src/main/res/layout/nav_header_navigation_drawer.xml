@@ -34,7 +34,8 @@
 
     <TextView
       android:id="@+id/nav_header_profile_name"
-      android:layout_width="match_parent"
+      style="@style/TextViewStart"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="8dp"
       android:fontFamily="sans-serif-medium"
@@ -44,12 +45,13 @@
 
     <TextView
       android:id="@+id/profile_progress_text_view"
+      style="@style/TextViewStart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="4dp"
       android:layout_marginBottom="8dp"
       android:fontFamily="sans-serif"
-      android:text="@{@plurals/completed_story_count(viewModel.completedStoryCount, viewModel.completedStoryCount).concat(@string/bar_separator).concat(@plurals/ongoing_topic_count(viewModel.ongoingTopicCount, viewModel.ongoingTopicCount))}"
+      android:text="@{viewModel.profileProgressText}"
       android:textColor="@color/white"
       android:textSize="14sp" />
   </LinearLayout>

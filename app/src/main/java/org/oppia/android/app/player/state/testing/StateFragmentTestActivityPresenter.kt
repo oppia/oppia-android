@@ -6,17 +6,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentTestActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -26,9 +28,16 @@ private const val TEST_ACTIVITY_TAG = "TestActivity"
 class StateFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationDataController: ExplorationDataController,
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   private val viewModelProvider: ViewModelProvider<StateFragmentTestViewModel>
 ) {
+
+  private var profileId: Int = 1
+  private lateinit var topicId: String
+  private lateinit var storyId: String
+  private lateinit var explorationId: String
+  private var shouldSavePartialProgress: Boolean = false
+
   fun handleOnCreate() {
     val binding = DataBindingUtil.setContentView<StateFragmentTestActivityBinding>(
       activity,
@@ -39,24 +48,18 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       viewModel = getStateFragmentTestViewModel()
     }
 
-    val profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
-    val topicId =
+    profileId = activity.intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, 1)
+    topicId =
       activity.intent.getStringExtra(TEST_ACTIVITY_TOPIC_ID_EXTRA_KEY) ?: TEST_TOPIC_ID_0
-    val storyId =
+    storyId =
       activity.intent.getStringExtra(TEST_ACTIVITY_STORY_ID_EXTRA_KEY) ?: TEST_STORY_ID_0
-    val explorationId =
+    explorationId =
       activity.intent.getStringExtra(TEST_ACTIVITY_EXPLORATION_ID_EXTRA_KEY)
-        ?: TEST_EXPLORATION_ID_2
+      ?: TEST_EXPLORATION_ID_2
+    shouldSavePartialProgress =
+      activity.intent.getBooleanExtra(TEST_ACTIVITY_SHOULD_SAVE_PARTIAL_PROGRESS_EXTRA_KEY, false)
     activity.findViewById<Button>(R.id.play_test_exploration_button)?.setOnClickListener {
-      startPlayingExploration(profileId, topicId, storyId, explorationId)
-    }
-
-    if (getHintsAndSolutionManagerFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.exploration_fragment_placeholder,
-        HintsAndSolutionExplorationManagerFragment(),
-        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
-      ).commitNow()
+      startPlayingExploration(profileId, topicId, storyId, explorationId, shouldSavePartialProgress)
     }
   }
 
@@ -64,33 +67,48 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
-  fun revealHint(saveUserChoice: Boolean, hintIndex: Int) =
-    getStateFragment()?.revealHint(saveUserChoice, hintIndex)
+  fun revealHint(hintIndex: Int) = getStateFragment()?.revealHint(hintIndex)
 
   fun revealSolution() = getStateFragment()?.revealSolution()
+
+  fun deleteCurrentProgressAndStopExploration() {
+    explorationDataController.deleteExplorationProgressById(
+      ProfileId.newBuilder().setInternalId(profileId).build(),
+      explorationId
+    )
+    stopExploration()
+  }
 
   private fun startPlayingExploration(
     profileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
+    shouldSavePartialProgress: Boolean
   ) {
     // TODO(#59): With proper test ordering & isolation, this hacky clean-up should not be necessary since each test
     //  should run with a new application instance.
     explorationDataController.stopPlayingExploration()
-    explorationDataController.startPlayingExploration(explorationId)
+    explorationDataController.startPlayingExploration(
+      profileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
       .observe(
         activity,
         Observer<AsyncResult<Any?>> { result ->
           when {
-            result.isPending() -> logger.d(TEST_ACTIVITY_TAG, "Loading exploration")
-            result.isFailure() -> logger.e(
+            result.isPending() -> oppiaLogger.d(TEST_ACTIVITY_TAG, "Loading exploration")
+            result.isFailure() -> oppiaLogger.e(
               TEST_ACTIVITY_TAG,
               "Failed to load exploration",
               result.getErrorOrNull()!!
             )
             else -> {
-              logger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
+              oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
               initializeExploration(profileId, topicId, storyId, explorationId)
             }
           }
@@ -98,6 +116,10 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       )
   }
 
+  /**
+   * Initializes fragments that depend on ephemeral state (which isn't valid to do until the play
+   * session is fully started).
+   */
   private fun initializeExploration(
     profileId: Int,
     topicId: String,
@@ -111,6 +133,14 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       R.id.state_fragment_placeholder,
       stateFragment
     ).commitNow()
+
+    if (getHintsAndSolutionManagerFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        HintsAndSolutionExplorationManagerFragment(),
+        TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
+      ).commitNow()
+    }
   }
 
   private fun finishExploration() {

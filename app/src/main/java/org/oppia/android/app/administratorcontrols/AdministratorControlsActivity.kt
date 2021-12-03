@@ -3,17 +3,19 @@ package org.oppia.android.app.administratorcontrols
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import org.oppia.android.R
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
-import org.oppia.android.app.drawer.KEY_NAVIGATION_PROFILE_ID
+import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.settings.profile.ProfileListActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
-const val LAST_LOADED_FRAGMENT_KEY = "LAST_LOADED_FRAGMENT_KEY"
+const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
@@ -27,25 +29,23 @@ class AdministratorControlsActivity :
   ShowLogoutDialogListener {
   @Inject
   lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
   private lateinit var lastLoadedFragment: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
-    val extraControlsTitle = savedInstanceState?.getString(SELECTED_CONTROLS_TITLE_SAVED_KEY)
+    (activityComponent as ActivityComponentImpl).inject(this)
+    val extraControlsTitle =
+      savedInstanceState?.getStringFromBundle(SELECTED_CONTROLS_TITLE_SAVED_KEY)
     lastLoadedFragment = if (savedInstanceState != null) {
-      savedInstanceState.get(LAST_LOADED_FRAGMENT_KEY) as String
+      savedInstanceState.get(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
     } else {
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
     administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
-    title = getString(R.string.administrator_controls)
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_administrator_controls_activity, menu)
-    return super.onCreateOptionsMenu(menu)
+    title = resourceHandler.getStringInLocale(R.string.administrator_controls)
   }
 
   override fun routeToAppVersion() {
@@ -59,26 +59,30 @@ class AdministratorControlsActivity :
   companion object {
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
-      intent.putExtra(KEY_NAVIGATION_PROFILE_ID, profileId)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
     }
 
     fun getIntentKey(): String {
-      return KEY_NAVIGATION_PROFILE_ID
+      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
   }
 
   override fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     administratorControlsActivityPresenter
-      .setExtraControlsTitle(getString(R.string.administrator_controls_edit_profiles))
+      .setExtraControlsTitle(
+        resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
+      )
     administratorControlsActivityPresenter.loadProfileList()
   }
 
   override fun loadAppVersion() {
     lastLoadedFragment = APP_VERSION_FRAGMENT
     administratorControlsActivityPresenter
-      .setExtraControlsTitle(getString(R.string.administrator_controls_app_version))
+      .setExtraControlsTitle(
+        resourceHandler.getStringInLocale(R.string.administrator_controls_app_version)
+      )
     administratorControlsActivityPresenter.loadAppVersion()
   }
 

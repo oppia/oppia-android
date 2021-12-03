@@ -3,13 +3,20 @@ package org.oppia.android.app.story
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.resumelesson.ResumeLessonActivity
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import javax.inject.Inject
 
 /** Activity for stories. */
-class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
+class StoryActivity :
+  InjectableAppCompatActivity(),
+  RouteToExplorationListener,
+  RouteToResumeLessonListener {
   @Inject
   lateinit var storyActivityPresenter: StoryActivityPresenter
   private var internalProfileId: Int = -1
@@ -18,7 +25,7 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    activityComponent.inject(this)
+    (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, -1)
     topicId = checkNotNull(intent.getStringExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID)) {
       "Expected extra topic ID to be included for StoryActivity."
@@ -34,7 +41,8 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?
+    backflowScreen: Int?,
+    isCheckpointingEnabled: Boolean
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -43,7 +51,29 @@ class StoryActivity : InjectableAppCompatActivity(), RouteToExplorationListener 
         topicId,
         storyId,
         explorationId,
-        backflowScreen
+        backflowScreen,
+        isCheckpointingEnabled
+      )
+    )
+  }
+
+  override fun routeToResumeLesson(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    backflowScreen: Int?,
+    explorationCheckpoint: ExplorationCheckpoint
+  ) {
+    startActivity(
+      ResumeLessonActivity.createResumeLessonActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        storyId,
+        explorationId,
+        backflowScreen,
+        explorationCheckpoint
       )
     )
   }

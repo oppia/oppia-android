@@ -1,0 +1,19 @@
+"""
+This library contains the utilities used in end-to-end testing.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "e2e_test_helper",
+    testonly = True,
+    srcs = [
+        "EndToEndTestHelper.kt",
+    ],
+    visibility = ["//:oppia_e2e_testing_visibility"],
+    deps = [
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_uiautomator_uiautomator",
+        "//third_party:com_google_truth_truth",
+    ],
+)

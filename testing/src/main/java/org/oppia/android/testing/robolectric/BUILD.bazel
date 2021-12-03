@@ -31,4 +31,23 @@ kt_android_library(
     ],
 )
 
+# Note that this library is visibility restricted to avoid wide use of custom shadows in the
+# codebase.
+kt_android_library(
+    name = "shadow_bidi_formatter",
+    testonly = True,
+    srcs = [
+        "ShadowBidiFormatter.kt",
+    ],
+    visibility = [
+        "//testing/src/test/java/org/oppia/android/testing/robolectric:__pkg__",
+        "//utility/src/test/java/org/oppia/android/util/locale:__pkg__",
+        "//utility/src/test/java/org/oppia/android/util/locale/testing:__pkg__",
+    ],
+    deps = [
+        "//third_party:androidx_core_core",
+        "//third_party:org_robolectric_robolectric",
+    ],
+)
+
 dagger_rules()

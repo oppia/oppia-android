@@ -2,47 +2,77 @@ package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Solution
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.hintsandsolution.isHintRevealed
+import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
+import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+
+/**
+ * RecyclerView items are 2 times of (No. of Hints + Solution),
+ * this is because in UI after each hint or solution there is a horizontal line/view
+ * which is considered as a separate item in recyclerview.
+ */
+const val RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER = 2
+
+private const val DEFAULT_HINT_AND_SOLUTION_SUMMARY = ""
 
 /** [ViewModel] for Hints in [HintsAndSolutionDialogFragment]. */
 @FragmentScope
-class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
+class HintsViewModel @Inject constructor(
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
+) : HintsAndSolutionItemViewModel() {
 
   val newAvailableHintIndex = ObservableField<Int>(-1)
   val allHintsExhausted = ObservableField<Boolean>(false)
   val explorationId = ObservableField<String>("")
 
   val title = ObservableField<String>("")
-  val hintsAndSolutionSummary = ObservableField<String>("")
+  val hintsAndSolutionSummary = ObservableField(DEFAULT_HINT_AND_SOLUTION_SUMMARY)
   val isHintRevealed = ObservableField<Boolean>(false)
   val hintCanBeRevealed = ObservableField<Boolean>(false)
 
   private lateinit var hintList: List<Hint>
   private lateinit var solution: Solution
-  private val itemList: MutableList<HintsAndSolutionItemViewModel> = ArrayList()
+  private lateinit var helpIndex: HelpIndex
+  private lateinit var writtenTranslationContext: WrittenTranslationContext
+  val itemList: MutableList<HintsAndSolutionItemViewModel> = ArrayList()
 
-  fun setHintsList(hintList: List<Hint>) {
+  /** Initializes the view model to display hints and a solution. */
+  fun initialize(
+    helpIndex: HelpIndex,
+    hintList: List<Hint>,
+    solution: Solution,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
+    this.helpIndex = helpIndex
     this.hintList = hintList
-  }
-
-  fun setSolution(solution: Solution) {
     this.solution = solution
+    this.writtenTranslationContext = writtenTranslationContext
   }
 
   fun processHintList(): List<HintsAndSolutionItemViewModel> {
     itemList.clear()
     for (index in hintList.indices) {
       if (itemList.isEmpty()) {
-        addHintToList(hintList[index])
+        addHintToList(index, hintList[index])
       } else if (itemList.size > 1) {
         val isLastHintRevealed =
-          (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get() ?: false
+          (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
+            .isHintRevealed.get()
+            ?: false
         val availableHintIndex = newAvailableHintIndex.get() ?: 0
-        if (isLastHintRevealed && index <= availableHintIndex / 2) {
-          addHintToList(hintList[index])
+        if (isLastHintRevealed &&
+          index <= availableHintIndex / RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
+        ) {
+          addHintToList(index, hintList[index])
         } else {
           break
         }
@@ -50,10 +80,12 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     }
     if (itemList.size > 1) {
       val isLastHintRevealed =
-        (itemList[itemList.size - 2] as HintsViewModel).isHintRevealed.get() ?: false
+        (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
+          .isHintRevealed.get()
+          ?: false
       val areAllHintsExhausted = allHintsExhausted.get() ?: false
       if (solution.hasExplanation() &&
-        hintList.size * 2 == itemList.size &&
+        hintList.size * RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER == itemList.size &&
         isLastHintRevealed &&
         areAllHintsExhausted
       ) {
@@ -63,11 +95,20 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     return itemList
   }
 
-  private fun addHintToList(hint: Hint) {
-    val hintsViewModel = HintsViewModel()
+  fun computeHintListDropDownIconContentDescription(): String {
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.show_hide_hint_list,
+      hintsAndSolutionSummary.get() ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY
+    )
+  }
+
+  private fun addHintToList(hintIndex: Int, hint: Hint) {
+    val hintsViewModel = HintsViewModel(resourceHandler, translationController)
     hintsViewModel.title.set(hint.hintContent.contentId)
-    hintsViewModel.hintsAndSolutionSummary.set(hint.hintContent.html)
-    hintsViewModel.isHintRevealed.set(hint.hintIsRevealed)
+    val hintContentHtml =
+      translationController.extractString(hint.hintContent, writtenTranslationContext)
+    hintsViewModel.hintsAndSolutionSummary.set(hintContentHtml)
+    hintsViewModel.isHintRevealed.set(helpIndex.isHintRevealed(hintIndex, hintList))
     itemList.add(hintsViewModel)
     addDividerItem()
   }
@@ -80,8 +121,10 @@ class HintsViewModel @Inject constructor() : HintsAndSolutionItemViewModel() {
     solutionViewModel.denominator.set(solution.correctAnswer.denominator)
     solutionViewModel.wholeNumber.set(solution.correctAnswer.wholeNumber)
     solutionViewModel.isNegative.set(solution.correctAnswer.isNegative)
-    solutionViewModel.solutionSummary.set(solution.explanation.html)
-    solutionViewModel.isSolutionRevealed.set(solution.solutionIsRevealed)
+    val explanationHtml =
+      translationController.extractString(solution.explanation, writtenTranslationContext)
+    solutionViewModel.solutionSummary.set(explanationHtml)
+    solutionViewModel.isSolutionRevealed.set(helpIndex.isSolutionRevealed())
     itemList.add(solutionViewModel)
     addDividerItem()
   }

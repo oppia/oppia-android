@@ -1,0 +1,56 @@
+"""
+Package for common libraries that potentially support multiple scripts by performing common or
+generic operations.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "bazel_client",
+    testonly = True,
+    srcs = [
+        "BazelClient.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "git_client",
+    srcs = [
+        "GitClient.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "command_executor",
+    srcs = [
+        "CommandExecutor.kt",
+        "CommandExecutorImpl.kt",
+        "CommandResult.kt",
+    ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+kt_jvm_library(
+    name = "proto_string_encoder",
+    testonly = True,
+    srcs = ["ProtoStringEncoder.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+kt_jvm_library(
+    name = "repository_file",
+    testonly = True,
+    srcs = ["RepositoryFile.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)

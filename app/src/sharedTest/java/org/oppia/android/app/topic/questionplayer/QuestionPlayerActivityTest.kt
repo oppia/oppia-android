@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.questionplayer
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.text.Spannable
 import android.text.style.ClickableSpan
 import android.view.View
@@ -17,6 +16,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -34,6 +34,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -45,20 +46,28 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -70,18 +79,37 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.question.InternalMasteryMultiplyFactor
+import org.oppia.android.domain.question.InternalScoreMultiplyFactor
+import org.oppia.android.domain.question.MaxMasteryGainPerQuestion
+import org.oppia.android.domain.question.MaxMasteryLossPerQuestion
+import org.oppia.android.domain.question.MaxScorePerQuestion
 import org.oppia.android.domain.question.QuestionCountPerTrainingSession
 import org.oppia.android.domain.question.QuestionTrainingSeed
+import org.oppia.android.domain.question.ViewHintMasteryPenalty
+import org.oppia.android.domain.question.ViewHintScorePenalty
+import org.oppia.android.domain.question.WrongAnswerMasteryPenalty
+import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
@@ -89,13 +117,17 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -109,8 +141,14 @@ private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = QuestionPlayerActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class QuestionPlayerActivityTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -134,6 +172,14 @@ class QuestionPlayerActivityTest {
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
   fun setUp() {
@@ -161,19 +207,14 @@ class QuestionPlayerActivityTest {
 
   @Test
   fun testQuestionPlayer_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createQuestionPlayerActivityIntent())
-    val title = activityTestRule.activity.title
+    launchForSkillList(SKILL_ID_LIST).use { scenario ->
+      lateinit var title: CharSequence
+      scenario.onActivity { activity -> title = activity.title }
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.question_player_activity_title))
-  }
-
-  private fun createQuestionPlayerActivityIntent(): Intent {
-    return QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-      context,
-      ArrayList(SKILL_ID_LIST)
-    )
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(title).isEqualTo(context.getString(R.string.question_player_activity_title))
+    }
   }
 
   @Test
@@ -191,7 +232,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test
+  @Test // TODO(#3370): Tests pass on Pixel 3 XL and fails on Pixel 3 because of screen size.
   fun testQuestionPlayer_landscape_forMisconception_showsLinkTextForConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
@@ -224,7 +265,7 @@ class QuestionPlayerActivityTest {
     }
   }
 
-  @Test
+  @Test // TODO(#3370): Tests pass on Pixel 3 XL and fails on Pixel 3 because of screen size.
   fun testQuestionPlayer_landscape_forMisconception_clickLinkText_opensConceptCard() {
     launchForSkillList(SKILL_ID_LIST).use {
       rotateToLandscape()
@@ -321,6 +362,65 @@ class QuestionPlayerActivityTest {
     }
   }
 
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_englishContentLang_contentIsInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      verifyContentContains("picture below represents the fraction")
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForSkillList(SKILL_ID_LIST).use {
+      verifyContentContains("أدناه يمثل الكسر")
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_englishContentLang_showHint_explanationInEnglish() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in English.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("number of pieces in the whole"))))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint explanation should be in Arabic. This helps demonstrate that the activity is
+      // correctly piping the profile ID along to the hint dialog fragment.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(matches(withText(containsString("القطع بنفس الحجم"))))
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -330,7 +430,7 @@ class QuestionPlayerActivityTest {
   ): ActivityScenario<QuestionPlayerActivity> {
     val scenario = ActivityScenario.launch<QuestionPlayerActivity>(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, ArrayList(skillIdList)
+        context, ArrayList(skillIdList), profileId
       )
     )
     testCoroutineDispatchers.runCurrent()
@@ -361,6 +461,42 @@ class QuestionPlayerActivityTest {
       )
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
+    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
+      profileId,
+      WrittenTranslationLanguageSelection.newBuilder().apply {
+        selectedLanguage = language
+      }.build()
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+  }
+
+  private fun openHintsAndSolutionsDialog() {
+    onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun pressRevealHintButton(hintPosition: Int) {
+    onView(withId(R.id.hints_and_solution_recycler_view))
+      .inRoot(isDialog())
+      .perform(scrollToPosition<RecyclerView.ViewHolder>(hintPosition * 2))
+    onView(allOf(withId(R.id.reveal_hint_button), isDisplayed()))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyContentContains(expectedHtml: String) {
+    scrollToViewType(CONTENT)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.question_recycler_view,
+        position = 0,
+        targetViewId = R.id.content_text_view
+      )
+    ).check(matches(withText(containsString(expectedHtml))))
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
@@ -447,26 +583,67 @@ class QuestionPlayerActivityTest {
     @Provides
     @QuestionTrainingSeed
     fun provideQuestionTrainingSeed(): Long = 3
+
+    @Provides
+    @ViewHintScorePenalty
+    fun provideViewHintScorePenalty(): Int = 1
+
+    @Provides
+    @WrongAnswerScorePenalty
+    fun provideWrongAnswerScorePenalty(): Int = 1
+
+    @Provides
+    @MaxScorePerQuestion
+    fun provideMaxScorePerQuestion(): Int = 10
+
+    @Provides
+    @InternalScoreMultiplyFactor
+    fun provideInternalScoreMultiplyFactor(): Int = 10
+
+    @Provides
+    @MaxMasteryGainPerQuestion
+    fun provideMaxMasteryGainPerQuestion(): Int = 10
+
+    @Provides
+    @MaxMasteryLossPerQuestion
+    fun provideMaxMasteryLossPerQuestion(): Int = -10
+
+    @Provides
+    @ViewHintMasteryPenalty
+    fun provideViewHintMasteryPenalty(): Int = 2
+
+    @Provides
+    @WrongAnswerMasteryPenalty
+    fun provideWrongAnswerMasteryPenalty(): Int = 5
+
+    @Provides
+    @InternalMasteryMultiplyFactor
+    fun provideInternalMasteryMultiplyFactor(): Int = 100
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      RobolectricModule::class, PlatformParameterModule::class,
       TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      HtmlParserEntityTypeModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      AccessibilityTestModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
-      RatioInputModule::class, HintsAndSolutionConfigFastShowTestModule::class,
+      HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogUploadWorkerModule::class, FakeOppiaClockModule::class, PracticeTabModule::class
+      LogUploadWorkerModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

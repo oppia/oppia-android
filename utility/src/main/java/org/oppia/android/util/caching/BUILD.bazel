@@ -1,0 +1,82 @@
+"""
+Utilities corresponding to caching.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "asset_repository",
+    srcs = [
+        "AssetRepository.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+kt_android_library(
+    name = "annotations",
+    srcs = [
+        "CacheAssetsLocally.kt",
+        "LoadImagesFromAssets.kt",
+        "LoadLessonProtosFromAssets.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "impl",
+    srcs = [
+        "AssetRepositoryImpl.kt",
+    ],
+    deps = [
+        ":asset_repository",
+        ":dagger",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "caching_prod_module",
+    srcs = [
+        "CachingModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":annotations",
+        ":asset_repository",
+        ":dagger",
+        ":topic_list_to_cache",
+    ],
+)
+
+kt_android_library(
+    name = "asset_prod_module",
+    srcs = [
+        "AssetModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":impl",
+    ],
+)
+
+kt_android_library(
+    name = "topic_list_to_cache",
+    srcs = [
+        "TopicListToCache.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()

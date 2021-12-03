@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -26,7 +27,8 @@ class TopicFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<TopicViewModel>,
   private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
-  @EnablePracticeTab private val enablePracticeTab: Boolean
+  @EnablePracticeTab private val enablePracticeTab: Boolean,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -82,7 +84,7 @@ class TopicFragmentPresenter @Inject constructor(
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)
-      tab.text = fragment.getString(topicTab.tabLabelResId)
+      tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {

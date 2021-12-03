@@ -17,18 +17,18 @@ import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -61,13 +61,14 @@ private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID =
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
 class ProfileManagementController @Inject constructor(
-  private val logger: ConsoleLogger,
+  private val oppiaLogger: OppiaLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val context: Context,
   private val directoryManagementUtil: DirectoryManagementUtil,
   private val exceptionsController: ExceptionsController,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -122,7 +123,7 @@ class ProfileManagementController @Inject constructor(
   init {
     profileDataStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
-        logger.e(
+        oppiaLogger.e(
           "DOMAIN",
           "Failed to prime cache ahead of LiveData conversion for ProfileManagementController.",
           it
@@ -681,9 +682,9 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun isNameUnique(newName: String, profileDatabase: ProfileDatabase): Boolean {
-    val lowerCaseNewName = newName.toLowerCase(Locale.getDefault())
+    val lowerCaseNewName = machineLocale.run { newName.toMachineLowerCase() }
     profileDatabase.profilesMap.values.forEach {
-      if (it.name.toLowerCase(Locale.getDefault()) == lowerCaseNewName) {
+      if (machineLocale.run { it.name.toMachineLowerCase() } == lowerCaseNewName) {
         return false
       }
     }
@@ -710,7 +711,7 @@ class ProfileManagementController @Inject constructor(
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      logger.e(
+      oppiaLogger.e(
         "ProfileManagementController",
         "Failed to store user submitted avatar image",
         e

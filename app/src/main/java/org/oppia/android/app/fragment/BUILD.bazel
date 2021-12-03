@@ -1,0 +1,93 @@
+"""
+Constructs for setting up fragments for injection in the Dagger graph.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+# TODO(#59): Define these exported files as separate libraries from top-level targets.
+exports_files([
+    "FragmentComponentBuilderModule.kt",
+    "FragmentComponentImpl.kt",
+    "FragmentModule.kt",
+])
+
+kt_android_library(
+    name = "fragment_scope",
+    srcs = [
+        "FragmentScope.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "fragment_component",
+    srcs = [
+        "FragmentComponent.kt",
+    ],
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+    ],
+    deps = [
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)
+
+kt_android_library(
+    name = "fragment_component_factory",
+    srcs = [
+        "FragmentComponentFactory.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":fragment_component",
+        "//third_party:androidx_appcompat_appcompat",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "fragment_component_builder_injector",
+    srcs = [
+        "FragmentComponentBuilderInjector.kt",
+    ],
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+    ],
+    deps = [
+        ":fragment_component",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "injectable_fragment",
+    srcs = [
+        "InjectableFragment.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)
+
+kt_android_library(
+    name = "injectable_dialog_fragment",
+    srcs = [
+        "InjectableDialogFragment.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)

@@ -9,7 +9,9 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.provider.MediaStore
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -31,6 +33,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.card.MaterialCardView
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -39,26 +43,31 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.application.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
-import org.oppia.android.app.player.state.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
@@ -70,15 +79,22 @@ import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRu
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.oppialogger.loguploader.WorkManagerConfigurationModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -87,16 +103,20 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.parser.GlideImageLoaderModule
-import org.oppia.android.util.parser.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.ImageParsingModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -110,6 +130,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileProgressFragmentTest {
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val accessibilityTestRule = AccessibilityTestRule()
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -179,6 +204,98 @@ class ProfileProgressFragmentTest {
         targetViewId = R.id.profile_name_text_view,
         stringToMatch = "Admin"
       )
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragment_checkAccessibilityFlowIsCorrect() {
+    launch<ProfileProgressActivity>(
+      createProfileProgressActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.profile_progress_list)
+        val headerView = recyclerView.getChildAt(0)
+        val rootView =
+          headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
+        assertThat(rootView.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        )
+
+        val ongoingTopicsContainer =
+          headerView.findViewById<MaterialCardView>(R.id.ongoing_topics_container)
+        assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+
+        val completedStoriesContainer =
+          headerView.findViewById<MaterialCardView>(R.id.completed_stories_container)
+        assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testProfileProgressFragment_configChange_checkAccessibilityFlowIsCorrect() {
+    launch<ProfileProgressActivity>(
+      createProfileProgressActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scenario.onActivity { activity ->
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.profile_progress_list)
+        val headerView = recyclerView.getChildAt(0)
+        val rootView =
+          headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
+        assertThat(rootView.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        )
+
+        val ongoingTopicsContainer =
+          headerView.findViewById<MaterialCardView>(R.id.ongoing_topics_container)
+        assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+
+        val completedStoriesContainer =
+          headerView.findViewById<MaterialCardView>(R.id.completed_stories_container)
+        assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+      }
+    }
+  }
+
+  @Config(qualifiers = "+sw600dp")
+  @Test
+  fun testProfileProgressFragment_tablet_checkAccessibilityFlowIsCorrect() {
+    launch<ProfileProgressActivity>(
+      createProfileProgressActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.profile_progress_list)
+        val headerView = recyclerView.getChildAt(0)
+        val rootView =
+          headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
+        assertThat(rootView.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        )
+
+        val ongoingTopicsContainer =
+          headerView.findViewById<MaterialCardView>(R.id.ongoing_topics_container)
+        assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+
+        val completedStoriesContainer =
+          headerView.findViewById<MaterialCardView>(R.id.completed_stories_container)
+        assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        )
+      }
     }
   }
 
@@ -441,7 +558,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_configChange_fractionStory_storyNameIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -461,7 +578,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_fractionsStory_storyNameIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -482,7 +599,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_fractionsStory_topicNameIsCorrect() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -503,7 +620,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickFractionsStory_opensTopicActivity() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
       timestampOlderThanOneWeek = false
     )
@@ -525,7 +642,7 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
-    storyProgressTestHelper.markRecentlyPlayedFractionsStory0Exp0(
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
     )
@@ -637,7 +754,7 @@ class ProfileProgressFragmentTest {
       intended(hasComponent(CompletedStoryListActivity::class.java.name))
       intended(
         hasExtra(
-          CompletedStoryListActivity.COMPLETED_STORY_LIST_ACTIVITY_PROFILE_ID_KEY,
+          CompletedStoryListActivity.PROFILE_ID_EXTRA_KEY,
           internalProfileId
         )
       )
@@ -710,6 +827,7 @@ class ProfileProgressFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
@@ -721,8 +839,12 @@ class ProfileProgressFragmentTest {
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      HintsAndSolutionConfigModule::class, FirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class, PracticeTabModule::class
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

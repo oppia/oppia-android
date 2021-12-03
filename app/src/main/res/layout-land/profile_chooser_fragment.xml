@@ -33,14 +33,13 @@
           android:paddingStart="4dp"
           android:paddingTop="20dp"
           android:paddingEnd="20dp"
-          android:src="@drawable/ic_language_icon_grey_24dp"
+          app:srcCompat="@drawable/ic_language_icon_grey_24dp"
           android:visibility="gone"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-          style="@style/Subtitle1"
-          android:gravity="center"
+          style="@style/Subtitle1ViewCenter"
           android:minHeight="48dp"
           android:paddingTop="20dp"
           android:text="@string/profile_chooser_language"
@@ -51,9 +50,9 @@
 
         <TextView
           android:id="@+id/profile_select_text"
-          style="@style/Heading1"
+          style="@style/Heading1ViewStart"
           android:layout_marginStart="36dp"
-          android:layout_marginTop="64dp"
+          android:layout_marginTop="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
           android:layout_marginEnd="36dp"
           android:text="@string/profile_chooser_select"
           android:textColor="@color/white"
@@ -65,7 +64,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_marginStart="16dp"
-          android:layout_marginTop="12dp"
+          android:layout_marginTop="@dimen/profile_chooser_fragment_profile_recycler_view_margin_top"
           android:layout_marginEnd="16dp"
           android:clipToPadding="false"
           android:fadingEdge="horizontal"
@@ -100,9 +99,8 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewCenter"
         android:layout_marginBottom="24dp"
-        android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
         android:textColor="@color/profileChooserGreyTextColor" />
@@ -117,7 +115,7 @@
         android:paddingTop="12dp"
         android:paddingEnd="16dp"
         android:paddingBottom="12dp"
-        android:src="@drawable/ic_settings_grey_48dp" />
+        app:srcCompat="@drawable/ic_settings_grey_48dp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

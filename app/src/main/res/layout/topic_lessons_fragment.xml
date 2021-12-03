@@ -2,6 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.topic.lessons.TopicLessonViewModel" />
+  </data>
+
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,12 +20,13 @@
       android:layout_height="0dp"
       android:clipToPadding="false"
       android:overScrollMode="never"
-      android:paddingBottom="128dp"
+      android:paddingBottom="@dimen/topic_lessons_fragment_layout_padding_bottom"
       android:scrollbars="none"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:data="@{viewModel.topicLessonLiveData}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

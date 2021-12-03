@@ -32,9 +32,8 @@
         android:id="@+id/lesson_thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="@{@string/lesson_thumbnail_content_description(viewModel.promotedStory.nextChapterName)}"
+        android:contentDescription="@{viewModel.computeLessonThumbnailContentDescription()}"
         android:importantForAccessibility="no"
-        android:scaleType="fitCenter"
         app:entityId="@{viewModel.promotedStory.storyId}"
         app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
@@ -55,6 +54,7 @@
 
         <TextView
           android:id="@+id/story_name_text_view"
+          style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
@@ -67,13 +67,13 @@
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp"
           android:textStyle="bold"
-          android:textAlignment="viewStart"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/topic_name_text_view"
+          style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
@@ -87,7 +87,6 @@
           android:textAllCaps="true"
           android:textColor="@color/oppiaPrimaryText"
           android:textSize="14sp"
-          android:textAlignment="viewStart"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"

@@ -1,0 +1,33 @@
+"""
+Libraries corresponding to developer scripts that help with continuous integration workflows.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "compute_affected_tests_lib",
+    testonly = True,
+    srcs = [
+        "ComputeAffectedTests.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
+        "//scripts/src/java/org/oppia/android/scripts/proto:affected_tests_java_proto_lite",
+    ],
+)
+
+kt_jvm_library(
+    name = "retrieve_affected_tests_lib",
+    testonly = True,
+    srcs = [
+        "RetrieveAffectedTests.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
+        "//scripts/src/java/org/oppia/android/scripts/proto:affected_tests_java_proto_lite",
+    ],
+)

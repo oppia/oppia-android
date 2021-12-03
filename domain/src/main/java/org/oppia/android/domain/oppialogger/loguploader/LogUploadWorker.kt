@@ -1,13 +1,18 @@
 package org.oppia.android.domain.oppialogger.loguploader
 
 import android.content.Context
-import androidx.work.CoroutineWorker
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
+import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
+import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
@@ -24,7 +29,7 @@ class LogUploadWorker private constructor(
   private val eventLogger: EventLogger,
   private val consoleLogger: ConsoleLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-) : CoroutineWorker(context, params) {
+) : ListenableWorker(context, params) {
 
   companion object {
     const val WORKER_CASE_KEY = "worker_case_key"
@@ -33,16 +38,27 @@ class LogUploadWorker private constructor(
     const val EXCEPTION_WORKER = "exception_worker"
   }
 
-  override suspend fun doWork(): Result {
-    return when (inputData.getString(WORKER_CASE_KEY)) {
-      EVENT_WORKER -> {
-        withContext(backgroundDispatcher) { uploadEvents() }
+  @ExperimentalCoroutinesApi
+  override fun startWork(): ListenableFuture<Result> {
+    val backgroundScope = CoroutineScope(backgroundDispatcher)
+    val result = backgroundScope.async {
+      when (inputData.getStringFromData(WORKER_CASE_KEY)) {
+        EVENT_WORKER -> uploadEvents()
+        EXCEPTION_WORKER -> uploadExceptions()
+        else -> Result.failure()
       }
-      EXCEPTION_WORKER -> {
-        withContext(backgroundDispatcher) { uploadExceptions() }
-      }
-      else -> Result.failure()
     }
+
+    val future = SettableFuture.create<Result>()
+    result.invokeOnCompletion { failure ->
+      if (failure != null) {
+        future.setException(failure)
+      } else {
+        future.set(result.getCompleted())
+      }
+    }
+    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    return future
   }
 
   /** Extracts exception logs from the cache store and logs them to the remote service. */
@@ -89,7 +105,7 @@ class LogUploadWorker private constructor(
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
 
-    fun create(context: Context, params: WorkerParameters): CoroutineWorker {
+    fun create(context: Context, params: WorkerParameters): ListenableWorker {
       return LogUploadWorker(
         context,
         params,
