@@ -4,8 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import javax.inject.Inject
 import org.oppia.android.databinding.AudioLanguageActivityBinding
+import javax.inject.Inject
 
 /** The presenter for [AudioLanguageActivity]. */
 @ActivityScope
