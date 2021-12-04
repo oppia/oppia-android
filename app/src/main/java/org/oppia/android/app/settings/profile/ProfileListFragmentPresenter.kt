@@ -12,6 +12,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileListFragmentBinding
 import org.oppia.android.databinding.ProfileListProfileViewBinding
 import javax.inject.Inject
+import org.oppia.android.R
 
 /** The presenter for [ProfileListFragment]. */
 @FragmentScope
@@ -65,13 +66,20 @@ class ProfileListFragmentPresenter @Inject constructor(
   ) {
     binding.profile = profile
     binding.root.setOnClickListener {
-      activity.startActivity(
-        ProfileEditActivity.createProfileEditActivity(
-          activity,
-          profile.id.internalId,
-          isMultipane
+      if (!isMultipane) {
+        activity.startActivity(
+          ProfileEditActivity.createProfileEditActivity(
+            activity,
+            profile.id.internalId,
+            isMultipane
+          )
         )
-      )
+      } else {
+        val fragment = ProfileEditFragment.newInstance(profile.id.internalId, isMultipane)
+        activity.supportFragmentManager.beginTransaction()
+          .add(R.id.administrator_controls_fragment_multipane_placeholder, fragment)
+          .commit()
+      }
     }
   }
 
