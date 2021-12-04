@@ -202,7 +202,7 @@ class PlayerSplitScreenTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlayerSplitScreenTesting_TestApplicationComponent.builder()
+      DaggerPlayerSplitScreenTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
