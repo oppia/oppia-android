@@ -383,5 +383,8 @@
   <dimen name="profile_rename_activity_profile_rename_input_margin_top">32dp</dimen>
   <dimen name="profile_rename_activity_profile_rename_input_margin_end">168dp</dimen>
   <dimen name="profile_rename_activity_profile_rename_save_button_margin_end">168dp</dimen>
-
+  <!-- TopicLessonsTitle -->
+  <dimen name="topic_lessons_title_margin_start">100dp</dimen>
+  <dimen name="topic_lessons_title_margin_top">32dp</dimen>
+  <dimen name="topic_lessons_title_margin_end">100dp</dimen>
 </resources>
