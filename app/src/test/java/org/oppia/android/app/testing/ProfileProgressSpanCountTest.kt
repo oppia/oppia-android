@@ -174,7 +174,7 @@ class ProfileProgressSpanCountTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileProgressSpanCount_TestApplicationComponent.builder()
+      DaggerProfileProgressSpanCountTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
