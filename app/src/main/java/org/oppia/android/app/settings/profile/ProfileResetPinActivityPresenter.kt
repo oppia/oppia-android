@@ -143,9 +143,7 @@ class ProfileResetPinActivityPresenter @Inject constructor(
           activity,
           Observer {
             if (it.isSuccess()) {
-              val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              activity.startActivity(intent)
+              activity.finish()
             }
           }
         )

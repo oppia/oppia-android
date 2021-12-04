@@ -104,9 +104,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
     if (result.isSuccess()) {
-      val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      activity.startActivity(intent)
+      activity.finish()
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {
         is ProfileManagementController.ProfileNameNotUniqueException ->
