@@ -1,16 +1,23 @@
 package org.oppia.android.testing
 
 import android.os.Build
+import androidx.test.espresso.accessibility.AccessibilityChecks
+import androidx.test.espresso.matcher.ViewMatchers
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils
+import org.hamcrest.CoreMatchers
 import org.junit.AssumptionViolatedException
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
+
+private const val DEFAULT_ENABLED_STATE = true
 
 /** JUnit rule to enable [RunOn] test targeting. */
 class OppiaTestRule : TestRule {
   override fun apply(base: Statement?, description: Description?): Statement {
     return object : Statement() {
       override fun evaluate() {
+        val isEnabled = description.areAccessibilityChecksEnabled()
         val targetPlatforms = description.getTargetPlatforms()
         val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
@@ -32,6 +39,26 @@ class OppiaTestRule : TestRule {
               "Test targeting ${targetEnvironments.toPluralEnvironmentDescription()} ignored on" +
                 " $currentEnvironment"
             )
+          }
+          currentPlatform == TestPlatform.ESPRESSO && isEnabled -> {
+            AccessibilityChecks.enable().apply {
+              // Suppressing failures for all views which matches with below conditions as we do not
+              // want to change the UI to pass these failures as it will change the expected behaviour
+              // for learner.
+              setSuppressingResultMatcher(
+                CoreMatchers.allOf(
+                  AccessibilityCheckResultUtils.matchesCheckNames(CoreMatchers.`is`("TouchTargetSizeViewCheck")),
+                  AccessibilityCheckResultUtils.matchesViews(ViewMatchers.withContentDescription("More options")),
+                  AccessibilityCheckResultUtils.matchesViews(
+                    ViewMatchers.withClassName(
+                      CoreMatchers.endsWith(
+                        "OverflowMenuButton"
+                      )
+                    )
+                  )
+                )
+              )
+            }.setRunChecksFromRootView(true)
           }
           else -> throw AssertionError("Reached impossible state in test rule")
         }
@@ -91,6 +118,20 @@ class OppiaTestRule : TestRule {
 
     private fun <T> Class<T>.getTargetBuildEnvironments(): List<BuildEnvironment>? {
       return getAnnotation(RunOn::class.java)?.buildEnvironments?.toList()
+    }
+
+    private fun Description?.areAccessibilityChecksEnabled(): Boolean {
+      val methodAccessibilityStatus = this?.areAccessibilityTestsEnabledForMethod()
+      val classAccessibilityStatus = this?.testClass?.areAccessibilityTestsEnabledForClass()
+      return methodAccessibilityStatus ?: classAccessibilityStatus ?: DEFAULT_ENABLED_STATE
+    }
+
+    private fun Description.areAccessibilityTestsEnabledForMethod(): Boolean {
+      return getAnnotation(DisableAccessibilityChecks::class.java) == null
+    }
+
+    private fun <T> Class<T>.areAccessibilityTestsEnabledForClass(): Boolean {
+      return getAnnotation(DisableAccessibilityChecks::class.java) == null
     }
   }
 }
