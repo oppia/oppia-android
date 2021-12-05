@@ -3,6 +3,14 @@
 
 **Solution**: Don't worry this is not an error. Just run the test file and it will solve the error. For running tests, you can see [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) document.
 
+## Crashing layout tags in table
+**Error**: java.lang.IllegalArgumentException: The tag for topic_lessons_title is invalid. Received: layout-sw600dp-port/topic_lessons_title_0
+**Solutions**: This error occurs when we remove any xml file which is related to tablet devices
+To solve this
+1. Uninstall the app from tablet
+2. Rebuild the app.
+3. Run the app again.
+
 ## Push failed
 **Error**: Failed to push some refs to `git@github.com:<your_user_name>/oppia-android.git`
 
