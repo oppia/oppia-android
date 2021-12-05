@@ -3,8 +3,13 @@ package org.oppia.android.testing
 import android.os.Build
 import androidx.test.espresso.accessibility.AccessibilityChecks
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withClassName
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesCheckNames
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesViews
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.`is`
 import org.junit.AssumptionViolatedException
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -47,15 +52,9 @@ class OppiaTestRule : TestRule {
               // for learner.
               setSuppressingResultMatcher(
                 CoreMatchers.allOf(
-                  AccessibilityCheckResultUtils.matchesCheckNames(CoreMatchers.`is`("TouchTargetSizeViewCheck")),
-                  AccessibilityCheckResultUtils.matchesViews(ViewMatchers.withContentDescription("More options")),
-                  AccessibilityCheckResultUtils.matchesViews(
-                    ViewMatchers.withClassName(
-                      CoreMatchers.endsWith(
-                        "OverflowMenuButton"
-                      )
-                    )
-                  )
+                  matchesCheckNames(`is`("TouchTargetSizeViewCheck")),
+                  matchesViews(withContentDescription("More options")),
+                  matchesViews(withClassName(CoreMatchers.endsWith("OverflowMenuButton")))
                 )
               )
             }.setRunChecksFromRootView(true)
