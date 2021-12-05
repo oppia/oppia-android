@@ -2,14 +2,13 @@ package org.oppia.android.testing
 
 import android.os.Build
 import androidx.test.espresso.accessibility.AccessibilityChecks
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
-import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesCheckNames
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils.matchesViews
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.endsWith
 import org.junit.AssumptionViolatedException
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -51,10 +50,10 @@ class OppiaTestRule : TestRule {
               // want to change the UI to pass these failures as it will change the expected behaviour
               // for learner.
               setSuppressingResultMatcher(
-                CoreMatchers.allOf(
+                allOf(
                   matchesCheckNames(`is`("TouchTargetSizeViewCheck")),
                   matchesViews(withContentDescription("More options")),
-                  matchesViews(withClassName(CoreMatchers.endsWith("OverflowMenuButton")))
+                  matchesViews(withClassName(endsWith("OverflowMenuButton")))
                 )
               )
             }.setRunChecksFromRootView(true)
