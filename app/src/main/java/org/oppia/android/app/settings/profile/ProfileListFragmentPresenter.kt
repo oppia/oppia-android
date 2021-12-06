@@ -13,6 +13,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileListFragmentBinding
 import org.oppia.android.databinding.ProfileListProfileViewBinding
 import javax.inject.Inject
+import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
 
 /** The presenter for [ProfileListFragment]. */
 @FragmentScope
@@ -67,7 +68,8 @@ class ProfileListFragmentPresenter @Inject constructor(
   ) {
     binding.profile = profile
     binding.root.setOnClickListener {
-      administratorControlsActivityPresenter.handleloadProfileEdit(profile.id.internalId)
+      val profileEditListener = (activity as LoadProfileEditListener)
+      profileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
     }
   }
 

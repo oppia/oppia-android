@@ -89,8 +89,9 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter.loadAppVersion()
   }
 
-  override fun loadProfileEdit(profileId: Int) {
+  override fun loadProfileEdit(profileId: Int, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+    administratorControlsActivityPresenter.setExtraControlsTitle(profileName)
     administratorControlsActivityPresenter.handleloadProfileEdit(profileId)
   }
 
