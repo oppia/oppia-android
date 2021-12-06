@@ -44,6 +44,19 @@
         app:layout_constraintEnd_toStartOf="@id/administrator_controls_guideline"
         app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
 
+      <ImageButton
+        android:id="@+id/administrator_controls_multipane_options_back_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@color/oppiaGreyBackground"
+        android:contentDescription="@string/help_activity_back_arrow_description"
+        android:padding="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/extra_controls_title"
+        app:layout_constraintStart_toStartOf="@+id/administrator_controls_guideline"
+        app:layout_constraintTop_toTopOf="@+id/extra_controls_title"
+        app:srcCompat="@drawable/ic_arrow_back_black_24_dp" />
+
       <TextView
         android:id="@+id/extra_controls_title"
         android:layout_width="0dp"
@@ -54,7 +67,7 @@
         android:textColor="@color/oppiaPrimaryText"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/administrator_controls_guideline"
+        app:layout_constraintStart_toEndOf="@+id/administrator_controls_multipane_options_back_button"
         app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
 
       <FrameLayout

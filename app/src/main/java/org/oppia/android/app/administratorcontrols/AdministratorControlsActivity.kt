@@ -17,6 +17,7 @@ const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
 const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
+const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
 /** Activity for Administrator Controls. */
@@ -26,9 +27,11 @@ class AdministratorControlsActivity :
   RouteToAppVersionListener,
   LoadProfileListListener,
   LoadAppVersionListener,
+  LoadProfileEditListener,
   ShowLogoutDialogListener {
   @Inject
   lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
+
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
   private lateinit var lastLoadedFragment: String
@@ -84,6 +87,11 @@ class AdministratorControlsActivity :
         resourceHandler.getStringInLocale(R.string.administrator_controls_app_version)
       )
     administratorControlsActivityPresenter.loadAppVersion()
+  }
+
+  override fun loadProfileEdit(profileId: Int) {
+    lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+    administratorControlsActivityPresenter.handleloadProfileEdit(profileId)
   }
 
   override fun showLogoutDialog() {

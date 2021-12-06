@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
@@ -11,6 +12,8 @@ import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
 import javax.inject.Inject
+import org.oppia.android.app.settings.profile.ProfileEditActivity
+import org.oppia.android.app.settings.profile.ProfileEditFragment
 
 /** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
@@ -88,6 +91,25 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
     ).commitNow()
+  }
+
+  fun handleloadProfileEdit(profileId: Int) {
+    if (!isMultipane) {
+      activity.startActivity(
+        ProfileEditActivity.createProfileEditActivity(
+          activity,
+          profileId,
+          isMultipane
+        )
+      )
+    } else {
+      lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+      getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
+      val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
+      activity.supportFragmentManager.beginTransaction()
+        .add(R.id.administrator_controls_fragment_multipane_placeholder, fragment)
+        .commit()
+    }
   }
 
   fun setExtraControlsTitle(title: String) {
