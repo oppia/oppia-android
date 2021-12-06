@@ -37,7 +37,6 @@ class HelpActivity :
   LoadLicenseTextViewerFragmentListener {
   override fun onBackPressed() {
     super.onBackPressed()
-
   }
 
   @Inject
