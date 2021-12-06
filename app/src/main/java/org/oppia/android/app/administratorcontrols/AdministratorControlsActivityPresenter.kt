@@ -103,7 +103,6 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       )
     } else {
       lastLoadedFragment = PROFILE_EDIT_FRAGMENT
-      getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
       val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.administrator_controls_fragment_multipane_placeholder, fragment)
