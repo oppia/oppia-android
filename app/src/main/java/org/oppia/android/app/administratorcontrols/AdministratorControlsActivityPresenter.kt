@@ -1,6 +1,7 @@
 package org.oppia.android.app.administratorcontrols
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -103,10 +104,11 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       )
     } else {
       lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+      binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
       val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.administrator_controls_fragment_multipane_placeholder, fragment)
-        .commit()
+        .commitNow()
     }
   }
 
