@@ -22,7 +22,11 @@ import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
+import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
+import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
+import org.oppia.android.app.model.MathFunctionCall.FunctionType
+import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
 // TODO: split up this extensions file into multiple, clean it up, reorganize, and add tests.
 
@@ -37,6 +41,56 @@ import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
 // TODO: Consider: (1+2)*x or (1+2)x
 // TODO: Make sure that all 'when' cases here do not use 'else' branches to ensure structural
 //  changes require changing logic.
+
+fun MathEquation.toRawLatex(divAsFraction: Boolean = false): String {
+  return "${leftSide.toRawLatex(divAsFraction)} = ${rightSide.toRawLatex(divAsFraction)}"
+}
+
+fun MathExpression.toRawLatex(divAsFraction: Boolean = false): String = toRawLatexAux(divAsFraction)
+
+private fun MathExpression.toRawLatexAux(divAsFraction: Boolean): String {
+  return when (expressionTypeCase) {
+    CONSTANT -> when (constant.realTypeCase) {
+      RATIONAL -> constant.rational.toDouble().toPlainString()
+      IRRATIONAL -> constant.irrational.toPlainString()
+      INTEGER -> constant.integer.toString()
+      REALTYPE_NOT_SET, null -> ""
+    }
+    VARIABLE -> variable
+    BINARY_OPERATION -> {
+      val lhsLatex = binaryOperation.leftOperand.toRawLatexAux(divAsFraction)
+      val rhsLatex = binaryOperation.rightOperand.toRawLatexAux(divAsFraction)
+      when (binaryOperation.operator) {
+        BinaryOperator.ADD -> "$lhsLatex + $rhsLatex"
+        BinaryOperator.SUBTRACT -> "$lhsLatex - $rhsLatex"
+        BinaryOperator.MULTIPLY -> "$lhsLatex \\times $rhsLatex"
+        BinaryOperator.DIVIDE -> if (divAsFraction) {
+          "\\frac{$lhsLatex}{$rhsLatex}"
+        } else "$lhsLatex \\div $rhsLatex"
+        BinaryOperator.EXPONENTIATE -> "$lhsLatex ^ {$rhsLatex}"
+        BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null ->
+          "$lhsLatex $rhsLatex"
+      }
+    }
+    UNARY_OPERATION -> {
+      val operandLatex = unaryOperation.operand.toRawLatexAux(divAsFraction)
+      when (unaryOperation.operator) {
+        UnaryOperator.NEGATE -> "-$operandLatex"
+        UnaryOperator.POSITIVE -> "+$operandLatex"
+        UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null -> operandLatex
+      }
+    }
+    FUNCTION_CALL -> {
+      val argumentLatex = functionCall.argument.toRawLatexAux(divAsFraction)
+      when (functionCall.functionType) {
+        FunctionType.SQUARE_ROOT -> "\\sqrt{$argumentLatex}"
+        FunctionType.FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null -> argumentLatex
+      }
+    }
+    GROUP -> "(${group.toRawLatexAux(divAsFraction)})"
+    EXPRESSIONTYPE_NOT_SET, null -> ""
+  }
+}
 
 // TODO: add proper error channels for the return value.
 fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
@@ -55,37 +109,37 @@ fun MathExpression.evaluate(): Real? {
 
 private fun MathBinaryOperation.evaluate(): Real? {
   return when (operator) {
-    MathBinaryOperation.Operator.ADD ->
+    BinaryOperator.ADD ->
       rightOperand.evaluate()?.let { leftOperand.evaluate()?.plus(it) }
-    MathBinaryOperation.Operator.SUBTRACT ->
+    BinaryOperator.SUBTRACT ->
       rightOperand.evaluate()?.let { leftOperand.evaluate()?.minus(it) }
-    MathBinaryOperation.Operator.MULTIPLY ->
+    BinaryOperator.MULTIPLY ->
       rightOperand.evaluate()?.let { leftOperand.evaluate()?.times(it) }
-    MathBinaryOperation.Operator.DIVIDE ->
+    BinaryOperator.DIVIDE ->
       rightOperand.evaluate()?.let { leftOperand.evaluate()?.div(it) }
-    MathBinaryOperation.Operator.EXPONENTIATE ->
+    BinaryOperator.EXPONENTIATE ->
       rightOperand.evaluate()?.let { leftOperand.evaluate()?.pow(it) }
-    MathBinaryOperation.Operator.OPERATOR_UNSPECIFIED,
-    MathBinaryOperation.Operator.UNRECOGNIZED,
+    BinaryOperator.OPERATOR_UNSPECIFIED,
+    BinaryOperator.UNRECOGNIZED,
     null -> null
   }
 }
 
 private fun MathUnaryOperation.evaluate(): Real? {
   return when (operator) {
-    MathUnaryOperation.Operator.NEGATE -> operand.evaluate()?.let { -it }
-    MathUnaryOperation.Operator.POSITIVE -> operand.evaluate() // '+2' is the same as just '2'.
-    MathUnaryOperation.Operator.OPERATOR_UNSPECIFIED,
-    MathUnaryOperation.Operator.UNRECOGNIZED,
+    UnaryOperator.NEGATE -> operand.evaluate()?.let { -it }
+    UnaryOperator.POSITIVE -> operand.evaluate() // '+2' is the same as just '2'.
+    UnaryOperator.OPERATOR_UNSPECIFIED,
+    UnaryOperator.UNRECOGNIZED,
     null -> null
   }
 }
 
 private fun MathFunctionCall.evaluate(): Real? {
   return when (functionType) {
-    MathFunctionCall.FunctionType.SQUARE_ROOT -> argument.evaluate()?.let { sqrt(it) }
-    MathFunctionCall.FunctionType.FUNCTION_UNSPECIFIED,
-    MathFunctionCall.FunctionType.UNRECOGNIZED,
+    FunctionType.SQUARE_ROOT -> argument.evaluate()?.let { sqrt(it) }
+    FunctionType.FUNCTION_UNSPECIFIED,
+    FunctionType.UNRECOGNIZED,
     null -> null
   }
 }
@@ -192,7 +246,7 @@ private fun MathExpression.reduceToPolynomial(): Polynomial? {
 
 private fun MathUnaryOperation.reduceToPolynomial(): Polynomial? {
   return when (operator) {
-    MathUnaryOperation.Operator.NEGATE -> -(operand.reduceToPolynomial() ?: return null)
+    UnaryOperator.NEGATE -> -(operand.reduceToPolynomial() ?: return null)
     else -> null
   }
 }
@@ -201,11 +255,11 @@ private fun MathBinaryOperation.reduceToPolynomial(): Polynomial? {
   val leftPolynomial = leftOperand.reduceToPolynomial() ?: return null
   val rightPolynomial = rightOperand.reduceToPolynomial() ?: return null
   return when (operator) {
-    MathBinaryOperation.Operator.ADD -> leftPolynomial + rightPolynomial
-    MathBinaryOperation.Operator.SUBTRACT -> leftPolynomial - rightPolynomial
-    MathBinaryOperation.Operator.MULTIPLY -> leftPolynomial * rightPolynomial
-    MathBinaryOperation.Operator.DIVIDE -> leftPolynomial / rightPolynomial
-    MathBinaryOperation.Operator.EXPONENTIATE -> leftPolynomial.pow(rightPolynomial)
+    BinaryOperator.ADD -> leftPolynomial + rightPolynomial
+    BinaryOperator.SUBTRACT -> leftPolynomial - rightPolynomial
+    BinaryOperator.MULTIPLY -> leftPolynomial * rightPolynomial
+    BinaryOperator.DIVIDE -> leftPolynomial / rightPolynomial
+    BinaryOperator.EXPONENTIATE -> leftPolynomial.pow(rightPolynomial)
     else -> null
   }
 }
@@ -358,7 +412,7 @@ private fun Polynomial.getLeadingTerm(): Term {
 private fun Polynomial.getDegree(): Int = getLeadingTerm().highestDegree()
 
 private fun Term.highestDegree(): Int {
-  return variableList.map(Variable::getPower).max() ?: 0
+  return variableList.map(Variable::getPower).maxOrNull() ?: 0
 }
 
 private fun Polynomial.isApproximatelyZero(): Boolean {
@@ -778,3 +832,5 @@ private fun sqrt(int: Int): Real {
     irrational = sqrt(int.toDouble())
   }.build()
 }
+
+private fun Double.toPlainString(): String = toBigDecimal().toPlainString()

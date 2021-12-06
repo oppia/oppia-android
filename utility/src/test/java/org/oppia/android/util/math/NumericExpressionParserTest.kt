@@ -4037,7 +4037,7 @@ class NumericExpressionParserTest {
     expectFailureWhenParsingAlgebraicEquation(" x =")
     expectFailureWhenParsingAlgebraicEquation(" = y")
 
-    val equation1 = parseAlgebraicEquationWithoutOptionalErrors("x = 1")
+    val equation1 = parseAlgebraicEquationWithAllErrors("x = 1")
     assertThat(equation1).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("x")
@@ -4046,7 +4046,7 @@ class NumericExpressionParserTest {
     assertThat(equation1).hasRightHandSideThat().evaluatesToIntegerThat().isEqualTo(1)
 
     val equation2 =
-      parseAlgebraicEquationWithoutOptionalErrors("y = mx + b", allowedVariables = listOf("x", "y", "b", "m"))
+      parseAlgebraicEquationWithAllErrors("y = mx + b", allowedVariables = listOf("x", "y", "b", "m"))
     assertThat(equation2).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("y")
@@ -4076,7 +4076,7 @@ class NumericExpressionParserTest {
       }
     }
 
-    val equation3 = parseAlgebraicEquationWithoutOptionalErrors("y = (x+1)^2")
+    val equation3 = parseAlgebraicEquationWithAllErrors("y = (x+1)^2")
     assertThat(equation3).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("y")
@@ -4108,7 +4108,7 @@ class NumericExpressionParserTest {
       }
     }
 
-    val equation4 = parseAlgebraicEquationWithoutOptionalErrors("y = (x+1)(x-1)")
+    val equation4 = parseAlgebraicEquationWithAllErrors("y = (x+1)(x-1)")
     assertThat(equation4).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("y")
@@ -4155,7 +4155,7 @@ class NumericExpressionParserTest {
     expectFailureWhenParsingAlgebraicEquation("y 2 = (x+1)(x-1)")
 
     val equation5 =
-      parseAlgebraicEquationWithoutOptionalErrors("a*x^2 + b*x + c = 0", allowedVariables = listOf("x", "a", "b", "c"))
+      parseAlgebraicEquationWithAllErrors("a*x^2 + b*x + c = 0", allowedVariables = listOf("x", "a", "b", "c"))
     assertThat(equation5).hasLeftHandSideThat().hasStructureThatMatches {
       addition {
         leftOperand {
@@ -4211,6 +4211,48 @@ class NumericExpressionParserTest {
         withIntegerValueThat().isEqualTo(0)
       }
     }
+  }
+
+  @Test
+  fun testLatex() {
+    // TODO: split up & move to separate test suites. Finish test cases.
+
+    val exp1 = parseNumericExpressionWithAllErrors("1")
+    assertThat(exp1.toRawLatex()).isEqualTo("1")
+
+    val exp2 = parseNumericExpressionWithAllErrors("1+2")
+    assertThat(exp2.toRawLatex()).isEqualTo("1 + 2")
+
+    val exp3 = parseNumericExpressionWithAllErrors("1*2")
+    assertThat(exp3.toRawLatex()).isEqualTo("1 \\times 2")
+
+    val exp4 = parseNumericExpressionWithAllErrors("1/2")
+    assertThat(exp4.toRawLatex()).isEqualTo("1 \\div 2")
+
+    val exp5 = parseNumericExpressionWithAllErrors("1/2")
+    assertThat(exp5.toRawLatex(divAsFraction = true)).isEqualTo("\\frac{1}{2}")
+
+    val exp6 = parseAlgebraicExpressionWithAllErrors("x+y")
+    assertThat(exp6.toRawLatex()).isEqualTo("x + y")
+
+    val exp7 = parseAlgebraicExpressionWithoutOptionalErrors("x^(1/y)")
+    assertThat(exp7.toRawLatex()).isEqualTo("x ^ {(1 \\div y)}")
+
+    val exp8 = parseAlgebraicExpressionWithoutOptionalErrors("x^(1/y)")
+    assertThat(exp8.toRawLatex(divAsFraction = true)).isEqualTo("x ^ {(\\frac{1}{y})}")
+
+    val exp9 = parseAlgebraicExpressionWithoutOptionalErrors("x^y^z")
+    assertThat(exp9.toRawLatex(divAsFraction = true)).isEqualTo("x ^ {y ^ {z}}")
+
+    val eq1 =
+      parseAlgebraicEquationWithAllErrors("a^2+b^2+c^2=0", allowedVariables = listOf("a", "b", "c"))
+    assertThat(eq1.toRawLatex()).isEqualTo("a ^ {2} + b ^ {2} + c ^ {2} = 0")
+
+    val eq2 = parseAlgebraicEquationWithAllErrors("sqrt(1+x)/x=1")
+    assertThat(eq2.toRawLatex()).isEqualTo("\\sqrt{1 + x} \\div x = 1")
+
+    val eq3 = parseAlgebraicEquationWithAllErrors("sqrt(1+x)/x=1")
+    assertThat(eq3.toRawLatex(divAsFraction = true)).isEqualTo("\\frac{\\sqrt{1 + x}}{x} = 1")
   }
 
   @DslMarker
@@ -4510,11 +4552,11 @@ class NumericExpressionParserTest {
       return (result as MathParsingResult.Failure<MathEquation>).error
     }
 
-    private fun parseAlgebraicEquationWithoutOptionalErrors(
+    private fun parseAlgebraicEquationWithAllErrors(
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathEquation {
-      return (parseAlgebraicEquationInternal(expression, ErrorCheckingMode.REQUIRED_ONLY, allowedVariables) as MathParsingResult.Success<MathEquation>).result
+      return (parseAlgebraicEquationInternal(expression, ErrorCheckingMode.ALL_ERRORS, allowedVariables) as MathParsingResult.Success<MathEquation>).result
     }
 
     private fun parseAlgebraicEquationInternal(
