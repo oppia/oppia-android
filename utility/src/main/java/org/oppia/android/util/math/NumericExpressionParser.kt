@@ -127,8 +127,14 @@ class NumericExpressionParser private constructor(private val parseContext: Pars
       // generic_add_sub_expression_rhs =
       //     generic_add_expression_rhs | generic_sub_expression_rhs ;
       when (nextToken) {
-        is PlusSymbol -> ADD to parseGenericAddExpressionRhs()
-        is MinusSymbol -> SUBTRACT to parseGenericSubExpressionRhs()
+        is PlusSymbol -> BinaryOperationRhs(
+          operator = ADD,
+          rhsResult = parseGenericAddExpressionRhs()
+        )
+        is MinusSymbol -> BinaryOperationRhs(
+          operator = SUBTRACT,
+          rhsResult = parseGenericSubExpressionRhs()
+        )
         is PositiveInteger, is PositiveRealNumber, is DivideSymbol, is EqualsSymbol,
         is ExponentiationSymbol, is FunctionName, is InvalidToken, is LeftParenthesisSymbol,
         is MultiplySymbol, is RightParenthesisSymbol, is SquareRootSymbol, is VariableName,
@@ -170,13 +176,26 @@ class NumericExpressionParser private constructor(private val parseContext: Pars
       //     | generic_div_expression_rhs
       //     | generic_implicit_mult_expression_rhs ;
       when (nextToken) {
-        is MultiplySymbol -> MULTIPLY to parseGenericMultExpressionRhs()
-        is DivideSymbol -> DIVIDE to parseGenericDivExpressionRhs()
-        is FunctionName, is LeftParenthesisSymbol, is SquareRootSymbol ->
-          MULTIPLY to parseGenericImplicitMultExpressionRhs()
+        is MultiplySymbol -> BinaryOperationRhs(
+          operator = MULTIPLY,
+          rhsResult = parseGenericMultExpressionRhs()
+        )
+        is DivideSymbol -> BinaryOperationRhs(
+          operator = DIVIDE,
+          rhsResult = parseGenericDivExpressionRhs()
+        )
+        is FunctionName, is LeftParenthesisSymbol, is SquareRootSymbol -> BinaryOperationRhs(
+          operator = MULTIPLY,
+          rhsResult = parseGenericImplicitMultExpressionRhs(),
+          isImplicit = true
+        )
         is VariableName -> {
           if (parseContext is AlgebraicExpressionContext) {
-            MULTIPLY to parseGenericImplicitMultExpressionRhs()
+            BinaryOperationRhs(
+              operator = MULTIPLY,
+              rhsResult = parseGenericImplicitMultExpressionRhs(),
+              isImplicit = true
+            )
           } else null
         }
         // Not a match to the expression.
@@ -245,11 +264,10 @@ class NumericExpressionParser private constructor(private val parseContext: Pars
   private fun parseGenericExpExpressionTail(
     lhsResult: MathParsingResult<MathExpression>
   ): MathParsingResult<MathExpression> {
-    return computeBinaryOperationExpression(
-      lhsResult
-    ) {
-      // generic_exp_expression_tail = exponentiation_operator , generic_exp_expression ;
-      EXPONENTIATE to lhsResult.flatMap {
+    // generic_exp_expression_tail = exponentiation_operator , generic_exp_expression ;
+    return BinaryOperationRhs(
+      operator = EXPONENTIATE,
+      rhsResult = lhsResult.flatMap {
         parseContext.consumeTokenOfType<ExponentiationSymbol>()
       }.maybeFail {
         if (!parseContext.hasMoreTokens()) {
@@ -258,7 +276,7 @@ class NumericExpressionParser private constructor(private val parseContext: Pars
       }.flatMap {
         parseGenericExpExpression()
       }
-    } ?: GenericError.toFailure()
+    ).computeBinaryOperationExpression(lhsResult)
   }
 
   private fun parseGenericTermWithUnary(): MathParsingResult<MathExpression> {
@@ -517,35 +535,17 @@ class NumericExpressionParser private constructor(private val parseContext: Pars
   }
 
   private fun parseGenericBinaryExpression(
-    parseLhs: () -> MathParsingResult<MathExpression>,
-    parseRhs: (Token?) -> Pair<MathBinaryOperation.Operator, MathParsingResult<MathExpression>>?
+    parseLhs: () -> MathParsingResult<MathExpression>, parseRhs: (Token?) -> BinaryOperationRhs?
   ): MathParsingResult<MathExpression> {
     var lastLhsResult = parseLhs()
     while (!lastLhsResult.isFailure()) {
       // Compute the next LHS if there are further RHS expressions.
       lastLhsResult =
-        computeBinaryOperationExpression(lastLhsResult, parseRhs)
+        parseRhs(parseContext.peekToken())
+          ?.computeBinaryOperationExpression(lastLhsResult)
           ?: break // Not a match to the expression.
     }
     return lastLhsResult
-  }
-
-  private fun computeBinaryOperationExpression(
-    lhsResult: MathParsingResult<MathExpression>,
-    parseRhs: (Token?) -> Pair<MathBinaryOperation.Operator, MathParsingResult<MathExpression>>?
-  ): MathParsingResult<MathExpression>? {
-    val (operator, rhsResult) = parseRhs(parseContext.peekToken()) ?: return null
-    return lhsResult.combineWith(rhsResult) { lhs, rhs ->
-      MathExpression.newBuilder().apply {
-        parseStartIndex = lhs.parseStartIndex
-        parseEndIndex = rhs.parseEndIndex
-        binaryOperation = MathBinaryOperation.newBuilder().apply {
-          this.operator = operator
-          leftOperand = lhs
-          rightOperand = rhs
-        }.build()
-      }.build()
-    }
   }
 
   private fun checkForLearnerErrors(expression: MathExpression): MathParsingError? {
@@ -847,6 +847,29 @@ class NumericExpressionParser private constructor(private val parseContext: Pars
           other2.map { otherResult2 ->
             combine(result, otherResult1, otherResult2)
           }
+        }
+      }
+    }
+
+    private data class BinaryOperationRhs(
+      val operator: MathBinaryOperation.Operator,
+      val rhsResult: MathParsingResult<MathExpression>,
+      val isImplicit: Boolean = false
+    ) {
+      fun computeBinaryOperationExpression(
+        lhsResult: MathParsingResult<MathExpression>
+      ): MathParsingResult<MathExpression> {
+        return lhsResult.combineWith(rhsResult) { lhs, rhs ->
+          MathExpression.newBuilder().apply {
+            parseStartIndex = lhs.parseStartIndex
+            parseEndIndex = rhs.parseEndIndex
+            binaryOperation = MathBinaryOperation.newBuilder().apply {
+              operator = this@BinaryOperationRhs.operator
+              leftOperand = lhs
+              rightOperand = rhs
+              isImplicit = this@BinaryOperationRhs.isImplicit
+            }.build()
+          }.build()
         }
       }
     }

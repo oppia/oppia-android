@@ -54,6 +54,7 @@ message MathBinaryOperation {
   Operator operator = 1;
   MathExpression left_operand = 2;
   MathExpression right_operand = 3;
+  bool is_implicit = 4;
 }
 
 message MathUnaryOperation {

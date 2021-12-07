@@ -27,6 +27,14 @@ import org.robolectric.annotation.LooperMode
 import kotlin.math.sqrt
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
+import org.oppia.android.app.model.OppiaLanguage.ARABIC
+import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
+import org.oppia.android.app.model.OppiaLanguage.ENGLISH
+import org.oppia.android.app.model.OppiaLanguage.HINDI
+import org.oppia.android.app.model.OppiaLanguage.HINGLISH
+import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
+import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
+import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
 import org.oppia.android.util.math.MathParsingError.DisabledVariablesInUseError
 import org.oppia.android.util.math.MathParsingError.EquationHasWrongNumberOfEqualsError
 import org.oppia.android.util.math.MathParsingError.EquationMissingLhsOrRhsError
@@ -290,7 +298,7 @@ class NumericExpressionParserTest {
     val failure58 = expectFailureWhenParsingAlgebraicExpression("sqr")
     assertThat(failure58).isInstanceOf(FunctionNameIncompleteError::class.java)
 
-    // TODO: Other cases: sqrt(, sqrt(), sqrt 2
+    // TODO: Other cases: sqrt(, sqrt(), sqrt 2, +2
   }
 
   @Test
@@ -4232,6 +4240,12 @@ class NumericExpressionParserTest {
     val exp5 = parseNumericExpressionWithAllErrors("1/2")
     assertThat(exp5.toRawLatex(divAsFraction = true)).isEqualTo("\\frac{1}{2}")
 
+    val exp10 = parseNumericExpressionWithAllErrors("√2")
+    assertThat(exp10.toRawLatex()).isEqualTo("\\sqrt{2}")
+
+    val exp11 = parseNumericExpressionWithAllErrors("√(1/2)")
+    assertThat(exp11.toRawLatex()).isEqualTo("\\sqrt{(1 \\div 2)}")
+
     val exp6 = parseAlgebraicExpressionWithAllErrors("x+y")
     assertThat(exp6.toRawLatex()).isEqualTo("x + y")
 
@@ -4245,14 +4259,350 @@ class NumericExpressionParserTest {
     assertThat(exp9.toRawLatex(divAsFraction = true)).isEqualTo("x ^ {y ^ {z}}")
 
     val eq1 =
-      parseAlgebraicEquationWithAllErrors("a^2+b^2+c^2=0", allowedVariables = listOf("a", "b", "c"))
-    assertThat(eq1.toRawLatex()).isEqualTo("a ^ {2} + b ^ {2} + c ^ {2} = 0")
+      parseAlgebraicEquationWithAllErrors(
+        "7a^2+b^2+c^2=0", allowedVariables = listOf("a", "b", "c")
+      )
+    assertThat(eq1.toRawLatex()).isEqualTo("7a ^ {2} + b ^ {2} + c ^ {2} = 0")
 
     val eq2 = parseAlgebraicEquationWithAllErrors("sqrt(1+x)/x=1")
     assertThat(eq2.toRawLatex()).isEqualTo("\\sqrt{1 + x} \\div x = 1")
 
     val eq3 = parseAlgebraicEquationWithAllErrors("sqrt(1+x)/x=1")
     assertThat(eq3.toRawLatex(divAsFraction = true)).isEqualTo("\\frac{\\sqrt{1 + x}}{x} = 1")
+  }
+
+  @Test
+  fun testHumanReadableString() {
+    // TODO: split up & move to separate test suites. Finish test cases (if anymore are needed).
+
+    val exp1 = parseNumericExpressionWithAllErrors("1")
+    assertThat(exp1.toHumanReadableString(ARABIC)).isNull()
+
+    assertThat(exp1.toHumanReadableString(HINDI)).isNull()
+
+    assertThat(exp1.toHumanReadableString(HINGLISH)).isNull()
+
+    assertThat(exp1.toHumanReadableString(PORTUGUESE)).isNull()
+
+    assertThat(exp1.toHumanReadableString(BRAZILIAN_PORTUGUESE)).isNull()
+
+    assertThat(exp1.toHumanReadableString(LANGUAGE_UNSPECIFIED)).isNull()
+
+    assertThat(exp1.toHumanReadableString(UNRECOGNIZED)).isNull()
+
+    val exp2 = parseAlgebraicExpressionWithAllErrors("x")
+    assertThat(exp2.toHumanReadableString(ARABIC)).isNull()
+
+    assertThat(exp2.toHumanReadableString(HINDI)).isNull()
+
+    assertThat(exp2.toHumanReadableString(HINGLISH)).isNull()
+
+    assertThat(exp2.toHumanReadableString(PORTUGUESE)).isNull()
+
+    assertThat(exp2.toHumanReadableString(BRAZILIAN_PORTUGUESE)).isNull()
+
+    assertThat(exp2.toHumanReadableString(LANGUAGE_UNSPECIFIED)).isNull()
+
+    assertThat(exp2.toHumanReadableString(UNRECOGNIZED)).isNull()
+
+    val eq1 = parseAlgebraicEquationWithAllErrors("x=1")
+    assertThat(eq1.toHumanReadableString(ARABIC)).isNull()
+
+    assertThat(eq1.toHumanReadableString(HINDI)).isNull()
+
+    assertThat(eq1.toHumanReadableString(HINGLISH)).isNull()
+
+    assertThat(eq1.toHumanReadableString(PORTUGUESE)).isNull()
+
+    assertThat(eq1.toHumanReadableString(BRAZILIAN_PORTUGUESE)).isNull()
+
+    assertThat(eq1.toHumanReadableString(LANGUAGE_UNSPECIFIED)).isNull()
+
+    assertThat(eq1.toHumanReadableString(UNRECOGNIZED)).isNull()
+
+    // specific cases (from rules & other cases):
+    val exp3 = parseNumericExpressionWithAllErrors("1")
+    assertThat(exp3.toHumanReadableString(ENGLISH)).isEqualTo("1")
+
+    val exp49 = parseNumericExpressionWithAllErrors("-1")
+    assertThat(exp49.toHumanReadableString(ENGLISH)).isEqualTo("negative 1")
+
+    val exp50 = parseNumericExpressionWithAllErrors("+1")
+    assertThat(exp50.toHumanReadableString(ENGLISH)).isEqualTo("positive 1")
+
+    val exp4 = parseNumericExpressionWithoutOptionalErrors("((1))")
+    assertThat(exp4.toHumanReadableString(ENGLISH)).isEqualTo("1")
+
+    val exp5 = parseNumericExpressionWithAllErrors("1+2")
+    assertThat(exp5.toHumanReadableString(ENGLISH)).isEqualTo("1 plus 2")
+
+    val exp6 = parseNumericExpressionWithAllErrors("1-2")
+    assertThat(exp6.toHumanReadableString(ENGLISH)).isEqualTo("1 minus 2")
+
+    val exp7 = parseNumericExpressionWithAllErrors("1*2")
+    assertThat(exp7.toHumanReadableString(ENGLISH)).isEqualTo("1 times 2")
+
+    val exp8 = parseNumericExpressionWithAllErrors("1/2")
+    assertThat(exp8.toHumanReadableString(ENGLISH)).isEqualTo("1 divided by 2")
+
+    val exp9 = parseNumericExpressionWithAllErrors("1+(1-2)")
+    assertThat(exp9.toHumanReadableString(ENGLISH))
+      .isEqualTo("1 plus open parenthesis 1 minus 2 close parenthesis")
+
+    val exp10 = parseNumericExpressionWithAllErrors("2^3")
+    assertThat(exp10.toHumanReadableString(ENGLISH)).isEqualTo("2 raised to the power of 3")
+
+    val exp11 = parseNumericExpressionWithAllErrors("2^(1+2)")
+    assertThat(exp11.toHumanReadableString(ENGLISH))
+      .isEqualTo("2 raised to the power of open parenthesis 1 plus 2 close parenthesis")
+
+    val exp12 = parseNumericExpressionWithAllErrors("100000*2")
+    assertThat(exp12.toHumanReadableString(ENGLISH)).isEqualTo("100,000 times 2")
+
+    val exp13 = parseNumericExpressionWithAllErrors("sqrt(2)")
+    assertThat(exp13.toHumanReadableString(ENGLISH)).isEqualTo("square root of 2")
+
+    val exp14 = parseNumericExpressionWithAllErrors("√2")
+    assertThat(exp14.toHumanReadableString(ENGLISH)).isEqualTo("square root of 2")
+
+    val exp15 = parseNumericExpressionWithAllErrors("sqrt(1+2)")
+    assertThat(exp15.toHumanReadableString(ENGLISH))
+      .isEqualTo("start square root 1 plus 2 end square root")
+
+    val singularOrdinalNames = mapOf(
+      1 to "oneth",
+      2 to "half",
+      3 to "third",
+      4 to "fourth",
+      5 to "fifth",
+      6 to "sixth",
+      7 to "seventh",
+      8 to "eighth",
+      9 to "ninth",
+      10 to "tenth",
+    )
+    val pluralOrdinalNames = mapOf(
+      1 to "oneths",
+      2 to "halves",
+      3 to "thirds",
+      4 to "fourths",
+      5 to "fifths",
+      6 to "sixths",
+      7 to "sevenths",
+      8 to "eighths",
+      9 to "ninths",
+      10 to "tenths",
+    )
+    for (denominatorToCheck in 1..10) {
+      for (numeratorToCheck in 0..denominatorToCheck) {
+        val exp16 = parseNumericExpressionWithAllErrors("$numeratorToCheck/$denominatorToCheck")
+
+        val ordinalName =
+          if (numeratorToCheck == 1) {
+            singularOrdinalNames.getValue(denominatorToCheck)
+          } else pluralOrdinalNames.getValue(denominatorToCheck)
+        assertThat(exp16.toHumanReadableString(ENGLISH, divAsFraction = true))
+          .isEqualTo("$numeratorToCheck $ordinalName")
+      }
+    }
+
+    val exp17 = parseNumericExpressionWithAllErrors("-1/3")
+    assertThat(exp17.toHumanReadableString(ENGLISH, divAsFraction = true))
+      .isEqualTo("negative 1 third")
+
+    val exp18 = parseNumericExpressionWithAllErrors("-2/3")
+    assertThat(exp18.toHumanReadableString(ENGLISH, divAsFraction = true))
+      .isEqualTo("negative 2 thirds")
+
+    val exp19 = parseNumericExpressionWithAllErrors("10/11")
+    assertThat(exp19.toHumanReadableString(ENGLISH, divAsFraction = true)).isEqualTo("10 over 11")
+
+    val exp20 = parseNumericExpressionWithAllErrors("121/7986")
+    assertThat(exp20.toHumanReadableString(ENGLISH, divAsFraction = true))
+      .isEqualTo("121 over 7,986")
+
+    val exp21 = parseNumericExpressionWithAllErrors("8/7")
+    assertThat(exp21.toHumanReadableString(ENGLISH, divAsFraction = true)).isEqualTo("8 over 7")
+
+    val exp22 = parseNumericExpressionWithAllErrors("-10/-30")
+    assertThat(exp22.toHumanReadableString(ENGLISH, divAsFraction = true))
+      .isEqualTo("negative the fraction with numerator 10 and denominator negative 30")
+
+    val exp23 = parseAlgebraicExpressionWithAllErrors("1")
+    assertThat(exp23.toHumanReadableString(ENGLISH)).isEqualTo("1")
+
+    val exp24 = parseAlgebraicExpressionWithoutOptionalErrors("((1))")
+    assertThat(exp24.toHumanReadableString(ENGLISH)).isEqualTo("1")
+
+    val exp25 = parseAlgebraicExpressionWithAllErrors("x")
+    assertThat(exp25.toHumanReadableString(ENGLISH)).isEqualTo("x")
+
+    val exp26 = parseAlgebraicExpressionWithoutOptionalErrors("((x))")
+    assertThat(exp26.toHumanReadableString(ENGLISH)).isEqualTo("x")
+
+    val exp51 = parseAlgebraicExpressionWithAllErrors("-x")
+    assertThat(exp51.toHumanReadableString(ENGLISH)).isEqualTo("negative x")
+
+    val exp52 = parseAlgebraicExpressionWithAllErrors("+x")
+    assertThat(exp52.toHumanReadableString(ENGLISH)).isEqualTo("positive x")
+
+    val exp27 = parseAlgebraicExpressionWithAllErrors("1+x")
+    assertThat(exp27.toHumanReadableString(ENGLISH)).isEqualTo("1 plus x")
+
+    val exp28 = parseAlgebraicExpressionWithAllErrors("1-x")
+    assertThat(exp28.toHumanReadableString(ENGLISH)).isEqualTo("1 minus x")
+
+    val exp29 = parseAlgebraicExpressionWithAllErrors("1*x")
+    assertThat(exp29.toHumanReadableString(ENGLISH)).isEqualTo("1 times x")
+
+    val exp30 = parseAlgebraicExpressionWithAllErrors("1/x")
+    assertThat(exp30.toHumanReadableString(ENGLISH)).isEqualTo("1 divided by x")
+
+    val exp31 = parseAlgebraicExpressionWithAllErrors("1/x")
+    assertThat(exp31.toHumanReadableString(ENGLISH, divAsFraction = true))
+      .isEqualTo("the fraction with numerator 1 and denominator x")
+
+    val exp32 = parseAlgebraicExpressionWithAllErrors("1+(1-x)")
+    assertThat(exp32.toHumanReadableString(ENGLISH))
+      .isEqualTo("1 plus open parenthesis 1 minus x close parenthesis")
+
+    val exp33 = parseAlgebraicExpressionWithAllErrors("2x")
+    assertThat(exp33.toHumanReadableString(ENGLISH)).isEqualTo("2 x")
+
+    val exp34 = parseAlgebraicExpressionWithAllErrors("xy")
+    assertThat(exp34.toHumanReadableString(ENGLISH)).isEqualTo("x times y")
+
+    val exp35 = parseAlgebraicExpressionWithAllErrors("z")
+    assertThat(exp35.toHumanReadableString(ENGLISH)).isEqualTo("zed")
+
+    val exp36 = parseAlgebraicExpressionWithAllErrors("2xz")
+    assertThat(exp36.toHumanReadableString(ENGLISH)).isEqualTo("2 x times zed")
+
+    val exp37 = parseAlgebraicExpressionWithAllErrors("x^2")
+    assertThat(exp37.toHumanReadableString(ENGLISH)).isEqualTo("x raised to the power of 2")
+
+    val exp38 = parseAlgebraicExpressionWithoutOptionalErrors("x^(1+x)")
+    assertThat(exp38.toHumanReadableString(ENGLISH))
+      .isEqualTo("x raised to the power of open parenthesis 1 plus x close parenthesis")
+
+    val exp39 = parseAlgebraicExpressionWithAllErrors("100000*2")
+    assertThat(exp39.toHumanReadableString(ENGLISH)).isEqualTo("100,000 times 2")
+
+    val exp40 = parseAlgebraicExpressionWithAllErrors("sqrt(2)")
+    assertThat(exp40.toHumanReadableString(ENGLISH)).isEqualTo("square root of 2")
+
+    val exp41 = parseAlgebraicExpressionWithAllErrors("sqrt(x)")
+    assertThat(exp41.toHumanReadableString(ENGLISH)).isEqualTo("square root of x")
+
+    val exp42 = parseAlgebraicExpressionWithAllErrors("√2")
+    assertThat(exp42.toHumanReadableString(ENGLISH)).isEqualTo("square root of 2")
+
+    val exp43 = parseAlgebraicExpressionWithAllErrors("√x")
+    assertThat(exp43.toHumanReadableString(ENGLISH)).isEqualTo("square root of x")
+
+    val exp44 = parseAlgebraicExpressionWithAllErrors("sqrt(1+2)")
+    assertThat(exp44.toHumanReadableString(ENGLISH))
+      .isEqualTo("start square root 1 plus 2 end square root")
+
+    val exp45 = parseAlgebraicExpressionWithAllErrors("sqrt(1+x)")
+    assertThat(exp45.toHumanReadableString(ENGLISH))
+      .isEqualTo("start square root 1 plus x end square root")
+
+    val exp46 = parseAlgebraicExpressionWithAllErrors("√(1+x)")
+    assertThat(exp46.toHumanReadableString(ENGLISH))
+      .isEqualTo("start square root open parenthesis 1 plus x close parenthesis end square root")
+
+    for (denominatorToCheck in 1..10) {
+      for (numeratorToCheck in 0..denominatorToCheck) {
+        val exp16 = parseAlgebraicExpressionWithAllErrors("$numeratorToCheck/$denominatorToCheck")
+
+        val ordinalName =
+          if (numeratorToCheck == 1) {
+            singularOrdinalNames.getValue(denominatorToCheck)
+          } else pluralOrdinalNames.getValue(denominatorToCheck)
+        assertThat(exp16.toHumanReadableString(ENGLISH, divAsFraction = true))
+          .isEqualTo("$numeratorToCheck $ordinalName")
+      }
+    }
+
+    val exp47 = parseAlgebraicExpressionWithAllErrors("1")
+    assertThat(exp47.toHumanReadableString(ENGLISH)).isEqualTo("1")
+
+    val exp48 = parseAlgebraicExpressionWithAllErrors("x(5-y)")
+    assertThat(exp48.toHumanReadableString(ENGLISH))
+      .isEqualTo("x times open parenthesis 5 minus y close parenthesis")
+
+    val eq2 = parseAlgebraicEquationWithAllErrors("x=1/y")
+    assertThat(eq2.toHumanReadableString(ENGLISH)).isEqualTo("x equals 1 divided by y")
+
+    val eq3 = parseAlgebraicEquationWithAllErrors("x=1/2")
+    assertThat(eq3.toHumanReadableString(ENGLISH)).isEqualTo("x equals 1 divided by 2")
+
+    val eq4 = parseAlgebraicEquationWithAllErrors("x=1/y")
+    assertThat(eq4.toHumanReadableString(ENGLISH, divAsFraction = true))
+      .isEqualTo("x equals the fraction with numerator 1 and denominator y")
+
+    val eq5 = parseAlgebraicEquationWithAllErrors("x=1/2")
+    assertThat(eq5.toHumanReadableString(ENGLISH, divAsFraction = true))
+      .isEqualTo("x equals 1 half")
+
+    // Tests from examples in the PRD
+    val eq6 = parseAlgebraicEquationWithAllErrors("3x^2+4y=62")
+    assertThat(eq6.toHumanReadableString(ENGLISH))
+      .isEqualTo("3 x raised to the power of 2 plus 4 y equals 62")
+
+    val exp53 = parseAlgebraicExpressionWithAllErrors("(x+6)/(x-4)")
+    assertThat(exp53.toHumanReadableString(ENGLISH, divAsFraction = true))
+      .isEqualTo(
+        "the fraction with numerator open parenthesis x plus 6 close parenthesis and denominator" +
+          " open parenthesis x minus 4 close parenthesis"
+      )
+
+    val exp54 = parseAlgebraicExpressionWithoutOptionalErrors("4*(x)^(2)+20x")
+    assertThat(exp54.toHumanReadableString(ENGLISH))
+      .isEqualTo("4 times x raised to the power of 2 plus 20 x")
+
+    val exp55 = parseAlgebraicExpressionWithAllErrors("3+x-5")
+    assertThat(exp55.toHumanReadableString(ENGLISH)).isEqualTo("3 plus x minus 5")
+
+    val exp56 = parseAlgebraicExpressionWithAllErrors("Z+A-Z", allowedVariables = listOf("A", "Z"))
+    assertThat(exp56.toHumanReadableString(ENGLISH)).isEqualTo("Zed plus A minus Zed")
+
+    val exp57 =
+      parseAlgebraicExpressionWithAllErrors("6C-5A-1", allowedVariables = listOf("A", "C"))
+    assertThat(exp57.toHumanReadableString(ENGLISH)).isEqualTo("6 C minus 5 A minus 1")
+
+    val exp58 = parseAlgebraicExpressionWithAllErrors("5*Z-w", allowedVariables = listOf("Z", "w"))
+    assertThat(exp58.toHumanReadableString(ENGLISH)).isEqualTo("5 times Zed minus w")
+
+    val exp59 =
+      parseAlgebraicExpressionWithAllErrors("L*S-3S+L", allowedVariables = listOf("L", "S"))
+    assertThat(exp59.toHumanReadableString(ENGLISH)).isEqualTo("L times S minus 3 S plus L")
+
+    val exp60 = parseAlgebraicExpressionWithAllErrors("2*(2+6+3+4)")
+    assertThat(exp60.toHumanReadableString(ENGLISH))
+      .isEqualTo("2 times open parenthesis 2 plus 6 plus 3 plus 4 close parenthesis")
+
+    val exp61 = parseAlgebraicExpressionWithAllErrors("sqrt(64)")
+    assertThat(exp61.toHumanReadableString(ENGLISH)).isEqualTo("square root of 64")
+
+    val exp62 = parseAlgebraicExpressionWithAllErrors("√(a+b)", allowedVariables = listOf("a", "b"))
+    assertThat(exp62.toHumanReadableString(ENGLISH))
+      .isEqualTo("start square root open parenthesis a plus b close parenthesis end square root")
+
+    val exp63 = parseAlgebraicExpressionWithAllErrors("3*10^-5")
+    assertThat(exp63.toHumanReadableString(ENGLISH))
+      .isEqualTo("3 times 10 raised to the power of negative 5")
+
+    val exp64 =
+      parseAlgebraicExpressionWithoutOptionalErrors(
+        "((x+2y)+5*(a-2b)+z)", allowedVariables = listOf("x", "y", "a", "b", "z")
+      )
+    assertThat(exp64.toHumanReadableString(ENGLISH))
+      .isEqualTo(
+        "open parenthesis open parenthesis x plus 2 y close parenthesis plus 5 times open" +
+          " parenthesis a minus 2 b close parenthesis plus zed close parenthesis"
+      )
   }
 
   @DslMarker
