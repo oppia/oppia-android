@@ -80,10 +80,7 @@ private val pluralOrdinalNames = mapOf(
   10 to "tenths",
 )
 
-fun MathEquation.toHumanReadableString(
-  language: OppiaLanguage,
-  divAsFraction: Boolean = false
-): String? {
+fun MathEquation.toHumanReadableString(language: OppiaLanguage, divAsFraction: Boolean): String? {
   return when (language) {
     ENGLISH -> toHumanReadableEnglishString(divAsFraction)
     ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, LANGUAGE_UNSPECIFIED, UNRECOGNIZED ->
@@ -91,10 +88,7 @@ fun MathEquation.toHumanReadableString(
   }
 }
 
-fun MathExpression.toHumanReadableString(
-  language: OppiaLanguage,
-  divAsFraction: Boolean = false
-): String? {
+fun MathExpression.toHumanReadableString(language: OppiaLanguage, divAsFraction: Boolean): String? {
   return when (language) {
     ENGLISH -> toHumanReadableEnglishString(divAsFraction)
     ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, LANGUAGE_UNSPECIFIED, UNRECOGNIZED ->
@@ -205,19 +199,17 @@ private fun MathExpression.isSingleTerm(): Boolean = when (expressionTypeCase) {
   EXPRESSIONTYPE_NOT_SET, null -> false
 }
 
-fun MathEquation.toRawLatex(divAsFraction: Boolean = false): String {
+fun MathEquation.toRawLatex(divAsFraction: Boolean): String {
   return "${leftSide.toRawLatex(divAsFraction)} = ${rightSide.toRawLatex(divAsFraction)}"
 }
 
-fun MathExpression.toRawLatex(divAsFraction: Boolean = false): String = toRawLatexAux(divAsFraction)
-
-private fun MathExpression.toRawLatexAux(divAsFraction: Boolean): String {
+fun MathExpression.toRawLatex(divAsFraction: Boolean): String {
   return when (expressionTypeCase) {
     CONSTANT -> constant.toPlainString()
     VARIABLE -> variable
     BINARY_OPERATION -> {
-      val lhsLatex = binaryOperation.leftOperand.toRawLatexAux(divAsFraction)
-      val rhsLatex = binaryOperation.rightOperand.toRawLatexAux(divAsFraction)
+      val lhsLatex = binaryOperation.leftOperand.toRawLatex(divAsFraction)
+      val rhsLatex = binaryOperation.rightOperand.toRawLatex(divAsFraction)
       when (binaryOperation.operator) {
         BinaryOperator.ADD -> "$lhsLatex + $rhsLatex"
         BinaryOperator.SUBTRACT -> "$lhsLatex - $rhsLatex"
@@ -233,7 +225,7 @@ private fun MathExpression.toRawLatexAux(divAsFraction: Boolean): String {
       }
     }
     UNARY_OPERATION -> {
-      val operandLatex = unaryOperation.operand.toRawLatexAux(divAsFraction)
+      val operandLatex = unaryOperation.operand.toRawLatex(divAsFraction)
       when (unaryOperation.operator) {
         UnaryOperator.NEGATE -> "-$operandLatex"
         UnaryOperator.POSITIVE -> "+$operandLatex"
@@ -241,13 +233,13 @@ private fun MathExpression.toRawLatexAux(divAsFraction: Boolean): String {
       }
     }
     FUNCTION_CALL -> {
-      val argumentLatex = functionCall.argument.toRawLatexAux(divAsFraction)
+      val argumentLatex = functionCall.argument.toRawLatex(divAsFraction)
       when (functionCall.functionType) {
         FunctionType.SQUARE_ROOT -> "\\sqrt{$argumentLatex}"
         FunctionType.FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null -> argumentLatex
       }
     }
-    GROUP -> "(${group.toRawLatexAux(divAsFraction)})"
+    GROUP -> "(${group.toRawLatex(divAsFraction)})"
     EXPRESSIONTYPE_NOT_SET, null -> ""
   }
 }
