@@ -159,8 +159,7 @@ class ProfileRenameFragmentTest {
         )
       ).perform(editTextInputAction.appendText("James"))
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button))
-        .perform(click())
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
     }
@@ -205,8 +204,7 @@ class ProfileRenameFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button))
-        .check(matches(isEnabled()))
+      onView(withId(R.id.profile_rename_save_button)).check(matches(isEnabled()))
     }
   }
 
@@ -254,17 +252,17 @@ class ProfileRenameFragmentTest {
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("Admin"))
-      onView(withId(R.id.profile_rename_save_button))
-        .perform(click())
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            TextInputAction.hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
+      onView(withId(R.id.profile_rename_input)).check(
+        matches(
+          TextInputAction.hasErrorText(
+            context.resources.getString(
+              R.string.add_profile_error_name_not_unique
             )
           )
         )
+      )
     }
   }
 
@@ -282,8 +280,7 @@ class ProfileRenameFragmentTest {
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText("Admin"))
-      onView(withId(R.id.profile_rename_save_button))
-        .perform(click())
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -291,8 +288,7 @@ class ProfileRenameFragmentTest {
           isDescendantOfA(withId(R.id.profile_rename_input))
         )
       ).perform(editTextInputAction.appendText(" "))
-      onView(withId(R.id.profile_rename_input))
-        .check(matches(hasNoErrorText()))
+      onView(withId(R.id.profile_rename_input)).check(matches(hasNoErrorText()))
     }
   }
 
@@ -311,8 +307,7 @@ class ProfileRenameFragmentTest {
         )
       ).perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button))
-        .perform(click())
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input))
         .check(
@@ -340,8 +335,7 @@ class ProfileRenameFragmentTest {
         )
       ).perform(editTextInputAction.appendText("123"))
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button))
-        .perform(click())
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -350,8 +344,7 @@ class ProfileRenameFragmentTest {
         )
       ).perform(editTextInputAction.appendText(" "))
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input))
-        .check(matches(hasNoErrorText()))
+      onView(withId(R.id.profile_rename_input)).check(matches(hasNoErrorText()))
     }
   }
 
@@ -406,8 +399,7 @@ class ProfileRenameFragmentTest {
         closeSoftKeyboard()
       )
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button))
-        .perform(click())
+      onView(withId(R.id.profile_rename_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -430,12 +422,10 @@ class ProfileRenameFragmentTest {
         profileId = 1
       )
     ).use {
-      onView(withId(R.id.profile_rename_save_button))
-        .check(matches(not(isClickable())))
+      onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button))
-        .check(matches(not(isClickable())))
+      onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
     }
   }
 
