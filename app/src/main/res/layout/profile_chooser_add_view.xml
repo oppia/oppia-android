@@ -36,7 +36,7 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         app:srcCompat="@{@drawable/ic_add_profile}"
-        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_color="@color/avatar_border"
         app:civ_border_width="1dp" />
 
       <LinearLayout

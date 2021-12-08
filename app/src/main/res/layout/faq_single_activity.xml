@@ -40,7 +40,7 @@
       <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/oppiaGreyBackground"
+        android:background="@color/oppia_grey_background"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/faq_single_activity_scroll_padding_bottom"
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="18sp" />
 
           <TextView
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="16sp" />
         </LinearLayout>
       </ScrollView>

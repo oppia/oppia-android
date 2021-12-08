@@ -13,7 +13,7 @@
     android:id="@+id/topic_practice_skill_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppiaBackground"
+    android:background="@color/oppia_background"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:paddingBottom="112dp"

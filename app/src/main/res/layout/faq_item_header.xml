@@ -32,7 +32,7 @@
         android:layout_marginEnd="@dimen/faq_item_header_margin_end"
         android:layout_marginBottom="@dimen/faq_item_header_margin_bottom"
         android:text="@string/featured_questions"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="18sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,7 @@
       android:id="@+id/admin_auth_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/oppiaBackgroundYellowIvory"
+      android:background="@color/oppia_background_yellow_ivory"
       android:paddingBottom="108dp">
 
       <View
@@ -118,7 +118,7 @@
         android:enabled="@{viewModel.isButtonActive()}"
         android:minHeight="48dp"
         android:text="@string/save"
-        android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
+        android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submit_button_inactive_text }"
         app:layout_constraintEnd_toEndOf="@id/admin_pin_input_confirm_pin"
         app:layout_constraintTop_toBottomOf="@+id/admin_pin_input_confirm_pin" />
     </androidx.constraintlayout.widget.ConstraintLayout>
