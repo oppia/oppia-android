@@ -71,6 +71,10 @@ class AdministratorControlsActivity :
     }
   }
 
+  override fun onBackPressed() {
+    administratorControlsActivityPresenter.handleOnBackPressed();
+  }
+
   override fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     administratorControlsActivityPresenter

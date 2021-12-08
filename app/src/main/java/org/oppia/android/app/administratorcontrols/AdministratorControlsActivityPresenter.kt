@@ -112,6 +112,14 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     }
   }
 
+  fun handleOnBackPressed() {
+    if (activity.supportFragmentManager.backStackEntryCount == 1) {
+      activity.finish()
+    } else {
+
+    }
+  }
+
   fun setExtraControlsTitle(title: String) {
     binding.extraControlsTitle?.text = title
   }
