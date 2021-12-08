@@ -5,16 +5,25 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.Component
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +42,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -61,7 +70,8 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -147,28 +157,27 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      Intents.intended(IntentMatchers.hasComponent(ProfileEditActivity::class.java.name))
+      intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
@@ -182,26 +191,26 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
         ViewActions.pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
-      Intents.intended(IntentMatchers.hasComponent(ProfileEditActivity::class.java.name))
+      intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
@@ -215,33 +224,32 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
-      ).perform(ViewActions.scrollTo())
+      ).perform(scrollTo())
         .perform(
           editTextInputAction.appendText("12345"),
-          ViewActions.closeSoftKeyboard()
+          closeSoftKeyboard()
         )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
-        ViewActions.scrollTo()
+        scrollTo()
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
 
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.scrollTo()).perform(ViewActions.click())
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
-      Intents.intended(IntentMatchers.hasComponent(ProfileEditActivity::class.java.name))
+      intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
@@ -255,26 +263,26 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
         ViewActions.pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
-      Intents.intended(IntentMatchers.hasComponent(ProfileEditActivity::class.java.name))
+      intended(hasComponent(ProfileEditActivity::class.java.name))
     }
   }
 
@@ -288,30 +296,29 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(withId(R.id.profile_reset_input_pin))
         .check(
-          ViewAssertions.matches(
-            TextInputAction.hasErrorText(
+          matches(
+            hasErrorText(
               context.resources.getString(R.string.profile_reset_pin_error_admin_pin_length)
             )
           )
@@ -329,31 +336,30 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.scrollTo()).perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_reset_input_pin))
         .check(
-          ViewAssertions.matches(
-            TextInputAction.hasErrorText(
+          matches(
+            hasErrorText(
               context.resources.getString(R.string.profile_reset_pin_error_admin_pin_length)
             )
           )
@@ -370,28 +376,27 @@ class ProfileResetPinFragmentTest {
         isAdmin = true
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(withId(R.id.profile_reset_save_button))
+        .perform(click())
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("5"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_pin))
-        .check(ViewAssertions.matches(TextInputAction.hasNoErrorText()))
+      onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
     }
   }
 
@@ -404,29 +409,28 @@ class ProfileResetPinFragmentTest {
         isAdmin = true
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(withId(R.id.profile_reset_save_button))
+        .perform(click())
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("5"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_pin))
-        .check(ViewAssertions.matches(TextInputAction.hasNoErrorText()))
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
     }
   }
 
@@ -440,30 +444,29 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(withId(R.id.profile_reset_input_confirm_pin))
         .check(
-          ViewAssertions.matches(
-            TextInputAction.hasErrorText(
+          matches(
+            hasErrorText(
               context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
@@ -481,32 +484,31 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
-        .perform(ViewActions.scrollTo())
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_reset_input_confirm_pin))
+        .perform(scrollTo())
         .check(
-          ViewAssertions.matches(
-            TextInputAction.hasErrorText(
+          matches(
+            hasErrorText(
               context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
@@ -524,43 +526,42 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
-      ).perform(ViewActions.scrollTo())
-        .check(ViewAssertions.matches(ViewMatchers.withText("12345")))
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      ).perform(scrollTo())
+        .check(matches(withText("12345")))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       )
-        .perform(ViewActions.scrollTo())
-        .check(ViewAssertions.matches(ViewMatchers.withText("12345")))
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.scrollTo())
-        .check(ViewAssertions.matches(ViewMatchers.isClickable()))
+        .perform(scrollTo())
+        .check(matches(withText("12345")))
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
+        .check(matches(isClickable()))
     }
   }
 
@@ -573,37 +574,36 @@ class ProfileResetPinFragmentTest {
         isAdmin = true
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("1234"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(withId(R.id.profile_reset_save_button))
+        .perform(click())
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("5"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
-        .check(ViewAssertions.matches(TextInputAction.hasNoErrorText()))
+      onView(withId(R.id.profile_reset_input_confirm_pin)).check(matches(hasNoErrorText()))
     }
   }
 
@@ -617,30 +617,29 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(withId(R.id.profile_reset_input_pin))
         .check(
-          ViewAssertions.matches(
-            TextInputAction.hasErrorText(
+          matches(
+            hasErrorText(
               context.resources.getString(R.string.profile_reset_pin_error_user_pin_length)
             )
           )
@@ -657,28 +656,26 @@ class ProfileResetPinFragmentTest {
         isAdmin = false
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("3"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_pin))
-        .check(ViewAssertions.matches(TextInputAction.hasNoErrorText()))
+      onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
     }
   }
 
@@ -692,30 +689,29 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(withId(R.id.profile_reset_input_confirm_pin))
         .check(
-          ViewAssertions.matches(
-            TextInputAction.hasErrorText(
+          matches(
+            hasErrorText(
               context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
             )
           )
@@ -732,37 +728,35 @@ class ProfileResetPinFragmentTest {
         isAdmin = false
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.click())
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("3"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
-        .check(ViewAssertions.matches(TextInputAction.hasNoErrorText()))
+      onView(withId(R.id.profile_reset_input_confirm_pin)).check(matches(hasNoErrorText()))
     }
   }
 
@@ -775,8 +769,7 @@ class ProfileResetPinFragmentTest {
         isAdmin = false
       )
     ).use {
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -789,10 +782,9 @@ class ProfileResetPinFragmentTest {
         isAdmin = false
       )
     ).use {
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.scrollTo())
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
+        .check(matches(not(isClickable())))
     }
   }
 
@@ -805,17 +797,16 @@ class ProfileResetPinFragmentTest {
         isAdmin = false
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -828,19 +819,18 @@ class ProfileResetPinFragmentTest {
         isAdmin = false
       )
     ).use {
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.scrollTo())
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
+        .check(matches(not(isClickable())))
     }
   }
 
@@ -854,26 +844,25 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .check(ViewAssertions.matches(ViewMatchers.isClickable()))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
     }
   }
 
@@ -887,37 +876,36 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .check(ViewAssertions.matches(ViewMatchers.isClickable()))
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         ViewActions.clearText(),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
+      onView(withId(R.id.profile_reset_save_button))
+        .check(matches(not(isClickable())))
     }
   }
 
@@ -931,37 +919,35 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .check(ViewAssertions.matches(ViewMatchers.isClickable()))
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         ViewActions.clearText(),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
     }
   }
 
@@ -975,39 +961,37 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         editTextInputAction.appendText("12"),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .check(ViewAssertions.matches(ViewMatchers.isClickable()))
-      Espresso.onView(
-        CoreMatchers.allOf(
-          ViewMatchers.withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.profile_reset_input_confirm_pin))
+      onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
+      onView(
+        allOf(
+          withId(R.id.profile_reset_input_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
         ViewActions.clearText(),
-        ViewActions.closeSoftKeyboard()
+        closeSoftKeyboard()
       )
-      Espresso.onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      Espresso.onView(ViewMatchers.withId(R.id.profile_reset_save_button))
-        .perform(ViewActions.scrollTo())
-        .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isClickable())))
+      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
+        .check(matches(not(isClickable())))
     }
   }
 
