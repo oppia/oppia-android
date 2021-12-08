@@ -195,6 +195,7 @@ class WalkthroughActivityTest {
     scenario.onActivity { activity ->
       assertThat(activity.title).isEqualTo(context.getString(R.string.walkthrough_activity_title))
     }
+    scenario.close()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
