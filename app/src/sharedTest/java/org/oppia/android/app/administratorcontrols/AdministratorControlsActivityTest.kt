@@ -175,7 +175,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
+  fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -184,19 +184,10 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 0,
-        targetView = R.id.general_text_view
-      )
-      verifyTextOnAdministratorListItemAtPosition(
-        itemPosition = 0,
-        targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_account
-      )
-      verifyItemDisplayedOnAdministratorControlListItem(
-        itemPosition = 1,
         targetView = R.id.profile_management_text_view
       )
       verifyTextOnAdministratorListItemAtPosition(
-        itemPosition = 1,
+        itemPosition = 0,
         targetViewId = R.id.edit_profiles_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_profiles
       )
