@@ -49,7 +49,7 @@
         android:id="@+id/profile_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/profileEditBackground"
+        android:background="@color/profile_edit_background"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="108dp"

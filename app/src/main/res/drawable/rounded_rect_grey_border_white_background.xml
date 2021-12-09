@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
   <stroke
     android:width="1dp"
-    android:color="@color/oppiaGreyBorder" />
+    android:color="@color/oppia_grey_border" />
   <solid android:color="@color/white" />
   <corners android:radius="4dp" />
 </shape>
