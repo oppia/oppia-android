@@ -6,17 +6,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -207,7 +208,7 @@ class ProfileResetPinFragmentTest {
         )
       ).perform(
         editTextInputAction.appendText("12345"),
-        ViewActions.pressImeActionButton()
+        pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
@@ -224,7 +225,7 @@ class ProfileResetPinFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -279,7 +280,7 @@ class ProfileResetPinFragmentTest {
         )
       ).perform(
         editTextInputAction.appendText("123"),
-        ViewActions.pressImeActionButton()
+        pressImeActionButton()
       )
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ProfileEditActivity::class.java.name))
@@ -355,7 +356,7 @@ class ProfileResetPinFragmentTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_input_pin))
         .check(
           matches(
@@ -418,8 +419,7 @@ class ProfileResetPinFragmentTest {
         editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.profile_reset_save_button))
-        .perform(click())
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -429,7 +429,7 @@ class ProfileResetPinFragmentTest {
         editTextInputAction.appendText("5"),
         closeSoftKeyboard()
       )
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
     }
   }
@@ -503,7 +503,7 @@ class ProfileResetPinFragmentTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_input_confirm_pin))
         .perform(scrollTo())
         .check(
@@ -544,7 +544,7 @@ class ProfileResetPinFragmentTest {
         editTextInputAction.appendText("12345"),
         closeSoftKeyboard()
       )
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -592,8 +592,7 @@ class ProfileResetPinFragmentTest {
         editTextInputAction.appendText("1234"),
         closeSoftKeyboard()
       )
-      onView(withId(R.id.profile_reset_save_button))
-        .perform(click())
+      onView(withId(R.id.profile_reset_save_button)).perform(click())
       onView(
         allOf(
           withId(R.id.profile_reset_input_confirm_pin_edit_text),
@@ -782,7 +781,7 @@ class ProfileResetPinFragmentTest {
         isAdmin = false
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
     }
@@ -828,7 +827,7 @@ class ProfileResetPinFragmentTest {
         editTextInputAction.appendText("123"),
         closeSoftKeyboard()
       )
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
     }
@@ -901,7 +900,7 @@ class ProfileResetPinFragmentTest {
           isDescendantOfA(withId(R.id.profile_reset_input_pin))
         )
       ).perform(
-        ViewActions.clearText(),
+        clearText(),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button))
@@ -944,7 +943,7 @@ class ProfileResetPinFragmentTest {
           isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
-        ViewActions.clearText(),
+        clearText(),
         closeSoftKeyboard()
       )
       onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
@@ -986,10 +985,10 @@ class ProfileResetPinFragmentTest {
           isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
         )
       ).perform(
-        ViewActions.clearText(),
+        clearText(),
         closeSoftKeyboard()
       )
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
     }
