@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="primary_color">@color/oppia_primary</color>
+  <color name="primary_dark_color">@color/oppia_primary_dark</color>
+  <color name="accent_color">@color/oppia_accent</color>
+  <color name="primary_text_color">@color/oppia_primary_text</color>
+  <color name="heading_text_color">@color/oppia_primary_text</color>
+</resources>

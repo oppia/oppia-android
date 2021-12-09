@@ -146,4 +146,9 @@
   <color name="admin_highlighted">#A5D3EC</color>
   <color name="coming_soon_end">#674172</color>
   <color name="coming_soon_start">#7659B6</color>
+  <!--DARK MODE-->
+  <color name="oppia_white_subtext">#C4C4C4</color>
+  <color name="oppia_primary_2">#3bd1c4</color>
+  <color name="oppia_primary_dark_2">#03635B</color>
+  <color name="oppia_accent_2">#2B5F73</color>
 </resources>
