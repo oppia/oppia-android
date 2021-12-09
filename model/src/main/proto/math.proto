@@ -39,11 +39,11 @@ message MathEquation {
 message MathBinaryOperation {
   enum Operator {
     OPERATOR_UNSPECIFIED = 0;
-    // Represents adding two values, e.g.: 1 + x.
+    // Represents adding two values, e.g.: 1+x.
     ADD = 1;
-    // Represents subtracting two values, e.g.: x - 2.
+    // Represents subtracting two values, e.g.: x-2.
     SUBTRACT = 2;
-    // Represents multiplying two values, e.g.: x * y.
+    // Represents multiplying two values, e.g.: x*y.
     MULTIPLY = 3;
     // Represents dividing two values, e.g.: 1/x.
     DIVIDE = 4;
@@ -92,11 +92,13 @@ message Real {
 
 message ComparableOperationList {
   message ComparableOperation {
+    bool is_negated = 1;
+
     oneof comparison_type {
-      CommutativeAccumulation commutative_accumulation = 1;
-      NonCommutativeOperation non_commutative_operation = 2;
-      Real constant_term = 3;
-      string variable_term = 4;
+      CommutativeAccumulation commutative_accumulation = 2;
+      NonCommutativeOperation non_commutative_operation = 3;
+      Real constant_term = 4;
+      string variable_term = 5;
     }
   }
   message CommutativeAccumulation {
@@ -110,20 +112,15 @@ message ComparableOperationList {
     repeated ComparableOperation combined_operations = 2;
   }
   message NonCommutativeOperation {
-    bool is_negated = 1;
-
     oneof operation_type {
-      BinaryOperation division = 2;
-      BinaryOperation exponentiation = 3;
-      UnaryOperation square_root = 4;
+      BinaryOperation division = 1;
+      BinaryOperation exponentiation = 2;
+      ComparableOperation square_root = 3;
     }
 
     message BinaryOperation {
       ComparableOperation left_operand = 1;
       ComparableOperation right_operand = 2;
-    }
-    message UnaryOperation {
-      ComparableOperation operand = 1;
     }
   }
 

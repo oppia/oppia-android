@@ -6,10 +6,10 @@ import com.google.common.truth.DoubleSubject
 import com.google.common.truth.FailureMetadata
 import com.google.common.truth.IntegerSubject
 import com.google.common.truth.StringSubject
-import com.google.common.truth.Subject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import com.google.common.truth.extensions.proto.LiteProtoSubject
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Fraction
@@ -25,6 +25,11 @@ import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.Real
 import org.robolectric.annotation.LooperMode
 import kotlin.math.sqrt
+import org.oppia.android.app.model.ComparableOperationList
+import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.PRODUCT
+import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.SUMMATION
+import org.oppia.android.app.model.ComparableOperationList.ComparableOperation
+import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.OppiaLanguage
@@ -311,7 +316,7 @@ class NumericExpressionParserTest {
     val expression1 = parseNumericExpressionWithoutOptionalErrors("1")
     assertThat(expression1).hasStructureThatMatches {
       constant {
-        withIntegerValueThat().isEqualTo(1)
+        withValueThat().isIntegerThat().isEqualTo(1)
       }
     }
     assertThat(expression1).evaluatesToIntegerThat().isEqualTo(1)
@@ -321,7 +326,7 @@ class NumericExpressionParserTest {
     val expression2 = parseNumericExpressionWithoutOptionalErrors("   2 ")
     assertThat(expression2).hasStructureThatMatches {
       constant {
-        withIntegerValueThat().isEqualTo(2)
+        withValueThat().isIntegerThat().isEqualTo(2)
       }
     }
     assertThat(expression2).evaluatesToIntegerThat().isEqualTo(2)
@@ -329,7 +334,7 @@ class NumericExpressionParserTest {
     val expression3 = parseNumericExpressionWithoutOptionalErrors("   2.5 ")
     assertThat(expression3).hasStructureThatMatches {
       constant {
-        withIrrationalValueThat().isWithin(1e-5).of(2.5)
+        withValueThat().isIrrationalThat().isWithin(1e-5).of(2.5)
       }
     }
     assertThat(expression3).evaluatesToIrrationalThat().isWithin(1e-5).of(2.5)
@@ -343,19 +348,19 @@ class NumericExpressionParserTest {
       exponentiation {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -372,12 +377,12 @@ class NumericExpressionParserTest {
             exponentiation {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
@@ -385,7 +390,7 @@ class NumericExpressionParserTest {
         }
         rightOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
       }
@@ -399,19 +404,19 @@ class NumericExpressionParserTest {
           division {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(512)
+                withValueThat().isIntegerThat().isEqualTo(512)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(32)
+                withValueThat().isIntegerThat().isEqualTo(32)
               }
             }
           }
         }
         rightOperand {
           constant {
-            withIntegerValueThat().isEqualTo(4)
+            withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
       }
@@ -423,7 +428,7 @@ class NumericExpressionParserTest {
       division {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(512)
+            withValueThat().isIntegerThat().isEqualTo(512)
           }
         }
         rightOperand {
@@ -431,12 +436,12 @@ class NumericExpressionParserTest {
             division {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(32)
+                  withValueThat().isIntegerThat().isEqualTo(32)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -451,7 +456,7 @@ class NumericExpressionParserTest {
       functionCallTo(SQUARE_ROOT) {
         argument {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
       }
@@ -465,7 +470,7 @@ class NumericExpressionParserTest {
     val expression6 = parseNumericExpressionWithoutOptionalErrors("732")
     assertThat(expression6).hasStructureThatMatches {
       constant {
-        withIntegerValueThat().isEqualTo(732)
+        withValueThat().isIntegerThat().isEqualTo(732)
       }
     }
     assertThat(expression6).evaluatesToIntegerThat().isEqualTo(732)
@@ -476,19 +481,19 @@ class NumericExpressionParserTest {
       addition {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(7)
+                withValueThat().isIntegerThat().isEqualTo(7)
               }
             }
           }
@@ -514,13 +519,13 @@ class NumericExpressionParserTest {
                     leftOperand {
                       // 3
                       constant {
-                        withIntegerValueThat().isEqualTo(3)
+                        withValueThat().isIntegerThat().isEqualTo(3)
                       }
                     }
                     rightOperand {
                       // 2
                       constant {
-                        withIntegerValueThat().isEqualTo(2)
+                        withValueThat().isIntegerThat().isEqualTo(2)
                       }
                     }
                   }
@@ -528,7 +533,7 @@ class NumericExpressionParserTest {
                 rightOperand {
                   // 3
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -548,13 +553,13 @@ class NumericExpressionParserTest {
                             leftOperand {
                               // 4
                               constant {
-                                withIntegerValueThat().isEqualTo(4)
+                                withValueThat().isIntegerThat().isEqualTo(4)
                               }
                             }
                             rightOperand {
                               // 7
                               constant {
-                                withIntegerValueThat().isEqualTo(7)
+                                withValueThat().isIntegerThat().isEqualTo(7)
                               }
                             }
                           }
@@ -562,7 +567,7 @@ class NumericExpressionParserTest {
                         rightOperand {
                           // 8
                           constant {
-                            withIntegerValueThat().isEqualTo(8)
+                            withValueThat().isIntegerThat().isEqualTo(8)
                           }
                         }
                       }
@@ -570,7 +575,7 @@ class NumericExpressionParserTest {
                     rightOperand {
                       // 3
                       constant {
-                        withIntegerValueThat().isEqualTo(3)
+                        withValueThat().isIntegerThat().isEqualTo(3)
                       }
                     }
                   }
@@ -578,7 +583,7 @@ class NumericExpressionParserTest {
                 rightOperand {
                   // 2
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -588,7 +593,7 @@ class NumericExpressionParserTest {
         rightOperand {
           // 7
           constant {
-            withIntegerValueThat().isEqualTo(7)
+            withValueThat().isIntegerThat().isEqualTo(7)
           }
         }
       }
@@ -609,12 +614,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -625,12 +630,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -648,7 +653,7 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
@@ -656,12 +661,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -679,14 +684,14 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -706,7 +711,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -716,12 +721,12 @@ class NumericExpressionParserTest {
                 addition {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(1)
+                      withValueThat().isIntegerThat().isEqualTo(1)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -734,19 +739,19 @@ class NumericExpressionParserTest {
             subtraction {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 exponentiation {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(5)
+                      withValueThat().isIntegerThat().isEqualTo(5)
                     }
                   }
                 }
@@ -767,7 +772,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -777,12 +782,12 @@ class NumericExpressionParserTest {
                 addition {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(1)
+                      withValueThat().isIntegerThat().isEqualTo(1)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -795,19 +800,19 @@ class NumericExpressionParserTest {
             subtraction {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 exponentiation {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(5)
+                      withValueThat().isIntegerThat().isEqualTo(5)
                     }
                   }
                 }
@@ -824,7 +829,7 @@ class NumericExpressionParserTest {
       group {
         group {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
       }
@@ -838,7 +843,7 @@ class NumericExpressionParserTest {
           positive {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
           }
@@ -854,7 +859,7 @@ class NumericExpressionParserTest {
           negation {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -868,14 +873,14 @@ class NumericExpressionParserTest {
       addition {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(1)
+            withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         rightOperand {
           negation {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -889,14 +894,14 @@ class NumericExpressionParserTest {
       addition {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(1)
+            withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         rightOperand {
           positive {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -910,14 +915,14 @@ class NumericExpressionParserTest {
       subtraction {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(1)
+            withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         rightOperand {
           negation {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -937,21 +942,21 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(7)
+                withValueThat().isIntegerThat().isEqualTo(7)
               }
             }
           }
         }
         rightOperand {
           constant {
-            withIntegerValueThat().isEqualTo(4)
+            withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
       }
@@ -970,7 +975,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -979,7 +984,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -990,7 +995,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -1013,12 +1018,12 @@ class NumericExpressionParserTest {
                 addition {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(1)
+                      withValueThat().isIntegerThat().isEqualTo(1)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -1030,19 +1035,19 @@ class NumericExpressionParserTest {
                 subtraction {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(3)
+                      withValueThat().isIntegerThat().isEqualTo(3)
                     }
                   }
                   rightOperand {
                     exponentiation {
                       leftOperand {
                         constant {
-                          withIntegerValueThat().isEqualTo(7)
+                          withValueThat().isIntegerThat().isEqualTo(7)
                         }
                       }
                       rightOperand {
                         constant {
-                          withIntegerValueThat().isEqualTo(2)
+                          withValueThat().isIntegerThat().isEqualTo(2)
                         }
                       }
                     }
@@ -1058,14 +1063,14 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(5)
+                  withValueThat().isIntegerThat().isEqualTo(5)
                 }
               }
               rightOperand {
                 negation {
                   operand {
                     constant {
-                      withIntegerValueThat().isEqualTo(17)
+                      withValueThat().isIntegerThat().isEqualTo(17)
                     }
                   }
                 }
@@ -1082,14 +1087,14 @@ class NumericExpressionParserTest {
       exponentiation {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
           negation {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1111,14 +1116,14 @@ class NumericExpressionParserTest {
             exponentiation {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 negation {
                   operand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -1131,14 +1136,14 @@ class NumericExpressionParserTest {
             exponentiation {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 negation {
                   operand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -1155,21 +1160,21 @@ class NumericExpressionParserTest {
       subtraction {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(1)
+            withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         rightOperand {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
             rightOperand {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(4)
+                    withValueThat().isIntegerThat().isEqualTo(4)
                   }
                 }
               }
@@ -1189,12 +1194,12 @@ class NumericExpressionParserTest {
           division {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1204,12 +1209,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -1226,12 +1231,12 @@ class NumericExpressionParserTest {
           division {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1241,12 +1246,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -1271,14 +1276,14 @@ class NumericExpressionParserTest {
             leftOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -1287,7 +1292,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(5)
+              withValueThat().isIntegerThat().isEqualTo(5)
             }
           }
         }
@@ -1300,13 +1305,13 @@ class NumericExpressionParserTest {
       exponentiation {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(3)
+              withValueThat().isIntegerThat().isEqualTo(3)
             }
           }
         }
@@ -1322,13 +1327,13 @@ class NumericExpressionParserTest {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
@@ -1337,7 +1342,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(4)
+              withValueThat().isIntegerThat().isEqualTo(4)
             }
           }
         }
@@ -1355,13 +1360,13 @@ class NumericExpressionParserTest {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
@@ -1371,12 +1376,12 @@ class NumericExpressionParserTest {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1393,13 +1398,13 @@ class NumericExpressionParserTest {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
@@ -1410,12 +1415,12 @@ class NumericExpressionParserTest {
             exponentiation {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -1441,13 +1446,13 @@ class NumericExpressionParserTest {
                 leftOperand {
                   // 2
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
                 rightOperand {
                   // 3
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -1456,7 +1461,7 @@ class NumericExpressionParserTest {
               // 4
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -1468,13 +1473,13 @@ class NumericExpressionParserTest {
             leftOperand {
               // 2
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               // 3
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
           }
@@ -1499,12 +1504,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -1525,7 +1530,7 @@ class NumericExpressionParserTest {
           multiplication {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
@@ -1533,12 +1538,12 @@ class NumericExpressionParserTest {
                 addition {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(1)
+                      withValueThat().isIntegerThat().isEqualTo(1)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -1559,12 +1564,12 @@ class NumericExpressionParserTest {
               exponentiation {
                 leftOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
                 rightOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -1572,7 +1577,7 @@ class NumericExpressionParserTest {
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -1591,14 +1596,14 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1606,7 +1611,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(3)
+              withValueThat().isIntegerThat().isEqualTo(3)
             }
           }
         }
@@ -1624,12 +1629,12 @@ class NumericExpressionParserTest {
                 exponentiation {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -1637,7 +1642,7 @@ class NumericExpressionParserTest {
               rightOperand {
                 group {
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -1658,14 +1663,14 @@ class NumericExpressionParserTest {
           multiplication {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               negation {
                 operand {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -1681,13 +1686,13 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -1700,14 +1705,14 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1721,14 +1726,14 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1743,14 +1748,14 @@ class NumericExpressionParserTest {
         leftOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -1765,7 +1770,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1773,7 +1778,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -1788,7 +1793,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1797,7 +1802,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1813,7 +1818,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1822,7 +1827,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1839,14 +1844,14 @@ class NumericExpressionParserTest {
             leftOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -1855,7 +1860,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -1872,7 +1877,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -1881,7 +1886,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -1892,7 +1897,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1911,7 +1916,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -1920,7 +1925,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -1931,7 +1936,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -1959,13 +1964,13 @@ class NumericExpressionParserTest {
                 leftOperand {
                   // 2
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
                 rightOperand {
                   // 2
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -1976,7 +1981,7 @@ class NumericExpressionParserTest {
                 // 4
                 operand {
                   constant {
-                    withIntegerValueThat().isEqualTo(4)
+                    withValueThat().isIntegerThat().isEqualTo(4)
                   }
                 }
               }
@@ -1989,13 +1994,13 @@ class NumericExpressionParserTest {
             leftOperand {
               // 7
               constant {
-                withIntegerValueThat().isEqualTo(7)
+                withValueThat().isIntegerThat().isEqualTo(7)
               }
             }
             rightOperand {
               // 2
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -2009,7 +2014,7 @@ class NumericExpressionParserTest {
       division {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
@@ -2017,12 +2022,12 @@ class NumericExpressionParserTest {
             subtraction {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -2038,7 +2043,7 @@ class NumericExpressionParserTest {
         leftOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(3)
+              withValueThat().isIntegerThat().isEqualTo(3)
             }
           }
         }
@@ -2047,12 +2052,12 @@ class NumericExpressionParserTest {
             subtraction {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -2067,7 +2072,7 @@ class NumericExpressionParserTest {
       division {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
@@ -2076,12 +2081,12 @@ class NumericExpressionParserTest {
               subtraction {
                 leftOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(1)
+                    withValueThat().isIntegerThat().isEqualTo(1)
                   }
                 }
                 rightOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -2105,7 +2110,7 @@ class NumericExpressionParserTest {
     val expression1 = parseAlgebraicExpressionWithoutOptionalErrors("1")
     assertThat(expression1).hasStructureThatMatches {
       constant {
-        withIntegerValueThat().isEqualTo(1)
+        withValueThat().isIntegerThat().isEqualTo(1)
       }
     }
     assertThat(expression1).evaluatesToIntegerThat().isEqualTo(1)
@@ -2120,7 +2125,7 @@ class NumericExpressionParserTest {
     val expression2 = parseAlgebraicExpressionWithoutOptionalErrors("   2 ")
     assertThat(expression2).hasStructureThatMatches {
       constant {
-        withIntegerValueThat().isEqualTo(2)
+        withValueThat().isIntegerThat().isEqualTo(2)
       }
     }
     assertThat(expression2).evaluatesToIntegerThat().isEqualTo(2)
@@ -2128,7 +2133,7 @@ class NumericExpressionParserTest {
     val expression3 = parseAlgebraicExpressionWithoutOptionalErrors("   2.5 ")
     assertThat(expression3).hasStructureThatMatches {
       constant {
-        withIrrationalValueThat().isWithin(1e-5).of(2.5)
+        withValueThat().isIrrationalThat().isWithin(1e-5).of(2.5)
       }
     }
     assertThat(expression3).evaluatesToIrrationalThat().isWithin(1e-5).of(2.5)
@@ -2161,19 +2166,19 @@ class NumericExpressionParserTest {
       exponentiation {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -2190,12 +2195,12 @@ class NumericExpressionParserTest {
             exponentiation {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
@@ -2203,7 +2208,7 @@ class NumericExpressionParserTest {
         }
         rightOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
       }
@@ -2217,19 +2222,19 @@ class NumericExpressionParserTest {
           division {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(512)
+                withValueThat().isIntegerThat().isEqualTo(512)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(32)
+                withValueThat().isIntegerThat().isEqualTo(32)
               }
             }
           }
         }
         rightOperand {
           constant {
-            withIntegerValueThat().isEqualTo(4)
+            withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
       }
@@ -2241,7 +2246,7 @@ class NumericExpressionParserTest {
       division {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(512)
+            withValueThat().isIntegerThat().isEqualTo(512)
           }
         }
         rightOperand {
@@ -2249,12 +2254,12 @@ class NumericExpressionParserTest {
             division {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(32)
+                  withValueThat().isIntegerThat().isEqualTo(32)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -2269,7 +2274,7 @@ class NumericExpressionParserTest {
       functionCallTo(SQUARE_ROOT) {
         argument {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
       }
@@ -2307,7 +2312,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -2317,7 +2322,7 @@ class NumericExpressionParserTest {
     val expression6 = parseAlgebraicExpressionWithoutOptionalErrors("732")
     assertThat(expression6).hasStructureThatMatches {
       constant {
-        withIntegerValueThat().isEqualTo(732)
+        withValueThat().isIntegerThat().isEqualTo(732)
       }
     }
     assertThat(expression6).evaluatesToIntegerThat().isEqualTo(732)
@@ -2330,19 +2335,19 @@ class NumericExpressionParserTest {
       addition {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(7)
+                withValueThat().isIntegerThat().isEqualTo(7)
               }
             }
           }
@@ -2368,13 +2373,13 @@ class NumericExpressionParserTest {
                     leftOperand {
                       // 3
                       constant {
-                        withIntegerValueThat().isEqualTo(3)
+                        withValueThat().isIntegerThat().isEqualTo(3)
                       }
                     }
                     rightOperand {
                       // 2
                       constant {
-                        withIntegerValueThat().isEqualTo(2)
+                        withValueThat().isIntegerThat().isEqualTo(2)
                       }
                     }
                   }
@@ -2382,7 +2387,7 @@ class NumericExpressionParserTest {
                 rightOperand {
                   // 3
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -2402,13 +2407,13 @@ class NumericExpressionParserTest {
                             leftOperand {
                               // 4
                               constant {
-                                withIntegerValueThat().isEqualTo(4)
+                                withValueThat().isIntegerThat().isEqualTo(4)
                               }
                             }
                             rightOperand {
                               // 7
                               constant {
-                                withIntegerValueThat().isEqualTo(7)
+                                withValueThat().isIntegerThat().isEqualTo(7)
                               }
                             }
                           }
@@ -2416,7 +2421,7 @@ class NumericExpressionParserTest {
                         rightOperand {
                           // 8
                           constant {
-                            withIntegerValueThat().isEqualTo(8)
+                            withValueThat().isIntegerThat().isEqualTo(8)
                           }
                         }
                       }
@@ -2424,7 +2429,7 @@ class NumericExpressionParserTest {
                     rightOperand {
                       // 3
                       constant {
-                        withIntegerValueThat().isEqualTo(3)
+                        withValueThat().isIntegerThat().isEqualTo(3)
                       }
                     }
                   }
@@ -2432,7 +2437,7 @@ class NumericExpressionParserTest {
                 rightOperand {
                   // 2
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -2442,7 +2447,7 @@ class NumericExpressionParserTest {
         rightOperand {
           // 7
           constant {
-            withIntegerValueThat().isEqualTo(7)
+            withValueThat().isIntegerThat().isEqualTo(7)
           }
         }
       }
@@ -2463,12 +2468,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -2479,12 +2484,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -2502,7 +2507,7 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
@@ -2510,12 +2515,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -2533,14 +2538,14 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -2561,7 +2566,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -2578,7 +2583,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -2588,12 +2593,12 @@ class NumericExpressionParserTest {
                 addition {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(1)
+                      withValueThat().isIntegerThat().isEqualTo(1)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -2606,19 +2611,19 @@ class NumericExpressionParserTest {
             subtraction {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 exponentiation {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(5)
+                      withValueThat().isIntegerThat().isEqualTo(5)
                     }
                   }
                 }
@@ -2639,7 +2644,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -2649,12 +2654,12 @@ class NumericExpressionParserTest {
                 addition {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(1)
+                      withValueThat().isIntegerThat().isEqualTo(1)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -2667,19 +2672,19 @@ class NumericExpressionParserTest {
             subtraction {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 exponentiation {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(5)
+                      withValueThat().isIntegerThat().isEqualTo(5)
                     }
                   }
                 }
@@ -2696,7 +2701,7 @@ class NumericExpressionParserTest {
       group {
         group {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
       }
@@ -2710,7 +2715,7 @@ class NumericExpressionParserTest {
           positive {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
           }
@@ -2726,7 +2731,7 @@ class NumericExpressionParserTest {
           negation {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -2740,14 +2745,14 @@ class NumericExpressionParserTest {
       addition {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(1)
+            withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         rightOperand {
           negation {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -2761,14 +2766,14 @@ class NumericExpressionParserTest {
       addition {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(1)
+            withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         rightOperand {
           positive {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -2782,14 +2787,14 @@ class NumericExpressionParserTest {
       subtraction {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(1)
+            withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         rightOperand {
           negation {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -2809,21 +2814,21 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(7)
+                withValueThat().isIntegerThat().isEqualTo(7)
               }
             }
           }
         }
         rightOperand {
           constant {
-            withIntegerValueThat().isEqualTo(4)
+            withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
       }
@@ -2842,7 +2847,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -2851,7 +2856,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -2862,7 +2867,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(4)
+                withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
           }
@@ -2885,12 +2890,12 @@ class NumericExpressionParserTest {
                 addition {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(1)
+                      withValueThat().isIntegerThat().isEqualTo(1)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -2902,19 +2907,19 @@ class NumericExpressionParserTest {
                 subtraction {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(3)
+                      withValueThat().isIntegerThat().isEqualTo(3)
                     }
                   }
                   rightOperand {
                     exponentiation {
                       leftOperand {
                         constant {
-                          withIntegerValueThat().isEqualTo(7)
+                          withValueThat().isIntegerThat().isEqualTo(7)
                         }
                       }
                       rightOperand {
                         constant {
-                          withIntegerValueThat().isEqualTo(2)
+                          withValueThat().isIntegerThat().isEqualTo(2)
                         }
                       }
                     }
@@ -2930,14 +2935,14 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(5)
+                  withValueThat().isIntegerThat().isEqualTo(5)
                 }
               }
               rightOperand {
                 negation {
                   operand {
                     constant {
-                      withIntegerValueThat().isEqualTo(17)
+                      withValueThat().isIntegerThat().isEqualTo(17)
                     }
                   }
                 }
@@ -2954,14 +2959,14 @@ class NumericExpressionParserTest {
       exponentiation {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
           negation {
             operand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -2983,14 +2988,14 @@ class NumericExpressionParserTest {
             exponentiation {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 negation {
                   operand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -3003,14 +3008,14 @@ class NumericExpressionParserTest {
             exponentiation {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 negation {
                   operand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -3027,21 +3032,21 @@ class NumericExpressionParserTest {
       subtraction {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(1)
+            withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         rightOperand {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
             rightOperand {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(4)
+                    withValueThat().isIntegerThat().isEqualTo(4)
                   }
                 }
               }
@@ -3061,12 +3066,12 @@ class NumericExpressionParserTest {
           division {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3076,12 +3081,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -3098,12 +3103,12 @@ class NumericExpressionParserTest {
           division {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3113,12 +3118,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -3143,14 +3148,14 @@ class NumericExpressionParserTest {
             leftOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -3159,7 +3164,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(5)
+              withValueThat().isIntegerThat().isEqualTo(5)
             }
           }
         }
@@ -3172,13 +3177,13 @@ class NumericExpressionParserTest {
       exponentiation {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(3)
+              withValueThat().isIntegerThat().isEqualTo(3)
             }
           }
         }
@@ -3194,13 +3199,13 @@ class NumericExpressionParserTest {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
@@ -3209,7 +3214,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(4)
+              withValueThat().isIntegerThat().isEqualTo(4)
             }
           }
         }
@@ -3227,13 +3232,13 @@ class NumericExpressionParserTest {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
@@ -3243,12 +3248,12 @@ class NumericExpressionParserTest {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3265,13 +3270,13 @@ class NumericExpressionParserTest {
           exponentiation {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(3)
+                  withValueThat().isIntegerThat().isEqualTo(3)
                 }
               }
             }
@@ -3282,12 +3287,12 @@ class NumericExpressionParserTest {
             exponentiation {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -3313,13 +3318,13 @@ class NumericExpressionParserTest {
                 leftOperand {
                   // 2
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
                 rightOperand {
                   // 3
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -3328,7 +3333,7 @@ class NumericExpressionParserTest {
               // 4
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -3340,13 +3345,13 @@ class NumericExpressionParserTest {
             leftOperand {
               // 2
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               // 3
               constant {
-                withIntegerValueThat().isEqualTo(3)
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
           }
@@ -3371,12 +3376,12 @@ class NumericExpressionParserTest {
             addition {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -3394,7 +3399,7 @@ class NumericExpressionParserTest {
           multiplication {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
@@ -3415,7 +3420,7 @@ class NumericExpressionParserTest {
           multiplication {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
@@ -3423,12 +3428,12 @@ class NumericExpressionParserTest {
                 addition {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(1)
+                      withValueThat().isIntegerThat().isEqualTo(1)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -3449,12 +3454,12 @@ class NumericExpressionParserTest {
               exponentiation {
                 leftOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
                 rightOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -3462,7 +3467,7 @@ class NumericExpressionParserTest {
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(4)
+                  withValueThat().isIntegerThat().isEqualTo(4)
                 }
               }
             }
@@ -3481,14 +3486,14 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
             }
             rightOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3496,7 +3501,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(3)
+              withValueThat().isIntegerThat().isEqualTo(3)
             }
           }
         }
@@ -3514,12 +3519,12 @@ class NumericExpressionParserTest {
                 exponentiation {
                   leftOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                   rightOperand {
                     constant {
-                      withIntegerValueThat().isEqualTo(2)
+                      withValueThat().isIntegerThat().isEqualTo(2)
                     }
                   }
                 }
@@ -3527,7 +3532,7 @@ class NumericExpressionParserTest {
               rightOperand {
                 group {
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -3548,14 +3553,14 @@ class NumericExpressionParserTest {
           multiplication {
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             rightOperand {
               negation {
                 operand {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -3571,13 +3576,13 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -3590,14 +3595,14 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3611,14 +3616,14 @@ class NumericExpressionParserTest {
       multiplication {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         rightOperand {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3633,14 +3638,14 @@ class NumericExpressionParserTest {
         leftOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -3655,7 +3660,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3663,7 +3668,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -3678,7 +3683,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3687,7 +3692,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3703,7 +3708,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3712,7 +3717,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3729,14 +3734,14 @@ class NumericExpressionParserTest {
             leftOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
             rightOperand {
               group {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -3745,7 +3750,7 @@ class NumericExpressionParserTest {
         rightOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(2)
+              withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
         }
@@ -3762,7 +3767,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -3771,7 +3776,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -3782,7 +3787,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3801,7 +3806,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -3810,7 +3815,7 @@ class NumericExpressionParserTest {
               functionCallTo(SQUARE_ROOT) {
                 argument {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -3821,7 +3826,7 @@ class NumericExpressionParserTest {
           functionCallTo(SQUARE_ROOT) {
             argument {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3844,7 +3849,7 @@ class NumericExpressionParserTest {
             // 2
             leftOperand {
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             // x^2
@@ -3859,7 +3864,7 @@ class NumericExpressionParserTest {
                 // 2
                 rightOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -3881,7 +3886,7 @@ class NumericExpressionParserTest {
                 // 3
                 operand {
                   constant {
-                    withIntegerValueThat().isEqualTo(3)
+                    withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
               }
@@ -3904,13 +3909,13 @@ class NumericExpressionParserTest {
                 leftOperand {
                   // 2
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
                 rightOperand {
                   // 2
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -3921,7 +3926,7 @@ class NumericExpressionParserTest {
                 // 4
                 operand {
                   constant {
-                    withIntegerValueThat().isEqualTo(4)
+                    withValueThat().isIntegerThat().isEqualTo(4)
                   }
                 }
               }
@@ -3934,13 +3939,13 @@ class NumericExpressionParserTest {
             leftOperand {
               // 7
               constant {
-                withIntegerValueThat().isEqualTo(7)
+                withValueThat().isIntegerThat().isEqualTo(7)
               }
             }
             rightOperand {
               // 2
               constant {
-                withIntegerValueThat().isEqualTo(2)
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
           }
@@ -3954,7 +3959,7 @@ class NumericExpressionParserTest {
       division {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
@@ -3962,12 +3967,12 @@ class NumericExpressionParserTest {
             subtraction {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -3983,7 +3988,7 @@ class NumericExpressionParserTest {
         leftOperand {
           group {
             constant {
-              withIntegerValueThat().isEqualTo(3)
+              withValueThat().isIntegerThat().isEqualTo(3)
             }
           }
         }
@@ -3992,12 +3997,12 @@ class NumericExpressionParserTest {
             subtraction {
               leftOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(2)
+                  withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
             }
@@ -4012,7 +4017,7 @@ class NumericExpressionParserTest {
       division {
         leftOperand {
           constant {
-            withIntegerValueThat().isEqualTo(3)
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         rightOperand {
@@ -4021,12 +4026,12 @@ class NumericExpressionParserTest {
               subtraction {
                 leftOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(1)
+                    withValueThat().isIntegerThat().isEqualTo(1)
                   }
                 }
                 rightOperand {
                   constant {
-                    withIntegerValueThat().isEqualTo(2)
+                    withValueThat().isIntegerThat().isEqualTo(2)
                   }
                 }
               }
@@ -4103,7 +4108,7 @@ class NumericExpressionParserTest {
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
             }
@@ -4111,7 +4116,7 @@ class NumericExpressionParserTest {
         }
         rightOperand {
           constant {
-            withIntegerValueThat().isEqualTo(2)
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
       }
@@ -4135,7 +4140,7 @@ class NumericExpressionParserTest {
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
             }
@@ -4151,7 +4156,7 @@ class NumericExpressionParserTest {
               }
               rightOperand {
                 constant {
-                  withIntegerValueThat().isEqualTo(1)
+                  withValueThat().isIntegerThat().isEqualTo(1)
                 }
               }
             }
@@ -4185,7 +4190,7 @@ class NumericExpressionParserTest {
                     }
                     rightOperand {
                       constant {
-                        withIntegerValueThat().isEqualTo(2)
+                        withValueThat().isIntegerThat().isEqualTo(2)
                       }
                     }
                   }
@@ -4217,7 +4222,7 @@ class NumericExpressionParserTest {
     }
     assertThat(equation5).hasRightHandSideThat().hasStructureThatMatches {
       constant {
-        withIntegerValueThat().isEqualTo(0)
+        withValueThat().isIntegerThat().isEqualTo(0)
       }
     }
   }
@@ -4691,17 +4696,1440 @@ class NumericExpressionParserTest {
       )
   }
 
-  @DslMarker
-  private annotation class ExpressionComparatorMarker
+  @Test
+  fun testToComparableOperation() {
+    // TODO: split up & move to separate test suites. Finish test cases (if anymore are needed).
+
+    val exp1 = parseNumericExpressionWithAllErrors("1")
+    assertThat(exp1.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      constantTerm {
+        withValueThat().isIntegerThat().isEqualTo(1)
+      }
+    }
+
+    val exp2 = parseNumericExpressionWithAllErrors("-1")
+    assertThat(exp2.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isTrue()
+      constantTerm {
+        withValueThat().isIntegerThat().isEqualTo(1)
+      }
+    }
+
+    val exp3 = parseNumericExpressionWithAllErrors("1+3+4")
+    assertThat(exp3.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+      }
+    }
+
+    val exp4 = parseNumericExpressionWithAllErrors("-1-2-3")
+    assertThat(exp4.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+
+    val exp5 = parseNumericExpressionWithAllErrors("1+2-3")
+    assertThat(exp5.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+
+    val exp6 = parseNumericExpressionWithAllErrors("2*3*4")
+    assertThat(exp6.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+      }
+    }
+
+    val exp7 = parseNumericExpressionWithAllErrors("1-2*3")
+    assertThat(exp7.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(2)
+        index(0) {
+          hasNegatedPropertyThat().isTrue()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(2)
+              }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+      }
+    }
+
+    val exp8 = parseNumericExpressionWithAllErrors("2*3-4")
+    assertThat(exp8.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(2)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(2)
+              }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+      }
+    }
+
+    val exp9 = parseNumericExpressionWithAllErrors("1+2*3-4+8*7*6-9")
+    assertThat(exp9.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(5)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(2)
+              }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(3)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(6)
+              }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(7)
+              }
+            }
+            index(2) {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(8)
+              }
+            }
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+        index(4) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(9)
+          }
+        }
+      }
+    }
+
+    val exp10 = parseNumericExpressionWithAllErrors("2/3/4")
+    assertThat(exp10.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      nonCommutativeOperation {
+        division {
+          leftOperand {
+            hasNegatedPropertyThat().isFalse()
+            nonCommutativeOperation {
+              division {
+                leftOperand {
+                  hasNegatedPropertyThat().isFalse()
+                  constantTerm {
+                    withValueThat().isIntegerThat().isEqualTo(2)
+                  }
+                }
+                rightOperand {
+                  hasNegatedPropertyThat().isFalse()
+                  constantTerm {
+                    withValueThat().isIntegerThat().isEqualTo(3)
+                  }
+                }
+              }
+            }
+          }
+          rightOperand {
+            hasNegatedPropertyThat().isFalse()
+            constantTerm {
+              withValueThat().isIntegerThat().isEqualTo(4)
+            }
+          }
+        }
+      }
+    }
+
+    val exp11 = parseNumericExpressionWithoutOptionalErrors("2^3^4")
+    assertThat(exp11.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      nonCommutativeOperation {
+        exponentiation {
+          leftOperand {
+            hasNegatedPropertyThat().isFalse()
+            constantTerm {
+              withValueThat().isIntegerThat().isEqualTo(2)
+            }
+          }
+          rightOperand {
+            hasNegatedPropertyThat().isFalse()
+            nonCommutativeOperation {
+              exponentiation {
+                leftOperand {
+                  hasNegatedPropertyThat().isFalse()
+                  constantTerm {
+                    withValueThat().isIntegerThat().isEqualTo(3)
+                  }
+                }
+                rightOperand {
+                  hasNegatedPropertyThat().isFalse()
+                  constantTerm {
+                    withValueThat().isIntegerThat().isEqualTo(4)
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    val exp12 = parseNumericExpressionWithAllErrors("1+2/3+3")
+    assertThat(exp12.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            division {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(2)
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(3)
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+
+    val exp13 = parseNumericExpressionWithAllErrors("1+(2/3)+3")
+    assertThat(exp13.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            division {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(2)
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(3)
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+
+    val exp14 = parseNumericExpressionWithAllErrors("1+2^3+3")
+    assertThat(exp14.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            exponentiation {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(2)
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(3)
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+
+    val exp15 = parseNumericExpressionWithAllErrors("1+(2^3)+3")
+    assertThat(exp15.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            exponentiation {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(2)
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(3)
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+
+    // 2*3/4*7 is the same as ((2*3)/4)*7 due to precedence and associativity, so there's not much
+    // reordering possible.
+    val exp16 = parseNumericExpressionWithAllErrors("2*3/4*7")
+    assertThat(exp16.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(2)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            division {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                commutativeAccumulationWithType(PRODUCT) {
+                  hasOperandCountThat().isEqualTo(2)
+                  index(0) {
+                    hasNegatedPropertyThat().isFalse()
+                    constantTerm {
+                      withValueThat().isIntegerThat().isEqualTo(2)
+                    }
+                  }
+                  index(1) {
+                    hasNegatedPropertyThat().isFalse()
+                    constantTerm {
+                      withValueThat().isIntegerThat().isEqualTo(3)
+                    }
+                  }
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(4)
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(7)
+          }
+        }
+      }
+    }
+
+    val exp17 = parseNumericExpressionWithAllErrors("2*(3/4)*7")
+    assertThat(exp17.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            division {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(3)
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(4)
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(7)
+          }
+        }
+      }
+    }
+
+    val exp18 = parseNumericExpressionWithAllErrors("-3*sqrt(2)")
+    assertThat(exp18.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isTrue()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(2)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            squareRootWithArgument {
+              hasNegatedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(2)
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+
+    val exp19 = parseNumericExpressionWithAllErrors("1+(2+(3+(4+5)))")
+    assertThat(exp19.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(5)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+        index(4) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(5)
+          }
+        }
+      }
+    }
+
+    val exp20 = parseNumericExpressionWithAllErrors("2*(3*(4*(5*6)))")
+    assertThat(exp20.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(5)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(5)
+          }
+        }
+        index(4) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(6)
+          }
+        }
+      }
+    }
+
+    val exp21 = parseAlgebraicExpressionWithAllErrors("x")
+    assertThat(exp21.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      variableTerm {
+        withNameThat().isEqualTo("x")
+      }
+    }
+
+    val exp22 = parseAlgebraicExpressionWithAllErrors("-x")
+    assertThat(exp22.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isTrue()
+      variableTerm {
+        withNameThat().isEqualTo("x")
+      }
+    }
+
+    val exp23 = parseAlgebraicExpressionWithAllErrors("1+x+y")
+    assertThat(exp23.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("y")
+          }
+        }
+      }
+    }
+
+    val exp24 = parseAlgebraicExpressionWithAllErrors("-1-x-y")
+    assertThat(exp24.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isTrue()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isTrue()
+          variableTerm {
+            withNameThat().isEqualTo("y")
+          }
+        }
+      }
+    }
+
+    val exp25 = parseAlgebraicExpressionWithAllErrors("1+x-y")
+    assertThat(exp25.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isTrue()
+          variableTerm {
+            withNameThat().isEqualTo("y")
+          }
+        }
+      }
+    }
+
+    val exp26 = parseAlgebraicExpressionWithAllErrors("2xy")
+    assertThat(exp26.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("y")
+          }
+        }
+      }
+    }
+
+    val exp27 = parseAlgebraicExpressionWithAllErrors("1-xy")
+    assertThat(exp27.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(2)
+        index(0) {
+          hasNegatedPropertyThat().isTrue()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("x")
+              }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("y")
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+      }
+    }
+
+    val exp28 = parseAlgebraicExpressionWithAllErrors("xy-4")
+    assertThat(exp28.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(2)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("x")
+              }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("y")
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+      }
+    }
+
+    val exp29 = parseAlgebraicExpressionWithAllErrors("1+xy-4+yz-9")
+    assertThat(exp29.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(5)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("x")
+              }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("y")
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("y")
+              }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("z")
+              }
+            }
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+        index(4) {
+          hasNegatedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(9)
+          }
+        }
+      }
+    }
+
+    val exp30 = parseAlgebraicExpressionWithAllErrors("2/x/y")
+    assertThat(exp30.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      nonCommutativeOperation {
+        division {
+          leftOperand {
+            hasNegatedPropertyThat().isFalse()
+            nonCommutativeOperation {
+              division {
+                leftOperand {
+                  hasNegatedPropertyThat().isFalse()
+                  constantTerm {
+                    withValueThat().isIntegerThat().isEqualTo(2)
+                  }
+                }
+                rightOperand {
+                  hasNegatedPropertyThat().isFalse()
+                  variableTerm {
+                    withNameThat().isEqualTo("x")
+                  }
+                }
+              }
+            }
+          }
+          rightOperand {
+            hasNegatedPropertyThat().isFalse()
+            variableTerm {
+              withNameThat().isEqualTo("y")
+            }
+          }
+        }
+      }
+    }
+
+    val exp31 = parseAlgebraicExpressionWithoutOptionalErrors("x^3^4")
+    assertThat(exp31.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      nonCommutativeOperation {
+        exponentiation {
+          leftOperand {
+            hasNegatedPropertyThat().isFalse()
+            variableTerm {
+              withNameThat().isEqualTo("x")
+            }
+          }
+          rightOperand {
+            hasNegatedPropertyThat().isFalse()
+            nonCommutativeOperation {
+              exponentiation {
+                leftOperand {
+                  hasNegatedPropertyThat().isFalse()
+                  constantTerm {
+                    withValueThat().isIntegerThat().isEqualTo(3)
+                  }
+                }
+                rightOperand {
+                  hasNegatedPropertyThat().isFalse()
+                  constantTerm {
+                    withValueThat().isIntegerThat().isEqualTo(4)
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    val exp32 = parseAlgebraicExpressionWithAllErrors("1+x/y+z")
+    assertThat(exp32.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            division {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("x")
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("y")
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("z")
+          }
+        }
+      }
+    }
+
+    val exp33 = parseAlgebraicExpressionWithAllErrors("1+(x/y)+z")
+    assertThat(exp33.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            division {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("x")
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("y")
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("z")
+          }
+        }
+      }
+    }
+
+    val exp34 = parseAlgebraicExpressionWithAllErrors("1+x^3+y")
+    assertThat(exp34.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            exponentiation {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("x")
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(3)
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("y")
+          }
+        }
+      }
+    }
+
+    val exp35 = parseAlgebraicExpressionWithAllErrors("1+(x^3)+y")
+    assertThat(exp35.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            exponentiation {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("x")
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                constantTerm {
+                  withValueThat().isIntegerThat().isEqualTo(3)
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("y")
+          }
+        }
+      }
+    }
+
+    // 2*3/4*7 is the same as ((2*3)/4)*7 due to precedence and associativity, so there's not much
+    // reordering possible.
+    val exp36 = parseAlgebraicExpressionWithAllErrors("2*x/y*z")
+    assertThat(exp36.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(2)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            division {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                commutativeAccumulationWithType(PRODUCT) {
+                  hasOperandCountThat().isEqualTo(2)
+                  index(0) {
+                    hasNegatedPropertyThat().isFalse()
+                    constantTerm {
+                      withValueThat().isIntegerThat().isEqualTo(2)
+                    }
+                  }
+                  index(1) {
+                    hasNegatedPropertyThat().isFalse()
+                    variableTerm {
+                      withNameThat().isEqualTo("x")
+                    }
+                  }
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("y")
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("z")
+          }
+        }
+      }
+    }
+
+    val exp37 = parseAlgebraicExpressionWithAllErrors("2*(x/y)*z")
+    assertThat(exp37.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            division {
+              leftOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("x")
+                }
+              }
+              rightOperand {
+                hasNegatedPropertyThat().isFalse()
+                variableTerm {
+                  withNameThat().isEqualTo("y")
+                }
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("z")
+          }
+        }
+      }
+    }
+
+    val exp38 = parseAlgebraicExpressionWithAllErrors("-2*sqrt(x)")
+    assertThat(exp38.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isTrue()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(2)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          nonCommutativeOperation {
+            squareRootWithArgument {
+              hasNegatedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("x")
+              }
+            }
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+      }
+    }
+
+    val exp39 = parseAlgebraicExpressionWithAllErrors("1+(x+(3+(z+y)))")
+    assertThat(exp39.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(SUMMATION) {
+        hasOperandCountThat().isEqualTo(5)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("y")
+          }
+        }
+        index(4) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("z")
+          }
+        }
+      }
+    }
+
+    val exp40 = parseAlgebraicExpressionWithAllErrors("2*(x*(4*(zy)))")
+    assertThat(exp40.toComparableOperationList()).hasStructureThatMatches {
+      hasNegatedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(5)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("y")
+          }
+        }
+        index(4) {
+          hasNegatedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("z")
+          }
+        }
+      }
+    }
+
+    // Equality tests:
+    val list1 = createComparableOperationListFromNumericExpression("(1+2)+3")
+    val list2 = createComparableOperationListFromNumericExpression("1+(2+3)")
+    assertThat(list1).isEqualTo(list2)
+
+    val list3 = createComparableOperationListFromNumericExpression("1+2+3")
+    val list4 = createComparableOperationListFromNumericExpression("3+2+1")
+    assertThat(list3).isEqualTo(list4)
+
+    val list5 = createComparableOperationListFromNumericExpression("1-2-3")
+    val list6 = createComparableOperationListFromNumericExpression("-3 + -2 + 1")
+    assertThat(list5).isEqualTo(list6)
+
+    val list7 = createComparableOperationListFromNumericExpression("1-2-3")
+    val list8 = createComparableOperationListFromNumericExpression("-3-2+1")
+    assertThat(list7).isEqualTo(list8)
+
+    val list9 = createComparableOperationListFromNumericExpression("1-2-3")
+    val list10 = createComparableOperationListFromNumericExpression("-3-2+1")
+    assertThat(list9).isEqualTo(list10)
+
+    val list11 = createComparableOperationListFromNumericExpression("1-2-3")
+    val list12 = createComparableOperationListFromNumericExpression("3-2-1")
+    assertThat(list11).isNotEqualTo(list12)
+
+    val list13 = createComparableOperationListFromNumericExpression("2*3*4")
+    val list14 = createComparableOperationListFromNumericExpression("4*3*2")
+    assertThat(list13).isEqualTo(list14)
+
+    val list15 = createComparableOperationListFromNumericExpression("2*(3/4)")
+    val list16 = createComparableOperationListFromNumericExpression("3/4*2")
+    assertThat(list15).isEqualTo(list16)
+
+    val list17 = createComparableOperationListFromNumericExpression("2*3/4")
+    val list18 = createComparableOperationListFromNumericExpression("3/4*2")
+    assertThat(list17).isNotEqualTo(list18)
+
+    val list19 = createComparableOperationListFromNumericExpression("2*3/4")
+    val list20 = createComparableOperationListFromNumericExpression("2*4/3")
+    assertThat(list19).isNotEqualTo(list20)
+
+    val list21 = createComparableOperationListFromNumericExpression("2*3/4*7")
+    val list22 = createComparableOperationListFromNumericExpression("3/4*7*2")
+    assertThat(list21).isNotEqualTo(list22)
+
+    val list23 = createComparableOperationListFromNumericExpression("2*3/4*7")
+    val list24 = createComparableOperationListFromNumericExpression("7*(3*2/4)")
+    assertThat(list23).isEqualTo(list24)
+
+    val list25 = createComparableOperationListFromNumericExpression("2*3/4*7")
+    val list26 = createComparableOperationListFromNumericExpression("7*3*2/4")
+    assertThat(list25).isNotEqualTo(list26)
+
+    val list27 = createComparableOperationListFromNumericExpression("-2*3")
+    val list28 = createComparableOperationListFromNumericExpression("3*-2")
+    assertThat(list27).isEqualTo(list28)
+
+    val list29 = createComparableOperationListFromNumericExpression("2^3")
+    val list30 = createComparableOperationListFromNumericExpression("3^2")
+    assertThat(list29).isNotEqualTo(list30)
+
+    val list31 = createComparableOperationListFromNumericExpression("-(1+2)")
+    val list32 = createComparableOperationListFromNumericExpression("-1+2")
+    assertThat(list31).isNotEqualTo(list32)
+
+    val list33 = createComparableOperationListFromNumericExpression("-(1+2)")
+    val list34 = createComparableOperationListFromNumericExpression("-1-2")
+    assertThat(list33).isNotEqualTo(list34)
+
+    val list35 = createComparableOperationListFromAlgebraicExpression("x(x+1)")
+    val list36 = createComparableOperationListFromAlgebraicExpression("(1+x)x")
+    assertThat(list35).isEqualTo(list36)
+
+    val list37 = createComparableOperationListFromAlgebraicExpression("x(x+1)")
+    val list38 = createComparableOperationListFromAlgebraicExpression("x^2+x")
+    assertThat(list37).isNotEqualTo(list38)
+
+    val list39 = createComparableOperationListFromAlgebraicExpression("x^2*sqrt(x)")
+    val list40 = createComparableOperationListFromAlgebraicExpression("x")
+    assertThat(list39).isNotEqualTo(list40)
+
+    val list41 = createComparableOperationListFromAlgebraicExpression("xyz")
+    val list42 = createComparableOperationListFromAlgebraicExpression("zyx")
+    assertThat(list41).isEqualTo(list42)
+
+    val list43 = createComparableOperationListFromAlgebraicExpression("1+xy-2")
+    val list44 = createComparableOperationListFromAlgebraicExpression("-2+1+yx")
+    assertThat(list43).isEqualTo(list44)
+
+    // TODO: add tests for comparator/sorting & negation simplification?
+  }
+
+  private fun createComparableOperationListFromNumericExpression(expression: String) =
+    parseNumericExpressionWithAllErrors(expression).toComparableOperationList()
+
+  private fun createComparableOperationListFromAlgebraicExpression(expression: String) =
+    parseAlgebraicExpressionWithAllErrors(expression).toComparableOperationList()
+
+  @DslMarker private annotation class ExpressionComparatorMarker
+
+  @DslMarker private annotation class ComparableOperationComparatorMarker
 
   // See: https://kotlinlang.org/docs/type-safe-builders.html.
   private class MathExpressionSubject(
     metadata: FailureMetadata,
     private val actual: MathExpression
-  ) : Subject(metadata, actual) {
-    fun hasStructureThatMatches(init: ExpressionComparator.() -> Unit): ExpressionComparator {
+  ) : LiteProtoSubject(metadata, actual) {
+    fun hasStructureThatMatches(init: ExpressionComparator.() -> Unit) {
       // TODO: maybe verify that all aspects are verified?
-      return ExpressionComparator.createFromExpression(actual).also(init)
+      ExpressionComparator.createFromExpression(actual).also(init)
     }
 
     fun evaluatesToRationalThat(): FractionSubject =
@@ -4814,15 +6242,7 @@ class NumericExpressionParserTest {
 
     @ExpressionComparatorMarker
     class ConstantComparator private constructor(private val constant: Real) {
-      fun withIntegerValueThat(): IntegerSubject {
-        assertThat(constant.realTypeCase).isEqualTo(Real.RealTypeCase.INTEGER)
-        return assertThat(constant.integer)
-      }
-
-      fun withIrrationalValueThat(): DoubleSubject {
-        assertThat(constant.realTypeCase).isEqualTo(Real.RealTypeCase.IRRATIONAL)
-        return assertThat(constant.irrational)
-      }
+      fun withValueThat(): RealSubject = assertThat(constant)
 
       internal companion object {
         fun createFromExpression(expression: MathExpression): ConstantComparator {
@@ -4914,7 +6334,7 @@ class NumericExpressionParserTest {
   private class MathEquationSubject(
     metadata: FailureMetadata,
     private val actual: MathEquation
-  ) : Subject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     fun hasLeftHandSideThat(): MathExpressionSubject = assertThat(actual.leftSide)
 
     fun hasRightHandSideThat(): MathExpressionSubject = assertThat(actual.rightSide)
@@ -4956,11 +6376,11 @@ class NumericExpressionParserTest {
     }
   }
 
-  // TODO: move this to a common location.
+  // TODO: move these to a common location.
   private class FractionSubject(
     metadata: FailureMetadata,
     private val actual: Fraction
-  ) : Subject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     fun hasNegativePropertyThat(): BooleanSubject = assertThat(actual.isNegative)
 
     fun hasWholeNumberThat(): IntegerSubject = assertThat(actual.wholeNumber)
@@ -4970,6 +6390,185 @@ class NumericExpressionParserTest {
     fun hasDenominatorThat(): IntegerSubject = assertThat(actual.denominator)
 
     fun evaluatesToRealThat(): DoubleSubject = assertThat(actual.toDouble())
+  }
+
+  private class RealSubject(
+    metadata: FailureMetadata,
+    private val actual: Real
+  ) : LiteProtoSubject(metadata, actual) {
+    fun isRationalThat(): FractionSubject {
+      verifyTypeToBe(Real.RealTypeCase.RATIONAL)
+      return assertThat(actual.rational)
+    }
+
+    fun isIrrationalThat(): DoubleSubject {
+      verifyTypeToBe(Real.RealTypeCase.IRRATIONAL)
+      return assertThat(actual.irrational)
+    }
+
+    fun isIntegerThat(): IntegerSubject {
+      verifyTypeToBe(Real.RealTypeCase.INTEGER)
+      return assertThat(actual.integer)
+    }
+
+    private fun verifyTypeToBe(expected: Real.RealTypeCase) {
+      assertWithMessage("Expected real type to be $expected, not: ${actual.realTypeCase}")
+        .that(actual.realTypeCase)
+        .isEqualTo(expected)
+    }
+  }
+
+  private class ComparableOperationListSubject(
+    metadata: FailureMetadata,
+    private val actual: ComparableOperationList
+  ) : LiteProtoSubject(metadata, actual) {
+    fun hasStructureThatMatches(init: ComparableOperationComparator.() -> Unit) {
+      ComparableOperationComparator.createFrom(actual.rootOperation).also(init)
+    }
+
+    @ComparableOperationComparatorMarker
+    class ComparableOperationComparator private constructor(
+      private val operation: ComparableOperation
+    ) {
+      fun hasNegatedPropertyThat(): BooleanSubject = assertThat(operation.isNegated)
+
+      fun commutativeAccumulationWithType(
+        type: ComparableOperationList.CommutativeAccumulation.AccumulationType,
+        init: CommutativeAccumulationComparator.() -> Unit
+      ): CommutativeAccumulationComparator =
+        CommutativeAccumulationComparator.createFrom(type, operation).also(init)
+
+      fun nonCommutativeOperation(
+        init: NonCommutativeOperationComparator.() -> Unit
+      ): NonCommutativeOperationComparator =
+        NonCommutativeOperationComparator.createFrom(operation).also(init)
+
+      fun constantTerm(init: ConstantTermComparator.() -> Unit): ConstantTermComparator =
+        ConstantTermComparator.createFrom(operation).also(init)
+
+      fun variableTerm(init: VariableTermComparator.() -> Unit): VariableTermComparator =
+        VariableTermComparator.createFrom(operation).also(init)
+
+      internal companion object {
+        fun createFrom(operation: ComparableOperation): ComparableOperationComparator =
+          ComparableOperationComparator(operation)
+      }
+    }
+
+    @ComparableOperationComparatorMarker
+    class CommutativeAccumulationComparator private constructor(
+      private val accumulation: ComparableOperationList.CommutativeAccumulation
+    ) {
+      fun hasOperandCountThat(): IntegerSubject = assertThat(accumulation.combinedOperationsCount)
+
+      fun index(
+        index: Int,
+        init: ComparableOperationComparator.() -> Unit
+      ): ComparableOperationComparator {
+        return ComparableOperationComparator.createFrom(
+          accumulation.combinedOperationsList[index]
+        ).also(init)
+      }
+
+      internal companion object {
+        fun createFrom(
+          type: ComparableOperationList.CommutativeAccumulation.AccumulationType,
+          operation: ComparableOperation
+        ): CommutativeAccumulationComparator {
+          assertThat(operation.comparisonTypeCase)
+            .isEqualTo(ComparisonTypeCase.COMMUTATIVE_ACCUMULATION)
+          assertThat(operation.commutativeAccumulation.accumulationType).isEqualTo(type)
+          return CommutativeAccumulationComparator(operation.commutativeAccumulation)
+        }
+      }
+    }
+
+    @ComparableOperationComparatorMarker
+    class NonCommutativeOperationComparator private constructor(
+      private val operation: ComparableOperationList.NonCommutativeOperation
+    ) {
+      fun division(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
+        verifyTypeAs(ComparableOperationList.NonCommutativeOperation.OperationTypeCase.DIVISION)
+        return BinaryOperationComparator.createFrom(operation.division).also(init)
+      }
+
+      fun exponentiation(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
+        verifyTypeAs(
+          ComparableOperationList.NonCommutativeOperation.OperationTypeCase.EXPONENTIATION
+        )
+        return BinaryOperationComparator.createFrom(operation.exponentiation).also(init)
+      }
+
+      fun squareRootWithArgument(
+        init: ComparableOperationComparator.() -> Unit
+      ): ComparableOperationComparator {
+        verifyTypeAs(ComparableOperationList.NonCommutativeOperation.OperationTypeCase.SQUARE_ROOT)
+        return ComparableOperationComparator.createFrom(operation.squareRoot).also(init)
+      }
+
+      private fun verifyTypeAs(
+        type: ComparableOperationList.NonCommutativeOperation.OperationTypeCase
+      ) {
+        assertThat(operation.operationTypeCase).isEqualTo(type)
+      }
+
+      internal companion object {
+        fun createFrom(operation: ComparableOperation): NonCommutativeOperationComparator {
+          assertThat(operation.comparisonTypeCase)
+            .isEqualTo(ComparisonTypeCase.NON_COMMUTATIVE_OPERATION)
+          return NonCommutativeOperationComparator(operation.nonCommutativeOperation)
+        }
+      }
+    }
+
+    @ComparableOperationComparatorMarker
+    class BinaryOperationComparator private constructor(
+      private val operation: ComparableOperationList.NonCommutativeOperation.BinaryOperation
+    ) {
+      fun leftOperand(
+        init: ComparableOperationComparator.() -> Unit
+      ): ComparableOperationComparator =
+        ComparableOperationComparator.createFrom(operation.leftOperand).also(init)
+
+      fun rightOperand(
+        init: ComparableOperationComparator.() -> Unit
+      ): ComparableOperationComparator =
+        ComparableOperationComparator.createFrom(operation.rightOperand).also(init)
+
+      internal companion object {
+        fun createFrom(
+          operation: ComparableOperationList.NonCommutativeOperation.BinaryOperation
+        ): BinaryOperationComparator = BinaryOperationComparator(operation)
+      }
+    }
+
+    @ComparableOperationComparatorMarker
+    class ConstantTermComparator private constructor(
+      private val constant: Real
+    ) {
+      fun withValueThat(): RealSubject = assertThat(constant)
+
+      internal companion object {
+        fun createFrom(operation: ComparableOperation): ConstantTermComparator {
+          assertThat(operation.comparisonTypeCase).isEqualTo(ComparisonTypeCase.CONSTANT_TERM)
+          return ConstantTermComparator(operation.constantTerm)
+        }
+      }
+    }
+
+    @ComparableOperationComparatorMarker
+    class VariableTermComparator private constructor(
+      private val variableName: String
+    ) {
+      fun withNameThat(): StringSubject = assertThat(variableName)
+
+      internal companion object {
+        fun createFrom(operation: ComparableOperation): VariableTermComparator {
+          assertThat(operation.comparisonTypeCase).isEqualTo(ComparisonTypeCase.VARIABLE_TERM)
+          return VariableTermComparator(operation.variableTerm)
+        }
+      }
+    }
   }
 
   private companion object {
@@ -5060,5 +6659,10 @@ class NumericExpressionParserTest {
 
     private fun assertThat(actual: Fraction): FractionSubject =
       assertAbout(::FractionSubject).that(actual)
+
+    private fun assertThat(actual: Real): RealSubject = assertAbout(::RealSubject).that(actual)
+
+    private fun assertThat(actual: ComparableOperationList): ComparableOperationListSubject =
+      assertAbout(::ComparableOperationListSubject).that(actual)
   }
 }
