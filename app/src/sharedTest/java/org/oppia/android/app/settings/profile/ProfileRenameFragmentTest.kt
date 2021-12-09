@@ -70,7 +70,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -256,7 +256,7 @@ class ProfileRenameFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_rename_input)).check(
         matches(
-          TextInputAction.hasErrorText(
+          hasErrorText(
             context.resources.getString(
               R.string.add_profile_error_name_not_unique
             )
@@ -312,7 +312,7 @@ class ProfileRenameFragmentTest {
       onView(withId(R.id.profile_rename_input))
         .check(
           matches(
-            TextInputAction.hasErrorText(
+            hasErrorText(
               context.resources.getString(R.string.add_profile_error_name_only_letters)
             )
           )
@@ -406,7 +406,7 @@ class ProfileRenameFragmentTest {
       onView(withId(R.id.profile_rename_input))
         .check(
           matches(
-            TextInputAction.hasErrorText(
+            hasErrorText(
               context.resources.getString(R.string.add_profile_error_name_not_unique)
             )
           )

@@ -17,7 +17,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:background="@color/generalNavigationBackground"
+      android:background="@color/general_navigation_background"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +67,7 @@
           android:enabled="@{viewModel.inputName.length > 0}"
           android:text="@string/profile_rename_save"
           android:textAllCaps="true"
-          android:textColor="@{viewModel.inputName.length > 0 ? @color/white : @color/submitButtonInactiveText }"
+          android:textColor="@{viewModel.inputName.length > 0 ? @color/white : @color/submit_button_inactive_text }"
           android:textSize="14sp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_rename_input" />
