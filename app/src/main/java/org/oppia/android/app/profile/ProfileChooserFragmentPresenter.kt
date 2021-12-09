@@ -78,7 +78,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    StatusBarColor.statusBarColorUpdate(R.color.profileStatusBar, activity, false)
+    StatusBarColor.statusBarColorUpdate(R.color.profile_status_bar, activity, false)
     binding = ProfileChooserFragmentBinding.inflate(
       inflater,
       container,
