@@ -42,7 +42,7 @@
         android:layout_height="108dp"
         app:srcCompat="@{@drawable/ic_add_profile}"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_circular_image_margin_top_profile_already_added : @dimen/space_0dp}"
-        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_color="@color/avatar_border"
         app:civ_border_width="1dp" />
 
       <LinearLayout

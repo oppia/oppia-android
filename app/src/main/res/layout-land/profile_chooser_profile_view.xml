@@ -40,7 +40,7 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginBottom="8dp"
-        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_color="@color/avatar_border"
         app:civ_border_width="1dp"
         profile:src="@{viewModel.profile.avatar}" />
 
@@ -85,7 +85,7 @@
       android:layout_height="match_parent"
       android:layout_marginTop="@dimen/profile_chooser_profile_view_view_margin_top"
       android:layout_gravity="bottom"
-      android:background="@color/oppiaProfileChooserDivider"
+      android:background="@color/oppia_profile_chooser_divider"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="@+id/profile_chooser_item"
       app:layout_constraintEnd_toEndOf="parent"
