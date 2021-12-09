@@ -177,9 +177,7 @@ class AddProfileActivityTest {
       AddProfileActivity::class.java
     ).use {
       onView(allOf(withId(R.id.add_profile_activity_required_heading_text_view))).check(
-        matches(
-          withText("*" + context.getString(R.string.add_profile_required))
-        )
+        matches(withText("*" + context.getString(R.string.add_profile_required)))
       )
     }
   }
