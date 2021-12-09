@@ -70,6 +70,7 @@ private val COMPARABLE_OPERATION_COMPARATOR: Comparator<ComparableOperation> by 
   // isn't valid until it's fully assembled).
   Comparator.comparing(ComparableOperation::getComparisonTypeCase)
     .thenComparing(ComparableOperation::getIsNegated)
+    .thenComparing(ComparableOperation::getIsInverted)
     .selectAmong(
       ComparableOperation::getComparisonTypeCase,
       COMMUTATIVE_ACCUMULATION to comparingDeferred(
@@ -102,9 +103,6 @@ private val NON_COMMUTATIVE_OPERATION_COMPARATOR: Comparator<NonCommutativeOpera
   Comparator.comparing(NonCommutativeOperation::getOperationTypeCase)
     .selectAmong(
       NonCommutativeOperation::getOperationTypeCase,
-      OperationTypeCase.DIVISION to Comparator.comparing(
-        NonCommutativeOperation::getDivision, NON_COMMUTATIVE_BINARY_OPERATION_COMPARATOR
-      ),
       OperationTypeCase.EXPONENTIATION to Comparator.comparing(
         NonCommutativeOperation::getExponentiation, NON_COMMUTATIVE_BINARY_OPERATION_COMPARATOR
       ),
@@ -184,7 +182,7 @@ private fun ComparableOperation.stabilizeNegation(): ComparableOperation {
           // Negations can be combined for all constituent operations & brought up to the top-level
           // operation.
           val negativeCount = stabilizedOperations.count { it.isNegated } + if (isNegated) 1 else 0
-          val positiveOperations = stabilizedOperations.map { it.positive() }
+          val positiveOperations = stabilizedOperations.map { it.makePositive() }
           toBuilder().apply {
             isNegated = (negativeCount % 2) == 1
             commutativeAccumulation = commutativeAccumulation.toBuilder().apply {
@@ -199,12 +197,6 @@ private fun ComparableOperation.stabilizeNegation(): ComparableOperation {
     NON_COMMUTATIVE_OPERATION -> toBuilder().apply {
       // Negation can't be extracted from commutative operations.
       nonCommutativeOperation = when (nonCommutativeOperation.operationTypeCase) {
-        OperationTypeCase.DIVISION -> nonCommutativeOperation.toBuilder().apply {
-          division = nonCommutativeOperation.division.toBuilder().apply {
-            leftOperand = nonCommutativeOperation.division.leftOperand.stabilizeNegation()
-            rightOperand = nonCommutativeOperation.division.rightOperand.stabilizeNegation()
-          }.build()
-        }.build()
         OperationTypeCase.EXPONENTIATION -> nonCommutativeOperation.toBuilder().apply {
           exponentiation = nonCommutativeOperation.exponentiation.toBuilder().apply {
             leftOperand = nonCommutativeOperation.exponentiation.leftOperand.stabilizeNegation()
@@ -235,12 +227,6 @@ private fun ComparableOperation.sort(): ComparableOperation {
     }.build()
     NON_COMMUTATIVE_OPERATION -> toBuilder().apply {
       nonCommutativeOperation = when (nonCommutativeOperation.operationTypeCase) {
-        OperationTypeCase.DIVISION -> nonCommutativeOperation.toBuilder().apply {
-          division = nonCommutativeOperation.division.toBuilder().apply {
-            leftOperand = nonCommutativeOperation.division.leftOperand.sort()
-            rightOperand = nonCommutativeOperation.division.rightOperand.sort()
-          }.build()
-        }.build()
         OperationTypeCase.EXPONENTIATION -> nonCommutativeOperation.toBuilder().apply {
           exponentiation = nonCommutativeOperation.exponentiation.toBuilder().apply {
             leftOperand = nonCommutativeOperation.exponentiation.leftOperand.sort()
@@ -291,22 +277,15 @@ private fun MathExpression.toComparableOperation(): ComparableOperation {
     BINARY_OPERATION -> when (binaryOperation.operator) {
       BinaryOperator.ADD -> toSummation(isRhsNegative = false)
       BinaryOperator.SUBTRACT -> toSummation(isRhsNegative = true)
-      BinaryOperator.MULTIPLY -> ComparableOperation.newBuilder().apply {
-        commutativeAccumulation = CommutativeAccumulation.newBuilder().apply {
-          accumulationType = AccumulationType.PRODUCT
-          addOperationToProduct(binaryOperation.leftOperand)
-          addOperationToProduct(binaryOperation.rightOperand)
-        }.build()
-      }.build()
-      BinaryOperator.DIVIDE ->
-        toNonCommutativeOperation(NonCommutativeOperation.Builder::setDivision)
+      BinaryOperator.MULTIPLY -> toProduct(isRhsInverted = false)
+      BinaryOperator.DIVIDE -> toProduct(isRhsInverted = true)
       BinaryOperator.EXPONENTIATE ->
         toNonCommutativeOperation(NonCommutativeOperation.Builder::setExponentiation)
       BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null ->
         ComparableOperation.getDefaultInstance()
     }
     UNARY_OPERATION -> when (unaryOperation.operator) {
-      UnaryOperator.NEGATE -> unaryOperation.operand.toComparableOperation().negate()
+      UnaryOperator.NEGATE -> unaryOperation.operand.toComparableOperation().makeNegative()
       UnaryOperator.POSITIVE -> unaryOperation.operand.toComparableOperation()
       UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null ->
         ComparableOperation.getDefaultInstance()
@@ -335,13 +314,22 @@ private fun MathExpression.toSummation(isRhsNegative: Boolean): ComparableOperat
   }.build()
 }
 
+private fun MathExpression.toProduct(isRhsInverted: Boolean): ComparableOperation {
+  return ComparableOperation.newBuilder().apply {
+    commutativeAccumulation = CommutativeAccumulation.newBuilder().apply {
+      accumulationType = AccumulationType.PRODUCT
+      addOperationToProduct(binaryOperation.leftOperand, forceInverse = false)
+      addOperationToProduct(binaryOperation.rightOperand, forceInverse = isRhsInverted)
+    }.build()
+  }.build()
+}
+
 private fun CommutativeAccumulation.Builder.addOperationToSum(
-  expression: MathExpression,
-  forceNegative: Boolean
+  expression: MathExpression, forceNegative: Boolean
 ) {
-  // If the whole operation is negative, carry it to the left-hand side of the operation.
   when (expression.binaryOperation.operator) {
     BinaryOperator.ADD -> {
+      // If the whole operation is negative, carry it to the left-hand side of the operation.
       addOperationToSum(expression.binaryOperation.leftOperand, forceNegative)
       addOperationToSum(expression.binaryOperation.rightOperand, forceNegative = false)
     }
@@ -350,17 +338,28 @@ private fun CommutativeAccumulation.Builder.addOperationToSum(
       addOperationToSum(expression.binaryOperation.rightOperand, forceNegative = true)
     }
     else -> if (forceNegative) {
-      addCombinedOperations(expression.toComparableOperation().negate())
+      addCombinedOperations(expression.toComparableOperation().makeNegative())
     } else addCombinedOperations(expression.toComparableOperation())
   }
 }
 
-private fun CommutativeAccumulation.Builder.addOperationToProduct(expression: MathExpression) {
-  // This implies a binary operation.
-  if (expression.binaryOperation.operator == BinaryOperator.MULTIPLY) {
-    addOperationToProduct(expression.binaryOperation.leftOperand)
-    addOperationToProduct(expression.binaryOperation.rightOperand)
-  } else addCombinedOperations(expression.toComparableOperation())
+private fun CommutativeAccumulation.Builder.addOperationToProduct(
+  expression: MathExpression, forceInverse: Boolean
+) {
+  when (expression.binaryOperation.operator) {
+    BinaryOperator.MULTIPLY -> {
+      // If the whole operation is inverted, carry it to the left-hand side of the operation.
+      addOperationToProduct(expression.binaryOperation.leftOperand, forceInverse)
+      addOperationToProduct(expression.binaryOperation.rightOperand, forceInverse = false)
+    }
+    BinaryOperator.DIVIDE -> {
+      addOperationToProduct(expression.binaryOperation.leftOperand, forceInverse)
+      addOperationToProduct(expression.binaryOperation.rightOperand, forceInverse = true)
+    }
+    else -> if (forceInverse) {
+      addCombinedOperations(expression.toComparableOperation().makeInverted())
+    } else addCombinedOperations(expression.toComparableOperation())
+  }
 }
 
 private fun MathExpression.toNonCommutativeOperation(
@@ -380,11 +379,14 @@ private fun MathExpression.toNonCommutativeOperation(
   }.build()
 }
 
-private fun ComparableOperation.positive(): ComparableOperation =
+private fun ComparableOperation.makePositive(): ComparableOperation =
   toBuilder().apply { isNegated = false }.build()
 
-private fun ComparableOperation.negate(): ComparableOperation =
+private fun ComparableOperation.makeNegative(): ComparableOperation =
   toBuilder().apply { isNegated = true }.build()
+
+private fun ComparableOperation.makeInverted(): ComparableOperation =
+  toBuilder().apply { isInverted = true }.build()
 
 // TODO: move these to the UI layer & have them utilize non-translatable strings.
 private val numberFormat by lazy { NumberFormat.getNumberInstance(Locale.US) }

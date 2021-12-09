@@ -90,17 +90,34 @@ message Real {
   }
 }
 
+// Represents a list of comparable mathematics operations. 'Comparable' here means that this
+// structure provides a trivial way to compare commutative operations (i.e. by extracting terms from
+// multiple subsequent commutative operations into lists that can be deterministically sorted). This
+// structure is meant to provide a means to compare two expressions without considering
+// associativity or commutativity (though the latter requires the operation lists stored within this
+// structure to be sorted before using standard proto equals checking).
 message ComparableOperationList {
   message ComparableOperation {
+    // Treat this operation (e.g. x) as negated (e.g. -x).
     bool is_negated = 1;
 
+    // Treat this operation (e.g. x) as a multiplicative inverse (e.g. 1/x).
+    bool is_inverted = 2;
+
     oneof comparison_type {
-      CommutativeAccumulation commutative_accumulation = 2;
-      NonCommutativeOperation non_commutative_operation = 3;
-      Real constant_term = 4;
-      string variable_term = 5;
+      CommutativeAccumulation commutative_accumulation = 3;
+      NonCommutativeOperation non_commutative_operation = 4;
+      Real constant_term = 5;
+      string variable_term = 6;
     }
   }
+  // Represents an accumulation of operations (such as a summation or product). This helps simplify
+  // comparison across commutative boundaries by collecting terms into sortable lists, such as the
+  // expression 1+2+3 becoming [1,2,3] and trivially comparable to [3,2,1] from 3+2+1.
+  //
+  // Subsequent subtractions are treated as additions with each term arithmetically negated (i.e.
+  // f(x)=-x). Similarly, divisions are considered multiplications with each divisor being
+  // multiplicatively inverted (i.e. the reciprocal function: f(x)=1/x).
   message CommutativeAccumulation {
     enum AccumulationType {
       ACCUMULATION_TYPE_UNSPECIFIED = 0;
@@ -113,9 +130,8 @@ message ComparableOperationList {
   }
   message NonCommutativeOperation {
     oneof operation_type {
-      BinaryOperation division = 1;
-      BinaryOperation exponentiation = 2;
-      ComparableOperation square_root = 3;
+      BinaryOperation exponentiation = 1;
+      ComparableOperation square_root = 2;
     }
 
     message BinaryOperation {

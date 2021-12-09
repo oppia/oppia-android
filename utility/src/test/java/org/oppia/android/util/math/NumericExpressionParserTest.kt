@@ -4703,6 +4703,7 @@ class NumericExpressionParserTest {
     val exp1 = parseNumericExpressionWithAllErrors("1")
     assertThat(exp1.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       constantTerm {
         withValueThat().isIntegerThat().isEqualTo(1)
       }
@@ -4711,6 +4712,7 @@ class NumericExpressionParserTest {
     val exp2 = parseNumericExpressionWithAllErrors("-1")
     assertThat(exp2.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
+      hasInvertedPropertyThat().isFalse()
       constantTerm {
         withValueThat().isIntegerThat().isEqualTo(1)
       }
@@ -4719,22 +4721,26 @@ class NumericExpressionParserTest {
     val exp3 = parseNumericExpressionWithAllErrors("1+3+4")
     assertThat(exp3.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
@@ -4745,22 +4751,26 @@ class NumericExpressionParserTest {
     val exp4 = parseNumericExpressionWithAllErrors("-1-2-3")
     assertThat(exp4.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
@@ -4771,22 +4781,26 @@ class NumericExpressionParserTest {
     val exp5 = parseNumericExpressionWithAllErrors("1+2-3")
     assertThat(exp5.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
@@ -4797,22 +4811,26 @@ class NumericExpressionParserTest {
     val exp6 = parseNumericExpressionWithAllErrors("2*3*4")
     assertThat(exp6.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
@@ -4823,20 +4841,24 @@ class NumericExpressionParserTest {
     val exp7 = parseNumericExpressionWithAllErrors("1-2*3")
     assertThat(exp7.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(2)
         index(0) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           commutativeAccumulationWithType(PRODUCT) {
             hasOperandCountThat().isEqualTo(2)
             index(0) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             index(1) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(3)
               }
@@ -4845,6 +4867,7 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
@@ -4855,20 +4878,24 @@ class NumericExpressionParserTest {
     val exp8 = parseNumericExpressionWithAllErrors("2*3-4")
     assertThat(exp8.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(2)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           commutativeAccumulationWithType(PRODUCT) {
             hasOperandCountThat().isEqualTo(2)
             index(0) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             index(1) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(3)
               }
@@ -4877,6 +4904,7 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
@@ -4887,20 +4915,24 @@ class NumericExpressionParserTest {
     val exp9 = parseNumericExpressionWithAllErrors("1+2*3-4+8*7*6-9")
     assertThat(exp9.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(5)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           commutativeAccumulationWithType(PRODUCT) {
             hasOperandCountThat().isEqualTo(2)
             index(0) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
             index(1) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(3)
               }
@@ -4909,22 +4941,26 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           commutativeAccumulationWithType(PRODUCT) {
             hasOperandCountThat().isEqualTo(3)
             index(0) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(6)
               }
             }
             index(1) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(7)
               }
             }
             index(2) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(8)
               }
@@ -4933,18 +4969,21 @@ class NumericExpressionParserTest {
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(3) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
         index(4) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(9)
           }
@@ -4955,32 +4994,28 @@ class NumericExpressionParserTest {
     val exp10 = parseNumericExpressionWithAllErrors("2/3/4")
     assertThat(exp10.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
-      nonCommutativeOperation {
-        division {
-          leftOperand {
-            hasNegatedPropertyThat().isFalse()
-            nonCommutativeOperation {
-              division {
-                leftOperand {
-                  hasNegatedPropertyThat().isFalse()
-                  constantTerm {
-                    withValueThat().isIntegerThat().isEqualTo(2)
-                  }
-                }
-                rightOperand {
-                  hasNegatedPropertyThat().isFalse()
-                  constantTerm {
-                    withValueThat().isIntegerThat().isEqualTo(3)
-                  }
-                }
-              }
-            }
+      hasInvertedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
-          rightOperand {
-            hasNegatedPropertyThat().isFalse()
-            constantTerm {
-              withValueThat().isIntegerThat().isEqualTo(4)
-            }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
       }
@@ -4989,26 +5024,31 @@ class NumericExpressionParserTest {
     val exp11 = parseNumericExpressionWithoutOptionalErrors("2^3^4")
     assertThat(exp11.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       nonCommutativeOperation {
         exponentiation {
           leftOperand {
             hasNegatedPropertyThat().isFalse()
+            hasInvertedPropertyThat().isFalse()
             constantTerm {
               withValueThat().isIntegerThat().isEqualTo(2)
             }
           }
           rightOperand {
             hasNegatedPropertyThat().isFalse()
+            hasInvertedPropertyThat().isFalse()
             nonCommutativeOperation {
               exponentiation {
                 leftOperand {
                   hasNegatedPropertyThat().isFalse()
+                  hasInvertedPropertyThat().isFalse()
                   constantTerm {
                     withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
                 rightOperand {
                   hasNegatedPropertyThat().isFalse()
+                  hasInvertedPropertyThat().isFalse()
                   constantTerm {
                     withValueThat().isIntegerThat().isEqualTo(4)
                   }
@@ -5023,35 +5063,40 @@ class NumericExpressionParserTest {
     val exp12 = parseNumericExpressionWithAllErrors("1+2/3+3")
     assertThat(exp12.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
-          nonCommutativeOperation {
-            division {
-              leftOperand {
-                hasNegatedPropertyThat().isFalse()
-                constantTerm {
-                  withValueThat().isIntegerThat().isEqualTo(2)
-                }
+          hasInvertedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
-              rightOperand {
-                hasNegatedPropertyThat().isFalse()
-                constantTerm {
-                  withValueThat().isIntegerThat().isEqualTo(3)
-                }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isTrue()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
@@ -5062,35 +5107,40 @@ class NumericExpressionParserTest {
     val exp13 = parseNumericExpressionWithAllErrors("1+(2/3)+3")
     assertThat(exp13.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
-          nonCommutativeOperation {
-            division {
-              leftOperand {
-                hasNegatedPropertyThat().isFalse()
-                constantTerm {
-                  withValueThat().isIntegerThat().isEqualTo(2)
-                }
+          hasInvertedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(2)
               }
-              rightOperand {
-                hasNegatedPropertyThat().isFalse()
-                constantTerm {
-                  withValueThat().isIntegerThat().isEqualTo(3)
-                }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isTrue()
+              constantTerm {
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
@@ -5101,20 +5151,24 @@ class NumericExpressionParserTest {
     val exp14 = parseNumericExpressionWithAllErrors("1+2^3+3")
     assertThat(exp14.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           nonCommutativeOperation {
             exponentiation {
               leftOperand {
                 hasNegatedPropertyThat().isFalse()
+                hasInvertedPropertyThat().isFalse()
                 constantTerm {
                   withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
               rightOperand {
                 hasNegatedPropertyThat().isFalse()
+                hasInvertedPropertyThat().isFalse()
                 constantTerm {
                   withValueThat().isIntegerThat().isEqualTo(3)
                 }
@@ -5124,12 +5178,14 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
@@ -5140,20 +5196,24 @@ class NumericExpressionParserTest {
     val exp15 = parseNumericExpressionWithAllErrors("1+(2^3)+3")
     assertThat(exp15.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           nonCommutativeOperation {
             exponentiation {
               leftOperand {
                 hasNegatedPropertyThat().isFalse()
+                hasInvertedPropertyThat().isFalse()
                 constantTerm {
                   withValueThat().isIntegerThat().isEqualTo(2)
                 }
               }
               rightOperand {
                 hasNegatedPropertyThat().isFalse()
+                hasInvertedPropertyThat().isFalse()
                 constantTerm {
                   withValueThat().isIntegerThat().isEqualTo(3)
                 }
@@ -5163,12 +5223,14 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
@@ -5176,48 +5238,38 @@ class NumericExpressionParserTest {
       }
     }
 
-    // 2*3/4*7 is the same as ((2*3)/4)*7 due to precedence and associativity, so there's not much
-    // reordering possible.
     val exp16 = parseNumericExpressionWithAllErrors("2*3/4*7")
     assertThat(exp16.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
-        hasOperandCountThat().isEqualTo(2)
+        hasOperandCountThat().isEqualTo(4)
         index(0) {
           hasNegatedPropertyThat().isFalse()
-          nonCommutativeOperation {
-            division {
-              leftOperand {
-                hasNegatedPropertyThat().isFalse()
-                commutativeAccumulationWithType(PRODUCT) {
-                  hasOperandCountThat().isEqualTo(2)
-                  index(0) {
-                    hasNegatedPropertyThat().isFalse()
-                    constantTerm {
-                      withValueThat().isIntegerThat().isEqualTo(2)
-                    }
-                  }
-                  index(1) {
-                    hasNegatedPropertyThat().isFalse()
-                    constantTerm {
-                      withValueThat().isIntegerThat().isEqualTo(3)
-                    }
-                  }
-                }
-              }
-              rightOperand {
-                hasNegatedPropertyThat().isFalse()
-                constantTerm {
-                  withValueThat().isIntegerThat().isEqualTo(4)
-                }
-              }
-            }
+          hasInvertedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(7)
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
       }
@@ -5226,37 +5278,35 @@ class NumericExpressionParserTest {
     val exp17 = parseNumericExpressionWithAllErrors("2*(3/4)*7")
     assertThat(exp17.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
-        hasOperandCountThat().isEqualTo(3)
+        hasOperandCountThat().isEqualTo(4)
         index(0) {
           hasNegatedPropertyThat().isFalse()
-          nonCommutativeOperation {
-            division {
-              leftOperand {
-                hasNegatedPropertyThat().isFalse()
-                constantTerm {
-                  withValueThat().isIntegerThat().isEqualTo(3)
-                }
-              }
-              rightOperand {
-                hasNegatedPropertyThat().isFalse()
-                constantTerm {
-                  withValueThat().isIntegerThat().isEqualTo(4)
-                }
-              }
-            }
-          }
-        }
-        index(1) {
-          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(7)
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isTrue()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
       }
@@ -5265,13 +5315,16 @@ class NumericExpressionParserTest {
     val exp18 = parseNumericExpressionWithAllErrors("-3*sqrt(2)")
     assertThat(exp18.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
         hasOperandCountThat().isEqualTo(2)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           nonCommutativeOperation {
             squareRootWithArgument {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               constantTerm {
                 withValueThat().isIntegerThat().isEqualTo(2)
               }
@@ -5280,6 +5333,7 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
@@ -5290,34 +5344,40 @@ class NumericExpressionParserTest {
     val exp19 = parseNumericExpressionWithAllErrors("1+(2+(3+(4+5)))")
     assertThat(exp19.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(5)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         index(3) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
         index(4) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(5)
           }
@@ -5328,34 +5388,40 @@ class NumericExpressionParserTest {
     val exp20 = parseNumericExpressionWithAllErrors("2*(3*(4*(5*6)))")
     assertThat(exp20.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
         hasOperandCountThat().isEqualTo(5)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
         index(3) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(5)
           }
         }
         index(4) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(6)
           }
@@ -5366,6 +5432,7 @@ class NumericExpressionParserTest {
     val exp21 = parseAlgebraicExpressionWithAllErrors("x")
     assertThat(exp21.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       variableTerm {
         withNameThat().isEqualTo("x")
       }
@@ -5374,6 +5441,7 @@ class NumericExpressionParserTest {
     val exp22 = parseAlgebraicExpressionWithAllErrors("-x")
     assertThat(exp22.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
+      hasInvertedPropertyThat().isFalse()
       variableTerm {
         withNameThat().isEqualTo("x")
       }
@@ -5382,22 +5450,26 @@ class NumericExpressionParserTest {
     val exp23 = parseAlgebraicExpressionWithAllErrors("1+x+y")
     assertThat(exp23.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("x")
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("y")
           }
@@ -5408,22 +5480,26 @@ class NumericExpressionParserTest {
     val exp24 = parseAlgebraicExpressionWithAllErrors("-1-x-y")
     assertThat(exp24.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("x")
           }
         }
         index(2) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("y")
           }
@@ -5434,22 +5510,26 @@ class NumericExpressionParserTest {
     val exp25 = parseAlgebraicExpressionWithAllErrors("1+x-y")
     assertThat(exp25.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("x")
           }
         }
         index(2) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("y")
           }
@@ -5460,22 +5540,26 @@ class NumericExpressionParserTest {
     val exp26 = parseAlgebraicExpressionWithAllErrors("2xy")
     assertThat(exp26.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("x")
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("y")
           }
@@ -5486,20 +5570,24 @@ class NumericExpressionParserTest {
     val exp27 = parseAlgebraicExpressionWithAllErrors("1-xy")
     assertThat(exp27.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(2)
         index(0) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           commutativeAccumulationWithType(PRODUCT) {
             hasOperandCountThat().isEqualTo(2)
             index(0) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("x")
               }
             }
             index(1) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("y")
               }
@@ -5508,6 +5596,7 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
@@ -5518,20 +5607,24 @@ class NumericExpressionParserTest {
     val exp28 = parseAlgebraicExpressionWithAllErrors("xy-4")
     assertThat(exp28.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(2)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           commutativeAccumulationWithType(PRODUCT) {
             hasOperandCountThat().isEqualTo(2)
             index(0) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("x")
               }
             }
             index(1) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("y")
               }
@@ -5540,6 +5633,7 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
@@ -5550,20 +5644,24 @@ class NumericExpressionParserTest {
     val exp29 = parseAlgebraicExpressionWithAllErrors("1+xy-4+yz-9")
     assertThat(exp29.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(5)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           commutativeAccumulationWithType(PRODUCT) {
             hasOperandCountThat().isEqualTo(2)
             index(0) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("x")
               }
             }
             index(1) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("y")
               }
@@ -5572,16 +5670,19 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           commutativeAccumulationWithType(PRODUCT) {
             hasOperandCountThat().isEqualTo(2)
             index(0) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("y")
               }
             }
             index(1) {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("z")
               }
@@ -5590,18 +5691,21 @@ class NumericExpressionParserTest {
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(3) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
         index(4) {
           hasNegatedPropertyThat().isTrue()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(9)
           }
@@ -5612,32 +5716,28 @@ class NumericExpressionParserTest {
     val exp30 = parseAlgebraicExpressionWithAllErrors("2/x/y")
     assertThat(exp30.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
-      nonCommutativeOperation {
-        division {
-          leftOperand {
-            hasNegatedPropertyThat().isFalse()
-            nonCommutativeOperation {
-              division {
-                leftOperand {
-                  hasNegatedPropertyThat().isFalse()
-                  constantTerm {
-                    withValueThat().isIntegerThat().isEqualTo(2)
-                  }
-                }
-                rightOperand {
-                  hasNegatedPropertyThat().isFalse()
-                  variableTerm {
-                    withNameThat().isEqualTo("x")
-                  }
-                }
-              }
-            }
+      hasInvertedPropertyThat().isFalse()
+      commutativeAccumulationWithType(PRODUCT) {
+        hasOperandCountThat().isEqualTo(3)
+        index(0) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
-          rightOperand {
-            hasNegatedPropertyThat().isFalse()
-            variableTerm {
-              withNameThat().isEqualTo("y")
-            }
+        }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isTrue()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isTrue()
+          variableTerm {
+            withNameThat().isEqualTo("y")
           }
         }
       }
@@ -5646,26 +5746,31 @@ class NumericExpressionParserTest {
     val exp31 = parseAlgebraicExpressionWithoutOptionalErrors("x^3^4")
     assertThat(exp31.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       nonCommutativeOperation {
         exponentiation {
           leftOperand {
             hasNegatedPropertyThat().isFalse()
+            hasInvertedPropertyThat().isFalse()
             variableTerm {
               withNameThat().isEqualTo("x")
             }
           }
           rightOperand {
             hasNegatedPropertyThat().isFalse()
+            hasInvertedPropertyThat().isFalse()
             nonCommutativeOperation {
               exponentiation {
                 leftOperand {
                   hasNegatedPropertyThat().isFalse()
+                  hasInvertedPropertyThat().isFalse()
                   constantTerm {
                     withValueThat().isIntegerThat().isEqualTo(3)
                   }
                 }
                 rightOperand {
                   hasNegatedPropertyThat().isFalse()
+                  hasInvertedPropertyThat().isFalse()
                   constantTerm {
                     withValueThat().isIntegerThat().isEqualTo(4)
                   }
@@ -5680,35 +5785,40 @@ class NumericExpressionParserTest {
     val exp32 = parseAlgebraicExpressionWithAllErrors("1+x/y+z")
     assertThat(exp32.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
-          nonCommutativeOperation {
-            division {
-              leftOperand {
-                hasNegatedPropertyThat().isFalse()
-                variableTerm {
-                  withNameThat().isEqualTo("x")
-                }
+          hasInvertedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("x")
               }
-              rightOperand {
-                hasNegatedPropertyThat().isFalse()
-                variableTerm {
-                  withNameThat().isEqualTo("y")
-                }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isTrue()
+              variableTerm {
+                withNameThat().isEqualTo("y")
               }
             }
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("z")
           }
@@ -5719,35 +5829,40 @@ class NumericExpressionParserTest {
     val exp33 = parseAlgebraicExpressionWithAllErrors("1+(x/y)+z")
     assertThat(exp33.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
-          nonCommutativeOperation {
-            division {
-              leftOperand {
-                hasNegatedPropertyThat().isFalse()
-                variableTerm {
-                  withNameThat().isEqualTo("x")
-                }
+          hasInvertedPropertyThat().isFalse()
+          commutativeAccumulationWithType(PRODUCT) {
+            hasOperandCountThat().isEqualTo(2)
+            index(0) {
+              hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
+              variableTerm {
+                withNameThat().isEqualTo("x")
               }
-              rightOperand {
-                hasNegatedPropertyThat().isFalse()
-                variableTerm {
-                  withNameThat().isEqualTo("y")
-                }
+            }
+            index(1) {
+              hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isTrue()
+              variableTerm {
+                withNameThat().isEqualTo("y")
               }
             }
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("z")
           }
@@ -5758,20 +5873,24 @@ class NumericExpressionParserTest {
     val exp34 = parseAlgebraicExpressionWithAllErrors("1+x^3+y")
     assertThat(exp34.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           nonCommutativeOperation {
             exponentiation {
               leftOperand {
                 hasNegatedPropertyThat().isFalse()
+                hasInvertedPropertyThat().isFalse()
                 variableTerm {
                   withNameThat().isEqualTo("x")
                 }
               }
               rightOperand {
                 hasNegatedPropertyThat().isFalse()
+                hasInvertedPropertyThat().isFalse()
                 constantTerm {
                   withValueThat().isIntegerThat().isEqualTo(3)
                 }
@@ -5781,12 +5900,14 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("y")
           }
@@ -5797,20 +5918,24 @@ class NumericExpressionParserTest {
     val exp35 = parseAlgebraicExpressionWithAllErrors("1+(x^3)+y")
     assertThat(exp35.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(3)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           nonCommutativeOperation {
             exponentiation {
               leftOperand {
                 hasNegatedPropertyThat().isFalse()
+                hasInvertedPropertyThat().isFalse()
                 variableTerm {
                   withNameThat().isEqualTo("x")
                 }
               }
               rightOperand {
                 hasNegatedPropertyThat().isFalse()
+                hasInvertedPropertyThat().isFalse()
                 constantTerm {
                   withValueThat().isIntegerThat().isEqualTo(3)
                 }
@@ -5820,12 +5945,14 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("y")
           }
@@ -5833,48 +5960,38 @@ class NumericExpressionParserTest {
       }
     }
 
-    // 2*3/4*7 is the same as ((2*3)/4)*7 due to precedence and associativity, so there's not much
-    // reordering possible.
     val exp36 = parseAlgebraicExpressionWithAllErrors("2*x/y*z")
     assertThat(exp36.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
-        hasOperandCountThat().isEqualTo(2)
+        hasOperandCountThat().isEqualTo(4)
         index(0) {
           hasNegatedPropertyThat().isFalse()
-          nonCommutativeOperation {
-            division {
-              leftOperand {
-                hasNegatedPropertyThat().isFalse()
-                commutativeAccumulationWithType(PRODUCT) {
-                  hasOperandCountThat().isEqualTo(2)
-                  index(0) {
-                    hasNegatedPropertyThat().isFalse()
-                    constantTerm {
-                      withValueThat().isIntegerThat().isEqualTo(2)
-                    }
-                  }
-                  index(1) {
-                    hasNegatedPropertyThat().isFalse()
-                    variableTerm {
-                      withNameThat().isEqualTo("x")
-                    }
-                  }
-                }
-              }
-              rightOperand {
-                hasNegatedPropertyThat().isFalse()
-                variableTerm {
-                  withNameThat().isEqualTo("y")
-                }
-              }
-            }
+          hasInvertedPropertyThat().isFalse()
+          constantTerm {
+            withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
+        index(2) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("z")
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isTrue()
+          variableTerm {
+            withNameThat().isEqualTo("y")
           }
         }
       }
@@ -5883,37 +6000,35 @@ class NumericExpressionParserTest {
     val exp37 = parseAlgebraicExpressionWithAllErrors("2*(x/y)*z")
     assertThat(exp37.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
-        hasOperandCountThat().isEqualTo(3)
+        hasOperandCountThat().isEqualTo(4)
         index(0) {
           hasNegatedPropertyThat().isFalse()
-          nonCommutativeOperation {
-            division {
-              leftOperand {
-                hasNegatedPropertyThat().isFalse()
-                variableTerm {
-                  withNameThat().isEqualTo("x")
-                }
-              }
-              rightOperand {
-                hasNegatedPropertyThat().isFalse()
-                variableTerm {
-                  withNameThat().isEqualTo("y")
-                }
-              }
-            }
-          }
-        }
-        index(1) {
-          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
+        index(1) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
+          variableTerm {
+            withNameThat().isEqualTo("x")
+          }
+        }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("z")
+          }
+        }
+        index(3) {
+          hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isTrue()
+          variableTerm {
+            withNameThat().isEqualTo("y")
           }
         }
       }
@@ -5922,13 +6037,16 @@ class NumericExpressionParserTest {
     val exp38 = parseAlgebraicExpressionWithAllErrors("-2*sqrt(x)")
     assertThat(exp38.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
         hasOperandCountThat().isEqualTo(2)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           nonCommutativeOperation {
             squareRootWithArgument {
               hasNegatedPropertyThat().isFalse()
+              hasInvertedPropertyThat().isFalse()
               variableTerm {
                 withNameThat().isEqualTo("x")
               }
@@ -5937,6 +6055,7 @@ class NumericExpressionParserTest {
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
@@ -5947,34 +6066,40 @@ class NumericExpressionParserTest {
     val exp39 = parseAlgebraicExpressionWithAllErrors("1+(x+(3+(z+y)))")
     assertThat(exp39.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
         hasOperandCountThat().isEqualTo(5)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(1)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("x")
           }
         }
         index(3) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("y")
           }
         }
         index(4) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("z")
           }
@@ -5985,34 +6110,40 @@ class NumericExpressionParserTest {
     val exp40 = parseAlgebraicExpressionWithAllErrors("2*(x*(4*(zy)))")
     assertThat(exp40.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
+      hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
         hasOperandCountThat().isEqualTo(5)
         index(0) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(2)
           }
         }
         index(1) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           constantTerm {
             withValueThat().isIntegerThat().isEqualTo(4)
           }
         }
         index(2) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("x")
           }
         }
         index(3) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("y")
           }
         }
         index(4) {
           hasNegatedPropertyThat().isFalse()
+          hasInvertedPropertyThat().isFalse()
           variableTerm {
             withNameThat().isEqualTo("z")
           }
@@ -6055,7 +6186,11 @@ class NumericExpressionParserTest {
 
     val list17 = createComparableOperationListFromNumericExpression("2*3/4")
     val list18 = createComparableOperationListFromNumericExpression("3/4*2")
-    assertThat(list17).isNotEqualTo(list18)
+    assertThat(list17).isEqualTo(list18)
+
+    val list45 = createComparableOperationListFromNumericExpression("2*3/4")
+    val list46 = createComparableOperationListFromNumericExpression("2*3*4")
+    assertThat(list45).isNotEqualTo(list46)
 
     val list19 = createComparableOperationListFromNumericExpression("2*3/4")
     val list20 = createComparableOperationListFromNumericExpression("2*4/3")
@@ -6063,7 +6198,7 @@ class NumericExpressionParserTest {
 
     val list21 = createComparableOperationListFromNumericExpression("2*3/4*7")
     val list22 = createComparableOperationListFromNumericExpression("3/4*7*2")
-    assertThat(list21).isNotEqualTo(list22)
+    assertThat(list21).isEqualTo(list22)
 
     val list23 = createComparableOperationListFromNumericExpression("2*3/4*7")
     val list24 = createComparableOperationListFromNumericExpression("7*(3*2/4)")
@@ -6071,7 +6206,7 @@ class NumericExpressionParserTest {
 
     val list25 = createComparableOperationListFromNumericExpression("2*3/4*7")
     val list26 = createComparableOperationListFromNumericExpression("7*3*2/4")
-    assertThat(list25).isNotEqualTo(list26)
+    assertThat(list25).isEqualTo(list26)
 
     val list27 = createComparableOperationListFromNumericExpression("-2*3")
     val list28 = createComparableOperationListFromNumericExpression("3*-2")
@@ -6432,6 +6567,8 @@ class NumericExpressionParserTest {
     ) {
       fun hasNegatedPropertyThat(): BooleanSubject = assertThat(operation.isNegated)
 
+      fun hasInvertedPropertyThat(): BooleanSubject = assertThat(operation.isInverted)
+
       fun commutativeAccumulationWithType(
         type: ComparableOperationList.CommutativeAccumulation.AccumulationType,
         init: CommutativeAccumulationComparator.() -> Unit
@@ -6487,11 +6624,6 @@ class NumericExpressionParserTest {
     class NonCommutativeOperationComparator private constructor(
       private val operation: ComparableOperationList.NonCommutativeOperation
     ) {
-      fun division(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-        verifyTypeAs(ComparableOperationList.NonCommutativeOperation.OperationTypeCase.DIVISION)
-        return BinaryOperationComparator.createFrom(operation.division).also(init)
-      }
-
       fun exponentiation(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
         verifyTypeAs(
           ComparableOperationList.NonCommutativeOperation.OperationTypeCase.EXPONENTIATION
