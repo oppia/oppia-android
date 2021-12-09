@@ -69,7 +69,7 @@ class AdministratorControlsViewModel @Inject constructor(
 //      AdministratorControlsGeneralViewModel()
 //    )
 //    itemViewModelList.add(
-//      AdministratadorControlsProfileViewModel(
+//      AdministratorControlsProfileViewModel(
 //        routeToProfileListListener,
 //        loadProfileListListener
 //      )
