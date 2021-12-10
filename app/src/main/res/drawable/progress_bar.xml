@@ -6,14 +6,14 @@
       <solid android:color="@color/white" />
       <stroke
         android:width="1dp"
-        android:color="@color/colorPrimary" />
+        android:color="@color/oppia_primary" />
     </shape>
   </item>
   <item android:id="@+id/progress">
     <scale android:scaleWidth="100%">
       <shape>
         <corners android:radius="8dp" />
-        <solid android:color="@color/colorPrimary" />
+        <solid android:color="@color/oppia_primary" />
       </shape>
     </scale>
   </item>

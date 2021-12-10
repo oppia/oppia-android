@@ -49,7 +49,7 @@
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/oppiaBrownDark"
+        android:background="@color/oppia_brown_dark"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
         android:maxLines="3"
