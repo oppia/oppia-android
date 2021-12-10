@@ -1,6 +1,7 @@
 package org.oppia.android.app.administratorcontrols
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,8 +24,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
   private lateinit var lastLoadedFragment: String
-  private lateinit var binding: AdministratorControlsActivityBinding
+  private val ADMINISTRATOR_CONTROLS_BACKSTACK: String? = null//"ADMINISTRATOR_CONTROLS_BACKSTACK"
 
+  private lateinit var binding: AdministratorControlsActivityBinding
   fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
     binding = DataBindingUtil.setContentView(
       activity,
@@ -42,7 +44,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     }
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_placeholder,
-      AdministratorControlsFragment.newInstance(isMultipane)
+      AdministratorControlsFragment.newInstance(isMultipane),
+      ADMINISTRATOR_CONTROLS_BACKSTACK
     ).commitNow()
     if (isMultipane) {
       when (lastLoadedFragment) {
@@ -80,7 +83,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
-      ProfileListFragment.newInstance(isMultipane)
+      ProfileListFragment.newInstance(isMultipane),
+      ADMINISTRATOR_CONTROLS_BACKSTACK
     ).commitNow()
   }
 
@@ -89,7 +93,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
-      AppVersionFragment()
+      AppVersionFragment(),
+      ADMINISTRATOR_CONTROLS_BACKSTACK
     ).commitNow()
   }
 
@@ -106,17 +111,27 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       lastLoadedFragment = PROFILE_EDIT_FRAGMENT
       binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
       val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
-      activity.supportFragmentManager.beginTransaction()
-        .add(R.id.administrator_controls_fragment_multipane_placeholder, fragment)
-        .commitNow()
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.administrator_controls_fragment_multipane_placeholder,
+        fragment,
+        ADMINISTRATOR_CONTROLS_BACKSTACK
+      ).commitNow()
     }
   }
 
+  val TAG = "tag"
   fun handleOnBackPressed() {
-    if (activity.supportFragmentManager.backStackEntryCount == 1) {
-      activity.finish()
-    } else {
+    var b = activity.supportFragmentManager.fragments.removeLast()
+    var c = activity.supportFragmentManager.fragments
+    Log.i(TAG, "handleOnBackPressed: $b\n$c")
+  }
 
+  fun handleOnResume() {
+    activity.supportFragmentManager.addOnBackStackChangedListener {
+      Log.i(
+        TAG,
+        "handleOnResume:\n ************************************************ back stack changed\n *********************************************************************"
+      )
     }
   }
 
