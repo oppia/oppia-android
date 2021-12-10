@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/app_information_text_view"
-      style="@style/Caption"
+      style="@style/CaptionViewStart"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
       android:paddingStart="16dp"
@@ -31,7 +31,7 @@
 
     <TextView
       android:id="@+id/app_version_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onAppVersionClicked()}"

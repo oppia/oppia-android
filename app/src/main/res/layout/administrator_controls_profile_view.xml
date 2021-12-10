@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/profile_management_text_view"
-      style="@style/Heading5"
+      style="@style/Heading5ViewStart"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
       android:paddingStart="16dp"
