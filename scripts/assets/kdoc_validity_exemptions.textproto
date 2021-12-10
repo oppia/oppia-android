@@ -355,8 +355,6 @@ exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/Drawa
 exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/EspressoTestsMatchers.kt"
 exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/OrientationChangeAction.kt"
 exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt"
-exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/ProfileProgressSpanCount.kt"
-exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/player/split/PlayerSplitScreenTesting.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/api/ClassroomService.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/api/ConceptCardService.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/api/ExplorationService.kt"
