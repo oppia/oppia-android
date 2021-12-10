@@ -123,7 +123,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun handleOnBackPressed() {
     var b = activity.supportFragmentManager.fragments.removeLast()
     var c = activity.supportFragmentManager.fragments
-    var d= activity.supportFragmentManager.backStackEntryCount
+    var d = activity.supportFragmentManager.backStackEntryCount
     Log.i(TAG, "handleOnBackPressed: $b\n$c")
   }
 
