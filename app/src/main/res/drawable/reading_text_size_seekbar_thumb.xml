@@ -4,7 +4,7 @@
       <size
         android:width="12dp"
         android:height="12dp" />
-      <solid android:color="@color/oppiaPrimaryLight"/>
+      <solid android:color="@color/oppia_primary_light"/>
     </shape>
   </item>
 </layer-list>
