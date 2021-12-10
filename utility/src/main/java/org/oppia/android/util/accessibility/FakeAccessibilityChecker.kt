@@ -12,6 +12,7 @@ class FakeAccessibilityChecker @Inject constructor() : AccessibilityChecker {
 
   override fun isScreenReaderEnabled(): Boolean = isScreenReaderEnabled
 
+  /** Returns announcement. */
   fun getAnnouncement(): CharSequence? = announcement
 
   /**
