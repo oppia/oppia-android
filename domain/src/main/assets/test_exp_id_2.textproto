@@ -457,7 +457,7 @@ states {
         outcome {
           dest_state_name: "ItemSelectionMinOne"
           feedback {
-            html: "<p>Correct! Eagles can sustain flight.</p>"
+            html: ""
             content_id: "feedback_1"
           }
         }

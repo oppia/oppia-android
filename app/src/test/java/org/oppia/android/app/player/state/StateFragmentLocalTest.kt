@@ -131,6 +131,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityChecker
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
@@ -192,6 +193,9 @@ class StateFragmentLocalTest {
   lateinit var editTextInputAction: EditTextInputAction
 
   @Inject
+  lateinit var accessibilityManager: FakeAccessibilityChecker
+
+  @Inject
   lateinit var translationController: TranslationController
 
   @Inject
@@ -216,7 +220,6 @@ class StateFragmentLocalTest {
         .setAnimationExecutor(executorService)
         .setSourceExecutor(executorService)
     )
-
     profileTestHelper.initializeProfiles()
     ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
   }
@@ -347,6 +350,32 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       playThroughFractionsState1()
 
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_portrait_submitCorrectAnswer_correctIsAnnounced() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      playThroughFractionsState2()
+      assertThat(accessibilityManager.getAnnouncement()).isEqualTo("Correct!")
+      onView(withId(R.id.congratulations_text_view))
+        .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_landscape_submitCorrectAnswer_correctIsAnnounced() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      playThroughFractionsState2()
+      assertThat(accessibilityManager.getAnnouncement()).isEqualTo("Correct!")
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
     }

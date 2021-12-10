@@ -1,6 +1,7 @@
 package org.oppia.android.util.accessibility
 
 import android.content.Context
+import android.view.View
 import android.view.accessibility.AccessibilityManager
 import javax.inject.Inject
 
@@ -14,5 +15,9 @@ class AccessibilityCheckerImpl @Inject constructor(
 
   override fun isScreenReaderEnabled(): Boolean {
     return accessibilityManager.isEnabled
+  }
+
+  override fun announceForAccessibilityForView(view: View, text: CharSequence?) {
+    view.announceForAccessibility(text)
   }
 }

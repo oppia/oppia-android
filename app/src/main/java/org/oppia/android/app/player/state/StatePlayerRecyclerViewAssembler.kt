@@ -88,6 +88,7 @@ import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.accessibility.AccessibilityChecker
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -126,6 +127,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val fragment: Fragment,
   private val profileId: ProfileId,
   private val context: Context,
+  private val accessibilityChecker: AccessibilityChecker?,
   private val congratulationsTextView: TextView?,
   private val congratulationsTextConfettiView: KonfettiView?,
   private val congratulationsTextConfettiConfig: ConfettiConfig?,
@@ -472,8 +474,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     createBannerConfetti(confettiView, confettiConfig)
     animateCongratulationsTextView(textView)
+
     if (feedback.html.isBlank()) {
-      textView.announceForAccessibility(resourceHandler.getStringInLocale(R.string.correct))
+      accessibilityChecker?.announceForAccessibilityForView(
+        textView,
+        resourceHandler.getStringInLocale(R.string.correct)
+      )
     }
   }
 
@@ -884,6 +890,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Tracks features individually enabled for the assembler. No features are enabled by default.
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
+    private var accessibilityChecker: AccessibilityChecker? = null
     private var congratulationsTextView: TextView? = null
     private var congratulationsTextConfettiView: KonfettiView? = null
     private var congratulationsTextConfettiConfig: ConfettiConfig? = null
@@ -1236,10 +1243,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * answer.
      */
     fun addCelebrationForCorrectAnswers(
+      accessibilityChecker: AccessibilityChecker,
       congratulationsTextView: TextView,
       congratulationsTextConfettiView: KonfettiView,
       confettiConfig: ConfettiConfig
     ): Builder {
+      this.accessibilityChecker = accessibilityChecker
       this.congratulationsTextView = congratulationsTextView
       this.congratulationsTextConfettiView = congratulationsTextConfettiView
       this.congratulationsTextConfettiConfig = confettiConfig
@@ -1324,6 +1333,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         fragment,
         profileId,
         context,
+        accessibilityChecker,
         congratulationsTextView,
         congratulationsTextConfettiView,
         congratulationsTextConfettiConfig,

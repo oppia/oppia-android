@@ -32,6 +32,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.QuestionPlayerFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionAssessmentProgressController
+import org.oppia.android.util.accessibility.AccessibilityChecker
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
@@ -67,6 +68,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private lateinit var questionId: String
   private lateinit var currentQuestionState: State
   private lateinit var helpIndex: HelpIndex
+  @Inject lateinit var accessibilityChecker: AccessibilityChecker
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -81,6 +83,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, "skill", profileId),
+      accessibilityChecker,
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView
     )
@@ -324,6 +327,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
+    accessibilityChecker: AccessibilityChecker,
     congratulationsTextView: TextView,
     congratulationsTextConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
@@ -342,6 +346,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       .addReturnToTopicSupport()
       .addHintsAndSolutionsSupport()
       .addCelebrationForCorrectAnswers(
+        accessibilityChecker,
         congratulationsTextView,
         congratulationsTextConfettiView,
         MINI_CONFETTI_BURST
