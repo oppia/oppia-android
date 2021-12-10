@@ -24,7 +24,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
   private lateinit var lastLoadedFragment: String
-  private val ADMINISTRATOR_CONTROLS_BACKSTACK: String? = null//"ADMINISTRATOR_CONTROLS_BACKSTACK"
+  private val ADMINISTRATOR_CONTROLS_BACKSTACK: String? = null // "ADMINISTRATOR_CONTROLS_BACKSTACK"
 
   private lateinit var binding: AdministratorControlsActivityBinding
   fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
@@ -130,7 +130,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     activity.supportFragmentManager.addOnBackStackChangedListener {
       Log.i(
         TAG,
-        "handleOnResume:\n ************************************************ back stack changed\n *********************************************************************"
+        "handleOnResume:\n **** back stack changed\n *******"
       )
     }
   }

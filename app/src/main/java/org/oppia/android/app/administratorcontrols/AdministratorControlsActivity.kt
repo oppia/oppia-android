@@ -77,7 +77,7 @@ class AdministratorControlsActivity :
   }
 
   override fun onBackPressed() {
-    administratorControlsActivityPresenter.handleOnBackPressed();
+    administratorControlsActivityPresenter.handleOnBackPressed()
   }
 
   override fun loadProfileList() {
