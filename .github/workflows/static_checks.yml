@@ -95,6 +95,7 @@ jobs:
 
   script_checks:
     name: Script Checks
+    if: false
     runs-on: ubuntu-18.04
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -185,6 +186,7 @@ jobs:
   # ensure the results exactly match the current state of the repository).
   third_party_dependencies_check:
     name: Maven Dependencies Checks
+    if: false
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
