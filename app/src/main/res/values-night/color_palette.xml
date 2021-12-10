@@ -5,4 +5,9 @@
   <color name="accent_color">@color/oppia_accent_2</color>
   <color name="primary_text_color">@color/oppia_white_subtext</color>
   <color name="heading_text_color">@color/white</color>
+  <color name="add_profile_background_color">@color/oppia_background_black</color>
+  <color name="switch_description_color">@color/oppia_white_subtext</color>
+  <color name="edit_text_input_background">@color/oppia_edit_text_background</color>
+  <color name="add_profile_switch_text_color">@color/white</color>
+  <color name="text_input_layout_error_color">@color/error_red</color>
 </resources>

@@ -5,4 +5,11 @@
   <color name="oppia_accent_color">@color/accent_color</color>
   <color name="oppia_primary_text_color">@color/primary_text_color</color>
   <color name="oppia_heading_text_color">@color/heading_text_color</color>
+  <color name="oppia_switch_description_color">@color/switch_description_color</color>
+  <color name="oppia_edit_text_background_color">@color/edit_text_input_background</color>
+  <color name="oppia_text_input_layout_error_color">@color/text_input_layout_error_color</color>
+  <color name="oppia_action_bar_color">@color/oppia_primary</color>
+  <!--Add Profile Activity-->
+  <color name="oppia_add_profile_background_color">@color/add_profile_background_color</color>
+  <color name="oppia_add_profile_switch_text_color">@color/add_profile_switch_text_color</color>
 </resources>

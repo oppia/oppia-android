@@ -172,10 +172,10 @@
     <item name="boxStrokeColor">@color/oppia_primary_text</item>
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
     <item name="errorEnabled">true</item>
-    <item name="errorIconTint">@color/oppia_red</item>
-    <item name="errorTextColor">@color/oppia_red</item>
-    <item name="boxStrokeErrorColor">@color/oppia_red</item>
-    <item name="hintTextColor">@color/oppia_primary_text</item>
+    <item name="errorIconTint">@color/oppia_text_input_layout_error_color</item>
+    <item name="errorTextColor">@color/oppia_text_input_layout_error_color</item>
+    <item name="boxStrokeErrorColor">@color/oppia_text_input_layout_error_color</item>
+    <item name="hintTextColor">@color/oppia_primary_text_color</item>
     <item name="android:textAlignment">viewStart</item>
   </style>
 
@@ -183,17 +183,19 @@
     <item name="fontFamily">sans-serif</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="textAllCaps">false</item>
-    <item name="android:textColor">@color/oppia_primary_text</item>
+    <item name="android:textColor">@color/oppia_primary_text_color</item>
     <item name="android:textCursorDrawable">@drawable/color_cursor</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">normal</item>
     <item name="android:textAlignment">viewStart</item>
+    <item name="android:backgroundTint">@color/oppia_edit_text_background_color</item>
   </style>
 
   <style name="Heading1" parent="TextView.Common1">
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">24sp</item>
     <item name="fontFamily">sans-serif</item>
+    <item name="android:textColor">@color/oppia_heading_text_color</item>
   </style>
 
   <style name="Heading1ViewStart" parent="Heading1">
@@ -216,6 +218,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">20sp</item>
     <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textColor">@color/oppia_heading_text_color</item>
   </style>
 
   <style name="Heading2ViewStart" parent="Heading2">
@@ -235,6 +238,7 @@
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif-medium</item>
     <item name="android:gravity">center_vertical</item>
+    <item name="android:textColor">@color/oppia_heading_text_color</item>
   </style>
 
   <style name="Heading3ViewCenterVertical" parent="Heading3">
@@ -249,6 +253,7 @@
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif</item>
+    <item name="android:textColor">@color/oppia_heading_text_color</item>
   </style>
 
   <style name="Heading4ViewCenterVertical" parent="Heading4">
@@ -263,6 +268,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textColor">@color/oppia_heading_text_color</item>
   </style>
 
   <style name="Heading5ViewCenterVertical" parent="Heading5">
@@ -390,7 +396,7 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textAllCaps">false</item>
-    <item name="android:textColor">@color/oppia_primary_text</item>
+    <item name="android:textColor">@color/oppia_primary_text_color</item>
   </style>
   <!-- Start Over Lesson Button -->
   <style name="StartOverLessonButton" parent="TextAppearance.AppCompat.Widget.Button">
@@ -459,4 +465,8 @@
     <item name="android:gravity">center_horizontal</item>
   </style>
 
+  <!--ACTION BAR STYLE-->
+  <style name="OppiaActionBar" parent="Widget.AppCompat.Light.ActionBar">
+    <item name="android:background">@color/oppia_action_bar_color</item>
+  </style>
 </resources>
