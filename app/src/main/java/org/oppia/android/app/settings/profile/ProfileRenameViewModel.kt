@@ -9,9 +9,9 @@ import javax.inject.Inject
 @ActivityScope
 class ProfileRenameViewModel @Inject constructor() : ObservableViewModel() {
 
-  /** Input name for new profile name. */
+  /** The name of the internal profile. */
   val inputName = ObservableField("")
 
-  /** Error message for the text input layout in [ProfileRenameFragment]. */
+  /** The error message of the wrong name entered in [ProfileRenameFragment]. */
   val nameErrorMsg = ObservableField("")
 }

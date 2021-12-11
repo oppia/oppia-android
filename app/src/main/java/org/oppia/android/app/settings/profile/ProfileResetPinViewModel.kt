@@ -8,21 +8,21 @@ import javax.inject.Inject
 /** The ViewModel for [ProfileResetPinActivity]. */
 @ActivityScope
 class ProfileResetPinViewModel @Inject constructor() : ObservableViewModel() {
-  /** Variable for storing error message in first text input layout. */
+  /** The error message is shown if the second pin not matches with the first pin. */
   val pinErrorMsg = ObservableField("")
 
-  /** Variable for storing error message in second text input layout. */
+  /** The error message is confirmed with this pin. */
   val confirmErrorMsg = ObservableField("")
 
-  /** For confirming if the profile is admin or not. */
+  /** If the user is admin then he should have admin rights. */
   val isAdmin = ObservableField(false)
 
-  /** For storing input pin entered by user in first text input layout. */
+  /** This is used to store the user pin. */
   val inputPin = ObservableField("")
 
-  /** For storing input pin entered by user in second text input layout. */
+  /** This confirms and validates the previous pin entered by the user. */
   val inputConfirmPin = ObservableField("")
 
-  /** For verification if both pins are same then only enable the button. */
+  /** The submit button only becomes clickable when both the pins are same. */
   val isButtonActive = ObservableField(false)
 }

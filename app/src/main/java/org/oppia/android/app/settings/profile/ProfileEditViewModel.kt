@@ -23,10 +23,10 @@ class ProfileEditViewModel @Inject constructor(
 
   private val isAllowedDownloadAccessMutableLiveData = MutableLiveData<Boolean>()
 
-  /** Specifies whether download access has been enabled by the user. */
+  /** The download access for the profile. */
   val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
 
-  /** Live data for managing profile. */
+  /** The list of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
       profileManagementController.getProfile(profileId).toLiveData(),
@@ -34,10 +34,10 @@ class ProfileEditViewModel @Inject constructor(
     )
   }
 
-  /** Verifies whether the user has admin rights or not. */
+  /** The admin rights for the profile. */
   var isAdmin = false
 
-  /** Sets the profile id of all the users. */
+  /** The internal profile id of the profile. */
   fun setProfileId(id: Int) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
   }
