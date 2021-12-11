@@ -24,7 +24,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "retriever_module",
+    name = "retriever_prod_module",
     srcs = [
         "ExpirationMetaDataRetrieverModule.kt",
     ],
