@@ -582,7 +582,6 @@ kt_android_library(
         "//model:question_java_proto_lite",
         "//model:topic_java_proto_lite",
         "//third_party:androidx_recyclerview_recyclerview",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
     ],
 )
 
