@@ -33,7 +33,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
     /** Argument key for policy page in [PoliciesActivity]. */
     const val POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
 
-    /** Returns the [Intent] for opening [PoliciesActivity]. */
+    /** Returns the [Intent] for opening [PoliciesActivity] for the specified [policyPage]. */
     fun createPoliciesActivityIntent(context: Context, policyPage: PolicyPage): Intent {
       val intent = Intent(context, PoliciesActivity::class.java)
       val policiesArguments =
