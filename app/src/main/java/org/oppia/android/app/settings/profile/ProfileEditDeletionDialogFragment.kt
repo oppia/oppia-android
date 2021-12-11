@@ -28,7 +28,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
     }
   }
 
-  /** A reference variable for [ProfileEditDialogFragment]. */
+  /** A dialog interface for creating dialogs of [ProfileEditDialogFragment]. */
   lateinit var profileEditDialogInterface: ProfileEditDialogInterface
 
   override fun onCreate(savedInstanceState: Bundle?) {
