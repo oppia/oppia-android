@@ -223,5 +223,25 @@ class HtmlParser private constructor(
         policyOppiaTagActionListener
       )
     }
+
+    /**
+     * Returns a new [HtmlParser] with an optionally specified [CustomOppiaTagActionListener] and
+     * [PolicyOppiaTagActionListener] for handling custom Oppia tag events.
+     */
+    fun create(
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
+      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
+    ): HtmlParser {
+      return HtmlParser(
+        urlImageParserFactory,
+        gcsResourceName = "",
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = false,
+        consoleLogger,
+        customOppiaTagActionListener,
+        policyOppiaTagActionListener
+      )
+    }
   }
 }

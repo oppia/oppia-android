@@ -54,6 +54,6 @@ class PoliciesActivityPresenter @Inject constructor(
       .supportFragmentManager
       .findFragmentById(
         R.id.policies_fragment_placeholder
-      ) as PoliciesFragment?
+      ) as? PoliciesFragment
   }
 }

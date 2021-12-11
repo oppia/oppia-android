@@ -156,12 +156,7 @@ class PoliciesFragmentTest {
     val privacyPolicyTextView = activityTestRule.activity.findViewById(
       R.id.policies_description_text_view
     ) as TextView
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false
-    )
+    val htmlParser = htmlParserFactory.create()
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       getResources().getString(R.string.privacy_policy_content),
       privacyPolicyTextView
@@ -175,12 +170,7 @@ class PoliciesFragmentTest {
     val privacyPolicyTextView = activityTestRule.activity.findViewById(
       R.id.policies_description_text_view
     ) as TextView
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false
-    )
+    val htmlParser = htmlParserFactory.create()
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       getResources().getString(R.string.terms_of_service_content),
       privacyPolicyTextView

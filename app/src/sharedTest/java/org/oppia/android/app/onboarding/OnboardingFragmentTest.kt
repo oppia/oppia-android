@@ -693,10 +693,6 @@ class OnboardingFragmentTest {
   @Test
   fun testHtmlContent_withPolicies_linkSupport_clickSpan_callsTagListener() {
     val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
       policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
     )
     testCoroutineDispatchers.runCurrent()
