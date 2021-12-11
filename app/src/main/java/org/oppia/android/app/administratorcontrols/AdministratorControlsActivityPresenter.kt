@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.commit
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
@@ -24,7 +25,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
   private lateinit var lastLoadedFragment: String
-  private val ADMINISTRATOR_CONTROLS_BACKSTACK: String? = "ADMINISTRATOR_CONTROLS_BACKSTACK"
+  private val ADMINISTRATOR_CONTROLS_BACKSTACK: String? = null//"ADMINISTRATOR_CONTROLS_BACKSTACK"
 
   private lateinit var binding: AdministratorControlsActivityBinding
   fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
@@ -111,20 +112,21 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       lastLoadedFragment = PROFILE_EDIT_FRAGMENT
       binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
       val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.administrator_controls_fragment_multipane_placeholder,
-        fragment,
-        ADMINISTRATOR_CONTROLS_BACKSTACK
-      ).commitNow()
+      activity.supportFragmentManager.commit {
+        add(
+          R.id.administrator_controls_fragment_multipane_placeholder,
+          fragment,
+          ADMINISTRATOR_CONTROLS_BACKSTACK
+        )
+        addToBackStack(null)
+      }
     }
   }
 
   val TAG = "tag"
   fun handleOnBackPressed() {
-    var b = activity.supportFragmentManager.fragments.removeLast()
-    var c = activity.supportFragmentManager.fragments
-    var d = activity.supportFragmentManager.backStackEntryCount
-    Log.i(TAG, "handleOnBackPressed: $b\n$c")
+    if (activity.supportFragmentManager.backStackEntryCount > 0)
+      activity.supportFragmentManager.popBackStackImmediate()
   }
 
   fun handleOnResume() {
@@ -133,6 +135,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         TAG,
         "handleOnResume:\n **** back stack changed\n *******"
       )
+    }
+    binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
+      handleOnBackPressed()
     }
   }
 

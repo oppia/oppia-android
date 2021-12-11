@@ -77,7 +77,10 @@ class AdministratorControlsActivity :
   }
 
   override fun onBackPressed() {
-    administratorControlsActivityPresenter.handleOnBackPressed()
+    if (supportFragmentManager.backStackEntryCount <= 0)
+      super.onBackPressed()
+    else
+      administratorControlsActivityPresenter.handleOnBackPressed()
   }
 
   override fun loadProfileList() {
