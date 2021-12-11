@@ -189,7 +189,7 @@ kt_android_library(
         "ImageLoader.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//:oppia_api_visibility",
     ],
     deps = [
         ":image_targets",
