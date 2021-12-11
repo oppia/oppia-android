@@ -26,14 +26,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Git diagnostics
-        run: |
-          ls -al
-          git status
-          git log
-          git merge-base HEAD origin/develop
-          git merge-base origin/test-4020-ci origin/develop
-
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
