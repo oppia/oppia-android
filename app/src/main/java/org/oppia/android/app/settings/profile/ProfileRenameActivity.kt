@@ -17,7 +17,7 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
 
   companion object {
 
-    /** Creates the Intent for [ProfileRenameActivity]. */
+    /** Returns an [Intent] for opening [ProfileRenameActivity]. */
     fun createProfileRenameActivity(context: Context, profileId: Int): Intent {
       val intent = Intent(context, ProfileRenameActivity::class.java)
       intent.putExtra(PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, profileId)

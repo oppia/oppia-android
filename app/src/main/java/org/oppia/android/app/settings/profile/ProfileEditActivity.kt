@@ -23,7 +23,7 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
   lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 
   companion object {
-    /** This function creates the Intent for the [ProfileEditActivity]. */
+    /** Returns an [Intent] for opening the [ProfileEditActivity]. */
     fun createProfileEditActivity(
       context: Context,
       profileId: Int,
