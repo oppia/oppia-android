@@ -38,7 +38,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="6dp"
         android:text="@{viewModel.processDateAndTime()}"
-        android:textColor="@color/oppiaSecondaryText" />
+        android:textColor="@color/oppia_secondary_text" />
 
       <TextView
         android:id="@+id/view_event_logs_priority_text_view"
@@ -66,7 +66,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="6dp"
       android:text="@{viewModel.formatContextString()}"
-      android:textColor="@color/oppiaPrimaryTextDark"
+      android:textColor="@color/oppia_primary_text_dark"
       android:visibility="@{viewModel.eventLog.context.activityContextCase != EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toTopOf="@id/view_event_logs_action_name_text_view"
       app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +83,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@{viewModel.formatActionNameString()}"
-      android:textColor="@color/oppiaPrimaryTextDark"
+      android:textColor="@color/oppia_primary_text_dark"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/view_event_logs_context_text_view" />

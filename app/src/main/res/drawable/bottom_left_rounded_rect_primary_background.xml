@@ -4,5 +4,5 @@
     android:bottomLeftRadius="12dp"
     android:topLeftRadius="0dp"
     android:topRightRadius="4dp"/>
-  <solid android:color="@color/oppiaPrimaryDark"/>
+  <solid android:color="@color/oppia_primary"/>
 </shape>

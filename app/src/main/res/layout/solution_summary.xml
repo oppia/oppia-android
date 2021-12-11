@@ -38,7 +38,7 @@
         android:layout_marginTop="@dimen/solution_summary_margin_top_solution_title"
         android:layout_marginBottom="@dimen/solution_summary_margin_bottom_solution_title"
         android:fontFamily="sans-serif-medium"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -118,7 +118,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-black"
           android:text="@string/the_only_solution_is"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="16sp" />
 
         <TextView
@@ -128,7 +128,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:layout_marginStart="8dp"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="16sp" />
       </LinearLayout>
 
@@ -145,7 +145,7 @@
           android:layout_marginTop="@dimen/solution_summary_margin_top_solution_summary_label"
           android:fontFamily="sans-serif-black"
           android:text="@string/explanation"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="16sp" />
 
         <TextView
@@ -154,7 +154,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="16sp" />
       </LinearLayout>
     </LinearLayout>
