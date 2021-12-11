@@ -251,6 +251,10 @@
     <item name="fontFamily">sans-serif</item>
   </style>
 
+  <style name="Heading4ViewCenter" parent="Heading4">
+    <item name="android:gravity">center</item>
+  </style>
+
   <style name="Heading4ViewCenterVertical" parent="Heading4">
     <item name="android:gravity">center_vertical</item>
   </style>

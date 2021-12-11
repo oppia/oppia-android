@@ -6,6 +6,6 @@ enum class HelpItems {
   THIRD_PARTY,
   /** Corresponds to the Privacy Policy page. */
   PRIVACY_POLICY,
-  /** Corresponds to the Terms Of Service page. */
+  /** Corresponds to the Terms of Service page. */
   TERMS_OF_SERVICE
 }

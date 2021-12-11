@@ -129,10 +129,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     model: OnboardingSlideFinalViewModel
   ) {
     binding.viewModel = model
-    setTermsAndCondition(binding)
-  }
 
-  private fun setTermsAndCondition(binding: OnboardingSlideFinalBinding) {
     val completeString: String =
       resourceHandler.getStringInLocaleWithWrapping(
         R.string.agree_to_terms,
