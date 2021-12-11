@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/override_app_behaviors_text_view"
-      style="@style/Heading5"
+      style="@style/Heading5ViewStart"
       android:layout_width="match_parent"
       android:background="@color/mid_grey_30"
       android:paddingStart="16dp"
@@ -23,8 +23,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/developer_options_override_app_behaviors_label"
-      android:textAlignment="viewStart"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/oppia_primary"
       app:layout_constraintBottom_toTopOf="@id/show_all_hints_solution_constraint_layout"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -47,12 +46,11 @@
 
       <TextView
         android:id="@+id/show_all_hints_solution_text_view"
-        style="@style/Subtitle1"
+        style="@style/Subtitle1ViewStart"
         android:layout_width="0dp"
         android:background="@color/white"
         android:text="@string/developer_options_show_all_hints_solution"
-        android:textAlignment="viewStart"
-        android:textColor="@color/oppiaPrimaryTextDark"
+        android:textColor="@color/oppia_primary_text_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/show_all_hints_solution_switch"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +86,7 @@
 
     <TextView
       android:id="@+id/force_network_type_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onForceNetworkTypeClicked()}"
@@ -97,8 +95,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/developer_options_force_network_type"
-      android:textAlignment="viewStart"
-      android:textColor="@color/oppiaPrimaryTextDark"
+      android:textColor="@color/oppia_primary_text_dark"
       app:layout_constraintBottom_toTopOf="@id/view_divider2"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +113,7 @@
 
     <TextView
       android:id="@+id/force_crash_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:onClick="@{(v) -> viewModel.onForceCrashClicked()}"
@@ -125,8 +122,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/developer_options_force_crash"
-      android:textAlignment="viewStart"
-      android:textColor="@color/oppiaPrimaryTextDark"
+      android:textColor="@color/oppia_primary_text_dark"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

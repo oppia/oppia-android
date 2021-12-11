@@ -15,7 +15,7 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppiaLightGreen"
+    android:background="@color/oppia_light_green"
     android:descendantFocusability="beforeDescendants"
     android:fitsSystemWindows="true"
     android:focusableInTouchMode="true">
@@ -133,6 +133,7 @@
 
       <TextView
         android:id="@+id/congratulations_text_view"
+        style="@style/TextViewCenter"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_gravity="bottom"
@@ -141,7 +142,6 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/congratulations_text_background_shadow"
         android:fontFamily="sans-serif-medium"
-        android:gravity="center"
         android:lineSpacingExtra="1dp"
         android:text="@string/correct"
         android:textAllCaps="true"

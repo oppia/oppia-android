@@ -34,12 +34,13 @@
 
     <TextView
       android:id="@+id/text_size_text_view"
+      style="@style/TextViewStart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.textSizeName}"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="@{viewModel.textSize}" />
   </LinearLayout>
 </layout>

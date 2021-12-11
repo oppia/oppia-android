@@ -8,10 +8,11 @@
 
   <TextView
     android:id="@+id/font_scale_content_text_view"
+    style="@style/TextViewStart"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fontFamily="sans-serif"
     android:text="html Content"
-    android:textColor="@color/oppiaPrimaryText"
+    android:textColor="@color/oppia_primary_text"
     android:textSize="20sp" />
 </FrameLayout>

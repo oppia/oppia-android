@@ -54,6 +54,7 @@
 
         <TextView
           android:id="@+id/story_name_text_view"
+          style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
@@ -63,16 +64,16 @@
           android:fontFamily="sans-serif"
           android:lines="2"
           android:text="@{viewModel.promotedStory.storyName}"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="14sp"
           android:textStyle="bold"
-          android:textAlignment="viewStart"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
           android:id="@+id/topic_name_text_view"
+          style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
@@ -84,9 +85,8 @@
           android:maxLines="1"
           android:text="@{viewModel.promotedStory.topicName}"
           android:textAllCaps="true"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="14sp"
-          android:textAlignment="viewStart"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
