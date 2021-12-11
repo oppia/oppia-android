@@ -164,7 +164,7 @@
   </style>
 
   <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-    <item name="boxBackgroundColor">@color/white</item>
+    <item name="boxBackgroundColor">@color/oppia_edit_text_background_color</item>
     <item name="boxCornerRadiusBottomEnd">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusBottomStart">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopEnd">@dimen/text_input_layout_corner_radius</item>
@@ -188,7 +188,6 @@
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">normal</item>
     <item name="android:textAlignment">viewStart</item>
-    <item name="android:backgroundTint">@color/oppia_edit_text_background_color</item>
   </style>
 
   <style name="Heading1" parent="TextView.Common1">
