@@ -4,7 +4,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppiaGreyBackground"
+    android:background="@color/oppia_grey_background"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:paddingBottom="@dimen/privacy_policy_single_activity_scroll_padding_bottom"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:textColor="@color/oppiaPrimaryText" />
+        android:textColor="@color/oppia_primary_text" />
 
       <TextView
         android:id="@+id/policies_web_link_text_view"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:textColor="@color/oppiaPrimaryText" />
+        android:textColor="@color/oppia_primary_text" />
     </LinearLayout>
   </ScrollView>
 </layout>
