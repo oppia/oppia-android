@@ -2,6 +2,7 @@ package org.oppia.android.app.options
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.databinding.AudioLanguageActivityBinding
@@ -14,8 +15,10 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
   private lateinit var prefSummaryValue: String
 
   fun handleOnCreate(prefKey: String, prefValue: String) {
-    val binding = AudioLanguageActivityBinding.inflate(activity.layoutInflater, null, false)
-    activity.setContentView(binding.root)
+    val binding: AudioLanguageActivityBinding = DataBindingUtil.setContentView(
+      activity,
+      R.layout.audio_language_activity,
+    )
     val toolbar = binding.audioLanguageToolbar
     toolbar.setNavigationOnClickListener {
       val intent = Intent().apply {
