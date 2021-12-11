@@ -69,7 +69,7 @@ kt_android_library(
         "ExplorationHtmlParserEntityType.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//:oppia_api_visibility",
     ],
     deps = [
         "//third_party:javax_inject_javax_inject",
