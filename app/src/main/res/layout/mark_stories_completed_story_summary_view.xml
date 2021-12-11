@@ -33,7 +33,7 @@
       android:paddingBottom="26dp"
       android:text="@{viewModel.storySummary.storyName}"
       android:textAlignment="viewStart"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="16sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

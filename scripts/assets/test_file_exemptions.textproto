@@ -353,6 +353,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/Pr
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileListFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileListViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileRenameActivityPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileRenameFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileRenameViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinViewModel.kt"
