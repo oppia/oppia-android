@@ -53,14 +53,12 @@ class PoliciesFragmentPresenter @Inject constructor(
       else -> PolicyPage.POLICY_PAGE_UNSPECIFIED
     }
 
-    binding.policiesDescriptionTextView.text = htmlParserFactory.create(
-    ).parseOppiaHtml(
+    binding.policiesDescriptionTextView.text = htmlParserFactory.create().parseOppiaHtml(
       privacyPolicyDescription,
       binding.policiesDescriptionTextView
     )
 
-    binding.policiesWebLinkTextView.text = htmlParserFactory.create(
-    ).parseOppiaHtml(
+    binding.policiesWebLinkTextView.text = htmlParserFactory.create().parseOppiaHtml(
       privacyPolicyWebLink,
       binding.policiesWebLinkTextView
     )
