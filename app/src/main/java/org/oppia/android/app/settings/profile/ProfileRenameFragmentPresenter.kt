@@ -1,6 +1,5 @@
 package org.oppia.android.app.settings.profile
 
-import android.content.Intent
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -102,9 +101,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
     if (result.isSuccess()) {
-      val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      activity.startActivity(intent)
+      (activity as ProfileRenameActivity).finish()
     } else if (result.isFailure()) {
       when (result.getErrorOrNull()) {
         is ProfileManagementController.ProfileNameNotUniqueException ->
