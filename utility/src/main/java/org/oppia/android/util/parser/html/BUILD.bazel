@@ -30,7 +30,6 @@ kt_android_library(
         "ImageTagHandler.kt",
         "MathTagHandler.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":custom_html_content_handler",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
@@ -43,7 +42,7 @@ kt_android_library(
         "CustomBulletSpan.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//app:__subpackages__",
     ],
     deps = [
         "//utility",
@@ -56,7 +55,7 @@ kt_android_library(
         "CustomHtmlContentHandler.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:__subpackages__",
     ],
     deps = [
         "//third_party:androidx_core_core-ktx",
@@ -69,7 +68,7 @@ kt_android_library(
         "ExplorationHtmlParserEntityType.kt",
     ],
     visibility = [
-        "//:oppia_api_visibility",
+        "//domain:__subpackages__",
     ],
     deps = [
         "//third_party:javax_inject_javax_inject",
@@ -82,7 +81,7 @@ kt_android_library(
         "HtmlParserEntityTypeModule.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//app:__subpackages__",
     ],
     deps = [
         ":custom_html_content_handler",
