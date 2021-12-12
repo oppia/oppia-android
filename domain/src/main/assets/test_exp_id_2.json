@@ -268,7 +268,7 @@
               "dest": "ItemSelectionMinOne",
               "feedback": {
                 "content_id": "feedback_1",
-                "html": ""
+                "html": "<p>Correct! Eagles can sustain flight.</p>"
               },
               "labelled_as_correct": false,
               "param_changes": [],
