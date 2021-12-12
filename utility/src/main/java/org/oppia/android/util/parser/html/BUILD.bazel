@@ -68,7 +68,7 @@ kt_android_library(
         "ExplorationHtmlParserEntityType.kt",
     ],
     visibility = [
-        "//domain:__subpackages__",
+        "//:oppia_api_visibility",
     ],
     deps = [
         "//third_party:javax_inject_javax_inject",
@@ -81,7 +81,7 @@ kt_android_library(
         "HtmlParserEntityTypeModule.kt",
     ],
     visibility = [
-        "//app:__subpackages__",
+        "//:oppia_prod_module_visibility",
     ],
     deps = [
         ":custom_html_content_handler",
