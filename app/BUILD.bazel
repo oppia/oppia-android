@@ -611,6 +611,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
     ],
 )
@@ -758,6 +759,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser_entity_type_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
         # TODO(#2432): Replace debug_module with prod_module when building the app in prod mode.
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
