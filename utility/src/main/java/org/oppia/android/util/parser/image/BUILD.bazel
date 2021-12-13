@@ -33,9 +33,6 @@ kt_android_library(
     srcs = [
         "GlideImageLoader.kt",
     ],
-    visibility = [
-        "//:oppia_testing_visibility",
-    ],
     deps = [
         ":image_asset_fetcher",
         ":image_loader",
