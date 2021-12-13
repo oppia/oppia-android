@@ -58,7 +58,7 @@ kt_android_library(
         "GlideImageLoaderModule.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//:oppia_api_visibility",
     ],
     deps = [
         ":dagger",
