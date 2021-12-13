@@ -81,9 +81,8 @@
 
       <TextView
         android:id="@+id/skip_text_view"
-        style="@style/Caption"
+        style="@style/CaptionViewCenter"
         android:layout_marginStart="20dp"
-        android:gravity="center"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:onClick="@{(v) -> presenter.clickOnSkip()}"
