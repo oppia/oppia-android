@@ -54,8 +54,8 @@ gradlew.bat @BenHenning
 *Test.kt @anandwana001
 
 # All resource files.
-/app/src/main/res/**/*.xml @rt4914
-/utility/src/main/res/**/*.xml @rt4914
+/app/src/main/res/**/*.xml @BenHenning
+/utility/src/main/res/**/*.xml @BenHenning
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning
@@ -65,7 +65,7 @@ gradlew.bat @BenHenning
 *.pro @BenHenning
 
 # Lesson assets.
-/domain/src/main/assets/ @BenHenning @rt4914
+/domain/src/main/assets/ @BenHenning @BenHenning
 
 # Android manifests and top-level app configuration.
 *Manifest.xml @BenHenning
@@ -107,8 +107,8 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # Global app module code ownership.
-/app/**/*.kt @rt4914
-/app/**/*.java @rt4914
+/app/**/*.kt @BenHenning
+/app/**/*.java @BenHenning
 
 # State players.
 /app/src/*/java/org/oppia/android/app/player/ @BenHenning
@@ -184,13 +184,13 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 /utility/**/*.kt @BenHenning
 
 # Accessibility utilities.
-/utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
+/utility/src/*/java/org/oppia/android/util/accessibility/ @BenHenning
 
 # Core logging infrastructure.
 /utility/src/*/java/org/oppia/android/util/logging/ @vinitamurthi
 
 # Miscellaneous statusbar UI utilities.
-/utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914
+/utility/src/*/java/org/oppia/android/util/statusbar/ @BenHenning
 
 #####################################################################################
 #                                     scripts                                       #
