@@ -25,7 +25,11 @@ class ProfileRenameActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    profileRenameActivityPresenter.handleOnCreate()
+    profileRenameActivityPresenter.handleOnCreate(
+      intent.getIntExtra(
+        PROFILE_RENAME_PROFILE_ID_EXTRA_KEY, 0
+      )
+    )
   }
 
   override fun onSupportNavigateUp(): Boolean {

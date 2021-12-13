@@ -328,13 +328,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
       translationController.extractString(
         ephemeralState.state.content, ephemeralState.writtenTranslationContext
       )
-    pendingItemList += ContentViewModel(
-      contentSubtitledHtml,
-      gcsEntityId,
-      hasConversationView,
-      isSplitView.get()!!,
-      playerFeatureSet.conceptCardSupport
-    )
+    if (contentSubtitledHtml.isNotEmpty()) {
+      pendingItemList += ContentViewModel(
+        contentSubtitledHtml,
+        gcsEntityId,
+        hasConversationView,
+        isSplitView.get()!!,
+        playerFeatureSet.conceptCardSupport
+      )
+    }
   }
 
   private fun addPreviousAnswers(
