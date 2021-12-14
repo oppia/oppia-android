@@ -9,14 +9,13 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.provider.MediaStore
-import android.view.View
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -36,14 +35,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.google.android.material.textfield.TextInputLayout
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -91,6 +87,8 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -439,7 +437,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            )
+          )
+        )
     }
   }
 
@@ -461,7 +465,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            )
+          )
+        )
     }
   }
 
@@ -550,7 +560,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_only_letters)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_only_letters)
+            )
+          )
+        )
     }
   }
 
@@ -573,7 +589,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_only_letters)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_only_letters)
+            )
+          )
+        )
     }
   }
 
@@ -672,7 +694,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_length)
+            )
+          )
+        )
     }
   }
 
@@ -712,7 +740,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_length)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_length)
+            )
+          )
+        )
     }
   }
 
@@ -824,7 +858,13 @@ class AddProfileActivityTest {
       onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_create_button)).perform(click())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            )
+          )
+        )
     }
   }
 
@@ -885,7 +925,13 @@ class AddProfileActivityTest {
         )
       ).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            )
+          )
+        )
     }
   }
 
@@ -989,6 +1035,42 @@ class AddProfileActivityTest {
       )
       onView(withId(R.id.add_profile_activity_confirm_pin))
         .check(matches(hasNoErrorText()))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputCorrectPinAndConfirmPin_actionDone_buttonIsVisible() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("test"), closeSoftKeyboard()
+      )
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_pin))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
+        )
+      ).perform(scrollTo()).perform(
+        editTextInputAction.appendText("123"),
+        pressImeActionButton()
+      )
+      onView(withId(R.id.add_profile_activity_create_button)).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_create_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -1391,7 +1473,13 @@ class AddProfileActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_activity_user_name))
-        .check(matches(hasErrorText(R.string.add_profile_error_name_not_unique)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_name_not_unique)
+            )
+          )
+        )
     }
   }
 
@@ -1505,7 +1593,13 @@ class AddProfileActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.add_profile_activity_pin_check_box)).perform(scrollTo())
       onView(withId(R.id.add_profile_activity_confirm_pin))
-        .check(matches(hasErrorText(R.string.add_profile_error_pin_confirm_wrong)))
+        .check(
+          matches(
+            hasErrorText(
+              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
+            )
+          )
+        )
     }
   }
 
@@ -1581,31 +1675,6 @@ class AddProfileActivityTest {
       ApplicationProvider.getApplicationContext(),
       colorRgb = -10710042
     )
-  }
-
-  private fun hasErrorText(@StringRes expectedErrorTextId: Int): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        val expectedErrorText = context.resources.getString(expectedErrorTextId)
-        return (view as TextInputLayout).error == expectedErrorText
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("TextInputLayout's error")
-      }
-    }
-  }
-
-  private fun hasNoErrorText(): Matcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(view: View): Boolean {
-        return (view as TextInputLayout).error.isNullOrEmpty()
-      }
-
-      override fun describeTo(description: Description) {
-        description.appendText("")
-      }
-    }
   }
 
   private fun createGalleryPickActivityResultStub(): ActivityResult {

@@ -71,8 +71,6 @@
   <dimen name="home_tablet_port_outer_margin">120dp</dimen>
   <dimen name="recently_played_margin_max">28dp</dimen>
   <dimen name="recently_played_margin_min">8dp</dimen>
-  <dimen name="recently_played_tablet_land_outer_margin">96dp</dimen>
-  <dimen name="recently_played_tablet_port_outer_margin">120dp</dimen>
   <dimen name="coming_soon_padding_end">16dp</dimen>
   <dimen name="coming_soon_padding_start">12dp</dimen>
 
@@ -517,6 +515,9 @@
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">128dp</dimen>
 
+  <!-- Story Chapter View -->
+  <dimen name="story_chapter_view_margin_top_first_item">0dp</dimen>
+
   <!-- Story Header View -->
   <dimen name="story_header_view_layout_margin_start">32dp</dimen>
   <dimen name="story_header_view_layout_margin_end">32dp</dimen>
@@ -573,5 +574,18 @@
   <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_top">28dp</dimen>
   <dimen name="profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_end">28dp</dimen>
   <dimen name="profile_reset_pin_activity_profile_reset_save_button_margin_end">28dp</dimen>
+
+  <!-- Profile Rename Activity -->
+  <dimen name="profile_rename_activity_constraint_layout">32dp</dimen>
+  <dimen name="profile_rename_activity_profile_rename_input_margin_start">28dp</dimen>
+  <dimen name="profile_rename_activity_profile_rename_input_margin_top">28dp</dimen>
+  <dimen name="profile_rename_activity_profile_rename_input_margin_end">28dp</dimen>
+  <dimen name="profile_rename_activity_profile_rename_save_button_margin_end">28dp</dimen>
+
+  <!-- SectionTitleFragment -->
+  <dimen name="section_title_divider_view_layout_margin_top">32dp</dimen>
+  <dimen name="section_title_text_view_layout_margin_start">28dp</dimen>
+  <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
+  <dimen name="section_title_text_view_layout_margin_end">32dp</dimen>
 
 </resources>

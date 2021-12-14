@@ -28,7 +28,7 @@
         android:id="@+id/add_profile_activity_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/addProfileBackground">
+        android:background="@color/add_profile_background">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="wrap_content"
@@ -65,13 +65,16 @@
 
           <TextView
             android:id="@+id/add_profile_activity_required_heading_text_view"
-            android:layout_width="match_parent"
+            style="@style/TextViewStart"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@string/add_profile_required"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
           <com.google.android.material.textfield.TextInputLayout
@@ -185,17 +188,19 @@
 
               <TextView
                 android:id="@+id/add_profile_activity_allow_download_heading_text_view"
+                style="@style/TextViewStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@{viewModel.validPin ? @color/oppiaPrimaryTextDark : @color/accessible_grey}"
+                android:textColor="@{viewModel.validPin ? @color/oppia_primary_text_dark : @color/accessible_grey}"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
               <TextView
                 android:id="@+id/add_profile_activity_allow_download_text_view"
+                style="@style/TextViewStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
@@ -228,7 +233,7 @@
             android:gravity="center"
             android:text="@string/add_profile_create_btn"
             android:textAllCaps="true"
-            android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
+            android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submit_button_inactive_text }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_constraint_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>

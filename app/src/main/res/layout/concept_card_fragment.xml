@@ -13,13 +13,13 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorConceptCardBackground">
+    android:background="@color/concept_card_background">
 
     <androidx.appcompat.widget.Toolbar
       android:id="@+id/concept_card_toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/colorConceptToolbarBackground"
+      android:background="@color/concept_toolbar_background"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -50,6 +50,7 @@
 
           <TextView
             android:id="@+id/concept_card_heading_text"
+            style="@style/TextViewStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/concept_card_heading_text_margin_start"
@@ -57,19 +58,15 @@
             android:layout_marginEnd="@dimen/concept_card_heading_text_margin_end"
             android:fontFamily="sans-serif-medium"
             android:text="@{viewModel.conceptCardLiveData.conceptCard.skillDescription}"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="20sp" />
 
           <TextView
             android:id="@+id/concept_card_explanation_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Body"
             android:layout_marginStart="@dimen/concept_card_explanation_text_margin_start"
             android:layout_marginTop="@dimen/concept_card_explanation_text_margin_top"
-            android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/oppiaPrimaryText"
-            android:textSize="16sp" />
+            android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end" />
         </LinearLayout>
         <!-- TODO(#352): Show worked examples in Concept Card. -->
       </ScrollView>

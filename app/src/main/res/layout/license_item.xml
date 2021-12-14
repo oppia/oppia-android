@@ -18,7 +18,7 @@
 
     <TextView
       android:id="@+id/license_name_text_view"
-      style="@style/Subtitle2"
+      style="@style/Subtitle2ViewStart"
       android:layout_width="match_parent"
       android:background="@drawable/general_item_background_border"
       android:fontFamily="sans-serif-smallcaps"

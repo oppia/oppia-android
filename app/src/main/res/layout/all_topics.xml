@@ -14,6 +14,7 @@
 
     <TextView
       android:id="@+id/all_topics_text_view"
+      style="@style/TextViewStart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/all_topics_text_margin_start"
@@ -22,7 +23,7 @@
       android:layout_marginBottom="@dimen/all_topics_text_margin_bottom"
       android:fontFamily="sans-serif-medium"
       android:text="@string/all_topics"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="18sp" />
   </FrameLayout>
 </layout>

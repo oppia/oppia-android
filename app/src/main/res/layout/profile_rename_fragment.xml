@@ -14,43 +14,20 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/profile_rename_app_bar_layout"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
-
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/profile_rename_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/navigate_up"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/profile_rename_activity_title"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
-
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:background="@color/generalNavigationBackground"
+      android:background="@color/general_navigation_background"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/profile_rename_app_bar_layout">
+      app:layout_constraintTop_toTopOf="parent">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/general_item_background_border"
-        android:paddingBottom="56dp"
+        android:paddingBottom="@dimen/profile_rename_activity_constraint_layout"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -58,9 +35,9 @@
           style="@style/TextInputLayout"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginStart="168dp"
-          android:layout_marginTop="32dp"
-          android:layout_marginEnd="168dp"
+          android:layout_marginStart="@dimen/profile_rename_activity_profile_rename_input_margin_start"
+          android:layout_marginTop="@dimen/profile_rename_activity_profile_rename_input_margin_top"
+          android:layout_marginEnd="@dimen/profile_rename_activity_profile_rename_input_margin_end"
           android:hint="@string/profile_rename_label"
           app:errorMessage="@{viewModel.nameErrorMsg}"
           app:layout_constraintEnd_toEndOf="parent"
@@ -84,13 +61,13 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="16dp"
-          android:layout_marginEnd="168dp"
+          android:layout_marginEnd="@dimen/profile_rename_activity_profile_rename_save_button_margin_end"
           android:background="@{viewModel.inputName.length > 0 ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
           android:clickable="@{viewModel.inputName.length > 0}"
           android:enabled="@{viewModel.inputName.length > 0}"
           android:text="@string/profile_rename_save"
           android:textAllCaps="true"
-          android:textColor="@{viewModel.inputName.length > 0 ? @color/white : @color/submitButtonInactiveText }"
+          android:textColor="@{viewModel.inputName.length > 0 ? @color/white : @color/submit_button_inactive_text }"
           android:textSize="14sp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_rename_input" />

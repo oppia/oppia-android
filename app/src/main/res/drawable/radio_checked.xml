@@ -4,7 +4,7 @@
     <shape android:shape="oval">
       <stroke
         android:width="2dp"
-        android:color="@color/audioLanguageActivityRadioButton" />
+        android:color="@color/audio_language_activity_radio_button" />
       <size
         android:width="20dp"
         android:height="20dp" />
@@ -16,7 +16,7 @@
     android:right="5dp"
     android:top="5dp">
     <shape android:shape="oval">
-      <solid android:color="@color/audioLanguageActivityRadioButton" />
+      <solid android:color="@color/audio_language_activity_radio_button" />
       <size
         android:width="10dp"
         android:height="10dp" />

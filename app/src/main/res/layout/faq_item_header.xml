@@ -23,6 +23,7 @@
 
       <TextView
         android:id="@+id/faq_question_text_view"
+        style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
@@ -31,8 +32,7 @@
         android:layout_marginEnd="@dimen/faq_item_header_margin_end"
         android:layout_marginBottom="@dimen/faq_item_header_margin_bottom"
         android:text="@string/featured_questions"
-        android:textAlignment="viewStart"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="18sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

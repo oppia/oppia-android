@@ -9,15 +9,15 @@
 
   <TextView
     android:id="@+id/submitted_answer_content_text_view"
+    style="@style/TextViewCenterVertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fontFamily="sans-serif"
-    android:gravity="center_vertical"
     android:paddingTop="8dp"
     android:paddingStart="4dp"
     android:paddingEnd="4dp"
     android:paddingBottom="8dp"
     android:text="@{htmlContent}"
-    android:textColor="@color/oppiaPrimaryText"
+    android:textColor="@color/oppia_primary_text"
     android:textSize="16sp" />
 </layout>

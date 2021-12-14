@@ -50,14 +50,15 @@
       android:paddingBottom="8dp"
       android:singleLine="true"
       android:text="@={fractionInteractionViewModel.answerText}"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textColorHint="@color/editTextHint"
+      android:textColor="@color/oppia_primary_text"
+      android:textColorHint="@color/edit_text_hint"
       android:textSize="14sp"
       android:textStyle="italic"
       app:textChangedListener="@{fractionInteractionViewModel.answerTextWatcher}" />
 
     <TextView
       android:id="@+id/fraction_input_error"
+      style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
@@ -65,7 +66,7 @@
       android:fontFamily="sans-serif"
       android:minHeight="32dp"
       android:text="@{fractionInteractionViewModel.errorMessage}"
-      android:textColor="@color/editTextError"
+      android:textColor="@color/edit_text_error"
       android:textSize="12sp"
       android:visibility="@{fractionInteractionViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
@@ -86,14 +87,15 @@
       android:paddingBottom="8dp"
       android:singleLine="true"
       android:text="@={ratioInteractionInputViewModel.answerText}"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textColorHint="@color/editTextHint"
+      android:textColor="@color/oppia_primary_text"
+      android:textColorHint="@color/edit_text_hint"
       android:textSize="14sp"
       android:textStyle="italic"
       app:textChangedListener="@{ratioInteractionInputViewModel.answerTextWatcher}" />
 
     <TextView
       android:id="@+id/ratio_input_error"
+      style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
@@ -101,7 +103,7 @@
       android:fontFamily="sans-serif"
       android:minHeight="32dp"
       android:text="@{ratioInteractionInputViewModel.errorMessage}"
-      android:textColor="@color/editTextError"
+      android:textColor="@color/edit_text_error"
       android:textSize="12sp"
       android:visibility="@{ratioInteractionInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
@@ -122,6 +124,7 @@
 
     <TextView
       android:id="@+id/number_input_error"
+      style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
@@ -129,7 +132,7 @@
       android:fontFamily="sans-serif"
       android:minHeight="32dp"
       android:text="@{numericInputViewModel.errorMessage}"
-      android:textColor="@color/editTextError"
+      android:textColor="@color/edit_text_error"
       android:textSize="12sp"
       android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
