@@ -2841,14 +2841,7 @@ states {
     }
     written_translations {
       key: "feedback_1"
-      value {
-        translation_mapping {
-          key: "es"
-          value {
-            html: "<p>\302\241S\303\255, eso es correcto! Bien hecho.</p>"
-          }
-        }
-      }
+      value {}
     }
     written_translations {
       key: "feedback_6"
@@ -2954,10 +2947,7 @@ states {
       answer_groups {
         outcome {
           dest_state_name: "Question 1"
-          feedback {
-            html: ""
-            content_id: "feedback_1"
-          }
+          feedback {}
           labelled_as_correct: true
         }
         rule_specs {

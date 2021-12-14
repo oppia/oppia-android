@@ -2583,13 +2583,7 @@
                 "needs_update": false
               }
             },
-            "feedback_1": {
-              "es": {
-                "data_format": "html",
-                "translation": {"translation" : "<p>¡Sí, eso es correcto! Bien hecho.</p>"},
-                "needs_update": false
-              }
-            },
+            "feedback_1": null,
             "feedback_6": {
               "es": {
                 "data_format": "html",
@@ -2692,10 +2686,7 @@
             }],
             "outcome": {
               "dest": "Matthew gets conned",
-              "feedback": {
-                "content_id": "feedback_1",
-                "html": " "
-              },
+              "feedback": null
               "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
