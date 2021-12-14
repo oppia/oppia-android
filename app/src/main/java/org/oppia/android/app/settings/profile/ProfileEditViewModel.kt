@@ -23,10 +23,10 @@ class ProfileEditViewModel @Inject constructor(
 
   private val isAllowedDownloadAccessMutableLiveData = MutableLiveData<Boolean>()
 
-  /** The download access for the profile. */
+  /** Download access enabled for profile by the administrator. */
   val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
 
-  /** The list of all the current profiles registered in the app [ProfileListFragment]. */
+  /** List of all the current profiles registered in the app [ProfileListFragment]. */
   val profile: LiveData<Profile> by lazy {
     Transformations.map(
       profileManagementController.getProfile(profileId).toLiveData(),
@@ -34,15 +34,15 @@ class ProfileEditViewModel @Inject constructor(
     )
   }
 
-  /** The admin rights for the profile. */
+  /** Whether the user is admin. */
   var isAdmin = false
 
-  /** The internal profile id of the profile. */
+  /** Internal profile id of the profile. */
   fun setProfileId(id: Int) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
   }
 
-  /** This fetches the profile of a user asynchronously. */
+  /** This method fetches the profile of a user asynchronously. */
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       oppiaLogger.e(
