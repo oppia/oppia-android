@@ -53,18 +53,6 @@ import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
 
 // TODO: split up this extensions file into multiple, clean it up, reorganize, and add tests.
 
-// XXX: Polynomials can actually take lots of forms, so this conversion is intentionally limited
-// based on intended use cases and can be extended in the future, as needed. For example, both
-// x^(2^3) and ((x^2+2x+1)/(x+1)) won't be considered polynomials, but it can be seen that they are
-// indeed after being simplified. This implementation doesn't yet support recognizing binomials
-// (e.g. (x+1)^2) but needs to be updated to. The representation for Polynomial doesn't quite
-// support much outside of general form (except negative exponents).
-
-// TODO: Consider expressions like x/2 (should be treated like (1/2)x).
-// TODO: Consider: (1+2)*x or (1+2)x
-// TODO: Make sure that all 'when' cases here do not use 'else' branches to ensure structural
-//  changes require changing logic.
-
 private val COMPARABLE_OPERATION_COMPARATOR: Comparator<ComparableOperation> by lazy {
   // Some of the comparators must be deferred since they indirectly reference this comparator (which
   // isn't valid until it's fully assembled).
@@ -649,7 +637,6 @@ fun MathExpression.toRawLatex(divAsFraction: Boolean): String {
   }
 }
 
-// TODO: add proper error channels for the return value.
 fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
 
 fun MathExpression.evaluate(): Real? {
@@ -701,55 +688,14 @@ private fun MathFunctionCall.evaluate(): Real? {
   }
 }
 
-// Also: consider how to perform expression analysis for non-polynomial trees
-
 fun MathExpression.toPolynomial(): Polynomial? {
-  // Constructing a polynomial more or less requires:
-  // 1. Collecting all variables (these will either be part of exponent expressions if they have a
-  // power, part of a multiplication expression with a constant/evaluable constant directly or once
-  // removed, or part of another expression) and evaluating them into terms.
-  // 2. Collecting all non-variable values as top-level constant terms.
-  // Note that polynomials are always representable via summation, so multiplication, division, and
-  // subtraction must be partially evaluated and eliminated (if they can't be eliminated then the
-  // expression is not polynomial or requires a more complex algorithm for reduction such as
-  // polynomial long division).
-
-  // ----- Algo probably requires additional data structure component since it's changing the tree piece-by-piece.
-  // Consider having two versions of the conversion: one for rigid polynomials and another for forcing expressions into a polynomial.
-
-  // First thoughts on a possible algorithm:
-  // 1. Find all variable expressions, then go up 1 node (short-circuit: if no parent, it's a polynomial with 1 variable term)
-  // 2. For each variable:
-  //   a. If the parent is a multiplication expression, try to reduce the other term to a constant (this would be the term of the variable). Remove the multiplication term.
-  //   b. If the parent is an exponent, try to reduce the right-hand side. This would become the variable's power. Remove the exponent term.
-  //   c. If the parent is a unary operation, in-line that.
-  // 3. Repeat (2) until variables become irreducible.
-  // 4. Enumerate all exponents, multiplications, and divisions: reduce each at its parent to a constant.
-  // 5. Replace remaining subtractions with additions + unary operators, then reduce all unary operations to constants.
-  // 6. Check: there should be no remaining exponents, multiplications, divisions, subtractions, or unary operations (only addition should remain). If there are, fail: this isn't a polynomial or it isn't one that we support.
-  // 7. Traverse the tree and convert each addition operand into a term and construct the final polynomial.
-  // 8. Optional: further reduce the polynomial and/or convert to general form.
-
-  // Consider revising the above to recursively find nested polynomials and "build them up". This
-  // will allow us to detect each of the pathological cases that can't be handled by the above, plus
-  // trivial cases the are handled by the above:
-  // 1. Top-level polynomial / polynomials being added / polynomials being subtracted (should be handled by the above algo)
-  // 2. Polynomial being divided by another polynomial (we should just fail here--it's quite complex to solve this)
-  // 3. Polynomial raised by a constant positive whole number power (e.g. binomial); any other exponent isn't a polynomial (including a polynomial exp)
-  // 4. Polynomials multiplied by each other (requires expanding like #3, probably via matrix multiplication
-  // 5. Combinations of 1-4 (which requires recursion to find a complete solution for)
-
-  // Final algorithm (non-simplified):
-  // 1. Copy the tree so it can be augmented as nodes(expression | polynomial | constant)
-  // 2. Replace all variable expressions with polynomials
-  // 3. Depth-first evaluate the entire graph (results are polynomials OR concatenation). If any fails, this is not a polynomial or is unsupported. Specifics:
-  //   a. Unary (apply to coefficients of the terms)
-  //   b. Exponents (right-hand side must be reducible to constant -> calculate the power); may require expansion (e.g. for binomials)
-  //   c. Subtraction (replace with addition & negate the coefficient of the polynomial terms)
-  //   d. Division (right-hand side must be reducible to constant -> apply to the term, e.g. for x/4)
-  //   e. Multiplication (for one side constant, apply to coefficients otherwise perform polynomial multiplication)
-  //   f. Addition (treat constants as constant terms & concatenate term lists to compute new polynomial)
-  // 4. Collect the final polynomial as the result. Early exiting indicates a non-polynomial.
+  // Polynomials are created by converting subsequent parts of a math expression to polynomials and
+  // then combining them using math operations. In some cases (such as exponentiation and division),
+  // this can fail (which indicates a non-polynomial expression). In other cases (such as square
+  // roots), additional processing is needed. This method guarantees that there are no zero terms
+  // returned, and that the returned polynomial's terms are deterministically arranged such that two
+  // similar expressions only different by commutativity/term reordering will result in exactly the
+  // same polynomial (i.e. Polynomial.isEqualTo method will return true when comparing the two).
   return stripGroups().replaceSquareRoots()
     .reduceToPolynomial()
     ?.removeUnnecessaryVariables()
@@ -759,14 +705,6 @@ fun MathExpression.toPolynomial(): Polynomial? {
 private fun Polynomial.sort() = Polynomial.newBuilder().apply {
   addAllTerm(this@sort.termList.sortedWith(POLYNOMIAL_TERM_COMPARATOR))
 }.build()
-
-fun Polynomial.isUnivariate(): Boolean = getUniqueVariableCount() == 1
-
-fun Polynomial.isMultivariate(): Boolean = getUniqueVariableCount() > 1
-
-private fun Polynomial.getUniqueVariableCount(): Int {
-  return termList.flatMap(Term::getVariableList).map(Variable::getName).toSet().size
-}
 
 fun Polynomial.toPlainText(): String {
   return termList.map { it.toPlainText() }.reduce { acc, termAnswerStr ->
@@ -869,7 +807,6 @@ private operator fun Polynomial.unaryMinus(): Polynomial {
     .build()
 }
 
-// TODO: extract the filtering done during addition & also do it at the end in case initial polynomials are tried (like x^0, or 0y). Add tests for these cases.
 private operator fun Polynomial.plus(rhs: Polynomial): Polynomial {
   // Adding two polynomials just requires combining their terms lists (taking into account combining
   // common terms).
@@ -920,8 +857,6 @@ private operator fun Term.times(rhs: Term): Term {
 }
 
 private operator fun Polynomial.div(rhs: Polynomial): Polynomial? {
-  // TODO: ensure this properly computes distributions for fractions, e.g. ((x+3)/2) should become
-  //  (1/2)x + (3/2).
   // See https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode for reference.
   if (rhs.isApproximatelyZero()) {
     return null // Dividing by zero is invalid and thus cannot yield a polynomial.
@@ -1130,24 +1065,6 @@ private fun Polynomial.pow(exp: Polynomial): Polynomial? {
 
 private fun Polynomial.isSingleTerm(): Boolean = termList.size == 1
 
-//private fun MathExpression.toTreeNode(): ExpressionTreeNode {
-//  return when (expressionTypeCase) {
-//    CONSTANT -> ExpressionTreeNode.ConstantNode(constant)
-//    VARIABLE -> ExpressionTreeNode.PolynomialNode(createSingleTermPolynomial(variable))
-//    UNARY_OPERATION -> ExpressionTreeNode.ExpressionNode(this, unaryOperation.collectChildren())
-//    BINARY_OPERATION -> ExpressionTreeNode.ExpressionNode(this, binaryOperation.collectChildren())
-//    else -> ExpressionTreeNode.ExpressionNode(this, mutableListOf())
-//  }
-//}
-//
-//private fun MathUnaryOperation.collectChildren(): MutableList<ExpressionTreeNode> {
-//  return mutableListOf(operand.toTreeNode())
-//}
-//
-//private fun MathBinaryOperation.collectChildren(): MutableList<ExpressionTreeNode> {
-//  return mutableListOf(leftOperand.toTreeNode(), rightOperand.toTreeNode())
-//}
-
 private fun createSingleVariablePolynomial(variableName: String): Polynomial {
   return createSingleTermPolynomial(
     Term.newBuilder().apply {
@@ -1177,59 +1094,6 @@ private fun createCoefficientValueOfOne(): Real = createCoefficientValueOf(value
 private fun createZeroTerm() = Term.newBuilder().apply {
   coefficient = createCoefficientValueOfZero()
 }.build()
-
-private sealed class ExpressionTreeNode {
-  data class ExpressionNode(
-    val mathExpression: MathExpression,
-    val children: MutableList<ExpressionTreeNode>
-  ) : ExpressionTreeNode()
-
-  data class PolynomialNode(val polynomial: Polynomial) : ExpressionTreeNode()
-
-  data class ConstantNode(val constant: Real) : ExpressionTreeNode()
-}
-
-// TODO: add a faster isReducibleToConstant recursive function since this is used a lot.
-
-// private fun MathExpression.reduceToConstant(): MathExpression? {
-//  return when (expressionTypeCase) {
-//    CONSTANT -> this
-//    VARIABLE -> null
-//    UNARY_OPERATION -> unaryOperation.reduceToConstant()
-//    BINARY_OPERATION -> binaryOperation.reduceToConstant()
-//    else -> null
-//  }
-// }
-
-// private fun MathUnaryOperation.reduceToConstant(): MathExpression? {
-//  return when (operator) {
-//    MathUnaryOperation.Operator.NEGATE -> operand.reduceToConstant()?.transformConstant { -it }
-//    else -> null
-//  }
-// }
-
-// private fun MathBinaryOperation.reduceToConstant(): MathExpression? {
-//  val leftConstant = leftOperand.reduceToConstant()?.constant ?: return null
-//  val rightConstant = rightOperand.reduceToConstant()?.constant ?: return null
-//  return when (operator) {
-//    MathBinaryOperation.Operator.ADD -> fromConstant(leftConstant + rightConstant)
-//    MathBinaryOperation.Operator.SUBTRACT -> fromConstant(leftConstant - rightConstant)
-//    MathBinaryOperation.Operator.MULTIPLY -> fromConstant(leftConstant * rightConstant)
-//    MathBinaryOperation.Operator.DIVIDE -> fromConstant(leftConstant / rightConstant)
-//    MathBinaryOperation.Operator.EXPONENTIATE -> fromConstant(leftConstant.pow(rightConstant))
-//    else -> null
-//  }
-// }
-
-private fun MathExpression.transformConstant(
-  transform: (Real.Builder) -> Real.Builder
-): MathExpression {
-  return toBuilder().setConstant(transform(constant.toBuilder())).build()
-}
-
-private fun fromConstant(real: Real): MathExpression {
-  return MathExpression.newBuilder().setConstant(real).build()
-}
 
 private fun Real.isApproximatelyEqualTo(value: Double): Boolean {
   return toDouble().approximatelyEquals(value)
