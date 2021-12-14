@@ -12,26 +12,23 @@ import com.google.common.truth.Truth.assertWithMessage
 import com.google.common.truth.extensions.proto.LiteProtoSubject
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.MathBinaryOperation
-import org.oppia.android.app.model.MathExpression
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
-import org.oppia.android.app.model.MathFunctionCall
-import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
-import org.oppia.android.app.model.MathUnaryOperation
-import org.oppia.android.app.model.Real
-import org.robolectric.annotation.LooperMode
-import kotlin.math.sqrt
 import org.oppia.android.app.model.ComparableOperationList
 import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.PRODUCT
 import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.SUMMATION
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase
+import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathEquation
+import org.oppia.android.app.model.MathExpression
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
+import org.oppia.android.app.model.MathFunctionCall
+import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
+import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -42,6 +39,9 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
 import org.oppia.android.app.model.Polynomial
+import org.oppia.android.app.model.Real
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathParsingError.DisabledVariablesInUseError
 import org.oppia.android.util.math.MathParsingError.EquationHasWrongNumberOfEqualsError
 import org.oppia.android.util.math.MathParsingError.EquationMissingLhsOrRhsError
@@ -64,8 +64,8 @@ import org.oppia.android.util.math.MathParsingError.TermDividedByZeroError
 import org.oppia.android.util.math.MathParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
 import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
-import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
-import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
+import org.robolectric.annotation.LooperMode
+import kotlin.math.sqrt
 
 /** Tests for [MathExpressionParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -4061,7 +4061,9 @@ class MathExpressionParserTest {
     assertThat(equation1).hasRightHandSideThat().evaluatesToIntegerThat().isEqualTo(1)
 
     val equation2 =
-      parseAlgebraicEquationWithAllErrors("y = mx + b", allowedVariables = listOf("x", "y", "b", "m"))
+      parseAlgebraicEquationWithAllErrors(
+        "y = mx + b", allowedVariables = listOf("x", "y", "b", "m")
+      )
     assertThat(equation2).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("y")
@@ -4170,7 +4172,9 @@ class MathExpressionParserTest {
     expectFailureWhenParsingAlgebraicEquation("y 2 = (x+1)(x-1)")
 
     val equation5 =
-      parseAlgebraicEquationWithAllErrors("a*x^2 + b*x + c = 0", allowedVariables = listOf("x", "a", "b", "c"))
+      parseAlgebraicEquationWithAllErrors(
+        "a*x^2 + b*x + c = 0", allowedVariables = listOf("x", "a", "b", "c")
+      )
     assertThat(equation5).hasLeftHandSideThat().hasStructureThatMatches {
       addition {
         leftOperand {
@@ -7379,7 +7383,8 @@ class MathExpressionParserTest {
     }
 
     private fun convertToHumanReadableString(
-      language: OppiaLanguage, divAsFraction: Boolean
+      language: OppiaLanguage,
+      divAsFraction: Boolean
     ): String {
       val readableString = maybeConvertToHumanReadableString(language, divAsFraction)
       assertWithMessage("Expected to convert to: $language").that(readableString).isNotNull()
@@ -7641,15 +7646,24 @@ class MathExpressionParserTest {
     }
 
     private fun parseNumericExpressionWithoutOptionalErrors(expression: String): MathExpression {
-      return (parseNumericExpressionInternal(expression, ErrorCheckingMode.REQUIRED_ONLY) as MathParsingResult.Success<MathExpression>).result
+      return (
+        parseNumericExpressionInternal(
+          expression, ErrorCheckingMode.REQUIRED_ONLY
+        ) as MathParsingResult.Success<MathExpression>
+        ).result
     }
 
     private fun parseNumericExpressionWithAllErrors(expression: String): MathExpression {
-      return (parseNumericExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS) as MathParsingResult.Success<MathExpression>).result
+      return (
+        parseNumericExpressionInternal(
+          expression, ErrorCheckingMode.ALL_ERRORS
+        ) as MathParsingResult.Success<MathExpression>
+        ).result
     }
 
     private fun parseNumericExpressionInternal(
-      expression: String, errorCheckingMode: ErrorCheckingMode
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode
     ): MathParsingResult<MathExpression> {
       return MathExpressionParser.parseNumericExpression(expression, errorCheckingMode)
     }
@@ -7668,14 +7682,22 @@ class MathExpressionParserTest {
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathExpression {
-      return (parseAlgebraicExpressionInternal(expression, ErrorCheckingMode.REQUIRED_ONLY, allowedVariables) as MathParsingResult.Success<MathExpression>).result
+      return (
+        parseAlgebraicExpressionInternal(
+          expression, ErrorCheckingMode.REQUIRED_ONLY, allowedVariables
+        ) as MathParsingResult.Success<MathExpression>
+        ).result
     }
 
     private fun parseAlgebraicExpressionWithAllErrors(
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathExpression {
-      return (parseAlgebraicExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS, allowedVariables) as MathParsingResult.Success<MathExpression>).result
+      return (
+        parseAlgebraicExpressionInternal(
+          expression, ErrorCheckingMode.ALL_ERRORS, allowedVariables
+        ) as MathParsingResult.Success<MathExpression>
+        ).result
     }
 
     private fun parseAlgebraicExpressionInternal(
@@ -7698,7 +7720,11 @@ class MathExpressionParserTest {
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathEquation {
-      return (parseAlgebraicEquationInternal(expression, ErrorCheckingMode.ALL_ERRORS, allowedVariables) as MathParsingResult.Success<MathEquation>).result
+      return (
+        parseAlgebraicEquationInternal(
+          expression, ErrorCheckingMode.ALL_ERRORS, allowedVariables
+        ) as MathParsingResult.Success<MathEquation>
+        ).result
     }
 
     private fun parseAlgebraicEquationInternal(

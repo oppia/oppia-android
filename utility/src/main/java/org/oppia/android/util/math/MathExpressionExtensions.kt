@@ -1,30 +1,5 @@
 package org.oppia.android.util.math
 
-import java.text.NumberFormat
-import java.util.Locale
-import java.util.SortedSet
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.MathBinaryOperation
-import org.oppia.android.app.model.MathExpression
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.EXPRESSIONTYPE_NOT_SET
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
-import org.oppia.android.app.model.MathFunctionCall
-import org.oppia.android.app.model.MathUnaryOperation
-import org.oppia.android.app.model.Polynomial
-import org.oppia.android.app.model.Polynomial.Term
-import org.oppia.android.app.model.Polynomial.Term.Variable
-import org.oppia.android.app.model.Real
-import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
-import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
-import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
-import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
-import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
 import org.oppia.android.app.model.ComparableOperationList
 import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation
 import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType
@@ -36,11 +11,20 @@ import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.C
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase.VARIABLE_TERM
 import org.oppia.android.app.model.ComparableOperationList.NonCommutativeOperation
 import org.oppia.android.app.model.ComparableOperationList.NonCommutativeOperation.OperationTypeCase
-import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
+import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathEquation
+import org.oppia.android.app.model.MathExpression
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.EXPRESSIONTYPE_NOT_SET
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
+import org.oppia.android.app.model.MathFunctionCall
 import org.oppia.android.app.model.MathFunctionCall.FunctionType
-import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
+import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -50,6 +34,22 @@ import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
+import org.oppia.android.app.model.Polynomial
+import org.oppia.android.app.model.Polynomial.Term
+import org.oppia.android.app.model.Polynomial.Term.Variable
+import org.oppia.android.app.model.Real
+import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
+import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
+import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
+import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
+import java.text.NumberFormat
+import java.util.Locale
+import java.util.SortedSet
+import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sqrt
+import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
+import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
 // TODO: split up this extensions file into multiple, clean it up, reorganize, and add tests.
 
@@ -74,9 +74,12 @@ private val COMPARABLE_OPERATION_COMPARATOR: Comparator<ComparableOperation> by 
 
 private val COMMUTATIVE_ACCUMULATION_COMPARATOR: Comparator<CommutativeAccumulation> by lazy {
   Comparator.comparing(CommutativeAccumulation::getAccumulationType)
-    .thenComparing({ accumulation ->
-      accumulation.combinedOperationsList.toSortedSet(COMPARABLE_OPERATION_COMPARATOR)
-    }, COMPARABLE_OPERATION_COMPARATOR.toSetComparator())
+    .thenComparing(
+      { accumulation ->
+        accumulation.combinedOperationsList.toSortedSet(COMPARABLE_OPERATION_COMPARATOR)
+      },
+      COMPARABLE_OPERATION_COMPARATOR.toSetComparator()
+    )
 }
 
 private val NON_COMMUTATIVE_BINARY_OPERATION_COMPARATOR by lazy {
@@ -126,7 +129,8 @@ private val POLYNOMIAL_TERM_COMPARATOR: Comparator<Term> by lazy {
 }
 
 private fun <T, U> comparingDeferred(
-  keySelector: (T) -> U, comparatorSelector: () -> Comparator<U>
+  keySelector: (T) -> U,
+  comparatorSelector: () -> Comparator<U>
 ): Comparator<T> {
   // Store as captured val for memoization.
   val comparator by lazy { comparatorSelector() }
@@ -135,12 +139,13 @@ private fun <T, U> comparingDeferred(
   }
 }
 
-private fun <T, U: Comparable<U>> Comparator<T>.thenComparingReversed(
+private fun <T, U : Comparable<U>> Comparator<T>.thenComparingReversed(
   keySelector: (T) -> U
 ): Comparator<T> = thenComparing(Comparator.comparing(keySelector).reversed())
 
-private fun <T, E: Enum<E>> Comparator<T>.thenSelectAmong(
-  enumSelector: (T) -> E, vararg comparators: Pair<E, Comparator<T>>
+private fun <T, E : Enum<E>> Comparator<T>.thenSelectAmong(
+  enumSelector: (T) -> E,
+  vararg comparators: Pair<E, Comparator<T>>
 ): Comparator<T> {
   val comparatorMap = comparators.toMap()
   return thenComparing(
@@ -383,7 +388,8 @@ private fun MathExpression.toProduct(isRhsInverted: Boolean): ComparableOperatio
 }
 
 private fun CommutativeAccumulation.Builder.addOperationToSum(
-  expression: MathExpression, forceNegative: Boolean
+  expression: MathExpression,
+  forceNegative: Boolean
 ) {
   when (expression.binaryOperation.operator) {
     BinaryOperator.ADD -> {
@@ -402,7 +408,8 @@ private fun CommutativeAccumulation.Builder.addOperationToSum(
 }
 
 private fun CommutativeAccumulation.Builder.addOperationToProduct(
-  expression: MathExpression, forceInverse: Boolean
+  expression: MathExpression,
+  forceInverse: Boolean
 ) {
   when (expression.binaryOperation.operator) {
     BinaryOperator.MULTIPLY -> {
@@ -945,9 +952,11 @@ private fun Polynomial.combineLikeTerms(): Polynomial {
 
 private fun Polynomial.removeUnnecessaryVariables(): Polynomial {
   return Polynomial.newBuilder().apply {
-    addAllTerm(this@removeUnnecessaryVariables.termList.filter { term ->
-      !term.coefficient.isApproximatelyZero()
-    })
+    addAllTerm(
+      this@removeUnnecessaryVariables.termList.filter { term ->
+        !term.coefficient.isApproximatelyZero()
+      }
+    )
   }.build().ensureAtLeastConstant()
 }
 
@@ -1069,10 +1078,12 @@ private fun createSingleVariablePolynomial(variableName: String): Polynomial {
   return createSingleTermPolynomial(
     Term.newBuilder().apply {
       coefficient = createCoefficientValueOfOne()
-      addVariable(Variable.newBuilder().apply {
-        name = variableName
-        power = 1
-      }.build())
+      addVariable(
+        Variable.newBuilder().apply {
+          name = variableName
+          power = 1
+        }.build()
+      )
     }.build()
   )
 }
@@ -1282,7 +1293,7 @@ private fun Real.isNegative(): Boolean = when (realTypeCase) {
   RATIONAL -> rational.isNegative
   IRRATIONAL -> irrational < 0
   INTEGER -> integer < 0
-  REALTYPE_NOT_SET, null ->  throw Exception("Invalid real: $this.")
+  REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
 }
 
 private fun Real.asWholeNumber(): Int? {

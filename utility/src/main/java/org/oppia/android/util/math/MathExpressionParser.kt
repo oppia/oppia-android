@@ -1,6 +1,5 @@
 package org.oppia.android.util.math
 
-import kotlin.math.absoluteValue
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE
@@ -21,6 +20,8 @@ import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
 import org.oppia.android.app.model.Real
+import org.oppia.android.util.math.MathExpressionParser.ParseContext.AlgebraicExpressionContext
+import org.oppia.android.util.math.MathExpressionParser.ParseContext.NumericExpressionContext
 import org.oppia.android.util.math.MathParsingError.DisabledVariablesInUseError
 import org.oppia.android.util.math.MathParsingError.EquationHasWrongNumberOfEqualsError
 import org.oppia.android.util.math.MathParsingError.EquationMissingLhsOrRhsError
@@ -44,6 +45,7 @@ import org.oppia.android.util.math.MathParsingError.TermDividedByZeroError
 import org.oppia.android.util.math.MathParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
 import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
+import org.oppia.android.util.math.MathTokenizer.Companion.BinaryOperatorToken
 import org.oppia.android.util.math.MathTokenizer.Companion.Token
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.DivideSymbol
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.EqualsSymbol
@@ -60,9 +62,7 @@ import org.oppia.android.util.math.MathTokenizer.Companion.Token.PositiveRealNum
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.RightParenthesisSymbol
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.SquareRootSymbol
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.VariableName
-import org.oppia.android.util.math.MathExpressionParser.ParseContext.AlgebraicExpressionContext
-import org.oppia.android.util.math.MathExpressionParser.ParseContext.NumericExpressionContext
-import org.oppia.android.util.math.MathTokenizer.Companion.BinaryOperatorToken
+import kotlin.math.absoluteValue
 
 class MathExpressionParser private constructor(private val parseContext: ParseContext) {
   // TODO:
@@ -286,8 +286,8 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
     return when (val nextToken = parseContext.peekToken()) {
       is MinusSymbol, is PlusSymbol -> parseGenericPlusMinusUnaryTerm()
       is PositiveInteger, is PositiveRealNumber -> parseNumber().takeUnless {
-        parseContext.hasNextTokenOfType<PositiveInteger>()
-          || parseContext.hasNextTokenOfType<PositiveRealNumber>()
+        parseContext.hasNextTokenOfType<PositiveInteger>() ||
+          parseContext.hasNextTokenOfType<PositiveRealNumber>()
       } ?: SpacesBetweenNumbersError.toFailure()
       is FunctionName, is LeftParenthesisSymbol, is SquareRootSymbol ->
         parseGenericTermWithoutUnaryWithoutNumber()
@@ -536,15 +536,16 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
   }
 
   private fun parseGenericBinaryExpression(
-    parseLhs: () -> MathParsingResult<MathExpression>, parseRhs: (Token?) -> BinaryOperationRhs?
+    parseLhs: () -> MathParsingResult<MathExpression>,
+    parseRhs: (Token?) -> BinaryOperationRhs?
   ): MathParsingResult<MathExpression> {
     var lastLhsResult = parseLhs()
     while (!lastLhsResult.isFailure()) {
       // Compute the next LHS if there are further RHS expressions.
       lastLhsResult =
         parseRhs(parseContext.peekToken())
-          ?.computeBinaryOperationExpression(lastLhsResult)
-          ?: break // Not a match to the expression.
+        ?.computeBinaryOperationExpression(lastLhsResult)
+        ?: break // Not a match to the expression.
     }
     return lastLhsResult
   }
@@ -664,7 +665,8 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
     }
 
     class NumericExpressionContext(
-      rawExpression: String, override val errorCheckingMode: ErrorCheckingMode
+      rawExpression: String,
+      override val errorCheckingMode: ErrorCheckingMode
     ) : ParseContext(rawExpression) {
       // Numeric expressions never allow variables.
       override fun allowsVariables(): Boolean = false
@@ -695,7 +697,8 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
     }
 
     fun parseNumericExpression(
-      rawExpression: String, errorCheckingMode: ErrorCheckingMode = ErrorCheckingMode.ALL_ERRORS
+      rawExpression: String,
+      errorCheckingMode: ErrorCheckingMode = ErrorCheckingMode.ALL_ERRORS
     ): MathParsingResult<MathExpression> =
       createNumericParser(rawExpression, errorCheckingMode).parseGenericExpressionGrammar()
 
@@ -720,7 +723,8 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
     }
 
     private fun createNumericParser(
-      rawExpression: String, errorCheckingMode: ErrorCheckingMode
+      rawExpression: String,
+      errorCheckingMode: ErrorCheckingMode
     ): MathExpressionParser =
       MathExpressionParser(NumericExpressionContext(rawExpression, errorCheckingMode))
 
@@ -883,8 +887,9 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
         }
         UNARY_OPERATION -> unaryOperation.operand.findFirstMultiRedundantGroup()
         FUNCTION_CALL -> functionCall.argument.findFirstMultiRedundantGroup()
-        GROUP -> group.takeIf { it.expressionTypeCase == GROUP }
-          ?: group.findFirstMultiRedundantGroup()
+        GROUP ->
+          group.takeIf { it.expressionTypeCase == GROUP }
+            ?: group.findFirstMultiRedundantGroup()
         CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> null
       }
     }
@@ -923,10 +928,10 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       return when (expressionTypeCase) {
         BINARY_OPERATION -> {
           takeIf {
-            binaryOperation.operator == EXPONENTIATE
-              && binaryOperation.rightOperand.isVariableExpression()
+            binaryOperation.operator == EXPONENTIATE &&
+              binaryOperation.rightOperand.isVariableExpression()
           } ?: binaryOperation.leftOperand.findNextExponentiationWithVariablePower()
-          ?: binaryOperation.rightOperand.findNextExponentiationWithVariablePower()
+            ?: binaryOperation.rightOperand.findNextExponentiationWithVariablePower()
         }
         UNARY_OPERATION -> unaryOperation.operand.findNextExponentiationWithVariablePower()
         FUNCTION_CALL -> functionCall.argument.findNextExponentiationWithVariablePower()
@@ -939,11 +944,11 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       return when (expressionTypeCase) {
         BINARY_OPERATION -> {
           takeIf {
-            binaryOperation.operator == EXPONENTIATE
-              && binaryOperation.rightOperand.expressionTypeCase == CONSTANT
-              && binaryOperation.rightOperand.constant.toDouble() > 5.0
+            binaryOperation.operator == EXPONENTIATE &&
+              binaryOperation.rightOperand.expressionTypeCase == CONSTANT &&
+              binaryOperation.rightOperand.constant.toDouble() > 5.0
           } ?: binaryOperation.leftOperand.findNextExponentiationWithTooLargePower()
-          ?: binaryOperation.rightOperand.findNextExponentiationWithTooLargePower()
+            ?: binaryOperation.rightOperand.findNextExponentiationWithTooLargePower()
         }
         UNARY_OPERATION -> unaryOperation.operand.findNextExponentiationWithTooLargePower()
         FUNCTION_CALL -> functionCall.argument.findNextExponentiationWithTooLargePower()
@@ -956,10 +961,10 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       return when (expressionTypeCase) {
         BINARY_OPERATION -> {
           takeIf {
-            binaryOperation.operator == EXPONENTIATE
-              && binaryOperation.rightOperand.containsExponentiation()
+            binaryOperation.operator == EXPONENTIATE &&
+              binaryOperation.rightOperand.containsExponentiation()
           } ?: binaryOperation.leftOperand.findNextNestedExponentiation()
-          ?: binaryOperation.rightOperand.findNextNestedExponentiation()
+            ?: binaryOperation.rightOperand.findNextNestedExponentiation()
         }
         UNARY_OPERATION -> unaryOperation.operand.findNextNestedExponentiation()
         FUNCTION_CALL -> functionCall.argument.findNextNestedExponentiation()
@@ -972,12 +977,12 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       return when (expressionTypeCase) {
         BINARY_OPERATION -> {
           takeIf {
-            binaryOperation.operator == DIVIDE
-              && binaryOperation.rightOperand.expressionTypeCase == CONSTANT
-              && binaryOperation.rightOperand.constant
-              .toDouble().absoluteValue.approximatelyEquals(0.0)
+            binaryOperation.operator == DIVIDE &&
+              binaryOperation.rightOperand.expressionTypeCase == CONSTANT &&
+              binaryOperation.rightOperand.constant
+                .toDouble().absoluteValue.approximatelyEquals(0.0)
           } ?: binaryOperation.leftOperand.findNextDivisionByZero()
-          ?: binaryOperation.rightOperand.findNextDivisionByZero()
+            ?: binaryOperation.rightOperand.findNextDivisionByZero()
         }
         UNARY_OPERATION -> unaryOperation.operand.findNextDivisionByZero()
         FUNCTION_CALL -> functionCall.argument.findNextDivisionByZero()
@@ -1012,8 +1017,8 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       return when (expressionTypeCase) {
         VARIABLE -> true
         BINARY_OPERATION -> {
-          binaryOperation.leftOperand.isVariableExpression()
-            || binaryOperation.rightOperand.isVariableExpression()
+          binaryOperation.leftOperand.isVariableExpression() ||
+            binaryOperation.rightOperand.isVariableExpression()
         }
         UNARY_OPERATION -> unaryOperation.operand.isVariableExpression()
         FUNCTION_CALL -> functionCall.argument.isVariableExpression()
@@ -1025,9 +1030,9 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
     private fun MathExpression.containsExponentiation(): Boolean {
       return when (expressionTypeCase) {
         BINARY_OPERATION -> {
-          binaryOperation.operator == EXPONENTIATE
-            || binaryOperation.leftOperand.containsExponentiation()
-            || binaryOperation.rightOperand.containsExponentiation()
+          binaryOperation.operator == EXPONENTIATE ||
+            binaryOperation.leftOperand.containsExponentiation() ||
+            binaryOperation.rightOperand.containsExponentiation()
         }
         UNARY_OPERATION -> unaryOperation.operand.containsExponentiation()
         FUNCTION_CALL -> functionCall.argument.containsExponentiation()

@@ -1,6 +1,5 @@
 package org.oppia.android.util.math
 
-import java.lang.StringBuilder
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE
@@ -10,6 +9,7 @@ import org.oppia.android.app.model.MathBinaryOperation.Operator.SUBTRACT
 import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
+import java.lang.StringBuilder
 
 // TODO: rename to MathTokenizer & add documentation.
 // TODO: consider a more efficient implementation that uses 1 underlying buffer (which could still
@@ -109,7 +109,9 @@ class MathTokenizer private constructor() {
     }
 
     private fun tokenizeFunctionName(
-      currChar: Char, startIndex: Int, chars: PeekableIterator<Char>
+      currChar: Char,
+      startIndex: Int,
+      chars: PeekableIterator<Char>
     ): Token? {
       // allowed_function_name = "sqrt" ;
       // disallowed_function_name =
@@ -220,7 +222,10 @@ class MathTokenizer private constructor() {
     }
 
     private fun tokenizeExpectedFunction(
-      name: String, isAllowedFunction: Boolean, startIndex: Int, chars: PeekableIterator<Char>
+      name: String,
+      isAllowedFunction: Boolean,
+      startIndex: Int,
+      chars: PeekableIterator<Char>
     ): Token {
       return chars.expectNextCharsForFunctionName(name.substring(1), startIndex)
         ?: Token.FunctionName(
@@ -261,24 +266,33 @@ class MathTokenizer private constructor() {
       abstract val endIndex: Int
 
       class PositiveInteger(
-        val parsedValue: Int, override val startIndex: Int, override val endIndex: Int
+        val parsedValue: Int,
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token()
 
       class PositiveRealNumber(
-        val parsedValue: Double, override val startIndex: Int, override val endIndex: Int
+        val parsedValue: Double,
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token()
 
       class VariableName(
-        val parsedName: String, override val startIndex: Int, override val endIndex: Int
+        val parsedName: String,
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token()
 
       class FunctionName(
-        val parsedName: String, val isAllowedFunction: Boolean, override val startIndex: Int,
+        val parsedName: String,
+        val isAllowedFunction: Boolean,
+        override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
       class MinusSymbol(
-        override val startIndex: Int, override val endIndex: Int
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token(), UnaryOperatorToken, BinaryOperatorToken {
         override fun getUnaryOperator(): MathUnaryOperation.Operator = NEGATE
 
@@ -288,7 +302,8 @@ class MathTokenizer private constructor() {
       class SquareRootSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
       class PlusSymbol(
-        override val startIndex: Int, override val endIndex: Int
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token(), UnaryOperatorToken, BinaryOperatorToken {
         override fun getUnaryOperator(): MathUnaryOperation.Operator = POSITIVE
 
@@ -296,19 +311,22 @@ class MathTokenizer private constructor() {
       }
 
       class MultiplySymbol(
-        override val startIndex: Int, override val endIndex: Int
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token(), BinaryOperatorToken {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = MULTIPLY
       }
 
       class DivideSymbol(
-        override val startIndex: Int, override val endIndex: Int
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token(), BinaryOperatorToken {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = DIVIDE
       }
 
       class ExponentiationSymbol(
-        override val startIndex: Int, override val endIndex: Int
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token(), BinaryOperatorToken {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = EXPONENTIATE
       }
@@ -316,15 +334,18 @@ class MathTokenizer private constructor() {
       class EqualsSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
       class LeftParenthesisSymbol(
-        override val startIndex: Int, override val endIndex: Int
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token()
 
       class RightParenthesisSymbol(
-        override val startIndex: Int, override val endIndex: Int
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token()
 
       class IncompleteFunctionName(
-        override val startIndex: Int, override val endIndex: Int
+        override val startIndex: Int,
+        override val endIndex: Int
       ) : Token()
 
       class InvalidToken(override val startIndex: Int, override val endIndex: Int) : Token()
@@ -347,7 +368,8 @@ class MathTokenizer private constructor() {
      * iterator will be at the token that comes after the last confirmed character in the string.
      */
     private fun PeekableIterator<Char>.expectNextCharsForFunctionName(
-      chars: String, startIndex: Int
+      chars: String,
+      startIndex: Int
     ): Token? {
       for (c in chars) {
         expectNextValue { c }
