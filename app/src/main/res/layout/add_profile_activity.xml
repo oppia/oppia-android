@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
-            android:text="@{viewModel.starRequired}"
+            android:text="@{viewModel.requiredTextWithStar}"
             android:textColor="@color/oppia_primary_text"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
