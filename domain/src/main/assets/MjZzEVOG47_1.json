@@ -2686,7 +2686,7 @@
             }],
             "outcome": {
               "dest": "Matthew gets conned",
-              "feedback": null
+              "feedback": null,
               "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
