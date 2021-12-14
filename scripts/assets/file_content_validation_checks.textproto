@@ -5,6 +5,15 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?.kt"
+  prohibited_content_regex: "announceForAccessibility"
+  failure_message: "When using announceForAccessibility, please add an exempt file here."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityChecker.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityCheckerImpl.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/FakeAccessibilityChecker.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
   prohibited_content_regex: "CoroutineWorker"
   failure_message: "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
