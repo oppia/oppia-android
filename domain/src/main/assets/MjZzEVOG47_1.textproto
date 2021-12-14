@@ -2841,7 +2841,12 @@ states {
     }
     written_translations {
       key: "feedback_1"
-      value {}
+      value {
+        translation_mapping {
+          key: "es"
+          value {}
+        }
+      }
     }
     written_translations {
       key: "feedback_6"
