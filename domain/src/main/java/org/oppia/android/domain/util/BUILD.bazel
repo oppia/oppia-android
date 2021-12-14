@@ -31,7 +31,7 @@ kt_android_library(
     ],
     visibility = ["//domain:__subpackages__"],
     deps = [
-        "//model:question_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
     ],
 )
@@ -44,7 +44,7 @@ kt_android_library(
     visibility = ["//domain:__subpackages__"],
     deps = [
         ":extensions",
-        "//model:question_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
     ],
 )

@@ -17,7 +17,7 @@ kt_android_library(
     deps = [
         ":constants",
         ":network_config_annotations",
-        "//model:arguments_java_proto_lite",
+        "//model/src/main/proto:arguments_java_proto_lite",
         "//third_party:com_squareup_okhttp3_okhttp",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",

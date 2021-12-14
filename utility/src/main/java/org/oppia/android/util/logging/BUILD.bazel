@@ -39,7 +39,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:event_logger_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
     ],
 )
 
@@ -50,7 +50,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:event_logger_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
     ],
 )
 

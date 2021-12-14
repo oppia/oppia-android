@@ -75,6 +75,6 @@ kt_android_library(
         "//app:app_visibility",
     ],
     deps = [
-        "//model:profile_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
     ],
 )

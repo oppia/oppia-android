@@ -29,9 +29,11 @@ def _gen_binary_proto_from_text_impl(ctx):
     # proto to binary, and expected stdin/stdout configurations. Note that the actual proto files
     # are passed to the compiler since it requires them in order to transcode the text proto file.
     command_path = ctx.executable._protoc_tool.path
+    proto_directory_path_args = ["--proto_path=%s" % file.dirname for file in input_proto_files]
+    proto_file_names = [file.basename for file in input_proto_files]
     arguments = [command_path] + [
         "--encode %s" % ctx.attr.proto_type_name,
-    ] + [file.path for file in input_proto_files] + [
+    ] + proto_directory_path_args + proto_file_names + [
         "< %s" % input_file,
         "> %s" % output_file.path,
     ]
