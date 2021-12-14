@@ -12,5 +12,5 @@ interface AccessibilityChecker {
    * the given view. This does not guarantee the text will actually be read, and it may interrupt
    * existing text being spoken.
    */
-  fun announceForAccessibilityForView(view: View, text: CharSequence?)
+  fun announceForAccessibilityForView(view: View, text: CharSequence)
 }

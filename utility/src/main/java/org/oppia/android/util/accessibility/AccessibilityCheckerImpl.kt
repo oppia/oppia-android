@@ -17,7 +17,7 @@ class AccessibilityCheckerImpl @Inject constructor(
     return accessibilityManager.isEnabled
   }
 
-  override fun announceForAccessibilityForView(view: View, text: CharSequence?) {
+  override fun announceForAccessibilityForView(view: View, text: CharSequence) {
     view.announceForAccessibility(text)
   }
 }
