@@ -6,6 +6,11 @@ import android.view.View
 interface AccessibilityChecker {
   /** Returns whether a screen reader (such as TalkBack) is currently enabled. */
   fun isScreenReaderEnabled(): Boolean
-  /** Calls view.announceForAccessibility(text). */
+
+  /**
+   * Suggests to the screen reader (if any is installed/enabled) to announce the specified text for
+   * the given view. This does not guarantee the text will actually be read, and it may interrupt
+   * existing text being spoken.
+   */
   fun announceForAccessibilityForView(view: View, text: CharSequence?)
 }

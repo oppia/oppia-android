@@ -362,7 +362,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       playThroughFractionsState1()
       playThroughFractionsState2()
-      assertThat(accessibilityManager.getAnnouncement()).isEqualTo("Correct!")
+      assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
     }
@@ -375,7 +375,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       playThroughFractionsState1()
       playThroughFractionsState2()
-      assertThat(accessibilityManager.getAnnouncement()).isEqualTo("Correct!")
+      assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
     }
