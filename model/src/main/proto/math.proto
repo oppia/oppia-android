@@ -152,7 +152,7 @@ message Polynomial {
 
     message Variable {
       string name = 1;
-      int32 power = 2;
+      uint32 power = 2;
     }
   }
 }

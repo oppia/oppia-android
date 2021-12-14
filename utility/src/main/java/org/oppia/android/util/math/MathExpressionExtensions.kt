@@ -71,7 +71,7 @@ private val COMPARABLE_OPERATION_COMPARATOR: Comparator<ComparableOperation> by 
   Comparator.comparing(ComparableOperation::getComparisonTypeCase)
     .thenComparing(ComparableOperation::getIsNegated)
     .thenComparing(ComparableOperation::getIsInverted)
-    .selectAmong(
+    .thenSelectAmong(
       ComparableOperation::getComparisonTypeCase,
       COMMUTATIVE_ACCUMULATION to comparingDeferred(
         ComparableOperation::getCommutativeAccumulation
@@ -88,7 +88,7 @@ private val COMMUTATIVE_ACCUMULATION_COMPARATOR: Comparator<CommutativeAccumulat
   Comparator.comparing(CommutativeAccumulation::getAccumulationType)
     .thenComparing({ accumulation ->
       accumulation.combinedOperationsList.toSortedSet(COMPARABLE_OPERATION_COMPARATOR)
-    }, ::compareSets)
+    }, COMPARABLE_OPERATION_COMPARATOR.toSetComparator())
 }
 
 private val NON_COMMUTATIVE_BINARY_OPERATION_COMPARATOR by lazy {
@@ -101,7 +101,7 @@ private val NON_COMMUTATIVE_BINARY_OPERATION_COMPARATOR by lazy {
 
 private val NON_COMMUTATIVE_OPERATION_COMPARATOR: Comparator<NonCommutativeOperation> by lazy {
   Comparator.comparing(NonCommutativeOperation::getOperationTypeCase)
-    .selectAmong(
+    .thenSelectAmong(
       NonCommutativeOperation::getOperationTypeCase,
       OperationTypeCase.EXPONENTIATION to Comparator.comparing(
         NonCommutativeOperation::getExponentiation, NON_COMMUTATIVE_BINARY_OPERATION_COMPARATOR
@@ -114,6 +114,29 @@ private val NON_COMMUTATIVE_OPERATION_COMPARATOR: Comparator<NonCommutativeOpera
 
 private val REAL_COMPARATOR: Comparator<Real> by lazy { Comparator.comparing(Real::toDouble) }
 
+private val POLYNOMIAL_VARIABLE_COMPARATOR: Comparator<Variable> by lazy {
+  // Note that power is reversed because larger powers should actually be sorted ahead of smaller
+  // powers for the same variable name (but variable name still takes precedence). This ensures
+  // cases like x^2y+y^2x are sorted in that order.
+  Comparator.comparing(Variable::getName).thenComparingReversed(Variable::getPower)
+}
+
+private val POLYNOMIAL_TERM_COMPARATOR: Comparator<Term> by lazy {
+  // First, sort by all variable names to ensure xy is placed ahead of xz. Then, sort by variable
+  // powers in order of the variables (such that x^2y is ranked higher thank xy). Finally, sort by
+  // the coefficient to ensure equality through the comparator works correctly (though in practice
+  // like terms should always be combined). Note the specific reversing happening here. It's done in
+  // this way so that sorted set bigger/smaller list is reversed (which matches expectations since
+  // larger terms should appear earlier in the results). This is implementing an ordering similar to
+  // https://en.wikipedia.org/wiki/Polynomial#Definition, except for multi-variable functions (where
+  // variables of higher degree are preferred over lower degree by lexicographical order of variable
+  // names).
+  Comparator.comparing<Term, SortedSet<Variable>>(
+    { term -> term.variableList.toSortedSet(POLYNOMIAL_VARIABLE_COMPARATOR) },
+    POLYNOMIAL_VARIABLE_COMPARATOR.reversed().toSetComparator()
+  ).reversed().thenComparing(Term::getCoefficient, REAL_COMPARATOR)
+}
+
 private fun <T, U> comparingDeferred(
   keySelector: (T) -> U, comparatorSelector: () -> Comparator<U>
 ): Comparator<T> {
@@ -124,7 +147,11 @@ private fun <T, U> comparingDeferred(
   }
 }
 
-private fun <T, E: Enum<E>> Comparator<T>.selectAmong(
+private fun <T, U: Comparable<U>> Comparator<T>.thenComparingReversed(
+  keySelector: (T) -> U
+): Comparator<T> = thenComparing(Comparator.comparing(keySelector).reversed())
+
+private fun <T, E: Enum<E>> Comparator<T>.thenSelectAmong(
   enumSelector: (T) -> E, vararg comparators: Pair<E, Comparator<T>>
 ): Comparator<T> {
   val comparatorMap = comparators.toMap()
@@ -135,28 +162,30 @@ private fun <T, E: Enum<E>> Comparator<T>.selectAmong(
       check(enum1 == enum2) {
         "Expected objects to have the same enum values: $o1 ($enum1), $o2 ($enum2)"
       }
-      val comparator = checkNotNull(comparatorMap[enum1]) { "No comparator for matched enum: $enum1" }
+      val comparator =
+        checkNotNull(comparatorMap[enum1]) { "No comparator for matched enum: $enum1" }
       return@Comparator comparator.compare(o1, o2)
     }
   )
 }
 
-private fun compareSets(
-  first: SortedSet<ComparableOperation>, second: SortedSet<ComparableOperation>
-): Int {
-  // Reference: https://stackoverflow.com/a/30107086.
-  val firstIter = first.iterator()
-  val secondIter = second.iterator()
-  while (firstIter.hasNext() || secondIter.hasNext()) {
-    val comparison = COMPARABLE_OPERATION_COMPARATOR.compare(firstIter.next(), secondIter.next())
-    if (comparison != 0) return comparison // Found a different item.
-  }
+private fun <T> Comparator<T>.toSetComparator(): Comparator<SortedSet<T>> {
+  val itemComparator = this
+  return Comparator { first, second ->
+    // Reference: https://stackoverflow.com/a/30107086.
+    val firstIter = first.iterator()
+    val secondIter = second.iterator()
+    while (firstIter.hasNext() && secondIter.hasNext()) {
+      val comparison = itemComparator.compare(firstIter.next(), secondIter.next())
+      if (comparison != 0) return@Comparator comparison // Found a different item.
+    }
 
-  // Everything is equal up to here, see if the lists are different length.
-  return when {
-    firstIter.hasNext() -> 1 // The first list is longer, therefore "greater."
-    secondIter.hasNext() -> -1 // Ditto, but for the second list.
-    else -> 0 // Otherwise, they're the same length with all equal items (and are thus equal).
+    // Everything is equal up to here, see if the lists are different length.
+    return@Comparator when {
+      firstIter.hasNext() -> 1 // The first list is longer, therefore "greater."
+      secondIter.hasNext() -> -1 // Ditto, but for the second list.
+      else -> 0 // Otherwise, they're the same length with all equal items (and are thus equal).
+    }
   }
 }
 
@@ -262,6 +291,47 @@ private fun MathExpression.stripGroups(): MathExpression {
       }.build()
     }.build()
     GROUP -> group.stripGroups()
+    CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> this
+  }
+}
+
+private val ONE_HALF by lazy {
+  Real.newBuilder().apply {
+    rational = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 2
+    }.build()
+  }.build()
+}
+
+private fun MathExpression.replaceSquareRoots(): MathExpression {
+  return when (expressionTypeCase) {
+    BINARY_OPERATION -> toBuilder().apply {
+      binaryOperation = binaryOperation.toBuilder().apply {
+        leftOperand = binaryOperation.leftOperand.replaceSquareRoots()
+        rightOperand = binaryOperation.rightOperand.replaceSquareRoots()
+      }.build()
+    }.build()
+    UNARY_OPERATION -> toBuilder().apply {
+      unaryOperation = unaryOperation.toBuilder().apply {
+        operand = unaryOperation.operand.replaceSquareRoots()
+      }.build()
+    }.build()
+    FUNCTION_CALL -> when (functionCall.functionType) {
+      FunctionType.SQUARE_ROOT -> toBuilder().apply {
+        // Replace the square root function call with the equivalent exponentiation. That is,
+        // sqrt(x)=x^(1/2).
+        binaryOperation = MathBinaryOperation.newBuilder().apply {
+          operator = BinaryOperator.EXPONENTIATE
+          leftOperand = functionCall.argument.replaceSquareRoots()
+          rightOperand = MathExpression.newBuilder().apply {
+            constant = ONE_HALF
+          }.build()
+        }.build()
+      }.build()
+      FunctionType.FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null -> this
+    }
+    GROUP -> group.replaceSquareRoots()
     CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> this
   }
 }
@@ -680,8 +750,15 @@ fun MathExpression.toPolynomial(): Polynomial? {
   //   e. Multiplication (for one side constant, apply to coefficients otherwise perform polynomial multiplication)
   //   f. Addition (treat constants as constant terms & concatenate term lists to compute new polynomial)
   // 4. Collect the final polynomial as the result. Early exiting indicates a non-polynomial.
-  return reduceToPolynomial()
+  return stripGroups().replaceSquareRoots()
+    .reduceToPolynomial()
+    ?.removeUnnecessaryVariables()
+    ?.sort()
 }
+
+private fun Polynomial.sort() = Polynomial.newBuilder().apply {
+  addAllTerm(this@sort.termList.sortedWith(POLYNOMIAL_TERM_COMPARATOR))
+}.build()
 
 fun Polynomial.isUnivariate(): Boolean = getUniqueVariableCount() == 1
 
@@ -691,31 +768,40 @@ private fun Polynomial.getUniqueVariableCount(): Int {
   return termList.flatMap(Term::getVariableList).map(Variable::getName).toSet().size
 }
 
-fun Polynomial.toAnswerString(): String {
-  return termList.joinToString(separator = " + ", transform = Term::toAnswerString)
+fun Polynomial.toPlainText(): String {
+  return termList.map { it.toPlainText() }.reduce { acc, termAnswerStr ->
+    if (termAnswerStr.startsWith("-")) {
+      "$acc - ${termAnswerStr.drop(1)}"
+    } else "$acc + $termAnswerStr"
+  }
 }
 
-private fun Term.toAnswerString(): String {
+private fun Term.toPlainText(): String {
   val productValues = mutableListOf<String>()
 
   // Include the coefficient if there is one (coefficients of 1 are ignored only if there are
   // variables present).
-  if (!coefficient.isApproximatelyEqualTo(1.0) || variableList.isEmpty()) {
-    productValues += coefficient.toAnswerString()
+  productValues += when {
+    variableList.isEmpty() || !abs(coefficient).isApproximatelyEqualTo(1.0) -> when {
+      coefficient.isRational() && variableList.isNotEmpty() -> "(${coefficient.toPlainText()})"
+      else -> coefficient.toPlainText()
+    }
+    coefficient.isNegative() -> "-"
+    else -> ""
   }
 
   // Include any present variables.
-  productValues += variableList.map(Variable::toAnswerString)
+  productValues += variableList.map(Variable::toPlainText)
 
   // Take the product of all relevant values of the term.
-  return productValues.joinToString(separator = "*")
+  return productValues.joinToString(separator = "")
 }
 
-private fun Variable.toAnswerString(): String {
+private fun Variable.toPlainText(): String {
   return if (power > 1) "$name^$power" else name
 }
 
-private fun Real.toAnswerString(): String = when (realTypeCase) {
+private fun Real.toPlainText(): String = when (realTypeCase) {
   // Note that the rational part is first converted to an improper fraction since mixed fractions
   // can't be expressed as a single coefficient in typical polynomial syntax).
   RATIONAL -> rational.toImproperForm().toAnswerString()
@@ -733,18 +819,20 @@ private fun Real.toPlainString(): String = when (realTypeCase) {
 
 private fun MathExpression.reduceToPolynomial(): Polynomial? {
   return when (expressionTypeCase) {
-    CONSTANT -> createPolynomialFromConstant(constant)
-    VARIABLE -> createSingleTermPolynomial(variable)
+    CONSTANT -> createConstantPolynomial(constant)
+    VARIABLE -> createSingleVariablePolynomial(variable)
     UNARY_OPERATION -> unaryOperation.reduceToPolynomial()
     BINARY_OPERATION -> binaryOperation.reduceToPolynomial()
-    else -> null
+    // Both functions & groups should be removed ahead of polynomial reduction.
+    FUNCTION_CALL, GROUP, EXPRESSIONTYPE_NOT_SET, null -> null
   }
 }
 
 private fun MathUnaryOperation.reduceToPolynomial(): Polynomial? {
   return when (operator) {
     UnaryOperator.NEGATE -> -(operand.reduceToPolynomial() ?: return null)
-    else -> null
+    UnaryOperator.POSITIVE -> operand.reduceToPolynomial() // Positive unary changes nothing.
+    UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null -> null
   }
 }
 
@@ -757,14 +845,12 @@ private fun MathBinaryOperation.reduceToPolynomial(): Polynomial? {
     BinaryOperator.MULTIPLY -> leftPolynomial * rightPolynomial
     BinaryOperator.DIVIDE -> leftPolynomial / rightPolynomial
     BinaryOperator.EXPONENTIATE -> leftPolynomial.pow(rightPolynomial)
-    else -> null
+    BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null -> null
   }
 }
 
 /** Returns whether this polynomial is a constant-only polynomial (contains no variables). */
-private fun Polynomial.isConstant(): Boolean {
-  return termCount == 1 && getTerm(0).variableCount == 0
-}
+fun Polynomial.isConstant(): Boolean = termCount == 1 && getTerm(0).variableCount == 0
 
 /**
  * Returns the first term coefficient from this polynomial. This corresponds to the whole value of
@@ -773,9 +859,7 @@ private fun Polynomial.isConstant(): Boolean {
  * Note that this function can throw if the polynomial is empty (so isConstant() should always be
  * checked first).
  */
-private fun Polynomial.getConstant(): Real {
-  return getTerm(0).coefficient
-}
+fun Polynomial.getConstant(): Real = getTerm(0).coefficient
 
 private operator fun Polynomial.unaryMinus(): Polynomial {
   // Negating a polynomial just requires flipping the signs on all coefficients.
@@ -785,9 +869,13 @@ private operator fun Polynomial.unaryMinus(): Polynomial {
     .build()
 }
 
+// TODO: extract the filtering done during addition & also do it at the end in case initial polynomials are tried (like x^0, or 0y). Add tests for these cases.
 private operator fun Polynomial.plus(rhs: Polynomial): Polynomial {
-  // Adding two polynomials just requires combining their terms lists.
-  return Polynomial.newBuilder().addAllTerm(termList).addAllTerm(rhs.termList).build()
+  // Adding two polynomials just requires combining their terms lists (taking into account combining
+  // common terms).
+  return Polynomial.newBuilder().apply {
+    addAllTerm(this@plus.termList + rhs.termList)
+  }.build().combineLikeTerms().removeUnnecessaryVariables()
 }
 
 private operator fun Polynomial.minus(rhs: Polynomial): Polynomial {
@@ -797,14 +885,13 @@ private operator fun Polynomial.minus(rhs: Polynomial): Polynomial {
 
 private operator fun Polynomial.times(rhs: Polynomial): Polynomial {
   // Polynomial multiplication is simply multiplying each term in one by each term in the other.
-  // TODO: ensure this properly computes trivial cases like (x^2 becoming x-squared) or whether
-  //  those cases need to be special cased.
-  return Polynomial.newBuilder()
-    .addAllTerm(
-      termList.flatMap { leftTerm ->
-        rhs.termList.map { rightTerm -> leftTerm * rightTerm }
-      }
-    ).build()
+  val crossMultipliedTerms = termList.flatMap { leftTerm ->
+    rhs.termList.map { rightTerm -> leftTerm * rightTerm }
+  }
+
+  // Treat each multiplied term as a unique polynomial, then add them together (so that like terms
+  // can be properly combined).
+  return crossMultipliedTerms.map { createSingleTermPolynomial(it) }.reduce(Polynomial::plus)
 }
 
 private operator fun Term.times(rhs: Term): Term {
@@ -837,26 +924,34 @@ private operator fun Polynomial.div(rhs: Polynomial): Polynomial? {
   //  (1/2)x + (3/2).
   // See https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode for reference.
   if (rhs.isApproximatelyZero()) {
-    // TODO: test (x+2)/0
     return null // Dividing by zero is invalid and thus cannot yield a polynomial.
   }
 
-  var quotient = createPolynomialFromConstant(createCoefficientValueOf(value = 0))
+  var quotient = createConstantPolynomial(createCoefficientValueOfZero())
   var remainder = this
-  val divisorDegree = rhs.getDegree()
   val leadingDivisorTerm = rhs.getLeadingTerm()
+  val divisorVariable = leadingDivisorTerm.highestDegreeVariable()
+  val divisorVariableName = divisorVariable?.name
+  val divisorDegree = leadingDivisorTerm.highestDegree()
   while (!remainder.isApproximatelyZero() && remainder.getDegree() >= divisorDegree) {
-    // Attempt to divide the leading terms (this may fail).
-    val newTerm = remainder.getLeadingTerm() / leadingDivisorTerm ?: return null
+    // Attempt to divide the leading terms (this may fail). Note that the leading term should always
+    // be based on the divisor variable being used (otherwise subsequent division steps will be
+    // inconsistent and potentially fail to resolve).
+    val newTerm =
+      remainder.getLeadingTerm(matchedVariable = divisorVariableName) / leadingDivisorTerm
+        ?: return null
     quotient += newTerm.toPolynomial()
     remainder -= newTerm.toPolynomial() * rhs
   }
-  if (!remainder.isApproximatelyZero()) {
-    // A non-zero remainder indicates the division was not "pure" which means the result is a
-    // non-polynomial.
-    return null
+  return when {
+    remainder.isApproximatelyZero() -> quotient // Exact division (i.e. with no remainder).
+    remainder.isConstant() && rhs.isConstant() -> {
+      // Remainder is a constant term.
+      val remainingTerm = remainder.getConstant() / rhs.getConstant()
+      quotient + createConstantPolynomial(remainingTerm)
+    }
+    else -> null // Remainder is a polynomial, so the division failed.
   }
-  return quotient
 }
 
 private fun Term.toPolynomial(): Polynomial {
@@ -887,6 +982,48 @@ private operator fun Term.div(rhs: Term): Term? {
     .build()
 }
 
+private fun Polynomial.combineLikeTerms(): Polynomial {
+  // The following algorithm is expected to grow in space by O(N*M) and in time by O(N*m*log(m))
+  // where N is the total number  of terms, M is the total number of variables, and m is the largest
+  // single count of variables among all terms (this is assuming constant-time insertion for the
+  // underlying hashtable).
+  val newTerms = termList.groupBy {
+    it.variableList.sortedWith(POLYNOMIAL_VARIABLE_COMPARATOR)
+  }.mapValues { (_, coefficientTerms) ->
+    coefficientTerms.map { it.coefficient }
+  }.mapNotNull { (variables, coefficients) ->
+    // Combine like terms by summing their coefficients.
+    val newCoefficient = coefficients.reduce(Real::plus)
+    return@mapNotNull if (!newCoefficient.isApproximatelyZero()) {
+      Term.newBuilder().apply {
+        coefficient = newCoefficient
+
+        // Remove variables with zero powers (since they evaluate to '1').
+        addAllVariable(variables.filter { variable -> variable.power != 0 })
+      }.build()
+    } else null // Zero terms should be removed.
+  }
+  return Polynomial.newBuilder().apply {
+    addAllTerm(newTerms)
+  }.build().ensureAtLeastConstant()
+}
+
+private fun Polynomial.removeUnnecessaryVariables(): Polynomial {
+  return Polynomial.newBuilder().apply {
+    addAllTerm(this@removeUnnecessaryVariables.termList.filter { term ->
+      !term.coefficient.isApproximatelyZero()
+    })
+  }.build().ensureAtLeastConstant()
+}
+
+private fun Polynomial.ensureAtLeastConstant(): Polynomial {
+  return if (termCount == 0) {
+    Polynomial.newBuilder().apply {
+      addTerm(createZeroTerm())
+    }.build()
+  } else this
+}
+
 private fun List<Variable>.toPowerMap(): Map<String, Int> {
   return associateBy({ it.name }, { it.power })
 }
@@ -895,9 +1032,13 @@ private fun Map<String, Int>.toVariableList(): List<Variable> {
   return map { (name, power) -> Variable.newBuilder().setName(name).setPower(power).build() }
 }
 
-private fun Polynomial.getLeadingTerm(): Term {
+private fun Polynomial.getLeadingTerm(matchedVariable: String? = null): Term {
   // Return the leading term. Reference: https://undergroundmathematics.org/glossary/leading-term.
-  return termList.reduce { maxTerm, term ->
+  return termList.filter { term ->
+    matchedVariable?.let { variableName ->
+      term.variableList.any { it.name == variableName }
+    } ?: true
+  }.reduce { maxTerm, term ->
     val maxTermDegree = maxTerm.highestDegree()
     val termDegree = term.highestDegree()
     return@reduce if (termDegree > maxTermDegree) term else maxTerm
@@ -908,76 +1049,134 @@ private fun Polynomial.getLeadingTerm(): Term {
 // https://www.varsitytutors.com/algebra_1-help/how-to-find-the-degree-of-a-polynomial.
 private fun Polynomial.getDegree(): Int = getLeadingTerm().highestDegree()
 
-private fun Term.highestDegree(): Int {
-  return variableList.map(Variable::getPower).maxOrNull() ?: 0
+private fun Term.highestDegreeVariable(): Variable? = variableList.maxByOrNull(Variable::getPower)
+
+private fun Term.highestDegree(): Int = highestDegreeVariable()?.power ?: 0
+
+private fun Term.pow(rational: Fraction): Term? {
+  // Raising an exponent by an exponent just requires multiplying the two together.
+  val newVariablePowers = variableList.map { variable ->
+    variable.power.toWholeNumberFraction() * rational
+  }
+
+  // If any powers are not whole numbers then the rational is likely representing a root and the
+  // term in question is not rootable to that degree.
+  if (newVariablePowers.any { !it.isOnlyWholeNumber() }) return null
+
+  return Term.newBuilder().apply {
+    coefficient = this@pow.coefficient
+    addAllVariable(
+      this@pow.variableList.zip(newVariablePowers).map { (variable, newPower) ->
+        variable.toBuilder().apply {
+          power = newPower.toWholeNumber()
+        }.build()
+      }
+    )
+  }.build()
 }
 
-private fun Polynomial.isApproximatelyZero(): Boolean {
-  return isConstant() && getConstant().isApproximatelyZero()
-}
+private fun Polynomial.isApproximatelyZero(): Boolean =
+  termList.all { it.coefficient.isApproximatelyZero() } // Zero polynomials only have 0 coefs.
 
 private fun Polynomial.pow(exp: Int): Polynomial {
   // Anything raised to the power of 0 is 1.
-  if (exp == 0) return createPolynomialFromConstant(createCoefficientValueOfOne())
+  if (exp == 0) return createConstantPolynomial(createCoefficientValueOfOne())
   if (exp == 1) return this
   var newValue = this
   for (i in 1 until exp) newValue *= this
   return newValue
 }
 
-private fun Polynomial.pow(exp: Real): Polynomial? {
-  // Polynomials can only be raised to positive integers (or zero).
-  return if (exp.hasRational() && exp.rational.isOnlyWholeNumber() && !exp.rational.isNegative) {
-    pow(exp.rational.wholeNumber)
+private fun Polynomial.pow(rational: Fraction): Polynomial? {
+  // Polynomials with addition require factoring.
+  return if (isSingleTerm()) {
+    termList.first().pow(rational)?.toPolynomial()
   } else null
+}
+
+private fun Polynomial.pow(exp: Real): Polynomial? {
+  val shouldBeInverted = exp.isNegative()
+  val positivePower = if (shouldBeInverted) -exp else exp
+  val exponentiation = when {
+    // Constant polynomials can be raised by any constant.
+    isConstant() -> createConstantPolynomial(getConstant().pow(positivePower))
+
+    // Polynomials can only be raised to positive integers (or zero).
+    exp.isWholeNumber() -> exp.asWholeNumber()?.let { pow(it) }
+
+    // Polynomials can potentially be raised by a fractional power.
+    exp.isRational() -> pow(exp.rational)
+
+    // All other cases require factoring will definitely not compute to polynomials (such as
+    // irrational exponents).
+    else -> null
+  }
+  return if (shouldBeInverted) {
+    val onePolynomial = createConstantPolynomial(createCoefficientValueOfOne())
+    // Note that this division is guaranteed to fail if the exponentiation result is a polynomial.
+    // Future implementations may leverage root-finding algorithms to factor for integer inverse
+    // powers (such as square root, cubic root, etc.). Non-integer inverse powers will require
+    // sampling.
+    exponentiation?.let { onePolynomial / it }
+  } else exponentiation
 }
 
 private fun Polynomial.pow(exp: Polynomial): Polynomial? {
   // Polynomial exponentiation is only supported if the right side is a constant polynomial,
-  // otherwise the result cannot be a polynomial.
+  // otherwise the result cannot be a polynomial (though could still be compared to another
+  // expression by utilizing sampling techniques).
   return if (exp.isConstant()) pow(exp.getConstant()) else null
 }
 
-private fun MathExpression.toTreeNode(): ExpressionTreeNode {
-  return when (expressionTypeCase) {
-    CONSTANT -> ExpressionTreeNode.ConstantNode(constant)
-    VARIABLE -> ExpressionTreeNode.PolynomialNode(createSingleTermPolynomial(variable))
-    UNARY_OPERATION -> ExpressionTreeNode.ExpressionNode(this, unaryOperation.collectChildren())
-    BINARY_OPERATION -> ExpressionTreeNode.ExpressionNode(this, binaryOperation.collectChildren())
-    else -> ExpressionTreeNode.ExpressionNode(this, mutableListOf())
-  }
+private fun Polynomial.isSingleTerm(): Boolean = termList.size == 1
+
+//private fun MathExpression.toTreeNode(): ExpressionTreeNode {
+//  return when (expressionTypeCase) {
+//    CONSTANT -> ExpressionTreeNode.ConstantNode(constant)
+//    VARIABLE -> ExpressionTreeNode.PolynomialNode(createSingleTermPolynomial(variable))
+//    UNARY_OPERATION -> ExpressionTreeNode.ExpressionNode(this, unaryOperation.collectChildren())
+//    BINARY_OPERATION -> ExpressionTreeNode.ExpressionNode(this, binaryOperation.collectChildren())
+//    else -> ExpressionTreeNode.ExpressionNode(this, mutableListOf())
+//  }
+//}
+//
+//private fun MathUnaryOperation.collectChildren(): MutableList<ExpressionTreeNode> {
+//  return mutableListOf(operand.toTreeNode())
+//}
+//
+//private fun MathBinaryOperation.collectChildren(): MutableList<ExpressionTreeNode> {
+//  return mutableListOf(leftOperand.toTreeNode(), rightOperand.toTreeNode())
+//}
+
+private fun createSingleVariablePolynomial(variableName: String): Polynomial {
+  return createSingleTermPolynomial(
+    Term.newBuilder().apply {
+      coefficient = createCoefficientValueOfOne()
+      addVariable(Variable.newBuilder().apply {
+        name = variableName
+        power = 1
+      }.build())
+    }.build()
+  )
 }
 
-private fun MathUnaryOperation.collectChildren(): MutableList<ExpressionTreeNode> {
-  return mutableListOf(operand.toTreeNode())
-}
+private fun createConstantPolynomial(constant: Real) =
+  createSingleTermPolynomial(Term.newBuilder().setCoefficient(constant).build())
 
-private fun MathBinaryOperation.collectChildren(): MutableList<ExpressionTreeNode> {
-  return mutableListOf(leftOperand.toTreeNode(), rightOperand.toTreeNode())
-}
+private fun createSingleTermPolynomial(term: Term) =
+  Polynomial.newBuilder().apply { addTerm(term) }.build()
 
-private fun createSingleTermPolynomial(variableName: String): Polynomial {
-  return Polynomial.newBuilder()
-    .addTerm(
-      Term.newBuilder()
-        .setCoefficient(createCoefficientValueOfOne())
-        .addVariable(Variable.newBuilder().setName(variableName).setPower(1))
-    ).build()
-}
+private fun createCoefficientValueOf(value: Int) = Real.newBuilder().apply {
+  integer = value
+}.build()
 
-private fun createPolynomialFromConstant(constant: Real): Polynomial {
-  return Polynomial.newBuilder()
-    .addTerm(Term.newBuilder().setCoefficient(constant))
-    .build()
-}
-
-private fun createCoefficientValueOf(value: Int): Real {
-  return Real.newBuilder()
-    .setRational(Fraction.newBuilder().setWholeNumber(value).setDenominator(1))
-    .build()
-}
+private fun createCoefficientValueOfZero(): Real = createCoefficientValueOf(value = 0)
 
 private fun createCoefficientValueOfOne(): Real = createCoefficientValueOf(value = 1)
+
+private fun createZeroTerm() = Term.newBuilder().apply {
+  coefficient = createCoefficientValueOfZero()
+}.build()
 
 private sealed class ExpressionTreeNode {
   data class ExpressionNode(
@@ -1211,7 +1410,35 @@ private fun sqrt(real: Real): Real {
   }
 }
 
+private fun abs(real: Real): Real = if (real.isNegative()) -real else real
+
 private fun Real.isInteger(): Boolean = realTypeCase == INTEGER
+
+private fun Real.isNegative(): Boolean = when (realTypeCase) {
+  RATIONAL -> rational.isNegative
+  IRRATIONAL -> irrational < 0
+  INTEGER -> integer < 0
+  REALTYPE_NOT_SET, null ->  throw Exception("Invalid real: $this.")
+}
+
+private fun Real.asWholeNumber(): Int? {
+  return when (realTypeCase) {
+    RATIONAL -> if (rational.isOnlyWholeNumber()) rational.toWholeNumber() else null
+    INTEGER -> integer
+    IRRATIONAL -> null
+    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
+  }
+}
+
+private fun Real.isWholeNumber(): Boolean {
+  return when (realTypeCase) {
+    RATIONAL -> rational.isOnlyWholeNumber()
+    INTEGER -> true
+    IRRATIONAL, REALTYPE_NOT_SET, null -> false
+  }
+}
+
+private fun Real.isRational(): Boolean = realTypeCase == RATIONAL
 
 private fun Double.pow(rhs: Fraction): Double = this.pow(rhs.toDouble())
 private fun Fraction.pow(rhs: Double): Double = toDouble().pow(rhs)
