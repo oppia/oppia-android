@@ -4,10 +4,6 @@ import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Polynomial.Term
 import org.oppia.android.app.model.Polynomial.Term.Variable
 import org.oppia.android.app.model.Real
-import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
-import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
-import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
-import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 
 /** Returns whether this polynomial is a constant-only polynomial (contains no variables). */
 fun Polynomial.isConstant(): Boolean = termCount == 1 && getTerm(0).variableCount == 0
@@ -53,4 +49,3 @@ private fun Term.toPlainText(): String {
 private fun Variable.toPlainText(): String {
   return if (power > 1) "$name^$power" else name
 }
-
