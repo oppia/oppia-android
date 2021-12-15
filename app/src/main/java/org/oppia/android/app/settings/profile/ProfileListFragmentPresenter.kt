@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivityPresenter
 import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
+import org.oppia.android.app.administratorcontrols.RouteToProfileEditListener
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -14,7 +15,6 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileListFragmentBinding
 import org.oppia.android.databinding.ProfileListProfileViewBinding
 import javax.inject.Inject
-import org.oppia.android.app.administratorcontrols.RouteToProfileEditListener
 
 /** The presenter for [ProfileListFragment]. */
 @FragmentScope
