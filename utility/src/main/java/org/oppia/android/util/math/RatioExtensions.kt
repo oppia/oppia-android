@@ -2,8 +2,6 @@ package org.oppia.android.util.math
 
 import org.oppia.android.app.model.RatioExpression
 
-// TODO: move to new package.
-
 /**
  * Returns this Ratio in its most simplified form.
  */
