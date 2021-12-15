@@ -713,48 +713,6 @@ private fun Polynomial.sort() = Polynomial.newBuilder().apply {
   addAllTerm(this@sort.termList.sortedWith(POLYNOMIAL_TERM_COMPARATOR))
 }.build()
 
-fun Polynomial.toPlainText(): String {
-  return termList.map { it.toPlainText() }.reduce { acc, termAnswerStr ->
-    if (termAnswerStr.startsWith("-")) {
-      "$acc - ${termAnswerStr.drop(1)}"
-    } else "$acc + $termAnswerStr"
-  }
-}
-
-private fun Term.toPlainText(): String {
-  val productValues = mutableListOf<String>()
-
-  // Include the coefficient if there is one (coefficients of 1 are ignored only if there are
-  // variables present).
-  productValues += when {
-    variableList.isEmpty() || !abs(coefficient).isApproximatelyEqualTo(1.0) -> when {
-      coefficient.isRational() && variableList.isNotEmpty() -> "(${coefficient.toPlainText()})"
-      else -> coefficient.toPlainText()
-    }
-    coefficient.isNegative() -> "-"
-    else -> ""
-  }
-
-  // Include any present variables.
-  productValues += variableList.map(Variable::toPlainText)
-
-  // Take the product of all relevant values of the term.
-  return productValues.joinToString(separator = "")
-}
-
-private fun Variable.toPlainText(): String {
-  return if (power > 1) "$name^$power" else name
-}
-
-private fun Real.toPlainText(): String = when (realTypeCase) {
-  // Note that the rational part is first converted to an improper fraction since mixed fractions
-  // can't be expressed as a single coefficient in typical polynomial syntax).
-  RATIONAL -> rational.toImproperForm().toAnswerString()
-  IRRATIONAL -> irrational.toPlainString()
-  INTEGER -> integer.toString()
-  REALTYPE_NOT_SET, null -> ""
-}
-
 private fun Real.toPlainString(): String = when (realTypeCase) {
   RATIONAL -> rational.toDouble().toPlainString()
   IRRATIONAL -> irrational.toPlainString()
@@ -793,18 +751,6 @@ private fun MathBinaryOperation.reduceToPolynomial(): Polynomial? {
     BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null -> null
   }
 }
-
-/** Returns whether this polynomial is a constant-only polynomial (contains no variables). */
-fun Polynomial.isConstant(): Boolean = termCount == 1 && getTerm(0).variableCount == 0
-
-/**
- * Returns the first term coefficient from this polynomial. This corresponds to the whole value of
- * the polynomial iff isConstant() returns true, otherwise this value isn't useful.
- *
- * Note that this function can throw if the polynomial is empty (so isConstant() should always be
- * checked first).
- */
-fun Polynomial.getConstant(): Real = getTerm(0).coefficient
 
 private operator fun Polynomial.unaryMinus(): Polynomial {
   // Negating a polynomial just requires flipping the signs on all coefficients.
@@ -1106,20 +1052,7 @@ private fun createZeroTerm() = Term.newBuilder().apply {
   coefficient = createCoefficientValueOfZero()
 }.build()
 
-private fun Real.isApproximatelyEqualTo(value: Double): Boolean {
-  return toDouble().approximatelyEquals(value)
-}
-
 private fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
-
-fun Real.toDouble(): Double {
-  return when (realTypeCase) {
-    RATIONAL -> rational.toDouble()
-    INTEGER -> integer.toDouble()
-    IRRATIONAL -> irrational
-    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
-  }
-}
 
 private fun Real.recompute(transform: (Real.Builder) -> Real.Builder): Real {
   return transform(toBuilder().clearRational().clearIrrational().clearInteger()).build()
@@ -1239,15 +1172,6 @@ private fun Real.pow(rhs: Real): Real {
   }
 }
 
-private operator fun Real.unaryMinus(): Real {
-  return when (realTypeCase) {
-    RATIONAL -> recompute { it.setRational(-rational) }
-    IRRATIONAL -> recompute { it.setIrrational(-irrational) }
-    INTEGER -> recompute { it.setInteger(-integer) }
-    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
-  }
-}
-
 private operator fun Real.plus(rhs: Real): Real {
   return combine(
     this, rhs, Fraction::plus, Fraction::plus, Fraction::plus, Double::plus, Double::plus,
@@ -1285,16 +1209,7 @@ private fun sqrt(real: Real): Real {
   }
 }
 
-private fun abs(real: Real): Real = if (real.isNegative()) -real else real
-
 private fun Real.isInteger(): Boolean = realTypeCase == INTEGER
-
-private fun Real.isNegative(): Boolean = when (realTypeCase) {
-  RATIONAL -> rational.isNegative
-  IRRATIONAL -> irrational < 0
-  INTEGER -> integer < 0
-  REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
-}
 
 private fun Real.asWholeNumber(): Int? {
   return when (realTypeCase) {
@@ -1312,8 +1227,6 @@ private fun Real.isWholeNumber(): Boolean {
     IRRATIONAL, REALTYPE_NOT_SET, null -> false
   }
 }
-
-private fun Real.isRational(): Boolean = realTypeCase == RATIONAL
 
 private fun Double.pow(rhs: Fraction): Double = this.pow(rhs.toDouble())
 private fun Fraction.pow(rhs: Double): Double = toDouble().pow(rhs)
@@ -1431,5 +1344,3 @@ private fun sqrt(int: Int): Real {
     irrational = sqrt(int.toDouble())
   }.build()
 }
-
-private fun Double.toPlainString(): String = toBigDecimal().toPlainString()

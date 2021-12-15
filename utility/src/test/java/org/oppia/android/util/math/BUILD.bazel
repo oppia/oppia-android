@@ -16,6 +16,7 @@ oppia_android_test(
         "//testing/src/main/java/org/oppia/android/testing/math:fraction_subject",
         "//testing/src/main/java/org/oppia/android/testing/math:math_equation_subject",
         "//testing/src/main/java/org/oppia/android/testing/math:math_expression_subject",
+        "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
         "//testing/src/main/java/org/oppia/android/testing/math:real_subject",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_extensions_truth-liteproto-extension",
