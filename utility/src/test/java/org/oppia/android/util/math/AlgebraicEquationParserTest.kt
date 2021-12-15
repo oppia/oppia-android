@@ -25,6 +25,7 @@ class AlgebraicEquationParserTest {
         withNameThat().isEqualTo("x")
       }
     }
+    assertThat(equation1).hasRightHandSideThat().evaluatesToIntegerThat().isEqualTo(1)
 
     val equation2 =
       parseAlgebraicEquationSuccessfully(

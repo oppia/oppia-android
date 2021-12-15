@@ -10,11 +10,13 @@ import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.robolectric.annotation.LooperMode
+import kotlin.math.sqrt
 
 /** Tests for [MathExpressionParser]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class NumericExpressionParserTest {
+
   @Test
   fun testLotsOfCasesForNumericExpression() {
     // TODO: split this up
@@ -27,6 +29,7 @@ class NumericExpressionParserTest {
         withValueThat().isIntegerThat().isEqualTo(1)
       }
     }
+    assertThat(expression1).evaluatesToIntegerThat().isEqualTo(1)
 
     expectFailureWhenParsingNumericExpression("x")
 
@@ -36,6 +39,7 @@ class NumericExpressionParserTest {
         withValueThat().isIntegerThat().isEqualTo(2)
       }
     }
+    assertThat(expression2).evaluatesToIntegerThat().isEqualTo(2)
 
     val expression3 = parseNumericExpressionWithAllErrors("   2.5 ")
     assertThat(expression3).hasStructureThatMatches {
@@ -43,6 +47,7 @@ class NumericExpressionParserTest {
         withValueThat().isIrrationalThat().isWithin(1e-5).of(2.5)
       }
     }
+    assertThat(expression3).evaluatesToIrrationalThat().isWithin(1e-5).of(2.5)
 
     expectFailureWhenParsingNumericExpression("   x ")
 
@@ -72,6 +77,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression4).evaluatesToIntegerThat().isEqualTo(512)
 
     val expression23 = parseNumericExpressionWithAllErrors("(2^3)^2")
     assertThat(expression23).hasStructureThatMatches {
@@ -99,6 +105,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression23).evaluatesToIntegerThat().isEqualTo(64)
 
     val expression24 = parseNumericExpressionWithAllErrors("512/32/4")
     assertThat(expression24).hasStructureThatMatches {
@@ -124,6 +131,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression24).evaluatesToIntegerThat().isEqualTo(4)
 
     val expression25 = parseNumericExpressionWithAllErrors("512/(32/4)")
     assertThat(expression25).hasStructureThatMatches {
@@ -151,6 +159,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression25).evaluatesToIntegerThat().isEqualTo(64)
 
     val expression5 = parseNumericExpressionWithAllErrors("sqrt(2)")
     assertThat(expression5).hasStructureThatMatches {
@@ -162,6 +171,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression5).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt(2.0))
 
     expectFailureWhenParsingNumericExpression("sqr(2)")
 
@@ -173,6 +183,7 @@ class NumericExpressionParserTest {
         withValueThat().isIntegerThat().isEqualTo(732)
       }
     }
+    assertThat(expression6).evaluatesToIntegerThat().isEqualTo(732)
 
     // Verify order of operations between higher & lower precedent operators.
     val expression32 = parseNumericExpressionWithAllErrors("3+4^5")
@@ -199,6 +210,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression32).evaluatesToIntegerThat().isEqualTo(1027)
 
     val expression7 = parseNumericExpressionWithoutOptionalErrors("3*2-3+4^7*8/3*2+7")
     assertThat(expression7).hasStructureThatMatches {
@@ -296,6 +308,11 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression7)
+      .evaluatesToRationalThat()
+      .evaluatesToRealThat()
+      .isWithin(1e-5)
+      .of(87391.333333333)
 
     expectFailureWhenParsingNumericExpression("x = √2 × 7 ÷ 4")
 
@@ -336,6 +353,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression8).evaluatesToIntegerThat().isEqualTo(21)
 
     // Right implicit multiplication of numbers isn't allowed.
     expectFailureWhenParsingNumericExpression("(1+2)2")
@@ -366,6 +384,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression10).evaluatesToIntegerThat().isEqualTo(6)
 
     // Right implicit multiplication of numbers isn't allowed.
     expectFailureWhenParsingNumericExpression("sqrt(2)3")
@@ -389,6 +408,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression12).evaluatesToIrrationalThat().isWithin(1e-5).of(3.0 * sqrt(2.0))
 
     expectFailureWhenParsingNumericExpression("xsqrt(2)")
 
@@ -451,6 +471,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression13).evaluatesToIrrationalThat().isWithin(1e-5).of(-123.036579926)
 
     val expression58 = parseNumericExpressionWithAllErrors("sqrt(2)(1+2)(3-2^5)")
     assertThat(expression58).hasStructureThatMatches {
@@ -511,6 +532,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression58).evaluatesToIrrationalThat().isWithin(1e-5).of(-123.036579926)
 
     val expression14 = parseNumericExpressionWithoutOptionalErrors("((3))")
     assertThat(expression14).hasStructureThatMatches {
@@ -522,6 +544,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression14).evaluatesToIntegerThat().isEqualTo(3)
 
     val expression15 = parseNumericExpressionWithoutOptionalErrors("++3")
     assertThat(expression15).hasStructureThatMatches {
@@ -537,6 +560,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression15).evaluatesToIntegerThat().isEqualTo(3)
 
     val expression16 = parseNumericExpressionWithoutOptionalErrors("--4")
     assertThat(expression16).hasStructureThatMatches {
@@ -552,6 +576,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression16).evaluatesToIntegerThat().isEqualTo(4)
 
     val expression17 = parseNumericExpressionWithAllErrors("1+-4")
     assertThat(expression17).hasStructureThatMatches {
@@ -572,6 +597,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression17).evaluatesToIntegerThat().isEqualTo(-3)
 
     val expression18 = parseNumericExpressionWithAllErrors("1++4")
     assertThat(expression18).hasStructureThatMatches {
@@ -592,6 +618,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression18).evaluatesToIntegerThat().isEqualTo(5)
 
     val expression19 = parseNumericExpressionWithAllErrors("1--4")
     assertThat(expression19).hasStructureThatMatches {
@@ -612,6 +639,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression19).evaluatesToIntegerThat().isEqualTo(5)
 
     expectFailureWhenParsingNumericExpression("1-^-4")
 
@@ -643,6 +671,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression20).evaluatesToIrrationalThat().isWithin(1e-5).of((sqrt(2.0) * 7.0) / 4.0)
 
     expectFailureWhenParsingNumericExpression("1+2 &asdf")
 
@@ -683,6 +712,10 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression21)
+      .evaluatesToIrrationalThat()
+      .isWithin(1e-5)
+      .of(sqrt(2.0) * sqrt(3.0) * sqrt(4.0))
 
     val expression22 = parseNumericExpressionWithAllErrors("(1+2)(3-7^2)(5+-17)")
     assertThat(expression22).hasStructureThatMatches {
@@ -757,6 +790,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression22).evaluatesToIntegerThat().isEqualTo(1656)
 
     val expression26 = parseNumericExpressionWithAllErrors("3^-2")
     assertThat(expression26).hasStructureThatMatches {
@@ -776,6 +810,12 @@ class NumericExpressionParserTest {
           }
         }
       }
+    }
+    assertThat(expression26).evaluatesToRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(0)
+      hasNumeratorThat().isEqualTo(1)
+      hasDenominatorThat().isEqualTo(9)
     }
 
     val expression27 = parseNumericExpressionWithoutOptionalErrors("(3^-2)^(3^-2)")
@@ -823,6 +863,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression27).evaluatesToIrrationalThat().isWithin(1e-5).of(0.78338103693)
 
     val expression28 = parseNumericExpressionWithAllErrors("1-3^sqrt(4)")
     assertThat(expression28).hasStructureThatMatches {
@@ -852,6 +893,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression28).evaluatesToIntegerThat().isEqualTo(-8)
 
     // "Hard" order of operation problems loosely based on & other problems that can often stump
     // people: https://www.basic-mathematics.com/hard-order-of-operations-problems.html.
@@ -890,6 +932,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression29).evaluatesToRationalThat().evaluatesToRealThat().isWithin(1e-5).of(10.5)
 
     val expression59 = parseNumericExpressionWithAllErrors("3÷2(3+4)")
     assertThat(expression59).hasStructureThatMatches {
@@ -926,6 +969,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression59).evaluatesToRationalThat().evaluatesToRealThat().isWithin(1e-5).of(10.5)
 
     // Numbers cannot have implicit multiplication unless they are in groups.
     expectFailureWhenParsingNumericExpression("2 2")
@@ -964,6 +1008,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression31).evaluatesToIntegerThat().isEqualTo(60)
 
     val expression33 = parseNumericExpressionWithoutOptionalErrors("2^(3)")
     assertThat(expression33).hasStructureThatMatches {
@@ -982,6 +1027,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression33).evaluatesToIntegerThat().isEqualTo(8)
 
     // Verify that implicit multiple has lower precedence than exponentiation.
     val expression34 = parseNumericExpressionWithoutOptionalErrors("2^(3)(4)")
@@ -1012,6 +1058,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression34).evaluatesToIntegerThat().isEqualTo(32)
 
     // An exponentiation can never be an implicit right operand.
     expectFailureWhenParsingNumericExpression("2^(3)2^2")
@@ -1051,6 +1098,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression35).evaluatesToIntegerThat().isEqualTo(32)
 
     // An exponentiation can be a right operand of an implicit mult if it's grouped.
     val expression36 = parseNumericExpressionWithoutOptionalErrors("2^(3)(2^2)")
@@ -1090,6 +1138,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression36).evaluatesToIntegerThat().isEqualTo(32)
 
     // An exponentiation can never be an implicit right operand.
     expectFailureWhenParsingNumericExpression("2^3(4)2^3")
@@ -1147,6 +1196,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression38).evaluatesToIntegerThat().isEqualTo(256)
 
     expectFailureWhenParsingNumericExpression("2^2 2^2")
     expectFailureWhenParsingNumericExpression("(3) 2^2")
@@ -1177,6 +1227,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression39).evaluatesToIntegerThat().isEqualTo(-3)
 
     // Should pass for algebra.
     expectFailureWhenParsingNumericExpression("-2 x")
@@ -1212,6 +1263,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression40).evaluatesToIntegerThat().isEqualTo(-6)
 
     val expression41 = parseNumericExpressionWithoutOptionalErrors("-2^3(4)")
     assertThat(expression41).hasStructureThatMatches {
@@ -1243,6 +1295,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression41).evaluatesToIntegerThat().isEqualTo(-32)
 
     val expression43 = parseNumericExpressionWithoutOptionalErrors("√2^2(3)")
     assertThat(expression43).hasStructureThatMatches {
@@ -1274,6 +1327,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression43).evaluatesToIrrationalThat().isWithin(1e-5).of(6.0)
 
     val expression60 = parseNumericExpressionWithoutOptionalErrors("√(2^2(3))")
     assertThat(expression60).hasStructureThatMatches {
@@ -1307,6 +1361,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression60).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt(12.0))
 
     val expression42 = parseNumericExpressionWithAllErrors("-2*-2")
     // Note that the following structure is not the same as (-2)*(-2) since unary negation has
@@ -1334,6 +1389,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression42).evaluatesToIntegerThat().isEqualTo(4)
 
     // TODO: Here & elsewhere, fix the fact that this is actually a valid use of single-term
     //  parentheses (there's a bug in the current error detection logic).
@@ -1354,6 +1410,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression44).evaluatesToIntegerThat().isEqualTo(4)
 
     val expression45 = parseNumericExpressionWithAllErrors("2sqrt(2)")
     assertThat(expression45).hasStructureThatMatches {
@@ -1374,6 +1431,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression45).evaluatesToIrrationalThat().isWithin(1e-5).of(2.0 * sqrt(2.0))
 
     val expression46 = parseNumericExpressionWithAllErrors("2√2")
     assertThat(expression46).hasStructureThatMatches {
@@ -1394,6 +1452,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression46).evaluatesToIrrationalThat().isWithin(1e-5).of(2.0 * sqrt(2.0))
 
     val expression47 = parseNumericExpressionWithoutOptionalErrors("(2)(2)")
     assertThat(expression47).hasStructureThatMatches {
@@ -1414,6 +1473,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression47).evaluatesToIntegerThat().isEqualTo(4)
 
     val expression48 = parseNumericExpressionWithoutOptionalErrors("sqrt(2)(2)")
     assertThat(expression48).hasStructureThatMatches {
@@ -1436,6 +1496,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression48).evaluatesToIrrationalThat().isWithin(1e-5).of(2.0 * sqrt(2.0))
 
     val expression49 = parseNumericExpressionWithAllErrors("sqrt(2)sqrt(2)")
     assertThat(expression49).hasStructureThatMatches {
@@ -1460,6 +1521,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression49).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt(2.0) * sqrt(2.0))
 
     val expression50 = parseNumericExpressionWithAllErrors("√2√2")
     assertThat(expression50).hasStructureThatMatches {
@@ -1484,6 +1546,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression50).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt(2.0) * sqrt(2.0))
 
     val expression51 = parseNumericExpressionWithoutOptionalErrors("(2)(2)(2)")
     assertThat(expression51).hasStructureThatMatches {
@@ -1515,6 +1578,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression51).evaluatesToIntegerThat().isEqualTo(8)
 
     val expression52 = parseNumericExpressionWithAllErrors("sqrt(2)sqrt(2)sqrt(2)")
     assertThat(expression52).hasStructureThatMatches {
@@ -1552,6 +1616,8 @@ class NumericExpressionParserTest {
         }
       }
     }
+    val sqrt2 = sqrt(2.0)
+    assertThat(expression52).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt2 * sqrt2 * sqrt2)
 
     val expression53 = parseNumericExpressionWithAllErrors("√2√2√2")
     assertThat(expression53).hasStructureThatMatches {
@@ -1589,6 +1655,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression53).evaluatesToIrrationalThat().isWithin(1e-5).of(sqrt2 * sqrt2 * sqrt2)
 
     // Should fail for algebra.
     expectFailureWhenParsingNumericExpression("x7")
@@ -1652,6 +1719,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression54).evaluatesToIntegerThat().isEqualTo(13)
 
     val expression55 = parseNumericExpressionWithAllErrors("3/(1-2)")
     assertThat(expression55).hasStructureThatMatches {
@@ -1679,6 +1747,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression55).evaluatesToIntegerThat().isEqualTo(-3)
 
     val expression56 = parseNumericExpressionWithoutOptionalErrors("(3)/(1-2)")
     assertThat(expression56).hasStructureThatMatches {
@@ -1708,6 +1777,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression56).evaluatesToIntegerThat().isEqualTo(-3)
 
     val expression57 = parseNumericExpressionWithoutOptionalErrors("3/((1-2))")
     assertThat(expression57).hasStructureThatMatches {
@@ -1737,6 +1807,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression57).evaluatesToIntegerThat().isEqualTo(-3)
 
     // TODO: add others, including tests for malformed expressions throughout the parser &
     //  tokenizer.

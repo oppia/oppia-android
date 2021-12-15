@@ -1,6 +1,8 @@
 package org.oppia.android.testing.math
 
+import com.google.common.truth.DoubleSubject
 import com.google.common.truth.FailureMetadata
+import com.google.common.truth.IntegerSubject
 import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
@@ -17,6 +19,8 @@ import org.oppia.android.app.model.MathFunctionCall
 import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.Real
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
+import org.oppia.android.util.math.evaluateAsNumericExpression
+import org.oppia.android.util.math.toRawLatex
 
 // See: https://kotlinlang.org/docs/type-safe-builders.html.
 class MathExpressionSubject(
@@ -27,6 +31,32 @@ class MathExpressionSubject(
     // TODO: maybe verify that all aspects are verified?
     ExpressionComparator.createFromExpression(actual).also(init)
   }
+
+  fun evaluatesToRationalThat(): FractionSubject =
+    FractionSubject.assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.RATIONAL).rational)
+
+  fun evaluatesToIrrationalThat(): DoubleSubject =
+    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.IRRATIONAL).irrational)
+
+  fun evaluatesToIntegerThat(): IntegerSubject =
+    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.INTEGER).integer)
+
+  fun convertsToLatexStringThat(): StringSubject =
+    assertThat(convertToLatex(divAsFraction = false))
+
+  fun convertsWithFractionsToLatexStringThat(): StringSubject =
+    assertThat(convertToLatex(divAsFraction = true))
+
+  private fun evaluateAsReal(expectedType: Real.RealTypeCase): Real {
+    val real = actual.evaluateAsNumericExpression()
+    assertWithMessage("Failed to evaluate numeric expression").that(real).isNotNull()
+    assertWithMessage("Expected constant to evaluate to $expectedType")
+      .that(real?.realTypeCase)
+      .isEqualTo(expectedType)
+    return checkNotNull(real) // Just to remove the nullable operator; the actual check is above.
+  }
+
+  private fun convertToLatex(divAsFraction: Boolean): String = actual.toRawLatex(divAsFraction)
 
   // TODO: update DSL to not have return values (since it's unnecessary).
   @ExpressionComparatorMarker
