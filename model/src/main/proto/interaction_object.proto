@@ -29,6 +29,7 @@ message InteractionObject {
     TranslatableHtmlContentId translatable_html_content_id = 14;
     SetOfTranslatableHtmlContentIds set_of_translatable_html_content_ids = 15;
     ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 16;
+    string math_expression = 17;
   }
 }
 

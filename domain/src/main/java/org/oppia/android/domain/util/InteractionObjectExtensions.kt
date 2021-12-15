@@ -9,6 +9,7 @@ import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.FRACTION
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.MATH_EXPRESSION
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
@@ -53,6 +54,7 @@ fun InteractionObject.toAnswerString(): String {
     LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS ->
       listOfSetsOfTranslatableHtmlContentIds.toAnswerString()
     TRANSLATABLE_SET_OF_NORMALIZED_STRING -> translatableSetOfNormalizedString.toAnswerString()
+    MATH_EXPRESSION -> mathExpression
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
 }
