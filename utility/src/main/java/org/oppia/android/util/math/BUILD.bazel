@@ -9,7 +9,9 @@ kt_android_library(
     srcs = [
         "FloatExtensions.kt",
         "FractionExtensions.kt",
+        "PolynomialExtensions.kt",
         "RatioExtensions.kt",
+        "RealExtensions.kt",
     ],
     visibility = [
         "//:oppia_api_visibility",

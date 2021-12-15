@@ -107,15 +107,6 @@ private fun ImageWithRegions.toAnswerString(): String =
 private fun ClickOnImage.toAnswerString(): String =
   "[(${clickedRegionsList.joinToString()}), (${clickPosition.x}, ${clickPosition.y})]"
 
-// https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47
-private fun Fraction.toAnswerString(): String {
-  val fractionString = if (numerator != 0) "$numerator/$denominator" else ""
-  val mixedString = if (wholeNumber != 0) "$wholeNumber $fractionString" else ""
-  val positiveFractionString = if (mixedString.isNotEmpty()) mixedString else fractionString
-  val negativeString = if (isNegative) "-" else ""
-  return if (positiveFractionString.isNotEmpty()) "$negativeString$positiveFractionString" else "0"
-}
-
 private fun TranslatableHtmlContentId.toAnswerString(): String {
   return "content_id=$contentId"
 }

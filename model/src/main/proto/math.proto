@@ -149,3 +149,17 @@ message ComparableOperationList {
 
   ComparableOperation root_operation = 1;
 }
+
+message Polynomial {
+  repeated Term term = 1;
+
+  message Term {
+    Real coefficient = 1;
+    repeated Variable variable = 2;
+
+    message Variable {
+      string name = 1;
+      uint32 power = 2;
+    }
+  }
+}
