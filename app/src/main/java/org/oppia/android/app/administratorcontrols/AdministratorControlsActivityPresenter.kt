@@ -10,7 +10,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
-import org.oppia.android.app.settings.profile.ProfileEditActivity
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
