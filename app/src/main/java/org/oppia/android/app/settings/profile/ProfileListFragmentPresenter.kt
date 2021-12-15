@@ -14,6 +14,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileListFragmentBinding
 import org.oppia.android.databinding.ProfileListProfileViewBinding
 import javax.inject.Inject
+import org.oppia.android.app.administratorcontrols.RouteToProfileEditListener
 
 /** The presenter for [ProfileListFragment]. */
 @FragmentScope
@@ -68,8 +69,13 @@ class ProfileListFragmentPresenter @Inject constructor(
   ) {
     binding.profile = profile
     binding.root.setOnClickListener {
-      val profileEditListener = (activity as LoadProfileEditListener)
-      profileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
+      if (isMultipane) {
+        val profileEditListener = (activity as LoadProfileEditListener)
+        profileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
+      } else {
+        val routeToProfileEditListener = (activity as RouteToProfileEditListener)
+        routeToProfileEditListener.routeToProfileEditActivity(profile.id.internalId, profile.name)
+      }
     }
   }
 

@@ -84,6 +84,7 @@ ANNOTATIONS = [
 # keep sorted
 LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadAppVersionListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileEditListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",

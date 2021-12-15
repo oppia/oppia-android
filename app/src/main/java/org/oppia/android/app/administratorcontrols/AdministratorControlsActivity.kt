@@ -12,6 +12,7 @@ import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
+import org.oppia.android.app.settings.profile.ProfileEditActivity
 
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
@@ -25,6 +26,7 @@ class AdministratorControlsActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
   RouteToAppVersionListener,
+  RouteToProfileEditListener,
   LoadProfileListListener,
   LoadAppVersionListener,
   LoadProfileEditListener,
@@ -64,16 +66,8 @@ class AdministratorControlsActivity :
     startActivity(ProfileListActivity.createProfileListActivityIntent(this))
   }
 
-  companion object {
-    fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
-      val intent = Intent(context, AdministratorControlsActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
-      return intent
-    }
-
-    fun getIntentKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-    }
+  override fun routeToProfileEditActivity(profileId: Int, profileName: String) {
+    startActivity(ProfileEditActivity.createProfileEditActivity(this, profileId, false))
   }
 
   override fun onBackPressed() {
@@ -104,7 +98,20 @@ class AdministratorControlsActivity :
   override fun loadProfileEdit(profileId: Int, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
     administratorControlsActivityPresenter.setExtraControlsTitle(profileName)
-    administratorControlsActivityPresenter.handleloadProfileEdit(profileId)
+    administratorControlsActivityPresenter.loadProfileEdit(profileId)
+  }
+
+  companion object {
+
+    fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
+      val intent = Intent(context, AdministratorControlsActivity::class.java)
+      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
+      return intent
+    }
+
+    fun getIntentKey(): String {
+      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+    }
   }
 
   override fun showLogoutDialog() {

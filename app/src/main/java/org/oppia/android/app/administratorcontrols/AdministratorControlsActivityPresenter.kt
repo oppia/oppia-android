@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.commit
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
@@ -99,7 +98,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     ).commitNow()
   }
 
-  fun handleloadProfileEdit(profileId: Int) {
+  fun loadProfileEdit(profileId: Int) {
     if (!isMultipane) {
       activity.startActivity(
         ProfileEditActivity.createProfileEditActivity(
@@ -112,14 +111,13 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       lastLoadedFragment = PROFILE_EDIT_FRAGMENT
       binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
       val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
-      activity.supportFragmentManager.commit {
-        add(
-          R.id.administrator_controls_fragment_multipane_placeholder,
-          fragment,
-          ADMINISTRATOR_CONTROLS_BACKSTACK
-        )
-        addToBackStack(null)
-      }
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.administrator_controls_fragment_multipane_placeholder,
+        fragment,
+        ADMINISTRATOR_CONTROLS_BACKSTACK
+      )
+        .addToBackStack(null)
+        .commit()
     }
   }
 
