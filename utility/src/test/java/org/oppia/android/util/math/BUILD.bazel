@@ -12,6 +12,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/math:comparable_operation_list_subject",
         "//testing/src/main/java/org/oppia/android/testing/math:fraction_subject",
         "//testing/src/main/java/org/oppia/android/testing/math:math_equation_subject",
         "//testing/src/main/java/org/oppia/android/testing/math:math_expression_subject",
