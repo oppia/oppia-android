@@ -7,7 +7,7 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.math.approximatelyEquals
-import org.oppia.android.util.math.toFloat
+import org.oppia.android.util.math.toDouble
 import org.oppia.android.util.math.toSimplestForm
 import javax.inject.Inject
 
@@ -36,6 +36,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
     input: Fraction,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
-    return answer.toFloat().approximatelyEquals(input.toFloat()) && answer == input.toSimplestForm()
+    return answer.toDouble().approximatelyEquals(input.toDouble())
+      && answer == input.toSimplestForm()
   }
 }

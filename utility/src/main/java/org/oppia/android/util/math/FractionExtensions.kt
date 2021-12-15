@@ -62,8 +62,8 @@ fun Fraction.toFloat(): Float = toDouble().toFloat()
  */
 fun Fraction.toDouble(): Double {
   val totalParts = ((wholeNumber.toDouble() * denominator.toDouble()) + numerator.toDouble())
-  val floatVal = totalParts / denominator.toDouble()
-  return if (isNegative) -floatVal else floatVal
+  val doubleVal = totalParts / denominator.toDouble()
+  return if (isNegative) -doubleVal else doubleVal
 }
 
 /**
@@ -73,11 +73,10 @@ fun Fraction.toDouble(): Double {
  */
 fun Fraction.toSimplestForm(): Fraction {
   val commonDenominator = gcd(numerator, denominator)
-  return toBuilder()
-    .setWholeNumber(wholeNumber)
-    .setNumerator(numerator / commonDenominator)
-    .setDenominator(denominator / commonDenominator)
-    .build()
+  return toBuilder().apply {
+    numerator = this@toSimplestForm.numerator / commonDenominator
+    denominator = this@toSimplestForm.denominator / commonDenominator
+  }.build()
 }
 
 /**
