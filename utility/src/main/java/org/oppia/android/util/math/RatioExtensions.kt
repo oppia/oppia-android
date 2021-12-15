@@ -1,4 +1,4 @@
-package org.oppia.android.domain.util
+package org.oppia.android.util.math
 
 import org.oppia.android.app.model.RatioExpression
 
