@@ -10,6 +10,7 @@ kt_android_library(
         "FloatExtensions.kt",
         "FractionExtensions.kt",
         "MathExpressionExtensions.kt",
+        "RatioExtensions.kt",
     ],
     visibility = [
         "//:oppia_api_visibility",

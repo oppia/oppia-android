@@ -23,7 +23,6 @@ kt_android_library(
     srcs = [
         "InteractionObjectExtensions.kt",
         "JsonExtensions.kt",
-        "RatioExtensions.kt",
         "StringExtensions.kt",
         "WorkDataExtensions.kt",
     ],
