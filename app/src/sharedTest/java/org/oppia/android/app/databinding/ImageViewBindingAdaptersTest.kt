@@ -5,6 +5,10 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -34,16 +38,19 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setImageDrawableCompat
 import org.oppia.android.app.databinding.ImageViewBindingAdapters.setPlayStateDrawable
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawableDynamic
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -90,23 +97,12 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import org.oppia.android.app.databinding.ImageViewBindingAdapters.setImageDrawableCompat
-import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
-import org.oppia.android.app.model.ProfileAvatar
-import android.graphics.drawable.BitmapDrawable
-
-import android.graphics.BitmapFactory
-
-import android.graphics.Bitmap
-
-import android.graphics.drawable.Drawable
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawableDynamic
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [ImageViewBindingAdaptersTest]. */
 @RunWith(AndroidJUnit4::class)
