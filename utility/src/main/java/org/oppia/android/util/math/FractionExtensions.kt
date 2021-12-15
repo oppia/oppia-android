@@ -4,35 +4,6 @@ import org.oppia.android.app.model.Fraction
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 
-/**
- * Returns a submittable answer string representation of this fraction (note that this may not be
- * the verbatim string originally submitted by the user, if any.
- */
-fun Fraction.toAnswerString(): String {
-  return when {
-    isOnlyWholeNumber() -> {
-      // Fraction is only a whole number.
-      if (isNegative) "-$wholeNumber" else "$wholeNumber"
-    }
-    wholeNumber == 0 -> {
-      // Fraction contains just a fraction (no whole number).
-      when (denominator) {
-        1 -> if (isNegative) "-$numerator" else "$numerator"
-        else -> if (isNegative) "-$numerator/$denominator" else "$numerator/$denominator"
-      }
-    }
-    else -> {
-      // Otherwise it's a mixed number. Note that the denominator is always shown here to account
-      // for strange cases that would require evaluation to resolve, such as: "2 2/1".
-      if (isNegative) {
-        "-$wholeNumber $numerator/$denominator"
-      } else {
-        "$wholeNumber $numerator/$denominator"
-      }
-    }
-  }
-}
-
 /** Returns whether this fraction has a fractional component. */
 fun Fraction.hasFractionalPart(): Boolean {
   return numerator != 0
@@ -67,6 +38,35 @@ fun Fraction.toDouble(): Double {
 }
 
 /**
+ * Returns a submittable answer string representation of this fraction (note that this may not be
+ * the verbatim string originally submitted by the user, if any.
+ */
+fun Fraction.toAnswerString(): String {
+  return when {
+    isOnlyWholeNumber() -> {
+      // Fraction is only a whole number.
+      if (isNegative) "-$wholeNumber" else "$wholeNumber"
+    }
+    wholeNumber == 0 -> {
+      // Fraction contains just a fraction (no whole number).
+      when (denominator) {
+        1 -> if (isNegative) "-$numerator" else "$numerator"
+        else -> if (isNegative) "-$numerator/$denominator" else "$numerator/$denominator"
+      }
+    }
+    else -> {
+      // Otherwise it's a mixed number. Note that the denominator is always shown here to account
+      // for strange cases that would require evaluation to resolve, such as: "2 2/1".
+      if (isNegative) {
+        "-$wholeNumber $numerator/$denominator"
+      } else {
+        "$wholeNumber $numerator/$denominator"
+      }
+    }
+  }
+}
+
+/**
  * Returns this fraction in its most simplified form.
  *
  * See: https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L83.
@@ -84,7 +84,11 @@ fun Fraction.toSimplestForm(): Fraction {
  * parts).
  */
 fun Fraction.toImproperForm(): Fraction {
-  return toBuilder().setNumerator(numerator + (denominator * wholeNumber)).setWholeNumber(0).build()
+  val newNumerator = numerator + (denominator * wholeNumber)
+  return toBuilder().apply {
+    numerator = newNumerator
+    wholeNumber = 0
+  }.build()
 }
 
 /**
@@ -184,7 +188,7 @@ fun Fraction.toInvertedImproperForm(): Fraction {
 
 /** Returns the negated form of this fraction. */
 operator fun Fraction.unaryMinus(): Fraction {
-  return toBuilder().setIsNegative(!isNegative).build()
+  return toBuilder().apply { isNegative = !this@unaryMinus.isNegative }.build()
 }
 
 /** Returns the [Fraction] representation of this integer (as a whole number fraction). */

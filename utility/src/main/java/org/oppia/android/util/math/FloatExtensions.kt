@@ -14,3 +14,5 @@ fun Float.approximatelyEquals(other: Float): Boolean {
 fun Double.approximatelyEquals(other: Double): Boolean {
   return abs(this - other) < FLOAT_EQUALITY_INTERVAL
 }
+
+fun Double.toPlainString(): String = toBigDecimal().toPlainString()
