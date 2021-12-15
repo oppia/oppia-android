@@ -8,11 +8,36 @@ import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
 import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 import kotlin.math.pow
 
+val ZERO: Real by lazy {
+  Real.newBuilder().apply { integer = 0 }.build()
+}
+
+val ONE: Real by lazy {
+  Real.newBuilder().apply { integer = 1 }.build()
+}
+
+val ONE_HALF: Real by lazy {
+  Real.newBuilder().apply {
+    rational = Fraction.newBuilder().apply {
+      numerator = 1
+      denominator = 2
+    }.build()
+  }.build()
+}
+
 val REAL_COMPARATOR: Comparator<Real> by lazy { Comparator.comparing(Real::toDouble) }
 
 fun Real.isRational(): Boolean = realTypeCase == RATIONAL
 
 fun Real.isInteger(): Boolean = realTypeCase == INTEGER
+
+fun Real.isWholeNumber(): Boolean {
+  return when (realTypeCase) {
+    RATIONAL -> rational.isOnlyWholeNumber()
+    INTEGER -> true
+    IRRATIONAL, REALTYPE_NOT_SET, null -> false
+  }
+}
 
 fun Real.isNegative(): Boolean = when (realTypeCase) {
   RATIONAL -> rational.isNegative
@@ -21,11 +46,26 @@ fun Real.isNegative(): Boolean = when (realTypeCase) {
   REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
 }
 
+fun Real.isApproximatelyEqualTo(value: Double): Boolean {
+  return toDouble().approximatelyEquals(value)
+}
+
+fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
+
 fun Real.toDouble(): Double {
   return when (realTypeCase) {
     RATIONAL -> rational.toDouble()
     INTEGER -> integer.toDouble()
     IRRATIONAL -> irrational
+    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
+  }
+}
+
+fun Real.asWholeNumber(): Int? {
+  return when (realTypeCase) {
+    RATIONAL -> if (rational.isOnlyWholeNumber()) rational.toWholeNumber() else null
+    INTEGER -> integer
+    IRRATIONAL -> null
     REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
   }
 }
@@ -37,10 +77,6 @@ fun Real.toPlainText(): String = when (realTypeCase) {
   IRRATIONAL -> irrational.toPlainString()
   INTEGER -> integer.toString()
   REALTYPE_NOT_SET, null -> ""
-}
-
-fun Real.isApproximatelyEqualTo(value: Double): Boolean {
-  return toDouble().approximatelyEquals(value)
 }
 
 operator fun Real.unaryMinus(): Real {

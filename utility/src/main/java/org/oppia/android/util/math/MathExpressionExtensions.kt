@@ -10,9 +10,11 @@ import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CA
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
+import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Real
 import org.oppia.android.util.math.ExpressionToComparableOperationListConverter.Companion.toComparable
 import org.oppia.android.util.math.ExpressionToLatexConverter.Companion.convertToLatex
+import org.oppia.android.util.math.ExpressionToPolynomialConverter.Companion.reduceToPolynomial
 import org.oppia.android.util.math.NumericExpressionEvaluator.Companion.evaluate
 
 fun MathEquation.toRawLatex(divAsFraction: Boolean): String = convertToLatex(divAsFraction)
@@ -23,6 +25,8 @@ fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
 
 fun MathExpression.toComparableOperationList(): ComparableOperationList =
   stripGroups().toComparable()
+
+fun MathExpression.toPolynomial(): Polynomial? = stripGroups().reduceToPolynomial()
 
 private fun MathExpression.stripGroups(): MathExpression {
   return when (expressionTypeCase) {
