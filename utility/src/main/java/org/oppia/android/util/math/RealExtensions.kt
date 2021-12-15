@@ -8,6 +8,8 @@ import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
 import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 import kotlin.math.pow
 
+val REAL_COMPARATOR: Comparator<Real> by lazy { Comparator.comparing(Real::toDouble) }
+
 fun Real.isRational(): Boolean = realTypeCase == RATIONAL
 
 fun Real.isInteger(): Boolean = realTypeCase == INTEGER
