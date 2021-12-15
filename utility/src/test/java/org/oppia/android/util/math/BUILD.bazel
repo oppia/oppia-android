@@ -4,13 +4,6 @@ TODO: document
 
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
-#        "//testing/src/main/java/org/oppia/android/testing/math:comparable_operation_list_subject",
-#        "//testing/src/main/java/org/oppia/android/testing/math:fraction_subject",
-#        "//testing/src/main/java/org/oppia/android/testing/math:math_equation_subject",
-#        "//testing/src/main/java/org/oppia/android/testing/math:math_expression_subject",
-#        "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
-#        "//testing/src/main/java/org/oppia/android/testing/math:real_subject",
-
 oppia_android_test(
     name = "AlgebraicEquationParserTest",
     srcs = ["AlgebraicEquationParserTest.kt"],
