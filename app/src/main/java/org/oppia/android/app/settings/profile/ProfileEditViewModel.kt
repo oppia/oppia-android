@@ -17,7 +17,7 @@ import javax.inject.Inject
 @ActivityScope
 class ProfileEditViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementControllerz
+  private val profileManagementController: ProfileManagementController
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 

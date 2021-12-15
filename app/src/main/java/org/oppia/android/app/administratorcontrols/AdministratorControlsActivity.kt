@@ -66,7 +66,7 @@ class AdministratorControlsActivity :
     startActivity(ProfileListActivity.createProfileListActivityIntent(this))
   }
 
-  override fun routeToProfileEditActivity(profileId: Int, profileName: String) {
+  override fun routeToProfileEditActivity(profileId: Int) {
     startActivity(ProfileEditActivity.createProfileEditActivity(this, profileId, false))
   }
 

@@ -74,7 +74,7 @@ class ProfileListFragmentPresenter @Inject constructor(
         profileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
       } else {
         val routeToProfileEditListener = (activity as RouteToProfileEditListener)
-        routeToProfileEditListener.routeToProfileEditActivity(profile.id.internalId, profile.name)
+        routeToProfileEditListener.routeToProfileEditActivity(profile.id.internalId)
       }
     }
   }

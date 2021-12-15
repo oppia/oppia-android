@@ -134,8 +134,10 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         "handleOnResume:\n **** back stack changed\n *******"
       )
     }
-    binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
-      handleOnBackPressed()
+    if (isMultipane) {
+      binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
+        handleOnBackPressed()
+      }
     }
   }
 
