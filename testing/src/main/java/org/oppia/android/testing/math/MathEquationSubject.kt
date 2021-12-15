@@ -8,7 +8,8 @@ import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
 
 class MathEquationSubject(
   metadata: FailureMetadata,
-  private val actual: MathEquation
+  // TODO: restrict visibility.
+  val actual: MathEquation
 ) : LiteProtoSubject(metadata, actual) {
   fun hasLeftHandSideThat(): MathExpressionSubject = assertThat(actual.leftSide)
 

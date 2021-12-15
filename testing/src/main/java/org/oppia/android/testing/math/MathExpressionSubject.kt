@@ -21,7 +21,8 @@ import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 // See: https://kotlinlang.org/docs/type-safe-builders.html.
 class MathExpressionSubject(
   metadata: FailureMetadata,
-  private val actual: MathExpression
+  // TODO: restrict visibility.
+  val actual: MathExpression
 ) : LiteProtoSubject(metadata, actual) {
   fun hasStructureThatMatches(init: ExpressionComparator.() -> Unit) {
     // TODO: maybe verify that all aspects are verified?

@@ -10,6 +10,7 @@ import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import com.google.common.truth.extensions.proto.LiteProtoSubject
+import kotlin.math.sqrt
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ComparableOperationList
@@ -17,18 +18,10 @@ import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulati
 import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.SUMMATION
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase
-import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
-import org.oppia.android.app.model.MathFunctionCall
 import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
-import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -40,6 +33,14 @@ import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
 import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Real
+import org.oppia.android.testing.math.FractionSubject
+import org.oppia.android.testing.math.FractionSubject.Companion.assertThat
+import org.oppia.android.testing.math.MathEquationSubject
+import org.oppia.android.testing.math.MathEquationSubject.Companion.assertThat
+import org.oppia.android.testing.math.MathExpressionSubject
+import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
+import org.oppia.android.testing.math.RealSubject
+import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathParsingError.DisabledVariablesInUseError
@@ -65,7 +66,6 @@ import org.oppia.android.util.math.MathParsingError.UnbalancedParenthesesError
 import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
 import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
 import org.robolectric.annotation.LooperMode
-import kotlin.math.sqrt
 
 /** Tests for [MathExpressionParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -7133,240 +7133,53 @@ class MathExpressionParserTest {
   private fun parsePolynomialFromAlgebraicExpression(expression: String) =
     parseAlgebraicExpressionWithAllErrors(expression).toPolynomial()
 
-  @DslMarker private annotation class ExpressionComparatorMarker
-
-  @DslMarker private annotation class ComparableOperationComparatorMarker
 
   // See: https://kotlinlang.org/docs/type-safe-builders.html.
-  private class MathExpressionSubject(
-    metadata: FailureMetadata,
-    private val actual: MathExpression
-  ) : LiteProtoSubject(metadata, actual) {
-    fun hasStructureThatMatches(init: ExpressionComparator.() -> Unit) {
-      // TODO: maybe verify that all aspects are verified?
-      ExpressionComparator.createFromExpression(actual).also(init)
-    }
+  @DslMarker private annotation class ComparableOperationComparatorMarker
 
-    fun evaluatesToRationalThat(): FractionSubject =
-      assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.RATIONAL).rational)
+  // TODO: move these to MathExpressionSubject
+  fun MathExpressionSubject.evaluatesToRationalThat(): FractionSubject =
+    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.RATIONAL).rational)
 
-    fun evaluatesToIrrationalThat(): DoubleSubject =
-      assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.IRRATIONAL).irrational)
+  fun MathExpressionSubject.evaluatesToIrrationalThat(): DoubleSubject =
+    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.IRRATIONAL).irrational)
 
-    fun evaluatesToIntegerThat(): IntegerSubject =
-      assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.INTEGER).integer)
+  fun MathExpressionSubject.evaluatesToIntegerThat(): IntegerSubject =
+    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.INTEGER).integer)
 
-    fun convertsToLatexStringThat(): StringSubject =
-      assertThat(convertToLatex(divAsFraction = false))
+  fun MathExpressionSubject.convertsToLatexStringThat(): StringSubject =
+    assertThat(convertToLatex(divAsFraction = false))
 
-    fun convertsWithFractionsToLatexStringThat(): StringSubject =
-      assertThat(convertToLatex(divAsFraction = true))
+  fun MathExpressionSubject.convertsWithFractionsToLatexStringThat(): StringSubject =
+    assertThat(convertToLatex(divAsFraction = true))
 
-    fun forHumanReadable(language: OppiaLanguage): HumanReadableStringChecker =
-      HumanReadableStringChecker(language, actual::toHumanReadableString)
+  fun MathExpressionSubject.forHumanReadable(language: OppiaLanguage): HumanReadableStringChecker =
+    HumanReadableStringChecker(language, actual::toHumanReadableString)
 
-    private fun evaluateAsReal(expectedType: Real.RealTypeCase): Real {
-      val real = actual.evaluateAsNumericExpression()
-      assertWithMessage("Failed to evaluate numeric expression").that(real).isNotNull()
-      assertWithMessage("Expected constant to evaluate to $expectedType")
-        .that(real?.realTypeCase)
-        .isEqualTo(expectedType)
-      return checkNotNull(real) // Just to remove the nullable operator; the actual check is above.
-    }
-
-    private fun convertToLatex(divAsFraction: Boolean): String = actual.toRawLatex(divAsFraction)
-
-    // TODO: update DSL to not have return values (since it's unnecessary).
-    @ExpressionComparatorMarker
-    class ExpressionComparator private constructor(private val expression: MathExpression) {
-      // TODO: convert to constant comparator?
-      fun constant(init: ConstantComparator.() -> Unit): ConstantComparator =
-        ConstantComparator.createFromExpression(expression).also(init)
-
-      fun variable(init: VariableComparator.() -> Unit): VariableComparator =
-        VariableComparator.createFromExpression(expression).also(init)
-
-      fun addition(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-        return BinaryOperationComparator.createFromExpression(
-          expression,
-          expectedOperator = MathBinaryOperation.Operator.ADD
-        ).also(init)
-      }
-
-      fun subtraction(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-        return BinaryOperationComparator.createFromExpression(
-          expression,
-          expectedOperator = MathBinaryOperation.Operator.SUBTRACT
-        ).also(init)
-      }
-
-      fun multiplication(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-        return BinaryOperationComparator.createFromExpression(
-          expression,
-          expectedOperator = MathBinaryOperation.Operator.MULTIPLY
-        ).also(init)
-      }
-
-      fun division(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-        return BinaryOperationComparator.createFromExpression(
-          expression,
-          expectedOperator = MathBinaryOperation.Operator.DIVIDE
-        ).also(init)
-      }
-
-      fun exponentiation(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-        return BinaryOperationComparator.createFromExpression(
-          expression,
-          expectedOperator = MathBinaryOperation.Operator.EXPONENTIATE
-        ).also(init)
-      }
-
-      fun negation(init: UnaryOperationComparator.() -> Unit): UnaryOperationComparator {
-        return UnaryOperationComparator.createFromExpression(
-          expression,
-          expectedOperator = MathUnaryOperation.Operator.NEGATE
-        ).also(init)
-      }
-
-      fun positive(init: UnaryOperationComparator.() -> Unit): UnaryOperationComparator {
-        return UnaryOperationComparator.createFromExpression(
-          expression,
-          expectedOperator = MathUnaryOperation.Operator.POSITIVE
-        ).also(init)
-      }
-
-      fun functionCallTo(
-        type: MathFunctionCall.FunctionType,
-        init: FunctionCallComparator.() -> Unit
-      ): FunctionCallComparator {
-        return FunctionCallComparator.createFromExpression(
-          expression,
-          expectedFunctionType = type
-        ).also(init)
-      }
-
-      fun group(init: ExpressionComparator.() -> Unit): ExpressionComparator {
-        return createFromExpression(expression.group).also(init)
-      }
-
-      internal companion object {
-        fun createFromExpression(expression: MathExpression): ExpressionComparator =
-          ExpressionComparator(expression)
-      }
-    }
-
-    @ExpressionComparatorMarker
-    class ConstantComparator private constructor(private val constant: Real) {
-      fun withValueThat(): RealSubject = assertThat(constant)
-
-      internal companion object {
-        fun createFromExpression(expression: MathExpression): ConstantComparator {
-          assertThat(expression.expressionTypeCase).isEqualTo(CONSTANT)
-          return ConstantComparator(expression.constant)
-        }
-      }
-    }
-
-    @ExpressionComparatorMarker
-    class VariableComparator private constructor(private val variableName: String) {
-      fun withNameThat(): StringSubject = assertThat(variableName)
-
-      internal companion object {
-        fun createFromExpression(expression: MathExpression): VariableComparator {
-          assertThat(expression.expressionTypeCase).isEqualTo(VARIABLE)
-          return VariableComparator(expression.variable)
-        }
-      }
-    }
-
-    @ExpressionComparatorMarker
-    class BinaryOperationComparator private constructor(
-      private val operation: MathBinaryOperation
-    ) {
-      fun leftOperand(init: ExpressionComparator.() -> Unit): ExpressionComparator =
-        ExpressionComparator.createFromExpression(operation.leftOperand).also(init)
-
-      fun rightOperand(init: ExpressionComparator.() -> Unit): ExpressionComparator =
-        ExpressionComparator.createFromExpression(operation.rightOperand).also(init)
-
-      internal companion object {
-        fun createFromExpression(
-          expression: MathExpression,
-          expectedOperator: MathBinaryOperation.Operator
-        ): BinaryOperationComparator {
-          assertThat(expression.expressionTypeCase).isEqualTo(BINARY_OPERATION)
-          assertWithMessage("Expected binary operation with operator: $expectedOperator")
-            .that(expression.binaryOperation.operator)
-            .isEqualTo(expectedOperator)
-          return BinaryOperationComparator(expression.binaryOperation)
-        }
-      }
-    }
-
-    @ExpressionComparatorMarker
-    class UnaryOperationComparator private constructor(
-      private val operation: MathUnaryOperation
-    ) {
-      fun operand(init: ExpressionComparator.() -> Unit): ExpressionComparator =
-        ExpressionComparator.createFromExpression(operation.operand).also(init)
-
-      internal companion object {
-        fun createFromExpression(
-          expression: MathExpression,
-          expectedOperator: MathUnaryOperation.Operator
-        ): UnaryOperationComparator {
-          assertThat(expression.expressionTypeCase).isEqualTo(UNARY_OPERATION)
-          assertWithMessage("Expected unary operation with operator: $expectedOperator")
-            .that(expression.unaryOperation.operator)
-            .isEqualTo(expectedOperator)
-          return UnaryOperationComparator(expression.unaryOperation)
-        }
-      }
-    }
-
-    @ExpressionComparatorMarker
-    class FunctionCallComparator private constructor(
-      private val functionCall: MathFunctionCall
-    ) {
-      fun argument(init: ExpressionComparator.() -> Unit): ExpressionComparator =
-        ExpressionComparator.createFromExpression(functionCall.argument).also(init)
-
-      internal companion object {
-        fun createFromExpression(
-          expression: MathExpression,
-          expectedFunctionType: MathFunctionCall.FunctionType
-        ): FunctionCallComparator {
-          assertThat(expression.expressionTypeCase).isEqualTo(FUNCTION_CALL)
-          assertWithMessage("Expected function call to: $expectedFunctionType")
-            .that(expression.functionCall.functionType)
-            .isEqualTo(expectedFunctionType)
-          return FunctionCallComparator(expression.functionCall)
-        }
-      }
-    }
+  private fun MathExpressionSubject.evaluateAsReal(expectedType: Real.RealTypeCase): Real {
+    val real = actual.evaluateAsNumericExpression()
+    assertWithMessage("Failed to evaluate numeric expression").that(real).isNotNull()
+    assertWithMessage("Expected constant to evaluate to $expectedType")
+      .that(real?.realTypeCase)
+      .isEqualTo(expectedType)
+    return checkNotNull(real) // Just to remove the nullable operator; the actual check is above.
   }
 
-  private class MathEquationSubject(
-    metadata: FailureMetadata,
-    private val actual: MathEquation
-  ) : LiteProtoSubject(metadata, actual) {
-    fun hasLeftHandSideThat(): MathExpressionSubject = assertThat(actual.leftSide)
+  private fun MathExpressionSubject.convertToLatex(divAsFraction: Boolean): String = actual.toRawLatex(divAsFraction)
 
-    fun hasRightHandSideThat(): MathExpressionSubject = assertThat(actual.rightSide)
+  // TODO: move these to MathEquationSubject
+  fun MathEquationSubject.convertsToLatexStringThat(): StringSubject =
+    assertThat(convertToLatex(divAsFraction = false))
 
-    fun convertsToLatexStringThat(): StringSubject =
-      assertThat(convertToLatex(divAsFraction = false))
+  fun MathEquationSubject.convertsWithFractionsToLatexStringThat(): StringSubject =
+    assertThat(convertToLatex(divAsFraction = true))
 
-    fun convertsWithFractionsToLatexStringThat(): StringSubject =
-      assertThat(convertToLatex(divAsFraction = true))
+  fun MathEquationSubject.forHumanReadable(language: OppiaLanguage): HumanReadableStringChecker =
+    HumanReadableStringChecker(language, actual::toHumanReadableString)
 
-    fun forHumanReadable(language: OppiaLanguage): HumanReadableStringChecker =
-      HumanReadableStringChecker(language, actual::toHumanReadableString)
+  private fun MathEquationSubject.convertToLatex(divAsFraction: Boolean): String = actual.toRawLatex(divAsFraction)
 
-    private fun convertToLatex(divAsFraction: Boolean): String = actual.toRawLatex(divAsFraction)
-  }
-
-  private class HumanReadableStringChecker(
+  class HumanReadableStringChecker(
     private val language: OppiaLanguage,
     private val maybeConvertToHumanReadableString: (OppiaLanguage, Boolean) -> String?
   ) {
@@ -7389,48 +7202,6 @@ class MathExpressionParserTest {
       val readableString = maybeConvertToHumanReadableString(language, divAsFraction)
       assertWithMessage("Expected to convert to: $language").that(readableString).isNotNull()
       return checkNotNull(readableString) // Verified in the above assertion check.
-    }
-  }
-
-  // TODO: move these to a common location.
-  private class FractionSubject(
-    metadata: FailureMetadata,
-    private val actual: Fraction
-  ) : LiteProtoSubject(metadata, actual) {
-    fun hasNegativePropertyThat(): BooleanSubject = assertThat(actual.isNegative)
-
-    fun hasWholeNumberThat(): IntegerSubject = assertThat(actual.wholeNumber)
-
-    fun hasNumeratorThat(): IntegerSubject = assertThat(actual.numerator)
-
-    fun hasDenominatorThat(): IntegerSubject = assertThat(actual.denominator)
-
-    fun evaluatesToRealThat(): DoubleSubject = assertThat(actual.toDouble())
-  }
-
-  private class RealSubject(
-    metadata: FailureMetadata,
-    private val actual: Real
-  ) : LiteProtoSubject(metadata, actual) {
-    fun isRationalThat(): FractionSubject {
-      verifyTypeToBe(Real.RealTypeCase.RATIONAL)
-      return assertThat(actual.rational)
-    }
-
-    fun isIrrationalThat(): DoubleSubject {
-      verifyTypeToBe(Real.RealTypeCase.IRRATIONAL)
-      return assertThat(actual.irrational)
-    }
-
-    fun isIntegerThat(): IntegerSubject {
-      verifyTypeToBe(Real.RealTypeCase.INTEGER)
-      return assertThat(actual.integer)
-    }
-
-    private fun verifyTypeToBe(expected: Real.RealTypeCase) {
-      assertWithMessage("Expected real type to be $expected, not: ${actual.realTypeCase}")
-        .that(actual.realTypeCase)
-        .isEqualTo(expected)
     }
   }
 
@@ -7736,17 +7507,6 @@ class MathExpressionParserTest {
         expression, allowedVariables, errorCheckingMode
       )
     }
-
-    private fun assertThat(actual: MathExpression): MathExpressionSubject =
-      assertAbout(::MathExpressionSubject).that(actual)
-
-    private fun assertThat(actual: MathEquation): MathEquationSubject =
-      assertAbout(::MathEquationSubject).that(actual)
-
-    private fun assertThat(actual: Fraction): FractionSubject =
-      assertAbout(::FractionSubject).that(actual)
-
-    private fun assertThat(actual: Real): RealSubject = assertAbout(::RealSubject).that(actual)
 
     private fun assertThat(actual: ComparableOperationList): ComparableOperationListSubject =
       assertAbout(::ComparableOperationListSubject).that(actual)
