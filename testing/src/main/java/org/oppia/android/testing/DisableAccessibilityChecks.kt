@@ -5,7 +5,7 @@ package org.oppia.android.testing
  * class or the specific method may run on. By default, tests are assumed to be able to run the
  * accessibility tests on Espresso.
  *
- * Note that this annotation only works if the test also has an [AccessibilityTestRule] hooked up.
+ * Note that this annotation only works if the test also has an [OppiaTestRule] hooked up.
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class DisableAccessibilityChecks
