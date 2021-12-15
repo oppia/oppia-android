@@ -5,5 +5,5 @@
   <corners
     android:radius="4dp"/>
   <solid
-    android:color="@color/oppiaDarkBlue"/>
+    android:color="@color/oppia_dark_blue"/>
 </shape>

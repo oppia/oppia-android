@@ -207,7 +207,7 @@ class NavigationDrawerActivityDebugTest {
           withText(R.string.developer_options),
           isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
-      ).check(matches(hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlighted_developer_options_nav_menu_item)))
     }
   }
 
@@ -234,7 +234,7 @@ class NavigationDrawerActivityDebugTest {
           withText(R.string.developer_options),
           isDescendantOfA(withId(R.id.developer_options_linear_layout))
         )
-      ).check(matches(hasTextColor(R.color.highlightedDeveloperOptionsNavMenuItem)))
+      ).check(matches(hasTextColor(R.color.highlighted_developer_options_nav_menu_item)))
     }
   }
 
