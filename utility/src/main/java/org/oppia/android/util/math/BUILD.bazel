@@ -20,3 +20,24 @@ kt_android_library(
         "//model/src/main/proto:math_java_proto_lite",
     ],
 )
+
+kt_android_library(
+    name = "tokenizer",
+    srcs = [
+        "MathTokenizer.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":peekable_iterator",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "peekable_iterator",
+    srcs = [
+        "PeekableIterator.kt",
+    ],
+)
