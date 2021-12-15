@@ -13,6 +13,7 @@ fun RatioExpression.toSimplestForm(): List<Int> {
     this.ratioComponentList.map { x -> x / gcdComponentResult }
   }
 }
+
 /**
  * Returns this Ratio in string format.
  * E.g. [1, 2, 3] will yield to 1:2:3
