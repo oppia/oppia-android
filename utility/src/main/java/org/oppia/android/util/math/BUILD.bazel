@@ -10,6 +10,7 @@ android_library(
         "//:oppia_api_visibility",
     ],
     exports = [
+        ":comparator_extensions",
         ":float_extensions",
         ":fraction_extensions",
         ":math_expression_extensions",
@@ -71,6 +72,13 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "comparator_extensions",
+    srcs = [
+        "ComparatorExtensions.kt",
+    ],
+)
+
+kt_android_library(
     name = "float_extensions",
     srcs = [
         "FloatExtensions.kt",
@@ -96,6 +104,7 @@ kt_android_library(
         "MathExpressionExtensions.kt",
     ],
     deps = [
+        ":expression_to_comparable_operation_list_converter",
         ":expression_to_latex_converter",
         ":numeric_expression_evaluator",
         ":polynomial_extensions",
@@ -134,6 +143,18 @@ kt_android_library(
     deps = [
         ":float_extensions",
         ":fraction_extensions",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "expression_to_comparable_operation_list_converter",
+    srcs = [
+        "ExpressionToComparableOperationListConverter.kt",
+    ],
+    deps = [
+        ":comparator_extensions",
+        ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
     ],
 )
