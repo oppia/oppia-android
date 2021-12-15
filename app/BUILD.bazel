@@ -87,6 +87,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileEditListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileEditListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt",
