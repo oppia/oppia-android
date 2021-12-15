@@ -1,4 +1,4 @@
-package org.oppia.android.domain.util
+package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat

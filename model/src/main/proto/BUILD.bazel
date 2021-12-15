@@ -85,7 +85,6 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "math_proto",
     srcs = ["math.proto"],
-    strip_import_prefix = "",
 )
 
 java_lite_proto_library(
