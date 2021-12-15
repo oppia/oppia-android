@@ -106,14 +106,14 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       fragment,
       ADMINISTRATOR_CONTROLS_BACKSTACK
     )
-      .addToBackStack(null)
+      .addToBackStack(ADMINISTRATOR_CONTROLS_BACKSTACK)
       .commit()
   }
 
   val TAG = "tag"
   fun handleOnBackPressed() {
     if (activity.supportFragmentManager.backStackEntryCount > 0)
-      activity.supportFragmentManager.popBackStackImmediate()
+      activity.supportFragmentManager.popBackStackImmediate(ADMINISTRATOR_CONTROLS_BACKSTACK,0)
   }
 
   fun handleOnResume() {
