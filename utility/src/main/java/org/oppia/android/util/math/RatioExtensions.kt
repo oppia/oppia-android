@@ -1,7 +1,6 @@
 package org.oppia.android.util.math
 
 import org.oppia.android.app.model.RatioExpression
-import org.oppia.android.util.math.gcd
 
 // TODO: move to new package.
 
