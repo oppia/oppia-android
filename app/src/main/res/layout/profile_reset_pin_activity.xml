@@ -40,7 +40,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:background="@color/generalNavigationBackground"
+      android:background="@color/general_navigation_background"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
             android:paddingStart="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_start"
             android:paddingEnd="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_end"
             android:text="@string/profile_reset_pin_main"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -135,7 +135,7 @@
             android:enabled="@{viewModel.isButtonActive()}"
             android:text="@string/profile_rename_save"
             android:textAllCaps="true"
-            android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
+            android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submit_button_inactive_text }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_reset_input_confirm_pin" />
         </androidx.constraintlayout.widget.ConstraintLayout>
