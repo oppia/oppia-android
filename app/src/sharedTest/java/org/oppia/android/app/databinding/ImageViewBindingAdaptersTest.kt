@@ -176,14 +176,21 @@ class ImageViewBindingAdaptersTest {
   @Test
   fun testImageViewBindingAdapters_imageView_has_correctDrawableByDrawable() {
     activityRule.scenario.runWithActivity {
+      testCoroutineDispatchers.runCurrent()
       val imageView = getImageView(it)
+      testCoroutineDispatchers.runCurrent()
       val drawable = it.getDrawable(R.drawable.ic_portrait_onboarding_0)
+      testCoroutineDispatchers.runCurrent()
       setImageDrawableCompat(imageView, drawable)
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.image_view_for_data_binding)))
         .check(matches(withDrawable(R.drawable.ic_portrait_onboarding_0)))
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.image_view_for_data_binding)))
         .check(matches(withDrawable(R.drawable.ic_portrait_onboarding_0)))
+      testCoroutineDispatchers.runCurrent()
     }
   }
 
@@ -201,8 +208,11 @@ class ImageViewBindingAdaptersTest {
   fun testImageViewBindingAdapters_imageView_setProfileImage() {
     activityRule.scenario.runWithActivity {
       val imageView = getImageView(it)
+      testCoroutineDispatchers.runCurrent()
       val profileAvatar = ProfileAvatar.getDefaultInstance()
+      testCoroutineDispatchers.runCurrent()
       setProfileImage(imageView, profileAvatar)
+      testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.image_view_for_data_binding))).check(
         matches(
           withDrawableDynamic(
@@ -210,6 +220,7 @@ class ImageViewBindingAdaptersTest {
           )
         )
       )
+      testCoroutineDispatchers.runCurrent()
     }
   }
 
