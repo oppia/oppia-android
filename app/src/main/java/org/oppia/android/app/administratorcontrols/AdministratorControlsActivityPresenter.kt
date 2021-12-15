@@ -99,26 +99,16 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   fun loadProfileEdit(profileId: Int) {
-    if (!isMultipane) {
-      activity.startActivity(
-        ProfileEditActivity.createProfileEditActivity(
-          activity,
-          profileId,
-          isMultipane
-        )
-      )
-    } else {
-      lastLoadedFragment = PROFILE_EDIT_FRAGMENT
-      binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
-      val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.administrator_controls_fragment_multipane_placeholder,
-        fragment,
-        ADMINISTRATOR_CONTROLS_BACKSTACK
-      )
-        .addToBackStack(null)
-        .commit()
-    }
+    lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+    binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
+    val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.administrator_controls_fragment_multipane_placeholder,
+      fragment,
+      ADMINISTRATOR_CONTROLS_BACKSTACK
+    )
+      .addToBackStack(null)
+      .commit()
   }
 
   val TAG = "tag"
