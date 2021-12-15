@@ -1,5 +1,6 @@
 package org.oppia.android.app.utility
 
+import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import org.hamcrest.Matcher
 import org.oppia.android.app.utility.TabMatcher.Companion.matchCurrentTabTitleCheck
@@ -14,6 +15,10 @@ object EspressoTestsMatchers {
 
   fun withDrawable(resourceId: Int): Matcher<View> {
     return DrawableMatcher(resourceId)
+  }
+
+  fun withDrawableDynamic(bitmapDrawable: BitmapDrawable): Matcher<View> {
+    return DrawableMatcherDynamic(bitmapDrawable)
   }
 
   @Suppress("unused")

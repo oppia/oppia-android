@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -91,6 +92,21 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setImageDrawableCompat
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
+import org.oppia.android.app.model.ProfileAvatar
+import android.graphics.drawable.BitmapDrawable
+
+import android.graphics.BitmapFactory
+
+import android.graphics.Bitmap
+
+import android.graphics.drawable.Drawable
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawableDynamic
 
 /** Tests for [ImageViewBindingAdaptersTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -144,16 +160,16 @@ class ImageViewBindingAdaptersTest {
       testCoroutineDispatchers.runCurrent()
       val imageView = getImageView(it)
       testCoroutineDispatchers.runCurrent()
-      ImageViewBindingAdapters.setImageDrawableCompat(
+      setImageDrawableCompat(
         imageView,
         R.drawable.ic_portrait_onboarding_0
       )
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.image_view_for_data_binding)))
-        .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.ic_portrait_onboarding_0)))
+        .check(matches(withDrawable(R.drawable.ic_portrait_onboarding_0)))
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.image_view_for_data_binding)))
-        .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.ic_portrait_onboarding_0)))
+        .check(matches(withDrawable(R.drawable.ic_portrait_onboarding_0)))
     }
   }
 
@@ -162,19 +178,40 @@ class ImageViewBindingAdaptersTest {
     activityRule.scenario.runWithActivity {
       val imageView = getImageView(it)
       val drawable = it.getDrawable(R.drawable.ic_portrait_onboarding_0)
-      ImageViewBindingAdapters.setImageDrawableCompat(imageView, drawable)
+      setImageDrawableCompat(imageView, drawable)
       onView(allOf(withId(R.id.image_view_for_data_binding)))
-        .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.ic_portrait_onboarding_0)))
+        .check(matches(withDrawable(R.drawable.ic_portrait_onboarding_0)))
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.image_view_for_data_binding)))
-        .check(matches(EspressoTestsMatchers.withDrawable(R.drawable.ic_portrait_onboarding_0)))
+        .check(matches(withDrawable(R.drawable.ic_portrait_onboarding_0)))
     }
   }
 
-//  @Test
-//  fun testImageViewBindingAdapters_imageView_setProfileImage() {
-//
-//  }
+  @Throws(IOException::class)
+  fun drawableFromUrl(url: String?): Drawable? {
+    val x: Bitmap
+    val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
+    connection.connect()
+    val input: InputStream = connection.getInputStream()
+    x = BitmapFactory.decodeStream(input)
+    return BitmapDrawable(Resources.getSystem(), x)
+  }
+
+  @Test
+  fun testImageViewBindingAdapters_imageView_setProfileImage() {
+    activityRule.scenario.runWithActivity {
+      val imageView = getImageView(it)
+      val profileAvatar = ProfileAvatar.getDefaultInstance()
+      setProfileImage(imageView, profileAvatar)
+      onView(allOf(withId(R.id.image_view_for_data_binding))).check(
+        matches(
+          withDrawableDynamic(
+            drawableFromUrl(profileAvatar.avatarImageUri) as BitmapDrawable
+          )
+        )
+      )
+    }
+  }
 
   @Test
   fun testSetPlayStateDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
