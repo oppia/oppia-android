@@ -36,7 +36,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
     input: Fraction,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
-    return answer.toDouble().approximatelyEquals(input.toDouble())
-      && answer == input.toSimplestForm()
+    return answer.toDouble().approximatelyEquals(input.toDouble()) &&
+      answer == input.toSimplestForm()
   }
 }
