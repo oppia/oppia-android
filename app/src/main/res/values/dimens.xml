@@ -588,4 +588,7 @@
   <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">32dp</dimen>
 
+  <!--  HomeActivity-->
+  <dimen name="home_activity_frame_layout_height">0dp</dimen>
+
 </resources>
