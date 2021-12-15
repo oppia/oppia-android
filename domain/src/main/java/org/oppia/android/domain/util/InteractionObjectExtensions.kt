@@ -1,7 +1,6 @@
 package org.oppia.android.domain.util
 
 import org.oppia.android.app.model.ClickOnImage
-import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE

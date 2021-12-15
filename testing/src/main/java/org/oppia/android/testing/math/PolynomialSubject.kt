@@ -44,7 +44,7 @@ class PolynomialSubject(
   fun term(index: Int): PolynomialTermSubject = assertThat(nonNullActual.termList[index])
 
   fun evaluatesToPlainTextThat(): StringSubject = assertThat(nonNullActual.toPlainText())
-  
+
   companion object {
     fun assertThat(actual: Polynomial?): PolynomialSubject =
       assertAbout(::PolynomialSubject).that(actual)
