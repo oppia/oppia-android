@@ -16,7 +16,7 @@ class AlgebraicExpressionInputModule {
   @IntoMap
   @StringKey("MatchesExactlyWith")
   @AlgebraicExpressionInputRules
-  internal fun provideAlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider(
+  internal fun provideAlgebraicExpressionInputMatchesExactlyWithRuleClassifier(
     classifierProvider: AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
