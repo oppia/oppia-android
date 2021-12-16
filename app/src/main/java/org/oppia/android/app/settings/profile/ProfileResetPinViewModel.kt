@@ -25,6 +25,6 @@ class ProfileResetPinViewModel @Inject constructor() : ObservableViewModel() {
    */
   val inputConfirmPin = ObservableField("")
 
-  /** Whether the save pin button is enabled (i.e. there is no issue with the inputted PIN's.) */
+  /** Whether the save pin button is enabled (i.e. there is no issue with the inputted PINs.) */
   val isButtonActive = ObservableField(false)
 }
