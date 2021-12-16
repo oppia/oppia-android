@@ -14,7 +14,7 @@ class ProfileResetPinViewModel @Inject constructor() : ObservableViewModel() {
   /** The second pin to which the first pin is matched. */
   val confirmErrorMsg = ObservableField("")
 
-  /** Whether the user is admin. */
+  /** Whether the user is an admin. */
   val isAdmin = ObservableField(false)
 
   /** The new pin inputted by the user. */
