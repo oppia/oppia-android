@@ -6,9 +6,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.AlgebraicExpressionInputRules
-import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputIsEquivalentToRuleClassifierProvider
-import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputMatchesExactlyWithRuleClassifierProvider
-import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 
 /**
  * Module that binds rule classifiers corresponding to the algebraic expression input interaction.
@@ -29,7 +26,7 @@ class AlgebraicExpressionInputModule {
   @AlgebraicExpressionInputRules
   internal fun provideAlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifier(
     classifierProvider:
-      MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
+      AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -37,6 +34,6 @@ class AlgebraicExpressionInputModule {
   @StringKey("IsEquivalentTo")
   @AlgebraicExpressionInputRules
   internal fun provideAlgebraicExpressionInputIsEquivalentToRuleClassifier(
-    classifierProvider: MathEquationInputIsEquivalentToRuleClassifierProvider
+    classifierProvider: AlgebraicExpressionInputIsEquivalentToRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }
