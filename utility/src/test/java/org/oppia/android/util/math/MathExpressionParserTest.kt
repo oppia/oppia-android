@@ -326,17 +326,18 @@ class MathExpressionParserTest {
     }
 
     private fun expectFailureWhenParsingAlgebraicEquation(expression: String): MathParsingError {
-      val result = parseAlgebraicEquationWithAllErrors(expression)
+      val result = parseAlgebraicEquationInternal(expression, ErrorCheckingMode.ALL_ERRORS)
       assertThat(result).isInstanceOf(MathParsingResult.Failure::class.java)
       return (result as MathParsingResult.Failure<MathEquation>).error
     }
 
-    private fun parseAlgebraicEquationWithAllErrors(
+    private fun parseAlgebraicEquationInternal(
       expression: String,
+      errorCheckingMode: ErrorCheckingMode,
       allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathParsingResult<MathEquation> {
       return MathExpressionParser.parseAlgebraicEquation(
-        expression, allowedVariables, ErrorCheckingMode.ALL_ERRORS
+        expression, allowedVariables, errorCheckingMode
       )
     }
   }

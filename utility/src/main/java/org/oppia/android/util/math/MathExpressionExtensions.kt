@@ -17,14 +17,14 @@ import org.oppia.android.util.math.ExpressionToLatexConverter.Companion.convertT
 import org.oppia.android.util.math.ExpressionToPolynomialConverter.Companion.reduceToPolynomial
 import org.oppia.android.util.math.NumericExpressionEvaluator.Companion.evaluate
 
-fun MathExpression.toComparableOperationList(): ComparableOperationList =
-  stripGroups().toComparable()
-
 fun MathEquation.toRawLatex(divAsFraction: Boolean): String = convertToLatex(divAsFraction)
 
 fun MathExpression.toRawLatex(divAsFraction: Boolean): String = convertToLatex(divAsFraction)
 
 fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
+
+fun MathExpression.toComparableOperationList(): ComparableOperationList =
+  stripGroups().toComparable()
 
 fun MathExpression.toPolynomial(): Polynomial? = stripGroups().reduceToPolynomial()
 
