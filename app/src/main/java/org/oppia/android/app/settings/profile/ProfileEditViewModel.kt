@@ -37,7 +37,7 @@ class ProfileEditViewModel @Inject constructor(
   /** Whether the user is an admin. */
   var isAdmin = false
 
-  /** Internal profile id of the profile. */
+  /** Sets the identifier of the profile. */
   fun setProfileId(id: Int) {
     profileId = ProfileId.newBuilder().setInternalId(id).build()
   }
