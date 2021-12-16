@@ -14,7 +14,7 @@ class NumericExpressionInputModule {
   @IntoMap
   @StringKey("MatchesExactlyWith")
   @NumericExpressionInputRules
-  internal fun provideNumericExpressionInputMatchesExactlyWithRuleClassifierProvider(
+  internal fun provideNumericExpressionInputMatchesExactlyWithRuleClassifier(
     classifierProvider: NumericExpressionInputMatchesExactlyWithRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
