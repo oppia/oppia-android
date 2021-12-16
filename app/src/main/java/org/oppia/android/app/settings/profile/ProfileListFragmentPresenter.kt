@@ -67,12 +67,13 @@ class ProfileListFragmentPresenter @Inject constructor(
   ) {
     binding.profile = profile
     binding.root.setOnClickListener {
-      if (isMultipane) {
-        val profileEditListener = (activity as LoadProfileEditListener)
-        profileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
-      } else {
+
+      if (!isMultipane) {
         val routeToProfileEditListener = (activity as RouteToProfileEditListener)
         routeToProfileEditListener.routeToProfileEditActivity(profile.id.internalId)
+      } else {
+        val profileEditListener = (activity as LoadProfileEditListener)
+        profileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
       }
     }
   }
