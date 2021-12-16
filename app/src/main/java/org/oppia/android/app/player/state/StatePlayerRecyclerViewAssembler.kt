@@ -121,13 +121,13 @@ private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
  * - [ReturnToTopicNavigationButtonListener] if the return to topic button is enabled
  */
 class StatePlayerRecyclerViewAssembler private constructor(
+  private var accessibilityChecker: AccessibilityChecker,
   val adapter: BindableAdapter<StateItemViewModel>,
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
   private val fragment: Fragment,
   private val profileId: ProfileId,
   private val context: Context,
-  private val accessibilityChecker: AccessibilityChecker?,
   private val congratulationsTextView: TextView?,
   private val congratulationsTextConfettiView: KonfettiView?,
   private val congratulationsTextConfettiConfig: ConfettiConfig?,
@@ -476,7 +476,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animateCongratulationsTextView(textView)
 
     if (feedback.html.isBlank()) {
-      accessibilityChecker?.announceForAccessibilityForView(
+      accessibilityChecker.announceForAccessibilityForView(
         textView,
         resourceHandler.getStringInLocale(R.string.correct)
       )
@@ -871,6 +871,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * using its injectable [Factory].
    */
   class Builder private constructor(
+    private var accessibilityChecker: AccessibilityChecker,
     private val htmlParserFactory: HtmlParser.Factory,
     private val resourceBucketName: String,
     private val entityType: String,
@@ -890,7 +891,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * Tracks features individually enabled for the assembler. No features are enabled by default.
      */
     private val featureSets = mutableSetOf(PlayerFeatureSet())
-    private var accessibilityChecker: AccessibilityChecker? = null
     private var congratulationsTextView: TextView? = null
     private var congratulationsTextConfettiView: KonfettiView? = null
     private var congratulationsTextConfettiConfig: ConfettiConfig? = null
@@ -1243,12 +1243,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
      * answer.
      */
     fun addCelebrationForCorrectAnswers(
-      accessibilityChecker: AccessibilityChecker,
       congratulationsTextView: TextView,
       congratulationsTextConfettiView: KonfettiView,
       confettiConfig: ConfettiConfig
     ): Builder {
-      this.accessibilityChecker = accessibilityChecker
       this.congratulationsTextView = congratulationsTextView
       this.congratulationsTextConfettiView = congratulationsTextConfettiView
       this.congratulationsTextConfettiConfig = confettiConfig
@@ -1327,13 +1325,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       val assembler = StatePlayerRecyclerViewAssembler(
+        accessibilityChecker,
         /* adapter= */ adapterBuilder.build(),
         /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
         profileId,
         context,
-        accessibilityChecker,
         congratulationsTextView,
         congratulationsTextConfettiView,
         congratulationsTextConfettiConfig,
@@ -1367,12 +1365,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val resourceHandler: AppLanguageResourceHandler,
       private val translationController: TranslationController
     ) {
+      @Inject lateinit var accessibilityChecker: AccessibilityChecker
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets, and the current logged in [ProfileId].
        */
       fun create(resourceBucketName: String, entityType: String, profileId: ProfileId): Builder {
         return Builder(
+          accessibilityChecker,
           htmlParserFactory,
           resourceBucketName,
           entityType,

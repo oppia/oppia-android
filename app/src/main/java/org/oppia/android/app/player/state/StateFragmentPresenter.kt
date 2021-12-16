@@ -38,7 +38,6 @@ import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.StoryProgressController
-import org.oppia.android.util.accessibility.AccessibilityChecker
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -83,7 +82,6 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var helpIndex: HelpIndex
-  @Inject lateinit var accessibilityChecker: AccessibilityChecker
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -115,7 +113,6 @@ class StateFragmentPresenter @Inject constructor(
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
       assemblerBuilderFactory.create(resourceBucketName, entityType, profileId),
-      accessibilityChecker,
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
@@ -217,7 +214,6 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
-    accessibilityChecker: AccessibilityChecker,
     congratulationsTextView: TextView,
     congratulationsTextConfettiView: KonfettiView,
     fullScreenConfettiView: KonfettiView
@@ -234,7 +230,6 @@ class StateFragmentPresenter @Inject constructor(
       .addForwardNavigationSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
-        accessibilityChecker,
         congratulationsTextView,
         congratulationsTextConfettiView,
         MINI_CONFETTI_BURST
