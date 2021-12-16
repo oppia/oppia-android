@@ -1,6 +1,7 @@
 package org.oppia.android.util.math
 
 import org.oppia.android.app.model.Fraction
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 /** Returns whether this fraction has a fractional component. */
@@ -210,7 +211,7 @@ fun Int.toWholeNumberFraction(): Fraction {
   val intValue = this
   return Fraction.newBuilder().apply {
     isNegative = intValue < 0
-    wholeNumber = kotlin.math.abs(intValue)
+    wholeNumber = abs(intValue)
     numerator = 0
     denominator = 1
   }.build()
