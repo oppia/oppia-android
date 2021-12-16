@@ -85,3 +85,10 @@ annotation class NumericExpressionInputRules
  */
 @Qualifier
 annotation class AlgebraicExpressionInputRules
+
+/**
+ * Corresponds to [org.oppia.android.domain.classify.RuleClassifier]s that can be used by the
+ * math equation input interaction.
+ */
+@Qualifier
+annotation class MathEquationInputRules
