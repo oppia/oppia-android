@@ -71,6 +71,7 @@ TEST_DEPS = [
     ":testing",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
     "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
