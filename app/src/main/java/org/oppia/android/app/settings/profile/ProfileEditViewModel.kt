@@ -23,7 +23,7 @@ class ProfileEditViewModel @Inject constructor(
 
   private val isAllowedDownloadAccessMutableLiveData = MutableLiveData<Boolean>()
 
-  /** Download access enabled for profile by the administrator. */
+  /** Download access enabled for the profile by the administrator. */
   val isAllowedDownloadAccess: LiveData<Boolean> = isAllowedDownloadAccessMutableLiveData
 
   /** List of all the current profiles registered in the app [ProfileListFragment]. */
