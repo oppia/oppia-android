@@ -2722,7 +2722,7 @@ questions {
       answer_groups {
         outcome {
           feedback {
-            html: "<p>That\'s correct!</p>"
+            html: ""
             content_id: "feedback_1"
           }
           labelled_as_correct: true

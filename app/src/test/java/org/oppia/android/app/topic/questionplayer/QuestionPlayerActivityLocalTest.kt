@@ -20,6 +20,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import com.google.common.truth.Truth.assertThat
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.junit.Before
@@ -87,6 +88,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityChecker
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -116,6 +118,9 @@ import javax.inject.Singleton
 class QuestionPlayerActivityLocalTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @Inject
+  lateinit var accessibilityManager: FakeAccessibilityChecker
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -163,6 +168,32 @@ class QuestionPlayerActivityLocalTest {
 
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port")
+  fun testQuestionPlayer_portrait_submitCorrectAnswer_correctIsAnnounced() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testQuestionPlayer_landscape_submitCorrectAnswer_correctIsAnnounced() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
     }
   }
 

@@ -2015,7 +2015,7 @@
             "dest": "",
             "feedback": {
               "content_id": "feedback_1",
-              "html": "<p>That's correct!</p>"
+              "html": ""
             },
             "labelled_as_correct": true,
             "param_changes": [],
