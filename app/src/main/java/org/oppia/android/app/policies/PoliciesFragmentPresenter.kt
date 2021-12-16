@@ -39,18 +39,15 @@ class PoliciesFragmentPresenter @Inject constructor(
   private fun setUpContentForTextViews(policyPage: PolicyPage) {
     var privacyPolicyDescription = ""
     var privacyPolicyWebLink = ""
-    when (policyPage) {
-      PolicyPage.PRIVACY_POLICY -> {
-        privacyPolicyDescription =
-          resourceHandler.getStringInLocale(R.string.privacy_policy_content)
-        privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
-      }
-      PolicyPage.TERMS_OF_SERVICE -> {
-        privacyPolicyDescription =
-          resourceHandler.getStringInLocale(R.string.terms_of_service_content)
-        privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
-      }
-      else -> PolicyPage.POLICY_PAGE_UNSPECIFIED
+    if (policyPage == PolicyPage.PRIVACY_POLICY) {
+      privacyPolicyDescription =
+        resourceHandler.getStringInLocale(R.string.privacy_policy_content)
+      privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
+    }
+    else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
+      privacyPolicyDescription =
+        resourceHandler.getStringInLocale(R.string.terms_of_service_content)
+      privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
     }
 
     binding.policiesDescriptionTextView.text = htmlParserFactory.create().parseOppiaHtml(

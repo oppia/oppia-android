@@ -11,7 +11,10 @@ import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [PolicyPageTagHandler]. */
 const val CUSTOM_POLICY_PAGE_TAG = "oppia-noninteractive-policy"
-
+private const val PRIVACY_POLICY_PAGE = "privacy"
+private const val TERMS_OF_SERVICE_PAGE = "tos"
+private const val PRIVACY_POLICY = "Privacy Policy"
+private const val TERMS_OF_SERVICE = "Terms of Service"
 /**
  * A custom tag handler for supporting custom Oppia policies page parsed with
  * [CustomHtmlContentHandler].
@@ -28,30 +31,31 @@ class PolicyPageTagHandler(
     imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
-    val termsOfServiceLink = attributes.getJsonStringValue("terms-of-service-link")
-    val privacyPolicyLink = attributes.getJsonStringValue("privacy-policy-link")
+    val text = attributes.getJsonStringValue("link")
 
-    when {
-      termsOfServiceLink != null -> {
-        clickableSpanBuilder(
-          termsOfServiceLink,
-          output,
-          openIndex,
-          closeIndex,
-          PolicyPage.TERMS_OF_SERVICE
-        )
+    if(text!=null) {
+      when(text) {
+        TERMS_OF_SERVICE_PAGE -> {
+          clickableSpanBuilder(
+            TERMS_OF_SERVICE,
+            output,
+            openIndex,
+            closeIndex,
+            PolicyPage.TERMS_OF_SERVICE
+          )
+        }
+        PRIVACY_POLICY_PAGE -> {
+          clickableSpanBuilder(
+            PRIVACY_POLICY,
+            output,
+            openIndex,
+            closeIndex,
+            PolicyPage.PRIVACY_POLICY
+          )
+        }
       }
-      privacyPolicyLink != null -> {
-        clickableSpanBuilder(
-          privacyPolicyLink,
-          output,
-          openIndex,
-          closeIndex,
-          PolicyPage.PRIVACY_POLICY
-        )
-      }
-      else -> consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
-    }
+    }else consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
+
   }
 
   private fun clickableSpanBuilder(
