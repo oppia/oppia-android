@@ -42,7 +42,7 @@ class ProfileEditViewModel @Inject constructor(
     profileId = ProfileId.newBuilder().setInternalId(id).build()
   }
 
-  /** This method fetches the profile of a user asynchronously. */
+  /** Fetches the profile of a user asynchronously. */
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
     if (profileResult.isFailure()) {
       oppiaLogger.e(
