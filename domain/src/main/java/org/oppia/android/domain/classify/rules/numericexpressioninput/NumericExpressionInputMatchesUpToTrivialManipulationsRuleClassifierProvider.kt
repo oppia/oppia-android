@@ -2,7 +2,7 @@ package org.oppia.android.domain.classify.rules.numericexpressioninput
 
 import org.oppia.android.app.model.ComparableOperationList
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -28,7 +28,7 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   override fun matches(
     answer: String,
     input: String,
-    writtenTranslationContext: WrittenTranslationContext
+    classificationContext: ClassificationContext
   ): Boolean {
     val answerExpression = parseComparableOperationList(answer) ?: return false
     val inputExpression = parseComparableOperationList(input) ?: return false

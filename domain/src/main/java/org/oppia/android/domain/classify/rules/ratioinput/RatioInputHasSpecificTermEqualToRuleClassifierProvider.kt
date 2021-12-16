@@ -2,7 +2,7 @@ package org.oppia.android.domain.classify.rules.ratioinput
 
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.RatioExpression
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -33,6 +33,6 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProvider @Inject constructor
     answer: RatioExpression,
     firstInput: Int,
     secondInput: Int,
-    writtenTranslationContext: WrittenTranslationContext
+    classificationContext: ClassificationContext
   ): Boolean = answer.ratioComponentList.getOrNull(firstInput - 1) == secondInput
 }
