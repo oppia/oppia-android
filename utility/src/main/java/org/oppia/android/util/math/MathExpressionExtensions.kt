@@ -1,10 +1,7 @@
 package org.oppia.android.util.math
 
-import java.text.NumberFormat
-import java.util.Locale
 import org.oppia.android.app.model.ComparableOperationList
 import org.oppia.android.app.model.MathBinaryOperation
-import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
@@ -15,7 +12,6 @@ import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.MathFunctionCall.FunctionType
-import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -35,6 +31,10 @@ import org.oppia.android.util.math.ExpressionToComparableOperationListConverter.
 import org.oppia.android.util.math.ExpressionToLatexConverter.Companion.convertToLatex
 import org.oppia.android.util.math.ExpressionToPolynomialConverter.Companion.reduceToPolynomial
 import org.oppia.android.util.math.NumericExpressionEvaluator.Companion.evaluate
+import java.text.NumberFormat
+import java.util.Locale
+import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
+import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
 // TODO: split up this extensions file into multiple, clean it up, reorganize, and add tests.
 

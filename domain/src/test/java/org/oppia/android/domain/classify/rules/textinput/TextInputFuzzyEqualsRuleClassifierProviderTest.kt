@@ -13,7 +13,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
@@ -89,7 +89,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -103,7 +103,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -117,7 +117,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -131,7 +131,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_DIFF_UPPERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -145,7 +145,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_LOWERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -159,7 +159,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_LOWERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -173,7 +173,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_DIFF_LOWERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -187,7 +187,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_DIFF_LOWERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -200,7 +200,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_ANSWER,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -213,7 +213,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TEST_WITH_WHITESPACE,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -226,7 +226,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_THIS,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -239,7 +239,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TEST,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -252,7 +252,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = STRING_VALUE_TESTING,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isFalse()
@@ -266,7 +266,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       inputFuzzyEqualsRuleClassifier.matches(
         answer = STRING_VALUE_TEST_ANSWER_UPPERCASE,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -284,7 +284,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = createString("an answer"),
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -297,7 +297,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = createString("uma resposta"),
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     // A Portuguese answer isn't reocgnized with this translation context.
@@ -311,7 +311,9 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = createString("an answer"),
       inputs = inputs,
-      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      classificationContext = ClassificationContext(
+        createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      )
     )
 
     // Even though the English string matches, the presence of the Portuguese context should trigger
@@ -326,7 +328,9 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = createString("uma resposta"),
       inputs = inputs,
-      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      classificationContext = ClassificationContext(
+        createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      )
     )
 
     // The translation context provides a bridge between Portuguese & English.
@@ -340,7 +344,9 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = createString("uma reposta"),
       inputs = inputs,
-      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      classificationContext = ClassificationContext(
+        createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      )
     )
 
     // A single misspelled letter should still result in a match in the same way as English.
@@ -354,7 +360,9 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = createString("reposta"),
       inputs = inputs,
-      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      classificationContext = ClassificationContext(
+        createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      )
     )
 
     // A missing word & a misspelled word should result in no match.
@@ -368,7 +376,9 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = createString("إجاب"),
       inputs = inputs,
-      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "إجابة")
+      classificationContext = ClassificationContext(
+        createTranslationContext(TEST_STRING_CONTENT_ID, "إجابة")
+      )
     )
 
     // A single misspelled letter should still result in a match in the same way as English.
@@ -382,7 +392,9 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
     val matches = inputFuzzyEqualsRuleClassifier.matches(
       answer = createString("إجا"),
       inputs = inputs,
-      writtenTranslationContext = createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      classificationContext = ClassificationContext(
+        createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+      )
     )
 
     // Multiple missing letters should result in no match.

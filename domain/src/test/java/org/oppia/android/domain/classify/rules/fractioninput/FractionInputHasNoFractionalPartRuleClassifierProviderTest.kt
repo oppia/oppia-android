@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.robolectric.annotation.Config
@@ -97,7 +97,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -111,7 +111,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -125,7 +125,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -139,7 +139,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_123_0_OVER_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -153,7 +153,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -167,7 +167,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_0_OVER_3,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -181,7 +181,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -195,7 +195,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_20_OVER_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()

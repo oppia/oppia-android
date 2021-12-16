@@ -39,13 +39,16 @@ import org.oppia.android.app.translation.testing.TestActivityRecreator
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -260,7 +263,9 @@ class AppLanguageWatcherMixinTest {
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleTestModule::class, ActivityRecreatorTestModule::class,
-      ActivityIntentFactoriesModule::class, PlatformParameterSingletonModule::class
+      ActivityIntentFactoriesModule::class, PlatformParameterSingletonModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

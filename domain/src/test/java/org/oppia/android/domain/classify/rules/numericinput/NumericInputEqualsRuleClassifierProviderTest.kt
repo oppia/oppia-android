@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.util.FLOAT_EQUALITY_INTERVAL
 import org.oppia.android.testing.assertThrows
@@ -66,7 +66,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -80,7 +80,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -95,7 +95,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
     val matches = inputEqualsRuleClassifier.matches(
       answer = FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isTrue()
@@ -109,7 +109,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -123,7 +123,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -137,7 +137,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -152,7 +152,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
     val matches = inputEqualsRuleClassifier.matches(
       answer = SIX_TIMES_FLOAT_EQUALITY_INTERVAL,
       inputs = inputs,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
 
     assertThat(matches).isFalse()
@@ -166,7 +166,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -183,7 +183,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

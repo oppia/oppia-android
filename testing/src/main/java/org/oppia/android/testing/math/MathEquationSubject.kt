@@ -11,7 +11,6 @@ import org.oppia.android.util.math.toRawLatex
 
 class MathEquationSubject(
   metadata: FailureMetadata,
-  // TODO: restrict visibility.
   val actual: MathEquation
 ) : LiteProtoSubject(metadata, actual) {
   fun hasLeftHandSideThat(): MathExpressionSubject = assertThat(actual.leftSide)
