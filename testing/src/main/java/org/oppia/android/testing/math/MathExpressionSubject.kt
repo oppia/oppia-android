@@ -25,7 +25,7 @@ import org.oppia.android.util.math.toRawLatex
 // See: https://kotlinlang.org/docs/type-safe-builders.html.
 class MathExpressionSubject(
   metadata: FailureMetadata,
-  private val actual: MathExpression
+  val actual: MathExpression
 ) : LiteProtoSubject(metadata, actual) {
   fun hasStructureThatMatches(init: ExpressionComparator.() -> Unit) {
     // TODO: maybe verify that all aspects are verified?
