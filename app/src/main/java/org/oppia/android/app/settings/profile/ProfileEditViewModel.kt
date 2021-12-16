@@ -34,7 +34,7 @@ class ProfileEditViewModel @Inject constructor(
     )
   }
 
-  /** Whether the user is admin. */
+  /** Whether the user is an admin. */
   var isAdmin = false
 
   /** Internal profile id of the profile. */
