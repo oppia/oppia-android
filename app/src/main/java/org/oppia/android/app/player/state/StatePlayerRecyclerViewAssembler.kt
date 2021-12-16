@@ -458,6 +458,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   /**
    * Shows a celebratory animation with a congratulations message and confetti when the learner submits
    * a correct answer.
+   *
+   * @param feedback Oppia's feedback to the learner's most recent answer. If the feedback is empty,
+   * talkback confirms correct answer by announcing "Correct" banner.
    */
   fun showCelebrationOnCorrectAnswer(feedback: SubtitledHtml) {
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
