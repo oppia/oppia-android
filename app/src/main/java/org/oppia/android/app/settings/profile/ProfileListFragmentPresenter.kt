@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.administratorcontrols.AdministratorControlsActivityPresenter
 import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
 import org.oppia.android.app.administratorcontrols.RouteToProfileEditListener
 import org.oppia.android.app.fragment.FragmentScope
@@ -22,7 +21,6 @@ class ProfileListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ProfileListViewModel>,
-  private val administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
 ) {
 
   private var isMultipane = false
