@@ -115,7 +115,8 @@ class ProfileEditFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_PROFILE_DELETION_DIALOG)
   }
 
-  /** Requests the specific profile to be deleted from the app
+  /**
+   * Requests the specific profile to be deleted from the app
    * and then routes the user either to administrator controls
    * activity or profile list activity depending on whether
    * they are currently using a tablet device.
