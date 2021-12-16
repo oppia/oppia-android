@@ -8,8 +8,8 @@ import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import javax.inject.Inject
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
+import javax.inject.Inject
 
 class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -35,7 +35,8 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject c
   }
 
   private fun parseExpression(
-    rawExpression: String, allowedVariables: List<String>
+    rawExpression: String,
+    allowedVariables: List<String>
   ): MathExpression? {
     return when (val expResult = parseAlgebraicExpression(rawExpression, allowedVariables)) {
       is MathParsingResult.Success -> expResult.result

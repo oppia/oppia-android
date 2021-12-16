@@ -7,7 +7,9 @@ import dagger.multibindings.StringKey
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.AlgebraicExpressionInputRules
 
-/** Module that binds rule classifiers corresponding to the algebraic expression input interaction. */
+/**
+ * Module that binds rule classifiers corresponding to the algebraic expression input interaction.
+ */
 @Module
 class AlgebraicExpressionInputModule {
   @Provides
@@ -23,7 +25,8 @@ class AlgebraicExpressionInputModule {
   @StringKey("MatchesUpToTrivialManipulations")
   @AlgebraicExpressionInputRules
   internal fun provideAlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifier(
-    classifierProvider: AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
+    classifierProvider:
+      AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides

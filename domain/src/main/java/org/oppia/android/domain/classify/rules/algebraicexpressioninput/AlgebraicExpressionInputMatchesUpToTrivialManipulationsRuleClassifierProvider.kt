@@ -8,9 +8,9 @@ import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
+import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import org.oppia.android.util.math.toComparableOperationList
 import javax.inject.Inject
-import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 
 class AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 @Inject constructor(
@@ -37,7 +37,8 @@ class AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvi
   }
 
   private fun parseComparableOperationList(
-    rawExpression: String, allowedVariables: List<String>
+    rawExpression: String,
+    allowedVariables: List<String>
   ): ComparableOperationList? {
     return when (val expResult = parseAlgebraicExpression(rawExpression, allowedVariables)) {
       is MathParsingResult.Success -> expResult.result.toComparableOperationList()
