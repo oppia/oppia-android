@@ -2,10 +2,7 @@ package org.oppia.android.util.parser.html
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView

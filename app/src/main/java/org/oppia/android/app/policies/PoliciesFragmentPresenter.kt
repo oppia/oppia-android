@@ -18,7 +18,6 @@ class PoliciesFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
-  private lateinit var binding: PoliciesFragmentBinding
 
   /** Handles onCreate() method of the [PoliciesFragment]. */
   fun handleCreateView(
@@ -26,19 +25,23 @@ class PoliciesFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     policiesArguments: PoliciesArguments
   ): View {
-    binding = PoliciesFragmentBinding.inflate(
+    val binding = PoliciesFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    setUpContentForTextViews(policiesArguments.policyPage)
+    setUpContentForTextViews(policiesArguments.policyPage, binding)
 
     return binding.root
   }
 
-  private fun setUpContentForTextViews(policyPage: PolicyPage) {
+  private fun setUpContentForTextViews(
+    policyPage: PolicyPage,
+    binding: PoliciesFragmentBinding
+  ) {
     var privacyPolicyDescription = ""
     var privacyPolicyWebLink = ""
+
     if (policyPage == PolicyPage.PRIVACY_POLICY) {
       privacyPolicyDescription =
         resourceHandler.getStringInLocale(R.string.privacy_policy_content)
