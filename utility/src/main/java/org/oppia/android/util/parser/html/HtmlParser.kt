@@ -92,8 +92,7 @@ class HtmlParser private constructor(
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
 
-//    htmlContentTextView.handleUrlClicks {}
-    Linkify.addLinks(htmlContentTextView , Linkify.WEB_URLS)
+    Linkify.addLinks(htmlContentTextView, Linkify.WEB_URLS)
 
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
@@ -116,34 +115,6 @@ class HtmlParser private constructor(
 
   private fun getLayoutDirection(view: View): Int {
     return ViewCompat.getLayoutDirection(view)
-  }
-
-  /**
-   * Searches for all URLSpans in current text replaces them with our own ClickableSpans
-   * forwards clicks to provided function.
-   */
-  private fun TextView.handleUrlClicks(onClicked: ((String) -> Unit)? = null) {
-    // create span builder and replaces current text with it
-    text = SpannableStringBuilder.valueOf(text).apply {
-      // search for all URL spans and replace all spans with our own clickable spans
-      getSpans(0, length, URLSpan::class.java).forEach {
-        // add new clickable span at the same position
-        setSpan(
-          object : ClickableSpan() {
-            override fun onClick(widget: View) {
-              onClicked?.invoke(it.url)
-            }
-          },
-          getSpanStart(it),
-          getSpanEnd(it),
-          Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-        )
-        // remove old URLSpan
-        removeSpan(it)
-      }
-    }
-    // make sure movement method is set
-    movementMethod = LinkMovementMethod.getInstance()
   }
 
   private fun computeCustomTagHandlers(
