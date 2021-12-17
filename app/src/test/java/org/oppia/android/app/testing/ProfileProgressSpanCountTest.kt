@@ -77,8 +77,8 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ProfileProgressSpanCount.TestApplication::class)
-class ProfileProgressSpanCount {
+@Config(application = ProfileProgressSpanCountTest.TestApplication::class)
+class ProfileProgressSpanCountTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -169,18 +169,18 @@ class ProfileProgressSpanCount {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(profileProgressSpanCount: ProfileProgressSpanCount)
+    fun inject(profileProgressSpanCountTest: ProfileProgressSpanCountTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileProgressSpanCount_TestApplicationComponent.builder()
+      DaggerProfileProgressSpanCountTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(profileProgressSpanCount: ProfileProgressSpanCount) {
-      component.inject(profileProgressSpanCount)
+    fun inject(ProfileProgressSpanCountTest: ProfileProgressSpanCountTest) {
+      component.inject(ProfileProgressSpanCountTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

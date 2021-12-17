@@ -15,6 +15,7 @@ class ProfileRenameActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileRenameViewModel>,
 ) {
 
+  /** Handles onCreate() of [ProfileRenameActivity]. */
   fun handleOnCreate(profileId: Int) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
