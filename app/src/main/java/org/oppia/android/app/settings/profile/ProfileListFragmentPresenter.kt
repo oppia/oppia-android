@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
-import org.oppia.android.app.administratorcontrols.RouteToProfileEditListener
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -73,8 +72,8 @@ class ProfileListFragmentPresenter @Inject constructor(
         val routeToProfileEditListener = (activity as RouteToProfileEditListener)
         routeToProfileEditListener.routeToProfileEditActivity(profile.id.internalId)
       } else {
-        val profileEditListener = (activity as LoadProfileEditListener)
-        profileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
+        val loadProfileEditListener = (activity as LoadProfileEditListener)
+        loadProfileEditListener.loadProfileEdit(profile.id.internalId, profile.name)
       }
     }
   }

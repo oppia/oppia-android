@@ -113,7 +113,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   val TAG = "tag"
   fun handleOnBackPressed() {
     if (activity.supportFragmentManager.backStackEntryCount > 0)
-      activity.supportFragmentManager.popBackStackImmediate(ADMINISTRATOR_CONTROLS_BACKSTACK,0)
+      activity.supportFragmentManager.popBackStackImmediate(ADMINISTRATOR_CONTROLS_BACKSTACK, 0)
   }
 
   fun handleOnResume() {

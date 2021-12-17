@@ -8,7 +8,6 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.settings.profile.ProfileEditActivity
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
@@ -26,7 +25,6 @@ class AdministratorControlsActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
   RouteToAppVersionListener,
-  RouteToProfileEditListener,
   LoadProfileListListener,
   LoadAppVersionListener,
   LoadProfileEditListener,
@@ -64,10 +62,6 @@ class AdministratorControlsActivity :
 
   override fun routeToProfileList() {
     startActivity(ProfileListActivity.createProfileListActivityIntent(this))
-  }
-
-  override fun routeToProfileEditActivity(profileId: Int) {
-    startActivity(ProfileEditActivity.createProfileEditActivity(this, profileId, false))
   }
 
   override fun onBackPressed() {
