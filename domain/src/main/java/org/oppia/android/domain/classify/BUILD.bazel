@@ -1,0 +1,80 @@
+"""
+Utilities for classify domain components.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "classification_controller",
+    testonly = True,
+    srcs = [
+        "AnswerClassificationController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:exploration_java_proto_lite",
+        "//model:interaction_object_java_proto_lite",
+        "//model:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "classification_result",
+    testonly = True,
+    srcs = [
+        "ClassificationResult.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:exploration_java_proto_lite"
+    ],
+)
+
+kt_android_library(
+    name = "generic_interaction_classifier",
+    testonly = True,
+    srcs = [
+        "GenericInteractionClassifier.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "interaction_classifier",
+    testonly = True,
+    srcs = [
+        "InteractionClassifier.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "interaction_module",
+    testonly = True,
+    srcs = [
+        "InterationModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:exploration_meta_data_retriever",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "rule_classifier",
+    testonly = True,
+    srcs = [
+        "RuleClassifier.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:interaction_object_java_proto_lite",
+        "//model:translation_java_proto_lite",
+    ],
+)
+
+dagger_rules()

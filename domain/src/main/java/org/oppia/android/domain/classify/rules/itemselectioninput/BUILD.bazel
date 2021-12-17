@@ -1,0 +1,29 @@
+"""
+Utilities for classify domain components.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "item_selection_input",
+    srcs = [
+        "ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider.kt",
+        "ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider.kt",
+        "ItemSelectionInputEqualsRuleClassifierProvider.kt",
+        "ItemSelectionInputIsProperSubsetOfRuleClassifierProvider.kt",
+        "ItemSelectionInputModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//model:interaction_object_java_proto_lite",
+        "//model:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()
