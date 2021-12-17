@@ -15,6 +15,7 @@ private const val PRIVACY_POLICY_PAGE = "privacy"
 private const val TERMS_OF_SERVICE_PAGE = "tos"
 private const val PRIVACY_POLICY = "Privacy Policy"
 private const val TERMS_OF_SERVICE = "Terms of Service"
+
 /**
  * A custom tag handler for supporting custom Oppia policies page parsed with
  * [CustomHtmlContentHandler].
@@ -33,8 +34,8 @@ class PolicyPageTagHandler(
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val text = attributes.getJsonStringValue("link")
 
-    if(text!=null) {
-      when(text) {
+    if (text != null) {
+      when (text) {
         TERMS_OF_SERVICE_PAGE -> {
           clickableSpanBuilder(
             TERMS_OF_SERVICE,
@@ -54,7 +55,7 @@ class PolicyPageTagHandler(
           )
         }
       }
-    }else consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
+    } else consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
   }
 
   private fun clickableSpanBuilder(
