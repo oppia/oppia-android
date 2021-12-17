@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser.html
 
+import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
@@ -12,6 +13,7 @@ import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
+  private val context: Context,
   private val urlImageParserFactory: UrlImageParser.Factory,
   private val gcsResourceName: String,
   private val entityType: String,
@@ -32,7 +34,6 @@ class HtmlParser private constructor(
   }
   private val bulletTagHandler by lazy { BulletTagHandler() }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
-  private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
@@ -84,7 +85,7 @@ class HtmlParser private constructor(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
-      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
+      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
     )
 
     val spannableBuilder = CustomBulletSpan.replaceBulletSpan(
@@ -99,12 +100,14 @@ class HtmlParser private constructor(
   }
 
   private fun computeCustomTagHandlers(
-    supportsConceptCards: Boolean
+    supportsConceptCards: Boolean,
+    htmlContentTextView: TextView
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
     handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
-    handlersMap[CUSTOM_MATH_TAG] = mathTagHandler
+    handlersMap[CUSTOM_MATH_TAG] =
+      MathTagHandler(consoleLogger, context.assets, htmlContentTextView.lineHeight.toFloat())
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
@@ -143,7 +146,8 @@ class HtmlParser private constructor(
   /** Factory for creating new [HtmlParser]s. */
   class Factory @Inject constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
-    private val consoleLogger: ConsoleLogger
+    private val consoleLogger: ConsoleLogger,
+    private val context: Context
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -157,6 +161,7 @@ class HtmlParser private constructor(
       customOppiaTagActionListener: CustomOppiaTagActionListener? = null
     ): HtmlParser {
       return HtmlParser(
+        context,
         urlImageParserFactory,
         gcsResourceName,
         entityType,
