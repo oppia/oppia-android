@@ -13,7 +13,7 @@ import java.io.InputStream
 
 // https://bumptech.github.io/glide/tut/custom-modelloader.html#an-empty-implementation.
 /** ModelLoader for loading assets from the app's local asset repository. */
-internal class RepositoryModelLoader : ModelLoader<ImageAssetFetcher, InputStream> {
+class RepositoryModelLoader : ModelLoader<ImageAssetFetcher, InputStream> {
   override fun buildLoadData(
     model: ImageAssetFetcher,
     width: Int,
@@ -43,7 +43,7 @@ internal class RepositoryModelLoader : ModelLoader<ImageAssetFetcher, InputStrea
   }
 
   /** [ModelLoaderFactory] for creating new [RepositoryModelLoader]s. */
-  internal class Factory : ModelLoaderFactory<ImageAssetFetcher, InputStream> {
+  class Factory : ModelLoaderFactory<ImageAssetFetcher, InputStream> {
     override fun build(
       multiFactory: MultiModelLoaderFactory
     ): ModelLoader<ImageAssetFetcher, InputStream> {
