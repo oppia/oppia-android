@@ -460,7 +460,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * a correct answer.
    *
    * @param feedback Oppia's feedback to the learner's most recent answer. If the feedback is empty,
-   * talkback confirms correct answer by announcing "Correct" banner.
+   *     talkback confirms correct answers by a separate announcement.
    */
   fun showCelebrationOnCorrectAnswer(feedback: SubtitledHtml) {
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
