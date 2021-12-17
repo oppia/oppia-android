@@ -505,8 +505,6 @@ exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/FontS
 exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/OrientationChangeAction.kt"
 exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt"
 exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt"
-exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/ProfileProgressSpanCount.kt"
-exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/player/split/PlayerSplitScreenTesting.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/BaseUrl.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/Constants.kt"
 exempted_file_path: "data/src/main/java/org/oppia/android/data/backends/gae/NetworkApiKey.kt"
