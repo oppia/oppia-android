@@ -8,11 +8,11 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 kt_android_library(
     name = "drag_and_drop_sort_input",
     srcs = [
-            "DragDropSortInputHasElementXAtPositionYClassifierProvider.kt",
-            "DragDropSortInputHasElementXBeforeElementYClassifierProvider.kt",
-            "DragDropSortInputIsEqualToOrderingClassifierProvider.kt",
-            "DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider.kt",
-            "DragDropSortInputModule .kt",
+        "DragDropSortInputHasElementXAtPositionYClassifierProvider.kt",
+        "DragDropSortInputHasElementXBeforeElementYClassifierProvider.kt",
+        "DragDropSortInputIsEqualToOrderingClassifierProvider.kt",
+        "DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider.kt",
+        "DragDropSortInputModule.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
