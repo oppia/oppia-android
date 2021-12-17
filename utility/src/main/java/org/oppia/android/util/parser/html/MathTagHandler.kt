@@ -20,7 +20,8 @@ private const val CUSTOM_MATH_SVG_PATH_ATTRIBUTE = "math_content-with-value"
 class MathTagHandler(
   private val consoleLogger: ConsoleLogger,
   private val assetManager: AssetManager,
-  private val lineHeight: Float
+  private val lineHeight: Float,
+  private val useInlineRendering: Boolean
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -44,7 +45,9 @@ class MathTagHandler(
         )
       }
       is MathContent.MathAsLatex -> {
-        MathExpressionSpan(content.rawLatex, lineHeight, assetManager, isMathMode = true)
+        MathExpressionSpan(
+          content.rawLatex, lineHeight, assetManager, isMathMode = !useInlineRendering
+        )
       }
       null -> {
         consoleLogger.e("MathTagHandler", "Failed to parse math tag")

@@ -19,6 +19,7 @@ class HtmlParser private constructor(
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean,
+  private val useInlineMathRendering: Boolean,
   private val consoleLogger: ConsoleLogger,
   customOppiaTagActionListener: CustomOppiaTagActionListener?
 ) {
@@ -107,7 +108,12 @@ class HtmlParser private constructor(
     handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
     handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
     handlersMap[CUSTOM_MATH_TAG] =
-      MathTagHandler(consoleLogger, context.assets, htmlContentTextView.lineHeight.toFloat())
+      MathTagHandler(
+        consoleLogger,
+        context.assets,
+        htmlContentTextView.lineHeight.toFloat(),
+        useInlineMathRendering
+      )
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
@@ -158,7 +164,8 @@ class HtmlParser private constructor(
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean,
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
+      useInlineMathRendering: Boolean = true
     ): HtmlParser {
       return HtmlParser(
         context,
@@ -167,6 +174,7 @@ class HtmlParser private constructor(
         entityType,
         entityId,
         imageCenterAlign,
+        useInlineMathRendering,
         consoleLogger,
         customOppiaTagActionListener
       )
