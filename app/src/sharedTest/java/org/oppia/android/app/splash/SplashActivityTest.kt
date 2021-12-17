@@ -20,13 +20,6 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import java.io.File
-import java.text.SimpleDateFormat
-import java.time.Duration
-import java.time.Instant
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -103,6 +96,14 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.Instant
+import java.util.Date
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Tests for [SplashActivity]. For context on the activity test rule setup see:
