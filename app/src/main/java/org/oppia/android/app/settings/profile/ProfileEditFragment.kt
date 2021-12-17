@@ -16,6 +16,8 @@ class ProfileEditFragment : InjectableFragment(), ProfileEditDialogInterface {
 
   companion object {
     const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
+
+    /** This creates the new instance of [ProfileEditFragment]. */
     fun newInstance(
       internalProfileId: Int,
       isMultipane: Boolean
