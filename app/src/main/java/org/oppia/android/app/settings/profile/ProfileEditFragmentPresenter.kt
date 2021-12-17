@@ -116,10 +116,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
   }
 
   /**
-   * Requests the specific profile to be deleted from the app
-   * and then routes the user either to administrator controls
-   * activity or profile list activity depending on whether
-   * they are currently using a tablet device.
+   * Requests the specific profile to be deleted from the app and then routes the user either to
+   * administrator controls activity or profile list activity depending on whether they are
+   * currently using a tablet device.
    */
   fun deleteProfile(internalProfileId: Int) {
     profileManagementController
