@@ -12,7 +12,7 @@ import org.oppia.android.util.parser.svg.SvgPictureDrawable
  *
  * [computeTextPicture] must be called before this drawable can be drawn.
  */
-class TextPictureDrawable internal constructor(
+class TextPictureDrawable constructor(
   context: Context,
   scalableVectorGraphic: ScalableVectorGraphic
 ) : SvgPictureDrawable(context, scalableVectorGraphic) {

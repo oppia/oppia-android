@@ -73,8 +73,8 @@ import javax.inject.Singleton
 
 // Devices reference: https://material.io/resources/devices/
 @RunWith(AndroidJUnit4::class)
-@Config(application = PlayerSplitScreenTesting.TestApplication::class)
-class PlayerSplitScreenTesting {
+@Config(application = PlayerSplitScreenTest.TestApplication::class)
+class PlayerSplitScreenTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -197,18 +197,18 @@ class PlayerSplitScreenTesting {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(playerSplitScreenTesting: PlayerSplitScreenTesting)
+    fun inject(playerSplitScreenTest: PlayerSplitScreenTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlayerSplitScreenTesting_TestApplicationComponent.builder()
+      DaggerPlayerSplitScreenTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(playerSplitScreenTesting: PlayerSplitScreenTesting) {
-      component.inject(playerSplitScreenTesting)
+    fun inject(playerSplitScreenTest: PlayerSplitScreenTest) {
+      component.inject(playerSplitScreenTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

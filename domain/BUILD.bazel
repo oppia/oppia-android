@@ -125,6 +125,8 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
     ],
 )
