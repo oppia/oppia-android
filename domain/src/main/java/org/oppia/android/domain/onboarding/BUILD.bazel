@@ -1,0 +1,58 @@
+"""
+Utilities for onboarding domain components.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "state_controller",
+    srcs = [
+        "AppStartupStateController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":exploration_meta_data_retriever",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model:onboarding_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+kt_android_library(
+    name = "retriever_prod_module",
+    srcs = [
+        "ExpirationMetaDataRetrieverModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":exploration_meta_data_retriever",
+        ":impl",
+    ],
+)
+
+kt_android_library(
+    name = "exploration_meta_data_retriever",
+    srcs = [
+        "ExpirationMetaDataRetriever.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "impl",
+    srcs = [
+        "ExpirationMetaDataRetrieverImpl.kt",
+    ],
+    deps = [
+        ":exploration_meta_data_retriever",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()
