@@ -55,7 +55,6 @@ class PolicyPageTagHandler(
         }
       }
     }else consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
-
   }
 
   private fun clickableSpanBuilder(
