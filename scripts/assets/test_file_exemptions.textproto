@@ -726,6 +726,7 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/I
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/ImageParsingAnnotations.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/ImageParsingModule.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/ImageTargets.kt"
+exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/ImageTransformation.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/RepositoryGlideModule.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/RepositoryModelLoader.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/TestGlideImageLoader.kt"
