@@ -6,6 +6,7 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
+import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.ViewCompat
@@ -91,7 +92,8 @@ class HtmlParser private constructor(
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
 
-    htmlContentTextView.handleUrlClicks {}
+//    htmlContentTextView.handleUrlClicks {}
+    Linkify.addLinks(htmlContentTextView , Linkify.WEB_URLS)
 
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {

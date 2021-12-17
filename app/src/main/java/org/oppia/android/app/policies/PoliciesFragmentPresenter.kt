@@ -51,12 +51,16 @@ class PoliciesFragmentPresenter @Inject constructor(
 
     binding.policiesDescriptionTextView.text = htmlParserFactory.create().parseOppiaHtml(
       privacyPolicyDescription,
-      binding.policiesDescriptionTextView
+      binding.policiesDescriptionTextView,
+      supportsLinks = true,
+      supportsConceptCards = false
     )
 
     binding.policiesWebLinkTextView.text = htmlParserFactory.create().parseOppiaHtml(
       privacyPolicyWebLink,
-      binding.policiesWebLinkTextView
+      binding.policiesWebLinkTextView,
+      supportsLinks = true,
+      supportsConceptCards = false
     )
   }
 }

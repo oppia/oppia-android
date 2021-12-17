@@ -136,10 +136,6 @@ class OnboardingFragmentPresenter @Inject constructor(
         resourceHandler.getStringInLocale(R.string.app_name)
       )
     binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.text = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "Policies",
-      entityId = "oppia",
-      imageCenterAlign = false,
       policyOppiaTagActionListener = this
     ).parseOppiaHtml(
       completeString,
