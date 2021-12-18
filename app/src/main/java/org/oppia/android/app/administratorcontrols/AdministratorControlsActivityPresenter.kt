@@ -125,7 +125,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       if (activity.supportFragmentManager.backStackEntryCount == 0)
         binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.GONE
       if (activity.supportFragmentManager.findFragmentById(R.id.administrator_controls_fragment_multipane_placeholder) is ProfileListFragment)
-        setExtraControlsTitle("Edit profiles")
+        setExtraControlsTitle(activity.applicationContext.getString(R.string.administrator_controls_edit_profiles))
     }
     if (isMultipane) {
       binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
