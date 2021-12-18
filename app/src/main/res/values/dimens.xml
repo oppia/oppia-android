@@ -588,4 +588,13 @@
   <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">32dp</dimen>
 
+  <!-- Topic Practice Header-->
+  <dimen name="custom_match_parent">-1px</dimen>
+  <dimen name="topic_practice_header_container_width">@dimen/custom_match_parent</dimen>
+  <dimen name="topic_practice_header_container_margin_start">32dp</dimen>
+  <dimen name="topic_practice_header_container_margin_top">32dp</dimen>
+  <dimen name="topic_practice_header_container_margin_end">24dp</dimen>
+  <dimen name="topic_practice_header_container_padding_bottom">24dp</dimen>
+  <dimen name="topic_practice_header_title_text_view_layout_margin_end">88dp</dimen>
+  <dimen name="topic_practice_header_description_text_view_layout_margin_top">4dp</dimen>
 </resources>
