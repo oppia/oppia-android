@@ -40,11 +40,9 @@ import javax.inject.Singleton
 import kotlin.reflect.KClass
 
 private const val POLICY_PAGE_LINK_MARKUP_1 =
-  "By using %s, you agree to our <br> <oppia-noninteractive-policy " +
-    "terms-of-service-link=\"Terms of Service\"> Terms of Service" +
-    "</oppia-noninteractive-policy> and <oppia-noninteractive-policy " +
-    "privacy-policy-link=\"Privacy Policy\">Privacy Policy" +
-    "</oppia-noninteractive-policy>."
+  "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\"> Terms of " +
+    "Service </oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">" +
+    "Privacy Policy </oppia-noninteractive-policy>."
 
 /** Tests for [PolicyPageTagHandler]. */
 @RunWith(AndroidJUnit4::class)

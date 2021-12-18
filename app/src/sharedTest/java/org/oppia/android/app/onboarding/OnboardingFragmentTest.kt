@@ -705,11 +705,9 @@ class OnboardingFragmentTest {
         it.findViewById(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)
 
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-        "By using %s, you agree to our <br> <oppia-noninteractive-policy " +
-          "terms-of-service-link=\"Terms of Service\"> Terms of Service" +
-          "</oppia-noninteractive-policy> and <oppia-noninteractive-policy " +
-          "privacy-policy-link=\"Privacy Policy\">Privacy Policy" +
-          "</oppia-noninteractive-policy>.",
+        "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">" +
+          " Terms of Service </oppia-noninteractive-policy> and <oppia-noninteractive-policy " +
+          "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
         textView,
         supportsLinks = true,
         supportsConceptCards = false

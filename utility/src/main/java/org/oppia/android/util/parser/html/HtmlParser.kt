@@ -196,7 +196,9 @@ class HtmlParser private constructor(
 
     /**
      * Returns a new [HtmlParser] with an optionally specified [CustomOppiaTagActionListener] and
-     * [PolicyOppiaTagActionListener] for handling custom Oppia tag events. Note that Oppia image loading is specifically not supported (see the other [create] method if image support is needed).
+     * [PolicyOppiaTagActionListener] for handling custom Oppia tag events. Note that Oppia image
+     * loading is specifically not supported (see the other [create] method if image support is
+     * needed).
      */
     fun create(
       customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
