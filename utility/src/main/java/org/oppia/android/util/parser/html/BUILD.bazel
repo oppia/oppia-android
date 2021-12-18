@@ -29,6 +29,7 @@ kt_android_library(
         "ConceptCardTagHandler.kt",
         "ImageTagHandler.kt",
         "MathTagHandler.kt",
+        "PolicyPageTagHandler.kt",
     ],
     visibility = ["//utility:__subpackages__"],
     deps = [
