@@ -7,7 +7,6 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
     name = "classification_controller",
-    testonly = True,
     srcs = [
         "AnswerClassificationController.kt",
     ],
@@ -22,19 +21,17 @@ kt_android_library(
 
 kt_android_library(
     name = "classification_result",
-    testonly = True,
     srcs = [
         "ClassificationResult.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:exploration_java_proto_lite"
+        "//model:exploration_java_proto_lite",
     ],
 )
 
 kt_android_library(
     name = "generic_interaction_classifier",
-    testonly = True,
     srcs = [
         "GenericInteractionClassifier.kt",
     ],
@@ -43,7 +40,6 @@ kt_android_library(
 
 kt_android_library(
     name = "interaction_classifier",
-    testonly = True,
     srcs = [
         "InteractionClassifier.kt",
     ],
@@ -52,7 +48,6 @@ kt_android_library(
 
 kt_android_library(
     name = "interaction_module",
-    testonly = True,
     srcs = [
         "InterationModule.kt",
     ],
@@ -66,7 +61,6 @@ kt_android_library(
 
 kt_android_library(
     name = "rule_classifier",
-    testonly = True,
     srcs = [
         "RuleClassifier.kt",
     ],
