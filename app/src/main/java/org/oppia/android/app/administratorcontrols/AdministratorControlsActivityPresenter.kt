@@ -124,8 +124,13 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       )
       if (activity.supportFragmentManager.backStackEntryCount == 0)
         binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.GONE
-      if (activity.supportFragmentManager.findFragmentById(R.id.administrator_controls_fragment_multipane_placeholder) is ProfileListFragment)
-        setExtraControlsTitle(activity.applicationContext.getString(R.string.administrator_controls_edit_profiles))
+      val multipane_id = R.id.administrator_controls_fragment_multipane_placeholder
+      val multipane_fragment =
+        activity.supportFragmentManager.findFragmentById(multipane_id)
+      if (multipane_fragment is ProfileListFragment) {
+        val id = R.string.administrator_controls_edit_profiles
+        setExtraControlsTitle(activity.applicationContext.getString(id))
+      }
     }
     if (isMultipane) {
       binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
