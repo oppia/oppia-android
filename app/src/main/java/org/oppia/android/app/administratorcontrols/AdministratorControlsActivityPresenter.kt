@@ -128,8 +128,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       val multipane_fragment =
         activity.supportFragmentManager.findFragmentById(multipane_id)
       if (multipane_fragment is ProfileListFragment) {
-        val id = R.string.administrator_controls_edit_profiles
-        setExtraControlsTitle(activity.applicationContext.getString(id))
+        setExtraControlsTitle("Edit profiles")
       }
     }
     if (isMultipane) {
