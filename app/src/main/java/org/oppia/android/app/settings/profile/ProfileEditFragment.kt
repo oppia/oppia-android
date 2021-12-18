@@ -15,6 +15,7 @@ class ProfileEditFragment : InjectableFragment(), ProfileEditDialogInterface {
   lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
   companion object {
+    /** Argument key for the Multipane in tablet mode for [ProfileEditFragment]. */
     const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.isMultipane"
 
     /** This creates the new instance of [ProfileEditFragment]. */

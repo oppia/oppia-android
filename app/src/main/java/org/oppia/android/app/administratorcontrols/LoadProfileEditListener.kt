@@ -1,6 +1,6 @@
 package org.oppia.android.app.administratorcontrols
 
-/** Listerner when a activity loads [ProfileEditFragment]. */
+/** Listener for when an activity should load [ProfileEditFragment]. */
 interface LoadProfileEditListener {
   fun loadProfileEdit(proifleId: Int, profileName: String)
 }
