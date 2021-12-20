@@ -13,7 +13,7 @@ class FakeAccessibilityChecker @Inject constructor() : AccessibilityChecker {
   override fun isScreenReaderEnabled(): Boolean = isScreenReaderEnabled
 
   /**
-   * Returns latest announcement. Announcement gets overwritten each time
+   * Returns latest announcement. Note that the announcement gets overwritten each time
    * announceForAccessibilityForView is called.
    */
   fun getLatestAnnouncement(): CharSequence = announcement
