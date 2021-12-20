@@ -284,7 +284,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_announceForAccessibilityUsageErrorMessage_fileContentIsNotCorrect() {
-    val prohibitedContent = "announceForAccessibility("
+    val prohibitedContent = "announceForAccessibility\("
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
@@ -304,7 +304,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_announceForAccessibilityForViewUsageErrorMessage_fileContentIsNotCorrect() {
-    val prohibitedContent = "announceForAccessibilityForView("
+    val prohibitedContent = "announceForAccessibilityForView\("
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
