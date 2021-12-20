@@ -5,13 +5,13 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?.kt"
-  prohibited_content_regex: "announceForAccessibility\("
+  prohibited_content_regex: "announceForAccessibility\\("
   failure_message: "Please use AccessibilityChecker instead."
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityCheckerImpl.kt"
 }
 file_content_checks {
   file_path_regex: ".+?.kt"
-  prohibited_content_regex: "announceForAccessibilityForView\("
+  prohibited_content_regex: "announceForAccessibilityForView\\("
   failure_message: "When using announceForAccessibility, please add an exempt file here."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
