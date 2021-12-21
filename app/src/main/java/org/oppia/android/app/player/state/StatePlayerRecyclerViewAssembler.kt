@@ -121,7 +121,7 @@ private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
  * - [ReturnToTopicNavigationButtonListener] if the return to topic button is enabled
  */
 class StatePlayerRecyclerViewAssembler private constructor(
-  private var accessibilityChecker: AccessibilityChecker,
+  private val accessibilityChecker: AccessibilityChecker,
   val adapter: BindableAdapter<StateItemViewModel>,
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
@@ -1359,6 +1359,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Fragment injectable factory to create new [Builder]s. */
     class Factory @Inject constructor(
+      private val accessibilityChecker: AccessibilityChecker,
       private val htmlParserFactory: HtmlParser.Factory,
       private val fragment: Fragment,
       private val context: Context,
@@ -1368,7 +1369,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val resourceHandler: AppLanguageResourceHandler,
       private val translationController: TranslationController
     ) {
-      @Inject lateinit var accessibilityChecker: AccessibilityChecker
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets, and the current logged in [ProfileId].
