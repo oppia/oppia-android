@@ -8,7 +8,7 @@ import javax.inject.Singleton
 @Singleton
 class FakeAccessibilityChecker @Inject constructor() : AccessibilityChecker {
   private var isScreenReaderEnabled = false
-  private var announcement: CharSequence = ""
+  private var announcement: CharSequence? = null
 
   override fun isScreenReaderEnabled(): Boolean = isScreenReaderEnabled
 
@@ -16,7 +16,11 @@ class FakeAccessibilityChecker @Inject constructor() : AccessibilityChecker {
    * Returns latest announcement. Note that the announcement gets overwritten each time
    * announceForAccessibilityForView is called.
    */
-  fun getLatestAnnouncement(): CharSequence = announcement
+  fun getLatestAnnouncement(): CharSequence? = announcement
+
+  fun resetLatestAnnouncement() {
+    announcement = null
+  }
 
   /**
    * Sets whether a screen reader should be considered currently enabled. This will change the

@@ -357,14 +357,41 @@ class StateFragmentLocalTest {
 
   @Test
   @Config(qualifiers = "+port")
+  fun testStateFragment_portrait_submitCorrectAnswerWithFeedback_correctIsNotAnnounced() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      playThroughFractionsState2()
+      accessibilityManager.resetLatestAnnouncement()
+      playThroughFractionsState3()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isNull()
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_landscape_submitCorrectAnswerWithFeedback_correctIsNotAnnounced() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      playThroughFractionsState2()
+      accessibilityManager.resetLatestAnnouncement()
+      playThroughFractionsState3()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isNull()
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
   fun testStateFragment_portrait_submitCorrectAnswer_correctIsAnnounced() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
       playThroughFractionsState2()
+
       assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
-      onView(withId(R.id.congratulations_text_view))
-        .check(matches(isCompletelyDisplayed()))
     }
   }
 
@@ -375,9 +402,8 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       playThroughFractionsState1()
       playThroughFractionsState2()
+
       assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
-      onView(withId(R.id.congratulations_text_view))
-        .check(matches(isCompletelyDisplayed()))
     }
   }
 
