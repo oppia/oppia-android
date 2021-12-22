@@ -4,7 +4,7 @@
   <color name="primary_dark_color">@color/oppia_bangladesh_green</color>
   <color name="accent_color">@color/oppia_metallic_blue</color>
   <color name="primary_text_color">@color/oppia_subtext_white</color>
-  <color name="heading_text_color">@color/white</color>
+  <color name="oppia_heading_text_color">@color/white</color>
   <color name="add_profile_background_color">@color/oppia_background_black</color>
   <color name="switch_description_color">@color/oppia_subtext_white</color>
   <color name="edit_text_input_background">@color/oppia_dark_grey</color>
