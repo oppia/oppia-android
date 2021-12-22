@@ -172,9 +172,9 @@
     <item name="boxStrokeColor">@color/oppia_primary_text</item>
     <item name="boxStrokeWidth">@dimen/text_input_layout_stroke_width</item>
     <item name="errorEnabled">true</item>
-    <item name="errorIconTint">@color/oppia_text_input_layout_error_color</item>
-    <item name="errorTextColor">@color/oppia_text_input_layout_error_color</item>
-    <item name="boxStrokeErrorColor">@color/oppia_text_input_layout_error_color</item>
+    <item name="errorIconTint">@color/text_input_layout_error_color</item>
+    <item name="errorTextColor">@color/text_input_layout_error_color</item>
+    <item name="boxStrokeErrorColor">@color/text_input_layout_error_color</item>
     <item name="hintTextColor">@color/oppia_primary_text_color</item>
     <item name="android:textAlignment">viewStart</item>
   </style>
@@ -462,10 +462,5 @@
 
   <style name="TextViewCenterHorizontal" parent="TextView.Common1">
     <item name="android:gravity">center_horizontal</item>
-  </style>
-
-  <!--ACTION BAR STYLE-->
-  <style name="OppiaActionBar" parent="Widget.AppCompat.Light.ActionBar">
-    <item name="android:background">@color/oppia_action_bar_color</item>
   </style>
 </resources>
