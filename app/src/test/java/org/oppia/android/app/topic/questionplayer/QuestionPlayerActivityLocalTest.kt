@@ -378,7 +378,8 @@ class QuestionPlayerActivityLocalTest {
   }
 
   private fun clickContinueNavigationButton() {
-    onView(withId(R.id.question_recycler_view)).perform(scrollToViewType(StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON))
+    onView(withId(R.id.question_recycler_view))
+      .perform(scrollToViewType(StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON))
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.continue_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
