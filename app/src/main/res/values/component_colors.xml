@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="oppia_primary_text_color">@color/primary_text_color</color>
-  <!--Should subtitles styles in styles.xml reference label_text_color or are better directly referencing color_palette.xml?-->
+  <color name="label_text_color">@color/primary_text_color</color>
   <color name="heading_text_color">@color/oppia_heading_text_color</color>
   <color name="oppia_switch_description_color">@color/switch_description_color</color>
   <color name="oppia_edit_text_background_color">@color/edit_text_input_background</color>
