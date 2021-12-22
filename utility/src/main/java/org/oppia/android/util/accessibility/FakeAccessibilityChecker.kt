@@ -18,6 +18,7 @@ class FakeAccessibilityChecker @Inject constructor() : AccessibilityChecker {
    */
   fun getLatestAnnouncement(): CharSequence? = announcement
 
+  /** Resets latest announcement. */
   fun resetLatestAnnouncement() {
     announcement = null
   }
