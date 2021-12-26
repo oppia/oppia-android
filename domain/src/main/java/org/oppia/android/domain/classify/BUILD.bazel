@@ -41,7 +41,7 @@ kt_android_library(
     deps = [
         ":interaction_classifier",
         ":rule_classifier"
-        ],
+    ],
 )
 
 kt_android_library(
@@ -50,6 +50,9 @@ kt_android_library(
         "InteractionClassifier.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
+    deps = [
+            ":rule_classifier"
+    ],
 )
 
 kt_android_library(
