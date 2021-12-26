@@ -51,7 +51,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-            ":rule_classifier"
+        ":rule_classifier"
     ],
 )
 
@@ -65,6 +65,7 @@ kt_android_library(
         ":dagger",
         ":generic_interaction_classifier",
         ":interaction_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:exploration_meta_data_retriever",
         "//third_party:javax_inject_javax_inject",
     ],
