@@ -11,10 +11,9 @@ kt_android_library(
         "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputContainsRuleClassifierProvider.kt",
         "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputEqualsRuleClassifierProvider.kt",
         "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputFuzzyEqualsRuleClassifierProvider.kt",
-        "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputRuleModule.kt",
         "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputStartsWithRuleClassifierProvider.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:__pkg__"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
@@ -27,6 +26,20 @@ kt_android_library(
         "//model:translation_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+    ],
+)
+
+kt_android_library(
+    name = "text_input_rule_module",
+    srcs = [
+        "TextInputRuleModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":text_input",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
     ],
 )
 

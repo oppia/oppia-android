@@ -18,9 +18,8 @@ kt_android_library(
         "FractionInputIsExactlyEqualToRuleClassifierProvider.kt",
         "FractionInputIsGreaterThanRuleClassifierProvider.kt",
         "FractionInputIsLessThanRuleClassifierProvider.kt",
-        "FractionInputModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:__pkg__"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
@@ -30,6 +29,20 @@ kt_android_library(
         "//model:interaction_object_java_proto_lite",
         "//model:translation_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "fraction_input_module",
+    srcs = [
+        "FractionInputModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":fraction_input",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
     ],
 )
 

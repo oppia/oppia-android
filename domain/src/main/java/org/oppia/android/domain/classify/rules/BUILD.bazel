@@ -23,7 +23,6 @@ kt_android_library(
 kt_android_library(
     name = "classifier_providers",
     srcs = [
-        "GenericRuleClassifier.kt",
         "InteractionObjectTypeExtractorRepository.kt",
         "RuleClassifierProvider.kt",
         "RuleQualifiers.kt",
