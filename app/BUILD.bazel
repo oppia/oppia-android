@@ -813,7 +813,7 @@ TEST_DEPS = [
     "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//domain",
     "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
-    "//domain/src/main/java/org/oppia/android/domain/classify/:interactions_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:fake_exploration_meta_data_retriever",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
     "//testing",
