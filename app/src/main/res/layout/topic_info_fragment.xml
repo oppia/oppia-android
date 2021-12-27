@@ -21,7 +21,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingBottom="24dp">
+      android:paddingTop="@dimen/topic_info_fragment_padding_top"
+      android:paddingBottom="@dimen/topic_info_fragment_padding_bottom">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail_image_view"
@@ -51,9 +52,10 @@
         style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/topic_info_fragment_layout_topic_name_text_view_margin_start"
+        android:layout_marginTop="@dimen/topic_info_fragment_layout_topic_name_text_view_margin_top"
+        android:layout_marginEnd="@dimen/topic_info_fragment_layout_topic_name_text_view_margin_end"
+        android:layout_marginBottom="@dimen/topic_info_fragment_layout_topic_name_text_view_margin_bottom"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topic.name}"
         android:textColor="@color/oppia_primary_text"
@@ -68,9 +70,9 @@
         style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="@dimen/topic_info_fragment_layout_story_count_text_view_margin_start"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="@dimen/topic_info_fragment_layout_story_count_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.storyCountText}"
         android:textColor="@color/oppia_primary_text"
@@ -86,8 +88,8 @@
         android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:maxLines="@{viewModel.isDescriptionExpanded() ? @integer/topic_description_expanded : @integer/topic_description_collapsed}"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"
+        android:paddingStart="@dimen/topic_info_fragment_layout_topic_description_text_view_padding_start"
+        android:paddingEnd="@dimen/topic_info_fragment_layout_topic_description_text_view_padding_end"
         android:text="@{viewModel.topicDescription}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -99,8 +101,8 @@
         style="@style/TextViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="@dimen/topic_info_fragment_layout_see_more_text_view_margin_start"
+        android:layout_marginEnd="@dimen/topic_info_fragment_layout_see_more_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:minHeight="48dp"
         android:onClick="@{(v) -> viewModel.clickSeeMore()}"
@@ -117,15 +119,16 @@
 
       <ImageView
         android:id="@+id/download_status_image_view"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="32dp"
-        app:srcCompat="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}"
+        android:layout_width="@dimen/topic_info_fragment_download_status_image_view_layout_width"
+        android:layout_height="@dimen/topic_info_fragment_download_status_image_view_layout_height"
+        android:layout_marginStart="@dimen/topic_info_fragment_download_status_image_view_layout_margin_start"
+        android:layout_marginTop="@dimen/topic_info_fragment_download_status_image_view_layout_margin_top"
+        android:layout_marginEnd="@dimen/topic_info_fragment_download_status_image_view_layout_margin_end"
+        android:layout_marginBottom="@dimen/topic_info_fragment_download_status_image_view_layout_margin_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/see_more_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/see_more_text_view"
+        app:srcCompat="@{viewModel.downloadStatusIndicatorDrawableResourceId, default=@drawable/ic_available_offline_primary_24dp}" />
 
       <TextView
         android:id="@+id/download_story_count_text_view"
@@ -148,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="@dimen/topic_info_fragment_download_size_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topicSizeText}"
         android:textColor="@color/oppia_primary_text"
