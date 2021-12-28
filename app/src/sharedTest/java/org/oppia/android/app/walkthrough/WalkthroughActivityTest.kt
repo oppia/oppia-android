@@ -191,11 +191,12 @@ class WalkthroughActivityTest {
 
   @Test
   fun testWalkthroughActivity_hasCorrectActivityLabel() {
-    val scenario = launch(WalkthroughActivity::class.java)
-    scenario.onActivity { activity ->
-      assertThat(activity.title).isEqualTo(context.getString(R.string.walkthrough_activity_title))
+    launch(WalkthroughActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+        assertThat(title).isEqualTo(context.getString(R.string.walkthrough_activity_title))
+      }
     }
-    scenario.close()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
