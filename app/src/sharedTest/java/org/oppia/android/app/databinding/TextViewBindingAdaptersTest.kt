@@ -3,19 +3,26 @@ package org.oppia.android.app.databinding
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -23,6 +30,8 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.databinding.TextViewBindingAdapters.setDrawableEndCompat
+import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileLastVisitedText
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -72,7 +81,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Singleton
 
 /** Tests for [TextViewBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -105,15 +113,50 @@ class TextViewBindingAdaptersTest {
     Intents.release()
   }
 
+  @Test
+  fun testTextViewBindingAdapters_ltrIsEnabled_port_profileDataTextIsCorrect() {
+    val textView = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_text_view)
+      setProfileLastVisitedText(textView, /* setText= */ 5L)
+      return@runWithActivity textView
+    }
+    assertThat(textView.text.toString()).isEqualTo("5")
+  }
+
+  @Test
+  fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
+    val textView = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_text_view)
+      setProfileLastVisitedText(textView, /* setText= */ 5L)
+      return@runWithActivity textView
+    }
+    assertThat(textView.text.toString()).isEqualTo("5")
+  }
+
+  @Test
+  fun testTextViewBindingAdapters_ltrIsEnabled_port_drawableEndCompactIsCorrect() {
+    val textView = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_text_view)
+      setDrawableEndCompat(
+        textView,
+        /* setDrawableEndCompat= */ R.drawable.test_text_view_drawable_binding_adapter.toDrawable()
+      )
+      return@runWithActivity textView
+    }
+    assertThat(textView.compoundDrawablesRelative).isEqualTo(
+      R.drawable.test_text_view_drawable_binding_adapter.toDrawable()
+    )
+  }
+
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
     crossinline action: (A) -> V
   ): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.
     @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = Mockito.mock(Consumer::class.java) as Consumer<V>
+    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
     val valueCaptor = ArgumentCaptor.forClass(V::class.java)
     onActivity { fakeMock.consume(action(it)) }
-    Mockito.verify(fakeMock).consume(valueCaptor.capture())
+    verify(fakeMock).consume(valueCaptor.capture())
     return valueCaptor.value
   }
 
