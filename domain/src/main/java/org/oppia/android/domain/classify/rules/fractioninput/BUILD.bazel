@@ -19,7 +19,8 @@ kt_android_library(
         "FractionInputIsGreaterThanRuleClassifierProvider.kt",
         "FractionInputIsLessThanRuleClassifierProvider.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:__pkg__"],
+    visibility = ["//:oppia_api_visibility"],
+#    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:__pkg__"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",

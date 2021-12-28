@@ -16,7 +16,8 @@ kt_android_library(
         "NumericInputIsLessThanRuleClassifierProvider.kt",
         "NumericInputIsWithinToleranceRuleClassifierProvider.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:__pkg__"],
+    visibility = ["//:oppia_api_visibility"],
+#    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:__pkg__"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",

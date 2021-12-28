@@ -13,7 +13,7 @@ kt_android_library(
         "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputFuzzyEqualsRuleClassifierProvider.kt",
         "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputStartsWithRuleClassifierProvider.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:__pkg__"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",

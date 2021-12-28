@@ -13,7 +13,8 @@ kt_android_library(
         "RatioInputHasSpecificTermEqualToRuleClassifierProvider.kt",
         "RatioInputIsEquivalentRuleClassifierProvider.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:__pkg__"],
+    visibility = ["//:oppia_api_visibility"],
+#    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:__pkg__"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
