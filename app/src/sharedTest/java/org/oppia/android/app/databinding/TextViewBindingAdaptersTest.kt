@@ -144,8 +144,7 @@ class TextViewBindingAdaptersTest {
       return@runWithActivity textView
     }
     assertThat(textView.compoundDrawablesRelative).isEqualTo(
-      R.drawable.test_text_view_drawable_binding_adapter.toDrawable()
-    )
+      R.drawable.test_text_view_drawable_binding_adapter.toDrawable())
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
