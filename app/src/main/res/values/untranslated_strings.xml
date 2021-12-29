@@ -25,4 +25,17 @@
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
+  <!-- ProfileAndDeviceIDsActivity -->
+  <string name="profile_and_device_id_activity_title" translatable="false">Profile &amp; Device IDs</string>
+  <string name="profile_id_label" translatable="false">Profile ID</string>
+  <string name="profile_name_label" translatable="false">Profile Name</string>
+  <string name="device_id_label" translatable="false">Profile ID</string>
+  <string name="copy_to_clipboard_label" translatable="false">Copy</string>
+  <string name="copied_to_clipboard_label" translatable="false">Copied</string>
+  <string name="copied_to_clipboard_snackbar_text" translatable="false">Copied "%s"</string>
+  <!-- Learner Analytics Sync Statuses -->
+  <string name="learner_analytics_sync_status_default" translatable="false">No data has been collected yet to upload.</string>
+  <string name="learner_analytics_sync_status_data_uploading" translatable="false">Profile data is currently uploading…</string>
+  <string name="learner_analytics_sync_status_data_uploaded" translatable="false">All profile data has been uploaded.</string>
+  <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
 </resources>
