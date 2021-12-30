@@ -678,7 +678,6 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/accessibility/
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityCheckerImpl.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityProdModule.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityTestModule.kt"
-exempted_file_path: "utility/src/main/java/org/oppia/android/util/accessibility/FakeAccessibilityChecker.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/AssetRepository.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/AssetRepositoryImpl.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/CacheAssetsLocally.kt"
