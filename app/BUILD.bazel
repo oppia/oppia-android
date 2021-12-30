@@ -443,7 +443,6 @@ BINDING_ADAPTERS = [
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java",
-    "src/main/java/org/oppia/android/app/databinding/TextViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/databinding/ViewBindingAdapters.java",
     "src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java",
 ] + [
