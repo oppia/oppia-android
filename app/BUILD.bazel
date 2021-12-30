@@ -300,6 +300,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/profileprogress/ProfilePictureActivityViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/profileprogress/ProfileProgressViewModel.kt",
     "src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt",
     "src/main/java/org/oppia/android/app/recyclerview/DividerItemDecorator.kt",
     "src/main/java/org/oppia/android/app/recyclerview/DragAndDropItemFacilitator.kt",
