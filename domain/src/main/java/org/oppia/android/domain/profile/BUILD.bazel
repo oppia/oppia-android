@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "ProfileManagementController.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
