@@ -15,6 +15,7 @@ file_content_checks {
   prohibited_content_regex: "announceForAccessibilityForView\\("
   failure_message: "When using announceForAccessibility, please add an exempt file in file_content_validation_checks.textproto."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
+  exempted_file_name: "app/src/test/java/org/oppia/android/app/accessibility/FakeAccessibilityCheckerTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityChecker.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityCheckerImpl.kt"
