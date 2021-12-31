@@ -395,4 +395,7 @@
   <dimen name="topic_practice_fragment_padding_start">48dp</dimen>
   <dimen name="topic_practice_fragment_padding_end">48dp</dimen>
 
+  <!-- AudioLanguageFragment -->
+  <dimen name="audio_language_recycler_view_padding_bottom">96dp</dimen>
+
 </resources>

@@ -401,4 +401,7 @@
   <!-- Topic Practice Fragment -->
   <dimen name="topic_practice_fragment_padding_bottom">112dp</dimen>
 
+  <!-- AudioLanguageFragment -->
+  <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
+
 </resources>
