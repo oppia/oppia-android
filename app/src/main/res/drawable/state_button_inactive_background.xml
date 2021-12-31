@@ -2,5 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
   android:shape="rectangle">
   <corners android:radius="@dimen/state_previous_next_button_radius" />
-  <solid android:color="@color/submitButtonInactive" />
+  <solid android:color="@color/submit_button_inactive" />
 </shape>

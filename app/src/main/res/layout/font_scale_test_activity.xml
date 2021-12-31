@@ -13,6 +13,6 @@
     android:layout_height="wrap_content"
     android:fontFamily="sans-serif"
     android:text="html Content"
-    android:textColor="@color/oppiaPrimaryText"
+    android:textColor="@color/oppia_primary_text"
     android:textSize="20sp" />
 </FrameLayout>
