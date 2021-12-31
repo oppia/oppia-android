@@ -81,6 +81,8 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileDataText
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Tests for [TextViewBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -113,16 +115,20 @@ class TextViewBindingAdaptersTest {
     Intents.release()
   }
 
+  private lateinit var resourceHandler : AppLanguageResourceHandler
+// get the current time stamp
+  // visited time stamp = currenttimestamp - 1hour
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileDataTextIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(textView, /* setText= */ 5L)
+      setProfileDataText(textView, /* setText= */ 5L)
       return@runWithActivity textView
     }
+    val time: String = resourceHandler.computeDateString(timestamp)
     assertThat(textView.text.toString()).isEqualTo("5")
   }
-
+// 1jan 1970 = 1 3600
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
@@ -130,7 +136,14 @@ class TextViewBindingAdaptersTest {
       setProfileLastVisitedText(textView, /* setText= */ 5L)
       return@runWithActivity textView
     }
-    assertThat(textView.text.toString()).isEqualTo("5")
+    val profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used)
+    val timeAgoTimeStamp = TextViewBindingAdapters.getTimeAgo(textView, timestamp)
+    val profileLastVisited = resourceHandler.getStringInLocaleWithWrapping(
+      R.string.profile_last_visited,
+      profileLastUsed,
+      timeAgoTimeStamp
+    )
+    assertThat(textView.text.toString()).isEqualTo("Last used $timeString ")
   }
 
   @Test
