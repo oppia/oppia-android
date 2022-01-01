@@ -1,7 +1,6 @@
 package org.oppia.android.app.administratorcontrols
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,7 +22,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
   private lateinit var lastLoadedFragment: String
-  private val ADMINISTRATOR_CONTROLS_BACKSTACK: String? = null // "ADMINISTRATOR_CONTROLS_BACKSTACK"
+  private val ADMINISTRATOR_CONTROLS_BACKSTACK: String = "ADMINISTRATOR_CONTROLS_BACKSTACK"
 
   private lateinit var binding: AdministratorControlsActivityBinding
   fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
@@ -110,18 +109,13 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       .commit()
   }
 
-  val TAG = "tag"
   fun handleOnBackPressed() {
     if (activity.supportFragmentManager.backStackEntryCount > 0)
-      activity.supportFragmentManager.popBackStackImmediate(ADMINISTRATOR_CONTROLS_BACKSTACK, 0)
+      activity.supportFragmentManager.popBackStackImmediate()
   }
 
   fun handleOnResume() {
     activity.supportFragmentManager.addOnBackStackChangedListener {
-      Log.i(
-        TAG,
-        "handleOnResume:\n **** back stack changed\n *******"
-      )
       if (activity.supportFragmentManager.backStackEntryCount == 0)
         binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.GONE
       val multipane_id = R.id.administrator_controls_fragment_multipane_placeholder
