@@ -27,6 +27,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -111,6 +113,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.Matchers.not
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -252,7 +255,7 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
-      ).check(matches(Matchers.not(ViewMatchers.isChecked())))
+      ).check(matches(not(isChecked())))
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
@@ -260,7 +263,7 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
         )
-      ).check(matches(Matchers.not(ViewMatchers.isChecked())))
+      ).check(matches(not(isChecked())))
     }
   }
 
@@ -279,14 +282,14 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
-      ).check(matches(Matchers.not(ViewMatchers.isChecked())))
+      ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
         )
-      ).check(matches(Matchers.not(ViewMatchers.isChecked())))
+      ).check(matches(not(isChecked())))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
@@ -303,14 +306,14 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
-      ).check(matches(ViewMatchers.isChecked()))
+      ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
         )
-      ).check(matches(Matchers.not(ViewMatchers.isChecked())))
+      ).check(matches(not(isChecked())))
       onView(isRoot()).perform(OrientationChangeAction.orientationPortrait())
       scrollToPosition(position = 2)
       onView(
@@ -319,14 +322,14 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
-      ).check(matches(ViewMatchers.isChecked()))
+      ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
         )
-      ).check(matches(Matchers.not(ViewMatchers.isChecked())))
+      ).check(matches(not(isChecked())))
     }
   }
 
@@ -353,7 +356,7 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
-      ).check(matches(ViewMatchers.isChecked()))
+      ).check(matches(isChecked()))
     }
   }
 
@@ -380,7 +383,7 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
         )
-      ).check(matches(ViewMatchers.isChecked()))
+      ).check(matches(isChecked()))
     }
   }
 
@@ -399,7 +402,7 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.topic_update_on_wifi_switch
         )
-      ).check(matches(Matchers.not(ViewMatchers.isClickable())))
+      ).check(matches(not(isClickable())))
     }
   }
 
@@ -418,7 +421,7 @@ class AdministratorControlsFragmentTest {
           position = 2,
           targetViewId = R.id.auto_update_topic_switch
         )
-      ).check(matches(Matchers.not(ViewMatchers.isClickable())))
+      ).check(matches(not(isClickable())))
     }
   }
 
