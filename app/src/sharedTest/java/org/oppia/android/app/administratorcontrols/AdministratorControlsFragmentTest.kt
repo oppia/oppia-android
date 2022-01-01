@@ -557,7 +557,7 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       onView(withId(R.id.administrator_controls_multipane_options_back_button))
-        .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+        .check(matches(withEffectiveVisibility(GONE)))
     }
   }
 
