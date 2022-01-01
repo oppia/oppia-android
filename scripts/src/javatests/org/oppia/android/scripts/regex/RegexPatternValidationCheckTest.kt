@@ -27,7 +27,7 @@ class RegexPatternValidationCheckTest {
   private val coroutineWorkerUsageErrorMessage =
     "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   private val announceForAccessibilityUsageErrorMessage =
-    "Please use AccessibilityChecker instead."
+    "Please use AccessibilityService instead."
   private val announceForAccessibilityForViewUsageErrorMessage =
     "When using announceForAccessibility, please add an exempt file in " +
       "file_content_validation_checks.textproto."
