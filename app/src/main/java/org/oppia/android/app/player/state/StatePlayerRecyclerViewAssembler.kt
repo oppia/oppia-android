@@ -88,7 +88,7 @@ import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.accessibility.AccessibilityChecker
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -121,7 +121,7 @@ private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
  * - [ReturnToTopicNavigationButtonListener] if the return to topic button is enabled
  */
 class StatePlayerRecyclerViewAssembler private constructor(
-  private val accessibilityChecker: AccessibilityChecker,
+  private val accessibilityService: AccessibilityService,
   val adapter: BindableAdapter<StateItemViewModel>,
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
@@ -479,7 +479,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     animateCongratulationsTextView(textView)
 
     if (feedback.html.isBlank()) {
-      accessibilityChecker.announceForAccessibilityForView(
+      accessibilityService.announceForAccessibilityForView(
         textView,
         resourceHandler.getStringInLocale(R.string.correct)
       )
@@ -874,7 +874,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * using its injectable [Factory].
    */
   class Builder private constructor(
-    private var accessibilityChecker: AccessibilityChecker,
+    private var accessibilityService: AccessibilityService,
     private val htmlParserFactory: HtmlParser.Factory,
     private val resourceBucketName: String,
     private val entityType: String,
@@ -1328,7 +1328,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       val assembler = StatePlayerRecyclerViewAssembler(
-        accessibilityChecker,
+        accessibilityService,
         /* adapter= */ adapterBuilder.build(),
         /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
@@ -1359,7 +1359,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Fragment injectable factory to create new [Builder]s. */
     class Factory @Inject constructor(
-      private val accessibilityChecker: AccessibilityChecker,
+      private val accessibilityService: AccessibilityService,
       private val htmlParserFactory: HtmlParser.Factory,
       private val fragment: Fragment,
       private val context: Context,
@@ -1375,7 +1375,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
        */
       fun create(resourceBucketName: String, entityType: String, profileId: ProfileId): Builder {
         return Builder(
-          accessibilityChecker,
+          accessibilityService,
           htmlParserFactory,
           resourceBucketName,
           entityType,

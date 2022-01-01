@@ -14,7 +14,7 @@ import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
-import org.oppia.android.util.accessibility.AccessibilityChecker
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
@@ -43,7 +43,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var listener: OnClickableAreaClickedListener
 
   @Inject
-  lateinit var accessibilityChecker: AccessibilityChecker
+  lateinit var accessibilityService: AccessibilityService
 
   @Inject
   lateinit var imageLoader: ImageLoader
@@ -141,7 +141,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
 
-    isAccessibilityEnabled = accessibilityChecker.isScreenReaderEnabled()
+    isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled()
   }
 
   fun setOnRegionClicked(onRegionClicked: OnClickableAreaClickedListener) {

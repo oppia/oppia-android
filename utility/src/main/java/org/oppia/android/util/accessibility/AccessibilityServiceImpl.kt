@@ -5,10 +5,10 @@ import android.view.View
 import android.view.accessibility.AccessibilityManager
 import javax.inject.Inject
 
-/** Implementation of [AccessibilityChecker]. */
-class AccessibilityCheckerImpl @Inject constructor(
+/** Implementation of [AccessibilityService]. */
+class AccessibilityServiceImpl @Inject constructor(
   private val context: Context
-) : AccessibilityChecker {
+) : AccessibilityService {
   private val accessibilityManager by lazy {
     context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
   }

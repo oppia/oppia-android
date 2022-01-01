@@ -4,9 +4,9 @@ import android.view.View
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Fake implementation of [AccessibilityChecker] which should be used in tests. */
+/** Fake implementation of [AccessibilityService] which should be used in tests. */
 @Singleton
-class FakeAccessibilityChecker @Inject constructor() : AccessibilityChecker {
+class FakeAccessibilityService @Inject constructor() : AccessibilityService {
   private var isScreenReaderEnabled = false
   private var announcement: CharSequence? = null
 

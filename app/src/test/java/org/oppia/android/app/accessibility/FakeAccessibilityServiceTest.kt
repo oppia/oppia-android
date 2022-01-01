@@ -4,11 +4,11 @@ import android.view.View
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.oppia.android.util.accessibility.FakeAccessibilityChecker
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 
-/** Tests for [FakeAccessibilityChecker]. */
-class FakeAccessibilityCheckerTest {
-  private var accessibilityManager = FakeAccessibilityChecker()
+/** Tests for [FakeAccessibilityService]. */
+class FakeAccessibilityServiceTest {
+  private var accessibilityManager = FakeAccessibilityService()
 
   @Test
   fun testInitialState() {
