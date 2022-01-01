@@ -587,6 +587,5 @@ class ProfileEditFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-
   }
 }
