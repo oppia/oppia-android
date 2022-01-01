@@ -8,7 +8,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 kt_android_library(
     name = "accessibility",
     srcs = [
-        "AccessibilityChecker.kt",
+        "AccessibilityService.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
 )
@@ -16,7 +16,7 @@ kt_android_library(
 kt_android_library(
     name = "impl",
     srcs = [
-        "AccessibilityCheckerImpl.kt",
+        "AccessibilityServiceImpl.kt",
     ],
     deps = [
         ":accessibility",
@@ -28,7 +28,7 @@ kt_android_library(
     name = "testing",
     testonly = True,
     srcs = [
-        "FakeAccessibilityChecker.kt",
+        "FakeAccessibilityService.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
