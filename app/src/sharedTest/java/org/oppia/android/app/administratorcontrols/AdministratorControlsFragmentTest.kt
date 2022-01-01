@@ -3,6 +3,7 @@ package org.oppia.android.app.administratorcontrols
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
@@ -26,10 +27,12 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.Visibility.*
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -545,6 +548,21 @@ class AdministratorControlsFragmentTest {
         .check(matches(isDisplayed()))
     }
   }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_defaultTabletConfig_multipaneBackButtonGone() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(withId(R.id.administrator_controls_multipane_options_back_button))
+        .check(matches(withEffectiveVisibility(GONE)))
+    }
+  }
+
+
 
   private fun ActivityScenario<AdministratorControlsActivity>.openNavigationDrawer() {
     onView(withContentDescription(R.string.drawer_open_content_description))
