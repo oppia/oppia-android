@@ -23,7 +23,6 @@ annotation class SplashScreenWelcomeMsg
  */
 const val SPLASH_SCREEN_WELCOME_MSG = "splash_screen_welcome_msg"
 
-
 /**
  * Default value of the platform parameter that controls the visibility of splash screen welcome
  * message toast in the [SplashTestActivity].
