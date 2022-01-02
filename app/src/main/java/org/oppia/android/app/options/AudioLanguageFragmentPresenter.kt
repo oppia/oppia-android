@@ -1,6 +1,5 @@
 package org.oppia.android.app.options
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,14 +31,6 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     languageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.audioLanguageRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
-    }
-
-    binding.audioLanguageToolbar?.setNavigationOnClickListener {
-      val message = languageSelectionViewModel.selectedLanguage.value
-      val intent = Intent()
-      intent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, message)
-      (fragment.activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
-      (fragment.activity as AudioLanguageActivity).finish()
     }
 
     return binding.root

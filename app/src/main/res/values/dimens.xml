@@ -590,5 +590,8 @@
 
   <!--  HomeActivity-->
   <dimen name="home_activity_frame_layout_height">0dp</dimen>
+  
+  <!-- AudioLanguageFragment -->
+  <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
 </resources>
