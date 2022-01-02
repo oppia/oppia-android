@@ -8,6 +8,8 @@
   <color name="toolbar_color">@color/oppia_primary</color>
   <color name="status_bar_color">@color/oppia_primary_dark</color>
   <color name="layout_background_color">@color/background_color</color>
+  <!--Admin Auth Activity-->
+  <color name="admin_auth_secondary_text">@color/description_text_color</color>
   <!--Add Profile Activity-->
   <color name="add_profile_switch_text_color">@color/dark_text_color</color>
 </resources>
