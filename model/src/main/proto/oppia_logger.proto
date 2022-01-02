@@ -106,6 +106,36 @@ message EventLog {
     OPEN_REVISION_CARD = 10;
     // Opening of profile chooser activity.
     OPEN_PROFILE_CHOOSER = 11;
+    // Starting an exploration card.
+    START_CARD = 12;
+    // Ending an exploration card.
+    END_CARD = 13;
+    // Offering a hint when it becomes available.
+    HINT_OFFERED = 14;
+    // Accessing a hint.
+    ACCESS_HINT = 15;
+    // Accessing a solution.
+    ACCESS_SOLUTION = 16;
+    // Offering a solution when it becomes available.
+    SOLUTION_OFFERED = 17;
+    // Submitting an answer.
+    SUBMIT_ANSWER = 18;
+    // Playing a voice over.
+    PLAY_VOICE_OVER = 19;
+    // Backgrounding of the application.
+    APP_IN_BACKGROUND = 20;
+    // Foregrounding of the application.
+    APP_IN_FOREGROUND = 21;
+    // Exiting an exploration.
+    EXIT_EXPLORATION = 22;
+    // Finishing an exploration.
+    FINISH_EXPLORATION = 23;
+    // Resuming an exploration.
+    RESUME_EXPLORATION = 24;
+    // Starting over an exploration.
+    START_OVER_EXPLORATION = 25;
+    // Deleting a profile.
+    DELETE_PROFILE = 26;
   }
 
   // Supported priority of events for event logging
