@@ -13,36 +13,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/reading_list_app_bar_layout"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
-
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/audio_language_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/navigate_up"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/audio_language_activity_title"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
-    </com.google.android.material.appbar.AppBarLayout>
-
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout">
+      app:layout_constraintTop_toTopOf="parent">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/audio_language_recycler_view"
@@ -51,7 +28,7 @@
         android:background="@color/general_navigation_background"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="132dp"
+        android:paddingBottom="@dimen/audio_language_recycler_view_padding_bottom"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
