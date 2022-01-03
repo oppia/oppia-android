@@ -27,8 +27,7 @@
 **Developer Reference**
   * Code style
     * [[Coding style guide|https://github.com/oppia/oppia-android/wiki/Coding-style-guide]]
-    * [[Ktlint Guide|https://github.com/oppia/oppia-android/wiki/Ktlint-Guide]]
-    * [[XML code style format|https://github.com/oppia/oppia-android/wiki/XML-code-style-format]]    
+    * [[Ktlint Guide|https://github.com/oppia/oppia-android/wiki/Ktlint-Guide]] 
     * [[Static Analysis Checks|https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks]]
   * [[Background Processing|https://github.com/oppia/oppia-android/wiki/Background-Processing]]
     * [[Kotlin Coroutines|https://github.com/oppia/oppia-android/wiki/Kotlin-Coroutines]]
