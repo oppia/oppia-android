@@ -31,6 +31,36 @@ message EventLog {
       ConceptCardContext concept_card_context = 5;
       // The event being logged is related to the revision card.
       RevisionCardContext revision_card_context = 6;
+      // The event being logged is related to starting an exploration card.
+      StartCardContext start_card_context = 7;
+      // The event being logged is related to ending an exploration card.
+      EndCardContext end_card_context = 8;
+      // The event being logged is related to offering a hint when it becomes available.
+      HintOfferedContext hint_offered_context = 9;
+      // The event being logged is related to accessing a hint.
+      AccessHintContext access_hint_context = 10;
+      // The event being logged is related to offering a solution when it becomes available.
+      SolutionOfferedContext solution_offered_context = 11;
+      // The event being logged is related to accessing a solution.
+      AccessSolutionContext access_solution_context = 12;
+      // The event being logged is related to submitting an answer.
+      SubmitAnswerContext submit_answer_context = 13;
+      // The event being logged is related to playing a voiceover.
+      PlayVoiceOverContext play_voice_over_context = 14;
+      // The event being logged is related to backgrounding of the application.
+      AppInBackgroundContext app_in_background_context = 15;
+      // The event being logged is related to foregrounding of the application.
+      AppInForegroundContext app_in_foreground_context = 16;
+      // The event being logged is related to exiting an exploration.
+      ExitExplorationContext exit_exploration_context = 17;
+      // The event being logged is related to finishing an exploration.
+      FinishExplorationContext finish_exploration_context = 18;
+      // The event being logged is related to resuming an exploration.
+      ResumeExplorationContext resume_exploration_context = 19;
+      // The event being logged is related to starting over an exploration.
+      StartOverExplorationContext start_over_exploration_context = 20;
+      // The event being logged is related to deleting a profile.
+      DeleteProfileContext delete_profile_context = 21;
     }
   }
 
@@ -78,6 +108,105 @@ message EventLog {
     string topic_id = 1;
     // The active sub topic ID when the event is logged.
     int32 sub_topic_id = 2;
+  }
+
+  // Structure of a start card context.
+  message StartCardContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+    // The linked skill id of the exploration.
+    string skill_id = 3;
+  }
+
+  // Structure of a end card context.
+  message EndCardContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+    // The linked skill id of the exploration.
+    string skill_id = 3;
+  }
+
+  // Structure of a hint offered context.
+  message HintOfferedContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+    // index of the last revealed hint within the hint list of a state (meaning the index
+    // corresponding to this value is the latest hint that's been revealed by the user)
+    string hint_index = 3;
+  }
+
+  // Structure of an access hint context.
+  message AccessHintContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+    // index of the last revealed hint within the hint list of a state (meaning the index
+    // corresponding to this value is the latest hint that's been revealed by the user)
+    string hint_index = 3;
+  }
+
+  // Structure of an access solution context.
+  message AccessSolutionContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+  }
+
+  // Structure of a solution offered context.
+  message SolutionOfferedContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+  }
+
+  // Structure of a submit answer context.
+  message SubmitAnswerContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+    // Whether the answer that the learner submitted is the correct answer.
+    bool is_answer_correct = 3;
+  }
+
+  // Structure of a play voiceover context.
+  message PlayVoiceOverContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+    // The content id of the voiceover recording.
+    string content_id = 3;
+  }
+
+  // Structure of an app in background context.
+  message AppInBackgroundContext {
+    GenericData generic_data = 1;
+  }
+
+  // Structure of an app in foreground context.
+  message AppInForegroundContext {
+    GenericData generic_data = 1;
+  }
+
+  // Structure of an exit exploration context.
+  message ExitExplorationContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+  }
+
+  // Structure of a finish exploration context.
+  message FinishExplorationContext {
+    GenericData generic_data = 1;
+    ExplorationData exploration_data= 2;
+  }
+
+  // Structure of a resume exploration context.
+  message ResumeExplorationContext {
+    GenericData generic_data = 1;
+  }
+
+  // Structure of a start over exploration context.
+  message StartOverExplorationContext {
+    GenericData generic_data = 1;
+  }
+
+  // Structure of a delete profile context.
+  message DeleteProfileContext {
+    GenericData generic_data = 1;
   }
 
   // Supported event actions for event logging.
@@ -147,6 +276,26 @@ message EventLog {
     ESSENTIAL = 1;
     // The priority of events whose logs can be removed from the storage if the size exceeds a certain limit
     OPTIONAL = 2;
+  }
+
+  // Structure of the generic data.
+  message GenericData {
+    // The learner id of the current user. This id is profile-specific.
+    string learner_id = 1;
+    // The device id of the current device. This id is common across all profiles.
+    string device_id = 2;
+  }
+
+  // Structure of the exploration data.
+  message ExplorationData {
+    // The session id of the exploration.
+    string session_id = 1;
+    // The ID of the exploration.
+    string exploration_id = 2;
+    // The version of the exploration.
+    string exploration_version = 3;
+    // The name of the current state of the exploration.
+    string state_name = 4;
   }
 }
 
