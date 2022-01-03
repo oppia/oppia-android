@@ -615,6 +615,7 @@ class AdministratorControlsFragmentTest {
         profileId = internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
         matches(withText("Admin"))
       )
@@ -641,7 +642,9 @@ class AdministratorControlsFragmentTest {
         profileId = internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
         matches(withText("Admin"))
       )
@@ -662,21 +665,25 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_selectProfileAdmin_displaysProfileEdit_backButton_selectSecondProfileDisplayed() {
+  fun testAdministratorControls_selectProfileAdmin_backButton_selectSecondProfileDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
         matches(withText("Admin"))
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
       onView(withId(R.id.administrator_controls_multipane_options_back_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Ben")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
     }
@@ -684,21 +691,25 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_selectProfileAdmin_displaysProfileEdit_backPressed_selectSecondProfileDisplayed() {
+  fun testAdministratorControls_selectProfileAdmin_backPressed_selectSecondProfileDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
         matches(withText("Admin"))
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
       pressBack()
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Ben")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
     }
@@ -712,11 +723,13 @@ class AdministratorControlsFragmentTest {
         profileId = internalProfileId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
         matches(withText("Admin"))
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
     }
   }
