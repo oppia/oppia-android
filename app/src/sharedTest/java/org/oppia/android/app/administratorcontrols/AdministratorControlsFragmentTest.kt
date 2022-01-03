@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
@@ -42,6 +41,7 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -115,7 +115,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hamcrest.Matchers.not
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -589,7 +588,8 @@ class AdministratorControlsFragmentTest {
         profileId = internalProfileId
       )
     ).use {
-      onView(withId(R.id.extra_controls_title)).check(matches(withText(R.string.administrator_controls_edit_profiles)))
+      onView(withId(R.id.extra_controls_title))
+        .check(matches(withText(R.string.administrator_controls_edit_profiles)))
     }
   }
 
@@ -602,7 +602,8 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.extra_controls_title)).check(matches(withText(R.string.administrator_controls_edit_profiles)))
+      onView(withId(R.id.extra_controls_title))
+        .check(matches(withText(R.string.administrator_controls_edit_profiles)))
     }
   }
 
@@ -683,7 +684,7 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_selectProfileAdmin_displaysProfileEdit_superBackButton_selectSecondProfileDisplayed() {
+  fun testAdministratorControls_selectProfileAdmin_displaysProfileEdit_backPressed_selectSecondProfileDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
