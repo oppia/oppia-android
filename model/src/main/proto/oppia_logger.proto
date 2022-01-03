@@ -288,7 +288,7 @@ message EventLog {
 
   // Structure of the exploration data.
   message ExplorationData {
-    // The session id of the exploration.
+    // The session id of the current learning session.
     string session_id = 1;
     // The ID of the exploration.
     string exploration_id = 2;
