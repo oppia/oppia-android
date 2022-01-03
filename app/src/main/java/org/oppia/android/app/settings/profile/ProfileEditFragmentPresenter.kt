@@ -26,11 +26,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
+  private val profileEditViewModel: ProfileEditViewModel,
   private val profileManagementController: ProfileManagementController
 ) {
-
-  @Inject
-  lateinit var profileEditViewModel: ProfileEditViewModel
 
   /** This handles OnCreateView() of [ProfileEditFragment]. */
   fun handleOnCreateView(
