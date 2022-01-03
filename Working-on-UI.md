@@ -5,9 +5,11 @@ For understanding the mocks let's take one example.
 Open [Admin Auth Mock Link](https://xd.adobe.com/view/0687f00c-695b-437a-79a6-688e7f4f7552-70b6/screen/a841330e-efe5-4bdb-acdd-4d6e52a59571/PC-MP-Admin-Authorization-Add-Profile-Empty-)
 
 In the below image you can see that there are two icons on left side of the screen. First icon is for comment, using which you can comment on the mock and second icon is for screen details which provide detailed information about the UI.
+
 <img width="1237" alt="Screenshot 2020-01-22 at 3 14 13 PM" src="https://user-images.githubusercontent.com/9396084/72883182-df728800-3d29-11ea-8584-446e00f91baf.png">
 
 Once you have selected the second icon, you will see a menu on right as below:
+
 <img width="1186" alt="Screenshot 2020-01-22 at 3 17 03 PM" src="https://user-images.githubusercontent.com/9396084/72883430-485a0000-3d2a-11ea-9e8f-b2a3d524162e.png">
 
 This menu contains details about the screen width, colors, fonts, etc. Also, please note that the screen width in the mocks is **360 px**.
@@ -36,10 +38,10 @@ Do not forget to check the opacity value in mocks. For example you find Opacity 
 2. Add two more characters at the start of color code of that view, for example if the item color code was `#999999` with 20% opacity value then the color code for that will be `#33999999`. Check [this](https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4) link for converting percentage to hex value.
 
 ### Blur effect
-Currently, we are not using blur effect in android code, so if the mock item does have a blur value than in that case optimise the android code in such a way that it does look almost like the mock without using the blur effect.
+Currently, we are using blur effect only over the locked chapters of an exploration. So if the mock item does have a blur value then in that case optimise the android code in such a way that it does look almost like the mock without using the blur effect.
 
 ### ImageView Aspect Ratio
-ImageView in android code uses aspect ratio of `4:3` or `16:9` mostly, though in some special cases it can be different. So based on the dimensions in mock, calculate the aspect ratio and use it accordingly in the code.
+ImageView in android code uses aspect ratio of `4:3` or `16:9` mostly, though in some special cases it can be different. So based on the dimensions in mock, calculate the aspect ratio (we can calculate that by getting the width and height from UI and just calculate the ratio which becomes the aspect ratio) and use it accordingly in the code.
 
 ### Bottom Margin in scrollable screens
 Almost in all scrollable screens there is bottom margin, make sure that your mock includes that as per mock.
@@ -63,3 +65,5 @@ Accessibility Scanner scans your screen and provides suggestions to improve the 
 * Touch target size
 * Clickable items
 * Text and image contrast
+
+You can know more about Accessibility in Oppia-Android [here](https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide)
