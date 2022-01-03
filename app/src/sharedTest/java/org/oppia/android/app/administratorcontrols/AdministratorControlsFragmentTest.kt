@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -142,8 +144,9 @@ class AdministratorControlsFragmentTest {
 
   @Before
   fun setup() {
-    setUpTestApplicationComponent()
     Intents.init()
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -561,6 +564,159 @@ class AdministratorControlsFragmentTest {
     ).use {
       onView(withId(R.id.administrator_controls_multipane_options_back_button))
         .check(matches(withEffectiveVisibility(GONE)))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_tabletConfigChange_multipaneBackButtonGone() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.administrator_controls_multipane_options_back_button))
+        .check(matches(withEffectiveVisibility(GONE)))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_defaultTabletConfig_editProfileVisible() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(withId(R.id.extra_controls_title)).check(matches(withText(R.string.administrator_controls_edit_profiles)))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_tabletConfigChange_editProfileVisible() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.extra_controls_title)).check(matches(withText(R.string.administrator_controls_edit_profiles)))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_defaultTabletConfig_profileListIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
+        matches(withText("Admin"))
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          0,
+          R.id.profile_list_admin_text
+        )
+      ).check(
+        matches(withText(context.resources.getString(R.string.profile_chooser_admin)))
+      )
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
+        matches(withText("Ben"))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_tabletConfigChange_profileListIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
+        matches(withText("Admin"))
+      )
+      onView(
+        atPositionOnView(
+          R.id.profile_list_recycler_view,
+          0,
+          R.id.profile_list_admin_text
+        )
+      ).check(
+        matches(withText(context.resources.getString(R.string.profile_chooser_admin)))
+      )
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
+        matches(withText("Ben"))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_selectProfileAdmin_displaysProfileEdit_backButton_selectSecondProfileDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
+        matches(withText("Admin"))
+      ).perform(click())
+      onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
+      onView(withId(R.id.administrator_controls_multipane_options_back_button)).perform(click())
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
+        matches(withText("Ben"))
+      ).perform(click())
+      onView(withId(R.id.extra_controls_title)).check(matches(withText("Ben")))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_selectProfileAdmin_displaysProfileEdit_superBackButton_selectSecondProfileDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
+        matches(withText("Admin"))
+      ).perform(click())
+      onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
+      pressBack()
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
+        matches(withText("Ben"))
+      ).perform(click())
+      onView(withId(R.id.extra_controls_title)).check(matches(withText("Ben")))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_selectProfileAdmin_tabletConfigChange_displaysProfileEdit() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
+        matches(withText("Admin"))
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
     }
   }
 
