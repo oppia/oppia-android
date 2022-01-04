@@ -39,4 +39,5 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
     ],
 )
+
 dagger_rules()
