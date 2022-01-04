@@ -9,6 +9,7 @@ on:
 jobs:
   holiday_message:
     runs-on: ubuntu-latest
+    if: false
     steps:
       - name: Add holiday comment
         uses: peter-evans/create-or-update-comment@v1
