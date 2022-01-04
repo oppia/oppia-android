@@ -3,10 +3,15 @@ package org.oppia.android.app.databinding
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
+import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -14,10 +19,12 @@ import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -25,12 +32,19 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundColor
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundResource
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBottomBackgroundDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setRectangleBackgroundDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setTopBackgroundDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -107,6 +121,78 @@ class DrawableBindingAdaptersTest {
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  private val colorRgb: Int = -0x1000000
+
+  @Test
+  fun testSetBackgroundColor_hasCorrectBackgroundColor() {
+    val view = activityRule.scenario.runWithActivity {
+      val view: View = getView(it)
+      setBackgroundColor(view, colorRgb)
+      return@runWithActivity view
+    }
+    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    )
+  }
+
+  @Test
+  fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
+    val view = activityRule.scenario.runWithActivity {
+      val view: View = getView(it)
+      setBackgroundDrawable(view, colorRgb)
+      return@runWithActivity view
+    }
+    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    )
+  }
+
+  @Test
+  fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
+    val view = activityRule.scenario.runWithActivity {
+      val view: View = getView(it)
+      setTopBackgroundDrawable(view, colorRgb)
+      return@runWithActivity view
+    }
+    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    )
+  }
+
+  @Test
+  fun testSetBottomBackgroundDrawable_hasCorrectTopBottomBackgroundDrawable() {
+    val view = activityRule.scenario.runWithActivity {
+      val view: View = getView(it)
+      setBottomBackgroundDrawable(view, colorRgb)
+      return@runWithActivity view
+    }
+    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    )
+  }
+
+  @Test
+  fun testSetRectangleBackgroundDrawable_hasCorrectRectangleBackgroundDrawable() {
+    val view = activityRule.scenario.runWithActivity {
+      val view: View = getView(it)
+      setRectangleBackgroundDrawable(view, colorRgb)
+      return@runWithActivity view
+    }
+    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    )
+  }
+
+  @Test
+  fun testSetBackgroundResource_hasCorrectBackgroundDrawable() {
+    val button = activityRule.scenario.runWithActivity {
+      val button: Button = it.findViewById(R.id.button_for_drawable_binding_adapters_test)
+      setBackgroundResource(button, R.drawable.thumbnail_gradient)
+      return@runWithActivity button
+    }
+    onView(withId(button.id)).check(matches(withDrawable(R.drawable.thumbnail_gradient))
+    )
+  }
+
+  private fun getView(it: DrawableBindingAdaptersTestActivity): View {
+    return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
