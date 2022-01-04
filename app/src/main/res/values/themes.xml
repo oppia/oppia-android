@@ -23,8 +23,6 @@
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
-<!--  TODO: Test behaviour with API 19-->
-    <item name="android:statusBarColor">@color/status_bar_color</item>
   </style>
 
   <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
