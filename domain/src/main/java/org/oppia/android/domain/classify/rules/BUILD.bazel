@@ -1,5 +1,5 @@
 """
-rules for classify domain components.
+Rule classifier providers for classify domain components.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
