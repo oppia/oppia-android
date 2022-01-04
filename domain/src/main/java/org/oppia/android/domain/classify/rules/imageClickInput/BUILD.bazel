@@ -10,8 +10,7 @@ kt_android_library(
     srcs = [
         "ImageClickInputIsInRegionRuleClassifierProvider.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
-#    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/imageClickInput:__pkg__"],
+    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/imageClickInput:__pkg__"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",

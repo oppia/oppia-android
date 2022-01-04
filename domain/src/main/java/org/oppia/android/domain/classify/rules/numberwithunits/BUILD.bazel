@@ -11,8 +11,7 @@ kt_android_library(
         "NumberWithUnitsIsEqualToRuleClassifierProvider.kt",
         "NumberWithUnitsIsEquivalentToRuleClassifierProvider.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
-#    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/numberwithunits:__pkg__"],
+    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/numberwithunits:__pkg__"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
