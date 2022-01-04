@@ -177,6 +177,7 @@
     <item name="boxStrokeErrorColor">@color/text_input_layout_error_color</item>
     <item name="hintTextColor">@color/label_text_color</item>
     <item name="android:textAlignment">viewStart</item>
+    <item name="android:textColorHint">@color/label_text_color</item>
   </style>
 
   <style name="TextInputEditText" parent="Widget.AppCompat.EditText">
