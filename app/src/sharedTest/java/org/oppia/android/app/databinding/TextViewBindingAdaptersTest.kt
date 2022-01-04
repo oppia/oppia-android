@@ -118,10 +118,10 @@ class TextViewBindingAdaptersTest {
   }
 
   @Inject
-  private lateinit var resourceHandler: AppLanguageResourceHandler
+  lateinit var resourceHandler: AppLanguageResourceHandler
 
   @Inject
-  private lateinit var fakeOppiaClock: FakeOppiaClock
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileDataTextIsCorrect() {
