@@ -30,12 +30,14 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.databinding.TextViewBindingAdapters.setDrawableEndCompat
+import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileDataText
 import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileLastVisitedText
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.TextViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -66,6 +68,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -80,9 +83,8 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.databinding.TextViewBindingAdapters.setProfileDataText
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Tests for [TextViewBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -115,35 +117,34 @@ class TextViewBindingAdaptersTest {
     Intents.release()
   }
 
-  private lateinit var resourceHandler : AppLanguageResourceHandler
-// get the current time stamp
-  // visited time stamp = currenttimestamp - 1hour
+  @Inject
+  private lateinit var resourceHandler: AppLanguageResourceHandler
+
+  @Inject
+  private lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileDataTextIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileDataText(textView, /* setText= */ 5L)
+      setProfileDataText(textView, /* setText= */ 0L)
       return@runWithActivity textView
     }
-    val time: String = resourceHandler.computeDateString(timestamp)
-    assertThat(textView.text.toString()).isEqualTo("5")
+    val time = resourceHandler.computeDateString(0L)
+    val dateString = resourceHandler.getStringInLocaleWithWrapping(
+      R.string.profile_edit_created, time
+    )
+    assertThat(textView.text.toString()).isEqualTo(dateString)
   }
-// 1jan 1970 = 1 3600
+
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(textView, /* setText= */ 5L)
+      setProfileLastVisitedText(textView, /* setText= */ fakeOppiaClock.getCurrentTimeMs())
       return@runWithActivity textView
     }
-    val profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used)
-    val timeAgoTimeStamp = TextViewBindingAdapters.getTimeAgo(textView, timestamp)
-    val profileLastVisited = resourceHandler.getStringInLocaleWithWrapping(
-      R.string.profile_last_visited,
-      profileLastUsed,
-      timeAgoTimeStamp
-    )
-    assertThat(textView.text.toString()).isEqualTo("Last used $timeString ")
+    assertThat(textView.text.toString()).isEqualTo("Last used just now")
   }
 
   @Test
