@@ -132,7 +132,8 @@ class DrawableBindingAdaptersTest {
       setBackgroundColor(view, colorRgb)
       return@runWithActivity view
     }
-    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    onView(withId(view.id)).check(
+      matches(withDrawable(colorRgb))
     )
   }
 
@@ -143,7 +144,8 @@ class DrawableBindingAdaptersTest {
       setBackgroundDrawable(view, colorRgb)
       return@runWithActivity view
     }
-    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    onView(withId(view.id)).check(
+      matches(withDrawable(colorRgb))
     )
   }
 
@@ -154,7 +156,8 @@ class DrawableBindingAdaptersTest {
       setTopBackgroundDrawable(view, colorRgb)
       return@runWithActivity view
     }
-    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    onView(withId(view.id)).check(
+      matches(withDrawable(colorRgb))
     )
   }
 
@@ -165,7 +168,8 @@ class DrawableBindingAdaptersTest {
       setBottomBackgroundDrawable(view, colorRgb)
       return@runWithActivity view
     }
-    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    onView(withId(view.id)).check(
+      matches(withDrawable(colorRgb))
     )
   }
 
@@ -176,7 +180,8 @@ class DrawableBindingAdaptersTest {
       setRectangleBackgroundDrawable(view, colorRgb)
       return@runWithActivity view
     }
-    onView(withId(view.id)).check(matches(withDrawable(colorRgb))
+    onView(withId(view.id)).check(
+      matches(withDrawable(colorRgb))
     )
   }
 
@@ -187,7 +192,8 @@ class DrawableBindingAdaptersTest {
       setBackgroundResource(button, R.drawable.thumbnail_gradient)
       return@runWithActivity button
     }
-    onView(withId(button.id)).check(matches(withDrawable(R.drawable.thumbnail_gradient))
+    onView(withId(button.id)).check(
+      matches(withDrawable(R.drawable.thumbnail_gradient))
     )
   }
 
