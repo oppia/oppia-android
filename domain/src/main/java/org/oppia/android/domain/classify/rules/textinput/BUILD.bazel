@@ -8,10 +8,10 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 kt_android_library(
     name = "text_input",
     srcs = [
-        "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputContainsRuleClassifierProvider.kt",
-        "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputEqualsRuleClassifierProvider.kt",
-        "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputFuzzyEqualsRuleClassifierProvider.kt",
-        "domain/src/main/java/org/oppia/android/domain/classify/rules/textinput/TextInputStartsWithRuleClassifierProvider.kt",
+        "TextInputContainsRuleClassifierProvider.kt",
+        "TextInputEqualsRuleClassifierProvider.kt",
+        "TextInputFuzzyEqualsRuleClassifierProvider.kt",
+        "TextInputStartsWithRuleClassifierProvider.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
