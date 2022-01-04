@@ -153,4 +153,5 @@
   <color name="oppia_background_black">#24282B</color>
   <color name="oppia_dark_grey">#4D4D4D</color>
   <color name="error_red">#FF938F</color>
+  <color name="container_black">#32363B</color>
 </resources>

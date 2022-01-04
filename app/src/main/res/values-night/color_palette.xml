@@ -6,8 +6,10 @@
   <color name="primary_text_color">@color/oppia_subtext_white</color>
   <color name="oppia_heading_text_color">@color/white</color>
   <color name="background_color">@color/oppia_background_black</color>
+  <color name="background_color_grey">@color/oppia_background_black</color>
   <color name="description_text_color">@color/oppia_subtext_white</color>
   <color name="text_input_background">@color/oppia_dark_grey</color>
   <color name="dark_text_color">@color/white</color>
   <color name="error_color">@color/error_red</color>
+  <color name="container_background_color">@color/container_black</color>
 </resources>
