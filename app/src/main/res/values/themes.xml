@@ -5,6 +5,7 @@
     <item name="colorPrimary">@color/primary_color</item>
     <item name="colorPrimaryDark">@color/primary_dark_color</item>
     <item name="colorAccent">@color/primary_color</item>
+    <item name="actionBarTheme">@style/OppiaActionBarTheme</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -37,5 +38,9 @@
     <item name="colorPrimary">@color/primary_color</item>
     <item name="colorPrimaryDark">@color/primary_dark_color</item>
     <item name="colorAccent">@color/primary_color</item>
+  </style>
+
+  <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
+    <item name="android:background">@color/toolbar_color</item>
   </style>
 </resources>
