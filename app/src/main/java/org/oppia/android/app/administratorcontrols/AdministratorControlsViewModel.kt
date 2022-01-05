@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
+import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.android.app.fragment.FragmentScope
@@ -19,7 +21,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
 @FragmentScope
@@ -28,7 +31,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val IntentFactoryShim: IntentFactoryShim
+  private val IntentFactoryShim: IntentFactoryShim,
+  @EnableEditAccountsOptionsUi private val enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -63,16 +67,6 @@ class AdministratorControlsViewModel @Inject constructor(
   private fun processAdministratorControlsList(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
-//    TODO #4033 : Enable Edit Accounts option.
-//    val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
-//      AdministratorControlsGeneralViewModel()
-//    )
-//    itemViewModelList.add(
-//      AdministratorControlsProfileViewModel(
-//        routeToProfileListListener,
-//        loadProfileListListener
-//      )
-//    )
 
     val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
       AdministratorControlsProfileViewModel(
@@ -80,6 +74,13 @@ class AdministratorControlsViewModel @Inject constructor(
         loadProfileListListener
       )
     )
+
+    if(enableEditAccountsOptionsUi.value){
+      itemViewModelList.add(
+        AdministratorControlsGeneralViewModel()
+      )
+    }
+
     itemViewModelList.add(
       AdministratorControlsDownloadPermissionsViewModel(
         fragment,

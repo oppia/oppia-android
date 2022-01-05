@@ -61,3 +61,8 @@ annotation class EnableLanguageSelectionUi
 // TODO(#52): Enable this feature by default once it's completed.
 /** Default value for the feature flag corresponding to [EnableLanguageSelectionUi]. */
 const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = false
+
+@Qualifier
+annotation class EnableEditAccountsOptionsUi
+
+const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false

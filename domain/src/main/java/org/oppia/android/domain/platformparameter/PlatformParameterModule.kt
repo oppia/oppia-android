@@ -2,7 +2,10 @@ package org.oppia.android.domain.platformparameter
 
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -44,4 +47,13 @@ class PlatformParameterModule {
       ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     )
   }
+
+  @Provides
+  @EnableEditAccountsOptionsUi
+  fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean>{
+    return PlatformParameterValue.createDefaultParameter(
+      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+    )
+  }
+
 }
