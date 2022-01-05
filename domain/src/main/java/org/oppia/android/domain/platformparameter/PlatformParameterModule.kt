@@ -2,7 +2,6 @@ package org.oppia.android.domain.platformparameter
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi

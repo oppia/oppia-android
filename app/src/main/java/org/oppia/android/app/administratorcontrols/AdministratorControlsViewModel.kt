@@ -75,7 +75,7 @@ class AdministratorControlsViewModel @Inject constructor(
       )
     )
 
-    if(enableEditAccountsOptionsUi.value){
+    if (enableEditAccountsOptionsUi.value) {
       itemViewModelList.add(
         AdministratorControlsGeneralViewModel()
       )
