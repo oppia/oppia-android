@@ -1,0 +1,24 @@
+# Contains jobs corresponding to repository-wide messaging.
+
+name: Repository Messaging
+
+on:
+  pull_request_target:
+    types: [ opened ]
+
+jobs:
+  holiday_message:
+    runs-on: ubuntu-latest
+    # NOTE TO DEVELOPERS: Update the body text and set this to 'true' to enable automatic messaging on all new PRs.
+    if: false
+    steps:
+      - name: Add holiday comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Thanks for submitting this pull request! Some main reviewers
+            have taken time off for the next few weeks, so it may take a
+            little while before we can look at this PR. We appreciate your
+            patience while some of our team members recharge. We'll be fully
+            returning on 4 January 2021.
