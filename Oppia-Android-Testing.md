@@ -103,6 +103,7 @@ public class MyActivityTest {
 4. Press `OK` to run the test cases in robolectric.
 
 ## Espresso
+
 Use [Espresso](https://developer.android.com/training/testing/espresso) to write concise, beautiful, and reliable Android UI tests.
 Example JUnit4 test using Rules:
 
@@ -137,6 +138,8 @@ class PinPasswordActivityTest {
  }
 }
 ```
+
+**Important note:** When running the Espresso tests, ensure that you are using the **API 28** emulator. If you use e.g. API 30, you may get a message saying "0 tests passed" when trying to run the tests.
 
 ### How to use View Matchers, View Actions and View Assertions in Espresso?
 Espresso has many ViewMatcher options which are very effective in uniquely locate UI element. You can also combine and create a combination of View Matchers to find element uniquely. 
