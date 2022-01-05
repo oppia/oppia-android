@@ -1,4 +1,3 @@
-
 package org.oppia.android.app.home
 
 import android.app.Application
