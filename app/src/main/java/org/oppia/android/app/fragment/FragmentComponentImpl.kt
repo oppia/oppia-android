@@ -13,6 +13,7 @@ import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragmen
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
+import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserFragment
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
@@ -124,6 +125,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
   fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
   fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)
+  fun inject(mathExpressionParserFragment: MathExpressionParserFragment)
   fun inject(myDownloadsFragment: MyDownloadsFragment)
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
   fun inject(onboardingFragment: OnboardingFragment)

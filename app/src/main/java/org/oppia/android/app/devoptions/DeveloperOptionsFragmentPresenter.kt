@@ -16,7 +16,9 @@ import org.oppia.android.databinding.DeveloperOptionsFragmentBinding
 import org.oppia.android.databinding.DeveloperOptionsModifyLessonProgressViewBinding
 import org.oppia.android.databinding.DeveloperOptionsOverrideAppBehaviorsViewBinding
 import org.oppia.android.databinding.DeveloperOptionsViewLogsViewBinding
+import org.oppia.android.databinding.DeveloperOptionsTestParsersViewBinding
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsTestParsersViewModel
 
 /** The presenter for [DeveloperOptionsFragment]. */
 @FragmentScope
@@ -72,6 +74,10 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
             viewModel.itemIndex.set(2)
             ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
           }
+          is DeveloperOptionsTestParsersViewModel -> {
+            viewModel.itemIndex.set(3)
+            ViewType.VIEW_TYPE_TEST_PARSERS
+          }
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
@@ -93,12 +99,19 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
         setViewModel = DeveloperOptionsOverrideAppBehaviorsViewBinding::setViewModel,
         transformViewModel = { it as DeveloperOptionsOverrideAppBehaviorsViewModel }
       )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_TEST_PARSERS,
+        inflateDataBinding = DeveloperOptionsTestParsersViewBinding::inflate,
+        setViewModel = DeveloperOptionsTestParsersViewBinding::setViewModel,
+        transformViewModel = { it as DeveloperOptionsTestParsersViewModel }
+      )
       .build()
   }
 
   private enum class ViewType {
     VIEW_TYPE_MODIFY_LESSON_PROGRESS,
     VIEW_TYPE_VIEW_LOGS,
-    VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
+    VIEW_TYPE_OVERRIDE_APP_BEHAVIORS,
+    VIEW_TYPE_TEST_PARSERS
   }
 }

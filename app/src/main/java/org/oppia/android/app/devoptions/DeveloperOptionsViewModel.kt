@@ -9,6 +9,7 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsTestParsersViewModel
 
 /**
  * [ViewModel] for [DeveloperOptionsFragment]. It populates the recyclerview with a list of
@@ -28,6 +29,8 @@ class DeveloperOptionsViewModel @Inject constructor(
     activity as RouteToMarkTopicsCompletedListener
   private val routeToViewEventLogsListener = activity as RouteToViewEventLogsListener
   private val routeToForceNetworkTypeListener = activity as RouteToForceNetworkTypeListener
+  private val routeToMathExpressionParserTestListener =
+    activity as RouteToMathExpressionParserTestListener
 
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
@@ -49,7 +52,8 @@ class DeveloperOptionsViewModel @Inject constructor(
         forceCrashButtonClickListener,
         routeToForceNetworkTypeListener,
         showAllHintsAndSolutionController
-      )
+      ),
+      DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener)
     )
   }
 }

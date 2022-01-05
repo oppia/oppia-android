@@ -14,6 +14,7 @@ import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
@@ -23,7 +24,8 @@ class DeveloperOptionsActivity :
   RouteToMarkStoriesCompletedListener,
   RouteToMarkTopicsCompletedListener,
   RouteToViewEventLogsListener,
-  RouteToForceNetworkTypeListener {
+  RouteToForceNetworkTypeListener,
+  RouteToMathExpressionParserTestListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -68,6 +70,10 @@ class DeveloperOptionsActivity :
 
   override fun routeToForceNetworkType() {
     startActivity(ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(this))
+  }
+
+  override fun routeToMathExpressionParserTest() {
+    startActivity(MathExpressionParserActivity.createIntent(this))
   }
 
   companion object {
