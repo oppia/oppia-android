@@ -16,6 +16,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.databinding.ImageViewBindingAdapters
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
@@ -75,7 +77,10 @@ class ProfileEditFragmentPresenter @Inject constructor(
     profileEditViewModel.profile.observe(
       fragment,
       Observer {
-        activity.title = it.name
+        if (activity is ProfileEditActivity)
+          activity.title = it.name
+        binding.profileEditName.text = it.name
+        setProfileImage(binding.profileEditImage, it.avatar)
       }
     )
 
