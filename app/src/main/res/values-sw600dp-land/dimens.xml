@@ -396,7 +396,7 @@
   <dimen name="section_title_text_view_layout_margin_top">32dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">96dp</dimen>
 
-  <!-- Topic Practice Fragment -->
+  <!-- TopicPracticeFragment -->
   <dimen name="topic_practice_fragment_padding_bottom">112dp</dimen>
 
   <!-- AudioLanguageFragment -->
