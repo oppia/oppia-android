@@ -3,7 +3,7 @@ package org.oppia.android.app.settings.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -14,7 +14,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The ViewModel for [ProfileEditActivity]. */
-@ActivityScope
+@FragmentScope
 class ProfileEditViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController
