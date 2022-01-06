@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
@@ -78,8 +77,6 @@ class ProfileEditFragmentPresenter @Inject constructor(
       Observer {
         if (activity is ProfileEditActivity)
           activity.title = it.name
-        binding.profileEditName.text = it.name
-        setProfileImage(binding.profileEditImage, it.avatar)
       }
     )
 
