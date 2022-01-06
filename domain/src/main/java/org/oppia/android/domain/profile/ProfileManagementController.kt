@@ -722,7 +722,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun onlyLetters(name: String): Boolean {
-    return name.matches(Regex("^[ A-Za-z]+\$"))
+    return name.matches(Regex("^(?!.*^[-.'])^(?!.*[.'-]\$).*^(?!.*[0-9!@#\$%^&*()_+={}\\[\\]|\\\\;\",?/<>`~]).*[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF.'-]"))
   }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
