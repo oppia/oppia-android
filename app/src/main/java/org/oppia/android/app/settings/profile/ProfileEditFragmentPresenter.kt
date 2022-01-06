@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
@@ -16,8 +17,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.databinding.ImageViewBindingAdapters
-import org.oppia.android.app.databinding.ImageViewBindingAdapters.setProfileImage
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
