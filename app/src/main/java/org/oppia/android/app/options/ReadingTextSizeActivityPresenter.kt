@@ -1,6 +1,9 @@
 package org.oppia.android.app.options
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
@@ -14,6 +17,7 @@ class ReadingTextSizeActivityPresenter @Inject constructor(
 
   fun handleOnCreate(prefSummaryValue: String) {
     activity.setContentView(R.layout.reading_text_size_activity)
+    setToolbar()
     fontSize = prefSummaryValue
     if (getReadingTextSizeFragment() == null) {
       val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(prefSummaryValue)
@@ -24,6 +28,14 @@ class ReadingTextSizeActivityPresenter @Inject constructor(
 
   fun setSelectedReadingTextSize(fontSize: String) {
     this.fontSize = fontSize
+  }
+
+  private fun setToolbar() {
+    val appVersionToolbar: Toolbar = activity.findViewById(R.id.reading_text_size_toolbar) as Toolbar
+    appVersionToolbar.setNavigationOnClickListener {
+      activity.onBackPressed()
+    }
+
   }
 
   fun getSelectedReadingTextSize(): String {

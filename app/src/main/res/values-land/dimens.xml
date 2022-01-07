@@ -50,7 +50,6 @@
   <dimen name="drag_drop_item_exploration_split_view_margin_top">40dp</dimen>
   <dimen name="drag_drop_item_question_split_view_margin_top">40dp</dimen>
   <dimen name="submitted_answer_exploration_split_view_margin_start">40dp</dimen>
-  <dimen name="reading_text_size_fragment_padding_bottom">96dp</dimen>
 
   <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
@@ -392,5 +391,8 @@
 
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">96dp</dimen>
+
+  <!--  ReadingTextSizeFragment-->
+  <dimen name="reading_text_size_fragment_padding_bottom">96dp</dimen>
 
 </resources>
