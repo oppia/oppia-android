@@ -10,6 +10,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +21,8 @@ import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createStri
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableSetOfNormalizedString
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslationContext
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -30,10 +34,6 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 
 /** Tests for [TextInputStartsWithRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -413,8 +413,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
     modules = [
       LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
       TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class, TestModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class
+      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
+      TestModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {

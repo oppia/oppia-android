@@ -2,7 +2,6 @@ package org.oppia.android.util.logging
 
 import android.os.Bundle
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT

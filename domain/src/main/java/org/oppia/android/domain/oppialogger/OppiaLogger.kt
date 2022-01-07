@@ -110,7 +110,7 @@ class OppiaLogger @Inject constructor(
   fun e(tag: String, msg: String, tr: Throwable?) {
     consoleLogger.e(tag, msg, tr)
   }
-  
+
   /**
    * Returns a generic data object that contains [deviceId] and [learnerId]. These identifiers are
    * logged across all Learner Study Analytics events.
@@ -241,8 +241,8 @@ class OppiaLogger @Inject constructor(
 
   /** Returns the context of an event related to starting an exploration card. */
   fun createStartCardContext(
-    skillId: String, 
-    genericData: EventLog.GenericData, 
+    skillId: String,
+    genericData: EventLog.GenericData,
     explorationData: EventLog.ExplorationData
   ): EventLog.Context {
     return EventLog.Context.newBuilder()

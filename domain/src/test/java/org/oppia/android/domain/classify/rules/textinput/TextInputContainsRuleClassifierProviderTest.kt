@@ -389,8 +389,8 @@ class TextInputContainsRuleClassifierProviderTest {
     modules = [
       LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
       TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class, TestModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class
+      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
+      TestModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {
