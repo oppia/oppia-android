@@ -591,4 +591,7 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
+  <!-- ProfileListFragment -->
+  <dimen name="profile_list_fragment_recycler_view_padding_bottom">40dp</dimen>
+
 </resources>
