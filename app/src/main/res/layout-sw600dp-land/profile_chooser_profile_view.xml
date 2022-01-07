@@ -46,7 +46,7 @@
         android:id="@+id/profile_avatar_img"
         android:layout_width="108dp"
         android:layout_height="108dp"
-        app:civ_border_color="@color/avatarBorder"
+        app:civ_border_color="@color/avatar_border"
         app:civ_border_width="1dp"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_circular_image_margin_top_profile_already_added : @dimen/space_0dp}"
         profile:src="@{viewModel.profile.avatar}" />
@@ -103,7 +103,7 @@
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:layout_marginTop="@dimen/profile_chooser_profile_view_divider_margin_top"
-      android:background="@color/oppiaProfileChooserDivider"
+      android:background="@color/oppia_profile_chooser_divider"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

@@ -28,7 +28,7 @@
         android:id="@+id/add_profile_activity_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/addProfileBackground">
+        android:background="@color/add_profile_background">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="wrap_content"
@@ -45,12 +45,12 @@
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
-            app:srcCompat="@drawable/ic_default_avatar"
             app:add_shadow="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shadow_radius="8" />
+            app:shadow_radius="8"
+            app:srcCompat="@drawable/ic_default_avatar" />
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
@@ -59,9 +59,9 @@
             android:contentDescription="@string/edit_profile_picture_content_description"
             android:paddingStart="12dp"
             android:paddingTop="12dp"
-            app:srcCompat="@drawable/rounded_white_background_with_shadow"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
-            app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view" />
+            app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
+            app:srcCompat="@drawable/rounded_white_background_with_shadow" />
 
           <TextView
             android:id="@+id/add_profile_activity_required_heading_text_view"
@@ -70,8 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
-            android:text="@string/add_profile_required"
-            android:textColor="@color/oppiaPrimaryText"
+            android:text="@{viewModel.requiredTextWithStar}"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -116,9 +116,9 @@
             android:layout_height="48dp"
             android:contentDescription="@string/add_profile_info_content_description"
             android:padding="12dp"
-            app:srcCompat="@drawable/ic_info_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/add_profile_activity_pin_check_box" />
+            app:layout_constraintTop_toTopOf="@+id/add_profile_activity_pin_check_box"
+            app:srcCompat="@drawable/ic_info_icon" />
 
           <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/add_profile_activity_pin_constraint_layout"
@@ -193,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@{viewModel.validPin ? @color/oppiaPrimaryTextDark : @color/accessible_grey}"
+                android:textColor="@{viewModel.validPin ? @color/oppia_primary_text_dark : @color/accessible_grey}"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -233,7 +233,7 @@
             android:gravity="center"
             android:text="@string/add_profile_create_btn"
             android:textAllCaps="true"
-            android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submitButtonInactiveText }"
+            android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submit_button_inactive_text }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_constraint_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>

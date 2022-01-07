@@ -14,7 +14,7 @@ import android.renderscript.ScriptIntrinsicBlur
 private const val BLUR_RADIUS = 20f
 
 /** Utility used to blur [Bitmap]s. */
-internal class BitmapBlurrer(private val context: Context) {
+class BitmapBlurrer(private val context: Context) {
   private val renderScript by lazy { RenderScript.create(context) }
   private val blurScript by lazy {
     // Create a new Gaussian blur script with 4 expect 8-bit color channels (e.g. ARGB).

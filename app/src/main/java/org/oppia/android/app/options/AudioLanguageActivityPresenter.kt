@@ -1,8 +1,11 @@
 package org.oppia.android.app.options
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.databinding.AudioLanguageActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageActivity]. */
@@ -12,7 +15,18 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
   private lateinit var prefSummaryValue: String
 
   fun handleOnCreate(prefKey: String, prefValue: String) {
-    activity.setContentView(R.layout.audio_language_activity)
+    val binding: AudioLanguageActivityBinding = DataBindingUtil.setContentView(
+      activity,
+      R.layout.audio_language_activity,
+    )
+    val toolbar = binding.audioLanguageToolbar
+    toolbar.setNavigationOnClickListener {
+      val intent = Intent().apply {
+        putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, prefSummaryValue)
+      }
+      (activity as AudioLanguageActivity).setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
+      activity.finish()
+    }
     setLanguageSelected(prefValue)
     if (getAudioLanguageFragment() == null) {
       val audioLanguageFragment = AudioLanguageFragment.newInstance(prefKey, prefValue)
