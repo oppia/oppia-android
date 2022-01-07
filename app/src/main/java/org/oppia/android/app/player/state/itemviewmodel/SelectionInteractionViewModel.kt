@@ -3,6 +3,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
+import javax.inject.Inject
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
@@ -23,7 +24,7 @@ enum class SelectionItemInputType {
 }
 
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
-class SelectionInteractionViewModel(
+class SelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
@@ -164,6 +165,33 @@ class SelectionInteractionViewModel(
 
   private fun areCheckboxesBound(): Boolean {
     return interactionId == "ItemSelectionInput" && maxAllowableSelectionCount > 1
+  }
+
+  /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
+  class FactoryImpl @Inject constructor(
+    private val translationController: TranslationController
+  ): InteractionItemFactory {
+    override fun create(
+      entityId: String,
+      hasConversationView: Boolean,
+      interaction: Interaction,
+      interactionAnswerReceiver: InteractionAnswerReceiver,
+      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+      hasPreviousButton: Boolean,
+      isSplitView: Boolean,
+      writtenTranslationContext: WrittenTranslationContext
+    ): StateItemViewModel {
+      return SelectionInteractionViewModel(
+        entityId,
+        hasConversationView,
+        interaction,
+        interactionAnswerReceiver,
+        answerErrorReceiver,
+        isSplitView,
+        writtenTranslationContext,
+        translationController
+      )
+    }
   }
 
   companion object {

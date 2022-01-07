@@ -197,6 +197,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragDropInteractionContentViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/MathExpressionInteractionsViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/PreviousResponsesHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/RatioExpressionInputInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt",
@@ -384,6 +385,7 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 # keep sorted
 VIEWS = [
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
+    "src/main/java/org/oppia/android/app/customview/interaction/MathExpressionInteractionsView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/RatioInputInteractionView.kt",

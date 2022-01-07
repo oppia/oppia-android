@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -13,11 +14,12 @@ import org.oppia.android.app.parser.StringToFractionParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 
 /** [StateItemViewModel] for the fraction input interaction. */
-class FractionInteractionViewModel(
+class FractionInteractionViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
@@ -118,6 +120,33 @@ class FractionInteractionViewModel(
       !allowNonzeroIntegerPart ->
         resourceHandler.getStringInLocale(R.string.fractions_default_hint_text_no_integer)
       else -> resourceHandler.getStringInLocale(R.string.fractions_default_hint_text)
+    }
+  }
+
+  /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
+  class FactoryImpl @Inject constructor(
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController
+  ): InteractionItemFactory {
+    override fun create(
+      entityId: String,
+      hasConversationView: Boolean,
+      interaction: Interaction,
+      interactionAnswerReceiver: InteractionAnswerReceiver,
+      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+      hasPreviousButton: Boolean,
+      isSplitView: Boolean,
+      writtenTranslationContext: WrittenTranslationContext
+    ): StateItemViewModel {
+      return FractionInteractionViewModel(
+        interaction,
+        hasConversationView,
+        isSplitView,
+        answerErrorReceiver,
+        writtenTranslationContext,
+        resourceHandler,
+        translationController
+      )
     }
   }
 }

@@ -11,7 +11,6 @@ import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.SchemaObject
-import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
@@ -19,10 +18,13 @@ import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
-import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
 
 /**
  * This is a dummy activity to test input interaction views.
@@ -31,35 +33,36 @@ import javax.inject.Inject
 class InputInteractionViewTestActivity :
   InjectableAppCompatActivity(),
   StateKeyboardButtonListener,
-  InteractionAnswerErrorOrAvailabilityCheckReceiver {
+  InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  InteractionAnswerReceiver {
   private lateinit var binding: ActivityInputInteractionViewTestBinding
-  lateinit var fractionInteractionViewModel: FractionInteractionViewModel
-  lateinit var ratioExpressionInputInteractionViewModel: RatioExpressionInputInteractionViewModel
 
   @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
+  lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
 
   @Inject
-  lateinit var translationController: TranslationController
+  lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
 
-  val numericInputViewModel by lazy {
-    NumericInputViewModel(
-      hasConversationView = false,
-      interactionAnswerErrorOrAvailabilityCheckReceiver = this,
-      isSplitView = false,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
-      resourceHandler = resourceHandler
-    )
+  @Inject
+  lateinit var fractionInteractionViewModelFactory: FractionInteractionViewModel.FactoryImpl
+
+  @Inject
+  lateinit var ratioViewModelFactory: RatioExpressionInputInteractionViewModel.FactoryImpl
+
+  val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
+
+  val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
+
+  val fractionInteractionViewModel by lazy {
+    fractionInteractionViewModelFactory.create<FractionInteractionViewModel>()
   }
 
-  val textInputViewModel by lazy {
-    TextInputViewModel(
-      interaction = Interaction.getDefaultInstance(),
-      hasConversationView = false,
-      interactionAnswerErrorOrAvailabilityCheckReceiver = this,
-      isSplitView = false,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
-      translationController = translationController
+  val ratioExpressionInputInteractionViewModel by lazy {
+    ratioViewModelFactory.create<RatioExpressionInputInteractionViewModel>(
+      interaction = Interaction.newBuilder().putCustomizationArgs(
+        "numberOfTerms",
+        SchemaObject.newBuilder().setSignedInt(3).build()
+      ).build()
     )
   }
 
@@ -68,28 +71,6 @@ class InputInteractionViewTestActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
       this, R.layout.activity_input_interaction_view_test
-    )
-    fractionInteractionViewModel = FractionInteractionViewModel(
-      interaction = Interaction.getDefaultInstance(),
-      hasConversationView = false,
-      isSplitView = false,
-      errorOrAvailabilityCheckReceiver = this,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
-      resourceHandler = resourceHandler,
-      translationController = translationController
-    )
-
-    ratioExpressionInputInteractionViewModel = RatioExpressionInputInteractionViewModel(
-      interaction = Interaction.newBuilder().putCustomizationArgs(
-        "numberOfTerms",
-        SchemaObject.newBuilder().setSignedInt(3).build()
-      ).build(),
-      hasConversationView = false,
-      isSplitView = false,
-      errorOrAvailabilityCheckReceiver = this,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
-      resourceHandler = resourceHandler,
-      translationController = translationController
     )
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
@@ -111,6 +92,24 @@ class InputInteractionViewTestActivity :
     binding.submitButton.isEnabled = pendingAnswerError == null
   }
 
+  override fun onAnswerReadyForSubmission(answer: UserAnswer) {
+  }
+
   override fun onEditorAction(actionCode: Int) {
+  }
+
+  private inline fun <reified T: StateItemViewModel> InteractionItemFactory.create(
+    interaction: Interaction = Interaction.getDefaultInstance()
+  ): T {
+    return create(
+      entityId = "fake_entity_id",
+      hasConversationView = false,
+      interaction = interaction,
+      interactionAnswerReceiver = this@InputInteractionViewTestActivity,
+      answerErrorReceiver = this@InputInteractionViewTestActivity,
+      hasPreviousButton = false,
+      isSplitView = false,
+      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+    ) as T
   }
 }
