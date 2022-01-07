@@ -1,5 +1,6 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import javax.inject.Inject
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.model.EventLog.Priority
@@ -12,7 +13,6 @@ import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
-import javax.inject.Inject
 
 /** Controller for handling analytics event logging.
  * [OppiaLogger] should be the only caller of this class. Any other classes that want to log

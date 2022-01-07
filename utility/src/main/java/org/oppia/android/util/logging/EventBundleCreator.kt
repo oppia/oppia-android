@@ -35,7 +35,7 @@ class EventBundleCreator {
         TOPIC_CONTEXT -> createTopicContextBundle(eventLog)
         CONCEPT_CARD_CONTEXT -> createConceptCardContextBundle(eventLog)
         REVISION_CARD_CONTEXT -> createRevisionCardContextBundle(eventLog)
-        ACTIVITYCONTEXT_NOT_SET -> createNoContextBundle(eventLog)
+        else -> createNoContextBundle(eventLog)
       }
     return bundle
   }

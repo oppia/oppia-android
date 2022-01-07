@@ -14,6 +14,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.Instant
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,6 +38,8 @@ import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBO
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -49,13 +57,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
-import java.text.SimpleDateFormat
-import java.time.Duration
-import java.time.Instant
-import java.util.Date
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [AppStartupStateController]. */
 @RunWith(AndroidJUnit4::class)
@@ -436,6 +437,7 @@ class AppStartupStateControllerTest {
       TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
       NetworkConnectionUtilDebugModule::class,
       OppiaClockModule::class, LocaleProdModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
     ]
   )
