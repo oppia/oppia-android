@@ -1,0 +1,96 @@
+"""
+General-purpose utilities for vector drawables and transcoders.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "block_picture_drawable",
+    srcs = [
+        "BlockPictureDrawable.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
+    deps = [
+        ":scalable_vector_graphic",
+        ":svg_picture_drawable",
+    ],
+)
+
+kt_android_library(
+    name = "block_svg_drawable_transcoder",
+    srcs = [
+        "BlockSvgDrawableTranscoder.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
+    deps = [
+        ":block_picture_drawable",
+        ":scalable_vector_graphic",
+    ],
+)
+
+kt_android_library(
+    name = "scalable_vector_graphic",
+    srcs = [
+        "ScalableVectorGraphic.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
+    deps = [
+        "//third_party:com_caverock_androidsvg",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
+    ],
+)
+
+kt_android_library(
+    name = "svg_blur_transformation",
+    srcs = [
+        "SvgBlurTransformation.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
+    deps = [
+        ":scalable_vector_graphic",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
+    ],
+)
+
+kt_android_library(
+    name = "svg_decoder",
+    srcs = [
+        "SvgDecoder.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
+    deps = [
+        ":scalable_vector_graphic",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:bitmap_blur_transformation",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:bitmap_blurrer",
+    ],
+)
+
+kt_android_library(
+    name = "svg_picture_drawable",
+    srcs = [
+        "SvgPictureDrawable.kt",
+    ],
+    visibility = [
+        "//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__",
+    ],
+    deps = [
+        ":scalable_vector_graphic",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:bitmap_blurrer",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
+    ],
+)
+
+kt_android_library(
+    name = "text_svg_drawable_transcoder",
+    srcs = [
+        "TextSvgDrawableTranscoder.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
+    deps = [
+        ":svg_picture_drawable",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:text_picture_drawable",
+    ],
+)

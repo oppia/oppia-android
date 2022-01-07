@@ -590,4 +590,7 @@
   <dimen name="promoted_story_list_layout_margin_end">28dp</dimen>
   <dimen name="promoted_story_list_layout_margin_start">28dp</dimen>
 
+  <!-- AudioLanguageFragment -->
+  <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
+
 </resources>
