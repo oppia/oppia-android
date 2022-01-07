@@ -68,16 +68,22 @@ class AdministratorControlsViewModel @Inject constructor(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
 
-    val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
-      AdministratorControlsProfileViewModel(
-        routeToProfileListListener,
-        loadProfileListListener
-      )
-    )
+    val itemViewModelList: MutableList<AdministratorControlsItemViewModel>
 
     if (enableEditAccountsOptionsUi.value) {
-      itemViewModelList.add(
-        AdministratorControlsGeneralViewModel()
+      itemViewModelList = mutableListOf(
+        AdministratorControlsGeneralViewModel(),
+        AdministratorControlsProfileViewModel(
+          routeToProfileListListener,
+          loadProfileListListener
+        )
+      )
+    }else{
+      itemViewModelList = mutableListOf(
+        AdministratorControlsProfileViewModel(
+          routeToProfileListListener,
+          loadProfileListListener
+        )
       )
     }
 
