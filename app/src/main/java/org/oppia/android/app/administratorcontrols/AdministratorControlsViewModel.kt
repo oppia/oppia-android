@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import javax.inject.Inject
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
@@ -23,6 +22,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
 @FragmentScope
@@ -68,16 +68,22 @@ class AdministratorControlsViewModel @Inject constructor(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
 
-    val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
-      AdministratorControlsProfileViewModel(
-        routeToProfileListListener,
-        loadProfileListListener
-      )
-    )
+    val itemViewModelList: MutableList<AdministratorControlsItemViewModel>
 
     if (enableEditAccountsOptionsUi.value) {
-      itemViewModelList.add(
-        AdministratorControlsGeneralViewModel()
+      itemViewModelList = mutableListOf(
+        AdministratorControlsGeneralViewModel(),
+        AdministratorControlsProfileViewModel(
+          routeToProfileListListener,
+          loadProfileListListener
+        )
+      )
+    }else{
+      itemViewModelList = mutableListOf(
+        AdministratorControlsProfileViewModel(
+          routeToProfileListListener,
+          loadProfileListListener
+        )
       )
     }
 
