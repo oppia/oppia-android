@@ -393,4 +393,8 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">96dp</dimen>
 
+  <!-- TopicRevisionSummary -->
+  <dimen name="topic_revision_summary_card_layout_margin_start">16dp</dimen>
+  <dimen name="topic_revision_summary_card_layout_margin_end">16dp</dimen>
+
 </resources>
