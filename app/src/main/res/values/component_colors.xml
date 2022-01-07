@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="label_text_color">@color/primary_text_color</color>
-  <color name="heading_text_color">@color/oppia_heading_text_color</color>
+  <color name="heading_text_color">@color/highlighted_text_color</color>
   <color name="switch_description_color">@color/description_text_color</color>
   <color name="menu_options_text_color">@color/dark_text_color</color>
   <color name="text_input_layout_background_color">@color/text_input_background</color>
