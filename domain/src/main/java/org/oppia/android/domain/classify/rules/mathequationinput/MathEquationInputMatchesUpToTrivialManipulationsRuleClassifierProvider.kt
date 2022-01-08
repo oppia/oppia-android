@@ -11,6 +11,7 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingRes
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
 import org.oppia.android.util.math.toComparableOperationList
 import javax.inject.Inject
+import org.oppia.android.util.math.approximatelyEquals
 
 class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 @Inject constructor(
@@ -35,7 +36,7 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
     val (inputLhs, inputRhs) = parseComparableLists(input, allowedVariables) ?: return false
 
     // Sides must match (reordering around the '=' is not allowed by this classifier).
-    return answerLhs == inputLhs && answerRhs == inputRhs
+    return answerLhs.approximatelyEquals(inputLhs) && answerRhs.approximatelyEquals(inputRhs)
   }
 
   private fun parseComparableLists(

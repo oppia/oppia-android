@@ -27,7 +27,10 @@ import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 class ExpressionToPolynomialConverter private constructor() {
   companion object {
     fun MathExpression.reduceToPolynomial(): Polynomial? =
-      replaceSquareRoots().reduceToPolynomialAux()?.removeUnnecessaryVariables()?.sort()
+      replaceSquareRoots().reduceToPolynomialAux()
+        ?.removeUnnecessaryVariables()
+        ?.simplifyRationals()
+        ?.sort()
 
     private fun MathExpression.replaceSquareRoots(): MathExpression {
       return when (expressionTypeCase) {

@@ -10,6 +10,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import javax.inject.Inject
+import org.oppia.android.util.math.approximatelyEquals
 
 class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -31,7 +32,7 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject c
     val allowedVariables = classificationContext.extractAllowedVariables()
     val answerExpression = parseExpression(answer, allowedVariables) ?: return false
     val inputExpression = parseExpression(input, allowedVariables) ?: return false
-    return answerExpression == inputExpression
+    return answerExpression.approximatelyEquals(inputExpression)
   }
 
   private fun parseExpression(

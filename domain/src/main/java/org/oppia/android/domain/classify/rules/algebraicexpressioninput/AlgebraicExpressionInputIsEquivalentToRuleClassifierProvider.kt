@@ -11,6 +11,7 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingRes
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import org.oppia.android.util.math.toPolynomial
 import javax.inject.Inject
+import org.oppia.android.util.math.approximatelyEquals
 
 class AlgebraicExpressionInputIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -32,7 +33,7 @@ class AlgebraicExpressionInputIsEquivalentToRuleClassifierProvider @Inject const
     val allowedVariables = classificationContext.extractAllowedVariables()
     val answerExpression = parsePolynomial(answer, allowedVariables) ?: return false
     val inputExpression = parsePolynomial(input, allowedVariables) ?: return false
-    return answerExpression == inputExpression
+    return answerExpression.approximatelyEquals(inputExpression)
   }
 
   private fun parsePolynomial(rawExpression: String, allowedVariables: List<String>): Polynomial? {
