@@ -10,7 +10,8 @@ import org.oppia.android.app.model.MathExpression
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathParsingError.DisabledVariablesInUseError
-import org.oppia.android.util.math.MathParsingError.EquationHasWrongNumberOfEqualsError
+import org.oppia.android.util.math.MathParsingError.EquationHasTooManyEqualsError
+import org.oppia.android.util.math.MathParsingError.EquationIsMissingEqualsError
 import org.oppia.android.util.math.MathParsingError.EquationMissingLhsOrRhsError
 import org.oppia.android.util.math.MathParsingError.ExponentIsVariableExpressionError
 import org.oppia.android.util.math.MathParsingError.ExponentTooLargeError
@@ -240,13 +241,16 @@ class MathExpressionParserTest {
     assertThat((failure56 as DisabledVariablesInUseError).variables).containsExactly("x", "y", "z")
 
     val failure30 = expectFailureWhenParsingAlgebraicEquation("x==2")
-    assertThat(failure30).isInstanceOf(EquationHasWrongNumberOfEqualsError::class.java)
+    assertThat(failure30).isInstanceOf(EquationHasTooManyEqualsError::class.java)
 
     val failure31 = expectFailureWhenParsingAlgebraicEquation("x=2=y")
-    assertThat(failure31).isInstanceOf(EquationHasWrongNumberOfEqualsError::class.java)
+    assertThat(failure31).isInstanceOf(EquationHasTooManyEqualsError::class.java)
 
     val failure32 = expectFailureWhenParsingAlgebraicEquation("x=2=")
-    assertThat(failure32).isInstanceOf(EquationHasWrongNumberOfEqualsError::class.java)
+    assertThat(failure32).isInstanceOf(EquationHasTooManyEqualsError::class.java)
+
+    val failure59 = expectFailureWhenParsingAlgebraicEquation("x")
+    assertThat(failure59).isInstanceOf(EquationIsMissingEqualsError::class.java)
 
     val failure33 = expectFailureWhenParsingAlgebraicEquation("x=")
     assertThat(failure33).isInstanceOf(EquationMissingLhsOrRhsError::class.java)

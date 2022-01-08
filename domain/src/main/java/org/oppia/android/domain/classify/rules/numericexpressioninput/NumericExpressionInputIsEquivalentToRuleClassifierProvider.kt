@@ -11,6 +11,7 @@ import org.oppia.android.util.math.MathExpressionParser
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.toPolynomial
 import javax.inject.Inject
+import org.oppia.android.util.math.approximatelyEquals
 
 class NumericExpressionInputIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -31,7 +32,7 @@ class NumericExpressionInputIsEquivalentToRuleClassifierProvider @Inject constru
   ): Boolean {
     val answerExpression = parsePolynomial(answer) ?: return false
     val inputExpression = parsePolynomial(input) ?: return false
-    return answerExpression == inputExpression
+    return answerExpression.approximatelyEquals(inputExpression)
   }
 
   private fun parsePolynomial(rawExpression: String): Polynomial? {

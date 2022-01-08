@@ -39,6 +39,22 @@ fun Polynomial.isApproximatelyZero(): Boolean =
   termList.all { it.coefficient.isApproximatelyZero() } // Zero polynomials only have 0 coefs.
 
 /**
+ * Returns whether this [Polynomial] approximately equals an other, that is, that the polynomial has
+ * the exact same terms and approximately equal coefficients (see [Real.approximatelyEquals]).
+ */
+fun Polynomial.approximatelyEquals(other: Polynomial): Boolean {
+  if (termCount != other.termCount) return false
+
+  // Terms can be zipped since they should be sorted prior to checking equivalence.
+  return termList.zip(other.termList).all { (first, second) -> first.approximatelyEquals(second) }
+}
+
+private fun Term.approximatelyEquals(other: Term): Boolean {
+  // The variable lists can be exactly matched since they're sorted.
+  return coefficient.approximatelyEquals(other.coefficient) && variableList == other.variableList
+}
+
+/**
  * Returns the first term coefficient from this polynomial. This corresponds to the whole value of
  * the polynomial iff isConstant() returns true, otherwise this value isn't useful.
  *
@@ -65,7 +81,7 @@ private fun Term.toPlainText(): String {
   // Include the coefficient if there is one (coefficients of 1 are ignored only if there are
   // variables present).
   productValues += when {
-    variableList.isEmpty() || !abs(coefficient).isApproximatelyEqualTo(1.0) -> when {
+    variableList.isEmpty() || !abs(coefficient).approximatelyEquals(1.0) -> when {
       coefficient.isRational() && variableList.isNotEmpty() -> "(${coefficient.toPlainText()})"
       else -> coefficient.toPlainText()
     }
@@ -118,6 +134,18 @@ fun Polynomial.removeUnnecessaryVariables(): Polynomial {
       }
     )
   }.build().ensureAtLeastConstant()
+}
+
+fun Polynomial.simplifyRationals(): Polynomial {
+  return Polynomial.newBuilder().apply {
+    addAllTerm(
+      this@simplifyRationals.termList.map { term ->
+        term.toBuilder().apply {
+          coefficient = term.coefficient.maybeSimplifyRationalToInteger()
+        }.build()
+      }
+    )
+  }.build()
 }
 
 fun Polynomial.sort(): Polynomial = Polynomial.newBuilder().apply {
@@ -305,7 +333,11 @@ private fun Term.pow(rational: Fraction): Term? {
   if (newVariablePowers.any { !it.isOnlyWholeNumber() }) return null
 
   return Term.newBuilder().apply {
-    coefficient = this@pow.coefficient
+    coefficient = this@pow.coefficient.pow(
+      Real.newBuilder().apply {
+        this.rational = rational
+      }.build()
+    )
     addAllVariable(
       this@pow.variableList.zip(newVariablePowers).map { (variable, newPower) ->
         variable.toBuilder().apply {
@@ -355,4 +387,17 @@ private fun List<Variable>.toPowerMap(): Map<String, Int> {
 
 private fun Map<String, Int>.toVariableList(): List<Variable> {
   return map { (name, power) -> Variable.newBuilder().setName(name).setPower(power).build() }
+}
+
+private fun Real.maybeSimplifyRationalToInteger(): Real = when (realTypeCase) {
+  Real.RealTypeCase.RATIONAL -> {
+    if (rational.isOnlyWholeNumber()) {
+      Real.newBuilder().apply {
+        integer = this@maybeSimplifyRationalToInteger.rational.toWholeNumber()
+      }.build()
+    } else this
+  }
+  // Nothing to do in these cases.
+  Real.RealTypeCase.IRRATIONAL, Real.RealTypeCase.INTEGER, Real.RealTypeCase.REALTYPE_NOT_SET,
+  null -> this
 }
