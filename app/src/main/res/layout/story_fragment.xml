@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -57,12 +58,14 @@
         android:id="@+id/story_chapter_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
         android:background="@color/white"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="@dimen/bottom_white_space"
+        android:paddingBottom="@dimen/story_fragment_padding_bottom"
         android:scrollbars="none"
-        app:data="@{viewModel.storyChapterLiveData}" />
+        app:data="@{viewModel.storyChapterLiveData}"
+        tools:listitem="@layout/story_chapter_view" />
 
       <View
         android:id="@+id/story_shadow_view"

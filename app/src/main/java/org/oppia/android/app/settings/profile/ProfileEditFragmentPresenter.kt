@@ -17,6 +17,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
+/** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
 
 /** The presenter for [ProfileEditFragment]. */
@@ -31,6 +32,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
   @Inject
   lateinit var profileEditViewModel: ProfileEditViewModel
 
+  /** This handles OnCreateView() of [ProfileEditFragment]. */
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -113,6 +115,11 @@ class ProfileEditFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_PROFILE_DELETION_DIALOG)
   }
 
+  /**
+   * Requests the specific profile to be deleted from the app and then routes the user either to
+   * administrator controls activity or profile list activity depending on whether they are
+   * currently using a tablet device.
+   */
   fun deleteProfile(internalProfileId: Int) {
     profileManagementController
       .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()

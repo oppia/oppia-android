@@ -28,7 +28,7 @@
         android:id="@+id/hints_and_solution_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppiaDarkBlue"
+        android:background="@color/oppia_dark_blue"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:title="@string/hints_toolbar_title"
@@ -39,7 +39,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:background="@color/hintsAndSolutionBackground"
+      android:background="@color/hints_and_solution_background"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
