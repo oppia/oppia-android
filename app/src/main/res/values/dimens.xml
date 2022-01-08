@@ -592,5 +592,8 @@
 
   <!--  ReadingTextSizeFragment-->
   <dimen name="reading_text_size_fragment_padding_bottom">132dp</dimen>
-
+   
+  <!-- StoryFragment -->
+  <dimen name="story_fragment_padding_bottom">160dp</dimen>
+  
 </resources>
