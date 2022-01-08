@@ -1,5 +1,6 @@
 package org.oppia.android.util.math
 
+import kotlin.math.absoluteValue
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Real
 import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
@@ -86,15 +87,9 @@ fun Real.pow(rhs: Real): Real {
     RATIONAL -> {
       // Left-hand side is Fraction.
       when (rhs.realTypeCase) {
-        RATIONAL -> recompute {
-          if (rhs.rational.isOnlyWholeNumber()) {
-            // The fraction can be retained.
-            it.setRational(rational.pow(rhs.rational.wholeNumber))
-          } else {
-            // The fraction can't realistically be retained since it's being raised to an actual
-            // fraction, resulting in an irrational number.
-            it.setIrrational(rational.toDouble().pow(rhs.rational.toDouble()))
-          }
+        // Anything raised by a fraction is pow'd by the numerator and rooted by the denominator.
+        RATIONAL -> rhs.rational.toImproperForm().let { power ->
+          rational.pow(power.numerator).root(power.denominator, power.isNegative)
         }
         IRRATIONAL -> recompute { it.setIrrational(rational.pow(rhs.irrational)) }
         INTEGER -> recompute { it.setRational(rational.pow(rhs.integer)) }
@@ -113,14 +108,12 @@ fun Real.pow(rhs: Real): Real {
     INTEGER -> {
       // Left-hand side is an integer.
       when (rhs.realTypeCase) {
-        RATIONAL -> {
-          if (rhs.rational.isOnlyWholeNumber()) {
-            // Whole number-only fractions are effectively just int^int.
-            integer.pow(rhs.rational.wholeNumber)
-          } else {
-            // Otherwise, raising by a fraction will result in an irrational number.
-            recompute { it.setIrrational(integer.toDouble().pow(rhs.rational.toDouble())) }
-          }
+        // An integer raised to a fraction can use the same approach as above (fraction raised to
+        // fraction) by treating the integer as a whole number fraction.
+        RATIONAL -> rhs.rational.toImproperForm().let { power ->
+          integer.toWholeNumberFraction()
+            .pow(power.numerator)
+            .root(power.denominator, power.isNegative)
         }
         IRRATIONAL -> recompute { it.setIrrational(integer.toDouble().pow(rhs.irrational)) }
         INTEGER -> integer.pow(rhs.integer)
@@ -198,43 +191,60 @@ private fun Int.pow(exp: Int): Real {
   }
 }
 
-private fun sqrt(fraction: Fraction): Real {
-  val improper = fraction.toImproperForm()
+private fun sqrt(fraction: Fraction): Real = fraction.root(base = 2, invert = false)
 
-  // Attempt to take the root of the fraction's numerator & denominator.
-  val numeratorRoot = sqrt(improper.numerator)
-  val denominatorRoot = sqrt(improper.denominator)
+private fun Fraction.root(base: Int, invert: Boolean): Real {
+  check(base > 1) { "Expected base of 2 or higher, not: $base" }
 
-  // If both values stayed as integers, the original fraction can be retained. Otherwise, the
-  // fraction must be evaluated by performing a division.
-  return Real.newBuilder().apply {
-    if (numeratorRoot.realTypeCase == denominatorRoot.realTypeCase && numeratorRoot.isInteger()) {
-      val rootedFraction = Fraction.newBuilder().apply {
-        isNegative = improper.isNegative
-        numerator = numeratorRoot.integer
-        denominator = denominatorRoot.integer
+  val adjustedFraction = toImproperForm()
+  val adjustedNum =
+    if (adjustedFraction.isNegative) -adjustedFraction.numerator else adjustedFraction.numerator
+  val adjustedDenom = adjustedFraction.denominator
+  val rootedNumerator = if (invert) root(adjustedDenom, base) else root(adjustedNum, base)
+  val rootedDenominator = if (invert) root(adjustedNum, base) else root(adjustedDenom, base)
+  return if (rootedNumerator.isInteger() && rootedDenominator.isInteger()) {
+    Real.newBuilder().apply {
+      rational = Fraction.newBuilder().apply {
+        isNegative = rootedNumerator.isNegative() || rootedDenominator.isNegative()
+        numerator = rootedNumerator.integer.absoluteValue
+        denominator = rootedDenominator.integer.absoluteValue
       }.build().toProperForm()
-      if (rootedFraction.isOnlyWholeNumber()) {
-        // If the fractional form doesn't need to be kept, remove it.
-        integer = rootedFraction.toWholeNumber()
-      } else {
-        rational = rootedFraction
-      }
-    } else {
-      irrational = numeratorRoot.toDouble()
-    }
-  }.build()
+    }.build()
+  } else {
+    // One or both of the components of the fraction can't be rooted, so compute an irrational
+    // version.
+    Real.newBuilder().apply {
+      irrational = rootedNumerator.toDouble() / rootedDenominator.toDouble()
+    }.build()
+  }
 }
 
-private fun sqrt(int: Int): Real {
-  // First, check if the integer is a square. Reference for possible methods:
+private fun sqrt(int: Int): Real = root(int, base = 2)
+
+private fun root(int: Int, base: Int): Real {
+  // First, check if the integer is a root. Base reference for possible methods:
   // https://www.researchgate.net/post/How-to-decide-if-a-given-number-will-have-integer-square-root-or-not.
-  var potentialRoot = 2
-  while ((potentialRoot * potentialRoot) < int) {
+  check(base > 1) { "Expected base of 2 or higher, not: $base" }
+  check((int < 0 && base.isOdd()) || int >= 0) { "Radicand results in imaginary number: $int" }
+
+  if (int == 1) {
+    // 1^x is always 1.
+    return Real.newBuilder().apply {
+      integer = 1
+    }.build()
+  }
+
+  val radicand = int.absoluteValue
+  var potentialRoot = base
+  while (potentialRoot.pow(base).integer < radicand) {
     potentialRoot++
   }
-  if (potentialRoot * potentialRoot == int) {
+  if (potentialRoot.pow(base).integer == radicand) {
     // There's an exact integer representation of the root.
+    if (int < 0 && base.isOdd()) {
+      // Odd roots of negative numbers retain the negative.
+      potentialRoot = -potentialRoot
+    }
     return Real.newBuilder().apply {
       integer = potentialRoot
     }.build()
@@ -242,9 +252,13 @@ private fun sqrt(int: Int): Real {
 
   // Otherwise, compute the irrational square root.
   return Real.newBuilder().apply {
-    irrational = kotlin.math.sqrt(int.toDouble())
+    irrational = if (base == 2) {
+      kotlin.math.sqrt(int.toDouble())
+    } else int.toDouble().pow(1.0 / base.toDouble())
   }.build()
 }
+
+private fun Int.isOdd() = this % 2 == 1
 
 private fun Real.recompute(transform: (Real.Builder) -> Real.Builder): Real {
   return transform(newBuilderForType()).build()
