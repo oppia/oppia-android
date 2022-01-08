@@ -29,7 +29,7 @@ class ReadingTextSizeActivityPresenter @Inject constructor(
   }
 
   private fun setToolbar() {
-    val readingTextSizeToolbar: Toolbar = activity.findViewById(R.id.reading_text_size_toolbar) as Toolbar
+    val readingTextSizeToolbar: Toolbar = activity.findViewById(R.id.reading_text_size_toolbar)
     readingTextSizeToolbar.setNavigationOnClickListener {
       activity.onBackPressed()
     }
