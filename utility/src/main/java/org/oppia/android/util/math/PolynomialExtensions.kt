@@ -120,6 +120,18 @@ fun Polynomial.removeUnnecessaryVariables(): Polynomial {
   }.build().ensureAtLeastConstant()
 }
 
+fun Polynomial.simplifyRationals(): Polynomial {
+  return Polynomial.newBuilder().apply {
+    addAllTerm(
+      this@simplifyRationals.termList.map { term ->
+        term.toBuilder().apply {
+          coefficient = term.coefficient.maybeSimplifyRationalToInteger()
+        }.build()
+      }
+    )
+  }.build()
+}
+
 fun Polynomial.sort(): Polynomial = Polynomial.newBuilder().apply {
   addAllTerm(this@sort.termList.sortedWith(POLYNOMIAL_TERM_COMPARATOR))
 }.build()
@@ -305,7 +317,11 @@ private fun Term.pow(rational: Fraction): Term? {
   if (newVariablePowers.any { !it.isOnlyWholeNumber() }) return null
 
   return Term.newBuilder().apply {
-    coefficient = this@pow.coefficient
+    coefficient = this@pow.coefficient.pow(
+      Real.newBuilder().apply {
+        this.rational = rational
+      }.build()
+    )
     addAllVariable(
       this@pow.variableList.zip(newVariablePowers).map { (variable, newPower) ->
         variable.toBuilder().apply {
@@ -355,4 +371,17 @@ private fun List<Variable>.toPowerMap(): Map<String, Int> {
 
 private fun Map<String, Int>.toVariableList(): List<Variable> {
   return map { (name, power) -> Variable.newBuilder().setName(name).setPower(power).build() }
+}
+
+private fun Real.maybeSimplifyRationalToInteger(): Real = when (realTypeCase) {
+  Real.RealTypeCase.RATIONAL -> {
+    if (rational.isOnlyWholeNumber()) {
+      Real.newBuilder().apply {
+        integer = this@maybeSimplifyRationalToInteger.rational.toWholeNumber()
+      }.build()
+    } else this
+  }
+  // Nothing to do in these cases.
+  Real.RealTypeCase.IRRATIONAL, Real.RealTypeCase.INTEGER, Real.RealTypeCase.REALTYPE_NOT_SET,
+  null -> this
 }
