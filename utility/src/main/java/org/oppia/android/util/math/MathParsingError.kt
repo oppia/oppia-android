@@ -36,11 +36,13 @@ sealed class MathParsingError {
   object SubsequentUnaryOperatorsError : MathParsingError()
 
   data class NoVariableOrNumberBeforeBinaryOperatorError(
-    val operator: MathBinaryOperation.Operator
+    val operator: MathBinaryOperation.Operator,
+    val operatorSymbol: String
   ) : MathParsingError()
 
   data class NoVariableOrNumberAfterBinaryOperatorError(
-    val operator: MathBinaryOperation.Operator
+    val operator: MathBinaryOperation.Operator,
+    val operatorSymbol: String
   ) : MathParsingError()
 
   object ExponentIsVariableExpressionError : MathParsingError()
@@ -57,7 +59,9 @@ sealed class MathParsingError {
 
   data class DisabledVariablesInUseError(val variables: List<String>) : MathParsingError()
 
-  object EquationHasWrongNumberOfEqualsError : MathParsingError()
+  object EquationIsMissingEqualsError: MathParsingError()
+
+  object EquationHasTooManyEqualsError: MathParsingError()
 
   object EquationMissingLhsOrRhsError : MathParsingError()
 
