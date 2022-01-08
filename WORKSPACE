@@ -133,7 +133,7 @@ git_repository(
 # min target SDK version to be compatible with Oppia.
 git_repository(
     name = "kotlitex",
-    commit = "26d3eb4cc148e6dae198f96a23c29d6c05cbcc56",
+    commit = "d9466ac308ed9d52da8135f4e8bee036fe000973",
     remote = "https://github.com/oppia/kotlitex",
 )
 
