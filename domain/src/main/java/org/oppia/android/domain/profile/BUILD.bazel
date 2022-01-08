@@ -1,5 +1,5 @@
 """
-Utilities for managing profile.
+Domain definitions and controllers for managing profiles.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
