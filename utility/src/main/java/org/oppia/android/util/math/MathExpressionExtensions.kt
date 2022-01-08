@@ -28,6 +28,35 @@ fun MathExpression.toComparableOperationList(): ComparableOperationList =
 
 fun MathExpression.toPolynomial(): Polynomial? = stripGroups().reduceToPolynomial()
 
+/**
+ * Returns whether this [MathExpression] approximately equals another, that is, that it fully
+ * matches in its AST representation but all constants are compared using
+ * [Real.approximatelyEquals]. Further, this does not check parser markers when considering
+ * equivalence.
+ */
+fun MathExpression.approximatelyEquals(other: MathExpression): Boolean {
+  if (expressionTypeCase != other.expressionTypeCase) return false
+  return when (expressionTypeCase) {
+    CONSTANT -> constant.approximatelyEquals(other.constant)
+    VARIABLE -> variable == other.variable
+    BINARY_OPERATION -> {
+      binaryOperation.operator == other.binaryOperation.operator
+        && binaryOperation.leftOperand.approximatelyEquals(other.binaryOperation.leftOperand)
+        && binaryOperation.rightOperand.approximatelyEquals(other.binaryOperation.rightOperand)
+    }
+    UNARY_OPERATION -> {
+      unaryOperation.operator == other.unaryOperation.operator
+        && unaryOperation.operand.approximatelyEquals(other.unaryOperation.operand)
+    }
+    FUNCTION_CALL -> {
+      functionCall.functionType == other.functionCall.functionType
+        && functionCall.argument.approximatelyEquals(other.functionCall.argument)
+    }
+    GROUP -> group.approximatelyEquals(other.group)
+    EXPRESSIONTYPE_NOT_SET, null -> true
+  }
+}
+
 private fun MathExpression.stripGroups(): MathExpression {
   return when (expressionTypeCase) {
     BINARY_OPERATION -> toBuilder().apply {
