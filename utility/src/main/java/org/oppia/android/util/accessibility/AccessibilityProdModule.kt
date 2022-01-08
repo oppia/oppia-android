@@ -7,5 +7,5 @@ import dagger.Module
 @Module
 interface AccessibilityProdModule {
   @Binds
-  fun provideProductionAccessibilityChecker(impl: AccessibilityServiceImpl): AccessibilityService
+  fun provideProductionAccessibilityService(impl: AccessibilityServiceImpl): AccessibilityService
 }
