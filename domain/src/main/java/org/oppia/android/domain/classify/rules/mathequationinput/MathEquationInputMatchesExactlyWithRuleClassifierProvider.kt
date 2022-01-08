@@ -10,6 +10,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
 import javax.inject.Inject
+import org.oppia.android.util.math.approximatelyEquals
 
 class MathEquationInputMatchesExactlyWithRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -31,7 +32,7 @@ class MathEquationInputMatchesExactlyWithRuleClassifierProvider @Inject construc
     val allowedVariables = classificationContext.extractAllowedVariables()
     val answerEquation = parseEquation(answer, allowedVariables) ?: return false
     val inputEquation = parseEquation(input, allowedVariables) ?: return false
-    return answerEquation == inputEquation
+    return answerEquation.approximatelyEquals(inputEquation)
   }
 
   private fun parseEquation(
@@ -58,6 +59,11 @@ class MathEquationInputMatchesExactlyWithRuleClassifierProvider @Inject construc
         ?.schemaObjectList
         ?.map { it.normalizedString }
         ?: listOf()
+    }
+
+    private fun MathEquation.approximatelyEquals(other: MathEquation): Boolean {
+      return leftSide.approximatelyEquals(other.leftSide)
+        && rightSide.approximatelyEquals(other.rightSide)
     }
   }
 }

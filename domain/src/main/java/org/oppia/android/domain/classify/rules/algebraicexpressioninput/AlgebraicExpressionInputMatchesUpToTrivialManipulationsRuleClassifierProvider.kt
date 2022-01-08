@@ -11,6 +11,7 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingRes
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import org.oppia.android.util.math.toComparableOperationList
 import javax.inject.Inject
+import org.oppia.android.util.math.approximatelyEquals
 
 class AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 @Inject constructor(
@@ -33,7 +34,7 @@ class AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvi
     val allowedVariables = classificationContext.extractAllowedVariables()
     val answerExpression = parseComparableOperationList(answer, allowedVariables) ?: return false
     val inputExpression = parseComparableOperationList(input, allowedVariables) ?: return false
-    return answerExpression == inputExpression
+    return answerExpression.approximatelyEquals(inputExpression)
   }
 
   private fun parseComparableOperationList(
