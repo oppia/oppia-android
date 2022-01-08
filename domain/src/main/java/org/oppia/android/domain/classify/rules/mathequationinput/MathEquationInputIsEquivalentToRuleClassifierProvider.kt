@@ -11,6 +11,7 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingRes
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
 import org.oppia.android.util.math.toPolynomial
 import javax.inject.Inject
+import org.oppia.android.util.math.approximatelyEquals
 
 class MathEquationInputIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -34,8 +35,8 @@ class MathEquationInputIsEquivalentToRuleClassifierProvider @Inject constructor(
     val (inputLhs, inputRhs) = parsePolynomials(input, allowedVariables) ?: return false
 
     // Sides may cross-match (i.e. it's fine to reorder around the '=').
-    return (answerLhs == inputLhs && answerRhs == inputRhs) ||
-      (answerLhs == inputRhs && answerRhs == inputLhs)
+    return (answerLhs.approximatelyEquals(inputLhs) && answerRhs.approximatelyEquals(inputRhs)) ||
+      (answerLhs.approximatelyEquals(inputRhs) && answerRhs.approximatelyEquals(inputLhs))
   }
 
   private fun parsePolynomials(

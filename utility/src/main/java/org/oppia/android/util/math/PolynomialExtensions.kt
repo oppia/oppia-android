@@ -39,6 +39,22 @@ fun Polynomial.isApproximatelyZero(): Boolean =
   termList.all { it.coefficient.isApproximatelyZero() } // Zero polynomials only have 0 coefs.
 
 /**
+ * Returns whether this [Polynomial] approximately equals an other, that is, that the polynomial has
+ * the exact same terms and approximately equal coefficients (see [Real.approximatelyEquals]).
+ */
+fun Polynomial.approximatelyEquals(other: Polynomial): Boolean {
+  if (termCount != other.termCount) return false
+
+  // Terms can be zipped since they should be sorted prior to checking equivalence.
+  return termList.zip(other.termList).all { (first, second) -> first.approximatelyEquals(second) }
+}
+
+private fun Term.approximatelyEquals(other: Term): Boolean {
+  // The variable lists can be exactly matched since they're sorted.
+  return coefficient.approximatelyEquals(other.coefficient) && variableList == other.variableList
+}
+
+/**
  * Returns the first term coefficient from this polynomial. This corresponds to the whole value of
  * the polynomial iff isConstant() returns true, otherwise this value isn't useful.
  *
@@ -65,7 +81,7 @@ private fun Term.toPlainText(): String {
   // Include the coefficient if there is one (coefficients of 1 are ignored only if there are
   // variables present).
   productValues += when {
-    variableList.isEmpty() || !abs(coefficient).isApproximatelyEqualTo(1.0) -> when {
+    variableList.isEmpty() || !abs(coefficient).approximatelyEquals(1.0) -> when {
       coefficient.isRational() && variableList.isNotEmpty() -> "(${coefficient.toPlainText()})"
       else -> coefficient.toPlainText()
     }
