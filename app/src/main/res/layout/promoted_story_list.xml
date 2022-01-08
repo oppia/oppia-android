@@ -25,6 +25,7 @@
 
       <TextView
         android:id="@+id/recently_played_stories_text_view"
+        style="@style/TextViewStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/promoted_story_list_layout_margin_start"
@@ -36,6 +37,7 @@
 
       <TextView
         android:id="@+id/view_all_text_view"
+        style="@style/TextViewCenterVertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
