@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
@@ -12,7 +13,6 @@ import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
-import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
@@ -25,6 +25,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private val ADMINISTRATOR_CONTROLS_BACKSTACK: String = "ADMINISTRATOR_CONTROLS_BACKSTACK"
 
   private lateinit var binding: AdministratorControlsActivityBinding
+
+  /** Initializes the [AdministratorControlsActivity] and sets the navigation drawer. */
   fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
     binding = DataBindingUtil.setContentView(
       activity,
@@ -53,6 +55,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     }
   }
 
+  /** Sets up the navigation drawer. */
   private fun setUpNavigationDrawer() {
     val toolbar = binding.administratorControlsActivityToolbar as Toolbar
     activity.setSupportActionBar(toolbar)
@@ -68,6 +71,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     )
   }
 
+  /** Returns [AdministratorControlsFragment] instance. */
   private fun getAdministratorControlsFragment(): AdministratorControlsFragment? {
     return activity
       .supportFragmentManager
@@ -76,6 +80,10 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       ) as AdministratorControlsFragment?
   }
 
+  /**
+   * Loads the profile list fragment as the [AdministratorControlsActivity] is
+   * started in multipane tablet mode.
+   */
   fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
@@ -86,6 +94,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     ).commitNow()
   }
 
+  /** Loads the [AppVersionFragment] in the multipane tablet mode. */
   fun loadAppVersion() {
     lastLoadedFragment = APP_VERSION_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
@@ -96,6 +105,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     ).commitNow()
   }
 
+  /** Loads the [ProfileEditFragment] when the user clicks on a profile in tablet multipane mode. */
   fun loadProfileEdit(profileId: Int) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
     binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
@@ -109,19 +119,21 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       .commit()
   }
 
+  /** Handles the back button according to the back stack of fragments. */
   fun handleOnBackPressed() {
     if (activity.supportFragmentManager.backStackEntryCount > 0)
       activity.supportFragmentManager.popBackStackImmediate()
   }
 
+  /** Checks and sets the visibility of back button in multipane tablet mode. */
   fun handleOnResume() {
     activity.supportFragmentManager.addOnBackStackChangedListener {
       if (activity.supportFragmentManager.backStackEntryCount == 0)
         binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.GONE
-      val multipane_id = R.id.administrator_controls_fragment_multipane_placeholder
-      val multipane_fragment =
-        activity.supportFragmentManager.findFragmentById(multipane_id)
-      if (multipane_fragment is ProfileListFragment) {
+      val multipaneId = R.id.administrator_controls_fragment_multipane_placeholder
+      val multipaneFragment =
+        activity.supportFragmentManager.findFragmentById(multipaneId)
+      if (multipaneFragment is ProfileListFragment) {
         setExtraControlsTitle("Edit profiles")
       }
     }
@@ -132,10 +144,12 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     }
   }
 
+  /** Sets the title of the extra controls in multipane tablet mode. */
   fun setExtraControlsTitle(title: String) {
     binding.extraControlsTitle?.text = title
   }
 
+  /** Saves the state of the views on configuration changes. */
   fun handleOnSaveInstanceState(outState: Bundle) {
     val titleTextView = binding.extraControlsTitle
     if (titleTextView != null) {
