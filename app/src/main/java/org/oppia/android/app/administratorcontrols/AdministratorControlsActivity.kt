@@ -3,6 +3,7 @@ package org.oppia.android.app.administratorcontrols
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
@@ -11,16 +12,24 @@ import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
-import javax.inject.Inject
 
+/** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
+
+/** Argument key for last loaded fragment in [AdministratorControlsActivity]. */
 const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
+
+/** Argument key for [ProfileListFragment]. */
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
+
+/** Argument key for [ProfileEditFragment]. */
 const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
+
+/** Argument key for [ProfileEditFragment]. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
-/** Activity for Administrator Controls. */
+/** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
 class AdministratorControlsActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
@@ -96,13 +105,14 @@ class AdministratorControlsActivity :
   }
 
   companion object {
-
+    /** Returns an [Intent] to start this activity. */
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
     }
 
+    /** Returns an Argument key for internal ProfileId of User. */
     fun getIntentKey(): String {
       return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
