@@ -10,8 +10,9 @@
 
   <TextView
     android:id="@+id/text_view_for_string_no_data_binding"
+    style="@style/TextViewStart"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@{viewModel.boundStringValue}"
-    android:textColor="@color/colorPrimary" />
+    android:textColor="@color/oppia_primary" />
 </layout>

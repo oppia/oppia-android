@@ -21,13 +21,14 @@
 
     <TextView
       android:id="@+id/coming_soon_topic_text_view"
+      style="@style/TextViewStart"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
       android:gravity="center|start"
       android:minHeight="48dp"
       android:text="@string/coming_soon"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="18sp"
       android:paddingStart="@dimen/coming_soon_text_padding_start"
       android:paddingEnd="@dimen/coming_soon_text_padding_end"

@@ -30,7 +30,7 @@
 
       <TextView
         android:id="@+id/view_event_logs_time_text_view"
-        style="@style/Subtitle2"
+        style="@style/Subtitle2ViewStart"
         android:layout_weight="1"
         android:background="@color/white"
         android:paddingStart="16dp"
@@ -38,11 +38,11 @@
         android:paddingEnd="16dp"
         android:paddingBottom="6dp"
         android:text="@{viewModel.processDateAndTime()}"
-        android:textColor="@color/oppiaSecondaryText" />
+        android:textColor="@color/oppia_secondary_text" />
 
       <TextView
         android:id="@+id/view_event_logs_priority_text_view"
-        style="@style/Subtitle2"
+        style="@style/Subtitle2ViewCenter"
         android:layout_width="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="16dp"
@@ -58,7 +58,7 @@
 
     <TextView
       android:id="@+id/view_event_logs_context_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:paddingStart="16dp"
@@ -66,7 +66,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="6dp"
       android:text="@{viewModel.formatContextString()}"
-      android:textColor="@color/oppiaPrimaryTextDark"
+      android:textColor="@color/oppia_primary_text_dark"
       android:visibility="@{viewModel.eventLog.context.activityContextCase != EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toTopOf="@id/view_event_logs_action_name_text_view"
       app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +75,7 @@
 
     <TextView
       android:id="@+id/view_event_logs_action_name_text_view"
-      style="@style/Subtitle1"
+      style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:paddingStart="16dp"
@@ -83,7 +83,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@{viewModel.formatActionNameString()}"
-      android:textColor="@color/oppiaPrimaryTextDark"
+      android:textColor="@color/oppia_primary_text_dark"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/view_event_logs_context_text_view" />

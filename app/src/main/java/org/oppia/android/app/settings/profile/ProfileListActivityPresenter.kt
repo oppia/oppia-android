@@ -12,6 +12,8 @@ class ProfileListActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
+
+  /** Handles onCreate method of [ProfileListActivity]. */
   fun handleOnCreate() {
     activity.title = resourceHandler.getStringInLocale(R.string.profile_list_activity_title)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
