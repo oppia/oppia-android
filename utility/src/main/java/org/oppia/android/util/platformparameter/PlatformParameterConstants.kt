@@ -67,4 +67,4 @@ const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = false
 annotation class EnableEditAccountsOptionsUi
 
 /** Default value for the feature flag corresponding to [EnableEditAccountsOptionsUi]. */
-const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
+const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = true

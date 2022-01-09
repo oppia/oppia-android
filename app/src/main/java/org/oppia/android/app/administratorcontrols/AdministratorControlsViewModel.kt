@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import java.util.Collections.emptyList
+import javax.inject.Inject
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
@@ -22,7 +24,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
 @FragmentScope
@@ -32,7 +33,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   private val IntentFactoryShim: IntentFactoryShim,
-  @EnableEditAccountsOptionsUi private val enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>
+  @EnableEditAccountsOptionsUi private val enableEditAccountsOptionsUi:
+  PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -68,24 +70,21 @@ class AdministratorControlsViewModel @Inject constructor(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
 
-    val itemViewModelList: MutableList<AdministratorControlsItemViewModel>
+    val itemViewModelList: MutableList<AdministratorControlsItemViewModel> =
+      emptyList<AdministratorControlsItemViewModel>().toMutableList()
 
     if (enableEditAccountsOptionsUi.value) {
-      itemViewModelList = mutableListOf(
-        AdministratorControlsGeneralViewModel(),
-        AdministratorControlsProfileViewModel(
-          routeToProfileListListener,
-          loadProfileListListener
-        )
-      )
-    }else{
-      itemViewModelList = mutableListOf(
-        AdministratorControlsProfileViewModel(
-          routeToProfileListListener,
-          loadProfileListListener
-        )
+      itemViewModelList.add(
+        AdministratorControlsGeneralViewModel()
       )
     }
+
+    itemViewModelList.add(
+      AdministratorControlsProfileViewModel(
+        routeToProfileListListener,
+        loadProfileListListener
+      )
+    )
 
     itemViewModelList.add(
       AdministratorControlsDownloadPermissionsViewModel(
@@ -96,6 +95,7 @@ class AdministratorControlsViewModel @Inject constructor(
         deviceSettings
       )
     )
+
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
     itemViewModelList.add(
       AdministratorControlsAccountActionsViewModel(
