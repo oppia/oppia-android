@@ -6,13 +6,16 @@
 
 ---
 **Developing Oppia**
-  * [[Installing Oppia-Android|https://github.com/oppia/oppia-android/wiki]]
+  * [[Contributing to Oppia-Android|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android]]
+    * [[Installing Oppia-Android|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android]]
     * [[Troubleshooting Installation|https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation]]
+    * [[Finding Something to do|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#finding-something-to-do]]
   * Bazel
     * [[Bazel setup instructions|https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions]]
     * [[Bazel Setup Instructions for Windows|https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows]]
   * Key Workflows
     * [[Making a code change|https://github.com/oppia/oppia-android/wiki/making-a-code-change]]
+    * [[Guidance on submitting a PR|https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR]]
     * [[Creating a screenshot|https://github.com/oppia/oppia-android/wiki/Creating-a-screenshot]]
     * [[Interpreting CI Results|https://github.com/oppia/oppia-android/wiki/Interpreting-CI-Results]]
   * [[Overview of the Oppia Android codebase and architecture|https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture]]
@@ -29,10 +32,12 @@
     * [[Coding style guide|https://github.com/oppia/oppia-android/wiki/Coding-style-guide]]
     * [[Ktlint Guide|https://github.com/oppia/oppia-android/wiki/Ktlint-Guide]] 
     * [[Static Analysis Checks|https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks]]
+    * [[Accessibility Guile|https://github.com/oppia/oppia-android/wiki/Accessibility-(A11y)-Guide]]
   * [[Background Processing|https://github.com/oppia/oppia-android/wiki/Background-Processing]]
     * [[Kotlin Coroutines|https://github.com/oppia/oppia-android/wiki/Kotlin-Coroutines]]
     * [[DataProvider & LiveData|https://github.com/oppia/oppia-android/wiki/DataProvider-&-LiveData]]
     * [[PersistentCacheStore & In Memory Blocking Cache|https://github.com/oppia/oppia-android/wiki/PersistentCacheStore-&-In-Memory-Blocking-Cache]]  
+  * [[Developing skills|https://github.com/oppia/oppia-android/wiki/Developing-skills]]
   * [[Buf Guide|https://github.com/oppia/oppia-android/wiki/Buf-Guide]]
   * [[Firebase Console Guide|https://github.com/oppia/oppia-android/wiki/Firebase-Console-Guide]]
   * [[Platform Parameters & Feature Flags|https://github.com/oppia/oppia-android/wiki/Platform-Parameters-&-Feature-Flags]]
