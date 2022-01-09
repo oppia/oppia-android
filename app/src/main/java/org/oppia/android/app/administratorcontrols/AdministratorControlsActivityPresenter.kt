@@ -116,13 +116,14 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       ADMINISTRATOR_CONTROLS_BACKSTACK
     )
       .addToBackStack(ADMINISTRATOR_CONTROLS_BACKSTACK)
-      .commit()
+      .commitNow()
   }
 
   /** Handles the back button according to the back stack of fragments. */
   fun handleOnBackPressed() {
-    if (activity.supportFragmentManager.backStackEntryCount > 0)
+    if (activity.supportFragmentManager.backStackEntryCount > 0) {
       activity.supportFragmentManager.popBackStackImmediate()
+    }
   }
 
   /** Checks and sets the visibility of back button in multipane tablet mode. */
@@ -134,7 +135,11 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       val multipaneFragment =
         activity.supportFragmentManager.findFragmentById(multipaneId)
       if (multipaneFragment is ProfileListFragment) {
-        setExtraControlsTitle("Edit profiles")
+        setExtraControlsTitle(
+          activity.applicationContext.resources.getString(
+            R.string.administrator_controls_edit_profiles
+          )
+        )
       }
     }
     if (isMultipane) {

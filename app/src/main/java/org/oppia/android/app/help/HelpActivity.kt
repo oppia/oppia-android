@@ -35,9 +35,6 @@ class HelpActivity :
   LoadThirdPartyDependencyListFragmentListener,
   LoadLicenseListFragmentListener,
   LoadLicenseTextViewerFragmentListener {
-  override fun onBackPressed() {
-    super.onBackPressed()
-  }
 
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter

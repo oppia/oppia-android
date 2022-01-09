@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ProfileListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ProfileListViewModel>,
+  private val viewModelProvider: ViewModelProvider<ProfileListViewModel>
 ) {
 
   private var isMultipane = false
