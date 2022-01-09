@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAccountActionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsAppInformationViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
@@ -20,7 +21,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
 @FragmentScope
@@ -35,6 +35,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val loadProfileListListener = activity as LoadProfileListListener
   private val showLogoutDialogListener = activity as ShowLogoutDialogListener
   private lateinit var userProfileId: ProfileId
+
+  /** Sets the Index for the currently selected fragment. */
   val selectedFragmentIndex = ObservableField<Int>(1)
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
@@ -44,6 +46,7 @@ class AdministratorControlsViewModel @Inject constructor(
     )
   }
 
+  /** This partially stores the list of the controls in the [AdministratorControlsFragment] */
   val administratorControlsLiveData: LiveData<List<AdministratorControlsItemViewModel>> by lazy {
     Transformations.map(deviceSettingsLiveData, ::processAdministratorControlsList)
   }
@@ -92,6 +95,7 @@ class AdministratorControlsViewModel @Inject constructor(
     return itemViewModelList
   }
 
+  /** Sets the user profile id. */
   fun setProfileId(profileId: ProfileId) {
     userProfileId = profileId
   }
