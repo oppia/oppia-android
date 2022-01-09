@@ -31,8 +31,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  @EnableEditAccountsOptionsUi private val enableEditAccountsOptionsUi:
-  PlatformParameterValue<Boolean>
+  @EnableEditAccountsOptionsUi
+  private val enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
