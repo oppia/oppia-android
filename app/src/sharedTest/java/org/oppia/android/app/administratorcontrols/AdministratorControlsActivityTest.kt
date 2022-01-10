@@ -39,6 +39,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -109,10 +111,11 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -138,6 +141,10 @@ class AdministratorControlsActivityTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  @EnableEditAccountsOptionsUi
+  lateinit var enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>
 
   @get:Rule
   val activityTestRule = ActivityTestRule(
@@ -176,6 +183,13 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
+    /** Default value for the feature flag corresponding to
+     * [EnableLanguageSelectionUi] platform parameter. */
+    val expectedItemPositionAccordingToEditAccountsParameterValue: Int =
+      if (enableEditAccountsOptionsUi.value) {
+        1
+      } else 0
+
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -183,11 +197,11 @@ class AdministratorControlsActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnAdministratorControlListItem(
-        itemPosition = 0,
+        itemPosition = expectedItemPositionAccordingToEditAccountsParameterValue,
         targetView = R.id.profile_management_text_view
       )
       verifyTextOnAdministratorListItemAtPosition(
-        itemPosition = 0,
+        itemPosition = expectedItemPositionAccordingToEditAccountsParameterValue,
         targetViewId = R.id.edit_profiles_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_profiles
       )
