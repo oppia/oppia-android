@@ -182,6 +182,29 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
+  fun testAdministratorControlsFragment_generalOptionsIsDisplayed() {
+    if (!enableEditAccountsOptionsUi.value) {
+      return assert(true)
+    }
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_account
+      )
+    }
+  }
+
+  @Test
   fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
     /** Default value for the feature flag corresponding to
      * [EnableLanguageSelectionUi] platform parameter. */
