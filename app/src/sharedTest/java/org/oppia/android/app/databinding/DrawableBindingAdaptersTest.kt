@@ -127,38 +127,35 @@ class DrawableBindingAdaptersTest {
 
   @Test
   fun testSetBackgroundColor_hasCorrectBackgroundColor() {
-    val view = activityRule.scenario.runWithActivity {
+    activityRule.scenario.runWithActivity {
       val view: View = getView(it)
       setBackgroundColor(view, colorRgb)
-      return@runWithActivity view
+      onView(withId(R.id.view_for_drawable_binding_adapters_test)).check(
+        matches(withDrawable(colorRgb))
+      )
     }
-    onView(withId(view.id)).check(
-      matches(withDrawable(colorRgb))
-    )
   }
 
   @Test
   fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
-    val view = activityRule.scenario.runWithActivity {
+    activityRule.scenario.runWithActivity {
       val view: View = getView(it)
       setBackgroundDrawable(view, colorRgb)
-      return@runWithActivity view
+      onView(withId(R.id.view_for_drawable_binding_adapters_test)).check(
+        matches(withDrawable(colorRgb))
+      )
     }
-    onView(withId(view.id)).check(
-      matches(withDrawable(colorRgb))
-    )
   }
 
   @Test
   fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
-    val view = activityRule.scenario.runWithActivity {
+    activityRule.scenario.runWithActivity {
       val view: View = getView(it)
       setTopBackgroundDrawable(view, colorRgb)
-      return@runWithActivity view
+      onView(withId(R.id.view_for_drawable_binding_adapters_test)).check(
+        matches(withDrawable(colorRgb))
+      )
     }
-    onView(withId(view.id)).check(
-      matches(withDrawable(colorRgb))
-    )
   }
 
   @Test
