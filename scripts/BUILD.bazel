@@ -4,7 +4,7 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
 load("@rules_java//java:defs.bzl", "java_binary")
-load("//:build_vars.bzl", "BUILD_TOOLS_VERSION", "TARGET_API")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
 load(
     "//scripts:script_assets.bzl",
     "generate_accessibility_label_assets_list_from_text_protos",
@@ -48,9 +48,9 @@ genrule(
     srcs = [],
     outs = ["sdk_info.properties"],
     cmd = """
-    echo target_sdk={0} > \"$@\"
+    echo build_sdk_version={0} > \"$@\"
     echo build_tools_version={1} >> \"$@\"
-    """.format(TARGET_API, BUILD_TOOLS_VERSION),
+    """.format(BUILD_SDK_VERSION, BUILD_TOOLS_VERSION),
 )
 
 kt_jvm_binary(
