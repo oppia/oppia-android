@@ -13,6 +13,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -83,7 +84,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Singleton
 
 /** Tests for [TextViewBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -137,7 +137,7 @@ class TextViewBindingAdaptersTest {
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(textView,/* setText= */ fakeOppiaClock.getCurrentTimeMs() - 10000)
+      setProfileLastVisitedText(textView, /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 10000)
       return@runWithActivity textView
     }
     assertThat(textView.text.toString()).isEqualTo("Last used just now")
