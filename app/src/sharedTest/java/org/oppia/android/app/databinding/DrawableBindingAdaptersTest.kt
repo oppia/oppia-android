@@ -158,42 +158,6 @@ class DrawableBindingAdaptersTest {
     }
   }
 
-  @Test
-  fun testSetBottomBackgroundDrawable_hasCorrectTopBottomBackgroundDrawable() {
-    val view = activityRule.scenario.runWithActivity {
-      val view: View = getView(it)
-      setBottomBackgroundDrawable(view, colorRgb)
-      return@runWithActivity view
-    }
-    onView(withId(view.id)).check(
-      matches(withDrawable(colorRgb))
-    )
-  }
-
-  @Test
-  fun testSetRectangleBackgroundDrawable_hasCorrectRectangleBackgroundDrawable() {
-    val view = activityRule.scenario.runWithActivity {
-      val view: View = getView(it)
-      setRectangleBackgroundDrawable(view, colorRgb)
-      return@runWithActivity view
-    }
-    onView(withId(view.id)).check(
-      matches(withDrawable(colorRgb))
-    )
-  }
-
-  @Test
-  fun testSetBackgroundResource_hasCorrectBackgroundDrawable() {
-    val button = activityRule.scenario.runWithActivity {
-      val button: Button = it.findViewById(R.id.button_for_drawable_binding_adapters_test)
-      setBackgroundResource(button, R.drawable.thumbnail_gradient)
-      return@runWithActivity button
-    }
-    onView(withId(button.id)).check(
-      matches(withDrawable(R.drawable.thumbnail_gradient))
-    )
-  }
-
   private fun getView(it: DrawableBindingAdaptersTestActivity): View {
     return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
