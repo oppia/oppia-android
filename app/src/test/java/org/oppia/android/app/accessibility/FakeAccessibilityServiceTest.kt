@@ -1,42 +1,85 @@
 package org.oppia.android.app.accessibility
 
+import android.app.Application
 import android.view.View
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
+import dagger.Component
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.oppia.android.util.accessibility.FakeAccessibilityService
+import org.junit.Before
+import org.junit.runner.RunWith
+import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [FakeAccessibilityService]. */
+@RunWith(AndroidJUnit4::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class FakeAccessibilityServiceTest {
-  private var accessibilityManager = FakeAccessibilityService()
+  @Inject
+  lateinit var accessibilityService: FakeAccessibilityService
 
-  @Test
-  fun testInitialState() {
-    assertThat(accessibilityManager.isScreenReaderEnabled()).isFalse()
-    assertThat(accessibilityManager.getLatestAnnouncement()).isNull()
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
   }
 
   @Test
-  fun testSetScreenReaderEnabledTrue() {
-    accessibilityManager.setScreenReaderEnabled(true)
-    assertThat(accessibilityManager.isScreenReaderEnabled()).isTrue()
+  fun testFakeAccessibilityService_initialState_isScreenReaderEnabled_isFalse() {
+    assertThat(accessibilityService.isScreenReaderEnabled()).isFalse()
   }
 
   @Test
-  fun testSetScreenReaderEnabledFalse() {
-    accessibilityManager.setScreenReaderEnabled(false)
-    assertThat(accessibilityManager.isScreenReaderEnabled()).isFalse()
+  fun testFakeAccessibilityService_initialState_getLatestAnnouncement_isNull() {
+    assertThat(accessibilityService.getLatestAnnouncement()).isNull()
   }
 
   @Test
-  fun testAnnounceForAccessibilityForView() {
-    accessibilityManager.announceForAccessibilityForView(mock(View::class.java), "test")
-    assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("test")
+  fun testFakeAccessibilityService_setScreenReaderEnabledTrue_isTrue() {
+    accessibilityService.setScreenReaderEnabled(true)
+    assertThat(accessibilityService.isScreenReaderEnabled()).isTrue()
   }
 
   @Test
-  fun testResetLatestAnnouncement() {
-    accessibilityManager.resetLatestAnnouncement()
-    assertThat(accessibilityManager.getLatestAnnouncement()).isNull()
+  fun testFakeAccessibilityService_setScreenReaderEnabledFalse_isFalse() {
+    accessibilityService.setScreenReaderEnabled(false)
+    assertThat(accessibilityService.isScreenReaderEnabled()).isFalse()
+  }
+
+  @Test
+  fun testFakeAccessibilityService_announceForAccessibilityForView_latestAnnouncementIsSet() {
+    accessibilityService.announceForAccessibilityForView(mock(View::class.java), "test")
+    assertThat(accessibilityService.getLatestAnnouncement()).isEqualTo("test")
+  }
+
+  @Test
+  fun testFakeAccessibilityService_resetLatestAnnouncement_latestAnnouncementIsNull() {
+    accessibilityService.resetLatestAnnouncement()
+    assertThat(accessibilityService.getLatestAnnouncement()).isNull()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerFakeAccessibilityServiceTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
+
+  @Singleton
+  @Component(modules = [AccessibilityTestModule::class])
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(fakeAccessibilityServiceTest: FakeAccessibilityServiceTest)
   }
 }
