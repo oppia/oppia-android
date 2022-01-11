@@ -70,11 +70,6 @@ class SelectionInteractionViewModel(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
-  override fun isExplicitAnswerSubmissionRequired(): Boolean {
-    // If more than one answer is allowed, then a submission button is needed.
-    return maxAllowableSelectionCount > 1
-  }
-
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     val translationContext = this@SelectionInteractionViewModel.writtenTranslationContext
     val selectedItemSubtitledHtmls = selectedItems.map(choiceItems::get).map { it.htmlContent }
@@ -151,10 +146,6 @@ class SelectionInteractionViewModel(
       val wasSelectedItemListEmpty = isAnswerAvailable.get()
       if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
         isAnswerAvailable.set(selectedItems.isNotEmpty())
-      }
-      // Only push the answer if explicit submission isn't required.
-      if (maxAllowableSelectionCount == 1) {
-        interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
       }
       return true
     }
