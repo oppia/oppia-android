@@ -4,6 +4,7 @@ Kotlin-based scripts to help developers or perform continuous integration tasks.
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
 load("@rules_java//java:defs.bzl", "java_binary")
+load("//:build_vars.bzl", "BUILD_TOOLS_VERSION", "TARGET_API")
 load(
     "//scripts:script_assets.bzl",
     "generate_accessibility_label_assets_list_from_text_protos",
@@ -40,6 +41,27 @@ package_group(
         ":oppia_script_test_visibility",
     ],
     packages = ["//scripts/src/java/..."],
+)
+
+genrule(
+    name = "sdk_info_properties",
+    srcs = [],
+    outs = ["sdk_info.properties"],
+    cmd = """
+    echo target_sdk={0} > \"$@\"
+    echo build_tools_version={1} >> \"$@\"
+    """.format(TARGET_API, BUILD_TOOLS_VERSION),
+)
+
+kt_jvm_binary(
+    name = "compute_aab_differences",
+    testonly = True,
+    data = [":sdk_info_properties"],
+    main_class = "org.oppia.android.scripts.apkstats.ComputeAabDifferencesKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:compute_aab_differences_lib",
+        "@android_bundletool//jar",
+    ],
 )
 
 kt_jvm_binary(

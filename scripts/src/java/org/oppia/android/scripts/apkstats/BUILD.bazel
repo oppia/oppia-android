@@ -1,0 +1,52 @@
+"""
+Libraries corresponding to developer scripts that help with computing APK & AAB stats.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "compute_aab_differences_lib",
+    testonly = True,
+    srcs = [
+        "ComputeAabDifferences.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":aapt2_client",
+        ":apk_analyzer_client",
+        ":bundle_tool_client",
+    ],
+)
+
+kt_jvm_library(
+    name = "aapt2_client",
+    testonly = True,
+    srcs = [
+        "Aapt2Client.kt",
+    ],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "apk_analyzer_client",
+    testonly = True,
+    srcs = [
+        "ApkAnalyzerClient.kt",
+    ],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "bundle_tool_client",
+    testonly = True,
+    srcs = [
+        "BundleToolClient.kt",
+    ],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)

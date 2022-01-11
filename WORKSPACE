@@ -4,6 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
+load("//:build_vars.bzl", "BUILD_TOOLS_VERSION", "TARGET_API")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
@@ -11,8 +12,8 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 28,
-    build_tools_version = "29.0.2",
+    api_level = TARGET_API,
+    build_tools_version = BUILD_TOOLS_VERSION,
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
