@@ -137,7 +137,9 @@ class TextViewBindingAdaptersTest {
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileLastVisitedText(textView, /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 10000)
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 10000)
       return@runWithActivity textView
     }
     assertThat(textView.text.toString()).isEqualTo("Last used just now")
