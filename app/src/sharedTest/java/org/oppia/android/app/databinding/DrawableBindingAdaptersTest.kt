@@ -118,15 +118,16 @@ class DrawableBindingAdaptersTest {
     Intents.release()
   }
 
-  private val colorRgb: Int = Color.parseColor("#00ff00")
+  private val colorRgb: Int = Color.parseColor("#ff000000")
 
   @Test
   fun testSetBackgroundColor_hasCorrectBackgroundColor() {
-    activityRule.scenario.runWithActivity {
+    val view = activityRule.scenario.runWithActivity {
       val view: View = getView(it)
       setBackgroundColor(view, colorRgb)
-      assertThat(view.background).isEqualTo(ColorDrawable(colorRgb))
+      return@runWithActivity view
     }
+    assertThat(view.background).isEqualTo(ColorDrawable(colorRgb))
   }
 
   @Test
