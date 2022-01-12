@@ -2,18 +2,20 @@ package org.oppia.android.scripts.common
 
 import java.io.File
 import java.io.InputStream
+import java.lang.IllegalStateException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 
 /**
  * The default amount of time that should be waited before considering a process as 'hung', in
@@ -48,9 +50,7 @@ class CommandExecutorImpl(
       process.errorStream.writeTo(dispatcher, standardErrorChannel)
       val (stdoutLinesDeferred, stderrLinesDeferred) = CoroutineScope(dispatcher).async {
         mutableListOf<String>().also { lines ->
-          standardOutputChannel.consumeAsFlow().collect {
-            lines += it
-          }
+          standardOutputChannel.consumeAsFlow().collect { lines += it }
         }.toList()
       } to CoroutineScope(dispatcher).async {
         mutableListOf<String>().also { lines ->
@@ -59,8 +59,14 @@ class CommandExecutorImpl(
       }
 
       val finished = process.waitFor(processTimeout, processTimeoutUnit)
-      val (standardOutputLines, standardErrorLines) = runBlocking {
-        stdoutLinesDeferred.await() to stderrLinesDeferred.await()
+      val (standardOutputLines, standardErrorLines) = try {
+        runBlocking {
+          withTimeout(processTimeoutUnit.toMillis(processTimeout)) {
+            stdoutLinesDeferred.await() to stderrLinesDeferred.await()
+          }
+        }
+      } catch (e: TimeoutCancellationException) {
+        throw IllegalStateException("Process did not finish within the expected timeout", e)
       }
       check(finished) { "Process did not finish within the expected timeout" }
       return CommandResult(
