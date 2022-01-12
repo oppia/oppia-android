@@ -39,6 +39,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 
 /** Tests for [ExplorationStorageModule]. */
 @RunWith(AndroidJUnit4::class)
@@ -115,7 +116,7 @@ class ExplorationStorageModuleTest {
       ExplorationStorageModule::class, TestDispatcherModule::class, RobolectricModule::class,
       LogStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

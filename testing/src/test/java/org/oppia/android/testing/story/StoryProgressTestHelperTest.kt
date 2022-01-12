@@ -75,6 +75,9 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 
 /** Tests for [StoryProgressTestHelper]. */
 @RunWith(AndroidJUnit4::class)
@@ -1772,7 +1775,8 @@ class StoryProgressTestHelperTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleProdModule::class
+      AssetModule::class, LocaleProdModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

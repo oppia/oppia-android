@@ -30,6 +30,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.model.Profile
 
 private val COLORS_LIST = listOf(
   R.color.avatar_background_1,
@@ -170,6 +171,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.viewModel = model
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
+      updateLearnerIdIfAbsent(model.profile)
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).toLiveData().observe(
           fragment,
@@ -251,5 +253,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(), EventLog.EventAction.OPEN_PROFILE_CHOOSER, eventContext = null
     )
+  }
+
+  private fun updateLearnerIdIfAbsent(profile: Profile) {
+    if (profile.learnerId.isNullOrEmpty()) {
+      profileManagementController.updateLearnerId(profile.id)
+    }
   }
 }

@@ -10,6 +10,7 @@ import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusManager
 
 /** Provides Firebase-specific logging implementations. */
 @Module
@@ -22,10 +23,14 @@ class LogReportingModule {
 
   @Singleton
   @Provides
-  fun provideEventLogger(context: Context): EventLogger {
+  fun provideEventLogger(
+    context: Context,
+    syncStatusManager: SyncStatusManager
+  ): EventLogger {
     return FirebaseEventLogger(
       FirebaseAnalytics.getInstance(Application()),
       EventBundleCreator(),
+      syncStatusManager,
       context
     )
   }

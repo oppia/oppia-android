@@ -57,6 +57,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -847,7 +848,8 @@ class AnswerClassificationControllerTest {
       FakeOppiaClockModule::class, LoggerModule::class, TestDispatcherModule::class,
       LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent {

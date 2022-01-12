@@ -57,6 +57,7 @@ import retrofit2.mock.MockRetrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 
 /** Tests for [PlatformParameterSyncUpWorkManagerInitializer]. */
 @RunWith(AndroidJUnit4::class)
@@ -238,7 +239,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       NetworkConfigProdModule::class, PlatformParameterSingletonModule::class,
-      LocaleProdModule::class
+      LocaleProdModule::class, LoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent {

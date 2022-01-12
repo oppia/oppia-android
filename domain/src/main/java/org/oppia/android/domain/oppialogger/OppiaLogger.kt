@@ -12,7 +12,8 @@ import javax.inject.Inject
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val consoleLogger: ConsoleLogger,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  private val loggingIdentifierController: LoggingIdentifierController
 ) {
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
@@ -27,7 +28,7 @@ class OppiaLogger @Inject constructor(
    * will only get logged if the value of [LearnerStudyAnalytics] platform parameter is set to true.
    * See [AnalyticsController.logTransitionEvent] for more context.
    */
-  fun logLearnerAnalyticsTransitionEvent(
+  fun logLearnerAnalyticsEvent(
     timestamp: Long,
     eventAction: EventAction,
     eventContext: EventLog.Context?
@@ -123,7 +124,7 @@ class OppiaLogger @Inject constructor(
     learnerId: String
   ): EventLog.GenericData {
     return EventLog.GenericData.newBuilder()
-      .setDeviceId(deviceId)
+      .setDeviceId(loggingIdentifierController.deviceId)
       .setLearnerId(learnerId)
       .build()
   }

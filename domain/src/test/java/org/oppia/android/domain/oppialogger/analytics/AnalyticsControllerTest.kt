@@ -74,6 +74,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
+import org.oppia.android.util.threading.BackgroundDispatcher
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -119,11 +124,30 @@ class AnalyticsControllerTest {
   @Inject
   lateinit var dataProviders: DataProviders
 
+  @Inject
+  lateinit var syncStatusManager: SyncStatusManager
+
+  @Inject
+  @field:BackgroundDispatcher
+  lateinit var backgroundDispatcher: CoroutineDispatcher
+
   @Mock
   lateinit var mockOppiaEventLogsObserver: Observer<AsyncResult<OppiaEventLogs>>
 
   @Captor
   lateinit var oppiaEventLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaEventLogs>>
+
+  @Mock
+  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
+
+  @Captor
+  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
+
+  @Mock
+  lateinit var mockSyncStatusLiveDataObserver2: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
+
+  @Captor
+  lateinit var syncStatusResultCaptor2: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
 
   private val GENERIC_DATA = EventLog.GenericData.newBuilder()
     .setDeviceId(TEST_DEVICE_ID)
@@ -849,6 +873,47 @@ class AnalyticsControllerTest {
     assertThat(secondEventLog.timestamp).isEqualTo(1556094100000)
   }
 
+  @Test
+  fun testController_logEvent_withoutNetwork_verifySyncStatusEqualsNetworkError() {
+    val syncStatus = syncStatusManager.getSyncStatus()
+    syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logTransitionEvent(
+      1556094120000,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      oppiaLogger.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
+    assertThat(syncStatusResultCaptor.value.getOrThrow()).isEqualTo(NETWORK_ERROR)
+  }
+
+  @Test
+  fun testController_logEvent_afterCompletion_verifySyncStatusEqualsDataUploaded() {
+    val syncStatus = syncStatusManager.getSyncStatus()
+    syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
+    analyticsController.logTransitionEvent(
+      1556094120000,
+      EventAction.EVENT_ACTION_UNSPECIFIED,
+      oppiaLogger.createQuestionContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    testCoroutineDispatchers.advanceUntilIdle()
+    verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
+    assertThat(syncStatusResultCaptor.value.getOrThrow()).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -938,7 +1003,8 @@ class AnalyticsControllerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

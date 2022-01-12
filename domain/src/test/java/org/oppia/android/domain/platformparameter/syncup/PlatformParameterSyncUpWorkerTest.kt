@@ -76,6 +76,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 
 /** Tests for [PlatformParameterSyncUpWorker]. */
 @RunWith(AndroidJUnit4::class)
@@ -173,9 +174,9 @@ class PlatformParameterSyncUpWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
 
-    // Retrieve the previously cached Platform Parameters from Cache Store.
     platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.runCurrent()// Retrieve the previously cached Platform Parameters from Cache Store.
+
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.
@@ -438,7 +439,7 @@ class PlatformParameterSyncUpWorkerTest {
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
       RetrofitTestModule::class, FakeOppiaClockModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      LocaleProdModule::class, PlatformParameterModule::class
+      LocaleProdModule::class, PlatformParameterModule::class, LoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

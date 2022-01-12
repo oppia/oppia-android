@@ -493,7 +493,7 @@ class OppiaLoggerTest {
   @Test
   fun testController_featureDisabled_logLearnerAnalyticsEvent_verifyEventNotLogged() {
     TestPlatformParameterModule.forceLearnerAnalyticsStudy = false
-    oppiaLogger.logLearnerAnalyticsTransitionEvent(
+    oppiaLogger.logLearnerAnalyticsEvent(
       TEST_TIMESTAMP,
       EventLog.EventAction.EVENT_ACTION_UNSPECIFIED,
       null
@@ -507,7 +507,7 @@ class OppiaLoggerTest {
     TestPlatformParameterModule.forceLearnerAnalyticsStudy = true
     setUpTestApplicationComponent()
 
-    oppiaLogger.logLearnerAnalyticsTransitionEvent(
+    oppiaLogger.logLearnerAnalyticsEvent(
       TEST_TIMESTAMP,
       EventLog.EventAction.EVENT_ACTION_UNSPECIFIED,
       null
@@ -598,7 +598,8 @@ class OppiaLoggerTest {
       TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent {

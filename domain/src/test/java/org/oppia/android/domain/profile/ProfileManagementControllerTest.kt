@@ -51,8 +51,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
 import java.io.FileInputStream
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.DeviceIdSeed
+import org.oppia.android.testing.FakeUUIDImpl
+import org.oppia.android.util.system.UUIDWrapper
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -74,6 +78,9 @@ class ProfileManagementControllerTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var fakeUUIDImpl: FakeUUIDImpl
 
   @Mock
   lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
@@ -124,6 +131,8 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddProfile_addProfile_checkProfileIsAdded() {
+    val defaultLearnerId =
+      String.format("%08x", Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -145,6 +154,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(ReadingTextSize.MEDIUM_TEXT_SIZE)
     assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.learnerId).isEqualTo(defaultLearnerId)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
   }
 
@@ -427,6 +437,28 @@ class ProfileManagementControllerTest {
     verifyGetProfileSucceeded()
     assertThat(profileResultCaptor.value.getOrThrow().appLanguage)
       .isEqualTo(AppLanguage.CHINESE_APP_LANGUAGE)
+  }
+
+  @Test
+  fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_checkUpdateIsSuccessful() {
+    val defaultLearnerId =
+      String.format("%08x", Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
+    addTestProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    profileManagementController.updateLearnerId(profileId)
+      .toLiveData()
+      .observeForever(mockUpdateResultObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyUpdateSucceeded()
+    verifyGetProfileSucceeded()
+    assertThat(profileResultCaptor.value.getOrThrow().learnerId)
+      .isEqualTo(defaultLearnerId)
   }
 
   @Test
@@ -1056,6 +1088,21 @@ class ProfileManagementControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestLoggingIdentifierModule {
+
+    companion object {
+      const val deviceIdSeed = 1L
+    }
+
+    @Provides
+    @DeviceIdSeed
+    fun provideDeviceIdSeed(): Long = deviceIdSeed
+
+    @Provides
+    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UUIDWrapper = fakeUUIDImpl
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -1063,7 +1110,8 @@ class ProfileManagementControllerTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestLoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

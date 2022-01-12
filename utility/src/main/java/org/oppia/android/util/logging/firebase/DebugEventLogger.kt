@@ -13,9 +13,14 @@ import javax.inject.Singleton
 class DebugEventLogger @Inject constructor() : EventLogger {
 
   private val eventList = mutableListOf<EventLog>()
+  private val cachedEventList = mutableListOf<EventLog>()
 
   override fun logEvent(eventLog: EventLog) {
     eventList.add(eventLog)
+  }
+
+  override fun logCachedEvent(eventLog: EventLog) {
+    cachedEventList.add(eventLog)
   }
 
   /** Returns list of event logs. */
