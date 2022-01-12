@@ -202,7 +202,7 @@ jobs:
       - name: Maven Dependencies Update Check
         if: always()
         run: |
-          bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_install.json scripts/assets/maven_dependencies.pb
+          bazel run //scripts:maven_dependencies_list_check -- $(pwd) third_party/maven_prod_install.json scripts/assets/maven_dependencies.pb
 
       - name: License Texts Check
         if: always()

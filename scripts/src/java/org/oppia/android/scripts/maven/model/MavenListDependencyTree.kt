@@ -3,12 +3,12 @@ package org.oppia.android.scripts.maven.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-/** Data class to parse the list of maven dependencies from maven_install.json. */
+/** Data class to parse the list of Maven dependencies from the Maven install manifest file. */
 @JsonClass(generateAdapter = true)
 data class MavenListDependencyTree(
   /**
-   * Parses the `dependeny_tree` key of the maven_install.json file that maps to an array of
-   * maven dependencies.
+   * Parses the `dependency_tree` key of the Maven install manifest file that maps to an array of
+   * Maven dependencies.
    */
   @Json(name = "dependency_tree") val mavenListDependencies: MavenListDependencies
 )

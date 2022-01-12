@@ -1,0 +1,56 @@
+"""
+Tests corresponding to libraries that help with computing APK & AAB stats.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "Aapt2ClientTest",
+    srcs = ["Aapt2ClientTest.kt"],
+    data = ["@androidsdk//:aapt2_binary"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:aapt2_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//testing",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "ApkAnalyzerClientTest",
+    srcs = ["ApkAnalyzerClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:apk_analyzer_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//testing",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "BundleToolClientTest",
+    srcs = ["BundleToolClientTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:bundle_tool_client",
+        "//testing",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "ComputeAabDifferencesTest",
+    srcs = ["ComputeAabDifferencesTest.kt"],
+    data = ["@androidsdk//:aapt2_binary"],
+    runtime_deps = [
+        "//third_party:android_bundletool",
+    ],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:aapt2_client",
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:apk_analyzer_client",
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:bundle_tool_client",
+        "//scripts/src/java/org/oppia/android/scripts/apkstats:compute_aab_differences_lib",
+        "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//testing",
+        "//third_party:com_google_truth_truth",
+    ],
+)

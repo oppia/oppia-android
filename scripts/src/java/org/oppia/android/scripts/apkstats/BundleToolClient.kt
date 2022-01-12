@@ -5,6 +5,12 @@ import java.util.zip.ZipFile
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 
+/**
+ * General utility for interfacing with bundletool in the local system at the specified working
+ * directory path.
+ *
+ * @property commandExecutor the [CommandExecutor] to use when accessing bundletool
+ */
 class BundleToolClient(
   private val workingDirectoryPath: String,
   private val commandExecutor: CommandExecutor = CommandExecutorImpl()
@@ -13,6 +19,15 @@ class BundleToolClient(
 
   // CLI reference: https://developer.android.com/studio/command-line/bundletool.
 
+  /**
+   * Builds & extracts configuration-specific APKs corresponding to the specified Android app
+   * bundle.
+   *
+   * @param inputBundlePath the AAB from which to extract APKs
+   * @param outputApksListPath the destination .apks file intermediary used to extract the APKs
+   * @param outputApkDirPath the destination directory in which the extracted APKs should be written
+   * @return the list of [File]s where each corresponds to one of the computed APKs
+   */
   fun buildApks(
     inputBundlePath: String, outputApksListPath: String, outputApkDirPath: String
   ): List<File> {
@@ -29,6 +44,10 @@ class BundleToolClient(
     }
   }
 
+  /**
+   * Builds and returns the file to a universal APK built in the specified output directory path and
+   * built according to the specified Android app bundle.
+   */
   fun buildUniversalApk(inputBundlePath: String, outputApkPath: String): File {
     return buildApkList(inputBundlePath, "$outputApkPath.apks", "--mode=universal").use { zipFile ->
       zipFile.extractTo("universal.apk", outputApkPath)
@@ -53,7 +72,7 @@ class BundleToolClient(
         workingDirectory,
         "java",
         "-classpath",
-        System.getProperty("java.class.path") ?: ".",
+        computeAbsoluteClasspath(),
         "com.android.tools.build.bundletool.BundleToolMain",
         *arguments
       )
@@ -66,12 +85,24 @@ class BundleToolClient(
   }
 
   private companion object {
+    private val currentDirectory by lazy { File(".") }
+
     private fun ZipFile.extractTo(entryName: String, destPath: String): File {
       val destFile = File(destPath)
       destFile.outputStream().use { outputStream ->
         getInputStream(getEntry(entryName)).copyTo(outputStream)
       }
       return destFile
+    }
+
+    private fun computeAbsoluteClasspath(): String {
+      val classpath = System.getProperty("java.class.path") ?: "."
+      val classpathComponents = classpath.split(":")
+      return classpathComponents.joinToString(":") { it.convertToAbsolutePath() }
+    }
+
+    private fun String.convertToAbsolutePath(): String {
+      return File(currentDirectory, this).absolutePath
     }
   }
 }

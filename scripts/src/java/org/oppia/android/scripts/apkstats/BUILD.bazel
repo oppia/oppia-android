@@ -15,6 +15,7 @@ kt_jvm_library(
         ":aapt2_client",
         ":apk_analyzer_client",
         ":bundle_tool_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
     ],
 )
 
@@ -24,6 +25,7 @@ kt_jvm_library(
     srcs = [
         "Aapt2Client.kt",
     ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
     ],
@@ -35,8 +37,13 @@ kt_jvm_library(
     srcs = [
         "ApkAnalyzerClient.kt",
     ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    runtime_deps = [
+        "//third_party:com_google_archivepatcher",
+    ],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        ":aapt2_client",
+        "//third_party:com_android_tools_apkparser_apkanalyzer",
     ],
 )
 
@@ -45,6 +52,11 @@ kt_jvm_library(
     testonly = True,
     srcs = [
         "BundleToolClient.kt",
+    ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    runtime_deps = [
+        "//third_party:android_bundletool",
+        "//third_party:com_google_guava_guava_jre",
     ],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",

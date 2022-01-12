@@ -117,17 +117,17 @@ jobs:
       - name: Run stats analysis tool
         run: |
           bazel run //scripts:compute_aab_differences -- \
-            $ANDROID_HOME $(pwd)/brief_build_summary.txt $(pwd)/full_build_summary.txt \
-            dev $(pwd)/oppia_dev_without_changes.aab $(pwd)/oppia_dev_with_changes.aab $(pwd)/dev_diff.txt \
-            alpha $(pwd)/oppia_alpha_without_changes.aab $(pwd)/oppia_alpha_with_changes.aab $(pwd)/alpha_diff.txt \
-            alpha_kitkat $(pwd)/oppia_alpha_kitkat_without_changes.aab $(pwd)/oppia_alpha_kitkat_with_changes.aab $(pwd)/alpha_kitkat_diff.txt
+            $(pwd)/brief_build_summary.log $(pwd)/full_build_summary.log \
+            dev $(pwd)/oppia_dev_without_changes.aab $(pwd)/oppia_dev_with_changes.aab \
+            alpha $(pwd)/oppia_alpha_without_changes.aab $(pwd)/oppia_alpha_with_changes.aab \
+            alpha_kitkat $(pwd)/oppia_alpha_kitkat_without_changes.aab $(pwd)/oppia_alpha_kitkat_with_changes.aab
 
       # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
       - name: Extract reports for uploading & commenting
         id: compute-comment-body
         run: |
-          cp ./*.txt /home/runner/work/oppia-android/oppia-android/
-          comment_body="$(cat /home/runner/work/oppia-android/oppia-android/brief_build_summary.txt)"
+          cp ./*.log /home/runner/work/oppia-android/oppia-android/
+          comment_body="$(cat /home/runner/work/oppia-android/oppia-android/brief_build_summary.log)"
           comment_body="${comment_body//'%'/'%25'}"
           comment_body="${comment_body//$'\n'/'%0A'}"
           comment_body="${comment_body//$'\r'/'%0D'}"
@@ -141,9 +141,6 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: build-difference-stats
+          name: fill-build-summary.log
           path: |
-            /home/runner/work/oppia-android/oppia-android/full_build_summary.txt
-            /home/runner/work/oppia-android/oppia-android/dev_diff.txt
-            /home/runner/work/oppia-android/oppia-android/alpha_diff.txt
-            /home/runner/work/oppia-android/oppia-android/alpha_kitkat_diff.txt
+            /home/runner/work/oppia-android/oppia-android/full_build_summary.log

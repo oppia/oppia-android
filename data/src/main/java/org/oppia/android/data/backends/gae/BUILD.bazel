@@ -78,7 +78,7 @@ kt_android_library(
         ":network_interceptors",
         ":oppia_retrofit",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
-        "//third_party:com_google_guava_guava",
+        "//third_party:com_google_guava_guava_android",
         "//third_party:com_squareup_retrofit2_converter-moshi",
     ],
 )

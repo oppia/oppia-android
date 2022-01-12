@@ -14,28 +14,47 @@ dependencies).
 
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
+load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_SCRIPT_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
 
 # Create an android library wrapper for all production dependencies. Note that artifact is used so
 # that the correct Maven repository (default) is selected. This allows future customization
 # potential in managing multiple Maven repositories.
 [android_library(
-    name = name.replace(":", "_").replace(".", "_"),
+    name = name.replace(":", "_").replace(".", "_") + (
+        "_%s" % details["suffix_alias"] if type(details) == "dict" else ""
+    ),
     visibility = ["//visibility:public"],
-    exports = [
-        artifact("%s:%s" % (name, version)),
-    ],
-) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
+    exports = [artifact(
+        name,
+        repository_name = "maven",
+    )],
+) for name, details in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
 
-# Create an android library wrapper for all test dependencies.
+# Create an android library wrapper for each test dependency.
 [android_library(
-    name = name.replace(":", "_").replace(".", "_"),
+    name = name.replace(":", "_").replace(".", "_") + (
+        "_%s" % details["suffix_alias"] if type(details) == "dict" else ""
+    ),
     testonly = True,
     visibility = ["//visibility:public"],
-    exports = [
-        artifact("%s:%s" % (name, version)),
-    ],
-) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
+    exports = [artifact(
+        name,
+        repository_name = "test_maven_deps",
+    )],
+) for name, details in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
+
+# Create an android library wrapper for each script dependency.
+[android_library(
+    name = name.replace(":", "_").replace(".", "_") + (
+        "_%s" % details["suffix_alias"] if type(details) == "dict" else ""
+    ),
+    testonly = True,
+    visibility = ["//scripts:__subpackages__"],
+    exports = [artifact(
+        name,
+        repository_name = "script_maven_deps",
+    )],
+) for name, details in MAVEN_SCRIPT_DEPENDENCY_VERSIONS.items()]
 
 android_library(
     name = "circularimageview_circular_image_view",
@@ -63,6 +82,14 @@ android_library(
     ],
 )
 
+android_library(
+    name = "com_google_archivepatcher",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@archive_patcher//tools",
+    ],
+)
+
 java_library(
     name = "moshi",
     exported_plugins = ["//tools:moshi_annotation_processor_plugin"],
@@ -85,9 +112,15 @@ java_library(
     ],
 )
 
-java_binary(
+android_library(
     name = "android_bundletool",
+    visibility = ["//visibility:public"],
+    exports = ["@android_bundletool//jar"],
+)
+
+java_binary(
+    name = "android_bundletool_binary",
     main_class = "com.android.tools.build.bundletool.BundleToolMain",
     visibility = ["//visibility:public"],
-    runtime_deps = ["@android_bundletool//jar"],
+    runtime_deps = [":android_bundletool"],
 )
