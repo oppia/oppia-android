@@ -39,6 +39,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.hamcrest.Matchers
@@ -112,7 +114,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -142,10 +143,6 @@ class AdministratorControlsActivityTest {
   @Inject
   lateinit var context: Context
 
-  @Inject
-  @EnableEditAccountsOptionsUi
-  lateinit var enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>
-
   @get:Rule
   val activityTestRule = ActivityTestRule(
     AdministratorControlsActivity::class.java,
@@ -169,6 +166,7 @@ class AdministratorControlsActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
+    TestModule.forceEnableEditAccountsOptionsUi = true
   }
 
   @After
@@ -183,9 +181,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_generalOptionsIsDisplayed() {
-    if (!enableEditAccountsOptionsUi.value) {
-      return assert(true)
-    }
+    TestModule.forceEnableEditAccountsOptionsUi = true
+
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -205,13 +202,8 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
-    /** Default value for the feature flag corresponding to
-     * [EnableLanguageSelectionUi] platform parameter. */
-    val expectedItemPositionAccordingToEditAccountsParameterValue: Int =
-      if (enableEditAccountsOptionsUi.value) {
-        1
-      } else 0
+  fun testAdministratorControlsFragment_generalOptionsIsNotDisplayed() {
+    TestModule.forceEnableEditAccountsOptionsUi = false
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -219,12 +211,32 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyTextOnAdministratorListItemAtPositionDoesNotExist(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_account
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnAdministratorControlListItem(
-        itemPosition = expectedItemPositionAccordingToEditAccountsParameterValue,
+        itemPosition = 1,
         targetView = R.id.profile_management_text_view
       )
       verifyTextOnAdministratorListItemAtPosition(
-        itemPosition = expectedItemPositionAccordingToEditAccountsParameterValue,
+        itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_profiles
       )
@@ -697,6 +709,19 @@ class AdministratorControlsActivityTest {
     ).check(matches(isDisplayed()))
   }
 
+  private fun verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(doesNotExist())
+  }
+
   private fun verifyTextOnAdministratorListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -709,6 +734,20 @@ class AdministratorControlsActivityTest {
         targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
+  }
+
+  private fun verifyTextOnAdministratorListItemAtPositionDoesNotExist(
+    itemPosition: Int,
+    targetViewId: Int,
+    @StringRes stringIdToMatch: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
+      )
+    ).check(doesNotExist())
   }
 
   private fun scrollToPosition(position: Int) {
@@ -773,5 +812,21 @@ class AdministratorControlsActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  @Module
+  class TestModule {
+    companion object {
+      /* When default value for [EnableEditAccountsOptionsUi] is true */
+      var forceEnableEditAccountsOptionsUi: Boolean = true
+    }
+
+    @Provides
+    @EnableEditAccountsOptionsUi
+    fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(
+        forceEnableEditAccountsOptionsUi
+      )
+    }
   }
 }
