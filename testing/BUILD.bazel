@@ -34,6 +34,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//third_party:androidx_core_core-ktx",
@@ -72,6 +73,7 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+    "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
     "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
