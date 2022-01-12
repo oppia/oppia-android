@@ -398,5 +398,8 @@
 
   <!--Topic Summary-->
   <dimen name="topic_summary_lesson_count_text_view_padding_bottom">12dp</dimen>
-
+  
+  <!-- AudioLanguageFragment -->
+  <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
+  
 </resources>
