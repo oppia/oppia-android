@@ -8,11 +8,11 @@ import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.junit.Before
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
