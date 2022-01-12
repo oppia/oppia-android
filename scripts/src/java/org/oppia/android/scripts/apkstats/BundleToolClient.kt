@@ -1,9 +1,9 @@
 package org.oppia.android.scripts.apkstats
 
-import java.io.File
-import java.util.zip.ZipFile
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
+import java.io.File
+import java.util.zip.ZipFile
 
 /**
  * General utility for interfacing with bundletool in the local system at the specified working
@@ -29,7 +29,9 @@ class BundleToolClient(
    * @return the list of [File]s where each corresponds to one of the computed APKs
    */
   fun buildApks(
-    inputBundlePath: String, outputApksListPath: String, outputApkDirPath: String
+    inputBundlePath: String,
+    outputApksListPath: String,
+    outputApkDirPath: String
   ): List<File> {
     val destDir = File(outputApkDirPath)
     return buildApkList(inputBundlePath, outputApksListPath).use { zipFile ->
@@ -55,7 +57,9 @@ class BundleToolClient(
   }
 
   private fun buildApkList(
-    inputBundlePath: String, outputApksListPath: String, vararg additionalArgs: String
+    inputBundlePath: String,
+    outputApksListPath: String,
+    vararg additionalArgs: String
   ): ZipFile {
     executeBundleToolCommand(
       "build-apks", "--bundle=$inputBundlePath", "--output=$outputApksListPath", *additionalArgs

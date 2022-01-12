@@ -57,8 +57,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:guava": {
-        "version": "28.1-android",
         "suffix_alias": "android",
+        "version": "28.1-android",
     },
     "com.google.protobuf:protobuf-javalite": "3.17.3",
     "com.squareup.moshi:moshi-kotlin": "1.11.0",
@@ -116,8 +116,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
 MAVEN_SCRIPT_DEPENDENCY_VERSIONS = {
     "com.android.tools.apkparser:apkanalyzer": "30.0.4",
     "com.google.guava:guava": {
-        "version": "28.1-jre",
         "suffix_alias": "jre",
+        "version": "28.1-jre",
     },
 }
 

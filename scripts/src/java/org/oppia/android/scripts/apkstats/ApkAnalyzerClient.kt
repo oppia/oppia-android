@@ -93,7 +93,8 @@ class ApkAnalyzerClient(private val aapt2Client: Aapt2Client) {
   }
 
   private fun collectZipEntries(
-    inputZipFile: String, predicate: (String) -> Boolean
+    inputZipFile: String,
+    predicate: (String) -> Boolean
   ): Map<String, ByteArray> {
     return ZipFile(inputZipFile).use { zipFile ->
       zipFile.entries()

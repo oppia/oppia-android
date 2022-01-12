@@ -1,12 +1,12 @@
 package org.oppia.android.scripts.apkstats
 
+import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import java.io.File
 import java.io.PrintStream
 import java.nio.file.Files
 import java.util.Locale
 import java.util.StringTokenizer
 import java.util.zip.ZipFile
-import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 
 // TODO(#1719): Add support for showing count & itemization of modified files/resources (vs. just
 //  new/removed).
@@ -133,7 +133,8 @@ class ComputeAabDifferences(
   }
 
   private fun computeApksList(
-    inputAabPath: String, destDir: String
+    inputAabPath: String,
+    destDir: String
   ): Pair<String, Map<String, String>> {
     println("Generating APK list for: $inputAabPath")
     val apksListPath = File(destDir, "list.apks").absolutePath
@@ -148,7 +149,8 @@ class ComputeAabDifferences(
   }
 
   private fun computeConfigurationStats(
-    apkWithoutChangesPath: String?, apkWithChangesPath: String?
+    apkWithoutChangesPath: String?,
+    apkWithChangesPath: String?
   ): ApkConfigurationStats {
     println("Comparing APKs: $apkWithoutChangesPath and $apkWithChangesPath")
     val fullComparison = if (apkWithoutChangesPath != null && apkWithChangesPath != null) {
@@ -165,7 +167,8 @@ class ComputeAabDifferences(
   }
 
   private fun computeFileSizeStats(
-    apkWithoutChangesPath: String?, apkWithChangesPath: String?
+    apkWithoutChangesPath: String?,
+    apkWithChangesPath: String?
   ): FileSizeStats {
     println("Computing file size for: $apkWithoutChangesPath and $apkWithChangesPath")
     val (fileSizeWithoutChanges, downloadSizeWithoutChanges) = if (apkWithoutChangesPath != null) {
@@ -188,7 +191,8 @@ class ComputeAabDifferences(
   }
 
   private fun computeDexStats(
-    apkWithoutChangesPath: String?, apkWithChangesPath: String?
+    apkWithoutChangesPath: String?,
+    apkWithChangesPath: String?
   ): DexStats {
     println("Computing dex method counts for: $apkWithoutChangesPath and $apkWithChangesPath")
     val methodCountWithoutChanges = apkWithoutChangesPath?.let { apkPath ->
@@ -203,7 +207,8 @@ class ComputeAabDifferences(
   }
 
   private fun computeManifestStats(
-    apkWithoutChangesPath: String?, apkWithChangesPath: String?
+    apkWithoutChangesPath: String?,
+    apkWithChangesPath: String?
   ): ManifestStats {
     println("Computing feature and permissions for: $apkWithoutChangesPath and $apkWithChangesPath")
     val (featuresWithoutChanges, permissionsWithoutChanges) = apkWithoutChangesPath?.let { path ->
@@ -224,7 +229,8 @@ class ComputeAabDifferences(
   }
 
   private fun computeResourceStats(
-    apkWithoutChangesPath: String?, apkWithChangesPath: String?
+    apkWithoutChangesPath: String?,
+    apkWithChangesPath: String?
   ): ResourceStats {
     println("Computing resource maps for: $apkWithoutChangesPath and $apkWithChangesPath")
     val resourcesWithoutChanges = apkWithoutChangesPath?.let { apkPath ->
@@ -237,7 +243,8 @@ class ComputeAabDifferences(
   }
 
   private fun computeAssetStats(
-    apkWithoutChangesPath: String?, apkWithChangesPath: String?
+    apkWithoutChangesPath: String?,
+    apkWithChangesPath: String?
   ): AssetStats {
     // Only consider top-level files in the assets/ folder.
     println("Computing asset stats for: $apkWithoutChangesPath and $apkWithChangesPath")
@@ -317,7 +324,10 @@ class ComputeAabDifferences(
      * @param longSummary whether to print a more detailed summary
      */
     fun writeSummaryTo(
-      stream: PrintStream, buildFlavor: String, itemLimit: Int, longSummary: Boolean
+      stream: PrintStream,
+      buildFlavor: String,
+      itemLimit: Int,
+      longSummary: Boolean
     ) {
       stream.println("## ${buildFlavor.capitalize(Locale.US)}")
       stream.println()
@@ -375,7 +385,10 @@ class ComputeAabDifferences(
      * @param itemize whether to expand lists of items
      */
     fun writeSummaryTo(
-      stream: PrintStream, itemize: Boolean, longSummary: Boolean, itemLimit: Int
+      stream: PrintStream,
+      itemize: Boolean,
+      longSummary: Boolean,
+      itemLimit: Int
     ) {
       fileSizeStats.writeTo(stream, itemize)
       if (itemize) stream.println()
@@ -459,7 +472,8 @@ class ComputeAabDifferences(
    *     user consent on L+ devices.
    */
   data class ManifestStats(
-    val features: DiffList<String>, val permissions: DiffList<String>
+    val features: DiffList<String>,
+    val permissions: DiffList<String>
   ) {
     /**
      * Writes the manifest stats summary between two APKs to [stream].
@@ -638,7 +652,9 @@ class ComputeAabDifferences(
     }
 
     private fun <K : Any?, IV : Any, OV : Any> combineMaps(
-      oldMap: Map<K, IV>, newMap: Map<K, IV>, combineValue: (IV?, IV?) -> OV
+      oldMap: Map<K, IV>,
+      newMap: Map<K, IV>,
+      combineValue: (IV?, IV?) -> OV
     ): Map<K, OV> {
       val allKeys = oldMap.keys + newMap.keys
       return allKeys.map { key ->

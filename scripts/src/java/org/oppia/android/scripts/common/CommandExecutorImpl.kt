@@ -1,10 +1,5 @@
 package org.oppia.android.scripts.common
 
-import java.io.File
-import java.io.InputStream
-import java.lang.IllegalStateException
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.TimeoutCancellationException
@@ -16,6 +11,11 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import java.io.File
+import java.io.InputStream
+import java.lang.IllegalStateException
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * The default amount of time that should be waited before considering a process as 'hung', in

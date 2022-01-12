@@ -1,14 +1,14 @@
 package org.oppia.android.scripts.apkstats
 
 import com.google.common.truth.Truth.assertThat
-import java.lang.IllegalStateException
-import java.util.concurrent.TimeUnit
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.testing.assertThrows
+import java.lang.IllegalStateException
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for [ComputeAabDifferences].
@@ -64,7 +64,9 @@ class ComputeAabDifferencesTest {
   }
 
   private fun createProfile(
-    oldAabFilePath: String, newAabFilePath: String, buildFlavor: String = "dev"
+    oldAabFilePath: String,
+    newAabFilePath: String,
+    buildFlavor: String = "dev"
   ): ComputeAabDifferences.AabProfile {
     return ComputeAabDifferences.AabProfile(buildFlavor, oldAabFilePath, newAabFilePath)
   }

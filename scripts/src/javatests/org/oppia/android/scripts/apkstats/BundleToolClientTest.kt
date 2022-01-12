@@ -1,12 +1,12 @@
 package org.oppia.android.scripts.apkstats
 
 import com.google.common.truth.Truth.assertThat
-import java.util.concurrent.TimeUnit
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.testing.assertThrows
+import java.util.concurrent.TimeUnit
 
 /**
  * Tests for [BundleToolClient].
