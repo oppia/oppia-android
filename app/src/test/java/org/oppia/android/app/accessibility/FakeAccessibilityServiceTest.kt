@@ -1,12 +1,15 @@
 package org.oppia.android.app.accessibility
 
 import android.app.Application
+import android.content.Context
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -70,8 +73,22 @@ class FakeAccessibilityServiceTest {
       .inject(this)
   }
 
+  // TODO(#89): Move this to a common test application component.
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+  }
+
   @Singleton
-  @Component(modules = [AccessibilityTestModule::class])
+  @Component(
+    modules = [
+      TestModule::class, AccessibilityTestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
