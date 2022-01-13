@@ -332,6 +332,11 @@ class ComputeAabDifferences(
       stream.println("## ${buildFlavor.capitalize(Locale.US)}")
       stream.println()
 
+      if (!longSummary) {
+        stream.println("<details><summary>Expand to see flavor specifics</summary>")
+        stream.println()
+      }
+
       stream.println("### Universal APK")
       universalApkStats.writeSummaryTo(stream, itemize = true, longSummary, itemLimit)
 
@@ -354,7 +359,7 @@ class ComputeAabDifferences(
         stream.println("#### Configuration $configuration")
         stats.writeSummaryTo(stream, itemize = longSummary, longSummary, itemLimit)
       }
-      if (!longSummary) stream.println("</details>")
+      if (!longSummary) stream.println("</details></details>")
     }
   }
 
