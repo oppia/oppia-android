@@ -33,4 +33,3 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TopicTestAct
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TopicTestActivityForStory"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ViewBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/activity/TestActivity"
-exempted_activity: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughActivity"
