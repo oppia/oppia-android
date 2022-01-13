@@ -119,7 +119,7 @@ jobs:
           comment_body="${comment_body//'%'/'%25'}"
           comment_body="${comment_body//$'\n'/'%0A'}"
           comment_body="${comment_body//$'\r'/'%0D'}"
-          echo "::set-output name=comment_body::comment_body"
+          echo "::set-output name=comment_body::$comment_body"
 
       - name: Add build stats summary comment
         uses: peter-evans/create-or-update-comment@v1
