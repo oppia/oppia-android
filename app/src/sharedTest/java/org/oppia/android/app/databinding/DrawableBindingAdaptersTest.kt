@@ -84,6 +84,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+
 /** Tests for [DrawableBindingAdaptersTest]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -118,16 +119,15 @@ class DrawableBindingAdaptersTest {
     Intents.release()
   }
 
-  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb() // from a color int
-//  private var colorRgb: Int = 0xff74AC23.toInt()
+  // from a color int
+  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
 
   @Test
   fun testSetBackgroundColor_hasCorrectBackgroundColor() {
     activityRule.scenario.onActivity {
       val view: View = getView(it)
-      setBackgroundColor(view, colorRgb)
-      val imageViewBackgroundColor = (view.background as ColorDrawable)
-      assertThat(imageViewBackgroundColor.color).isEqualTo(colorRgb)
+      setBackgroundColor(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as ColorDrawable).color).isEqualTo(colorRgb)
     }
   }
 
@@ -135,9 +135,8 @@ class DrawableBindingAdaptersTest {
   fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
     activityRule.scenario.onActivity {
       val view: View = getView(it)
-      setBackgroundDrawable(view, colorRgb)
-      val imageViewBackgroundColor = view.background as GradientDrawable
-      assertThat(imageViewBackgroundColor.color).isEqualTo(colorRgb)
+      setBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
@@ -145,9 +144,8 @@ class DrawableBindingAdaptersTest {
   fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
     activityRule.scenario.onActivity {
       val view: View = getView(it)
-      setTopBackgroundDrawable(view, colorRgb)
-      val imageViewBackgroundColor = (view.background as GradientDrawable)
-      assertThat(imageViewBackgroundColor.color).isEqualTo(colorRgb)
+      setTopBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
