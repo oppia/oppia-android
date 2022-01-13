@@ -115,7 +115,6 @@ jobs:
       - name: Extract reports for uploading & commenting
         id: compute-comment-body
         run: |
-          cp ./*.log /home/runner/work/oppia-android/oppia-android/
           comment_body="$(cat /home/runner/work/oppia-android/oppia-android/brief_build_summary.log)"
           comment_body="${comment_body//'%'/'%25'}"
           comment_body="${comment_body//$'\n'/'%0A'}"
