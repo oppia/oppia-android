@@ -1,6 +1,6 @@
 # Contains jobs corresponding to stats, including build stats due to changes in a PR.
 
-name: Static Checks
+name: Stats Checks & Reports
 
 on:
   pull_request:
