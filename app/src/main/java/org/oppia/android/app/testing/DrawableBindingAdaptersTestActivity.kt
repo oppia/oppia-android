@@ -10,6 +10,6 @@ class DrawableBindingAdaptersTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    setContentView(R.layout.test_drawable_binding_adapter_layout)
+    setContentView(R.layout.test_drawable_binding_adapter_activity)
   }
 }

@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -22,7 +23,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -83,6 +83,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.oppia.android.R
 
 /** Tests for [DrawableBindingAdaptersTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -118,33 +119,36 @@ class DrawableBindingAdaptersTest {
     Intents.release()
   }
 
-  private val colorRgb: Int = Color.parseColor("#ff000000")
+  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb() // from a color int
+//  private var colorRgb: Int = 0xff74AC23.toInt()
 
   @Test
   fun testSetBackgroundColor_hasCorrectBackgroundColor() {
-    val view = activityRule.scenario.runWithActivity {
+    activityRule.scenario.onActivity {
       val view: View = getView(it)
       setBackgroundColor(view, colorRgb)
-      return@runWithActivity view
+      val imageViewBackgroundColor = (view.background as ColorDrawable)
+      assertThat(imageViewBackgroundColor.color).isEqualTo(colorRgb)
     }
-    assertThat(view.background).isEqualTo(ColorDrawable(colorRgb))
   }
 
   @Test
   fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
-    activityRule.scenario.runWithActivity {
+    activityRule.scenario.onActivity {
       val view: View = getView(it)
       setBackgroundDrawable(view, colorRgb)
-      assertThat(view.background).isEqualTo(ColorDrawable(colorRgb))
+      val imageViewBackgroundColor = view.background as GradientDrawable
+      assertThat(imageViewBackgroundColor.color).isEqualTo(colorRgb)
     }
   }
 
   @Test
   fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
-    activityRule.scenario.runWithActivity {
+    activityRule.scenario.onActivity {
       val view: View = getView(it)
       setTopBackgroundDrawable(view, colorRgb)
-      assertThat(view.background).isEqualTo(ColorDrawable(colorRgb))
+      val imageViewBackgroundColor = (view.background as GradientDrawable)
+      assertThat(imageViewBackgroundColor.color).isEqualTo(colorRgb)
     }
   }
 
