@@ -13,6 +13,7 @@ on:
 jobs:
   bazel_build_app:
     name: Build Binary with Bazel
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -162,6 +163,7 @@ jobs:
 
   build_oppia_dev_aab:
     name: Build Oppia AAB (developer flavors)
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -311,6 +313,7 @@ jobs:
 
   build_oppia_alpha_aab:
     name: Build Oppia AAB (alpha flavors)
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
