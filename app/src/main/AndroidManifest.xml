@@ -185,6 +185,8 @@
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
     <activity android:name=".app.testing.ImageViewBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.MarginBindingAdaptersTestActivity" />
+    <activity android:name=".app.testing.TextViewBindingAdaptersTestActivity"
+      android:label="@string/text_view_binding_adapters_label"/>
     <activity
       android:name=".app.testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -193,7 +195,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
-    <activity android:name=".app.testing.TextViewBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
