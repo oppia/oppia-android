@@ -7,18 +7,7 @@ on:
 
 jobs:
   build_stats:
-    name: AAB & APK Build Stats
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: mszostok/codeowners-validator@v0.5.1
-        with:
-          checks: "duppatterns,files,syntax"
-          experimental_checks: "notowned"
-
-  script_checks:
-    name: Script Checks
+    name: Build Stats
     runs-on: ubuntu-18.04
     env:
       ENABLE_CACHING: false
