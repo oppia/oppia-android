@@ -3,16 +3,23 @@ package org.oppia.android.app.databinding
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -84,6 +91,8 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.oppia.android.app.utility.EspressoTestsMatchers
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 
 /** Tests for [TextViewBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -92,6 +101,7 @@ import javax.inject.Singleton
   application = TextViewBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
+
 class TextViewBindingAdaptersTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -116,30 +126,36 @@ class TextViewBindingAdaptersTest {
     Intents.release()
   }
 
-  lateinit var resourceHandler: AppLanguageResourceHandler
+  @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  // Time: Wed Apr 24 2019 08:22:00
+  private val MORNING_TIMESTAMP = 1556094120000
 
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileDataTextIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
+    activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileDataText(textView, /* setText= */ 0L)
-      return@runWithActivity textView
+
+      val time = it.resourceHandler.computeDateString(0L)
+      val dateString = it.resourceHandler.getStringInLocaleWithWrapping(
+        R.string.profile_edit_created, time
+      )
+      assertThat(textView.text.toString()).isEqualTo(dateString)
     }
-    val time = resourceHandler.computeDateString(0L)
-    val dateString = resourceHandler.getStringInLocaleWithWrapping(
-      R.string.profile_edit_created, time
-    )
-    assertThat(textView.text.toString()).isEqualTo(dateString)
   }
 
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
+
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     val textView = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 10000)
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs())
       return@runWithActivity textView
     }
     assertThat(textView.text.toString()).isEqualTo("Last used just now")
@@ -147,17 +163,18 @@ class TextViewBindingAdaptersTest {
 
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_drawableEndCompactIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
+    activityRule.scenario.onActivity {
+      val drawable = ContextCompat.getDrawable(it, R.drawable.test_text_view_drawable_binding_adapter)
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setDrawableEndCompat(
         textView,
-        /* setDrawableEndCompat= */ R.drawable.test_text_view_drawable_binding_adapter.toDrawable()
+        /* setDrawableEndCompat= */ drawable
       )
-      return@runWithActivity textView
+      assertThat(textView.compoundDrawablesRelative[2]).isEqualTo(drawable)
+//      onView(withId(R.id.test_text_view)).check(
+//        matches(withDrawable(drawable)
+//      ))
     }
-    assertThat(textView.compoundDrawablesRelative).isEqualTo(
-      R.drawable.test_text_view_drawable_binding_adapter.toDrawable()
-    )
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
