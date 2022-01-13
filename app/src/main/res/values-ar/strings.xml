@@ -298,7 +298,7 @@
   <string name="profile_reset_pin_error_user_pin_length">رقم التعريف الشخصي يجب أن يتكون من 3 أرقام.</string>
   <string name="profile_reset_pin_error_admin_pin_length">رقم التعريف الشخصي يجب أن يتكون من 5 أرقام.</string>
   <string name="add_profile_create_a_3_digit_pin">إنشاء رقم تعريف شخصي مكون من 3 أرقام</string>
-  <string name="add_profile_required">*مطلوب</string>
+  <string name="add_profile_required">مطلوب</string>
   <string name="back_button">زر العودة</string>
   <string name="next">التالي</string>
   <string name="administrator_controls_general_label">عام</string>
