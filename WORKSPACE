@@ -5,7 +5,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
-load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "MAVEN_SCRIPT_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS", "get_maven_dependencies")
+load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_ISOLATED_SCRIPT_DEPENDENCY_VERSIONS", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "MAVEN_TEST_DEPENDENCY_VERSIONS", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
@@ -167,45 +167,31 @@ http_jar(
 )
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
-# Further, multiple maven_installs are used to separate production & test dependencies per
-# https://github.com/bazelbuild/rules_jvm_external#multiple-maven_install-declarations-for-isolated-artifact-version-trees.
+# Further, multiple maven_installs are used to separate Android-specific & isolated script
+# dependencies per https://github.com/bazelbuild/rules_jvm_external#multiple-maven_install-declarations-for-isolated-artifact-version-trees.
 # Note that this is called 'maven' since Dagger expects it to be called that.
 maven_install(
     name = "maven",
-    artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(MAVEN_PRODUCTION_DEPENDENCY_VERSIONS),
+    artifacts = (
+        DAGGER_ARTIFACTS + (
+            get_maven_dependencies(MAVEN_PRODUCTION_DEPENDENCY_VERSIONS)
+        ) + (
+            get_maven_dependencies(MAVEN_TEST_DEPENDENCY_VERSIONS)
+        )
+    ),
     fail_if_repin_required = True,
     fetch_sources = True,
-    maven_install_json = "//third_party:maven_prod_install.json",
+    maven_install_json = "//third_party:maven_install.json",
     repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
 )
 
 maven_install(
-    name = "test_maven_deps",
-    artifacts = get_maven_dependencies(MAVEN_TEST_DEPENDENCY_VERSIONS),
-    fail_if_repin_required = True,
+    name = "isolated_script_maven_deps",
+    artifacts = get_maven_dependencies(MAVEN_ISOLATED_SCRIPT_DEPENDENCY_VERSIONS),
     fetch_sources = True,
-    maven_install_json = "//third_party:maven_test_install.json",
     repositories = MAVEN_REPOSITORIES,
 )
 
-maven_install(
-    name = "script_maven_deps",
-    artifacts = get_maven_dependencies(MAVEN_SCRIPT_DEPENDENCY_VERSIONS),
-    fail_if_repin_required = True,
-    fetch_sources = True,
-    maven_install_json = "//third_party:maven_script_install.json",
-    repositories = MAVEN_REPOSITORIES,
-)
+load("@maven//:defs.bzl", "pinned_maven_install")
 
-# See: https://github.com/bazelbuild/rules_jvm_external#multiple-maven_installjson-files.
-load("@maven//:defs.bzl", pinned_production_maven_install = "pinned_maven_install")
-
-pinned_production_maven_install()
-
-load("@test_maven_deps//:defs.bzl", pinned_test_maven_install = "pinned_maven_install")
-
-pinned_test_maven_install()
-
-load("@script_maven_deps//:defs.bzl", pinned_script_maven_install = "pinned_maven_install")
-
-pinned_script_maven_install()
+pinned_maven_install()

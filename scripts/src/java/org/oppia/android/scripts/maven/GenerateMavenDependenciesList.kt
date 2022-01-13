@@ -23,7 +23,7 @@ import org.oppia.android.scripts.proto.MavenDependencyList
  * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
  * Example:
  *   bazel run //scripts:generate_maven_dependencies_list -- $(pwd)
- *   third_party/maven_prod_install.json scripts/assets/maven_dependencies.textproto
+ *   third_party/maven_install.json scripts/assets/maven_dependencies.textproto
  *   scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {

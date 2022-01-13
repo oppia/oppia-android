@@ -153,6 +153,17 @@ maven_dependency {
   }
 }
 maven_dependency {
+  artifact_name: "androidx.legacy:legacy-support-core-utils:1.0.0"
+  artifact_version: "1.0.0"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
   artifact_name: "androidx.lifecycle:lifecycle-common:2.2.0"
   artifact_version: "2.2.0"
   license {
@@ -448,6 +459,16 @@ maven_dependency {
   }
 }
 maven_dependency {
+  artifact_name: "com.google.auto.value:auto-value-annotations:1.8.1"
+  artifact_version: "1.8.1"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
   artifact_name: "com.google.code.findbugs:jsr305:3.0.2"
   artifact_version: "3.0.2"
   license {
@@ -470,8 +491,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.errorprone:error_prone_annotations:2.3.2"
-  artifact_version: "2.3.2"
+  artifact_name: "com.google.errorprone:error_prone_annotations:2.7.1"
+  artifact_version: "2.7.1"
   license {
     license_name: "Apache 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -513,8 +534,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.guava:guava:28.1-android"
-  artifact_version: "28.1-android"
+  artifact_name: "com.google.guava:guava:30.1.1-android"
+  artifact_version: "30.1.1-android"
   license {
     license_name: "The Apache Software License, Version 2.0"
     scrapable_link {
@@ -733,19 +754,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.codehaus.mojo:animal-sniffer-annotations:1.18"
-  artifact_version: "1.18"
-  license {
-    license_name: "The MIT License"
-    original_link: "https://opensource.org/licenses/MIT"
-    extracted_copy_link {
-      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/mit-license.txt"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.4.10"
-  artifact_version: "1.4.10"
+  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.5.0"
+  artifact_version: "1.5.0"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -755,7 +765,18 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0"
+  artifact_version: "1.5.0"
+  license {
+    license_name: "The Apache License, Version 2.0"
+    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32"
   artifact_version: "1.4.32"
   license {
     license_name: "The Apache License, Version 2.0"
@@ -766,30 +787,19 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
-  artifact_version: "1.4.10"
-  license {
-    license_name: "The Apache License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
-  artifact_version: "1.4.10"
-  license {
-    license_name: "The Apache License, Version 2.0"
-    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    scrapable_link {
-      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }
-  }
-}
-maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32"
   artifact_version: "1.4.32"
+  license {
+    license_name: "The Apache License, Version 2.0"
+    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
+  artifact_version: "1.5.0"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -832,8 +842,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.ow2.asm:asm:7.1"
-  artifact_version: "7.1"
+  artifact_name: "org.ow2.asm:asm:9.1"
+  artifact_version: "9.1"
   license {
     license_name: "BSD-3-Clause"
     original_link: "https://asm.ow2.io/license.html"

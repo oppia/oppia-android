@@ -7,6 +7,7 @@ import java.nio.file.Files
 import java.util.Locale
 import java.util.StringTokenizer
 import java.util.zip.ZipFile
+import kotlin.math.absoluteValue
 
 // TODO(#1719): Add support for showing count & itemization of modified files/resources (vs. just
 //  new/removed).
@@ -752,10 +753,11 @@ class ComputeAabDifferences(
     }
 
     private fun Long.formatAsBytes(): String {
+      val magnitude = absoluteValue
       return when {
-        this < 10_000L -> "$this bytes"
-        this < 10_000_000L -> "${this / 1024} KiB"
-        this < 10_000_000_000L -> "${this / (1024 * 1024)} MiB"
+        magnitude < 10_000L -> "$this bytes"
+        magnitude < 10_000_000L -> "${this / 1024} KiB"
+        magnitude < 10_000_000_000L -> "${this / (1024 * 1024)} MiB"
         else -> "${this / (1024 * 1024 * 1024)} GiB"
       }
     }

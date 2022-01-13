@@ -102,11 +102,25 @@ class BundleToolClient(
     private fun computeAbsoluteClasspath(): String {
       val classpath = System.getProperty("java.class.path") ?: "."
       val classpathComponents = classpath.split(":")
-      return classpathComponents.joinToString(":") { it.convertToAbsolutePath() }
+      return classpathComponents.map {
+        it.convertToAbsolutePath()
+      }.filterNot {
+        it.isAndroidDependencyToOmit()
+      }.joinToString(":")
     }
 
     private fun String.convertToAbsolutePath(): String {
       return File(currentDirectory, this).absolutePath
+    }
+
+    private fun String.isAndroidDependencyToOmit(): Boolean {
+      // This is a hacky way to work around the classpath actually pulling in two versions of
+      // Guava: Android & JRE. Bundle tool requires the JRE version, and there's no obvious way to
+      // separate out the Maven dependencies without risking duplicate versions & automatic conflict
+      // resolution.
+      return File(this).name.let { name ->
+        "guava" in name && "android" in name
+      }
     }
   }
 }

@@ -56,10 +56,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
-    "com.google.guava:guava": {
-        "suffix_alias": "android",
-        "version": "28.1-android",
-    },
+    "com.google.guava:guava": "28.1-android",
     "com.google.protobuf:protobuf-javalite": "3.17.3",
     "com.squareup.moshi:moshi-kotlin": "1.11.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.11.0",
@@ -92,6 +89,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:core": "1.0.0",
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
+    "com.android.tools.apkparser:apkanalyzer": "30.0.4",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
@@ -111,13 +109,12 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
 # This list should only contain script-only dependencies. These are dependencies that are guaranteed
-# cannot be included in production builds of the app.
-MAVEN_SCRIPT_DEPENDENCY_VERSIONS = {
-    "com.android.tools.apkparser:apkanalyzer": "30.0.4",
-    "com.google.guava:guava": {
-        "suffix_alias": "jre",
-        "version": "28.1-jre",
-    },
+# cannot be included in production builds of the app. Note also that this dict should only include
+# dependencies that can't be pulled in from the test dependencies (i.e. due to a conflict with an
+# Android-specific dependency). As a result, these require special handling by whichever class is
+# using them.
+MAVEN_ISOLATED_SCRIPT_DEPENDENCY_VERSIONS = {
+    "com.google.guava:guava": "28.1-jre",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.

@@ -62,7 +62,7 @@ kt_android_library(
         "//third_party:androidx_work_work-runtime-ktx",
         "//third_party:com_caverock_androidsvg",
         "//third_party:com_github_bumptech_glide_glide",
-        "//third_party:com_google_guava_guava_android",
+        "//third_party:com_google_guava_guava",
         "//third_party:glide_compiler",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",

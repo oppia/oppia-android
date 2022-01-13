@@ -21,7 +21,7 @@ import org.oppia.android.scripts.proto.MavenDependency
  *
  * Example:
  *   bazel run //scripts:maven_dependencies_list_check -- $(pwd)
- *   third_party/maven_prod_install.json scripts/assets/maven_dependencies.pb
+ *   third_party/maven_install.json scripts/assets/maven_dependencies.pb
  */
 fun main(args: Array<String>) {
   MavenDependenciesListCheck(LicenseFetcherImpl()).main(args)
