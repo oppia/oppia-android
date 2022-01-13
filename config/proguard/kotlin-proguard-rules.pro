@@ -5,3 +5,6 @@
 # run into runtime issues if something is unintentionally removed.
 -dontwarn android.support.annotation.Keep
 -dontwarn android.support.annotation.VisibleForTesting
+
+# Potentially a Kotlin 1.4-only exception.
+-dontwarn kotlin.time.jdk8.DurationConversionsJDK8Kt
