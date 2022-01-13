@@ -3,23 +3,18 @@ package org.oppia.android.app.databinding
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -44,7 +39,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.TextViewBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -90,9 +84,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Singleton
-import org.oppia.android.app.utility.EspressoTestsMatchers
-import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 
 /** Tests for [TextViewBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
@@ -137,10 +128,10 @@ class TextViewBindingAdaptersTest {
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileDataText(textView, /* setText= */ 0L)
-
       val time = it.resourceHandler.computeDateString(0L)
       val dateString = it.resourceHandler.getStringInLocaleWithWrapping(
-        R.string.profile_edit_created, time
+        R.string.profile_edit_created,
+        time
       )
       assertThat(textView.text.toString()).isEqualTo(dateString)
     }
@@ -148,17 +139,16 @@ class TextViewBindingAdaptersTest {
 
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
-
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
-    val textView = activityRule.scenario.runWithActivity {
+    activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs())
-      return@runWithActivity textView
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs()
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used just now")
     }
-    assertThat(textView.text.toString()).isEqualTo("Last used just now")
   }
 
   @Test
@@ -171,9 +161,6 @@ class TextViewBindingAdaptersTest {
         /* setDrawableEndCompat= */ drawable
       )
       assertThat(textView.compoundDrawablesRelative[2]).isEqualTo(drawable)
-//      onView(withId(R.id.test_text_view)).check(
-//        matches(withDrawable(drawable)
-//      ))
     }
   }
 
