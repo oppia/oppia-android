@@ -26,7 +26,7 @@ const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 /** Argument key for [ProfileEditFragment]. */
 const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
 
-/** Argument key for [ProfileEditFragment]. */
+/** Argument key for [AppVersionFragment]. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
