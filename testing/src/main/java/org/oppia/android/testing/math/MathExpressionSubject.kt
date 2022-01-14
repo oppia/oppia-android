@@ -16,102 +16,288 @@ import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.MathFunctionCall
 import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.Real
+import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 
-// See: https://kotlinlang.org/docs/type-safe-builders.html.
-class MathExpressionSubject(
+// TODO(#4097): Add tests for this class.
+
+/**
+ * Truth subject for verifying properties of [MathExpression]s.
+ *
+ * This subject makes use of a custom Kotlin DSL to test the structure of an expression. This
+ * structure allows for recursive verification of the structure since the structure itself is
+ * recursive. Further, unchecked parts of the structure are not verified. See the following example
+ * to get an idea of the DSL for verifying expressions (see specific methods the comparator for all
+ * syntactical options):
+ *
+ * ```kotlin
+ *  assertThat(expression).hasStructureThatMatches {
+ *    addition {
+ *      leftOperand {
+ *        constant {
+ *          withValueThat().isIntegerThat().isEqualTo(3)
+ *        }
+ *      }
+ *      rightOperand {
+ *        multiplication {
+ *          leftOperand {
+ *            constant {
+ *              withValueThat().isIntegerThat().isEqualTo(4)
+ *            }
+ *          }
+ *          rightOperand {
+ *            negation {
+ *              operand {
+ *                constant {
+ *                  withValueThat().isIntegerThat().isEqualTo(5)
+ *                }
+ *              }
+ *            }
+ *          }
+ *        }
+ *      }
+ *    }
+ *  }
+ * ```
+ *
+ * The above verifies the following structure:
+ * ```
+ *    +
+ *  /   \
+ * 3     *
+ *     /   \
+ *    4    -
+ *         |
+ *         5
+ * ```
+ *
+ * (which would correspond to the expression 3+4*-5).
+ *
+ * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+ * [MathExpression] proto can be verified through inherited methods.
+ *
+ * Call [assertThat] to create the subject.
+ */
+class MathExpressionSubject private constructor(
   metadata: FailureMetadata,
   private val actual: MathExpression
 ) : LiteProtoSubject(metadata, actual) {
+  /**
+   * Begins the structure syntax matcher.
+   *
+   * See [ExpressionComparator] for syntax.
+   */
   fun hasStructureThatMatches(init: ExpressionComparator.() -> Unit) {
-    // TODO: maybe verify that all aspects are verified?
     ExpressionComparator.createFromExpression(actual).also(init)
   }
 
-  // TODO: update DSL to not have return values (since it's unnecessary).
+  /**
+   * DSL syntax provider for verifying the structure of a [MathExpression].
+   *
+   * Note that per the proto definition of [MathExpression], this comparator can only represent one
+   * of the expression substructures (e.g. constant, variable, binary operations, and others). See
+   * the member methods for the different substructures that can be verified.
+   *
+   * Example syntax for verifying a constant:
+   *
+   * ```kotlin
+   * <prefix> {
+   *   constant {
+   *     ...
+   *   }
+   * }
+   * ```
+   *
+   * <prefix> is either verifying the root (i.e. via [hasStructureThatMatches]) or is for verifying
+   * a nested expression (such as through groups).
+   */
   @ExpressionComparatorMarker
   class ExpressionComparator private constructor(private val expression: MathExpression) {
-    // TODO: convert to constant comparator?
-    fun constant(init: ConstantComparator.() -> Unit): ConstantComparator =
+    /**
+     * Begins structure matching for this expression as a constant per [MathExpression.getConstant].
+     *
+     * This method will fail if the expression corresponding to the subject is not a constant. See
+     * [ConstantComparator] for example syntax.
+     */
+    fun constant(init: ConstantComparator.() -> Unit) {
       ConstantComparator.createFromExpression(expression).also(init)
+    }
 
-    fun variable(init: VariableComparator.() -> Unit): VariableComparator =
+    /**
+     * Begins structure matching for this expression as a variable per [MathExpression.getVariable].
+     *
+     * This method will fail if the expression corresponding to the subject is not a variable. See
+     * [VariableComparator] for example syntax.
+     */
+    fun variable(init: VariableComparator.() -> Unit) {
       VariableComparator.createFromExpression(expression).also(init)
+    }
 
-    fun addition(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-      return BinaryOperationComparator.createFromExpression(
+    /**
+     * Begins structure matching for this expression as an addition operation per
+     * [MathExpression.getBinaryOperation].
+     *
+     * This method will fail if the expression corresponding to the subject is not an addition
+     * operation. See [BinaryOperationComparator] for example syntax.
+     */
+    fun addition(init: BinaryOperationComparator.() -> Unit) {
+      BinaryOperationComparator.createFromExpression(
         expression,
         expectedOperator = MathBinaryOperation.Operator.ADD
       ).also(init)
     }
 
-    fun subtraction(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-      return BinaryOperationComparator.createFromExpression(
+    /**
+     * Begins structure matching for this expression as a subtraction operation per
+     * [MathExpression.getBinaryOperation].
+     *
+     * This method will fail if the expression corresponding to the subject is not a subtraction
+     * operation. See [BinaryOperationComparator] for example syntax.
+     */
+    fun subtraction(init: BinaryOperationComparator.() -> Unit) {
+      BinaryOperationComparator.createFromExpression(
         expression,
         expectedOperator = MathBinaryOperation.Operator.SUBTRACT
       ).also(init)
     }
 
-    fun multiplication(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-      return BinaryOperationComparator.createFromExpression(
+    /**
+     * Begins structure matching for this expression as a multiplication operation per
+     * [MathExpression.getBinaryOperation].
+     *
+     * This method will fail if the expression corresponding to the subject is not a multiplication
+     * operation. See [BinaryOperationComparator] for example syntax.
+     */
+    fun multiplication(init: BinaryOperationComparator.() -> Unit) {
+      BinaryOperationComparator.createFromExpression(
         expression,
         expectedOperator = MathBinaryOperation.Operator.MULTIPLY
       ).also(init)
     }
 
-    fun division(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-      return BinaryOperationComparator.createFromExpression(
+    /**
+     * Begins structure matching for this expression as a division operation per
+     * [MathExpression.getBinaryOperation].
+     *
+     * This method will fail if the expression corresponding to the subject is not a division
+     * operation. See [BinaryOperationComparator] for example syntax.
+     */
+    fun division(init: BinaryOperationComparator.() -> Unit) {
+      BinaryOperationComparator.createFromExpression(
         expression,
         expectedOperator = MathBinaryOperation.Operator.DIVIDE
       ).also(init)
     }
 
-    fun exponentiation(init: BinaryOperationComparator.() -> Unit): BinaryOperationComparator {
-      return BinaryOperationComparator.createFromExpression(
+    /**
+     * Begins structure matching for this expression as an exponentiation operation per
+     * [MathExpression.getBinaryOperation].
+     *
+     * This method will fail if the expression corresponding to the subject is not an exponentiation
+     * operation. See [BinaryOperationComparator] for example syntax.
+     */
+    fun exponentiation(init: BinaryOperationComparator.() -> Unit) {
+      BinaryOperationComparator.createFromExpression(
         expression,
         expectedOperator = MathBinaryOperation.Operator.EXPONENTIATE
       ).also(init)
     }
 
-    fun negation(init: UnaryOperationComparator.() -> Unit): UnaryOperationComparator {
-      return UnaryOperationComparator.createFromExpression(
+    /**
+     * Begins structure matching for this expression as a negation operation per
+     * [MathExpression.getUnaryOperation].
+     *
+     * This method will fail if the expression corresponding to the subject is not a negation
+     * operation. See [UnaryOperationComparator] for example syntax.
+     */
+    fun negation(init: UnaryOperationComparator.() -> Unit) {
+      UnaryOperationComparator.createFromExpression(
         expression,
         expectedOperator = MathUnaryOperation.Operator.NEGATE
       ).also(init)
     }
 
-    fun positive(init: UnaryOperationComparator.() -> Unit): UnaryOperationComparator {
-      return UnaryOperationComparator.createFromExpression(
+    /**
+     * Begins structure matching for this expression as a positive operation per
+     * [MathExpression.getUnaryOperation].
+     *
+     * This method will fail if the expression corresponding to the subject is not a positive
+     * operation. See [UnaryOperationComparator] for example syntax.
+     */
+    fun positive(init: UnaryOperationComparator.() -> Unit) {
+      UnaryOperationComparator.createFromExpression(
         expression,
         expectedOperator = MathUnaryOperation.Operator.POSITIVE
       ).also(init)
     }
 
+    /**
+     * Begins structure matching for this expression as a function call per
+     * [MathExpression.getFunctionCall].
+     *
+     * This method will fail if the expression corresponding to the subject is not a function call.
+     * See [FunctionCallComparator] for example syntax.
+     */
     fun functionCallTo(
       type: MathFunctionCall.FunctionType,
       init: FunctionCallComparator.() -> Unit
-    ): FunctionCallComparator {
-      return FunctionCallComparator.createFromExpression(
-        expression,
-        expectedFunctionType = type
+    ) {
+      FunctionCallComparator.createFromExpression(
+        expression, expectedFunctionType = type
       ).also(init)
     }
 
-    fun group(init: ExpressionComparator.() -> Unit): ExpressionComparator {
-      return createFromExpression(expression.group).also(init)
+    /**
+     * Begins structure matching for this expression as a group per [MathExpression.getGroup].
+     *
+     * This method will fail if the expression corresponding to the subject is not a group. Example
+     * syntax:
+     *
+     * ```kotlin
+     * group {
+     *   ... <expression verification> ...
+     * }
+     * ```
+     *
+     * Groups refer to other expressions, so [ExpressionComparator] is used to verify constituent
+     * properties of the group.
+     */
+    fun group(init: ExpressionComparator.() -> Unit) {
+      createFromExpression(expression.group).also(init)
     }
 
     internal companion object {
+      /** Returns a new [ExpressionComparator] corresponding to the specified [MathExpression]. */
       fun createFromExpression(expression: MathExpression): ExpressionComparator =
         ExpressionComparator(expression)
     }
   }
 
+  /**
+   * DSL syntax provider for verifying constants.
+   *
+   * Example syntax:
+   *
+   * ```kotlin
+   * constant {
+   *   withValueThat()...
+   * }
+   * ```
+   *
+   * This comparator provides access to a [RealSubject] to verify the actual constant value.
+   */
   @ExpressionComparatorMarker
   class ConstantComparator private constructor(private val constant: Real) {
+    /**
+     * Returns a [RealSubject] to verify the constant that's being represented by this comparator.
+     */
     fun withValueThat(): RealSubject = assertThat(constant)
 
     internal companion object {
+      /**
+       * Returns a new [ConstantComparator] corresponding to the specified [MathExpression],
+       * verifying that it is, indeed, a constant.
+       */
       fun createFromExpression(expression: MathExpression): ConstantComparator {
         assertThat(expression.expressionTypeCase).isEqualTo(CONSTANT)
         return ConstantComparator(expression.constant)
@@ -119,11 +305,31 @@ class MathExpressionSubject(
     }
   }
 
+  /**
+   * DSL syntax provider for verifying variables.
+   *
+   * Example syntax:
+   *
+   * ```kotlin
+   * variable {
+   *   withNameThat()...
+   * }
+   * ```
+   *
+   * This comparator provides access to a [StringSubject] to verify the actual variable value.
+   */
   @ExpressionComparatorMarker
   class VariableComparator private constructor(private val variableName: String) {
+    /**
+     * Returns a [StringSubject] to verify the variable that's being represented by this comparator.
+     */
     fun withNameThat(): StringSubject = assertThat(variableName)
 
     internal companion object {
+      /**
+       * Returns a new [VariableComparator] corresponding to the specified [MathExpression],
+       * verifying that it is, indeed, a variable.
+       */
       fun createFromExpression(expression: MathExpression): VariableComparator {
         assertThat(expression.expressionTypeCase).isEqualTo(VARIABLE)
         return VariableComparator(expression.variable)
@@ -131,17 +337,56 @@ class MathExpressionSubject(
     }
   }
 
+  /**
+   * DSL syntax provider for verifying binary operations, like addition and multiplication.
+   *
+   * Example syntax:
+   *
+   * ```kotlin
+   * division {
+   *   leftOperand {
+   *     ... <expression verification> ...
+   *   }
+   *
+   *   rightOperand {
+   *     ... <expression verification> ...
+   *   }
+   * }
+   * ```
+   *
+   * Both the left and right operands represent other [MathExpression]s.
+   */
   @ExpressionComparatorMarker
   class BinaryOperationComparator private constructor(
     private val operation: MathBinaryOperation
   ) {
-    fun leftOperand(init: ExpressionComparator.() -> Unit): ExpressionComparator =
+    /**
+     * Begins structure matching this operation's left operand per
+     * [MathBinaryOperation.getLeftOperand] for the operation represented by this comparator.
+     *
+     * This method provides an [ExpressionComparator] to use to verify the constituent properties
+     * of the operand.
+     */
+    fun leftOperand(init: ExpressionComparator.() -> Unit) {
       ExpressionComparator.createFromExpression(operation.leftOperand).also(init)
+    }
 
-    fun rightOperand(init: ExpressionComparator.() -> Unit): ExpressionComparator =
+    /**
+     * Begins structure matching this operation's right operand per
+     * [MathBinaryOperation.getRightOperand] for the operation represented by this comparator.
+     *
+     * This method provides an [ExpressionComparator] to use to verify the constituent properties
+     * of the operand.
+     */
+    fun rightOperand(init: ExpressionComparator.() -> Unit) {
       ExpressionComparator.createFromExpression(operation.rightOperand).also(init)
+    }
 
     internal companion object {
+      /**
+       * Returns a new [BinaryOperationComparator] corresponding to the specified [MathExpression],
+       * verifying that it is, indeed, a binary operation with the specified operator.
+       */
       fun createFromExpression(
         expression: MathExpression,
         expectedOperator: MathBinaryOperation.Operator
@@ -155,14 +400,41 @@ class MathExpressionSubject(
     }
   }
 
+  /**
+   * DSL syntax provider for verifying unary operations, like negation.
+   *
+   * Example syntax:
+   *
+   * ```kotlin
+   * negation {
+   *   operand {
+   *     ... <expression verification> ...
+   *   }
+   * }
+   * ```
+   *
+   * The operation's operand represents another [MathExpression].
+   */
   @ExpressionComparatorMarker
   class UnaryOperationComparator private constructor(
     private val operation: MathUnaryOperation
   ) {
-    fun operand(init: ExpressionComparator.() -> Unit): ExpressionComparator =
+    /**
+     * Begins structure matching this operation's operand per [MathUnaryOperation.getOperand] for
+     * the operation represented by this comparator.
+     *
+     * This method provides an [ExpressionComparator] to use to verify the constituent properties
+     * of the operand.
+     */
+    fun operand(init: ExpressionComparator.() -> Unit) {
       ExpressionComparator.createFromExpression(operation.operand).also(init)
+    }
 
     internal companion object {
+      /**
+       * Returns a new [UnaryOperationComparator] corresponding to the specified [MathExpression],
+       * verifying that it is, indeed, a unary operation with the specified operator.
+       */
       fun createFromExpression(
         expression: MathExpression,
         expectedOperator: MathUnaryOperation.Operator
@@ -176,14 +448,41 @@ class MathExpressionSubject(
     }
   }
 
+  /**
+   * DSL syntax provider for verifying function calls, like square root.
+   *
+   * Example syntax:
+   *
+   * ```kotlin
+   * functionCallTo(SQUARE_ROOT) {
+   *   argument {
+   *     ... <expression verification> ...
+   *   }
+   * }
+   * ```
+   *
+   * The function call's argument represents another [MathExpression].
+   */
   @ExpressionComparatorMarker
   class FunctionCallComparator private constructor(
     private val functionCall: MathFunctionCall
   ) {
-    fun argument(init: ExpressionComparator.() -> Unit): ExpressionComparator =
+    /**
+     * Begins structure matching the function call's argument per [MathFunctionCall.getArgument] for
+     * the operation represented by this comparator.
+     *
+     * This method provides an [ExpressionComparator] to use to verify the constituent properties
+     * of the function call's argument.
+     */
+    fun argument(init: ExpressionComparator.() -> Unit) {
       ExpressionComparator.createFromExpression(functionCall.argument).also(init)
+    }
 
     internal companion object {
+      /**
+       * Returns a new [FunctionCallComparator] corresponding to the specified [MathExpression],
+       * verifying that it is, indeed, a function call with the function type.
+       */
       fun createFromExpression(
         expression: MathExpression,
         expectedFunctionType: MathFunctionCall.FunctionType
@@ -198,8 +497,13 @@ class MathExpressionSubject(
   }
 
   companion object {
+    // See: https://kotlinlang.org/docs/type-safe-builders.html for how the DSL definition works.
     @DslMarker private annotation class ExpressionComparatorMarker
 
+    /**
+     * Returns a new [MathExpressionSubject] to verify aspects of the specified [MathExpression]
+     * value.
+     */
     fun assertThat(actual: MathExpression): MathExpressionSubject =
       assertAbout(::MathExpressionSubject).that(actual)
   }
