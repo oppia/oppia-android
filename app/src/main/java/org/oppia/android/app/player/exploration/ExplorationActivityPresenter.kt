@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -30,6 +31,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.fragment.BottomSheetFragment
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -102,6 +104,11 @@ class ExplorationActivityPresenter @Inject constructor(
 
     binding.actionAudioPlayer.setOnClickListener {
       getExplorationFragment()?.handlePlayAudio()
+    }
+
+    binding.actionBottomSheet.setOnClickListener {
+      val bottomSheetFragment= BottomSheetFragment(internalProfileId)
+      bottomSheetFragment.show(activity.supportFragmentManager,bottomSheetFragment.tag)
     }
 
     updateToolbarTitle(explorationId)
