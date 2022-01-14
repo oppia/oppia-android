@@ -19,7 +19,6 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -42,8 +41,6 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -114,10 +111,13 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -167,7 +167,6 @@ class AdministratorControlsActivityTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    TestModule.forceEnableEditAccountsOptionsUi = true
   }
 
   @After
@@ -181,9 +180,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_generalOptionsIsDisplayed() {
-    TestModule.forceEnableEditAccountsOptionsUi = true
-
+  fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -199,39 +196,6 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.edit_account_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_account
       )
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_generalOptionsIsNotDisplayed() {
-    TestModule.forceEnableEditAccountsOptionsUi = false
-
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
-        itemPosition = 0,
-        targetView = R.id.general_text_view
-      )
-      verifyTextOnAdministratorListItemAtPositionDoesNotExist(
-        itemPosition = 0,
-        targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_account
-      )
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 1,
         targetView = R.id.profile_management_text_view
@@ -710,19 +674,6 @@ class AdministratorControlsActivityTest {
     ).check(matches(isDisplayed()))
   }
 
-  private fun verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(doesNotExist())
-  }
-
   private fun verifyTextOnAdministratorListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -735,20 +686,6 @@ class AdministratorControlsActivityTest {
         targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
-  }
-
-  private fun verifyTextOnAdministratorListItemAtPositionDoesNotExist(
-    itemPosition: Int,
-    targetViewId: Int,
-    @StringRes stringIdToMatch: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetViewId
-      )
-    ).check(doesNotExist())
   }
 
   private fun scrollToPosition(position: Int) {
@@ -765,11 +702,26 @@ class AdministratorControlsActivityTest {
       .check(matches(isDisplayed()))
   }
 
+  @Module
+  class TestModule {
+    companion object{
+      var forceEnableEditAccountsOptionsUi = true
+    }
+
+   @Provides
+   @EnableEditAccountsOptionsUi
+   fun providesEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
+     return PlatformParameterValue.createDefaultParameter(
+       forceEnableEditAccountsOptionsUi
+     )
+   }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestModule::class, RobolectricModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
@@ -813,21 +765,5 @@ class AdministratorControlsActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  @Module
-  class TestModule {
-    companion object {
-      /* When default value for [EnableEditAccountsOptionsUi] is true */
-      var forceEnableEditAccountsOptionsUi: Boolean = true
-    }
-
-    @Provides
-    @EnableEditAccountsOptionsUi
-    fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(
-        forceEnableEditAccountsOptionsUi
-      )
-    }
   }
 }
