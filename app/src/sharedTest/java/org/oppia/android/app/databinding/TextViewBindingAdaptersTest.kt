@@ -125,15 +125,12 @@ class TextViewBindingAdaptersTest {
 
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileDataTextIsCorrect() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileDataText(textView, /* setText= */ 0L)
-      val time = it.resourceHandler.computeDateString(0L)
-      val dateString = it.resourceHandler.getStringInLocaleWithWrapping(
-        R.string.profile_edit_created,
-        time
-      )
-      assertThat(textView.text.toString()).isEqualTo(dateString)
+      setProfileDataText(textView, /* setText= */ MORNING_TIMESTAMP)
+      assertThat(textView.text.toString()).isEqualTo("Created on April 24, 2019")
     }
   }
 
