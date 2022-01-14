@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <dimen name="home_padding_end">96dp</dimen>
   <dimen name="home_padding_start">120dp</dimen>
   <dimen name="home_outer_margin">120dp</dimen>
@@ -400,5 +400,11 @@
 
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
+
+  <!--  Revision Card Fragment-->
+  <dimen name="revision_card_fragment_layout_min_width" tools:ignore="MissingDefaultResource">512dp</dimen>
+  <dimen name="revision_card_fragment_padding_bottom">160dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_top_text">36dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_top_button">48dp</dimen>
 
 </resources>

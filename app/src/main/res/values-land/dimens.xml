@@ -395,4 +395,12 @@
   
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">60dp</dimen>
+
+  <!--  Revision Card Fragment-->
+  <dimen name="revision_card_fragment_padding_bottom">145dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_start">52dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_top_text">24dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_end">52dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_top_button">24dp</dimen>
+
 </resources>

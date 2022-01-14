@@ -20,14 +20,14 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:paddingBottom="160dp">
+      android:paddingBottom="@dimen/revision_card_fragment_padding_bottom">
 
       <TextView
         android:id="@+id/revision_card_explanation_text"
         style="@style/Body"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="28dp" />
+        android:layout_marginStart="@dimen/revision_card_fragment_layout_margin_start"
+        android:layout_marginTop="@dimen/revision_card_fragment_layout_margin_top_text"
+        android:layout_marginEnd="@dimen/revision_card_fragment_layout_margin_end" />
 
       <Button
         android:id="@+id/revision_card_return_button"
@@ -35,9 +35,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginStart="@dimen/revision_card_fragment_layout_margin_start"
+        android:layout_marginTop="@dimen/revision_card_fragment_layout_margin_top_button"
+        android:layout_marginEnd="@dimen/revision_card_fragment_layout_margin_end"
         android:background="@drawable/state_button_primary_background"
         android:onClick="@{viewModel::clickReturnToTopic}"
         android:paddingStart="32dp"
