@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -16,6 +17,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -191,7 +193,7 @@ class ImageViewBindingAdaptersTest {
   }
 
   @Throws(IOException::class)
-  fun drawableFromUrl(url: String?): Drawable? {
+  fun drawableFromUrl(url: String): Drawable? {
     val x: Bitmap
     val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
     connection.connect()
@@ -204,19 +206,15 @@ class ImageViewBindingAdaptersTest {
   fun testImageViewBindingAdapters_imageView_setProfileImage() {
     activityRule.scenario.runWithActivity {
       val imageView = getImageView(it)
-      testCoroutineDispatchers.runCurrent()
-      val profileAvatar = ProfileAvatar.getDefaultInstance()
-      testCoroutineDispatchers.runCurrent()
+      val profileAvatar = ProfileAvatar.newBuilder()
+        .setAvatarImageUri("https://render.fineartamerica.com/images/rendered/default/framed-print/images-medium-5/fuji-mountain-in-autumn-doctoregg.jpg?imgWI=36&imgHI=24&sku=CRQ13&mat1=PM918&mat2=&t=2&b=2&l=2&r=2&off=0.5&frameW=0.875")
+        .build()
+      val url = profileAvatar.avatarImageUri.toString()
+      Log.d("TAG", "testImageViewBindingAdapters_imageView_setProfileImage: $url")
       setProfileImage(imageView, profileAvatar)
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.image_view_for_data_binding))).check(
-        matches(
-          withDrawableDynamic(
-            drawableFromUrl(profileAvatar.avatarImageUri) as BitmapDrawable
-          )
-        )
-      )
-      testCoroutineDispatchers.runCurrent()
+      val drawableFromInternet = drawableFromUrl(url) as BitmapDrawable
+      assertThat(imageView, withDrawableDynamic(drawableFromInternet))
     }
   }
 
