@@ -1,0 +1,95 @@
+"""
+General-purpose utilities for parsing & rendering HTML within the app.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "html_parser",
+    srcs = [
+        "HtmlParser.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":custom_bullet_span",
+        ":custom_html_content_handler",
+        ":tag_handlers",
+        "//third_party:androidx_core_core-ktx",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
+    ],
+)
+
+kt_android_library(
+    name = "tag_handlers",
+    srcs = [
+        "BulletTagHandler.kt",
+        "ConceptCardTagHandler.kt",
+        "ImageTagHandler.kt",
+        "MathTagHandler.kt",
+    ],
+    visibility = ["//utility:__subpackages__"],
+    deps = [
+        ":custom_html_content_handler",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "custom_bullet_span",
+    srcs = [
+        "CustomBulletSpan.kt",
+    ],
+    visibility = [
+        "//app:__subpackages__",
+    ],
+    deps = [
+        "//utility",
+    ],
+)
+
+kt_android_library(
+    name = "custom_html_content_handler",
+    srcs = [
+        "CustomHtmlContentHandler.kt",
+    ],
+    visibility = [
+        "//utility/src/main/java/org/oppia/android/util/parser/image:__subpackages__",
+    ],
+    deps = [
+        "//third_party:androidx_core_core-ktx",
+    ],
+)
+
+kt_android_library(
+    name = "exploration_html_parser_entity_type",
+    srcs = [
+        "ExplorationHtmlParserEntityType.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "html_parser_entity_type_module",
+    srcs = [
+        "HtmlParserEntityTypeModule.kt",
+    ],
+    visibility = [
+        "//:oppia_prod_module_visibility",
+    ],
+    deps = [
+        ":custom_html_content_handler",
+        ":dagger",
+        ":exploration_html_parser_entity_type",
+        ":tag_handlers",
+    ],
+)
+
+dagger_rules()

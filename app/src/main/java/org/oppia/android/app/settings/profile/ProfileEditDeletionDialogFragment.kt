@@ -14,9 +14,11 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    /** Argument key for pop up of Profile Deletion Dialog in [ProfileEditActivity]. */
     const val PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY =
       "ProfileEditDeletionDialogFragment.profile_deletion_dialog_internal_profile_id"
 
+    /** Creates new instance of the fragment [ProfileEditFragment]. */
     fun newInstance(internalProfileId: Int): ProfileEditDeletionDialogFragment {
       val profileEditDeletionDialog = ProfileEditDeletionDialogFragment()
       val args = Bundle()
@@ -26,6 +28,7 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
     }
   }
 
+  /** A dialog interface for creating dialogs of [ProfileEditDialogFragment]. */
   lateinit var profileEditDialogInterface: ProfileEditDialogInterface
 
   override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,5 +1,5 @@
 """
-TODO: document
+General testing utilities and truth subjects for math structures and utilities.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
