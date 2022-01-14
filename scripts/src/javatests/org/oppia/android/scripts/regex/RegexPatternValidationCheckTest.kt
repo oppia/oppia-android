@@ -119,6 +119,7 @@ class RegexPatternValidationCheckTest {
     "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to" +
       " null, instead. Delegates uses reflection internally, have a non-trivial initialization" +
       " cost, and can cause breakages on KitKat devices. See #3939 for more context."
+  private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1539,6 +1540,48 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $useJava8OptionalErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_buildFileUsesProtoLibrary_fileContentIsNotCorrect() {
+    val prohibitedContent = "proto_library("
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/BUILD"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseProtoLibrary
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_buildBazelFileUsesProtoLibrary_fileContentIsNotCorrect() {
+    val prohibitedContent = "proto_library("
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/BUILD.bazel"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseProtoLibrary
         $wikiReferenceNote
         """.trimIndent()
       )
