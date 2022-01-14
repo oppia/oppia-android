@@ -221,7 +221,6 @@ message ComparableOperationList {
       NonCommutativeOperation non_commutative_operation = 4;
 
       // Indicates that this operation represents a constant value.
-
       Real constant_term = 5;
 
       // Indicates that this operation represents a variable.
