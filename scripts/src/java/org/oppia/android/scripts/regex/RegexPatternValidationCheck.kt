@@ -232,8 +232,8 @@ private data class MatchableFileContentCheck(
   }
 
   private fun isFileExempted(relativePath: String): Boolean {
-    return relativePath in exemptedFileNames
-      || exemptedFilePatterns.any { it.containsMatchIn(relativePath) }
+    return relativePath in exemptedFileNames ||
+      exemptedFilePatterns.any { it.containsMatchIn(relativePath) }
   }
 
   companion object {
