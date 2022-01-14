@@ -218,7 +218,7 @@ private data class MatchableFileContentCheck(
    * (i.e. that it matches the inclusion pattern and is not explicitly or implicitly excluded).
    */
   fun isFileAffectedByCheck(relativePath: String): Boolean =
-    filePathRegex.matches(relativePath) && !isFileExempted(relativePath)
+    filePathRegex.containsMatchIn(relativePath) && !isFileExempted(relativePath)
 
   /**
    * Returns the list of line indexes which contain prohibited content per this check (given an
@@ -231,8 +231,10 @@ private data class MatchableFileContentCheck(
     }.map { (index, _) -> index }
   }
 
-  private fun isFileExempted(relativePath: String): Boolean =
-    relativePath in exemptedFileNames || exemptedFilePatterns.any { it.matches(relativePath) }
+  private fun isFileExempted(relativePath: String): Boolean {
+    return relativePath in exemptedFileNames
+      || exemptedFilePatterns.any { it.containsMatchIn(relativePath) }
+  }
 
   companion object {
     /** Returns a new [MatchableFileContentCheck] based on the specified [FileContentCheck]. */
