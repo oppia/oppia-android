@@ -21,7 +21,7 @@ import javax.inject.Singleton
 /** Tests for [FakeAccessibilityService]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = FakeAccessibilityServiceTest.TestApplication::class)
 class FakeAccessibilityServiceTest {
   @Inject
   lateinit var accessibilityService: FakeAccessibilityService
@@ -66,9 +66,7 @@ class FakeAccessibilityServiceTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFakeAccessibilityServiceTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
+    ApplicationProvider.getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -83,5 +81,17 @@ class FakeAccessibilityServiceTest {
     }
 
     fun inject(fakeAccessibilityServiceTest: FakeAccessibilityServiceTest)
+  }
+
+  class TestApplication : Application() {
+    private val component: TestApplicationComponent by lazy {
+      DaggerFakeAccessibilityServiceTest_TestApplicationComponent.builder()
+        .setApplication(ApplicationProvider.getApplicationContext())
+        .build()
+    }
+
+    fun inject(fakeAccessibilityServiceTest: FakeAccessibilityServiceTest) {
+      component.inject(fakeAccessibilityServiceTest)
+    }
   }
 }
