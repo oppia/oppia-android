@@ -23,7 +23,7 @@ import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 
 /**
  * Truth subject for verifying properties of [MathExpression]s.
- * 
+ *
  * This subject makes use of a custom Kotlin DSL to test the structure of an expression. This
  * structure allows for recursive verification of the structure since the structure itself is
  * recursive. Further, unchecked parts of the structure are not verified. See the following example
@@ -239,7 +239,8 @@ class MathExpressionSubject private constructor(
      * See [FunctionCallComparator] for example syntax.
      */
     fun functionCallTo(
-      type: MathFunctionCall.FunctionType, init: FunctionCallComparator.() -> Unit
+      type: MathFunctionCall.FunctionType,
+      init: FunctionCallComparator.() -> Unit
     ) {
       FunctionCallComparator.createFromExpression(
         expression, expectedFunctionType = type

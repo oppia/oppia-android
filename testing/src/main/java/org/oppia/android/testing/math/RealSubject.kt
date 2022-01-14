@@ -7,7 +7,6 @@ import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import com.google.common.truth.extensions.proto.LiteProtoSubject
-import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.Real
 import org.oppia.android.testing.math.FractionSubject.Companion.assertThat
 
