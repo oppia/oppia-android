@@ -189,55 +189,104 @@ message MathEquation {
   MathExpression right_side = 2;
 }
 
-// Represents a list of comparable mathematics operations. 'Comparable' here means that this
-// structure provides a trivial way to compare commutative operations (i.e. by extracting terms from
-// multiple subsequent commutative operations into lists that can be deterministically sorted). This
-// structure is meant to provide a means to compare two expressions without considering
-// associativity or commutativity (though the latter requires the operation lists stored within this
-// structure to be sorted before using standard proto equals checking).
+// Represents a list of comparable mathematics operations.
+//
+// 'Comparable' here means that this structure provides a trivial way to compare commutative and
+// associative operations (i.e. by extracting terms from multiple subsequent commutative &
+// associative operations into lists that can be deterministically sorted). This structure is meant
+// to provide a means to compare two expressions without considering associativity or commutativity
+// (though the latter requires the operation lists stored within this structure to be sorted before
+// using standard proto equals checking). Also note that care must be taken when performing equality
+// checking since this structure can contain floating point values that require an epsilon check to
+// approximate equality.
 message ComparableOperationList {
+  // An operation that can be compared in a way that does not change the value based on
+  // commutativity or associativity.
   message ComparableOperation {
-    // Treat this operation (e.g. x) as negated (e.g. -x).
+    // Indicates that this operation (e.g. x) should be treated as negated (e.g. -x).
     bool is_negated = 1;
 
-    // Treat this operation (e.g. x) as a multiplicative inverse (e.g. 1/x).
+    // Indicates that this operation (e.g. x) should be treated as a multiplicative inverse
+    // (e.g. 1/x).
     bool is_inverted = 2;
 
+    // The supported comparison types.
     oneof comparison_type {
+      // Indicates that this operation is a commutative accumulation (that is, a list of subsequent
+      // operations of the same type that are commutative, e.g. addition or multiplication).
       CommutativeAccumulation commutative_accumulation = 3;
+
+      // Indicates that this operation is a non-commutative operation and thus cannot be
+      // accumulated (e.g. exponentiation).
       NonCommutativeOperation non_commutative_operation = 4;
+
+      // Indicates that this operation represents a constant value.
+
       Real constant_term = 5;
+
+      // Indicates that this operation represents a variable.
       string variable_term = 6;
     }
   }
-  // Represents an accumulation of operations (such as a summation or product). This helps simplify
-  // comparison across commutative boundaries by collecting terms into sortable lists, such as the
-  // expression 1+2+3 becoming [1,2,3] and trivially comparable to [3,2,1] from 3+2+1.
+
+  // Represents an accumulation of operations (such as a summation or product).
+  //
+  // This helps simplify comparison across commutative and associative boundaries by collecting
+  // terms into sortable lists, such as the expression 1+2+3 becoming [1,2,3] and trivially
+  // comparable to [3,2,1] from 3+2+1 (once sorted).
   //
   // Subsequent subtractions are treated as additions with each term arithmetically negated (i.e.
   // f(x)=-x). Similarly, divisions are considered multiplications with each divisor being
   // multiplicatively inverted (i.e. the reciprocal function: f(x)=1/x).
   message CommutativeAccumulation {
+    // The types of supported accumulations.
     enum AccumulationType {
+      // Represents an unsupported accumulation type (which is always invalid).
       ACCUMULATION_TYPE_UNSPECIFIED = 0;
+
+      // Represents an accumulation of sums, e.g. 1+2+3.
       SUMMATION = 1;
+
+      // Represents an accumulation of products, e.g. 2*3*4.
       PRODUCT = 2;
     }
 
+    // The type of this accumulation.
     AccumulationType accumulation_type = 1;
+
+    // The list of operations being combined in this accumulation (which can be subsequent
+    // accumulations in more complex expressions).
     repeated ComparableOperation combined_operations = 2;
   }
+
+  // Represents a non-commutative operation (such as exponentiation or square roots).
+  //
+  // Operations represented by this structure cannot be combined in an accumulation which means they
+  // can't be "internally" sorted (in order to maintain the commutativity and associativity of the
+  // operation).
   message NonCommutativeOperation {
+    // The types of supported non-commutative operations.
     oneof operation_type {
+      // Indicates that this is an exponentiation operation.
       BinaryOperation exponentiation = 1;
+
+      // Indicates that this is a square root operation with this operation representing the
+      // argument passed to the square root function.
       ComparableOperation square_root = 2;
     }
 
+    // Represents a non-commutative binary operation, such as exponentiation.
     message BinaryOperation {
+      // The left-hand side of the operation (which itself is another operation), e.g. the '2' in
+      // 2^3.
       ComparableOperation left_operand = 1;
+
+      // The right-hand side of the operation (which itself is another operation), e.g. the '3' in
+      // 2^3.
       ComparableOperation right_operand = 2;
     }
   }
 
+  // The root of the operation list (i.e. the lowest precedent operation of the expression).
   ComparableOperation root_operation = 1;
 }
