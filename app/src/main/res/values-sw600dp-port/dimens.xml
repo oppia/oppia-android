@@ -398,4 +398,7 @@
   <dimen name="section_title_text_view_layout_margin_top">32dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">120dp</dimen>
 
+  <!-- AudioLanguageFragment -->
+  <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
+
 </resources>
