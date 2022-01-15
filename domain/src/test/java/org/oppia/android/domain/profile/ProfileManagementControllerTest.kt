@@ -10,7 +10,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
+import java.io.File
+import java.io.FileInputStream
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,6 +33,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -47,10 +51,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.File
-import java.io.FileInputStream
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -111,13 +111,40 @@ class ProfileManagementControllerTest {
     Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
   )
 
-  @Before
+  private val allowedNamesProfileList = listOf<Profile>(
+    Profile.newBuilder().setName("जिष्णु").setPin("123").setAllowDownloadAccess(true).build(),
+    Profile.newBuilder().setName("Ben-Henning").setPin("345").setAllowDownloadAccess(true).build(),
+    Profile.newBuilder().setName("Rajat.T").setPin("456").setAllowDownloadAccess(false).build(),
+    Profile.newBuilder().setName("جيشنو").setPin("567").setAllowDownloadAccess(true).build()
+  )
+
+  private val unAllowedNamesList = listOf<String>("जिष्णु7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
+
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Test
+  fun testAddProfile_addProfile_checkThrowsExceptionIfProfileNameIsNotAllowed() {
+
+    assertThrows(
+      ProfileManagementController.ProfileNameOnlyLettersException::class
+    ) {
+      profileManagementController.addProfile(
+        unAllowedNamesProfileList[0].name,
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = true
+      ).toLiveData().observeForever(mockUpdateResultObserver)
+      testCoroutineDispatchers.runCurrent()
+    }
+
   }
 
   @Test
