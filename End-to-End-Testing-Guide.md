@@ -88,3 +88,24 @@ The android_binary of a test suite generates a test apk with the same name as th
 4. Prefer using existing helpers from ``EndToEndTestHelper`` rather than reimplementing them.
 5. Prefer testing whole end-to-end flows rather than specific behaviors. For example: opening the app, downloading a topic, and being able to play it is an excellent end-to-end test since it’s verifying multiple cross-stack behaviors. Conversely, testing that a thumbnail is aligned correctly on the home screen is less useful and ought to be tested in Robolectric or Espresso local to the component showing that image.
 6. Use uiautomatorviewer to get details of each view such as resource ID, content description, class, and other properties.
+
+### Writing E2E tests
+Unlike Robolectric and Espresso, tests in UiAutomator don't share the same code as Espresso and Robolectric. UiAutomator tests are dependent on [UiDevice](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice). UiDevice provides access to all the views and gives possibilities to stimulate all UserActions in the device/emulator including an app other than the current app. 
+
+In the instrumentation module all the UiAutomator tests are written using the Extensions of UiDevice in [EndToEndTestHelper.kt](https://github.com/oppia/oppia-android/blob/develop/instrumentation/src/java/org/oppia/android/instrumentation/testing/EndToEndTestHelper.kt)  
+
+**Example:** 
+To navigate from Profile screen to a Exploration page
+```
+    // device is a Instance of UiDevice.
+    device.findObjectByRes("skip_text_view").click() // Click on the "skip" button on the onBoarding page.
+    device.findObjectByRes("get_started_button").click() // Click on the "Getting Started' button.
+    device.waitForRes("profile_select_text") // Waiting for the Profile Select screen to appear.
+    device.findObjectByText("Admin").click() // Click on the admin profile.
+    scrollRecyclerViewTextIntoView("First Test Topic") // Scroll to the view with text "First Test Topic.
+    device.findObjectByText("First Test Topic").click() // Click on the "First Test Topic" text.
+    device.findObjectByText("LESSONS").click() // Click on the "Lessons" tab.
+    device.findObjectByText("First Story").click() // Click on the "First Story" tab.
+    scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration") // Scroll to first exploration.
+    device.findObjectByText("Chapter 1: Prototype Exploration").click() // Click on the first exploration.
+``` 
