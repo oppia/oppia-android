@@ -60,11 +60,6 @@ class AdministratorControlsActivity :
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
   }
 
-  override fun onResume() {
-    super.onResume()
-    administratorControlsActivityPresenter.handleOnResume()
-  }
-
   override fun routeToAppVersion() {
     startActivity(AppVersionActivity.createAppVersionActivityIntent(this))
   }

@@ -5,7 +5,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
@@ -13,6 +12,7 @@ import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
+import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
@@ -104,13 +104,13 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   /** Loads the [ProfileEditFragment] when the user clicks on a profile in tablet multipane mode. */
   fun loadProfileEdit(profileId: Int) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
     binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
     val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       fragment
-    )
-      .commitNow()
+    ).commitNow()
   }
 
   /** Handles the back button according to the back stack of fragments. */
@@ -120,25 +120,23 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     }
   }
 
-  /** Checks and sets the visibility of back button in multipane tablet mode. */
-  fun handleOnResume() {
-    activity.supportFragmentManager.addOnBackStackChangedListener {
-      if (activity.supportFragmentManager.backStackEntryCount == 0)
-        binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.GONE
-      val multipaneId = R.id.administrator_controls_fragment_multipane_placeholder
-      val multipaneFragment =
-        activity.supportFragmentManager.findFragmentById(multipaneId)
-      if (multipaneFragment is ProfileListFragment) {
-        setExtraControlsTitle(
-          activity.applicationContext.resources.getString(
-            R.string.administrator_controls_edit_profiles
-          )
+  private fun setBackButtonClickListener() {
+    binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
+      val currentFragment =
+        activity.supportFragmentManager.findFragmentById(
+          R.id.administrator_controls_fragment_multipane_placeholder
         )
-      }
-    }
-    if (isMultipane) {
-      binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
-        handleOnBackPressed()
+      if (currentFragment != null) {
+        when (currentFragment) {
+          is ProfileListFragment -> {
+            setExtraControlsTitle(
+              activity.applicationContext.resources.getString(
+                R.string.administrator_controls_edit_profiles
+              )
+            )
+            loadProfileList()
+          }
+        }
       }
     }
   }
