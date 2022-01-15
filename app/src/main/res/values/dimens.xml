@@ -591,11 +591,14 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
+  <!-- StoryFragment -->
+  <dimen name="story_fragment_padding_bottom">160dp</dimen>
+
   <!-- TopicRevisionSummary -->
   <dimen name="topic_revision_summary_card_layout_margin_start">8dp</dimen>
   <dimen name="topic_revision_summary_card_layout_margin_end">8dp</dimen>
   <dimen name="topic_revision_summary_card_layout_margin_top">12dp</dimen>
+  <dimen name="topic_revision_summary_card_layout_margin_bottom">12dp</dimen>
   <dimen name="topic_revision_summary_text_view_padding_start">8dp</dimen>
   <dimen name="topic_revision_summary_text_view_padding_end">8dp</dimen>
-
 </resources>

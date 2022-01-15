@@ -405,4 +405,5 @@
   <dimen name="topic_revision_summary_card_layout_margin_start">24dp</dimen>
   <dimen name="topic_revision_summary_card_layout_margin_end">24dp</dimen>
   <dimen name="topic_revision_summary_card_layout_margin_top">24dp</dimen>
+
 </resources>
