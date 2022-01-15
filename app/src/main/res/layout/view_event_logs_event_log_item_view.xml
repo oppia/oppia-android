@@ -42,7 +42,7 @@
 
       <TextView
         android:id="@+id/view_event_logs_priority_text_view"
-        style="@style/Subtitle2ViewCenter"
+        style="@style/Subtitle2ViewCenterVertical"
         android:layout_width="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="16dp"
