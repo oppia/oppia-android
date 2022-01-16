@@ -71,7 +71,7 @@ gradlew.bat @BenHenning
 *Manifest.xml @BenHenning
 
 # Linter configuration.
-buf.yaml @anandwana001
+.github/workflows/buf.yaml @anandwana001
 
 # Third-party dependencies.
 /third_party/ @BenHenning
