@@ -14,6 +14,7 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -111,40 +112,17 @@ class ProfileManagementControllerTest {
     Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
   )
 
-  private val allowedNamesProfileList = listOf<Profile>(
-    Profile.newBuilder().setName("जिष्णु").setPin("123").setAllowDownloadAccess(true).build(),
-    Profile.newBuilder().setName("Ben-Henning").setPin("345").setAllowDownloadAccess(true).build(),
-    Profile.newBuilder().setName("Rajat.T").setPin("456").setAllowDownloadAccess(false).build(),
-    Profile.newBuilder().setName("جيشنو").setPin("567").setAllowDownloadAccess(true).build()
-  )
+  private val allowedNamesList = listOf<String>("जिष्णु", "Ben-Henning", "Rajat.T", "جيشنو")
 
   private val unAllowedNamesList = listOf<String>("जिष्णु7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
 
+  @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  @Test
-  fun testAddProfile_addProfile_checkThrowsExceptionIfProfileNameIsNotAllowed() {
-
-    assertThrows(
-      ProfileManagementController.ProfileNameOnlyLettersException::class
-    ) {
-      profileManagementController.addProfile(
-        unAllowedNamesList[0],
-        pin = "123",
-        avatarImagePath = null,
-        allowDownloadAccess = true,
-        colorRgb = -10710042,
-        isAdmin = true
-      ).toLiveData().observeForever(mockUpdateResultObserver)
-      testCoroutineDispatchers.runCurrent()
-    }
-
   }
 
   @Test
@@ -194,23 +172,43 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testAddProfile_addProfileWithNumberInName_checkResultIsFailure() {
+  fun testAddProfile_addProfilesWithUnAllowedNames_checkResultIsFailure() {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    profileManagementController.addProfile(
-      name = unAllowedNamesList[0],
-      pin = "321",
-      avatarImagePath = null,
-      allowDownloadAccess = false,
-      colorRgb = -10710042,
-      isAdmin = true
-    ).toLiveData().observeForever(mockUpdateResultObserver)
+    unAllowedNamesList.forEach {
+      profileManagementController.addProfile(
+        name = it,
+        pin = "321",
+        avatarImagePath = null,
+        allowDownloadAccess = false,
+        colorRgb = -10710042,
+        isAdmin = true
+      ).toLiveData().observeForever(mockUpdateResultObserver)
+      testCoroutineDispatchers.runCurrent()
+
+      verifyUpdateFailed()
+      assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
+        .contains("$it does not contain only letters")
+    }
+  }
+
+  @Test
+  fun testAddProfiles_addProfilesWithAllowedNames_checkAllProfilesAreAdded() {
+    addAllowedNameProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    verifyUpdateFailed()
-    assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
-      .contains("${unAllowedNamesList[0]} does not contain only letters")
+    val profileDatabase = readProfileDatabase()
+    verifyUpdateSucceeded()
+
+    val profiles = profileDatabase.profilesMap
+
+    profiles.forEach { index, profile ->
+      assertThat(profile.name).isEqualTo(allowedNamesList[index])
+      assertThat(File(getAbsoluteDirPath("$index")).isDirectory).isTrue()
+    }
+
+    assertThat(profiles.size).isEqualTo(allowedNamesList.size)
   }
 
   @Test
@@ -1027,6 +1025,19 @@ class ProfileManagementControllerTest {
         colorRgb = -10710042,
         isAdmin = false
       ).toLiveData()
+    }
+  }
+
+  private fun addAllowedNameProfiles() {
+    allowedNamesList.forEach {
+      profileManagementController.addProfile(
+        name = it,
+        pin = "314",
+        avatarImagePath = null,
+        allowDownloadAccess = false,
+        colorRgb = -10710042,
+        isAdmin = false
+      ).toLiveData().observeForever(mockUpdateResultObserver)
     }
   }
 
