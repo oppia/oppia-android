@@ -197,7 +197,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!onlyLetters(name)) {
+      if (!nameAllowed(name)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(name, it)) {
@@ -309,7 +309,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!onlyLetters(newName)) {
+      if (!nameAllowed(newName)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(newName, it)) {
@@ -721,8 +721,29 @@ class ProfileManagementController @Inject constructor(
     return imageFile.absolutePath
   }
 
-  private fun onlyLetters(name: String): Boolean {
-    return name.matches(Regex("^(?!.*^[-.'])^(?!.*[.'-]\$).*^(?!.*[0-9!@#\$%^&*()_+={}\\[\\]|\\\\;\",?/<>`~]).*[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF.'-]"))
+  private fun nameAllowed(name: String): Boolean {
+    return (
+      notEmptyNoSpacesAndContainsLetters(name)
+        && noNumbers(name)
+        && noSymbols(name)
+        && noRepeatedUseOfAllowedSymbols(name)
+      )
+  }
+
+  private fun notEmptyNoSpacesAndContainsLetters(name: String): Boolean {
+    return name.matches(Regex("^.[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF]+\$"))
+  }
+
+  private fun noNumbers(name: String): Boolean {
+    return name.matches(Regex("^[^0-9]*\$"))
+  }
+
+  private fun noSymbols(name: String): Boolean {
+    return name.matches(Regex("^[^#*!@\$%^&()_+=\\\\|\\]\\[\":;?/><,`~{}]*\$"))
+  }
+
+  private fun noRepeatedUseOfAllowedSymbols(name: String): Boolean {
+    return name.matches(Regex("^(?!.*([.'-]{2})).*"))
   }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
