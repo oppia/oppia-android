@@ -135,7 +135,7 @@ class ProfileManagementControllerTest {
       ProfileManagementController.ProfileNameOnlyLettersException::class
     ) {
       profileManagementController.addProfile(
-        unAllowedNamesProfileList[0].name,
+        unAllowedNamesList[0],
         pin = "123",
         avatarImagePath = null,
         allowDownloadAccess = true,
@@ -199,7 +199,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     profileManagementController.addProfile(
-      name = "James034",
+      name = unAllowedNamesList[0],
       pin = "321",
       avatarImagePath = null,
       allowDownloadAccess = false,
@@ -210,7 +210,7 @@ class ProfileManagementControllerTest {
 
     verifyUpdateFailed()
     assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
-      .contains("James034 does not contain only letters")
+      .contains("${unAllowedNamesList[0]} does not contain only letters")
   }
 
   @Test
