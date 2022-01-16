@@ -111,13 +111,12 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -704,17 +703,17 @@ class AdministratorControlsActivityTest {
 
   @Module
   class TestModule {
-    companion object{
+    companion object {
       var forceEnableEditAccountsOptionsUi = true
     }
 
-   @Provides
-   @EnableEditAccountsOptionsUi
-   fun providesEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
-     return PlatformParameterValue.createDefaultParameter(
-       forceEnableEditAccountsOptionsUi
-     )
-   }
+    @Provides
+    @EnableEditAccountsOptionsUi
+    fun providesEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(
+        forceEnableEditAccountsOptionsUi
+      )
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
