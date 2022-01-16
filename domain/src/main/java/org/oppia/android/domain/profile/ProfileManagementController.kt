@@ -731,7 +731,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun notEmptyNoSpacesAndContainsLetters(name: String): Boolean {
-    return name.matches(Regex("^.[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF]+\$"))
+    return name.matches(Regex("^.[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF.'\\-]+\$"))
   }
 
   private fun noNumbers(name: String): Boolean {
