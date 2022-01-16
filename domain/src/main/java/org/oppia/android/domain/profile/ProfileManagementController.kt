@@ -723,10 +723,10 @@ class ProfileManagementController @Inject constructor(
 
   private fun nameAllowed(name: String): Boolean {
     return (
-      notEmptyNoSpacesAndContainsLetters(name)
-        && noNumbers(name)
-        && noSymbols(name)
-        && noRepeatedUseOfAllowedSymbols(name)
+      notEmptyNoSpacesAndContainsLetters(name) &&
+        noNumbers(name) &&
+        noSymbols(name) &&
+        noRepeatedUseOfAllowedSymbols(name)
       )
   }
 
