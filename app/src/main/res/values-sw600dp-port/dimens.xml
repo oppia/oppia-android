@@ -401,6 +401,10 @@
   <!-- TopicPracticeFragment -->
   <dimen name="topic_practice_fragment_padding_bottom">112dp</dimen>
 
+  <!--  PromotedStoryList-->
+  <dimen name="promoted_story_list_layout_margin_end">120dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_start">120dp</dimen>
+
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
