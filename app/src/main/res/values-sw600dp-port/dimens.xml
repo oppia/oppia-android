@@ -401,7 +401,7 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
-  <!--  Revision Card Fragment-->
+  <!--  RevisionCardFragment-->
   <dimen name="revision_card_fragment_layout_min_width" tools:ignore="MissingDefaultResource">512dp</dimen>
   <dimen name="revision_card_fragment_padding_bottom">160dp</dimen>
   <dimen name="revision_card_fragment_layout_margin_top_text">36dp</dimen>
