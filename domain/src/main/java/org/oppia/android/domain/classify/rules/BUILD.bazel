@@ -10,9 +10,9 @@ kt_android_library(
     srcs = [
         "GenericRuleClassifier.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:__subpackages__"],
     deps = [
-        ":classifier_providers",
+        ":rule_classifier_provider",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//model:interaction_object_java_proto_lite",
         "//model:translation_java_proto_lite",
@@ -21,13 +21,13 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "classifier_providers",
+    name = "rule_classifier_provider",
     srcs = [
         "InteractionObjectTypeExtractorRepository.kt",
         "RuleClassifierProvider.kt",
         "RuleQualifiers.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:__subpackages__"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//model:interaction_object_java_proto_lite",

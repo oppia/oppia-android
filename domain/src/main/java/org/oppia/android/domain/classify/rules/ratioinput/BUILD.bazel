@@ -1,23 +1,22 @@
 """
-Utilities for classify domain components.
+Classifiers for the 'RatioInput' interaction.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "ratio_input",
+    name = "ratio_input_providers",
     srcs = [
         "RatioInputEqualsRuleClassifierProvider.kt",
         "RatioInputHasNumberOfTermsEqualToClassifierProvider.kt",
         "RatioInputHasSpecificTermEqualToRuleClassifierProvider.kt",
         "RatioInputIsEquivalentRuleClassifierProvider.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:__pkg__"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
-        "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//model:interaction_object_java_proto_lite",
@@ -31,12 +30,12 @@ kt_android_library(
     srcs = [
         "RatioInputModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
-        ":ratio_input",
+        ":ratio_input_providers",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
-        "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
     ],
 )
 

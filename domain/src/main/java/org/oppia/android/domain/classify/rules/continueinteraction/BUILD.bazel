@@ -1,5 +1,5 @@
 """
-Utilities for classify domain components.
+Classifiers for the 'Continue' interaction.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -10,11 +10,11 @@ kt_android_library(
     srcs = [
         "ContinueModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
-        "//domain/src/main/java/org/oppia/android/domain/classify/rules:classifier_providers",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
     ],
 )
 
