@@ -101,6 +101,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivityTest
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -630,6 +632,7 @@ class OptionsFragmentTest {
   class TestModule {
     companion object {
       var forceEnableLanguageSelectionUi: Boolean = true
+      var forceEnableEditAccountsOptionsUi: Boolean = true
     }
 
     @Provides
@@ -650,6 +653,14 @@ class OptionsFragmentTest {
     @EnableLanguageSelectionUi
     fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
+    }
+
+    @Provides
+    @EnableEditAccountsOptionsUi
+    fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(
+        forceEnableEditAccountsOptionsUi
+      )
     }
   }
 
