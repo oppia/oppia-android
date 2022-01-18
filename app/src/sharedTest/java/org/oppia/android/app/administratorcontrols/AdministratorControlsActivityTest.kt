@@ -39,6 +39,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -113,6 +115,14 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
+import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -158,6 +168,7 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
+    TestModule.forceEnableEditAccountsOptionsUi = true
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -176,6 +187,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
+    TestModule.forceEnableEditAccountsOptionsUi = true
+
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -701,8 +714,8 @@ class AdministratorControlsActivityTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestModule::class, RobolectricModule::class,
+       PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -727,6 +740,42 @@ class AdministratorControlsActivityTest {
     interface Builder : ApplicationComponent.Builder
 
     fun inject(administratorControlsActivityTest: AdministratorControlsActivityTest)
+  }
+
+  @Module
+  class TestModule {
+    companion object {
+      var forceEnableLanguageSelectionUi: Boolean = true
+      var forceEnableEditAccountsOptionsUi: Boolean = true
+    }
+
+    @Provides
+    @SplashScreenWelcomeMsg
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
+    }
+
+    @Provides
+    @SyncUpWorkerTimePeriodHours
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @EnableLanguageSelectionUi
+    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
+    }
+
+    @Provides
+    @EnableEditAccountsOptionsUi
+    fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(
+        forceEnableEditAccountsOptionsUi
+      )
+    }
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
