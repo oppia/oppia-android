@@ -26,7 +26,7 @@ class OppiaTestRule : TestRule {
         val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
         val currentEnvironment = getCurrentBuildEnvironment()
-        if(currentPlatform == TestPlatform.ESPRESSO && isEnabled) {
+        if (currentPlatform == TestPlatform.ESPRESSO && isEnabled) {
           AccessibilityChecks.enable().apply {
             // Suppressing failures for all views which matches with below conditions as we do not
             // want to change the UI to pass these failures as it will change the expected behaviour
