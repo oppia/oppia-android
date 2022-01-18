@@ -49,6 +49,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       when (lastLoadedFragment) {
         PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
         APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
+        PROFILE_EDIT_FRAGMENT -> setBackButtonClickListener()
       }
     }
   }
@@ -115,9 +116,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 
   /** Handles the back button according to the back stack of fragments. */
   fun handleOnBackPressed() {
-    if (activity.supportFragmentManager.backStackEntryCount > 0) {
-      activity.supportFragmentManager.popBackStackImmediate()
-    }
+    setBackButtonClickListener()
   }
 
   private fun setBackButtonClickListener() {
