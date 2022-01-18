@@ -599,8 +599,8 @@
 <!--  RevisionCardFragment-->
   <dimen name="revision_card_fragment_padding_bottom">160dp</dimen>
   <dimen name="revision_card_fragment_layout_margin">28dp</dimen>
-  <dimen name="revision_card_fragment_layout_margin_top_text">36dp</dimen>
-  <dimen name="revision_card_fragment_layout_margin_top_button">48dp</dimen>
+  <dimen name="revision_card_fragment_layout_text_margin_top">36dp</dimen>
+  <dimen name="revision_card_fragment_layout_button_margin_top">48dp</dimen>
 
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>

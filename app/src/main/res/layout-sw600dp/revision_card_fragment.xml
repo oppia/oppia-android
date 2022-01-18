@@ -32,7 +32,7 @@
         <TextView
           android:id="@+id/revision_card_explanation_text"
           style="@style/Body"
-          android:layout_marginTop="@dimen/revision_card_fragment_layout_margin_top_text" />
+          android:layout_marginTop="@dimen/revision_card_fragment_layout_text_margin_top" />
 
         <Button
           android:id="@+id/revision_card_return_button"
@@ -40,7 +40,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="end"
-          android:layout_marginTop="@dimen/revision_card_fragment_layout_margin_top_button"
+          android:layout_marginTop="@dimen/revision_card_fragment_layout_button_margin_top"
           android:background="@drawable/state_button_primary_background"
           android:onClick="@{viewModel::clickReturnToTopic}"
           android:paddingStart="32dp"
