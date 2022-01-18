@@ -113,6 +113,7 @@ interface ActivityComponentImpl :
   fun inject(developerOptionsActivity: DeveloperOptionsActivity)
   fun inject(developerOptionsTestActivity: DeveloperOptionsTestActivity)
   fun inject(dragDropTestActivity: DragDropTestActivity)
+  fun inject(drawableBindingAdaptersTestActivity: DrawableBindingAdaptersTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
@@ -180,5 +181,4 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
-  fun inject(drawableBindingAdaptersTestActivity: DrawableBindingAdaptersTestActivity)
 }

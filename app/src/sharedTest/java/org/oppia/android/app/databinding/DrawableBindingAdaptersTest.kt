@@ -1,6 +1,5 @@
 package org.oppia.android.app.databinding
 
-import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.graphics.Color
@@ -8,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -20,9 +18,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -85,7 +80,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
-/** Tests for [DrawableBindingAdaptersTest]. */
+/** Tests for [DrawableBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -93,8 +88,6 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class DrawableBindingAdaptersTest {
-
-  // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
 
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -119,7 +112,6 @@ class DrawableBindingAdaptersTest {
     Intents.release()
   }
 
-  // from a color int
   private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
 
   @Test
@@ -153,20 +145,8 @@ class DrawableBindingAdaptersTest {
     return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
-    // Use Mockito to ensure the routine is actually executed before returning the result.
-    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
-    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
-    onActivity { fakeMock.consume(action(it)) }
-    verify(fakeMock).consume(valueCaptor.capture())
-    return valueCaptor.value
-  }
-
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<DrawableBindingAdaptersTest.TestApplication>()
+    ApplicationProvider.getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -195,13 +175,11 @@ class DrawableBindingAdaptersTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
-  /** Create a TestApplicationComponent. */
+
   interface TestApplicationComponent : ApplicationComponent {
-    /** Build the TestApplicationComponent. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    /** Inject [DrawableBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest)
   }
 
@@ -216,7 +194,6 @@ class DrawableBindingAdaptersTest {
         .build() as TestApplicationComponent
     }
 
-    /** Inject [DrawableBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest) {
       component.inject(drawableBindingAdaptersTest)
     }
@@ -226,10 +203,5 @@ class DrawableBindingAdaptersTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  private interface Consumer<T> {
-    /** Represents an operation that accepts a single input argument and returns no result. */
-    fun consume(value: T)
   }
 }
