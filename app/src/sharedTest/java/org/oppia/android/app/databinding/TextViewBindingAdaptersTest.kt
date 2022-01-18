@@ -1,12 +1,10 @@
 package org.oppia.android.app.databinding
 
-import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -18,9 +16,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -164,18 +159,6 @@ class TextViewBindingAdaptersTest {
     }
   }
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
-    // Use Mockito to ensure the routine is actually executed before returning the result.
-    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
-    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
-    onActivity { fakeMock.consume(action(it)) }
-    verify(fakeMock).consume(valueCaptor.capture())
-    return valueCaptor.value
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -205,13 +188,11 @@ class TextViewBindingAdaptersTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
-  /** Create a TestApplicationComponent. */
+
   interface TestApplicationComponent : ApplicationComponent {
-    /** Build the TestApplicationComponent. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    /** Inject [TextViewBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(textViewBindingAdaptersTest: TextViewBindingAdaptersTest)
   }
 
@@ -226,7 +207,6 @@ class TextViewBindingAdaptersTest {
         .build() as TestApplicationComponent
     }
 
-    /** Inject [TextViewBindingAdaptersTest] in TestApplicationComponent . */
     fun inject(textViewBindingAdaptersTest: TextViewBindingAdaptersTest) {
       component.inject(textViewBindingAdaptersTest)
     }
@@ -236,10 +216,5 @@ class TextViewBindingAdaptersTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  private interface Consumer<T> {
-    /** Represents an operation that accepts a single input argument and returns no result. */
-    fun consume(value: T)
   }
 }

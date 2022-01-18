@@ -171,6 +171,7 @@ interface ActivityComponentImpl :
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
+  fun inject(textViewBindingAdaptersTestActivity: TextViewBindingAdaptersTestActivity)
   fun inject(thirdPartyDependencyListActivity: ThirdPartyDependencyListActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)
@@ -180,5 +181,4 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
-  fun inject(textViewBindingAdaptersTestActivity: TextViewBindingAdaptersTestActivity)
 }
