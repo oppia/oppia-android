@@ -25,9 +25,10 @@
 
       <TextView
         android:id="@+id/recently_played_stories_text_view"
+        style="@style/TextViewStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="@dimen/promoted_story_list_layout_margin_start"
         android:layout_weight="1"
         android:fontFamily="sans-serif-medium"
         android:text="@{viewModel.getHeader()}"
@@ -36,10 +37,11 @@
 
       <TextView
         android:id="@+id/view_all_text_view"
+        style="@style/TextViewCenterVertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginEnd="@dimen/promoted_story_list_layout_margin_end"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:minHeight="48dp"

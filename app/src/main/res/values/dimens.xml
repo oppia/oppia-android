@@ -67,8 +67,6 @@
   <dimen name="home_welcome_outer_padding">28dp</dimen>
   <dimen name="home_welcome_text_view_margin_end">4dp</dimen>
   <dimen name="home_inner_margin">8dp</dimen>
-  <dimen name="home_tablet_land_outer_margin">96dp</dimen>
-  <dimen name="home_tablet_port_outer_margin">120dp</dimen>
   <dimen name="recently_played_margin_max">28dp</dimen>
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="coming_soon_padding_end">16dp</dimen>
@@ -588,6 +586,10 @@
   <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">32dp</dimen>
 
+  <!--  PromotedStoryList-->
+  <dimen name="promoted_story_list_layout_margin_end">28dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_start">28dp</dimen>
+
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
    
@@ -600,5 +602,8 @@
   <dimen name="revision_card_fragment_layout_margin_top_text">36dp</dimen>
   <dimen name="revision_card_fragment_layout_margin_top_button">48dp</dimen>
 
-
+  <!-- TopicLessonsTitle -->
+  <dimen name="topic_lessons_title_margin_start">32dp</dimen>
+  <dimen name="topic_lessons_title_margin_top">32dp</dimen>
+  <dimen name="topic_lessons_title_margin_end">32dp</dimen>
 </resources>
