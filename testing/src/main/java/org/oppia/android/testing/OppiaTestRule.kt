@@ -26,6 +26,20 @@ class OppiaTestRule : TestRule {
         val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
         val currentEnvironment = getCurrentBuildEnvironment()
+        if(currentPlatform == TestPlatform.ESPRESSO && isEnabled) {
+          AccessibilityChecks.enable().apply {
+            // Suppressing failures for all views which matches with below conditions as we do not
+            // want to change the UI to pass these failures as it will change the expected behaviour
+            // for learner.
+            setSuppressingResultMatcher(
+              allOf(
+                matchesCheckNames(`is`("TouchTargetSizeViewCheck")),
+                matchesViews(withContentDescription("More options")),
+                matchesViews(withClassName(endsWith("OverflowMenuButton")))
+              )
+            )
+          }.setRunChecksFromRootView(true)
+        }
         when {
           currentPlatform in targetPlatforms && currentEnvironment in targetEnvironments -> {
             // Only run this test if it's targeting the current platform & environment.
@@ -43,20 +57,6 @@ class OppiaTestRule : TestRule {
               "Test targeting ${targetEnvironments.toPluralEnvironmentDescription()} ignored on" +
                 " $currentEnvironment"
             )
-          }
-          currentPlatform == TestPlatform.ESPRESSO && isEnabled -> {
-            AccessibilityChecks.enable().apply {
-              // Suppressing failures for all views which matches with below conditions as we do not
-              // want to change the UI to pass these failures as it will change the expected behaviour
-              // for learner.
-              setSuppressingResultMatcher(
-                allOf(
-                  matchesCheckNames(`is`("TouchTargetSizeViewCheck")),
-                  matchesViews(withContentDescription("More options")),
-                  matchesViews(withClassName(endsWith("OverflowMenuButton")))
-                )
-              )
-            }.setRunChecksFromRootView(true)
           }
           else -> throw AssertionError("Reached impossible state in test rule")
         }
