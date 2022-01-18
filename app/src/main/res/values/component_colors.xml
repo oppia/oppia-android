@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="label_text_color">@color/primary_text_color</color>
+  <color name="cursor_color">@color/primary_text_color</color>
   <color name="heading_text_color">@color/highlighted_text_color</color>
   <color name="switch_description_color">@color/description_text_color</color>
   <color name="menu_options_text_color">@color/dark_text_color</color>
@@ -14,6 +15,7 @@
   <!--Add Profile Activity-->
   <color name="add_profile_switch_text_color">@color/dark_text_color</color>
   <!--Administrator Controls-->
-  <color name="admin_controls_background">@color/background_color_grey</color>
+  <color name="admin_controls_background_color">@color/background_color_grey</color>
   <color name="admin_controls_options_background">@color/container_background_color</color>
+  <color name="admin_controls_sub_heading_color">@color/primary_color</color>
 </resources>

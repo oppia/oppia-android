@@ -23,7 +23,7 @@
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_app_information_label"
-      android:textColor="@color/primary_color"
+      android:textColor="@color/admin_controls_sub_heading_color"
       app:layout_constraintBottom_toTopOf="@id/app_version_text_view"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
