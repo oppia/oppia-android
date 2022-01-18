@@ -19,6 +19,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -86,7 +87,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -115,7 +115,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -186,7 +185,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
+  fun testAdministratorControlsFragment_generalOptionsIsDisplayed() {
     TestModule.forceEnableEditAccountsOptionsUi = true
 
     launch<AdministratorControlsActivity>(
@@ -204,14 +203,26 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.edit_account_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_account
       )
-      verifyItemDisplayedOnAdministratorControlListItem(
-        itemPosition = 1,
-        targetView = R.id.profile_management_text_view
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_generalOptionsIsNotDisplayed() {
+    TestModule.forceEnableEditAccountsOptionsUi = false
+
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
       )
-      verifyTextOnAdministratorListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_profiles
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
       )
     }
   }
@@ -682,6 +693,19 @@ class AdministratorControlsActivityTest {
     ).check(matches(isDisplayed()))
   }
 
+  private fun verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(doesNotExist())
+  }
+
   private fun verifyTextOnAdministratorListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -694,6 +718,19 @@ class AdministratorControlsActivityTest {
         targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
+  }
+
+  private fun verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+    itemPosition: Int,
+    targetViewId: Int,
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
+      )
+    ).check(doesNotExist())
   }
 
   private fun scrollToPosition(position: Int) {
