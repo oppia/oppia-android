@@ -14,8 +14,8 @@ kt_android_library(
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
-        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//model:interaction_object_java_proto_lite",
         "//model:translation_java_proto_lite",
