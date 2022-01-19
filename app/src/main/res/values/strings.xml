@@ -452,6 +452,7 @@
   <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
+  <!-- DrawableBindingAdaptersTestActivity -->
   <string name="drawable_binding_adapters_test_label">Drawable Binding Adapter Activity</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
