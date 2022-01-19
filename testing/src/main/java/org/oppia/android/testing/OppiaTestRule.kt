@@ -14,19 +14,19 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-private const val DEFAULT_ENABLED_STATE = true
+private const val DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE = true
 
 /** JUnit rule to enable [RunOn] test targeting. */
 class OppiaTestRule : TestRule {
   override fun apply(base: Statement?, description: Description?): Statement {
     return object : Statement() {
       override fun evaluate() {
-        val isEnabled = description.areAccessibilityChecksEnabled()
+        val areAccessibilityChecksEnabled = description.areAccessibilityChecksEnabled()
         val targetPlatforms = description.getTargetPlatforms()
         val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
         val currentEnvironment = getCurrentBuildEnvironment()
-        if (currentPlatform == TestPlatform.ESPRESSO && isEnabled) {
+        if (currentPlatform == TestPlatform.ESPRESSO && areAccessibilityChecksEnabled) {
           AccessibilityChecks.enable().apply {
             // Suppressing failures for all views which matches with below conditions as we do not
             // want to change the UI to pass these failures as it will change the expected behaviour
@@ -121,7 +121,7 @@ class OppiaTestRule : TestRule {
     private fun Description?.areAccessibilityChecksEnabled(): Boolean {
       val methodAccessibilityStatus = this?.areAccessibilityTestsEnabledForMethod()
       val classAccessibilityStatus = this?.testClass?.areAccessibilityTestsEnabledForClass()
-      return methodAccessibilityStatus ?: classAccessibilityStatus ?: DEFAULT_ENABLED_STATE
+      return methodAccessibilityStatus ?: classAccessibilityStatus ?: DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE
     }
 
     private fun Description.areAccessibilityTestsEnabledForMethod(): Boolean {
