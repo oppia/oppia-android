@@ -122,7 +122,7 @@ class OppiaTestRule : TestRule {
       val methodAccessibilityStatus = this?.areAccessibilityTestsEnabledForMethod()
       val classAccessibilityStatus = this?.testClass?.areAccessibilityTestsEnabledForClass()
       return methodAccessibilityStatus ?: classAccessibilityStatus
-      ?: DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE
+        ?: DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE
     }
 
     private fun Description.areAccessibilityTestsEnabledForMethod(): Boolean {
