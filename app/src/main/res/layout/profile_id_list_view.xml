@@ -66,7 +66,7 @@
       android:id="@+id/profile_id_view_copy_status_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@{viewModel.currentCopiedId == profile.learnerId ? @string/copied_to_clipboard_label : @string/copy_to_clipboard_label}"
+      android:text="@{viewModel.currentCopiedId == profile.learnerId ? @string/learner_analytics_copied_to_clipboard_label : @string/learner_analytics_copy_to_clipboard_label}"
       android:textAllCaps="true"
       android:textSize="12sp"
       app:layout_constraintBottom_toBottomOf="@+id/profile_id_view_copy_status_image"

@@ -54,7 +54,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
-          android:text="@{viewModel.currentCopiedId == viewModel.deviceId ? @string/copied_to_clipboard_label : @string/copy_to_clipboard_label}"
+          android:text="@{viewModel.currentCopiedId == viewModel.deviceId ? @string/learner_analytics_copied_to_clipboard_label : @string/learner_analytics_copy_to_clipboard_label}"
           android:textAllCaps="true"
           android:textSize="12sp" />
       </LinearLayout>

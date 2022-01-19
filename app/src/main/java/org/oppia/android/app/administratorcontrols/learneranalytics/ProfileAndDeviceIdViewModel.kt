@@ -37,7 +37,7 @@ class ProfileAndDeviceIdViewModel @Inject constructor(
 ) : ObservableViewModel() {
 
   val deviceId =
-    resourceHandler.getStringInLocale(R.string.device_id_label) + loggingIdentifierController.deviceId
+    resourceHandler.getStringInLocale(R.string.learner_analytics_device_id_label).plus(" ") + loggingIdentifierController.deviceId
   val profiles: LiveData<List<Profile>> by lazy {
     Transformations.map(
       profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
