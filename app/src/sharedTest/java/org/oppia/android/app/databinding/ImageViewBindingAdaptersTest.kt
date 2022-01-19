@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -91,7 +91,10 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.ImageLoaderInjector
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.ImageTarget
+import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -119,6 +122,9 @@ class ImageViewBindingAdaptersTest {
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
 
   @get:Rule
   var activityRule: ActivityScenarioRule<ImageViewBindingAdaptersTestActivity> =
@@ -193,8 +199,15 @@ class ImageViewBindingAdaptersTest {
       val url = profileAvatar.avatarImageUri.toString()
       setProfileImage(imageView, profileAvatar)
       testCoroutineDispatchers.runCurrent()
-      val drawableFromInternet: BitmapDrawable = imageView.drawable as BitmapDrawable
-      assertThat(imageView, withDrawableDynamic(drawableFromInternet))
+      lateinit var imaegBitmapSource: ImageTarget<Bitmap>
+      testGlideImageLoader.loadBitmap(url, imaegBitmapSource)
+      onView(withId(R.id.image_view_for_data_binding)).check(
+        matches(
+          withDrawableDynamic(
+            imaegBitmapSource as BitmapDrawable
+          )
+        )
+      )
     }
   }
 
@@ -323,6 +336,8 @@ class ImageViewBindingAdaptersTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getImageLoaderInjector(): ImageLoaderInjector = component
   }
 
   private interface Consumer<T> {

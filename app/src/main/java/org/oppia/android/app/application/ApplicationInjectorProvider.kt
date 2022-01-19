@@ -6,6 +6,7 @@ import org.oppia.android.domain.locale.LocaleApplicationInjector
 import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.parser.image.ImageLoaderInjectorProvider
 import org.oppia.android.util.system.OppiaClockInjector
 import org.oppia.android.util.system.OppiaClockInjectorProvider
 
@@ -14,7 +15,8 @@ interface ApplicationInjectorProvider :
   DataProvidersInjectorProvider,
   AppLanguageApplicationInjectorProvider,
   OppiaClockInjectorProvider,
-  LocaleApplicationInjectorProvider {
+  LocaleApplicationInjectorProvider,
+  ImageLoaderInjectorProvider {
   fun getApplicationInjector(): ApplicationInjector
 
   override fun getDataProvidersInjector(): DataProvidersInjector = getApplicationInjector()

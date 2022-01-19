@@ -12,6 +12,7 @@ import com.google.firebase.FirebaseApp
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.util.parser.image.ImageLoaderInjector
 
 /** The root [Application] of the Oppia app. */
 class OppiaApplication :
@@ -31,6 +32,8 @@ class OppiaApplication :
   }
 
   override fun getApplicationInjector(): ApplicationInjector = component
+
+  override fun getImageLoaderInjector(): ImageLoaderInjector = component
 
   @SuppressLint("ObsoleteSdkInt") // Incorrect warning.
   override fun onCreate() {
