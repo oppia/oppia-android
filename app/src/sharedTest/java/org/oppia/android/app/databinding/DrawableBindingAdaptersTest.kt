@@ -175,7 +175,6 @@ class DrawableBindingAdaptersTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
@@ -183,10 +182,6 @@ class DrawableBindingAdaptersTest {
     fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest)
   }
 
-  /**
-   * Class to override a dependency throughout the test application, instead of overriding the
-   * dependencies in every test class, we can just do it once by extending the Application class.
-   */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerDrawableBindingAdaptersTest_TestApplicationComponent.builder()
