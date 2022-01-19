@@ -389,10 +389,13 @@
   <dimen name="section_title_text_view_layout_margin_start">72dp</dimen>
   <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">72dp</dimen>
+
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">96dp</dimen>
+
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">60dp</dimen>
+
   <!--OptionAudioLanguage-->
   <dimen name="option_audio_language_padding_start">36dp</dimen>
   <dimen name="option_audio_language_padding_end">36dp</dimen>
