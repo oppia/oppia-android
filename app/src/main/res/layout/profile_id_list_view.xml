@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:profile="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="profile"
+      type="org.oppia.android.app.model.Profile" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/general_item_background_border"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+      android:id="@+id/profile_id_view_profile_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="26dp"
+      android:text="@{profile.name}"
+      android:textColor="#333333"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/profile_id_view_learner_id"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@{profile.learnerId}"
+      android:textColor="#333333"
+      android:textSize="16dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+      android:id="@+id/profile_id_view_copy_status_image"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="5dp"
+      android:layout_marginEnd="5dp"
+      android:src="@{viewModel.currentCopiedId == profile.learnerId ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_content_copy_24}"
+      app:layout_constraintBottom_toTopOf="@+id/profile_id_view_copy_status_text"
+      app:layout_constraintEnd_toEndOf="@+id/profile_id_view_copy_status_text"
+      app:layout_constraintStart_toStartOf="@+id/profile_id_view_copy_status_text"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/profile_id_view_copy_status_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@{viewModel.currentCopiedId == profile.learnerId ? @string/copied_to_clipboard_label : @string/copy_to_clipboard_label}"
+      android:textAllCaps="true"
+      android:textSize="12sp"
+      app:layout_constraintBottom_toBottomOf="@+id/profile_id_view_copy_status_image"
+      app:layout_constraintEnd_toEndOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

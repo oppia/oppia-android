@@ -24,6 +24,8 @@ import org.oppia.android.databinding.AdministratorControlsGeneralViewBinding
 import org.oppia.android.databinding.AdministratorControlsProfileViewBinding
 import java.security.InvalidParameterException
 import javax.inject.Inject
+import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
+import org.oppia.android.databinding.AdministratorControlsLearnerAnalyticsViewBinding
 
 /** The presenter for [AdministratorControlsFragment]. */
 @FragmentScope
@@ -85,16 +87,20 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
               viewModel.itemIndex.set(1)
               ViewType.VIEW_TYPE_PROFILE
             }
-            is AdministratorControlsDownloadPermissionsViewModel -> {
+            is AdministratorControlsProfileAndDeviceIdViewModel -> {
               viewModel.itemIndex.set(2)
+              ViewType.VIEW_TYPE_LEARNER_ANALYTICS
+            }
+            is AdministratorControlsDownloadPermissionsViewModel -> {
+              viewModel.itemIndex.set(3)
               ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS
             }
             is AdministratorControlsAppInformationViewModel -> {
-              viewModel.itemIndex.set(3)
+              viewModel.itemIndex.set(4)
               ViewType.VIEW_TYPE_APP_INFORMATION
             }
             is AdministratorControlsAccountActionsViewModel -> {
-              viewModel.itemIndex.set(4)
+              viewModel.itemIndex.set(5)
               ViewType.VIEW_TYPE_ACCOUNT_ACTIONS
             }
             else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
@@ -111,6 +117,12 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
           inflateDataBinding = AdministratorControlsProfileViewBinding::inflate,
           setViewModel = this::bindProfileList,
           transformViewModel = { it as AdministratorControlsProfileViewModel }
+        )
+        .registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_LEARNER_ANALYTICS,
+          inflateDataBinding = AdministratorControlsLearnerAnalyticsViewBinding::inflate,
+          setViewModel = this::bindLearnerAnalytics,
+          transformViewModel = { it as AdministratorControlsProfileAndDeviceIdViewModel }
         )
         .registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS,
@@ -149,6 +161,14 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     binding.viewModel = model
   }
 
+  private fun bindLearnerAnalytics(
+    binding: AdministratorControlsLearnerAnalyticsViewBinding,
+    model: AdministratorControlsProfileAndDeviceIdViewModel
+  ) {
+    binding.commonViewModel = administratorControlsViewModel
+    binding.viewModel = model
+  }
+
   fun setSelectedFragment(selectedFragment: String) {
     administratorControlsViewModel.selectedFragmentIndex.set(
       getSelectedFragmentIndex(
@@ -161,6 +181,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     return when (selectedFragment) {
       PROFILE_LIST_FRAGMENT -> 1
       APP_VERSION_FRAGMENT -> 3
+      PROFILE_AND_DEVICE_ID_FRAGMENT -> 5
       else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
     }
   }
@@ -170,6 +191,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     VIEW_TYPE_PROFILE,
     VIEW_TYPE_DOWNLOAD_PERMISSIONS,
     VIEW_TYPE_APP_INFORMATION,
-    VIEW_TYPE_ACCOUNT_ACTIONS
+    VIEW_TYPE_ACCOUNT_ACTIONS,
+    VIEW_TYPE_LEARNER_ANALYTICS
   }
 }
