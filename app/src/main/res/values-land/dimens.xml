@@ -408,4 +408,8 @@
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
+
+  <!--OptionAudioLanguage-->
+  <dimen name="option_audio_language_padding_start">36dp</dimen>
+  <dimen name="option_audio_language_padding_end">36dp</dimen>
 </resources>
