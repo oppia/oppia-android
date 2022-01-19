@@ -31,6 +31,7 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.namevalidator.NameValidator
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -197,7 +198,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!nameAllowed(name)) {
+      if (!NameValidator.nameAllowed(name)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(name, it)) {
@@ -309,7 +310,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!nameAllowed(newName)) {
+      if (!NameValidator.nameAllowed(newName)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(newName, it)) {
@@ -721,30 +722,7 @@ class ProfileManagementController @Inject constructor(
     return imageFile.absolutePath
   }
 
-  private fun nameAllowed(name: String): Boolean {
-    return (
-      notEmptyNoSpacesAndContainsLetters(name) &&
-        noNumbers(name) &&
-        noSymbols(name) &&
-        noRepeatedUseOfAllowedSymbols(name)
-      )
-  }
 
-  private fun notEmptyNoSpacesAndContainsLetters(name: String): Boolean {
-    return name.matches(Regex("^.[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF.'\\-]+\$"))
-  }
-
-  private fun noNumbers(name: String): Boolean {
-    return name.matches(Regex("^[^0-9]*\$"))
-  }
-
-  private fun noSymbols(name: String): Boolean {
-    return name.matches(Regex("^[^#*!@\$%^&()_+=\\\\|\\]\\[\":;?/><,`~{}]*\$"))
-  }
-
-  private fun noRepeatedUseOfAllowedSymbols(name: String): Boolean {
-    return name.matches(Regex("^(?!.*([.'-]{2})).*"))
-  }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
     val croppedBitmap = ThumbnailUtils.extractThumbnail(bitmap, cropSize, cropSize)
