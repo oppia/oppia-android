@@ -1,7 +1,9 @@
 package org.oppia.android.app.databinding;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -14,6 +16,8 @@ import com.bumptech.glide.request.target.Target;
 import org.oppia.android.R;
 import org.oppia.android.app.model.ChapterPlayState;
 import org.oppia.android.app.model.ProfileAvatar;
+import org.oppia.android.util.parser.image.ImageLoader;
+import org.oppia.android.util.parser.image.ImageLoaderInjectorProvider;
 
 /** Holds all custom binding adapters that bind to [ImageView]. */
 public final class ImageViewBindingAdapters {
@@ -37,7 +41,7 @@ public final class ImageViewBindingAdapters {
    * Binding adapter for profile images. Used to either display a local image or custom
    * colored avatar.
    *
-   * @param imageView view where the profile avatar will be loaded into
+   * @param imageView     view where the profile avatar will be loaded into
    * @param profileAvatar represents either a colorId or local image uri
    */
   @BindingAdapter("profile:src")
@@ -102,5 +106,14 @@ public final class ImageViewBindingAdapters {
       default:
         setImageDrawableCompat(imageView, R.drawable.circular_stroke_2dp_grey_32dp);
     }
+  }
+
+  private static ImageLoader getImageLoader(View view) {
+    ImageLoaderInjectorProvider provider = (ImageLoaderInjectorProvider) getApplication(view);
+    return provider.getImageLoaderInjector().getImageLoader();
+  }
+
+  private static Context getApplication(View view) {
+    return view.getContext().getApplicationContext();
   }
 }
