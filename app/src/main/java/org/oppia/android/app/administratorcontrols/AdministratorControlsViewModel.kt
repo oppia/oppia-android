@@ -68,8 +68,7 @@ class AdministratorControlsViewModel @Inject constructor(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
 
-    val itemViewModelList: MutableList<AdministratorControlsItemViewModel> =
-      emptyList<AdministratorControlsItemViewModel>().toMutableList()
+    val itemViewModelList = mutableListOf<AdministratorControlsItemViewModel>()
 
     if (enableEditAccountsOptionsUi.value) {
       itemViewModelList.add(
