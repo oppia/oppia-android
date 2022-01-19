@@ -214,4 +214,3 @@ class AdministratorControlsFragmentTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
-
