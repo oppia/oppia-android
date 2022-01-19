@@ -17,6 +17,8 @@ class ProfileListFragment : InjectableFragment() {
   lateinit var profileListFragmentPresenter: ProfileListFragmentPresenter
 
   companion object {
+
+    /** This creates the new instance of [ProfileListFragment]. */
     fun newInstance(isMultipane: Boolean = false): ProfileListFragment {
       val args = Bundle()
       args.putBoolean(IS_MULTIPANE_ARGUMENT_KEY, isMultipane)

@@ -17,6 +17,12 @@ fun Polynomial.isConstant(): Boolean = termCount == 1 && getTerm(0).variableCoun
  */
 fun Polynomial.getConstant(): Real = getTerm(0).coefficient
 
+/**
+ * Returns a human-readable, plaintext representation of this [Polynomial].
+ *
+ * The returned string is guaranteed to be a syntactically correct algebraic expression representing
+ * the polynomial, e.g. "1+x-7x^2").
+ */
 fun Polynomial.toPlainText(): String {
   return termList.map { it.toPlainText() }.reduce { acc, termAnswerStr ->
     if (termAnswerStr.startsWith("-")) {
