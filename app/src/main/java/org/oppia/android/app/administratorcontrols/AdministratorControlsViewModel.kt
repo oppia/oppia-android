@@ -21,7 +21,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import java.util.Collections.emptyList
 import javax.inject.Inject
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
