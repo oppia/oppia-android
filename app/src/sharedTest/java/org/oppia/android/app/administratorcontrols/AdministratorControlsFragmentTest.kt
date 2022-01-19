@@ -14,8 +14,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -77,6 +75,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import javax.inject.Inject
+import javax.inject.Singleton
 
 class AdministratorControlsFragmentTest {
   @get:Rule
@@ -193,4 +193,3 @@ class AdministratorControlsFragmentTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
-
