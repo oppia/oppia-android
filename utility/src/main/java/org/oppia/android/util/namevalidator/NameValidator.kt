@@ -2,14 +2,14 @@ package org.oppia.android.util.namevalidator
 
 class NameValidator {
   companion object {
-    private const val regContainsLettersAndNoWhiteSpace =
+    private const val MATCH_INTERNATIONAL_LETTERS_REJECT_SPACES =
       "^.[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF.'\\-]+\$"
 
-    private const val regContainsNoSymbols = "^[^#*!@\$%^&()_+=\\\\|\\]\\[\":;?/><,`~{}]*\$"
+    private const val REJECT_SYMBOLS = "^[^#*!@\$%^&()_+=\\\\|\\]\\[\":;?/><,`~{}]*\$"
 
-    private const val regContainsRepeatedAllowedSymbols = "[\\.'-]{2}"
+    private const val REJECT_REPEATED_USE_OF_ALLOWED_SYMBOLS = "[\\.'-]{2}"
 
-    fun nameAllowed(name: String): Boolean {
+    fun validate(name: String): Boolean {
       return (
         notEmptyNoSpacesAndContainsLetters(name) &&
           noNumbers(name) &&
@@ -19,7 +19,7 @@ class NameValidator {
     }
 
     private fun notEmptyNoSpacesAndContainsLetters(name: String): Boolean {
-      return name.matches(Regex(regContainsLettersAndNoWhiteSpace))
+      return name.matches(Regex(MATCH_INTERNATIONAL_LETTERS_REJECT_SPACES))
     }
 
     private fun noNumbers(name: String): Boolean {
@@ -29,11 +29,11 @@ class NameValidator {
     }
 
     private fun noSymbols(name: String): Boolean {
-      return name.matches(Regex(regContainsNoSymbols))
+      return name.matches(Regex(REJECT_SYMBOLS))
     }
 
     private fun noRepeatedUseOfAllowedSymbols(name: String): Boolean {
-      return !name.contains(Regex(regContainsRepeatedAllowedSymbols))
+      return !name.contains(Regex(REJECT_REPEATED_USE_OF_ALLOWED_SYMBOLS))
     }
   }
 }
