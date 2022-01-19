@@ -192,16 +192,6 @@ class ImageViewBindingAdaptersTest {
     }
   }
 
-  @Throws(IOException::class)
-  fun drawableFromUrl(url: String): Drawable? {
-    val x: Bitmap
-    val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
-    connection.connect()
-    val input: InputStream = connection.getInputStream()
-    x = BitmapFactory.decodeStream(input)
-    return BitmapDrawable(Resources.getSystem(), x)
-  }
-
   @Test
   fun testImageViewBindingAdapters_imageView_setProfileImage() {
     activityRule.scenario.runWithActivity {
@@ -210,10 +200,9 @@ class ImageViewBindingAdaptersTest {
         .setAvatarImageUri("https://render.fineartamerica.com/images/rendered/default/framed-print/images-medium-5/fuji-mountain-in-autumn-doctoregg.jpg?imgWI=36&imgHI=24&sku=CRQ13&mat1=PM918&mat2=&t=2&b=2&l=2&r=2&off=0.5&frameW=0.875")
         .build()
       val url = profileAvatar.avatarImageUri.toString()
-      Log.d("TAG", "testImageViewBindingAdapters_imageView_setProfileImage: $url")
       setProfileImage(imageView, profileAvatar)
       testCoroutineDispatchers.runCurrent()
-      val drawableFromInternet = drawableFromUrl(url) as BitmapDrawable
+      val drawableFromInternet: BitmapDrawable = imageView.drawable as BitmapDrawable
       assertThat(imageView, withDrawableDynamic(drawableFromInternet))
     }
   }
