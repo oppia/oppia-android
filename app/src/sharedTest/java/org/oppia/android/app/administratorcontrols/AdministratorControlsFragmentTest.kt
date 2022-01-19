@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
@@ -107,13 +107,13 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickEditProfile_checkSendingTheCorrectIntent() {
-    ActivityScenario.launch<AdministratorControlsActivity>(
+    launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.edit_profiles_text_view))
+      onView(ViewMatchers.withId(R.id.edit_profiles_text_view))
         .perform(ViewActions.click())
       Intents.intended(IntentMatchers.hasComponent(ProfileListActivity::class.java.name))
     }
@@ -121,21 +121,22 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickAppVersion_checkSendingTheCorrectIntent() {
-    ActivityScenario.launch<AdministratorControlsActivity>(
+    launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      Espresso.onView(ViewMatchers.withId(R.id.administrator_controls_list)).perform(
+      onView(ViewMatchers.withId(R.id.administrator_controls_list)).perform(
         RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
           3
         )
       )
-      Espresso.onView(ViewMatchers.withId(R.id.app_version_text_view)).perform(ViewActions.click())
+      onView(ViewMatchers.withId(R.id.app_version_text_view)).perform(ViewActions.click())
       Intents.intended(IntentMatchers.hasComponent(AppVersionActivity::class.java.name))
     }
   }
+
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context,
