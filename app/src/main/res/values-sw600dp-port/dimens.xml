@@ -182,6 +182,11 @@
   <dimen name="submitted_answer_item_question_split_view_margin_top">24dp</dimen>
   <dimen name="submitted_answer_item_question_split_view_margin_end">32dp</dimen>
 
+  <!-- ProfileProgressFragment -->
+  <dimen name="profile_progress_fragment_margin_start">96dp</dimen>
+  <dimen name="profile_progress_fragment_margin_end">96dp</dimen>
+  <dimen name="profile_progress_fragment_padding_bottom">112dp</dimen>
+
   <!-- Submitted Answer Item: Question View -->
   <dimen name="submitted_answer_item_question_view_margin_start">128dp</dimen>
   <dimen name="submitted_answer_item_question_view_margin_top">24dp</dimen>

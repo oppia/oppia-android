@@ -467,6 +467,11 @@
   <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">108dp</dimen>
 
+  <!-- ProfileProgressFragment -->
+  <dimen name="profile_progress_fragment_margin_start">20dp</dimen>
+  <dimen name="profile_progress_fragment_margin_end">20dp</dimen>
+  <dimen name="profile_progress_fragment_padding_bottom">108dp</dimen>
+
   <!-- Completed Story Item -->
   <dimen name="completed_story_item_topic_container_margin_start">8dp</dimen>
   <dimen name="completed_story_item_topic_container_margin_end">8dp</dimen>
