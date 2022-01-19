@@ -18,8 +18,8 @@
     android:onClick="@{(v) -> viewModel.onAudioLanguageClicked()}"
     android:paddingStart="@dimen/option_audio_language_padding_start"
     android:paddingTop="20dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="@dimen/option_audio_language_padding_end">
+    android:paddingEnd="@dimen/option_audio_language_padding_end"
+    android:paddingBottom="20dp">
 
     <TextView
       android:id="@+id/audio_language_label_text_view"
