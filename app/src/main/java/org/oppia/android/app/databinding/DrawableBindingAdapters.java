@@ -11,7 +11,6 @@ import org.oppia.android.R;
 
 /** Holds all custom binding adapters that set background drawables. */
 public final class DrawableBindingAdapters {
-  // TODO(#3099): Add dedicated tests for this class.
 
   /** Used to set a rounded-rect background drawable with a data-bound color. */
   @BindingAdapter("android:background")
