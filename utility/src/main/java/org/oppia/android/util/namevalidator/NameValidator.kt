@@ -1,6 +1,6 @@
 package org.oppia.android.util.namevalidator
 
-class NameValidator(name: String) {
+class NameValidator {
   companion object {
     private const val regContainsLettersAndNoWhiteSpace =
       "^.[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF.'\\-]+\$"
