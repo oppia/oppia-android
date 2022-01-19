@@ -631,7 +631,6 @@ class OptionsFragmentTest {
   class TestModule {
     companion object {
       var forceEnableLanguageSelectionUi: Boolean = true
-      var forceEnableEditAccountsOptionsUi: Boolean = true
     }
 
     @Provides
@@ -658,7 +657,7 @@ class OptionsFragmentTest {
     @EnableEditAccountsOptionsUi
     fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(
-        forceEnableEditAccountsOptionsUi
+        false
       )
     }
   }
