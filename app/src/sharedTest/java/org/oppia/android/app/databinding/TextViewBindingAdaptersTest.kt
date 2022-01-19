@@ -87,7 +87,6 @@ import javax.inject.Singleton
   application = TextViewBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-
 class TextViewBindingAdaptersTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -148,7 +147,7 @@ class TextViewBindingAdaptersTest {
     activityRule.scenario.onActivity {
       val drawable = ContextCompat.getDrawable(
         it,
-        R.drawable.test_text_view_drawable_binding_adapter
+        R.drawable.ic_add_profile
       )
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setDrawableEndCompat(
@@ -196,10 +195,6 @@ class TextViewBindingAdaptersTest {
     fun inject(textViewBindingAdaptersTest: TextViewBindingAdaptersTest)
   }
 
-  /**
-   * Class to override a dependency throughout the test application, instead of overriding the
-   * dependencies in every test class, we can just do it once by extending the Application class.
-   */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerTextViewBindingAdaptersTest_TestApplicationComponent.builder()
