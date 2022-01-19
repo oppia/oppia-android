@@ -32,7 +32,7 @@
   <string name="profile_and_device_id_activity_title" translatable="false">Profile &amp; Device IDs</string>
   <string name="learner_analytics_profile_id_label" translatable="false">Profile ID</string>
   <string name="learner_analytics_profile_name_label" translatable="false">Profile Name</string>
-  <string name="learner_analytics_device_id_label" translatable="false">Device ID</string>
+  <string name="learner_analytics_device_id_label" translatable="false">Device ID:</string>
   <string name="learner_analytics_copy_to_clipboard_label" translatable="false">Copy</string>
   <string name="learner_analytics_copied_to_clipboard_label" translatable="false">Copied</string>
   <string name="learner_analytics_copied_to_clipboard_snackbar_text" translatable="false">Copied "%s"</string>
