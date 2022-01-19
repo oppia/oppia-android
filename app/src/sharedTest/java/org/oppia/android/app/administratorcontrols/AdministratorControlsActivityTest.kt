@@ -185,7 +185,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_generalOptionsIsDisplayed() {
+  fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
     TestModule.forceEnableEditAccountsOptionsUi = true
 
     launch<AdministratorControlsActivity>(
@@ -207,7 +207,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_generalOptionsIsNotDisplayed() {
+  fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
     TestModule.forceEnableEditAccountsOptionsUi = false
 
     launch<AdministratorControlsActivity>(
@@ -802,8 +802,7 @@ class AdministratorControlsActivityTest {
   @Module
   class TestModule {
     companion object {
-      var forceEnableLanguageSelectionUi: Boolean = true
-      var forceEnableEditAccountsOptionsUi: Boolean = true
+      var forceEnableEditAccountsOptionsUi: Boolean = false
     }
 
     @Provides
@@ -813,17 +812,9 @@ class AdministratorControlsActivityTest {
     }
 
     @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
     @EnableLanguageSelectionUi
     fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
+      return PlatformParameterValue.createDefaultParameter(false)
     }
 
     @Provides
