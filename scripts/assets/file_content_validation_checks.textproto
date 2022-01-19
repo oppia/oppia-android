@@ -5,6 +5,24 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?.kt"
+  prohibited_content_regex: "announceForAccessibility\\("
+  failure_message: "Please use AccessibilityService instead."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityServiceImpl.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "announceForAccessibilityForView\\("
+  failure_message: "When using announceForAccessibility, please add an exempt file in file_content_validation_checks.textproto."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
+  exempted_file_name: "app/src/test/java/org/oppia/android/app/accessibility/FakeAccessibilityServiceTest.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityService.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityServiceImpl.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/FakeAccessibilityService.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
   prohibited_content_regex: "CoroutineWorker"
   failure_message: "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
