@@ -56,7 +56,7 @@
           android:layout_gravity="center_horizontal"
           android:fontFamily="sans-serif"
           android:text="@string/no"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="20sp" />
 
         <TextView
@@ -67,7 +67,7 @@
           android:layout_marginTop="40dp"
           android:fontFamily="sans-serif"
           android:text="@string/pick_a_different_topic"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="12sp" />
       </com.google.android.material.card.MaterialCardView>
 
@@ -89,7 +89,7 @@
           android:layout_gravity="center_horizontal"
           android:fontFamily="sans-serif"
           android:text="@string/yes"
-          android:textColor="@color/oppiaPrimaryDark"
+          android:textColor="@color/oppia_primary"
           android:textSize="20sp" />
 
         <TextView
@@ -100,7 +100,7 @@
           android:layout_marginTop="40dp"
           android:fontFamily="sans-serif"
           android:text="@string/lets_get_started"
-          android:textColor="@color/oppiaPrimaryDark"
+          android:textColor="@color/oppia_primary"
           android:textSize="12sp" />
       </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
@@ -113,7 +113,7 @@
       android:layout_marginTop="4dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.topicTitle}"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="20sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
@@ -126,7 +126,7 @@
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
       android:text="@string/great"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="24sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"

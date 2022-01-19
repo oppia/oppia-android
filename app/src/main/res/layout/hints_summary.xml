@@ -37,7 +37,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -107,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="16sp" />
     </LinearLayout>
   </LinearLayout>

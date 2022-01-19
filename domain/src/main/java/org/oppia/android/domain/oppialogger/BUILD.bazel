@@ -10,7 +10,7 @@ kt_android_library(
     srcs = [
         "OppiaLogger.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//domain:__subpackages__"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//model:event_logger_java_proto_lite",

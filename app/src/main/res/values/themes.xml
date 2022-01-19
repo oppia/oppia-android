@@ -2,40 +2,40 @@
 <resources>
 
   <style name="OppiaTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="colorPrimary">@color/oppia_primary</item>
+    <item name="colorPrimaryDark">@color/oppia_primary_dark</item>
+    <item name="colorAccent">@color/oppia_primary</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorAccent</item>
+    <item name="colorPrimary">@color/oppia_primary</item>
+    <item name="colorPrimaryDark">@color/oppia_primary_dark</item>
+    <item name="colorAccent">@color/oppia_accent</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="colorPrimary">@color/oppia_primary</item>
+    <item name="colorPrimaryDark">@color/oppia_primary_dark</item>
+    <item name="colorAccent">@color/oppia_primary</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
   <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
-    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="colorAccent">@color/oppia_primary</item>
   </style>
 
   <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorControlActivated">@color/colorPrimary</item>
+    <item name="colorControlActivated">@color/oppia_primary</item>
   </style>
 
   <style name="OppiaAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="colorPrimary">@color/oppia_primary</item>
+    <item name="colorPrimaryDark">@color/oppia_primary_dark</item>
+    <item name="colorAccent">@color/oppia_primary</item>
   </style>
 </resources>

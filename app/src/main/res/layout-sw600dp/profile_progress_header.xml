@@ -23,7 +23,7 @@
       android:layout_width="160dp"
       android:layout_height="160dp"
       android:layout_marginStart="@dimen/profile_edit_image_layout_margin_start"
-      android:background="@color/whiteLight"
+      android:background="@color/white_light"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"
@@ -55,7 +55,7 @@
       android:layout_marginEnd="@dimen/profile_name_text_view_layout_margin_end"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="28sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/profile_edit_image"
@@ -94,7 +94,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{Integer.toString(viewModel.ongoingTopicCount)}"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="24sp" />
 
         <TextView
@@ -104,7 +104,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/topic_in_progress}"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="12sp" />
       </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -141,7 +141,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{Integer.toString(viewModel.completedStoryCount)}"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="24sp" />
 
         <TextView
@@ -151,7 +151,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{viewModel.completedStoryCount != 1 ? @string/stories_completed : @string/story_completed}"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="12sp" />
       </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -166,7 +166,7 @@
       android:fontFamily="sans-serif-medium"
       android:minHeight="48dp"
       android:text="@string/recently_played_stories"
-      android:textColor="@color/oppiaPrimaryText"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="18sp"
       android:visibility="@{viewModel.headerTextVisibility}"
       app:layout_constraintEnd_toStartOf="@+id/view_all_text_view"
@@ -185,7 +185,7 @@
       android:onClick="@{() -> viewModel.clickOnViewAll()}"
       android:text="@string/view_all"
       android:textAllCaps="true"
-      android:textColor="@color/oppiaPrimaryDark"
+      android:textColor="@color/oppia_primary"
       android:textSize="14sp"
       android:visibility="@{viewModel.viewAllButtonVisibility}"
       app:layout_constraintEnd_toEndOf="parent"

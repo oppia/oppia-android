@@ -31,7 +31,7 @@
       android:clickable="false"
       android:focusable="false"
       android:labelFor="@id/multiple_choice_content_text_view"
-      app:buttonTint="@color/oppiaDarkBlue" />
+      app:buttonTint="@color/oppia_dark_blue" />
 
     <TextView
       android:id="@+id/multiple_choice_content_text_view"
@@ -43,7 +43,7 @@
       android:layout_toEndOf="@+id/multiple_choice_radio_button"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
-      android:textColor="@color/oppiaDarkBlue"
+      android:textColor="@color/oppia_dark_blue"
       android:textSize="16sp" />
   </RelativeLayout>
 </layout>

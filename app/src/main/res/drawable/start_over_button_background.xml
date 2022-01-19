@@ -4,5 +4,5 @@
   <corners android:radius="@dimen/state_previous_next_button_radius" />
   <stroke
     android:width="2dp"
-    android:color="@color/oppiaPrimaryDark" />
+    android:color="@color/oppia_primary" />
 </shape>

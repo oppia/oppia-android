@@ -28,6 +28,7 @@ package_group(
 # top-level module library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/domain/feedbackreporting/*.kt",
+    "src/main/java/org/oppia/android/domain/onboarding/**/*.kt",
     "src/main/java/org/oppia/android/domain/oppialogger/**/*.kt",
     "src/main/java/org/oppia/android/domain/util/*.kt",
     "src/main/java/org/oppia/android/domain/state/*.kt",
@@ -128,6 +129,8 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
     ],
 )
@@ -170,6 +173,8 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/audio:cellular_audio_dialog_controller",
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:startup_listener",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",

@@ -13,13 +13,13 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorConceptCardBackground">
+    android:background="@color/concept_card_background">
 
     <androidx.appcompat.widget.Toolbar
       android:id="@+id/concept_card_toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/colorConceptToolbarBackground"
+      android:background="@color/concept_toolbar_background"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +58,7 @@
             android:layout_marginEnd="@dimen/concept_card_heading_text_margin_end"
             android:fontFamily="sans-serif-medium"
             android:text="@{viewModel.conceptCardLiveData.conceptCard.skillDescription}"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="20sp" />
 
           <TextView

@@ -3,28 +3,12 @@ package org.oppia.android.app.settings.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -43,7 +27,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -71,8 +54,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
-import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -158,292 +139,6 @@ class ProfileRenameActivityTest {
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.profile_rename_activity_title))
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputNewName_clickSave_checkProfileEditActivityIsOpen() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("James"))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputNewName_clickImeActionButton_checkProfileEditActivityIsOpen() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(
-        editTextInputAction.appendText("James"),
-        pressImeActionButton()
-      )
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputNewName_configurationChange_checkSaveIsEnabled() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("James"))
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).check(matches(isEnabled()))
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputNewName_configurationChange_inputTextExists() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("James"))
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).check(
-        matches(
-          withText("James")
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputOldName_clickSave_checkNameNotUniqueError() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("Admin"))
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputOldName_clickSave_inputName_checkErrorIsCleared() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("Admin"))
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText(" "))
-      onView(withId(R.id.profile_rename_input))
-        .check(matches(hasNoErrorText()))
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("123"))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_only_letters)
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("123"))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText(" "))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input))
-        .check(matches(hasNoErrorText()))
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputName_changeConfiguration_checkNameIsDisplayed() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(
-        editTextInputAction.appendText("test"),
-        closeSoftKeyboard()
-      )
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).check(
-        matches(
-          withText("test")
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_inputOldName_clickSave_changeConfiguration_errorIsVisible() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(
-        editTextInputAction.appendText("Admin"),
-        closeSoftKeyboard()
-      )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testProfileRenameActivity_clickSave_changeConfiguration_saveButtonIsNotClickable() {
-    launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

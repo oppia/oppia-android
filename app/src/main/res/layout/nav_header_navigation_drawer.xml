@@ -14,7 +14,7 @@
     android:id="@+id/header_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/navBarHeaderBackground"
+    android:background="@color/navbar_header_background"
     android:gravity="bottom"
     android:onClick="@{(v) -> viewModel.onHeaderClicked()}"
     android:orientation="vertical"

@@ -2,22 +2,22 @@
 <resources>
 
   <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorAccent</item>
+    <item name="colorPrimary">@color/oppia_primary</item>
+    <item name="colorPrimaryDark">@color/oppia_primary_dark</item>
+    <item name="colorAccent">@color/oppia_accent</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
   <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="android:colorControlActivated">@color/colorPrimary</item>
+    <item name="android:colorControlActivated">@color/oppia_primary</item>
   </style>
 
   <style name="OppiaAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="colorPrimary">@color/oppia_primary</item>
+    <item name="colorPrimaryDark">@color/oppia_primary_dark</item>
+    <item name="colorAccent">@color/oppia_primary</item>
     <item name="android:buttonBarNegativeButtonStyle">@style/textAllCaps</item>
     <item name="android:buttonBarPositiveButtonStyle">@style/textAllCaps</item>
   </style>

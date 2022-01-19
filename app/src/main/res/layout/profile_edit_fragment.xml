@@ -20,7 +20,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/profileEditBackground"
+      android:background="@color/profile_edit_background"
       android:clipToPadding="false">
 
       <View
@@ -47,13 +47,15 @@
 
       <TextView
         android:id="@+id/profile_edit_name"
-        style="@style/Heading2"
-        android:layout_width="wrap_content"
+        style="@style/Heading2ViewStart"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
         android:importantForAccessibility="no"
         android:text="@{viewModel.profile.name}"
         app:layout_constraintBottom_toTopOf="@+id/profile_edit_created"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/profile_edit_image"
         app:layout_constraintTop_toTopOf="@id/profile_edit_image"
         app:layout_constraintVertical_chainStyle="packed" />
@@ -92,7 +94,7 @@
         android:paddingEnd="16dp"
         android:text="@string/profile_edit_rename"
         android:textAllCaps="false"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +122,7 @@
         android:paddingEnd="16dp"
         android:text="@string/profile_edit_reset"
         android:textAllCaps="false"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -157,7 +159,7 @@
           android:paddingTop="12dp"
           android:paddingEnd="24dp"
           android:text="@string/profile_edit_allow_download_heading"
-          android:textColor="@color/oppiaPrimaryText"
+          android:textColor="@color/oppia_primary_text"
           android:textSize="16sp"
           app:layout_constraintEnd_toStartOf="@+id/profile_edit_allow_download_switch"
           app:layout_constraintHorizontal_bias="0.0"
@@ -226,7 +228,7 @@
         android:paddingEnd="16dp"
         android:text="@string/profile_edit_delete"
         android:textAllCaps="false"
-        android:textColor="@color/oppiaRed"
+        android:textColor="@color/oppia_red"
         android:textSize="16sp"
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toTopOf="@+id/view5"

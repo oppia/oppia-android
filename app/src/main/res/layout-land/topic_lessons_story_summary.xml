@@ -67,7 +67,7 @@
               android:layout_gravity="center"
               android:fontFamily="sans-serif-medium"
               android:text="@{viewModel.storyProgressPercentageText}"
-              android:textColor="@color/oppiaPrimaryText"
+              android:textColor="@color/oppia_primary_text"
               android:textSize="14sp"
               android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
           </FrameLayout>
@@ -79,7 +79,7 @@
             android:layout_marginTop="4dp"
             android:fontFamily="sans-serif"
             android:text="@{viewModel.storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="10sp"
             android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
@@ -109,7 +109,7 @@
               android:paddingTop="24dp"
               android:paddingBottom="4dp"
               android:text="@{viewModel.storySummary.storyName}"
-              android:textColor="@color/oppiaPrimaryText"
+              android:textColor="@color/oppia_primary_text"
               android:textSize="18sp" />
 
             <TextView
@@ -120,7 +120,7 @@
               android:fontFamily="sans-serif"
               android:importantForAccessibility="no"
               android:text="@{viewModel.computeChapterCountText()}"
-              android:textColor="@color/oppiaPrimaryText"
+              android:textColor="@color/oppia_primary_text"
               android:textSize="16sp" />
           </LinearLayout>
 
@@ -149,7 +149,7 @@
         android:id="@+id/chapter_list_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/whiteLight"
+        android:background="@color/white_light"
         android:orientation="vertical"
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 

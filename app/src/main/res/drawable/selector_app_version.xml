@@ -13,7 +13,7 @@
     <layer-list>
       <item android:left="0dp" android:top="0dp">
         <shape>
-          <solid android:color="@color/oppiaTextShadow" />
+          <solid android:color="@color/oppia_text_shadow" />
         </shape>
       </item>
       <item android:bottom="1dp" android:right="0dp">

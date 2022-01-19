@@ -33,7 +33,7 @@
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
       app:cardCornerRadius="4dp"
       app:cardElevation="@dimen/story_chapter_card_playable_state_elevation"
-      app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/colorPrimary : @color/chapterCardGreyBorder}"
+      app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppia_primary : @color/chapter_card_grey_border}"
       app:strokeWidth="2dp">
 
       <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +63,7 @@
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
             android:text="@{viewModel.computeChapterTitleText()}"
-            android:textColor="@color/oppiaPrimaryText"
+            android:textColor="@color/oppia_primary_text"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:text="@{htmlContent}"
-            android:textColorLink="@color/colorPrimary"
+            android:textColorLink="@color/oppia_primary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +108,7 @@
       android:layout_marginTop="16dp"
       android:layout_marginEnd="72dp"
       android:layout_marginBottom="8dp"
-      android:background="@color/chapterCardShadow"
+      android:background="@color/chapter_card_shadow"
       android:padding="8dp"
       android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
   </FrameLayout>

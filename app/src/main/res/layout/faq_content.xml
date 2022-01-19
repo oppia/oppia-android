@@ -35,7 +35,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.question}"
-        android:textColor="@color/oppiaPrimaryText"
+        android:textColor="@color/oppia_primary_text"
         android:textSize="14sp" />
 
       <View
@@ -44,7 +44,7 @@
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/faq_content_margin_start"
         android:layout_marginEnd="@dimen/faq_content_margin_end"
-        android:background="@color/oppiaFAQDivider" />
+        android:background="@color/oppia_faq_divider" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

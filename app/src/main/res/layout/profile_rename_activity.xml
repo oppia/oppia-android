@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
-
-  <data>
-
-    <variable
-      name="viewModel"
-      type="org.oppia.android.app.settings.profile.ProfileRenameViewModel" />
-  </data>
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -38,68 +32,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
+      android:id="@+id/profile_rename_fragment_placeholder"
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:background="@color/generalNavigationBackground"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/profile_rename_app_bar_layout">
-
-      <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/general_item_background_border"
-        android:paddingBottom="@dimen/profile_rename_activity_constraint_layout"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.textfield.TextInputLayout
-          android:id="@+id/profile_rename_input"
-          style="@style/TextInputLayout"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="@dimen/profile_rename_activity_profile_rename_input_margin_start"
-          android:layout_marginTop="@dimen/profile_rename_activity_profile_rename_input_margin_top"
-          android:layout_marginEnd="@dimen/profile_rename_activity_profile_rename_input_margin_end"
-          android:hint="@string/profile_rename_label"
-          app:errorMessage="@{viewModel.nameErrorMsg}"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent">
-
-          <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/profile_rename_input_edit_text"
-            style="@style/TextInputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:maxLength="36"
-            android:singleLine="true"
-            android:text="@{viewModel.inputName}" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-          android:id="@+id/profile_rename_save_button"
-          style="@style/StateButtonActive"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:layout_marginEnd="@dimen/profile_rename_activity_profile_rename_save_button_margin_end"
-          android:background="@{viewModel.inputName.length > 0 ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
-          android:clickable="@{viewModel.inputName.length > 0}"
-          android:enabled="@{viewModel.inputName.length > 0}"
-          android:text="@string/profile_rename_save"
-          android:textAllCaps="true"
-          android:textColor="@{viewModel.inputName.length > 0 ? @color/white : @color/submitButtonInactiveText }"
-          android:textSize="14sp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/profile_rename_input" />
-      </androidx.constraintlayout.widget.ConstraintLayout>
-
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
-    </FrameLayout>
+      app:layout_constraintTop_toBottomOf="@+id/profile_rename_app_bar_layout"></FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

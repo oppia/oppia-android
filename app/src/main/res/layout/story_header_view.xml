@@ -19,7 +19,7 @@
     android:layout_marginBottom="8dp"
     android:fontFamily="sans-serif-medium"
     android:text="@{viewModel.computeStoryProgressChapterCompletedText()}"
-    android:textColor="@color/oppiaPrimaryText"
+    android:textColor="@color/oppia_primary_text"
     android:textSize="18sp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />

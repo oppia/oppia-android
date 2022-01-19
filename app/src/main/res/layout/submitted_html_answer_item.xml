@@ -18,6 +18,6 @@
     android:paddingEnd="4dp"
     android:paddingBottom="8dp"
     android:text="@{htmlContent}"
-    android:textColor="@color/oppiaPrimaryText"
+    android:textColor="@color/oppia_primary_text"
     android:textSize="16sp" />
 </layout>

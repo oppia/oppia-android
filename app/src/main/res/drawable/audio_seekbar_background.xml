@@ -9,7 +9,7 @@
   <item android:id="@android:id/progress">
     <clip>
       <shape>
-        <solid android:color="@color/colorAccent" />
+        <solid android:color="@color/oppia_accent" />
         <corners android:radius="8dp" />
       </shape>
     </clip>

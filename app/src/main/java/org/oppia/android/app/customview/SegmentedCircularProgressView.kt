@@ -76,14 +76,14 @@ class SegmentedCircularProgressView : View {
     calculateSweepAngle()
 
     chapterFinishedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    setupArcPaint(chapterFinishedArcPaint, R.color.oppiaProgressChapterFinished)
+    setupArcPaint(chapterFinishedArcPaint, R.color.oppia_progress_chapter_finished)
 
     chapterInProgressArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    setupArcPaint(chapterInProgressArcPaint, R.color.oppiaProgressChapterInProgress)
+    setupArcPaint(chapterInProgressArcPaint, R.color.oppia_progress_chapter_in_progress)
 
     chapterNotStartedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     if (chaptersFinished != 0) {
-      setupArcPaint(chapterNotStartedArcPaint, R.color.oppiaProgressChapterNotFinished)
+      setupArcPaint(chapterNotStartedArcPaint, R.color.oppia_progress_chapter_not_finished)
     } else {
       setupArcPaint(chapterNotStartedArcPaint, R.color.grey_shade_20)
     }

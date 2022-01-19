@@ -17,13 +17,13 @@
       android:id="@+id/download_permissions_text_view"
       style="@style/CaptionViewStart"
       android:layout_width="match_parent"
-      android:background="@color/oppiaGreyBackground"
+      android:background="@color/oppia_grey_background"
       android:paddingStart="16dp"
       android:paddingTop="28dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_download_permissions_label"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/oppia_primary"
       app:layout_constraintBottom_toTopOf="@id/topic_update_on_wifi_constraint_layout"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
         android:background="@color/white"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_update_on_wifi_title"
-        android:textColor="@color/oppiaPrimaryTextDark"
+        android:textColor="@color/oppia_primary_text_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -120,7 +120,7 @@
         android:background="@color/white"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_auto_update_title"
-        android:textColor="@color/oppiaPrimaryTextDark"
+        android:textColor="@color/oppia_primary_text_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

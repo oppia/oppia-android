@@ -35,7 +35,7 @@ class VerticalDashedLineView @JvmOverloads constructor(
 
     paint = Paint().apply {
       isAntiAlias = true
-      color = ContextCompat.getColor(context, R.color.colorPrimary)
+      color = ContextCompat.getColor(context, R.color.oppia_primary)
       style = Paint.Style.STROKE
       strokeCap = Paint.Cap.ROUND
       strokeWidth = dashThickness

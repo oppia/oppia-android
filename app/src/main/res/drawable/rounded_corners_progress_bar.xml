@@ -16,7 +16,7 @@
     <scale android:scaleWidth="100%">
       <shape>
         <corners android:radius="8dp"/>
-        <solid android:color="@color/colorPrimaryDark"/>
+        <solid android:color="@color/oppia_primary_dark"/>
       </shape>
     </scale>
   </item>

@@ -66,7 +66,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_baseline_code_24"
-            android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlightedDeveloperOptionsNavMenuItem : @color/oppiaPrimaryTextDark}"/>
+            android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlighted_developer_options_nav_menu_item : @color/oppia_primary_text_dark}"/>
 
           <TextView
             android:layout_width="match_parent"
@@ -75,7 +75,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/developer_options"
-            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlightedDeveloperOptionsNavMenuItem : @color/oppiaPrimaryTextDark}"
+            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlighted_developer_options_nav_menu_item : @color/oppia_primary_text_dark}"
             android:textSize="14sp" />
         </LinearLayout>
 
@@ -97,7 +97,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_admin_settings_icon_brown_24dp"
-            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}" />
+            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/highlighted_nav_menu_item : @color/oppia_primary_text_dark}" />
 
           <TextView
             android:layout_width="match_parent"
@@ -106,7 +106,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/administrator_controls"
-            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/highlightedNavMenuItem : @color/oppiaPrimaryTextDark}"
+            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/highlighted_nav_menu_item : @color/oppia_primary_text_dark}"
             android:textSize="14sp" />
         </LinearLayout>
       </LinearLayout>

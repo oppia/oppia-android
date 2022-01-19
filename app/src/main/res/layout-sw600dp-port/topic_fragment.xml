@@ -52,7 +52,7 @@
         android:layout_marginEnd="64dp"
         android:textSize="14sp"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabBackground="@color/oppiaPrimaryDark"
+        app:tabBackground="@color/oppia_primary"
         app:tabGravity="fill"
         app:tabIconTint="@color/tab_icon_color_selector"
         app:tabIndicatorColor="@android:color/white"

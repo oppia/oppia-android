@@ -5,5 +5,5 @@
   <corners
     android:radius="@dimen/state_previous_next_button_radius"/>
   <solid
-    android:color="@color/oppiaDarkBlue"/>
+    android:color="@color/oppia_dark_blue"/>
 </shape>
