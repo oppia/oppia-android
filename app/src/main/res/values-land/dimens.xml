@@ -400,9 +400,10 @@
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">60dp</dimen>
 
-  <!--  RevisionCardFragment-->
+  <!-- RevisionCardFragment -->
   <dimen name="revision_card_fragment_padding_bottom">145dp</dimen>
-  <dimen name="revision_card_fragment_layout_margin">52dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_start">52dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_end">52dp</dimen>
   <dimen name="revision_card_fragment_layout_text_margin_top">24dp</dimen>
   <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
 
