@@ -26,6 +26,7 @@
   * [[Frequent Errors and Solutions|https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions]]
   * [[RTL Guidelines|https://github.com/oppia/oppia-android/wiki/RTL-Guidelines]] 
   * [[Working on UI|https://github.com/oppia/oppia-android/wiki/Working-on-UI]]
+  * [[Writing Design Docs|https://github.com/oppia/oppia-android/wiki/Writing-design-docs]]
 ---
 **Developer Reference**
   * Code style
