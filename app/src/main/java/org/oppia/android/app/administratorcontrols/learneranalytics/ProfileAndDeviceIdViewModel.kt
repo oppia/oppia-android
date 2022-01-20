@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
@@ -18,10 +17,11 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.SyncStatusManager
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DEFAULT
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DEFAULT
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
+import javax.inject.Inject
 
 private const val DEFAULT_COPIED_ID_TEXT = "default_copied_id_text"
 
@@ -37,7 +37,9 @@ class ProfileAndDeviceIdViewModel @Inject constructor(
 ) : ObservableViewModel() {
 
   val deviceId =
-    resourceHandler.getStringInLocale(R.string.learner_analytics_device_id_label).plus(" ") + loggingIdentifierController.deviceId
+    resourceHandler.getStringInLocale(
+      R.string.learner_analytics_device_id_label
+    ).plus(" ") + loggingIdentifierController.deviceId
   val profiles: LiveData<List<Profile>> by lazy {
     Transformations.map(
       profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
@@ -78,9 +80,12 @@ class ProfileAndDeviceIdViewModel @Inject constructor(
     }
     return when (syncStatusResult.getOrDefault(DEFAULT)) {
       DEFAULT -> resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_default)
-      DATA_UPLOADING -> resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_data_uploading)
-      DATA_UPLOADED -> resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_data_uploaded)
-      NETWORK_ERROR -> resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_network_error)
+      DATA_UPLOADING ->
+        resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_data_uploading)
+      DATA_UPLOADED ->
+        resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_data_uploaded)
+      NETWORK_ERROR ->
+        resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_network_error)
     }
   }
 

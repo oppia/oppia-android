@@ -7,12 +7,12 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
@@ -98,7 +98,7 @@ class AdministratorControlsActivity :
     lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
     administratorControlsActivityPresenter.setExtraControlsTitle(
       resourceHandler.getStringInLocale(R.string.profile_and_device_id_activity_title)
-      //TODO(LearnerAnalytics): Replace with new string
+      // TODO(LearnerAnalytics): Replace with new string
     )
     administratorControlsActivityPresenter.loadLearnerAnalyticsData()
   }

@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileAndDeviceIdFragmentBinding
 import org.oppia.android.databinding.ProfileIdListViewBinding
+import javax.inject.Inject
 
 @FragmentScope
 class ProfileAndDeviceIdFragmentPresenter @Inject constructor(

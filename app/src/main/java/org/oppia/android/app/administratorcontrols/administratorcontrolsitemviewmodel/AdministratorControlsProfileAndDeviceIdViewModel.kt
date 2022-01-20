@@ -6,12 +6,12 @@ import org.oppia.android.app.administratorcontrols.RouteToLearnerAnalyticsListen
 
 class AdministratorControlsProfileAndDeviceIdViewModel(
   activity: AppCompatActivity
-): AdministratorControlsItemViewModel() {
+) : AdministratorControlsItemViewModel() {
 
   private val routeToLearnerAnalyticsListener = activity as RouteToLearnerAnalyticsListener
   private val loadLearnerAnalyticsListener = activity as LoadLearnerAnalyticsListener
 
-  fun onProfileAndDeviceIdsClicked(){
+  fun onProfileAndDeviceIdsClicked() {
     if (isMultipane.get()!!) {
       loadLearnerAnalyticsListener.loadLearnerAnalyticsData()
     } else {

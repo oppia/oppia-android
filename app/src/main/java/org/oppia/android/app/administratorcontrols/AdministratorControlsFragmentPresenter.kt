@@ -11,6 +11,7 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
+import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
@@ -21,11 +22,10 @@ import org.oppia.android.databinding.AdministratorControlsAppInformationViewBind
 import org.oppia.android.databinding.AdministratorControlsDownloadPermissionsViewBinding
 import org.oppia.android.databinding.AdministratorControlsFragmentBinding
 import org.oppia.android.databinding.AdministratorControlsGeneralViewBinding
+import org.oppia.android.databinding.AdministratorControlsLearnerAnalyticsViewBinding
 import org.oppia.android.databinding.AdministratorControlsProfileViewBinding
 import java.security.InvalidParameterException
 import javax.inject.Inject
-import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
-import org.oppia.android.databinding.AdministratorControlsLearnerAnalyticsViewBinding
 
 /** The presenter for [AdministratorControlsFragment]. */
 @FragmentScope

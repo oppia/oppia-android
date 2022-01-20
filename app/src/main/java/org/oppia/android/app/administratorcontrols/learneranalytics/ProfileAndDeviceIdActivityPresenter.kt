@@ -2,9 +2,9 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import javax.inject.Inject
 
 @ActivityScope
 class ProfileAndDeviceIdActivityPresenter @Inject constructor(
@@ -31,6 +31,8 @@ class ProfileAndDeviceIdActivityPresenter @Inject constructor(
   private fun getProfileAndDeviceIdFragment(): ProfileAndDeviceIdFragment? {
     return activity
       .supportFragmentManager
-      .findFragmentById(R.id.profile_and_device_id_fragment_placeholder) as ProfileAndDeviceIdFragment?
+      .findFragmentById(
+        R.id.profile_and_device_id_fragment_placeholder
+      ) as ProfileAndDeviceIdFragment?
   }
 }
