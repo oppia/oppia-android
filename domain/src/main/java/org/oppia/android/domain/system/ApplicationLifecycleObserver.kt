@@ -4,12 +4,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.util.system.OppiaClock
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Observer that observes application lifecycle. */
 @Singleton
@@ -17,7 +17,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val loggingIdentifierController: LoggingIdentifierController,
   @LearnerAnalyticsInactivityLimit private val inactivityLimit: Int
-): ApplicationStartupListener, LifecycleObserver {
+) : ApplicationStartupListener, LifecycleObserver {
 
   override fun onCreate() {
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
@@ -27,10 +27,10 @@ class ApplicationLifecycleObserver @Inject constructor(
 
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
-  fun onAppInForeground(){
-    if (firstTimestamp > 0){
+  fun onAppInForeground() {
+    if (firstTimestamp > 0) {
       val timeDifference = oppiaClock.getCurrentTimeMs() - firstTimestamp
-      if (TimeUnit.MILLISECONDS.toMinutes(timeDifference) > inactivityLimit){
+      if (TimeUnit.MILLISECONDS.toMinutes(timeDifference) > inactivityLimit) {
         loggingIdentifierController.updateSessionId()
       }
     }
@@ -38,7 +38,7 @@ class ApplicationLifecycleObserver @Inject constructor(
 
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-  fun onAppInBackground(){
+  fun onAppInBackground() {
     firstTimestamp = oppiaClock.getCurrentTimeMs()
   }
 }

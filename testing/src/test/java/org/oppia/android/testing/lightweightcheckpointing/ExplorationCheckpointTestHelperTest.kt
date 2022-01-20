@@ -27,6 +27,9 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
@@ -55,9 +58,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 
 /** Tests for [ExplorationCheckpointTestHelper]. */
 @RunWith(AndroidJUnit4::class)

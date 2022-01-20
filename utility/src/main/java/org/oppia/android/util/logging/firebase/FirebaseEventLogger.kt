@@ -7,9 +7,9 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.SyncStatusManager
 import java.util.Locale
 import javax.inject.Singleton
-import org.oppia.android.util.logging.SyncStatusManager
 
 private const val NETWORK_USER_PROPERTY = "NETWORK"
 private const val COUNTRY_USER_PROPERTY = "COUNTRY"

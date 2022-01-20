@@ -32,6 +32,7 @@ import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBO
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -58,7 +59,6 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 
 /** Tests for [AppStartupStateController]. */
 @RunWith(AndroidJUnit4::class)

@@ -33,6 +33,9 @@ import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
@@ -75,9 +78,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 
 /** Tests for [StoryProgressTestHelper]. */
 @RunWith(AndroidJUnit4::class)

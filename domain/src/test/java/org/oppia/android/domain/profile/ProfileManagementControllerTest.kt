@@ -28,9 +28,11 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.domain.oppialogger.DeviceIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.FakeUUIDImpl
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -47,16 +49,14 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.system.UUIDWrapper
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
 import java.io.FileInputStream
-import java.util.*
+import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.DeviceIdSeed
-import org.oppia.android.testing.FakeUUIDImpl
-import org.oppia.android.util.system.UUIDWrapper
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)

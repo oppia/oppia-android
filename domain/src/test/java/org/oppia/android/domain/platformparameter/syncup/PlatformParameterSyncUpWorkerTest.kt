@@ -38,6 +38,7 @@ import org.oppia.android.data.backends.gae.OppiaRetrofit
 import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
@@ -76,7 +77,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 
 /** Tests for [PlatformParameterSyncUpWorker]. */
 @RunWith(AndroidJUnit4::class)
@@ -175,8 +175,8 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
 
     platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()// Retrieve the previously cached Platform Parameters from Cache Store.
-
+    // Retrieve the previously cached Platform Parameters from Cache Store.
+    testCoroutineDispatchers.runCurrent()
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.

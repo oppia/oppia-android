@@ -1,10 +1,10 @@
 package org.oppia.android.util.logging
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val SYNC_STATUS_PROVIDER_ID = "sync_status_provider_id"
 

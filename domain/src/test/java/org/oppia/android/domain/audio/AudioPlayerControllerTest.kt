@@ -25,6 +25,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeExceptionLogger
@@ -51,7 +52,6 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 
 /** Tests for [AudioPlayerControllerTest]. */
 @RunWith(AndroidJUnit4::class)

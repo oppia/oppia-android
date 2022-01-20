@@ -2,10 +2,10 @@ package org.oppia.android.domain.oppialogger
 
 import dagger.Module
 import dagger.Provides
-import javax.inject.Qualifier
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.system.RealUUIDImpl
 import org.oppia.android.util.system.UUIDWrapper
+import javax.inject.Qualifier
 
 @Qualifier
 annotation class DeviceIdSeed
