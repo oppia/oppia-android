@@ -127,7 +127,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         )
       if (currentFragment != null) {
         when (currentFragment) {
-          is ProfileListFragment -> {
+          is ProfileEditFragment -> {
             setExtraControlsTitle(
               activity.applicationContext.resources.getString(
                 R.string.administrator_controls_edit_profiles
