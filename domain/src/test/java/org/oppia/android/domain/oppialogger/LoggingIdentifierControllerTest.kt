@@ -12,7 +12,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.security.MessageDigest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,6 +23,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.FakeUUIDImpl
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -48,13 +48,13 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAUL
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
+import org.oppia.android.util.system.UUIDWrapper
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.FakeUUIDImpl
-import org.oppia.android.util.system.UUIDWrapper
 
 private const val TEST_UUID = "test_uuid"
 private const val TEST_MAC_ADDRESS = "test_mac_address"

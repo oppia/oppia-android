@@ -10,8 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -54,6 +52,8 @@ import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.oppia.android.util.system.UUIDWrapper
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TEST_UUID = "test_uuid"
 private const val TEST_TIMESTAMP_ONE = 1610322960000
@@ -100,7 +100,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_getSessionID_goInBackground_returnToForegroundAfterExceedingLimit_verifyUpdatesSessionId() {
+  fun testObserver_getSessionID_goInBackground_returnToForegroundAfterExceedingLimit_verifyUpdatesSessionId() { // ktlint-disable max-line-length
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val sessionId = loggingIdentifierController.getSessionId()
     sessionId.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -108,7 +108,7 @@ class ApplicationLifecycleObserverTest {
     fakeUUIDImpl.setUUIDValue(TEST_UUID)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_ONE)
     applicationLifecycleObserver.onAppInBackground()
-    //moving time to more than 30 minutes later.
+    // moving time to more than 30 minutes later.
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_TWO)
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.advanceUntilIdle()
@@ -118,7 +118,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_getSessionID_goInBackground_returnToForegroundWithoutExceedingLimit_verifyDoesNotUpdateSessionId() {
+  fun testObserver_getSessionID_goInBackground_returnToForegroundWithoutExceedingLimit_verifyDoesNotUpdateSessionId() { // ktlint-disable max-line-length
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val defaultUUID = fakeUUIDImpl.getUUIDValue()
     val sessionId = loggingIdentifierController.getSessionId()
@@ -127,7 +127,7 @@ class ApplicationLifecycleObserverTest {
     fakeUUIDImpl.setUUIDValue(TEST_UUID)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_ONE)
     applicationLifecycleObserver.onAppInBackground()
-    //moving time to less than 30 minutes later.
+    // moving time to less than 30 minutes later.
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_THREE)
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.advanceUntilIdle()

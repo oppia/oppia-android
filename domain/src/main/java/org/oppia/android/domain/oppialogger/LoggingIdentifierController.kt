@@ -2,14 +2,14 @@ package org.oppia.android.domain.oppialogger
 
 import android.content.Context
 import android.net.wifi.WifiManager
-import java.security.MessageDigest
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.UUIDWrapper
+import java.security.MessageDigest
+import java.util.Random
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val SESSION_ID_DATA_PROVIDER_ID = "session_id_data_provider_id"
 

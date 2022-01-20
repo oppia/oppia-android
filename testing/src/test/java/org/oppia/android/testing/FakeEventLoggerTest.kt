@@ -159,7 +159,7 @@ class FakeEventLoggerTest {
   }
 
   @Test
-  fun testFakeEventLogger_logCachedEvent_clearAllCachedEvents_logCachedEventAgain_returnsLatestCachedEvent() {
+  fun testFakeEventLogger_logCachedEvent_clearAllCachedEvents_logCachedEventAgain_returnsLatestCachedEvent() { // ktlint-disable max-line-length
     eventLogger.logCachedEvent(eventLog1)
     fakeEventLogger.clearAllCachedEvents()
     eventLogger.logCachedEvent(eventLog2)
