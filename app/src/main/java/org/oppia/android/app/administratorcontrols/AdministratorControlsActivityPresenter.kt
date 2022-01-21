@@ -11,13 +11,15 @@ import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
 import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsActivity]. */
 @ActivityScope
 class AdministratorControlsActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
@@ -131,9 +133,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         when (currentFragment) {
           is ProfileEditFragment -> {
             setExtraControlsTitle(
-              activity.applicationContext.resources.getString(
-                R.string.administrator_controls_edit_profiles
-              )
+              resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
             )
             loadProfileList()
           }
