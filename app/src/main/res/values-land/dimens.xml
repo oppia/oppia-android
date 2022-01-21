@@ -408,4 +408,8 @@
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
+
+  <!-- StoryTextSize -->
+  <dimen name="option_story_text_size_padding_start">36dp</dimen>
+  <dimen name="option_story_text_size_padding_end">36dp</dimen>
 </resources>

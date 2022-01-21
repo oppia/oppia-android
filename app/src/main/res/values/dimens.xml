@@ -605,4 +605,8 @@
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
+
+  <!-- StoryTextSize -->
+  <dimen name="option_story_text_size_padding_start">16dp</dimen>
+  <dimen name="option_story_text_size_padding_end">16dp</dimen>
 </resources>
