@@ -8,6 +8,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.app.player.exploration.BottomSheetItemClickListener
+import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.databinding.FragmentBottomSheetBinding
 
 class BottomSheetFragment(val internalProfileId : Int) : BottomSheetDialogFragment() {
@@ -22,17 +24,12 @@ class BottomSheetFragment(val internalProfileId : Int) : BottomSheetDialogFragme
   }
 
   private fun setUpOnClickListeners(binding: FragmentBottomSheetBinding){
+    val bottomSheetItemClickListener = activity as BottomSheetItemClickListener
     binding.actionHelp.setOnClickListener {
-
+      bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_help)
     }
     binding.actionOptions.setOnClickListener {
-      val intent = OptionsActivity.createOptionsActivity(
-        requireActivity(),
-        internalProfileId,
-        /* isFromNavigationDrawer= */ false
-      )
-//      fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
-//      context.startActivity(intent)
+      bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_options)
     }
   }
 }

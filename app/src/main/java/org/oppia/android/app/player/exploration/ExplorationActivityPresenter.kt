@@ -164,9 +164,9 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Action for onOptionsItemSelected */
-  fun handleOnOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      R.id.action_preferences -> {
+  fun handleOnOptionsItemSelected(itemId: Int): Boolean {
+    return when (itemId) {
+      R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
           internalProfileId,

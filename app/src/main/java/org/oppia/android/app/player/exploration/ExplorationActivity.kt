@@ -37,7 +37,8 @@ class ExplorationActivity :
   RevealSolutionInterface,
   DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener,
-  ConceptCardListener {
+  ConceptCardListener,
+  BottomSheetItemClickListener {
 
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
@@ -118,15 +119,6 @@ class ExplorationActivity :
     explorationActivityPresenter.deleteOldestSavedProgressAndStopExploration()
   }
 
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    //menuInflater.inflate(R.menu.menu_reading_options, menu)
-    return super.onCreateOptionsMenu(menu)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    return explorationActivityPresenter.handleOnOptionsItemSelected(item)
-  }
-
   override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
 
   override fun hideAudioButton() = explorationActivityPresenter.hideAudioButton()
@@ -191,4 +183,8 @@ class ExplorationActivity :
   }
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
+
+  override fun handleOnOptionsItemSelected(itemId:Int){
+    explorationActivityPresenter.handleOnOptionsItemSelected(itemId)
+  }
 }
