@@ -34,7 +34,7 @@ class ScalableVectorGraphic {
    * images). Otherwise, the returned specs will be arranged for rendering the SVG in a standalone
    * manner.
    */
-  internal fun computeSizeSpecs(textPaint: TextPaint?): SvgSizeSpecs {
+  fun computeSizeSpecs(textPaint: TextPaint?): SvgSizeSpecs {
     return if (textPaint != null) {
       val options = RenderOptionsBase().textPaint(textPaint)
       val width = parsedSvg.value.getDocumentWidth(options)

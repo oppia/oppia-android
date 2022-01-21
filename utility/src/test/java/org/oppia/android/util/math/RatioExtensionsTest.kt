@@ -7,7 +7,9 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.RatioExpression
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [RatioExtensions]. */
+/** Tests for [RatioExpression] extensions. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class RatioExtensionsTest {

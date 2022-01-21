@@ -1,0 +1,224 @@
+"""
+General-purpose utilities for image loading and processing.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "bitmap_blurrer",
+    srcs = [
+        "BitmapBlurrer.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/svg:__pkg__"],
+    deps = [
+        "//third_party:com_github_bumptech_glide_glide",
+    ],
+)
+
+kt_android_library(
+    name = "bitmap_blur_transformation",
+    srcs = [
+        "BitmapBlurTransformation.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/svg:__pkg__"],
+    deps = [
+        ":bitmap_blurrer",
+        "//third_party:com_github_bumptech_glide_glide",
+    ],
+)
+
+kt_android_library(
+    name = "glide_image_loader",
+    srcs = [
+        "GlideImageLoader.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":image_asset_fetcher",
+        ":image_loader",
+        ":image_targets",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_blur_transformation",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_decoder",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_picture_drawable",
+    ],
+)
+
+kt_android_library(
+    name = "glide_image_loader_module",
+    srcs = [
+        "GlideImageLoaderModule.kt",
+    ],
+    visibility = [
+        "//:oppia_prod_module_visibility",
+    ],
+    deps = [
+        ":dagger",
+        ":glide_image_loader",
+        ":image_loader",
+    ],
+)
+
+kt_android_library(
+    name = "image_asset_fetcher",
+    srcs = [
+        "ImageAssetFetcher.kt",
+    ],
+)
+
+kt_android_library(
+    name = "test_glide_image_loader",
+    srcs = [
+        "TestGlideImageLoader.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":glide_image_loader",
+        ":image_loader",
+        ":text_picture_drawable",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
+    ],
+)
+
+kt_android_library(
+    name = "image_parsing_annonations",
+    srcs = [
+        "ImageParsingAnnotations.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "image_parsing_module",
+    srcs = [
+        "ImageParsingModule.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":dagger",
+        ":image_parsing_annonations",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "image_targets",
+    srcs = [
+        "ImageTargets.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":image_asset_fetcher",
+        "//third_party:com_github_bumptech_glide_glide",
+    ],
+)
+
+kt_android_library(
+    name = "image_transformation",
+    srcs = [
+        "ImageTransformation.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+)
+
+kt_android_library(
+    name = "repository_glide_module",
+    srcs = [
+        "RepositoryGlideModule.kt",
+    ],
+    visibility = ["//app:__subpackages__"],
+    deps = [
+        ":image_asset_fetcher",
+        ":repository_model_loader",
+        "//third_party:glide_compiler",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_svg_drawable_transcoder",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_decoder",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:text_svg_drawable_transcoder",
+    ],
+)
+
+kt_android_library(
+    name = "repository_model_loader",
+    srcs = [
+        "RepositoryModelLoader.kt",
+    ],
+    deps = [
+        ":image_asset_fetcher",
+        "//third_party:com_github_bumptech_glide_glide",
+    ],
+)
+
+kt_android_library(
+    name = "text_picture_drawable",
+    srcs = [
+        "TextPictureDrawable.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/svg:__pkg__"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:scalable_vector_graphic",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:svg_picture_drawable",
+    ],
+)
+
+kt_android_library(
+    name = "image_loader",
+    srcs = [
+        "ImageLoader.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":image_targets",
+        ":text_picture_drawable",
+        "//third_party:androidx_annotation_annotation",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
+    ],
+)
+
+kt_android_library(
+    name = "url_image_parser",
+    srcs = [
+        "UrlImageParser.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":image_loader",
+        ":image_parsing_annonations",
+        ":image_targets",
+        ":text_picture_drawable",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:javax_inject_javax_inject",
+        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:custom_html_content_handler",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:block_picture_drawable",
+    ],
+)
+
+dagger_rules()
