@@ -64,6 +64,7 @@ import org.oppia.android.util.math.MathTokenizer.Companion.Token.VariableName
 import kotlin.math.absoluteValue
 import org.oppia.android.util.math.MathParsingError.EquationHasTooManyEqualsError
 import org.oppia.android.util.math.MathParsingError.EquationIsMissingEqualsError
+import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 
 class MathExpressionParser private constructor(private val parseContext: ParseContext) {
   // TODO:
@@ -637,7 +638,7 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
 
   private sealed class ParseContext(val rawExpression: String) {
     val tokens: PeekableIterator<Token> by lazy {
-      PeekableIterator.fromSequence(MathTokenizer.tokenize(rawExpression))
+      MathTokenizer.tokenize(rawExpression).toPeekableIterator()
     }
     private var previousToken: Token? = null
 
