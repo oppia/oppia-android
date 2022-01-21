@@ -9,8 +9,8 @@ import org.oppia.android.app.model.MathBinaryOperation.Operator.SUBTRACT
 import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
-import java.lang.StringBuilder
 import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
+import java.lang.StringBuilder
 
 /**
  * Input tokenizer for math (numeric & algebraic) expressions and equations.

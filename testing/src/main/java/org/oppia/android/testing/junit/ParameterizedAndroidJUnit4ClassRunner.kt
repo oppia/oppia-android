@@ -14,7 +14,7 @@ internal class ParameterizedAndroidJUnit4ClassRunner(
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
   private val iterationName: String?
-): AndroidJUnit4ClassRunner(testClass), ParameterizedRunnerOverrideMethods {
+) : AndroidJUnit4ClassRunner(testClass), ParameterizedRunnerOverrideMethods {
   private val delegate by lazy {
     ParameterizedRunnerDelegate(
       parameterizedMethods,

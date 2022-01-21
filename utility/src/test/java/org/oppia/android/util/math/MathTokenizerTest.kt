@@ -644,7 +644,7 @@ class MathTokenizerTest {
   fun testTokenize_manyOtherUnicodeValues_produceInvalidTokens() {
     // Build a large list of unicode characters minus those which are actually allowed. The ASCII
     // range is excluded from this list.
-    val characters = ('\u007f' .. '\uffff').filterNot {
+    val characters = ('\u007f'..'\uffff').filterNot {
       it in listOf('×', '÷', '−', '√')
     }
     val charStr = characters.joinToString("")

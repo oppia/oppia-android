@@ -14,7 +14,7 @@ package org.oppia.android.util.math
  *
  * This class is not safe to use across multiple threads and requires synchronization.
  */
-class PeekableIterator<T: Any> private constructor(
+class PeekableIterator<T : Any> private constructor(
   private val backingIterator: Iterator<T>
 ) : Iterator<T> {
   private var next: T? = null
@@ -84,7 +84,7 @@ class PeekableIterator<T: Any> private constructor(
      * [List]). Some sequences do support multiple iteration, so the exact behavior of the returned
      * iterator will be sequence implementation dependent.
      */
-    fun <T: Any> Sequence<T>.toPeekableIterator(): PeekableIterator<T> =
+    fun <T : Any> Sequence<T>.toPeekableIterator(): PeekableIterator<T> =
       PeekableIterator(iterator())
   }
 }

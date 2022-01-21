@@ -13,7 +13,7 @@ internal class ParameterizedRunnerDelegate(
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
   private val iterationName: String?
-): ParameterizedRunnerOverrideMethods {
+) : ParameterizedRunnerOverrideMethods {
   /**
    * A lambda used to call into the parent runner's [getChildren] method. This should be set by
    * helper parameterized test runners.

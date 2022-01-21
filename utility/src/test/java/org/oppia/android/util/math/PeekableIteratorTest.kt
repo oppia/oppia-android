@@ -2,7 +2,6 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import java.util.function.Supplier
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,10 +13,10 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.mockito.stubbing.Answer
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 import org.robolectric.annotation.LooperMode
+import java.util.function.Supplier
 
 /** Tests for [PeekableIterator]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -56,7 +55,7 @@ class PeekableIteratorTest {
     val sequence = sequenceOf<String>()
     val iterator = sequence.toPeekableIterator()
 
-    assertThrows(NoSuchElementException::class) { iterator.next()  }
+    assertThrows(NoSuchElementException::class) { iterator.next() }
   }
 
   @Test

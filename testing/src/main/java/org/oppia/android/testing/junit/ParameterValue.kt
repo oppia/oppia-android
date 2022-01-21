@@ -12,8 +12,9 @@ import java.lang.reflect.Field
  */
 internal sealed class ParameterValue(val key: String, val value: Any) {
   private class BooleanParameterValue private constructor(
-    key: String, value: Boolean
-  ): ParameterValue(key, value) {
+    key: String,
+    value: Boolean
+  ) : ParameterValue(key, value) {
     companion object {
       /**
        * Returns a new [ParameterValue] for the specified [key] and a [Boolean] parsed
@@ -35,8 +36,9 @@ internal sealed class ParameterValue(val key: String, val value: Any) {
   }
 
   private class IntParameterValue private constructor(
-    key: String, value: Int
-  ): ParameterValue(key, value) {
+    key: String,
+    value: Int
+  ) : ParameterValue(key, value) {
     companion object {
       /**
        * Returns a new [ParameterValue] for the specified [key] and an [Int] parsed representation
@@ -49,8 +51,9 @@ internal sealed class ParameterValue(val key: String, val value: Any) {
   }
 
   private class LongParameterValue private constructor(
-    key: String, value: Long
-  ): ParameterValue(key, value) {
+    key: String,
+    value: Long
+  ) : ParameterValue(key, value) {
     companion object {
       /**
        * Returns a new [ParameterValue] for the specified [key] and a [Long] parsed representation
@@ -63,8 +66,9 @@ internal sealed class ParameterValue(val key: String, val value: Any) {
   }
 
   private class FloatParameterValue private constructor(
-    key: String, value: Float
-  ): ParameterValue(key, value) {
+    key: String,
+    value: Float
+  ) : ParameterValue(key, value) {
     companion object {
       /**
        * Returns a new [ParameterValue] for the specified [key] and a [Float] parsed representation
@@ -77,8 +81,9 @@ internal sealed class ParameterValue(val key: String, val value: Any) {
   }
 
   private class DoubleParameterValue private constructor(
-    key: String, value: Double
-  ): ParameterValue(key, value) {
+    key: String,
+    value: Double
+  ) : ParameterValue(key, value) {
     companion object {
       /**
        * Returns a new [ParameterValue] for the specified [key] and a [Double] parsed representation
@@ -91,8 +96,9 @@ internal sealed class ParameterValue(val key: String, val value: Any) {
   }
 
   private class StringParameterValue private constructor(
-    key: String, value: String
-  ): ParameterValue(key, value) {
+    key: String,
+    value: String
+  ) : ParameterValue(key, value) {
     companion object {
       /**
        * Returns a new [ParameterValue] for the specified [key] and a [String] parsed representation
@@ -104,12 +110,36 @@ internal sealed class ParameterValue(val key: String, val value: Any) {
   }
 
   internal companion object {
-    private val booleanValueParser = createParser(BooleanParameterValue::createParameter)
-    private val intValueParser = createParser(IntParameterValue::createParameter)
-    private val longValueParser = createParser(LongParameterValue::createParameter)
-    private val floatValueParser = createParser(FloatParameterValue::createParameter)
-    private val doubleValueParser = createParser(DoubleParameterValue::createParameter)
-    private val stringValueParser = createParser(StringParameterValue::createParameter)
+    private val booleanValueParser = object : ParameterValueParser {
+      override fun parseParameter(key: String, rawValue: String): ParameterValue? {
+        return BooleanParameterValue.createParameter(key, rawValue)
+      }
+    }
+    private val intValueParser = object : ParameterValueParser {
+      override fun parseParameter(key: String, rawValue: String): ParameterValue? {
+        return IntParameterValue.createParameter(key, rawValue)
+      }
+    }
+    private val longValueParser = object : ParameterValueParser {
+      override fun parseParameter(key: String, rawValue: String): ParameterValue? {
+        return LongParameterValue.createParameter(key, rawValue)
+      }
+    }
+    private val floatValueParser = object : ParameterValueParser {
+      override fun parseParameter(key: String, rawValue: String): ParameterValue? {
+        return FloatParameterValue.createParameter(key, rawValue)
+      }
+    }
+    private val doubleValueParser = object : ParameterValueParser {
+      override fun parseParameter(key: String, rawValue: String): ParameterValue? {
+        return DoubleParameterValue.createParameter(key, rawValue)
+      }
+    }
+    private val stringValueParser = object : ParameterValueParser {
+      override fun parseParameter(key: String, rawValue: String): ParameterValue {
+        return StringParameterValue.createParameter(key, rawValue)
+      }
+    }
 
     /**
      * Returns a new [ParameterValueParser] corresponding to the type of the specified [field], or
@@ -127,17 +157,16 @@ internal sealed class ParameterValue(val key: String, val value: Any) {
       }
     }
 
+    // TODO(#4122): Use 'fun interface' here, instead, once ktlint supports it. This allows for
+    //  method references to be passed to createParser when defining the parsers above. See the
+    //  blame PR's change for this code for a commit that has the functional interface alternative.
     /** A string parser for a specific [ParameterValue] type. */
-    fun interface ParameterValueParser {
+    interface ParameterValueParser { // ktlint-disable
       /**
        * Returns a [ParameterValue] corresponding to the specified [key], and with a type-safe
        * parsing of [rawValue], or null if the string value is invalid.
        */
       fun parseParameter(key: String, rawValue: String): ParameterValue?
     }
-
-    // A hack to work around the fact that Kotlin doesn't support assignment conversion from
-    // references to a functional interface.
-    private fun createParser(parser: ParameterValueParser) = parser
   }
 }

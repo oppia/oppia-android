@@ -1,8 +1,5 @@
 package org.oppia.android.testing.junit
 
-import java.lang.annotation.Repeatable
-import java.lang.reflect.Field
-import java.lang.reflect.Method
 import org.junit.runner.Description
 import org.junit.runner.Runner
 import org.junit.runner.manipulation.Filter
@@ -11,6 +8,9 @@ import org.junit.runner.manipulation.Sortable
 import org.junit.runner.manipulation.Sorter
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.Suite
+import java.lang.annotation.Repeatable
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 
 /**
  * JUnit test runner that enables support for parameterization, that is, running a single test
@@ -71,7 +71,7 @@ import org.junit.runners.Suite
  * contain (thus they should be treated as undefined outside of tests that specific define their
  * value via [Iteration]).
  */
-class OppiaParameterizedTestRunner(private val testClass: Class<*>): Suite(testClass, listOf()) {
+class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(testClass, listOf()) {
   private val parameterizedMethods = computeParameterizedMethods()
   private val childrenRunners by lazy {
     // Collect all parameterized methods (for each iteration they support) plus one test runner for
@@ -239,7 +239,8 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>): Suite(testC
   annotation class Iteration(val name: String, vararg val keyValuePairs: String)
 
   private data class ParameterizedMethodDeclaration(
-    val method: Method, val rawValues: Map<String, List<String>>
+    val method: Method,
+    val rawValues: Map<String, List<String>>
   )
 
   private class ProxyParameterizedTestRunner(
@@ -247,7 +248,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>): Suite(testC
     private val parameterizedMethods: Map<String, ParameterizedMethod>,
     private val methodName: String?,
     private val iterationName: String? = null
-  ): Runner(), Filterable, Sortable {
+  ) : Runner(), Filterable, Sortable {
     private val delegate by lazy { constructDelegate() }
     private val delegateRunner by lazy {
       checkNotNull(delegate as? Runner) { "Delegate runner isn't a JUnit runner: $delegate" }

@@ -14,7 +14,7 @@ internal class ParameterizedRobolectricTestRunner(
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
   private val iterationName: String?
-): RobolectricTestRunner(testClass), ParameterizedRunnerOverrideMethods {
+) : RobolectricTestRunner(testClass), ParameterizedRunnerOverrideMethods {
   private val delegate by lazy {
     ParameterizedRunnerDelegate(
       parameterizedMethods,
@@ -37,7 +37,7 @@ internal class ParameterizedRobolectricTestRunner(
   override fun getHelperTestRunner(
     bootstrappedTestClass: Class<*>?
   ): HelperTestRunner {
-    return object: HelperTestRunner(bootstrappedTestClass) {
+    return object : HelperTestRunner(bootstrappedTestClass) {
       override fun methodInvoker(method: FrameworkMethod?, test: Any?): Statement {
         delegate.fetchMethodInvokerFromParent = { innerMethod, innerParent ->
           super.methodInvoker(innerMethod, innerParent)
