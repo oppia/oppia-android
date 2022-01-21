@@ -408,6 +408,10 @@
   <dimen name="audio_player_split_view_margin_start">32dp</dimen>
   <dimen name="audio_player_split_view_margin_end">32dp</dimen>
 
+  <!-- OptionAppLanguage -->
+  <dimen name="option_app_language_padding_start">16dp</dimen>
+  <dimen name="option_app_language_padding_end">16dp</dimen>
+
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">24dp</dimen>
   <dimen name="faq_single_padding_top">22dp</dimen>

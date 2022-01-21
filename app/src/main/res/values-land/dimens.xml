@@ -324,6 +324,10 @@
   <dimen name="topic_practice_subtopic_layout_margin_start">104dp</dimen>
   <dimen name="topic_practice_subtopic_layout_margin_end">96dp</dimen>
 
+  <!-- OptionAppLanguage -->
+  <dimen name="option_app_language_padding_start">36dp</dimen>
+  <dimen name="option_app_language_padding_end">36dp</dimen>
+
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">80dp</dimen>
 
