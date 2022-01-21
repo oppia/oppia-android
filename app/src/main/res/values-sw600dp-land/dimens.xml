@@ -401,5 +401,4 @@
   
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
-  
 </resources>

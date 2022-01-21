@@ -596,5 +596,4 @@
 
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">160dp</dimen>
-
 </resources>
