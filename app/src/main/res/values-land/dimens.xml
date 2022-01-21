@@ -410,4 +410,24 @@
   <dimen name="topic_info_fragment_download_status_image_view_layout_margin_top">24dp</dimen>
   <dimen name="topic_info_fragment_download_status_image_view_layout_margin_bottom">32dp</dimen>
   <dimen name="topic_info_fragment_download_size_text_view_margin_end">72dp</dimen>
+
+  <!-- TopicPracticeFragment -->
+  <dimen name="topic_practice_fragment_padding_bottom">0dp</dimen>
+  <dimen name="topic_practice_fragment_padding_start">48dp</dimen>
+  <dimen name="topic_practice_fragment_padding_end">48dp</dimen>
+
+  <!--  PromotedStoryList-->
+  <dimen name="promoted_story_list_layout_margin_end">72dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_start">72dp</dimen>
+
+  <!-- AudioLanguageFragment -->
+  <dimen name="audio_language_recycler_view_padding_bottom">96dp</dimen>
+  
+  <!-- StoryFragment -->
+  <dimen name="story_fragment_padding_bottom">60dp</dimen>
+
+  <!-- TopicLessonsTitle -->
+  <dimen name="topic_lessons_title_margin_start">100dp</dimen>
+  <dimen name="topic_lessons_title_margin_end">100dp</dimen>
+
 </resources>
