@@ -108,3 +108,18 @@ kt_android_library(
         "//third_party:com_google_truth_truth",
     ],
 )
+
+kt_android_library(
+    name = "token_subject",
+    testonly = True,
+    srcs = [
+        "TokenSubject.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        "//third_party:com_google_truth_truth",
+        "//utility/src/main/java/org/oppia/android/util/math:tokenizer",
+    ],
+)
