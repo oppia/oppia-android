@@ -9,7 +9,7 @@ import java.util.Locale
  *
  * @property methodName the name of the test method that's been parameterized
  */
-internal class ParameterizedMethod(
+class ParameterizedMethod(
   val methodName: String,
   private val values: Map<String, List<ParameterValue>>,
   private val parameterFields: List<Field>
@@ -25,7 +25,7 @@ internal class ParameterizedMethod(
    * method is called for each iteration (since the test method should be executed multiples, once
    * for each of its iteration).
    */
-  internal fun initializeForTest(testClassInstance: Any, iterationName: String) {
+  fun initializeForTest(testClassInstance: Any, iterationName: String) {
     // Retrieve the setters for the fields (since these are expected to be used instead of direct
     // property access in Kotlin). Note that these need to be re-fetched since the instance class
     // may change (due to Robolectric instrumentation including custom class loading & bytecode

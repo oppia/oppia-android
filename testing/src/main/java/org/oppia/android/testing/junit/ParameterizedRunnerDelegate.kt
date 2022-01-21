@@ -9,7 +9,7 @@ import org.junit.runners.model.Statement
  * This class performs the actual field injection and execution delegation for running each
  * parameterized test method.
  */
-internal class ParameterizedRunnerDelegate(
+class ParameterizedRunnerDelegate(
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
   private val iterationName: String?

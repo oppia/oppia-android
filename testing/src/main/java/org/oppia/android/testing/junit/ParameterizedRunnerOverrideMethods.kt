@@ -6,7 +6,7 @@ import org.junit.runners.model.Statement
 /**
  * Specifies methods that the helper parameterized runners should override from JUnit's test runner.
  */
-internal interface ParameterizedRunnerOverrideMethods {
+interface ParameterizedRunnerOverrideMethods {
   /** See [org.junit.runners.BlockJUnit4ClassRunner.getChildren]. */
   fun getChildren(): MutableList<FrameworkMethod>
 

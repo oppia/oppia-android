@@ -10,7 +10,7 @@ import java.lang.reflect.Field
  * @property value the type-correct value to assign to the field prior to executing the iteration
  *     corresponding to this value
  */
-internal sealed class ParameterValue(val key: String, val value: Any) {
+sealed class ParameterValue(val key: String, val value: Any) {
   private class BooleanParameterValue private constructor(
     key: String,
     value: Boolean
@@ -109,7 +109,7 @@ internal sealed class ParameterValue(val key: String, val value: Any) {
     }
   }
 
-  internal companion object {
+  companion object {
     private val booleanValueParser = object : ParameterValueParser {
       override fun parseParameter(key: String, rawValue: String): ParameterValue? {
         return BooleanParameterValue.createParameter(key, rawValue)
