@@ -33,7 +33,7 @@
       android:id="@+id/edit_profiles_text_view"
       style="@style/Body"
       android:layout_width="match_parent"
-      android:background="@color/admin_controls_options_background"
+      android:background="@color/admin_controls_options_background_color"
       android:onClick="@{(v) -> viewModel.onEditProfilesClicked()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
