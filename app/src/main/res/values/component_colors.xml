@@ -3,9 +3,6 @@
   <color name="text_input_edit_text_cursor_color">@color/primary_text_color</color>
   <color name="toolbar_color">@color/oppia_primary</color>
   <color name="status_bar_color">@color/oppia_primary_dark</color>
-
-  <color name="layout_background_color">@color/background_color</color>
-
   <!--Styles.xml-->
   <color name="text_view_text_color">@color/primary_text_color</color>
   <color name="text_view_heading_text_color">@color/highlighted_text_color</color>
@@ -15,17 +12,22 @@
   <color name="input_interaction_edit_text_text_color">@color/primary_text_color</color>
   <color name="text_input_layout_background_color">@color/text_input_background</color>
   <color name="text_input_layout_error_color">@color/error_color</color>
-
   <!--Admin Auth Activity-->
   <color name="admin_auth_secondary_text_color">@color/description_text_color</color>
+  <color name="admin_auth_layout_background_color">@color/background_color</color>
   <!--Add Profile Activity-->
   <color name="add_profile_activity_label_text_color">@color/primary_text_color</color>
   <color name="add_profile_activity_switch_text_color">@color/dark_text_color</color>
   <color name="add_profile_activity_switch_description_color">@color/description_text_color</color>
+  <color name="add_profile_activity_layout_background_color">@color/background_color</color>
   <!--Administrator Controls-->
   <color name="admin_controls_background_color">@color/background_color_grey</color>
   <color name="admin_controls_options_background_color">@color/container_background_color</color>
   <color name="admin_controls_sub_heading_color">@color/primary_color</color>
   <color name="admin_controls_switch_description_color">@color/description_text_color</color>
   <color name="admin_controls_menu_options_text_color">@color/dark_text_color</color>
+  <!--Admin Pin Activity-->
+  <color name="admin_pin_activity_layout_background_color">@color/background_color</color>
+  <!--Pin Password Activity-->
+  <color name="pin_password_activity_layout_background_color">@color/background_color</color>
 </resources>

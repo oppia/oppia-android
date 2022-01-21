@@ -19,7 +19,7 @@
       android:id="@+id/admin_auth_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/layout_background_color"
+      android:background="@color/admin_pin_activity_layout_background_color"
       android:paddingBottom="108dp">
 
       <View
