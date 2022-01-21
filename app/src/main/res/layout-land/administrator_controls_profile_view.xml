@@ -40,7 +40,7 @@
       android:paddingEnd="36dp"
       android:paddingBottom="20dp"
       android:text="@string/administrator_controls_edit_profiles"
-      android:textColor="@color/menu_options_text_color"
+      android:textColor="@color/admin_controls_menu_options_text_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

@@ -53,7 +53,7 @@
         android:background="@color/admin_controls_options_background_color"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_update_on_wifi_title"
-        android:textColor="@color/menu_options_text_color"
+        android:textColor="@color/admin_controls_menu_options_text_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,7 +63,7 @@
         android:layout_width="0dp"
         android:background="@color/admin_controls_options_background_color"
         android:text="@string/administrator_controls_update_on_wifi_message"
-        android:textColor="@color/switch_description_color"
+        android:textColor="@color/admin_controls_switch_description_color"
         app:layout_constraintEnd_toStartOf="@id/topic_update_on_wifi_switch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topic_update_on_wifi_title_text_view" />
@@ -120,7 +120,7 @@
         android:background="@color/admin_controls_options_background_color"
         android:paddingBottom="4dp"
         android:text="@string/administrator_controls_auto_update_title"
-        android:textColor="@color/menu_options_text_color"
+        android:textColor="@color/admin_controls_menu_options_text_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -130,7 +130,7 @@
         android:layout_width="0dp"
         android:background="@color/admin_controls_options_background_color"
         android:text="@string/administrator_controls_auto_update_message"
-        android:textColor="@color/switch_description_color"
+        android:textColor="@color/admin_controls_switch_description_color"
         app:layout_constraintEnd_toStartOf="@id/auto_update_topic_switch"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"

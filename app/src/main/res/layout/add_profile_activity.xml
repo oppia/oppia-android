@@ -194,7 +194,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@{viewModel.validPin ? @color/add_profile_activity_switch_text_color : @color/switch_description_color}"
+                android:textColor="@{viewModel.validPin ? @color/add_profile_activity_switch_text_color : @color/add_profile_activity_switch_description_color}"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -206,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_sub"
-                android:textColor="@color/switch_description_color"
+                android:textColor="@color/add_profile_activity_switch_description_color"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
