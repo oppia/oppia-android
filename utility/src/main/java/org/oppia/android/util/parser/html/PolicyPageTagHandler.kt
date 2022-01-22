@@ -35,19 +35,20 @@ class PolicyPageTagHandler(
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     var text = attributes.getJsonStringValue("link")
     if (text != null) {
-      text = if(TERMS_OF_SERVICE_PAGE == text) {
+      text = if (TERMS_OF_SERVICE_PAGE == text) {
         TERMS_OF_SERVICE
-      }else{
+      } else {
         PRIVACY_POLICY
       }
       val spannableBuilder = SpannableStringBuilder(text)
       spannableBuilder.setSpan(
         object : ClickableSpan() {
           override fun onClick(view: View) {
-            if(TERMS_OF_SERVICE == text) {
+            if (TERMS_OF_SERVICE == text) {
               listener.onPolicyPageLinkClicked(PolicyPage.TERMS_OF_SERVICE)
-            }else if(PRIVACY_POLICY == text) {
-              listener.onPolicyPageLinkClicked(PolicyPage.PRIVACY_POLICY
+            } else if (PRIVACY_POLICY == text) {
+              listener.onPolicyPageLinkClicked(
+                PolicyPage.PRIVACY_POLICY
               )
             }
           }
