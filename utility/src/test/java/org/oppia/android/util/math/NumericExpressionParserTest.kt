@@ -19,16 +19,12 @@ class NumericExpressionParserTest {
   fun testLotsOfCasesForNumericExpression() {
     // TODO: split this up
     // TODO: add log string generation for expressions.
-    expectFailureWhenParsingNumericExpression("")
-
     val expression1 = parseNumericExpressionWithAllErrors("1")
     assertThat(expression1).hasStructureThatMatches {
       constant {
         withValueThat().isIntegerThat().isEqualTo(1)
       }
     }
-
-    expectFailureWhenParsingNumericExpression("x")
 
     val expression2 = parseNumericExpressionWithAllErrors("   2 ")
     assertThat(expression2).hasStructureThatMatches {
@@ -43,10 +39,6 @@ class NumericExpressionParserTest {
         withValueThat().isIrrationalThat().isWithin(1e-5).of(2.5)
       }
     }
-
-    expectFailureWhenParsingNumericExpression("   x ")
-
-    expectFailureWhenParsingNumericExpression(" z  x ")
 
     val expression4 = parseNumericExpressionWithoutOptionalErrors("2^3^2")
     assertThat(expression4).hasStructureThatMatches {
@@ -162,10 +154,6 @@ class NumericExpressionParserTest {
         }
       }
     }
-
-    expectFailureWhenParsingNumericExpression("sqr(2)")
-
-    expectFailureWhenParsingNumericExpression("xyz(2)")
 
     val expression6 = parseNumericExpressionWithAllErrors("732")
     assertThat(expression6).hasStructureThatMatches {
@@ -297,8 +285,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    expectFailureWhenParsingNumericExpression("x = √2 × 7 ÷ 4")
-
     val expression8 = parseNumericExpressionWithAllErrors("(1+2)(3+4)")
     assertThat(expression8).hasStructureThatMatches {
       multiplication {
@@ -337,9 +323,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    // Right implicit multiplication of numbers isn't allowed.
-    expectFailureWhenParsingNumericExpression("(1+2)2")
-
     val expression10 = parseNumericExpressionWithAllErrors("2(1+2)")
     assertThat(expression10).hasStructureThatMatches {
       multiplication {
@@ -367,9 +350,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    // Right implicit multiplication of numbers isn't allowed.
-    expectFailureWhenParsingNumericExpression("sqrt(2)3")
-
     val expression12 = parseNumericExpressionWithAllErrors("3sqrt(2)")
     assertThat(expression12).hasStructureThatMatches {
       multiplication {
@@ -389,8 +369,6 @@ class NumericExpressionParserTest {
         }
       }
     }
-
-    expectFailureWhenParsingNumericExpression("xsqrt(2)")
 
     val expression13 = parseNumericExpressionWithAllErrors("sqrt(2)*(1+2)*(3-2^5)")
     assertThat(expression13).hasStructureThatMatches {
@@ -573,7 +551,7 @@ class NumericExpressionParserTest {
       }
     }
 
-    val expression18 = parseNumericExpressionWithAllErrors("1++4")
+    val expression18 = parseNumericExpressionWithoutOptionalErrors("1++4")
     assertThat(expression18).hasStructureThatMatches {
       addition {
         leftOperand {
@@ -613,8 +591,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    expectFailureWhenParsingNumericExpression("1-^-4")
-
     val expression20 = parseNumericExpressionWithAllErrors("√2 × 7 ÷ 4")
     assertThat(expression20).hasStructureThatMatches {
       division {
@@ -643,8 +619,6 @@ class NumericExpressionParserTest {
         }
       }
     }
-
-    expectFailureWhenParsingNumericExpression("1+2 &asdf")
 
     val expression21 = parseNumericExpressionWithAllErrors("sqrt(2)sqrt(3)sqrt(4)")
     // Note that this tree demonstrates left associativity.
@@ -927,13 +901,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    // Numbers cannot have implicit multiplication unless they are in groups.
-    expectFailureWhenParsingNumericExpression("2 2")
-
-    expectFailureWhenParsingNumericExpression("2 2^2")
-
-    expectFailureWhenParsingNumericExpression("2^2 2")
-
     val expression31 = parseNumericExpressionWithoutOptionalErrors("(3)(4)(5)")
     assertThat(expression31).hasStructureThatMatches {
       multiplication {
@@ -1013,9 +980,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    // An exponentiation can never be an implicit right operand.
-    expectFailureWhenParsingNumericExpression("2^(3)2^2")
-
     val expression35 = parseNumericExpressionWithoutOptionalErrors("2^(3)*2^2")
     assertThat(expression35).hasStructureThatMatches {
       multiplication {
@@ -1091,9 +1055,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    // An exponentiation can never be an implicit right operand.
-    expectFailureWhenParsingNumericExpression("2^3(4)2^3")
-
     val expression38 = parseNumericExpressionWithoutOptionalErrors("2^3(4)*2^3")
     assertThat(expression38).hasStructureThatMatches {
       // 2^3(4)*2^3
@@ -1148,14 +1109,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    expectFailureWhenParsingNumericExpression("2^2 2^2")
-    expectFailureWhenParsingNumericExpression("(3) 2^2")
-    expectFailureWhenParsingNumericExpression("sqrt(3) 2^2")
-    expectFailureWhenParsingNumericExpression("√2 2^2")
-    expectFailureWhenParsingNumericExpression("2^2 3")
-
-    expectFailureWhenParsingNumericExpression("-2 3")
-
     val expression39 = parseNumericExpressionWithAllErrors("-(1+2)")
     assertThat(expression39).hasStructureThatMatches {
       negation {
@@ -1177,9 +1130,6 @@ class NumericExpressionParserTest {
         }
       }
     }
-
-    // Should pass for algebra.
-    expectFailureWhenParsingNumericExpression("-2 x")
 
     val expression40 = parseNumericExpressionWithAllErrors("-2 (1+2)")
     assertThat(expression40).hasStructureThatMatches {
@@ -1590,12 +1540,6 @@ class NumericExpressionParserTest {
       }
     }
 
-    // Should fail for algebra.
-    expectFailureWhenParsingNumericExpression("x7")
-
-    // Should pass for algebra.
-    expectFailureWhenParsingNumericExpression("2x^2")
-
     val expression54 = parseNumericExpressionWithAllErrors("2*2/-4+7*2")
     assertThat(expression54).hasStructureThatMatches {
       // 2*2/-4+7*2 -> ((2*2)/(-4))+(7*2)
@@ -1744,12 +1688,6 @@ class NumericExpressionParserTest {
 
   private companion object {
     // TODO: fix helper API.
-
-    private fun expectFailureWhenParsingNumericExpression(expression: String): MathParsingError {
-      val result = parseNumericExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS)
-      assertThat(result).isInstanceOf(MathParsingResult.Failure::class.java)
-      return (result as MathParsingResult.Failure<MathExpression>).error
-    }
 
     private fun parseNumericExpressionWithoutOptionalErrors(expression: String): MathExpression {
       val result =

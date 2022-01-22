@@ -19,8 +19,6 @@ class AlgebraicExpressionParserTest {
   fun testLotsOfCasesForAlgebraicExpression() {
     // TODO: split this up
     // TODO: add log string generation for expressions.
-    expectFailureWhenParsingAlgebraicExpression("")
-
     val expression1 = parseAlgebraicExpressionWithAllErrors("1")
     assertThat(expression1).hasStructureThatMatches {
       constant {
@@ -187,8 +185,6 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    expectFailureWhenParsingAlgebraicExpression("sqr(2)")
-
     val expression64 = parseAlgebraicExpressionWithoutOptionalErrors("xyz(2)")
     assertThat(expression64).hasStructureThatMatches {
       multiplication {
@@ -231,8 +227,6 @@ class AlgebraicExpressionParserTest {
         withValueThat().isIntegerThat().isEqualTo(732)
       }
     }
-
-    expectFailureWhenParsingAlgebraicExpression("73 2")
 
     // Verify order of operations between higher & lower precedent operators.
     val expression32 = parseAlgebraicExpressionWithAllErrors("3+4^5")
@@ -357,8 +351,6 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    expectFailureWhenParsingAlgebraicExpression("x = √2 × 7 ÷ 4")
-
     val expression8 = parseAlgebraicExpressionWithAllErrors("(1+2)(3+4)")
     assertThat(expression8).hasStructureThatMatches {
       multiplication {
@@ -397,9 +389,6 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    // Right implicit multiplication of numbers isn't allowed.
-    expectFailureWhenParsingAlgebraicExpression("(1+2)2")
-
     val expression10 = parseAlgebraicExpressionWithAllErrors("2(1+2)")
     assertThat(expression10).hasStructureThatMatches {
       multiplication {
@@ -426,9 +415,6 @@ class AlgebraicExpressionParserTest {
         }
       }
     }
-
-    // Right implicit multiplication of numbers isn't allowed.
-    expectFailureWhenParsingAlgebraicExpression("sqrt(2)3")
 
     val expression12 = parseAlgebraicExpressionWithAllErrors("3sqrt(2)")
     assertThat(expression12).hasStructureThatMatches {
@@ -651,7 +637,7 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    val expression18 = parseAlgebraicExpressionWithAllErrors("1++4")
+    val expression18 = parseAlgebraicExpressionWithoutOptionalErrors("1++4")
     assertThat(expression18).hasStructureThatMatches {
       addition {
         leftOperand {
@@ -691,8 +677,6 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    expectFailureWhenParsingAlgebraicExpression("1-^-4")
-
     val expression20 = parseAlgebraicExpressionWithAllErrors("√2 × 7 ÷ 4")
     assertThat(expression20).hasStructureThatMatches {
       division {
@@ -721,8 +705,6 @@ class AlgebraicExpressionParserTest {
         }
       }
     }
-
-    expectFailureWhenParsingAlgebraicExpression("1+2 &asdf")
 
     val expression21 = parseAlgebraicExpressionWithAllErrors("sqrt(2)sqrt(3)sqrt(4)")
     // Note that this tree demonstrates left associativity.
@@ -1005,13 +987,6 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    // Numbers cannot have implicit multiplication unless they are in groups.
-    expectFailureWhenParsingAlgebraicExpression("2 2")
-
-    expectFailureWhenParsingAlgebraicExpression("2 2^2")
-
-    expectFailureWhenParsingAlgebraicExpression("2^2 2")
-
     val expression31 = parseAlgebraicExpressionWithoutOptionalErrors("(3)(4)(5)")
     assertThat(expression31).hasStructureThatMatches {
       multiplication {
@@ -1091,9 +1066,6 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    // An exponentiation can never be an implicit right operand.
-    expectFailureWhenParsingAlgebraicExpression("2^(3)2^2")
-
     val expression35 = parseAlgebraicExpressionWithoutOptionalErrors("2^(3)*2^2")
     assertThat(expression35).hasStructureThatMatches {
       multiplication {
@@ -1169,9 +1141,6 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    // An exponentiation can never be an implicit right operand.
-    expectFailureWhenParsingAlgebraicExpression("2^3(4)2^3")
-
     val expression38 = parseAlgebraicExpressionWithoutOptionalErrors("2^3(4)*2^3")
     assertThat(expression38).hasStructureThatMatches {
       // 2^3(4)*2^3
@@ -1225,14 +1194,6 @@ class AlgebraicExpressionParserTest {
         }
       }
     }
-
-    expectFailureWhenParsingAlgebraicExpression("2^2 2^2")
-    expectFailureWhenParsingAlgebraicExpression("(3) 2^2")
-    expectFailureWhenParsingAlgebraicExpression("sqrt(3) 2^2")
-    expectFailureWhenParsingAlgebraicExpression("√2 2^2")
-    expectFailureWhenParsingAlgebraicExpression("2^2 3")
-
-    expectFailureWhenParsingAlgebraicExpression("-2 3")
 
     val expression39 = parseAlgebraicExpressionWithAllErrors("-(1+2)")
     assertThat(expression39).hasStructureThatMatches {
@@ -1684,9 +1645,6 @@ class AlgebraicExpressionParserTest {
       }
     }
 
-    // Should fail for algebra.
-    expectFailureWhenParsingAlgebraicExpression("x7")
-
     // Should pass for algebra.
     val expression67 = parseAlgebraicExpressionWithAllErrors("2x^2y^-3")
     assertThat(expression67).hasStructureThatMatches {
@@ -1893,16 +1851,6 @@ class AlgebraicExpressionParserTest {
 
   private companion object {
     // TODO: fix helper API.
-
-    private fun expectFailureWhenParsingAlgebraicExpression(
-      expression: String,
-      allowedVariables: List<String> = listOf("x", "y", "z")
-    ): MathParsingError {
-      val result =
-        parseAlgebraicExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS, allowedVariables)
-      assertThat(result).isInstanceOf(MathParsingResult.Failure::class.java)
-      return (result as MathParsingResult.Failure<MathExpression>).error
-    }
 
     private fun parseAlgebraicExpressionWithoutOptionalErrors(
       expression: String,

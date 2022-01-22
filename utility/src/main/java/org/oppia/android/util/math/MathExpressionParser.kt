@@ -62,6 +62,7 @@ import org.oppia.android.util.math.MathTokenizer.Companion.Token.RightParenthesi
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.SquareRootSymbol
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.VariableName
 import kotlin.math.absoluteValue
+import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.util.math.MathParsingError.EquationHasTooManyEqualsError
 import org.oppia.android.util.math.MathParsingError.EquationIsMissingEqualsError
 import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
@@ -565,40 +566,82 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
   }
 
   private fun checkForLearnerErrors(expression: MathExpression): MathParsingError? {
-    val firstMultiRedundantGroup = expression.findFirstMultiRedundantGroup()
-    val nextRedundantGroup = expression.findNextRedundantGroup()
-    val nextUnaryOperation = expression.findNextRedundantUnaryOperation()
-    val nextExpWithVariableExp = expression.findNextExponentiationWithVariablePower()
-    val nextExpWithTooLargePower = expression.findNextExponentiationWithTooLargePower()
-    val nextExpWithNestedExp = expression.findNextNestedExponentiation()
-    val nextDivByZero = expression.findNextDivisionByZero()
-    val disallowedVariables = expression.findAllDisallowedVariables(parseContext)
     // Note that the order of checks here is important since errors have precedence, and some are
     // redundant and, in the wrong order, may cause the wrong error to be returned.
     val includeOptionalErrors = parseContext.errorCheckingMode.includesOptionalErrors()
-    return when {
-      includeOptionalErrors && firstMultiRedundantGroup != null -> {
-        val subExpression = parseContext.extractSubexpression(firstMultiRedundantGroup)
-        MultipleRedundantParenthesesError(subExpression, firstMultiRedundantGroup)
-      }
-      includeOptionalErrors && expression.expressionTypeCase == GROUP ->
-        SingleRedundantParenthesesError(parseContext.rawExpression, expression)
-      includeOptionalErrors && nextRedundantGroup != null -> {
-        val subExpression = parseContext.extractSubexpression(nextRedundantGroup)
-        RedundantParenthesesForIndividualTermsError(subExpression, nextRedundantGroup)
-      }
-      includeOptionalErrors && nextUnaryOperation != null -> SubsequentUnaryOperatorsError
-      includeOptionalErrors && nextExpWithVariableExp != null -> ExponentIsVariableExpressionError
-      includeOptionalErrors && nextExpWithTooLargePower != null -> ExponentTooLargeError
-      includeOptionalErrors && nextExpWithNestedExp != null -> NestedExponentsError
-      includeOptionalErrors && nextDivByZero != null -> TermDividedByZeroError
-      includeOptionalErrors && disallowedVariables.isNotEmpty() ->
-        DisabledVariablesInUseError(disallowedVariables.toList())
-      else -> ensureNoRemainingTokens()
+    val optionalError = if (includeOptionalErrors) {
+      checkForFirstRedundantGroupError(expression)
+        ?: checkForWholeExpressionGroupRedundancy(expression)
+        ?: checkForRedundantGroupError(expression)
+        ?: checkForRedundantUnaryOperation(expression)
+        ?: checkForExponentVariablePowers(expression)
+        ?: checkForTooLargeExponentPower(expression)
+        ?: checkForNestedExponentiations(expression)
+        ?: checkForDivisionByZero(expression)
+        ?: checkForDisallowedVariables(expression)
+        ?: checkForUnaryPlus(expression)
+    } else null
+    return optionalError ?: checkForRemainingTokens()
+  }
+
+  private fun checkForFirstRedundantGroupError(expression: MathExpression): MathParsingError? {
+    return expression.findFirstMultiRedundantGroup()?.let { firstMultiRedundantGroup ->
+      val subExpression = parseContext.extractSubexpression(firstMultiRedundantGroup)
+      MultipleRedundantParenthesesError(subExpression, firstMultiRedundantGroup)
     }
   }
 
-  private fun ensureNoRemainingTokens(): MathParsingError? {
+  private fun checkForWholeExpressionGroupRedundancy(
+    expression: MathExpression
+  ): MathParsingError? {
+    return if (expression.expressionTypeCase == GROUP) {
+      SingleRedundantParenthesesError(parseContext.extractSubexpression(expression), expression)
+    } else null
+  }
+
+  private fun checkForRedundantGroupError(expression: MathExpression): MathParsingError? {
+    return expression.findNextRedundantGroup()?.let { nextRedundantGroup ->
+      val subExpression = parseContext.extractSubexpression(nextRedundantGroup)
+      RedundantParenthesesForIndividualTermsError(subExpression, nextRedundantGroup)
+    }
+  }
+
+  private fun checkForRedundantUnaryOperation(expression: MathExpression): MathParsingError? {
+    return expression.findNextRedundantUnaryOperation()?.let { SubsequentUnaryOperatorsError }
+  }
+
+  private fun checkForExponentVariablePowers(expression: MathExpression): MathParsingError? {
+    return expression.findNextExponentiationWithVariablePower()?.let {
+      ExponentIsVariableExpressionError
+    }
+  }
+
+  private fun checkForTooLargeExponentPower(expression: MathExpression): MathParsingError? {
+    return expression.findNextExponentiationWithTooLargePower()?.let { ExponentTooLargeError }
+  }
+
+  private fun checkForNestedExponentiations(expression: MathExpression): MathParsingError? {
+    return expression.findNextNestedExponentiation()?.let { NestedExponentsError }
+  }
+
+  private fun checkForDivisionByZero(expression: MathExpression): MathParsingError? {
+    return expression.findNextDivisionByZero()?.let { TermDividedByZeroError }
+  }
+
+  private fun checkForDisallowedVariables(expression: MathExpression): MathParsingError? {
+    return expression.findAllDisallowedVariables(parseContext).takeIf { it.isNotEmpty() }?.let {
+      DisabledVariablesInUseError(it.toList())
+    }
+  }
+
+  private fun checkForUnaryPlus(expression: MathExpression): MathParsingError? {
+    return expression.findNextUnaryPlus()?.let {
+      // The operatorSymbol can't be trivially extracted, so just force it to '+' for correctness.
+      NoVariableOrNumberBeforeBinaryOperatorError(ADD, operatorSymbol = "+")
+    }
+  }
+
+  private fun checkForRemainingTokens(): MathParsingError? {
     // Make sure all tokens were consumed (otherwise there are trailing tokens which invalidate the
     // whole grammar).
     return if (parseContext.hasMoreTokens()) {
@@ -1027,6 +1070,22 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
         FUNCTION_CALL -> functionCall.argument.findAllDisallowedVariablesAux(context)
         GROUP -> group.findAllDisallowedVariablesAux(context)
         CONSTANT, EXPRESSIONTYPE_NOT_SET, null -> setOf()
+      }
+    }
+
+    private fun MathExpression.findNextUnaryPlus(): MathExpression? {
+      return when (expressionTypeCase) {
+        BINARY_OPERATION ->
+          binaryOperation.leftOperand.findNextUnaryPlus()
+            ?: binaryOperation.rightOperand.findNextUnaryPlus()
+        UNARY_OPERATION -> when (unaryOperation.operator) {
+          POSITIVE -> this
+          NEGATE, UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null ->
+            unaryOperation.operand.findNextUnaryPlus()
+        }
+        FUNCTION_CALL -> functionCall.argument.findNextUnaryPlus()
+        GROUP -> group.findNextUnaryPlus()
+        CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> null
       }
     }
 

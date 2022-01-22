@@ -16,9 +16,6 @@ import org.robolectric.annotation.LooperMode
 class AlgebraicEquationParserTest {
   @Test
   fun testLotsOfCasesForAlgebraicEquation() {
-    expectFailureWhenParsingAlgebraicEquation(" x =")
-    expectFailureWhenParsingAlgebraicEquation(" = y")
-
     val equation1 = parseAlgebraicEquationSuccessfully("x = 1")
     assertThat(equation1).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
@@ -134,9 +131,6 @@ class AlgebraicEquationParserTest {
       }
     }
 
-    expectFailureWhenParsingAlgebraicEquation("y = (x+1)(x-1) 2")
-    expectFailureWhenParsingAlgebraicEquation("y 2 = (x+1)(x-1)")
-
     val equation5 =
       parseAlgebraicEquationSuccessfully(
         "a*x^2 + b*x + c = 0", allowedVariables = listOf("x", "a", "b", "c")
@@ -200,12 +194,6 @@ class AlgebraicEquationParserTest {
 
   private companion object {
     // TODO: fix helper API.
-
-    private fun expectFailureWhenParsingAlgebraicEquation(expression: String): MathParsingError {
-      val result = parseAlgebraicEquationWithAllErrors(expression)
-      assertThat(result).isInstanceOf(MathParsingResult.Failure::class.java)
-      return (result as MathParsingResult.Failure<MathEquation>).error
-    }
 
     private fun parseAlgebraicEquationSuccessfully(
       expression: String,
