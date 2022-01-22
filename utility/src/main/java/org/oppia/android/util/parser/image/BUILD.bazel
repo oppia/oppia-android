@@ -221,4 +221,26 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "image_loader_injector",
+    srcs = [
+        "ImageLoaderInjector.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":image_loader",
+    ],
+)
+
+kt_android_library(
+    name = "image_loader_injector_provider",
+    srcs = [
+        "ImageLoaderInjectorProvider.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":image_loader_injector",
+    ],
+)
+
 dagger_rules()
