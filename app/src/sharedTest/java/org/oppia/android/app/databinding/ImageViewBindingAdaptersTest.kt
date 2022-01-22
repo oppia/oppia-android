@@ -192,18 +192,20 @@ class ImageViewBindingAdaptersTest {
   fun testImageViewBindingAdapters_imageView_setProfileImage() {
     activityRule.scenario.runWithActivity {
       val imageView = getImageView(it)
+      val uri =
+        "black-man-male-short-hair-beard-hand-drawn-illustration_5362391.html"
       val profileAvatar = ProfileAvatar.newBuilder()
-        .setAvatarImageUri("https://render.fineartamerica.com/images/rendered/default/framed-print/images-medium-5/fuji-mountain-in-autumn-doctoregg.jpg?imgWI=36&imgHI=24&sku=CRQ13&mat1=PM918&mat2=&t=2&b=2&l=2&r=2&off=0.5&frameW=0.875")
+        .setAvatarImageUri("https://pngtree.com/freepng/$uri")
         .build()
       val url = profileAvatar.avatarImageUri.toString()
       setProfileImage(imageView, profileAvatar)
       testCoroutineDispatchers.runCurrent()
-      lateinit var imaegBitmapSource: ImageTarget<Bitmap>
-      testGlideImageLoader.loadBitmap(url, imaegBitmapSource)
+      lateinit var imageBitmapSource: ImageTarget<Bitmap>
+      testGlideImageLoader.loadBitmap(url, imageBitmapSource)
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(
           withDrawableDynamic(
-            imaegBitmapSource as BitmapDrawable
+            imageBitmapSource as BitmapDrawable
           )
         )
       )
