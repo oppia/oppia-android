@@ -41,6 +41,6 @@
   </style>
 
   <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
-    <item name="android:background">@color/toolbar_color</item>
+    <item name="android:background">@color/oppia_action_bar_theme_background_color</item>
   </style>
 </resources>
