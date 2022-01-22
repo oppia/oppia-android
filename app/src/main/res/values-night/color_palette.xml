@@ -3,13 +3,13 @@
   <color name="primary_color">@color/oppia_turquoise</color>
   <color name="primary_dark_color">@color/oppia_bangladesh_green</color>
   <color name="accent_color">@color/oppia_metallic_blue</color>
-  <color name="primary_text_color">@color/oppia_subtext_white</color>
+  <color name="primary_text_color">@color/oppia_silver</color>
   <color name="highlighted_text_color">@color/white</color>
-  <color name="background_color">@color/oppia_background_black</color>
-  <color name="background_color_grey">@color/oppia_background_black</color>
-  <color name="description_text_color">@color/oppia_subtext_white</color>
+  <color name="background_color">@color/oppia_light_black</color>
+  <color name="background_color_grey">@color/oppia_light_black</color>
+  <color name="description_text_color">@color/oppia_silver</color>
   <color name="text_input_background">@color/oppia_dark_grey</color>
   <color name="dark_text_color">@color/white</color>
-  <color name="error_color">@color/error_red</color>
-  <color name="container_background_color">@color/container_black</color>
+  <color name="error_color">@color/oppia_pink</color>
+  <color name="container_background_color">@color/oppia_grayish_black</color>
 </resources>

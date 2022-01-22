@@ -146,12 +146,12 @@
   <color name="coming_soon_end">#674172</color>
   <color name="coming_soon_start">#7659B6</color>
   <!--DARK MODE-->
-  <color name="oppia_subtext_white">#C4C4C4</color>
+  <color name="oppia_silver">#C4C4C4</color>
   <color name="oppia_turquoise">#3bd1c4</color>
   <color name="oppia_bangladesh_green">#03635B</color>
   <color name="oppia_metallic_blue">#2B5F73</color>
-  <color name="oppia_background_black">#24282B</color>
+  <color name="oppia_light_black">#24282B</color>
   <color name="oppia_dark_grey">#4D4D4D</color>
-  <color name="error_red">#FF938F</color>
-  <color name="container_black">#32363B</color>
+  <color name="oppia_pink">#FF938F</color>
+  <color name="oppia_grayish_black">#32363B</color>
 </resources>
