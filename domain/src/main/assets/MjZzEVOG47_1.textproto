@@ -2955,7 +2955,7 @@ states {
         outcome {
           dest_state_name: "Question 1"
           feedback {
-            html: "<p>Yes, that\'s right! Well done.</p>"
+            html: ""
             content_id: "feedback_1"
           }
           labelled_as_correct: true
