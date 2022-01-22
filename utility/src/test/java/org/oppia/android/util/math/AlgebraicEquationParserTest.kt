@@ -58,7 +58,7 @@ class AlgebraicEquationParserTest {
     assertThat(equation).hasRightHandSideThat().hasStructureThatMatches {
       addition {
         leftOperand {
-          multiplication {
+          multiplication(isImplicit = true) {
             leftOperand {
               variable {
                 withNameThat().isEqualTo("m")
@@ -126,7 +126,7 @@ class AlgebraicEquationParserTest {
       }
     }
     assertThat(equation).hasRightHandSideThat().hasStructureThatMatches {
-      multiplication {
+      multiplication(isImplicit = true) {
         leftOperand {
           group {
             addition {

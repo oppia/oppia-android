@@ -42,16 +42,11 @@ import org.robolectric.annotation.LooperMode
 @RunWith(OppiaParameterizedTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathExpressionParserTest {
-  @Parameter
-  lateinit var lhsOp: String
-  @Parameter
-  lateinit var rhsOp: String
-  @Parameter
-  lateinit var binOp: String
-  @Parameter
-  lateinit var subExp: String
-  @Parameter
-  lateinit var func: String
+  @Parameter lateinit var lhsOp: String
+  @Parameter lateinit var rhsOp: String
+  @Parameter lateinit var binOp: String
+  @Parameter lateinit var subExp: String
+  @Parameter lateinit var func: String
 
   @Test
   fun testParseNumExp_basicExpression_doesNotFail() {

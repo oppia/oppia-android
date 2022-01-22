@@ -15,6 +15,8 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class AlgebraicExpressionParserTest {
+  // TODO: finish docs.
+
   @Test
   fun testLotsOfCasesForAlgebraicExpression() {
     // TODO: split this up
