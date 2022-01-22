@@ -20,8 +20,6 @@
   <color name="black_26">#42000000</color>
   <color name="black_54">#8A000000</color>
   <color name="white_light">#F9F9F9</color>
-  <color name="accessible_grey">#333333</color>
-  <color name="accessible_light_grey">#555555</color>
   <!-- SUBMIT BUTTON INACTIVE -->
   <color name="grey">#CCCCCC</color>
   <!-- INPUT LAYOUT EDITTEXT -->

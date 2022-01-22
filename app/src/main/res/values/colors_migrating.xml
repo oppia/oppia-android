@@ -30,6 +30,9 @@
   <color name="oppia_background_yellow_ivory">#FFFFF0</color>
   <color name="oppia_faq_divider">#707070</color>
   <color name="oppia_profile_chooser_divider">#707070</color>
+  <!-- BASIC COLORS -->
+  <color name="accessible_grey">#333333</color>
+  <color name="accessible_light_grey">#555555</color>
   <!--  CONFETTI COLORS -->
   <color name="confetti_red">#FF1414</color>
   <color name="confetti_yellow">#FFE558</color>
