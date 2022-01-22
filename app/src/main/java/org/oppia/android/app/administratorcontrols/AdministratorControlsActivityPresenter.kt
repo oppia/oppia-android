@@ -124,19 +124,24 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   private fun setBackButtonClickListener() {
+    backButtonLogic()
     binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
-      val currentFragment =
-        activity.supportFragmentManager.findFragmentById(
-          R.id.administrator_controls_fragment_multipane_placeholder
-        )
-      if (currentFragment != null) {
-        when (currentFragment) {
-          is ProfileEditFragment -> {
-            setExtraControlsTitle(
-              resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
-            )
-            loadProfileList()
-          }
+      backButtonLogic()
+    }
+  }
+
+  private fun backButtonLogic() {
+    val currentFragment =
+      activity.supportFragmentManager.findFragmentById(
+        R.id.administrator_controls_fragment_multipane_placeholder
+      )
+    if (currentFragment != null) {
+      when (currentFragment) {
+        is ProfileEditFragment -> {
+          setExtraControlsTitle(
+            resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
+          )
+          loadProfileList()
         }
       }
     }

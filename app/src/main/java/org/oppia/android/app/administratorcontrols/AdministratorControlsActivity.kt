@@ -13,6 +13,7 @@ import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
+import org.oppia.android.app.settings.profile.ProfileEditFragment
 
 /** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
@@ -70,11 +71,13 @@ class AdministratorControlsActivity :
   }
 
   override fun onBackPressed() {
-    when (lastLoadedFragment) {
-      PROFILE_EDIT_FRAGMENT ->
-        administratorControlsActivityPresenter.handleOnBackPressed()
-      else -> super.onBackPressed()
-    }
+    val fragment =
+      supportFragmentManager.findFragmentById(R.id.administrator_controls_fragment_multipane_placeholder)
+
+    if (fragment is ProfileEditFragment)
+      administratorControlsActivityPresenter.handleOnBackPressed()
+    else
+      super.onBackPressed()
   }
 
   override fun loadProfileList() {
