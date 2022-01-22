@@ -31,50 +31,31 @@ class PolicyPageTagHandler(
     output: Editable,
     imageRetriever: CustomHtmlContentHandler.ImageRetriever
   ) {
+
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
-    val text = attributes.getJsonStringValue("link")
-
+    var text = attributes.getJsonStringValue("link")
     if (text != null) {
-      when (text) {
-        TERMS_OF_SERVICE_PAGE -> {
-          clickableSpanBuilder(
-            TERMS_OF_SERVICE,
-            output,
-            openIndex,
-            closeIndex,
-            PolicyPage.TERMS_OF_SERVICE
-          )
-        }
-        PRIVACY_POLICY_PAGE -> {
-          clickableSpanBuilder(
-            PRIVACY_POLICY,
-            output,
-            openIndex,
-            closeIndex,
-            PolicyPage.PRIVACY_POLICY
-          )
-        }
+      text = if(TERMS_OF_SERVICE_PAGE == text) {
+        TERMS_OF_SERVICE
+      }else{
+        PRIVACY_POLICY
       }
+      val spannableBuilder = SpannableStringBuilder(text)
+      spannableBuilder.setSpan(
+        object : ClickableSpan() {
+          override fun onClick(view: View) {
+            if(TERMS_OF_SERVICE == text) {
+              listener.onPolicyPageLinkClicked(PolicyPage.TERMS_OF_SERVICE)
+            }else if(PRIVACY_POLICY == text) {
+              listener.onPolicyPageLinkClicked(PolicyPage.PRIVACY_POLICY
+              )
+            }
+          }
+        },
+        /* start= */ 0, /* end= */ text.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+      output.replace(openIndex, closeIndex, spannableBuilder)
     } else consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
-  }
-
-  private fun clickableSpanBuilder(
-    policyLink: String,
-    output: Editable,
-    openIndex: Int,
-    closeIndex: Int,
-    policyPage: PolicyPage
-  ) {
-    val spannableBuilder = SpannableStringBuilder(policyLink)
-    spannableBuilder.setSpan(
-      object : ClickableSpan() {
-        override fun onClick(view: View) {
-          listener.onPolicyPageLinkClicked(policyPage)
-        }
-      },
-      /* start= */ 0, /* end= */ policyLink.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-    )
-    output.replace(openIndex, closeIndex, spannableBuilder)
   }
 
   /** Listener called when policy page links are clicked. */
