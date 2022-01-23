@@ -19,6 +19,10 @@ import javax.inject.Inject
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
   "AdministratorControlsActivity.selected_controls_title"
 
+/** Argument key for of selected profile for selected controls in [AdministratorControlsActivity]. */
+const val SELECTED_PROFILE_ID_SAVED_KEY =
+  "AdministratorControlsActivity.selected_profile_id"
+
 /** Argument key for last loaded fragment in [AdministratorControlsActivity]. */
 const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
 
@@ -58,7 +62,13 @@ class AdministratorControlsActivity :
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    administratorControlsActivityPresenter.handleOnCreate(extraControlsTitle, lastLoadedFragment)
+    val selectedProfileId =
+      savedInstanceState?.getInt(SELECTED_PROFILE_ID_SAVED_KEY)
+    administratorControlsActivityPresenter.handleOnCreate(
+      extraControlsTitle,
+      lastLoadedFragment,
+      selectedProfileId
+    )
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
   }
 

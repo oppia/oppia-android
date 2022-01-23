@@ -30,13 +30,18 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private var selectedProfileId: Int? = null
 
   /** Initializes the [AdministratorControlsActivity] and sets the navigation drawer. */
-  fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
+  fun handleOnCreate(
+    extraControlsTitle: String?,
+    lastLoadedFragment: String,
+    selectedProfileId: Int?
+  ) {
     binding = DataBindingUtil.setContentView(
       activity,
       R.layout.administrator_controls_activity
     )
     setUpNavigationDrawer()
     this.lastLoadedFragment = lastLoadedFragment
+    this.selectedProfileId = selectedProfileId
     binding.extraControlsTitle?.apply {
       text = extraControlsTitle
     }
@@ -53,6 +58,12 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       when (lastLoadedFragment) {
         PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
         APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
+        PROFILE_EDIT_FRAGMENT -> selectedProfileId?.let {
+          (activity as AdministratorControlsActivity).loadProfileEdit(
+            profileId = it,
+            profileName = "kjk"
+          )
+        }
       }
       setBackButtonClickListener()
     }
@@ -166,5 +177,6 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(LAST_LOADED_FRAGMENT_EXTRA_KEY, lastLoadedFragment)
+    selectedProfileId?.let { outState.putInt(SELECTED_PROFILE_ID_SAVED_KEY, it) }
   }
 }
