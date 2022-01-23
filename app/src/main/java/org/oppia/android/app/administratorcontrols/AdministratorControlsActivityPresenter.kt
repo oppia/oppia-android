@@ -88,6 +88,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
+    setMultipaneBackButtonVisibility(View.GONE)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       ProfileListFragment.newInstance(isMultipane)
@@ -98,6 +99,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun loadAppVersion() {
     lastLoadedFragment = APP_VERSION_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
+    setMultipaneBackButtonVisibility(View.GONE)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
@@ -107,13 +109,16 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   /** Loads the [ProfileEditFragment] when the user clicks on a profile in tablet multipane mode. */
   fun loadProfileEdit(profileId: Int) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
-    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
-    binding.administratorControlsMultipaneOptionsBackButton!!.visibility = View.VISIBLE
+    setMultipaneBackButtonVisibility(View.VISIBLE)
     val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       fragment
     ).commitNow()
+  }
+
+  private fun setMultipaneBackButtonVisibility(visibility: Int) {
+    binding.administratorControlsMultipaneOptionsBackButton!!.visibility = visibility
   }
 
   /** Handles the back button according to the back stack of fragments. */
