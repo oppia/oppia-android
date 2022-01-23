@@ -27,6 +27,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 
   private lateinit var binding: AdministratorControlsActivityBinding
 
+  private var selectedProfileId: Int? = null
+
   /** Initializes the [AdministratorControlsActivity] and sets the navigation drawer. */
   fun handleOnCreate(extraControlsTitle: String?, lastLoadedFragment: String) {
     binding = DataBindingUtil.setContentView(
