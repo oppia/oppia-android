@@ -8,12 +8,12 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
-import org.oppia.android.app.settings.profile.ProfileEditFragment
 
 /** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
@@ -72,7 +72,9 @@ class AdministratorControlsActivity :
 
   override fun onBackPressed() {
     val fragment =
-      supportFragmentManager.findFragmentById(R.id.administrator_controls_fragment_multipane_placeholder)
+      supportFragmentManager.findFragmentById(
+        R.id.administrator_controls_fragment_multipane_placeholder
+      )
 
     if (fragment is ProfileEditFragment)
       administratorControlsActivityPresenter.handleOnBackPressed()
