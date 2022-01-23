@@ -8,16 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -75,9 +77,15 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@RunWith(AndroidJUnit4::class)
+@Config(
+  application = AdministratorControlsFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class AdministratorControlsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -113,8 +121,8 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(ViewMatchers.withId(R.id.edit_profiles_text_view))
-        .perform(ViewActions.click())
+      onView(withId(R.id.edit_profiles_text_view))
+        .perform(click())
       Intents.intended(IntentMatchers.hasComponent(ProfileListActivity::class.java.name))
     }
   }
@@ -127,12 +135,12 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(ViewMatchers.withId(R.id.administrator_controls_list)).perform(
+      onView(withId(R.id.administrator_controls_list)).perform(
         RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
           3
         )
       )
-      onView(ViewMatchers.withId(R.id.app_version_text_view)).perform(ViewActions.click())
+      onView(withId(R.id.app_version_text_view)).perform(click())
       Intents.intended(IntentMatchers.hasComponent(AppVersionActivity::class.java.name))
     }
   }
