@@ -1,10 +1,6 @@
 package org.oppia.android.scripts.xml
 
 import org.oppia.android.scripts.common.RepositoryFile
-import org.xml.sax.SAXParseException
-import java.io.File
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
 
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
@@ -15,5 +11,4 @@ fun main(vararg args: String) {
     repoPath = repoPath,
     expectedExtension = ".xml"
   )
-
 }
