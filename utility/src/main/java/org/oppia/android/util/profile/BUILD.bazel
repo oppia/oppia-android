@@ -14,3 +14,11 @@ kt_android_library(
         "//third_party:javax_inject_javax_inject",
     ],
 )
+
+kt_android_library(
+    name = "name_validator",
+    srcs = [
+        "NameValidator.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
