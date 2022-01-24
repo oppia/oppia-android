@@ -14,14 +14,14 @@ class NameValidatorTest {
   @Test
   fun testNameValidator_addUnAllowedName_returnFalse() {
     unAllowedNamesList.forEach {
-      Truth.assertThat(!NameValidator.validate(it))
+      Truth.assertThat(!NameValidator.isNameValid(it))
     }
   }
 
   @Test
   fun testNameValidator_addAllowedName_returnTrue() {
     allowedNamesList.forEach {
-      Truth.assertThat(NameValidator.validate(it))
+      Truth.assertThat(NameValidator.isNameValid(it))
     }
   }
 }
