@@ -303,13 +303,8 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
         parseContext.hasNextTokenOfType<PositiveInteger>() ||
           parseContext.hasNextTokenOfType<PositiveRealNumber>()
       } ?: SpacesBetweenNumbersError.toFailure()
-      is FunctionName, is LeftParenthesisSymbol, is SquareRootSymbol ->
+      is FunctionName, is LeftParenthesisSymbol, is SquareRootSymbol, is VariableName ->
         parseGenericTermWithoutUnaryWithoutNumber()
-      is VariableName -> {
-        if (parseContext is AlgebraicExpressionContext) {
-          parseGenericTermWithoutUnaryWithoutNumber()
-        } else VariableInNumericExpressionError.toFailure()
-      }
       is DivideSymbol, is ExponentiationSymbol, is MultiplySymbol -> {
         val previousToken = parseContext.getPreviousToken()
         when {
@@ -528,9 +523,7 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
 
   private fun parseVariable(): MathParsingResult<MathExpression> {
     val variableNameResult =
-      parseContext.consumeTokenOfType<VariableName>().maybeFail {
-        if (!parseContext.allowsVariables()) GenericError else null
-      }.maybeFail { variableName ->
+      parseContext.consumeTokenOfType<VariableName>().maybeFail { variableName ->
         return@maybeFail if (parseContext.hasMoreTokens()) {
           when (val nextToken = parseContext.peekToken()) {
             is PositiveInteger ->
@@ -654,9 +647,12 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
         }
         is IncompleteFunctionName -> nextToken.toError()
         is InvalidToken -> nextToken.toError()
+        is VariableName -> if (parseContext !is AlgebraicExpressionContext) {
+          VariableInNumericExpressionError
+        } else GenericError
         is PositiveInteger, is PositiveRealNumber, is DivideSymbol, is ExponentiationSymbol,
         is FunctionName, is MinusSymbol, is MultiplySymbol, is PlusSymbol, is SquareRootSymbol,
-        is VariableName, null -> GenericError
+        null -> GenericError
       }
     } else null
   }
@@ -686,8 +682,6 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
     private var previousToken: Token? = null
 
     abstract val errorCheckingMode: ErrorCheckingMode
-
-    abstract fun allowsVariables(): Boolean
 
     fun hasMoreTokens(): Boolean = tokens.hasNext()
 
@@ -725,8 +719,6 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       rawExpression: String,
       override val errorCheckingMode: ErrorCheckingMode
     ) : ParseContext(rawExpression) {
-      // Numeric expressions never allow variables.
-      override fun allowsVariables(): Boolean = false
     }
 
     class AlgebraicExpressionContext(
@@ -736,8 +728,6 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       override val errorCheckingMode: ErrorCheckingMode
     ) : ParseContext(rawExpression) {
       fun allowsVariable(variableName: String): Boolean = variableName in allowedVariables
-
-      override fun allowsVariables(): Boolean = true
     }
   }
 

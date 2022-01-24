@@ -737,7 +737,8 @@ class MathExpressionParserTest {
     Iteration("var_directly_in_exp", "subExp=x"),
     Iteration("var_directly_in_sub_exp", "subExp=(1+x)"),
     Iteration("var_directly_in_nested_exp", "subExp=3^x"),
-    Iteration("var_directly_in_sqrt", "subExp=sqrt(x)")
+    Iteration("var_directly_in_sqrt", "subExp=sqrt(x)"),
+    Iteration("var_in_unary", "subExp=-x")
   )
   fun testParseAlgExp_powersWithVariableExpressions_returnsExponentIsVariableExpressionError() {
     val expression = "2^$subExp"
@@ -795,6 +796,14 @@ class MathExpressionParserTest {
   }
 
   @Test
+  fun testParseNumExp_nestedExponents_withUnary_returnsNestedExponentsError() {
+    val error = expectFailureWhenParsingAlgebraicExpression("2^-3^4")
+
+    // This covers a slightly different case than the above.
+    assertThat(error).isNestedExponents()
+  }
+
+  @Test
   fun testParseAlgExp_nestedExponents_optionalErrorsDisabled_doesNotFail() {
     // This doesn't trigger a failure when optional errors are disabled.
     expectSuccessWhenParsingAlgebraicExpression("x^2^5", errorCheckingMode = REQUIRED_ONLY)
@@ -838,6 +847,14 @@ class MathExpressionParserTest {
   fun testParseNumExp_addVariables_returnsVariableInNumericExpressionError() {
     val error = expectFailureWhenParsingNumericExpression("x+y")
 
+    assertThat(error).isVariableInNumericExpression()
+  }
+
+  @Test
+  fun testParseNumExp_addVariable_afterNumber_returnsVariableInNumericExpressionError() {
+    val error = expectFailureWhenParsingNumericExpression("2x")
+
+    // This covers a slightly different case than the above.
     assertThat(error).isVariableInNumericExpression()
   }
 
@@ -1047,6 +1064,14 @@ class MathExpressionParserTest {
 
     // Right implicit multiplication of numeric exponents isn't allowed, though in this case it's
     // likely that the '2^2' is being interpreted as additional, unused tokens.
+    assertThat(error).isGenericError()
+  }
+
+  @Test
+  fun testParseNumExp_trailingEquals_returnsGenericError() {
+    val error = expectFailureWhenParsingNumericExpression("+=")
+
+    // Expressions can't end with an equals sign.
     assertThat(error).isGenericError()
   }
 
