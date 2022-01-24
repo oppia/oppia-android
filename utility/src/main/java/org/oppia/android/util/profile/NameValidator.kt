@@ -1,33 +1,22 @@
 package org.oppia.android.util.profile
 
-class NameValidator {
-  companion object {
-    private const val MATCH_INTERNATIONAL_LETTERS_REJECT_SPACES =
-      "^.[\\w\\u00BF-\\u1FFF\\u2C00-\\uD7FF.'\\-]+\$"
+import javax.inject.Inject
+import javax.inject.Singleton
 
-    private const val REJECT_SYMBOLS = "^[^#*!@\$%^&()_+=\\\\|\\]\\[\":;?/><,`~{}]*\$"
+@Singleton
+class NameValidator @Inject constructor() {
+  companion object {
+    private const val MATCH_LETTERS_AND_ALLOWED_SYMBOLS =
+      "^.[\\p{L}.'\\-]+\$"
 
     private const val REJECT_REPEATED_USE_OF_ALLOWED_SYMBOLS = "[\\.'-]{2}"
 
-    fun validate(name: String): Boolean {
-      return (
-        notEmptyNoSpacesAndContainsLetters(name) &&
-          noNumbers(name) &&
-          noSymbols(name) &&
-          noRepeatedUseOfAllowedSymbols(name)
-        )
+    fun isNameValid(name: String): Boolean {
+      return (onlyLettersAndAllowedSymbols(name) && noRepeatedUseOfAllowedSymbols(name))
     }
 
-    private fun notEmptyNoSpacesAndContainsLetters(name: String): Boolean {
-      return name.matches(Regex(MATCH_INTERNATIONAL_LETTERS_REJECT_SPACES))
-    }
-
-    private fun noNumbers(name: String): Boolean {
-      return name.none { it.isDigit() }
-    }
-
-    private fun noSymbols(name: String): Boolean {
-      return name.matches(Regex(REJECT_SYMBOLS))
+    private fun onlyLettersAndAllowedSymbols(name: String): Boolean {
+      return name.matches(Regex(MATCH_LETTERS_AND_ALLOWED_SYMBOLS))
     }
 
     private fun noRepeatedUseOfAllowedSymbols(name: String): Boolean {
