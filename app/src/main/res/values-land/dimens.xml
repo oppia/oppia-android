@@ -408,4 +408,10 @@
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
+
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">16dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">16dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">24dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">24dp</dimen>
 </resources>

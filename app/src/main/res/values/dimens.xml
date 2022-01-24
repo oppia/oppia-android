@@ -605,4 +605,10 @@
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
+
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">8dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">12dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">12dp</dimen>
 </resources>

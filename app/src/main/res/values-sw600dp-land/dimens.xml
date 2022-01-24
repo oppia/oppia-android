@@ -406,4 +406,10 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">32dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">28dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">32dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">28dp</dimen>
+
 </resources>
