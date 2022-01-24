@@ -1,7 +1,7 @@
-package org.oppia.android.util.namevalidator
+package org.oppia.android.util.profile
 
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+
+import com.google.common.truth.Truth
 import org.junit.Test
 
 class NameValidatorTest {
@@ -14,14 +14,14 @@ class NameValidatorTest {
   @Test
   fun testNameValidator_addUnAllowedName_returnFalse() {
     unAllowedNamesList.forEach {
-      assertFalse(NameValidator.validate(it))
+      Truth.assertThat(!NameValidator.validate(it))
     }
   }
 
   @Test
   fun testNameValidator_addAllowedName_returnTrue() {
     allowedNamesList.forEach {
-      assertTrue(NameValidator.validate(it))
+      Truth.assertThat(NameValidator.validate(it))
     }
   }
 }

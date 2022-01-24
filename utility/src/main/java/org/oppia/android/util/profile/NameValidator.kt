@@ -1,4 +1,4 @@
-package org.oppia.android.util.namevalidator
+package org.oppia.android.util.profile
 
 class NameValidator {
   companion object {
@@ -23,9 +23,7 @@ class NameValidator {
     }
 
     private fun noNumbers(name: String): Boolean {
-      return name.none {
-        it.isDigit()
-      }
+      return name.none { it.isDigit() }
     }
 
     private fun noSymbols(name: String): Boolean {
