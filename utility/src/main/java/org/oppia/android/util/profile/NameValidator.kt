@@ -3,6 +3,7 @@ package org.oppia.android.util.profile
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Utility to validate profile names*/
 @Singleton
 class NameValidator @Inject constructor() {
   companion object {
@@ -11,6 +12,12 @@ class NameValidator @Inject constructor() {
 
     private const val REJECT_REPEATED_USE_OF_ALLOWED_SYMBOLS = "[\\.'-]{2}"
 
+    /**
+     * Validates names for a profile
+     *
+     * @param name name of the profile
+     * @return if the profile name is allowed or not
+     */
     fun isNameValid(name: String): Boolean {
       return (onlyLettersAndAllowedSymbols(name) && noRepeatedUseOfAllowedSymbols(name))
     }
