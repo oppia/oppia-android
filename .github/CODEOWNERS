@@ -56,6 +56,7 @@ gradlew.bat @BenHenning
 # All resource files.
 /app/src/main/res/**/*.xml @rt4914
 /utility/src/main/res/**/*.xml @rt4914
+/app/src/main/res/values/colors_migrating.xml @ayush0402
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning
