@@ -26,6 +26,7 @@
   <!-- Administrator Controls -->
   <color name="admin_controls_background_color">@color/background_color_grey</color>
   <color name="admin_controls_options_background_color">@color/container_background_color</color>
+  <color name="admin_controls_options_highlighted_background_color">@color/highlight_blue</color>
   <color name="admin_controls_sub_heading_color">@color/primary_color</color>
   <color name="admin_controls_switch_description_color">@color/description_text_color</color>
   <color name="admin_controls_menu_options_text_color">@color/dark_text_color</color>

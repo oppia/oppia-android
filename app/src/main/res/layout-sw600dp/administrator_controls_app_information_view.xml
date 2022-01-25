@@ -37,7 +37,7 @@
       android:id="@+id/app_version_text_view"
       style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
-      android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex? @color/admin_highlighted : @color/admin_controls_options_background_color}"
+      android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex? @color/admin_controls_options_highlighted_background_color : @color/admin_controls_options_background_color}"
       android:onClick="@{(v) -> viewModel.onAppVersionClicked()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
