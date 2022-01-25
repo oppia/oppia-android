@@ -84,9 +84,6 @@ import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
  * https://docs.google.com/document/d/1JMpbjqRqdEpye67HvDoqBo_rtScY9oEaB7SwKBBspss/edit#bookmark=id.wtmim9gp20a6.
  */
 class MathExpressionParser private constructor(private val parseContext: ParseContext) {
-  // TODO: document that 'generic' means either 'numeric' or 'algebraic' (ie that the expression is syntactically the same between both grammars).
-  // TODO: document that one design goal is keeping the grammar for this parser as LL(1) & why.
-
   private fun parseGenericEquationGrammar(): MathParsingResult<MathEquation> {
     // generic_equation_grammar = generic_equation ;
     return parseGenericEquation().maybeFail { equation ->
