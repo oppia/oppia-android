@@ -396,7 +396,7 @@
   <dimen name="section_title_text_view_layout_margin_top">32dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">96dp</dimen>
 
-  <!--Topic Summary-->
+  <!-- TopicSummaryView -->
   <dimen name="topic_summary_lesson_count_text_view_padding_bottom">12dp</dimen>
   
   <!-- TopicPracticeFragment -->
