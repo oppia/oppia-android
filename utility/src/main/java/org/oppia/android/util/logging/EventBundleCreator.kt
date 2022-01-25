@@ -36,8 +36,8 @@ class EventBundleCreator {
         CONCEPT_CARD_CONTEXT -> createConceptCardContextBundle(eventLog)
         REVISION_CARD_CONTEXT -> createRevisionCardContextBundle(eventLog)
         ACTIVITYCONTEXT_NOT_SET -> createNoContextBundle(eventLog)
+        // TODO(#4064): Create bundle creator functions for new events and replace this with them.
         else -> createNoContextBundle(eventLog)
-        // TODO(#4064): create bundle creator functions for new events and replace this with them.
       }
     return bundle
   }
