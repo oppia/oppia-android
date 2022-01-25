@@ -155,10 +155,11 @@ class ProfileEditActivityTest {
   @Test
   fun testProfileEditActivity_hasCorrectActivityLabel() {
     launch(
-      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
       ProfileEditActivity::class.java
     ).use { scenario ->
       scenario.onActivity { activity ->
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
         assertThat(activity.title).isEqualTo(
           context.getString(
             R.string.profile_edit_activity_title
