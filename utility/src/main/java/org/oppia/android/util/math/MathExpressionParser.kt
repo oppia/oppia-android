@@ -67,15 +67,23 @@ import org.oppia.android.util.math.MathParsingError.EquationHasTooManyEqualsErro
 import org.oppia.android.util.math.MathParsingError.EquationIsMissingEqualsError
 import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 
+/**
+ * Parser for numeric expressions, algebraic expressions, and algebraic equations.
+ *
+ * Note that this parser is guaranteed to be LL(1), and to perform a series of robust error checks
+ * against invalid string expressions. The implementation is specifically designed to ensure an
+ * LL(1) grammar for both simplicity and long-term maintainability (as it's likely additional
+ * functionality will need to be added to the language).
+ *
+ * To use the parser:
+ * - Call [parseNumericExpression] for numeric expressions
+ * - Call [parseAlgebraicExpression] for algebraic expressions
+ * - Call [parseAlgebraicEquation] for algebraic equations
+ *
+ * For the formal grammar specification, see:
+ * https://docs.google.com/document/d/1JMpbjqRqdEpye67HvDoqBo_rtScY9oEaB7SwKBBspss/edit#bookmark=id.wtmim9gp20a6.
+ */
 class MathExpressionParser private constructor(private val parseContext: ParseContext) {
-  // TODO:
-  //  - Add helpers to reduce overall parser length.
-  //  - Integrate with new errors & update the routines to not rely on exceptions except in actual exceptional cases. Make sure optional errors can be disabled (for testing purposes).
-  //  - Rename this to be a generic parser, update the public API, add documentation, remove the old classes, and split up the big test routines into actual separate tests.
-
-  // TODO: implement specific errors.
-  // TODO: verify remaining GenericErrors are correct.
-
   // TODO: document that 'generic' means either 'numeric' or 'algebraic' (ie that the expression is syntactically the same between both grammars).
   // TODO: document that one design goal is keeping the grammar for this parser as LL(1) & why.
 
@@ -86,6 +94,13 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
     }
   }
 
+  /**
+   * Returns a parsed [MathParsingResult] of [MathExpression]  from the current [ParseContext].
+   *
+   * Note that 'generic' here and elsewhere means that it can either be a 'numeric' or 'algebraic'
+   * expression (the specifics are handled lower in the parsing call tree). Generic methods are used
+   * to share common parsing logic to reduce the overall size of the parser.
+   */
   private fun parseGenericExpressionGrammar(): MathParsingResult<MathExpression> {
     // generic_expression_grammar = generic_expression ;
     return parseGenericExpression().maybeFail { expression -> checkForLearnerErrors(expression) }
@@ -675,16 +690,24 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
 
   private fun <T> InvalidToken.toFailure(): MathParsingResult<T> = toError().toFailure()
 
+  /**
+   * Specification of context while parsing math expressions and equations.
+   *
+   * @property rawExpression the whole raw math expression/equation currently being parsed
+   */
   private sealed class ParseContext(val rawExpression: String) {
-    val tokens: PeekableIterator<Token> by lazy {
+    private val tokens: PeekableIterator<Token> by lazy {
       MathTokenizer.tokenize(rawExpression).toPeekableIterator()
     }
     private var previousToken: Token? = null
 
+    /** Specifies the [ErrorCheckingMode] for the current parsing context. */
     abstract val errorCheckingMode: ErrorCheckingMode
 
+    /** Returns whether there are more [Token]s to parse. */
     fun hasMoreTokens(): Boolean = tokens.hasNext()
 
+    /** Returns the next [Token] available to parse. */
     fun peekToken(): Token? = tokens.peek()
 
     /**
@@ -695,8 +718,13 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
      */
     fun getPreviousToken(): Token? = previousToken
 
+    /** Returns whether the next available token is type [T] (implies there is a token to parse). */
     inline fun <reified T : Token> hasNextTokenOfType(): Boolean = peekToken() is T
 
+    /**
+     * Consumes the next [Token] (which is assumed to be type [T], otherwise the error provided by
+     * [missingError] is used) and returns the result.
+     */
     inline fun <reified T : Token> consumeTokenOfType(
       missingError: () -> MathParsingError = { GenericError }
     ): MathParsingResult<T> {
@@ -707,42 +735,81 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       } ?: missingError().toFailure()
     }
 
+    /** Returns the raw string sub-expression corresponding to the specified [Token]. */
     fun extractSubexpression(token: Token): String {
       return rawExpression.substring(token.startIndex, token.endIndex)
     }
 
+    /** Returns the raw string sub-expression corresponding to the specified [MathExpression]. */
     fun extractSubexpression(expression: MathExpression): String {
       return rawExpression.substring(expression.parseStartIndex, expression.parseEndIndex)
     }
 
+    /** The [ParseContext] corresponding to parsing numeric expressions. */
     class NumericExpressionContext(
       rawExpression: String,
       override val errorCheckingMode: ErrorCheckingMode
-    ) : ParseContext(rawExpression) {
-    }
+    ) : ParseContext(rawExpression)
 
+    /**
+     * The [ParseContext] corresponding to parsing algebraic expressions & equations.
+     *
+     * @property isPartOfEquation whether this context is part of parsing an equation
+     * @property allowedVariables the list of variables allowed to be used within this context
+     */
     class AlgebraicExpressionContext(
       rawExpression: String,
       val isPartOfEquation: Boolean,
       private val allowedVariables: List<String>,
       override val errorCheckingMode: ErrorCheckingMode
     ) : ParseContext(rawExpression) {
+      /** Returns whether the specified variable is allowed to be used per this context. */
       fun allowsVariable(variableName: String): Boolean = variableName in allowedVariables
     }
   }
 
   companion object {
+    /** The level of error detection strictness that should be enabled during parsing. */
     enum class ErrorCheckingMode {
+      /**
+       * Indicates that only only irrecoverable errors should be detected.
+       *
+       * See the documentation for specific [MathParsingError]s to determine which are
+       * irrecoverable.
+       */
       REQUIRED_ONLY,
+
+      /**
+       * Indicates that both irrecoverable and optional errors should be detected (the strictest
+       * setting).
+       *
+       * Note that 'optional' errors are those that correspond to syntaxes that can still be
+       * correctly represented as a math expression or equation (but may indicate a learner
+       * misunderstanding).
+       *
+       * See the documentation for specific [MathParsingError]s to determine which are optional.
+       */
       ALL_ERRORS
     }
 
+    /** The result of attempting to parse a raw math expression or equation. */
     sealed class MathParsingResult<T> {
+      /** Indicates that the parse was successful with a value of [result]. */
       data class Success<T>(val result: T) : MathParsingResult<T>()
 
+      /** Indicates that the parse failed with the specified [error]. */
       data class Failure<T>(val error: MathParsingError) : MathParsingResult<T>()
     }
 
+    /**
+     * Parses a [rawExpression] as a numeric expression
+     *
+     * Note that the returned expression will have all of its parsing information stripped.
+     *
+     * @param errorCheckingMode specifies what level of error detection should be enabled during
+     *     parsing. The default is [ErrorCheckingMode.ALL_ERRORS].
+     * @return the result of attempting to parse the specified numeric expression
+     */
     fun parseNumericExpression(
       rawExpression: String,
       errorCheckingMode: ErrorCheckingMode = ErrorCheckingMode.ALL_ERRORS
@@ -752,6 +819,17 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
         .map { it.stripParseInfo() }
     }
 
+    /**
+     * Parses a [rawExpression] as an algebraic expression
+     *
+     * Note that the returned expression will have all of its parsing information stripped.
+     *
+     * @param allowedVariables the list of case-sensitive variables allowed in the expression (any
+     *     variables encountered that are not within the list will result in an error)
+     * @param errorCheckingMode specifies what level of error detection should be enabled during
+     *     parsing. The default is [ErrorCheckingMode.ALL_ERRORS].
+     * @return the result of attempting to parse the specified algebraic expression
+     */
     fun parseAlgebraicExpression(
       rawExpression: String,
       allowedVariables: List<String>,
@@ -762,6 +840,17 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       ).parseGenericExpressionGrammar().map { it.stripParseInfo() }
     }
 
+    /**
+     * Parses a [rawExpression] as an algebraic equation
+     *
+     * Note that the returned expression will have all of its parsing information stripped.
+     *
+     * @param allowedVariables the list of case-sensitive variables allowed in the expression (any
+     *     variables encountered that are not within the list will result in an error)
+     * @param errorCheckingMode specifies what level of error detection should be enabled during
+     *     parsing. The default is [ErrorCheckingMode.ALL_ERRORS].
+     * @return the result of attempting to parse the specified algebraic equation
+     */
     fun parseAlgebraicEquation(
       rawExpression: String,
       allowedVariables: List<String>,
@@ -906,11 +995,23 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
       }
     }
 
+    /**
+     * Represents the right-hand side of a binary operation.
+     *
+     * @property operator the operator corresponding to the operation
+     * @property rhsResult the pending result for parsing the right-hand side
+     * @property isImplicit whether this is an implicit operation (such as implicit multiplication)
+     */
     private data class BinaryOperationRhs(
       val operator: MathBinaryOperation.Operator,
       val rhsResult: MathParsingResult<MathExpression>,
       val isImplicit: Boolean = false
     ) {
+      /**
+       * Returns the result of combining the left & right-hand sides of the operation into a single
+       * [MathExpression] representing the entire binary operation (or a failure if either the
+       * left-hand or right-hand sides failed).
+       */
       fun computeBinaryOperationExpression(
         lhsResult: MathParsingResult<MathExpression>
       ): MathParsingResult<MathExpression> {
