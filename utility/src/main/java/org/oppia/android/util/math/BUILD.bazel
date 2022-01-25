@@ -1,5 +1,5 @@
 """
-TODO: document
+General-purpose mathematics utilities, especially for supporting math-based interactions.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
@@ -67,6 +67,9 @@ kt_android_library(
     name = "peekable_iterator",
     srcs = [
         "PeekableIterator.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
     ],
 )
 

@@ -40,9 +40,10 @@ fun Fraction.toDouble(): Double {
  */
 fun Fraction.toAnswerString(): String {
   return when {
-    isOnlyWholeNumber() -> {
-      // Fraction is only a whole number.
-      if (isNegative) "-$wholeNumber" else "$wholeNumber"
+    // Fraction is only a whole number.
+    isOnlyWholeNumber() -> when (wholeNumber) {
+      0 -> "0" // 0 is always 0 regardless of its negative sign.
+      else -> if (isNegative) "-$wholeNumber" else "$wholeNumber"
     }
     wholeNumber == 0 -> {
       // Fraction contains just a fraction (no whole number).
@@ -218,7 +219,7 @@ fun Int.toWholeNumberFraction(): Fraction {
 }
 
 /** Returns the greatest common divisor between two integers. */
-fun gcd(x: Int, y: Int): Int {
+private fun gcd(x: Int, y: Int): Int {
   return if (y == 0) x else gcd(y, x % y)
 }
 
