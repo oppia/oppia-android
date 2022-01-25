@@ -9,9 +9,9 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
@@ -121,9 +121,8 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.edit_profiles_text_view))
-        .perform(click())
-      Intents.intended(IntentMatchers.hasComponent(ProfileListActivity::class.java.name))
+      onView(withId(R.id.edit_profiles_text_view)).perform(click())
+      Intents.intended(hasComponent(ProfileListActivity::class.java.name))
     }
   }
 
@@ -136,12 +135,12 @@ class AdministratorControlsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_list)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+        scrollToPosition<RecyclerView.ViewHolder>(
           3
         )
       )
       onView(withId(R.id.app_version_text_view)).perform(click())
-      Intents.intended(IntentMatchers.hasComponent(AppVersionActivity::class.java.name))
+      Intents.intended(hasComponent(AppVersionActivity::class.java.name))
     }
   }
 
