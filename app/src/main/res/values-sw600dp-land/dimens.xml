@@ -345,6 +345,11 @@
   <dimen name="topic_practice_subtopic_layout_margin_end">0dp</dimen>
   <dimen name="topic_practice_subtopic_layout_width">360dp</dimen>
 
+  <!-- ProfileProgressFragment -->
+  <dimen name="profile_progress_fragment_margin_start">64dp</dimen>
+  <dimen name="profile_progress_fragment_margin_end">64dp</dimen>
+  <dimen name="profile_progress_fragment_padding_bottom">112dp</dimen>
+
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
 
