@@ -943,7 +943,8 @@ class AlgebraicExpressionParserTest {
 
   private companion object {
     private fun parseAlgebraicExpressionWithoutOptionalErrors(
-      expression: String, allowedVariables: List<String> = listOf("x", "y", "z")
+      expression: String,
+      allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathExpression {
       return parseAlgebraicExpressionInternal(
         expression, ErrorCheckingMode.REQUIRED_ONLY, allowedVariables
@@ -951,7 +952,8 @@ class AlgebraicExpressionParserTest {
     }
 
     private fun parseAlgebraicExpressionWithAllErrors(
-      expression: String, allowedVariables: List<String> = listOf("x", "y", "z")
+      expression: String,
+      allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathExpression {
       return parseAlgebraicExpressionInternal(
         expression, ErrorCheckingMode.ALL_ERRORS, allowedVariables
@@ -959,7 +961,9 @@ class AlgebraicExpressionParserTest {
     }
 
     private fun parseAlgebraicExpressionInternal(
-      expression: String, errorCheckingMode: ErrorCheckingMode, allowedVariables: List<String>
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode,
+      allowedVariables: List<String>
     ): MathExpression {
       val result = MathExpressionParser.parseAlgebraicExpression(
         expression, allowedVariables, errorCheckingMode

@@ -1,7 +1,7 @@
 package org.oppia.android.util.math
 
-import com.google.common.truth.Truth.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathEquation
@@ -258,7 +258,8 @@ class AlgebraicEquationParserTest {
 
   private companion object {
     private fun parseAlgebraicEquation(
-      expression: String, allowedVariables: List<String> = listOf("x", "y", "z")
+      expression: String,
+      allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathEquation {
       val result = MathExpressionParser.parseAlgebraicEquation(
         expression, allowedVariables, ErrorCheckingMode.ALL_ERRORS

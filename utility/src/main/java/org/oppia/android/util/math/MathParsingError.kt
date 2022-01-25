@@ -199,14 +199,14 @@ sealed class MathParsingError {
    *
    * This is an irrecoverable error.
    */
-  object EquationIsMissingEqualsError: MathParsingError()
+  object EquationIsMissingEqualsError : MathParsingError()
 
   /**
    * Indicates that an algebraic equation has too many equals signs, e.g. '4 == x'.
    *
    * This is an irrecoverable error.
    */
-  object EquationHasTooManyEqualsError: MathParsingError()
+  object EquationHasTooManyEqualsError : MathParsingError()
 
   /**
    * Indicates that an algebraic equation is missing either its left or right side, e.g. '4=' and

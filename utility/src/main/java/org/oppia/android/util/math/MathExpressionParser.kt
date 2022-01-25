@@ -23,6 +23,8 @@ import org.oppia.android.app.model.Real
 import org.oppia.android.util.math.MathExpressionParser.ParseContext.AlgebraicExpressionContext
 import org.oppia.android.util.math.MathExpressionParser.ParseContext.NumericExpressionContext
 import org.oppia.android.util.math.MathParsingError.DisabledVariablesInUseError
+import org.oppia.android.util.math.MathParsingError.EquationHasTooManyEqualsError
+import org.oppia.android.util.math.MathParsingError.EquationIsMissingEqualsError
 import org.oppia.android.util.math.MathParsingError.EquationMissingLhsOrRhsError
 import org.oppia.android.util.math.MathParsingError.ExponentIsVariableExpressionError
 import org.oppia.android.util.math.MathParsingError.ExponentTooLargeError
@@ -61,11 +63,9 @@ import org.oppia.android.util.math.MathTokenizer.Companion.Token.PositiveRealNum
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.RightParenthesisSymbol
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.SquareRootSymbol
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.VariableName
+import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 import kotlin.math.absoluteValue
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
-import org.oppia.android.util.math.MathParsingError.EquationHasTooManyEqualsError
-import org.oppia.android.util.math.MathParsingError.EquationIsMissingEqualsError
-import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 
 /**
  * Parser for numeric expressions, algebraic expressions, and algebraic equations.

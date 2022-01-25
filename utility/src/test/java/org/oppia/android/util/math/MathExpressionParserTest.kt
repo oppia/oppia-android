@@ -993,7 +993,6 @@ class MathExpressionParserTest {
     val expression = "$func(0.5+1)"
     val error = expectFailureWhenParsingAlgebraicExpression(expression)
 
-
     // Starting a detected function but not completing it should result in an incomplete name error.
     assertThat(error).isFunctionNameIncomplete()
   }
@@ -1092,7 +1091,8 @@ class MathExpressionParserTest {
     )
 
     private fun expectSuccessWhenParsingNumericExpression(
-      expression: String, errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
     ) {
       expectSuccessfulParsingResult(parseNumericExpression(expression, errorCheckingMode))
     }
@@ -1112,7 +1112,8 @@ class MathExpressionParserTest {
     }
 
     private fun expectFailureWhenParsingAlgebraicExpression(
-      expression: String, allowedVariables: List<String> = listOf("x", "y", "z")
+      expression: String,
+      allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathParsingError {
       return expectFailingParsingResult(parseAlgebraicExpression(expression, allowedVariables))
     }
@@ -1126,13 +1127,15 @@ class MathExpressionParserTest {
     }
 
     private fun parseNumericExpression(
-      expression: String, errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
     ): MathParsingResult<MathExpression> {
       return MathExpressionParser.parseNumericExpression(expression, errorCheckingMode)
     }
 
     private fun parseAlgebraicExpression(
-      expression: String, allowedVariables: List<String>,
+      expression: String,
+      allowedVariables: List<String>,
       errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
     ): MathParsingResult<MathExpression> {
       return MathExpressionParser.parseAlgebraicExpression(

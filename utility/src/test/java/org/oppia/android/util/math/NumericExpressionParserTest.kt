@@ -1576,7 +1576,8 @@ class NumericExpressionParserTest {
       parseNumericExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS)
 
     private fun parseNumericExpressionInternal(
-      expression: String, errorCheckingMode: ErrorCheckingMode
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode
     ): MathExpression {
       val result = MathExpressionParser.parseNumericExpression(expression, errorCheckingMode)
       assertThat(result).isInstanceOf(MathParsingResult.Success::class.java)
