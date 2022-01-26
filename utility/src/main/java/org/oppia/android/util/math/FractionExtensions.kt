@@ -106,7 +106,7 @@ fun Fraction.toImproperForm(): Fraction {
 }
 
 /** Returns the inverse improper fraction representation of this fraction. */
-fun Fraction.toInvertedImproperForm(): Fraction {
+private fun Fraction.toInvertedImproperForm(): Fraction {
   return toImproperForm().let { improper ->
     improper.toBuilder().apply {
       numerator = improper.denominator
@@ -188,7 +188,8 @@ operator fun Fraction.div(rhs: Fraction): Fraction {
   return this * rhs.toInvertedImproperForm()
 }
 
-fun Fraction.pow(exp: Int): Fraction {
+// TODO: document 0^0 case.
+infix fun Fraction.pow(exp: Int): Fraction {
   return when {
     exp == 0 -> {
       Fraction.newBuilder().apply {
@@ -198,11 +199,11 @@ fun Fraction.pow(exp: Int): Fraction {
     }
     exp == 1 -> this
     // x^-2 == 1/(x^2).
-    exp < 1 -> pow(-exp).toInvertedImproperForm().toProperForm()
+    exp < 1 -> (this pow -exp).toInvertedImproperForm().toProperForm()
     else -> { // i > 1
       var newValue = this
       for (i in 1 until exp) newValue *= this
-      return newValue
+      return newValue.toProperForm()
     }
   }
 }
@@ -217,6 +218,7 @@ fun Int.toWholeNumberFraction(): Fraction {
     denominator = 1
   }.build()
 }
+
 
 /** Returns the greatest common divisor between two integers. */
 private fun gcd(x: Int, y: Int): Int {

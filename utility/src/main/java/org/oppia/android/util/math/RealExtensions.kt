@@ -105,7 +105,15 @@ operator fun Real.div(rhs: Real): Real {
   )
 }
 
-fun Real.pow(rhs: Real): Real {
+// TODO: document that roots represents the real value representation vs. principal root. Also,
+//  document 0^0 case per https://stackoverflow.com/a/19955996.
+// Rules:
+// - Anything involving a double always becomes a double.
+// - Int^Int stays int unless it's negative (then it becomes a fraction)
+// - Int^Fraction is treated as a fraction power & root (it becomes fraction or double)
+// - Fraction^Int always yields a fraction
+// - Fraction^Fraction yields a fraction or double (depending on the denominator root)
+infix fun Real.pow(rhs: Real): Real {
   // Powers can really only be effectively done via floats or whole-number only fractions.
   return when (realTypeCase) {
     RATIONAL -> {
@@ -113,11 +121,11 @@ fun Real.pow(rhs: Real): Real {
       when (rhs.realTypeCase) {
         // Anything raised by a fraction is pow'd by the numerator and rooted by the denominator.
         RATIONAL -> rhs.rational.toImproperForm().let { power ->
-          rational.pow(power.numerator).root(power.denominator, power.isNegative)
+          (rational pow power.numerator).root(power.denominator, power.isNegative)
         }
         IRRATIONAL -> recompute { it.setIrrational(rational.pow(rhs.irrational)) }
-        INTEGER -> recompute { it.setRational(rational.pow(rhs.integer)) }
-        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
+        INTEGER -> recompute { it.setRational(rational pow rhs.integer) }
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
       }
     }
     IRRATIONAL -> {
@@ -126,7 +134,7 @@ fun Real.pow(rhs: Real): Real {
         RATIONAL -> recompute { it.setIrrational(irrational.pow(rhs.rational)) }
         IRRATIONAL -> recompute { it.setIrrational(irrational.pow(rhs.irrational)) }
         INTEGER -> recompute { it.setIrrational(irrational.pow(rhs.integer)) }
-        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
       }
     }
     INTEGER -> {
@@ -135,16 +143,16 @@ fun Real.pow(rhs: Real): Real {
         // An integer raised to a fraction can use the same approach as above (fraction raised to
         // fraction) by treating the integer as a whole number fraction.
         RATIONAL -> rhs.rational.toImproperForm().let { power ->
-          integer.toWholeNumberFraction()
-            .pow(power.numerator)
-            .root(power.denominator, power.isNegative)
+          (integer.toWholeNumberFraction() pow power.numerator).root(
+            power.denominator, power.isNegative
+          )
         }
         IRRATIONAL -> recompute { it.setIrrational(integer.toDouble().pow(rhs.irrational)) }
         INTEGER -> integer.pow(rhs.integer)
-        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
       }
     }
-    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
+    REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
 }
 
@@ -153,7 +161,7 @@ fun sqrt(real: Real): Real {
     RATIONAL -> sqrt(real.rational)
     IRRATIONAL -> real.recompute { it.setIrrational(kotlin.math.sqrt(real.irrational)) }
     INTEGER -> sqrt(real.integer)
-    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $real.")
+    REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $real.")
   }
 }
 
@@ -199,7 +207,7 @@ private fun Int.divide(rhs: Int): Real = Real.newBuilder().apply {
       isNegative = (lhs < 0) xor (rhs < 0)
       numerator = kotlin.math.abs(lhs)
       denominator = kotlin.math.abs(rhs)
-    }.build()
+    }.build().toProperForm()
   }
 }.build()
 
@@ -208,9 +216,9 @@ private fun Fraction.pow(rhs: Double): Double = toDouble().pow(rhs)
 
 private fun Int.pow(exp: Int): Real {
   return when {
-    exp == 0 -> Real.newBuilder().apply { integer = 0 }.build()
+    exp == 0 -> Real.newBuilder().apply { integer = 1 }.build()
     exp == 1 -> Real.newBuilder().apply { integer = this@pow }.build()
-    exp < 0 -> Real.newBuilder().apply { rational = toWholeNumberFraction().pow(exp) }.build()
+    exp < 0 -> Real.newBuilder().apply { rational = toWholeNumberFraction() pow exp }.build()
     else -> {
       // exp > 1
       var computed = this
@@ -223,7 +231,7 @@ private fun Int.pow(exp: Int): Real {
 private fun sqrt(fraction: Fraction): Real = fraction.root(base = 2, invert = false)
 
 private fun Fraction.root(base: Int, invert: Boolean): Real {
-  check(base > 1) { "Expected base of 2 or higher, not: $base" }
+  check(base > 0) { "Expected base of 1 or higher, not: $base" }
 
   val adjustedFraction = toImproperForm()
   val adjustedNum =
@@ -253,14 +261,37 @@ private fun sqrt(int: Int): Real = root(int, base = 2)
 private fun root(int: Int, base: Int): Real {
   // First, check if the integer is a root. Base reference for possible methods:
   // https://www.researchgate.net/post/How-to-decide-if-a-given-number-will-have-integer-square-root-or-not.
-  check(base > 1) { "Expected base of 2 or higher, not: $base" }
-  check((int < 0 && base.isOdd()) || int >= 0) { "Radicand results in imaginary number: $int" }
-
-  if (int == 1) {
-    // 1^x is always 1.
+  if (int == 0 && base == 0) {
+    // This is considered a conventional identity per https://stackoverflow.com/a/19955996 that
+    // doesn't match mathematics definitions (but it does bring parity with the system's pow()
+    // function).
     return Real.newBuilder().apply {
       integer = 1
     }.build()
+  }
+
+  check(base > 0) { "Expected base of 1 or higher, not: $base" }
+  check((int < 0 && base.isOdd()) || int >= 0) { "Radicand results in imaginary number: $int" }
+
+  when {
+    int == 0 -> {
+      // 0^x is always zero.
+      return Real.newBuilder().apply {
+        integer = 0
+      }.build()
+    }
+    int == 1 || int == 0 || base == 0 -> {
+      // 1^x and x^0 are always 1.
+      return Real.newBuilder().apply {
+        integer = 1
+      }.build()
+    }
+    base == 1 -> {
+      // x^1 is always x.
+      return Real.newBuilder().apply {
+        integer = int
+      }.build()
+    }
   }
 
   val radicand = int.absoluteValue
@@ -319,7 +350,7 @@ private fun combine(
           }
         INTEGER ->
           lhs.recompute { it.setRational(leftRationalRightIntegerOp(lhs.rational, rhs.integer)) }
-        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
       }
     }
     IRRATIONAL -> {
@@ -337,7 +368,7 @@ private fun combine(
           lhs.recompute {
             it.setIrrational(leftIrrationalRightIntegerOp(lhs.irrational, rhs.integer))
           }
-        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
       }
     }
     INTEGER -> {
@@ -350,9 +381,9 @@ private fun combine(
             it.setIrrational(leftIntegerRightIrrationalOp(lhs.integer, rhs.irrational))
           }
         INTEGER -> leftIntegerRightIntegerOp(lhs.integer, rhs.integer)
-        REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $rhs.")
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
       }
     }
-    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $lhs.")
+    REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $lhs.")
   }
 }
