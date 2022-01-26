@@ -82,6 +82,7 @@ import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** Tests for [AdministratorControlsFragment]. */
 @RunWith(AndroidJUnit4::class)
 @Config(
   application = AdministratorControlsFragmentTest.TestApplication::class,
