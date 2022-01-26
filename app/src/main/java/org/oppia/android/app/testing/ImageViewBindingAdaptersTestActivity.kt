@@ -6,7 +6,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.databinding.ImageViewBindingAdapters
 
-/** Test activity for [ImageViewBindingAdapters]. */
+/** Test activity for ImageViewBindingAdapters. */
 class ImageViewBindingAdaptersTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
