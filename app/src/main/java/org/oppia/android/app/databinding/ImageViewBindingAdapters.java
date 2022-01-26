@@ -1,26 +1,19 @@
 package org.oppia.android.app.databinding;
 
-import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.widget.ImageView;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-
 import org.oppia.android.R;
 import org.oppia.android.app.model.ChapterPlayState;
 import org.oppia.android.app.model.ProfileAvatar;
-import org.oppia.android.util.parser.image.ImageLoader;
-import org.oppia.android.util.parser.image.ImageLoaderInjectorProvider;
 
 /**
  * Holds all custom binding adapters that bind to [ImageView].
