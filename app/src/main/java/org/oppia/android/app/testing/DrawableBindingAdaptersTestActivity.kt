@@ -4,7 +4,6 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.databinding.DrawableBindingAdapters
 
 /** Test activity for DrawableBindingAdapters. */
 class DrawableBindingAdaptersTestActivity : InjectableAppCompatActivity() {
