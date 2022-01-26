@@ -23,8 +23,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -73,7 +71,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -113,15 +111,6 @@ class ProfileEditActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  // The initialTouchMode enables the activity to be launched in touch mode. The launchActivity is
-  // disabled to launch Activity explicitly within each test case.
-  @get:Rule
-  var activityTestRule: ActivityTestRule<ProfileEditActivity> = ActivityTestRule(
-    ProfileEditActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
   @Inject
   lateinit var context: Context
 
@@ -150,23 +139,6 @@ class ProfileEditActivityTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  @Test
-  fun testProfileEditActivity_hasCorrectActivityLabel() {
-    launch(
-      ProfileEditActivity::class.java
-    ).use { scenario ->
-      scenario.onActivity { activity ->
-        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-        // correct string when it's read out.
-        assertThat(activity.title).isEqualTo(
-          context.getString(
-            R.string.profile_edit_activity_title
-          )
-        )
-      }
-    }
   }
 
   @Test
