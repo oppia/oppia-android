@@ -5,6 +5,24 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "announceForAccessibility\\("
+  failure_message: "Please use AccessibilityService instead."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityServiceImpl.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "announceForAccessibilityForView\\("
+  failure_message: "When using announceForAccessibility, please add an exempt file in file_content_validation_checks.textproto."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
+  exempted_file_name: "app/src/test/java/org/oppia/android/app/accessibility/FakeAccessibilityServiceTest.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityService.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityServiceImpl.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/FakeAccessibilityService.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "CoroutineWorker"
   failure_message: "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
@@ -263,4 +281,13 @@ file_content_checks {
   file_path_regex: "BUILD"
   prohibited_content_regex: "^proto_library\\("
   failure_message: "Don't use proto_library. Use oppia_proto_library instead."
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "OppiaParameterizedTestRunner"
+  failure_message: "To use OppiaParameterizedTestRunner, please add an exemption to file_content_validation_checks.textproto and add an explanation for your use case in your PR description. Note that parameterized tests should only be used in special circumstances where a single behavior can be tested across multiple inputs, or for especially large test suites that can be trivially reduced."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionParserTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathTokenizerTest.kt"
+  exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
 }
