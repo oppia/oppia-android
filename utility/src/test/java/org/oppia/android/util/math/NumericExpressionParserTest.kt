@@ -245,6 +245,21 @@ class NumericExpressionParserTest {
   }
 
   @Test
+  fun testParse_negation_withMathSymbol_returnsExpressionWithUnaryOperation() {
+    val expression = parseNumericExpressionWithAllErrors("−2")
+
+    assertThat(expression).hasStructureThatMatches {
+      negation {
+        operand {
+          constant {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+      }
+    }
+  }
+
+  @Test
   fun testParse_positiveUnary_withoutOptionalErrors_returnsExpressionWithUnaryOperation() {
     val expression = parseNumericExpressionWithoutOptionalErrors("+2")
 
