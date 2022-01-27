@@ -41,6 +41,24 @@ oppia_android_test(
 )
 
 oppia_android_test(
+    name = "FractionParserTest",
+    srcs = ["FractionParserTest.kt"],
+    custom_package = "org.oppia.android.util.math",
+    test_class = "org.oppia.android.util.math.FractionParserTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:fraction_parser",
+    ],
+)
+
+oppia_android_test(
     name = "PolynomialExtensionsTest",
     srcs = ["PolynomialExtensionsTest.kt"],
     custom_package = "org.oppia.android.util.math",

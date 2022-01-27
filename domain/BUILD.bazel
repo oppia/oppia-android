@@ -122,6 +122,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/extensions:string_extensions",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/math:extensions",
