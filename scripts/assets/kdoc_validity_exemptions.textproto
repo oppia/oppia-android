@@ -161,7 +161,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/options/RouteToAudi
 exempted_file_path: "app/src/main/java/org/oppia/android/app/options/RouteToReadingTextSizeListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/options/TextSizeItemViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/options/TextSizeRadioButtonListener.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/parser/StringToFractionParser.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/parser/StringToNumberParser.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/parser/StringToRatioParser.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/audio/AudioFragmentPresenter.kt"
