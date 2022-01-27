@@ -286,6 +286,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-2)
   }
 
   @Test

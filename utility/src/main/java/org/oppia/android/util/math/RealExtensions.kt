@@ -16,6 +16,12 @@ import kotlin.math.pow
  */
 fun Real.isRational(): Boolean = realTypeCase == RATIONAL
 
+/**
+ * Returns whether this [Real] is explicitly an integer.
+ *
+ * This returns false if the real is a rational despite that being mathematically an integer (e.g. a
+ * whole number fraction).
+ */
 fun Real.isInteger(): Boolean = realTypeCase == INTEGER
 
 /** Returns whether this [Real] is negative. */
@@ -81,6 +87,23 @@ operator fun Real.unaryMinus(): Real {
   }
 }
 
+/**
+ * Adds this [Real] with another and returns the result.
+ *
+ * Neither [Real] being added are changed during the operation.
+ *
+ * Note that this function will always succeed (unless one of the [Real]s is malformed or
+ * incomplete), but the type of [Real] that's returned depends on the constituent [Real]s being
+ * added. For reference, here's how the conversion behaves:
+ *
+ * |---------------------------------------------------|
+ * | +          | integer    | rational   | irrational |
+ * |------------|------------|------------|------------|
+ * | integer    | integer    | rational   | irrational |
+ * | rational   | rational   | rational   | irrational |
+ * | irrational | irrational | irrational | irrational |
+ * |---------------------------------------------------|
+ */
 operator fun Real.plus(rhs: Real): Real {
   return combine(
     this, rhs, Fraction::plus, Fraction::plus, Fraction::plus, Double::plus, Double::plus,
@@ -88,6 +111,15 @@ operator fun Real.plus(rhs: Real): Real {
   )
 }
 
+/**
+ * Subtracts this [Real] from another and returns the result.
+ *
+ * Neither [Real] being subtracted are changed during the operation.
+ *
+ * Note that this function will always succeed (unless one of the [Real]s is malformed or
+ * incomplete), but the type of [Real] that's returned depends on the constituent [Real]s being
+ * subtracted. For reference, see [Real.plus] (the same type conversion is used).
+ */
 operator fun Real.minus(rhs: Real): Real {
   return combine(
     this, rhs, Fraction::minus, Fraction::minus, Fraction::minus, Double::minus, Double::minus,
@@ -95,6 +127,18 @@ operator fun Real.minus(rhs: Real): Real {
   )
 }
 
+/**
+ * Multiplies this [Real] with another and returns the result.
+ *
+ * Neither [Real] being multiplied are changed during the operation.
+ *
+ * Note that this function will always succeed (unless one of the [Real]s is malformed or
+ * incomplete), but the type of [Real] that's returned depends on the constituent [Real]s being
+ * multiplied. For reference, see [Real.plus] (the same type conversion is used).
+ *
+ * Note that effective divisions by zero (i.e. fractions with zero denominators) may result in
+ * either an infinity being returned or an exception being thrown.
+ */
 operator fun Real.times(rhs: Real): Real {
   return combine(
     this, rhs, Fraction::times, Fraction::times, Fraction::times, Double::times, Double::times,
@@ -102,6 +146,18 @@ operator fun Real.times(rhs: Real): Real {
   )
 }
 
+/**
+ * Divides this [Real] by another and returns the result.
+ *
+ * Neither [Real] being divided are changed during the operation.
+ *
+ * Note that this function will always succeed (unless one of the [Real]s is malformed or
+ * incomplete), but the type of [Real] that's returned depends on the constituent [Real]s being
+ * divided. For reference, see [Real.plus] (the same type conversion is used).
+ *
+ * Note also that divisions by zero may result in either an exception being thrown, or an infinity
+ * being returned.
+ */
 operator fun Real.div(rhs: Real): Real {
   return combine(
     this, rhs, Fraction::div, Fraction::div, Fraction::div, Double::div, Double::div, Double::div,
@@ -109,14 +165,49 @@ operator fun Real.div(rhs: Real): Real {
   )
 }
 
-// TODO: document that roots represents the real value representation vs. principal root. Also,
-//  document 0^0 case per https://stackoverflow.com/a/19955996.
-// Rules:
-// - Anything involving a double always becomes a double.
-// - Int^Int stays int unless it's negative (then it becomes a fraction)
-// - Int^Fraction is treated as a fraction power & root (it becomes fraction or double)
-// - Fraction^Int always yields a fraction
-// - Fraction^Fraction yields a fraction or double (depending on the denominator root)
+/**
+ * Computes the power of this [Real] raised to [rhs] and returns the result.
+ *
+ * Neither [Real] being combined are changed during the operation.
+ *
+ * As this is an infix function, it should be called as so (example):
+ * ```kotlin
+ * val result = baseReal pow powerReal
+ * ```
+ *
+ * This function can fail in a few circumstances:
+ * - One of the [Real]s is malformed or incomplete (such as a default instance).
+ * - In cases where a root is being taken (i.e. when |[rhs]| < 1), if the root cannot be taken
+ *   either an exception will be thrown or NaN will be returned (such as trying to take the even
+ *   root of a negative value).
+ *
+ * Further, note that this function represents the real value root rather than the principal root,
+ * so negative bases are allowed so long as the root being used is odd. For non-integerlike powers,
+ * the base should never be negative except for fractions that could result in a positive base after
+ * exponentiation.
+ *
+ * This function special cases 0^0 to return 1 in all cases for consistency with the system ``pow``
+ * function and other languages, per: https://stackoverflow.com/a/19955996.
+ *
+ * Finally, this function also attempts to retain maximum precision in much the same way as [sqrt]
+ * and [Real.plus] except there are more cases when a value may change types. See the following
+ * table for reference:
+ *
+ * |----------------------------------------------------------------------------------------------|
+ * | pow        | positive int | negative int | rootable rational* | other rationals | irrational |
+ * |------------|--------------|--------------|--------------------|-----------------|------------|
+ * | integer    | integer      | rational     | rational           | irrational      | irrational |
+ * | rational   | rational     | rational     | rational           | irrational      | irrational |
+ * | irrational | irrational   | irrational   | irrational         | irrational      | irrational |
+ * |----------------------------------------------------------------------------------------------|
+ *
+ * *This corresponds to fraction powers whose denominator (which are treated as roots) can perform a
+ * perfect square root of either the integer base (for integer [Real]s) or both the numerator and
+ * denominator integers (for rational [Real]s).
+ *
+ * (Note that the left column represents the left-hand side and the top row represents the
+ * right-hand side of the operation).
+ */
 infix fun Real.pow(rhs: Real): Real {
   // Powers can really only be effectively done via floats or whole-number only fractions.
   return when (realTypeCase) {
@@ -160,6 +251,31 @@ infix fun Real.pow(rhs: Real): Real {
   }
 }
 
+/**
+ * Returns the square root of the specified [Real].
+ *
+ * [real] is not changed as a result of this operation (a new [Real] value is returned).
+ *
+ * Failure cases:
+ * - An invalid [Real] is passed in (such as a default instance), resulting in an exception being
+ *   thrown.
+ * - A negative value is passed in (this will either result in an exception or a NaN being
+ *   returned).
+ *
+ * Similar to [Real.plus] & other operations, this function attempts to retain as much precision as
+ * possible by first performing perfect roots before needing to perform a numerical approximation.
+ * This is achieved by attempting to take perfect integer roots for integer and rational types and,
+ * if that's not possible, then converting to a double. See the following conversion table for
+ * reference:
+ *
+ * |------------------------------------------------|
+ * | sqrt       | perfect square | all other values |
+ * |------------|----------------|------------------|
+ * | integer    | integer        | irrational       |
+ * | rational   | rational       | irrational       |
+ * | irrational | irrational     | irrational       |
+ * |------------------------------------------------|
+ */
 fun sqrt(real: Real): Real {
   return when (real.realTypeCase) {
     RATIONAL -> sqrt(real.rational)

@@ -95,18 +95,51 @@ class MathExpressionSubject private constructor(
     ExpressionComparator.createFromExpression(actual).also(init)
   }
 
+  /**
+   * Assumes that this expression evaluates to a fraction (i.e. [Real.getRational]) and returns a
+   * [FractionSubject] to verify the computed value.
+   *
+   * Note that this should only be used for numeric expressions as variable expressions cannot be
+   * evaluated. For more context on expression evaluation, see [evaluateAsNumericExpression].
+   */
   fun evaluatesToRationalThat(): FractionSubject =
     FractionSubject.assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.RATIONAL).rational)
 
+  /**
+   * Assumes that this expression evaluates to an irrational (i.e. [Real.getIrrational]) and returns
+   * a [DoubleSubject] to verify the computed value.
+   *
+   * Note that this should only be used for numeric expressions as variable expressions cannot be
+   * evaluated. For more context on expression evaluation, see [evaluateAsNumericExpression].
+   */
   fun evaluatesToIrrationalThat(): DoubleSubject =
     assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.IRRATIONAL).irrational)
 
+  /**
+   * Assumes that this expression evaluates to an integer (i.e. [Real.getInteger]) and returns an
+   * [IntegerSubject] to verify the computed value.
+   *
+   * Note that this should only be used for numeric expressions as variable expressions cannot be
+   * evaluated. For more context on expression evaluation, see [evaluateAsNumericExpression].
+   */
   fun evaluatesToIntegerThat(): IntegerSubject =
     assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.INTEGER).integer)
 
+  /**
+   * Returns a [StringSubject] to verify the LaTeX conversion of the tested [MathExpression].
+   *
+   * For more details on LaTeX conversion, see [toRawLatex]. Note that this method, in contrast to
+   * [convertsWithFractionsToLatexStringThat], retains division operations as-is.
+   */
   fun convertsToLatexStringThat(): StringSubject =
     assertThat(convertToLatex(divAsFraction = false))
 
+  /**
+   * Returns a [StringSubject] to verify the LaTeX conversion of the tested [MathExpression].
+   *
+   * For more details on LaTeX conversion, see [toRawLatex]. Note that this method, in contrast to
+   * [convertsToLatexStringThat], treats divisions as fractions.
+   */
   fun convertsWithFractionsToLatexStringThat(): StringSubject =
     assertThat(convertToLatex(divAsFraction = true))
 

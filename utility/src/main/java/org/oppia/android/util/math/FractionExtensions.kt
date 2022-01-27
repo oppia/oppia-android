@@ -188,7 +188,24 @@ operator fun Fraction.div(rhs: Fraction): Fraction {
   return this * rhs.toInvertedImproperForm()
 }
 
-// TODO: document 0^0 case.
+/**
+ * Raises this [Fraction] to the specified [exp] power and returns the result.
+ *
+ * Note that since this is an infix operation it should be used as follows (as an example):
+ * ```kotlin
+ * val result = fraction pow integerPower
+ * ```
+ *
+ * This function can only fail when (exceptions are thrown in all cases):
+ * - This [Fraction] is malformed or incomplete (e.g. a default instance).
+ * - The resulting [Fraction] would result in a zero denominator.
+ *
+ * Some specific details about the returned value:
+ * - A proper-form fraction is always returned (per [toProperForm]).
+ * - Negative powers are supported (they will invert the resulting fraction).
+ * - 0^0 is special-cased to return a 1-valued fraction for consistency with the power function for
+ *   reals (see that KDoc and/or https://stackoverflow.com/a/19955996 for context).
+ */
 infix fun Fraction.pow(exp: Int): Fraction {
   return when {
     exp == 0 -> {

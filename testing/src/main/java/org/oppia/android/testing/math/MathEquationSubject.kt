@@ -36,9 +36,21 @@ class MathEquationSubject private constructor(
    */
   fun hasRightHandSideThat(): MathExpressionSubject = assertThat(actual.rightSide)
 
+  /**
+   * Returns a [StringSubject] to verify the LaTeX conversion of the tested [MathEquation].
+   *
+   * For more details on LaTeX conversion, see [toRawLatex]. Note that this method, in contrast to
+   * [convertsWithFractionsToLatexStringThat], retains division operations as-is.
+   */
   fun convertsToLatexStringThat(): StringSubject =
     assertThat(convertToLatex(divAsFraction = false))
 
+  /**
+   * Returns a [StringSubject] to verify the LaTeX conversion of the tested [MathEquation].
+   *
+   * For more details on LaTeX conversion, see [toRawLatex]. Note that this method, in contrast to
+   * [convertsToLatexStringThat], treats divisions as fractions.
+   */
   fun convertsWithFractionsToLatexStringThat(): StringSubject =
     assertThat(convertToLatex(divAsFraction = true))
 
