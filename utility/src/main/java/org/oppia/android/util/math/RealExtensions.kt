@@ -41,6 +41,9 @@ fun Real.toDouble(): Double {
  * the real (which means proper fractions are converted to improper answer strings since fractions
  * like '1 1/2' can't be written as a numeric expression without converting them to an improper
  * form: '3/2').
+ *
+ * Note that this will return an empty string if this [Real] doesn't represent an actual real value
+ * (e.g. a default instance).
  */
 fun Real.toPlainText(): String = when (realTypeCase) {
   // Note that the rational part is first converted to an improper fraction since mixed fractions
@@ -48,6 +51,7 @@ fun Real.toPlainText(): String = when (realTypeCase) {
   RATIONAL -> rational.toImproperForm().toAnswerString()
   IRRATIONAL -> irrational.toPlainString()
   INTEGER -> integer.toString()
+  // The Real type isn't valid, so rather than failing just return an empty string.
   REALTYPE_NOT_SET, null -> ""
 }
 

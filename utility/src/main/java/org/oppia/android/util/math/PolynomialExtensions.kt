@@ -24,10 +24,12 @@ fun Polynomial.getConstant(): Real = getTerm(0).coefficient
  * the polynomial, e.g. "1+x-7x^2").
  */
 fun Polynomial.toPlainText(): String {
-  return termList.map { it.toPlainText() }.reduce { acc, termAnswerStr ->
+  return termList.map {
+    it.toPlainText()
+  }.reduce { ongoingPolynomialStr, termAnswerStr ->
     if (termAnswerStr.startsWith("-")) {
-      "$acc - ${termAnswerStr.drop(1)}"
-    } else "$acc + $termAnswerStr"
+      "$ongoingPolynomialStr - ${termAnswerStr.drop(1)}"
+    } else "$ongoingPolynomialStr + $termAnswerStr"
   }
 }
 
