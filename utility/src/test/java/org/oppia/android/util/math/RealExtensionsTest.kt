@@ -11,7 +11,6 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
-import org.oppia.android.util.math.FractionParser.Companion.parseFraction
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [Real] extensions. */
@@ -56,6 +55,8 @@ class RealExtensionsTest {
     private val PI_REAL = createIrrationalReal(PI)
     private val NEGATIVE_PI_REAL = createIrrationalReal(-PI)
   }
+
+  private val fractionParser by lazy { FractionParser() }
 
   @Parameter var lhsInt: Int = Int.MIN_VALUE
   @Parameter lateinit var lhsFrac: String
@@ -508,7 +509,7 @@ class RealExtensionsTest {
 
     val result = lhsReal + rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -549,7 +550,7 @@ class RealExtensionsTest {
 
     val result = lhsReal + rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -569,7 +570,7 @@ class RealExtensionsTest {
 
     val result = lhsReal + rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -690,7 +691,7 @@ class RealExtensionsTest {
 
     val result = lhsReal - rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -731,7 +732,7 @@ class RealExtensionsTest {
 
     val result = lhsReal - rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -751,7 +752,7 @@ class RealExtensionsTest {
 
     val result = lhsReal - rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -872,7 +873,7 @@ class RealExtensionsTest {
 
     val result = lhsReal * rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -913,7 +914,7 @@ class RealExtensionsTest {
 
     val result = lhsReal * rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -933,7 +934,7 @@ class RealExtensionsTest {
 
     val result = lhsReal * rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1052,7 +1053,7 @@ class RealExtensionsTest {
     val result = lhsReal / rhsReal
 
     // If the divisor doesn't divide the dividend, the result is a fraction.
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1073,7 +1074,7 @@ class RealExtensionsTest {
 
     val result = lhsReal / rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1114,7 +1115,7 @@ class RealExtensionsTest {
 
     val result = lhsReal / rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1134,7 +1135,7 @@ class RealExtensionsTest {
 
     val result = lhsReal / rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1336,7 +1337,7 @@ class RealExtensionsTest {
     val result = lhsReal pow rhsReal
 
     // Integers raised to a negative integer yields a fraction since x^-y=1/(x^y).
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1362,7 +1363,7 @@ class RealExtensionsTest {
 
     val result = lhsReal pow rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1423,7 +1424,7 @@ class RealExtensionsTest {
 
     val result = lhsReal pow rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1445,7 +1446,7 @@ class RealExtensionsTest {
 
     val result = lhsReal pow rhsReal
 
-    val expectedFraction = parseFraction(expFrac)
+    val expectedFraction = fractionParser.parseFraction(expFrac)
     assertThat(result).isRationalThat().isEqualTo(expectedFraction)
   }
 
@@ -1772,14 +1773,14 @@ class RealExtensionsTest {
 
     assertThat(result).isIrrationalThat().isWithin(1e-5).of(1.772004515)
   }
+
+  private fun createRationalReal(rawFractionExpression: String) =
+    createRationalReal(fractionParser.parseFractionFromString(rawFractionExpression))
 }
 
 private fun createIntegerReal(value: Int) = Real.newBuilder().apply {
   integer = value
 }.build()
-
-private fun createRationalReal(rawFractionExpression: String) =
-  createRationalReal(parseFraction(rawFractionExpression))
 
 private fun createRationalReal(value: Fraction) = Real.newBuilder().apply {
   rational = value
