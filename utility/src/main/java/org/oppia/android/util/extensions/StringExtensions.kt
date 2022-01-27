@@ -1,4 +1,4 @@
-package org.oppia.android.domain.util
+package org.oppia.android.util.extensions
 
 /**
  * Normalizes whitespace in the specified string in a way consistent with Oppia web:
