@@ -26,6 +26,11 @@ class RegexPatternValidationCheckTest {
     "AndroidX should be used instead of the support library"
   private val coroutineWorkerUsageErrorMessage =
     "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
+  private val announceForAccessibilityUsageErrorMessage =
+    "Please use AccessibilityService instead."
+  private val announceForAccessibilityForViewUsageErrorMessage =
+    "When using announceForAccessibility, please add an exempt file in " +
+      "file_content_validation_checks.textproto."
   private val settableFutureUsageErrorMessage =
     "SettableFuture should only be used in pre-approved locations since it's easy to potentially " +
       "mess up & lead to a hanging ListenableFuture."
@@ -273,6 +278,46 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         TestFile.kt:1: $coroutineWorkerUsageErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_announceForAccessibilityUsageErrorMessage_fileContentIsNotCorrect() {
+    val prohibitedContent = "announceForAccessibility("
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        TestFile.kt:1: $announceForAccessibilityUsageErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_announceForAccessibilityForViewUsageErrorMessage_fileContentIsNotCorrect() {
+    val prohibitedContent = "announceForAccessibilityForView("
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        TestFile.kt:1: $announceForAccessibilityForViewUsageErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )

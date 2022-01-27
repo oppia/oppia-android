@@ -36,7 +36,7 @@ message Real {
     // decimal values need to be treated as irrational and non-factorable.
     double irrational = 2;
 
-    // Indicates that thi sreal value is an integer (as a special case of rational values since
+    // Indicates that this real value is an integer (as a special case of rational values since
     // integers are easier to work with than fraction objects). Note that this isn't the only case
     // where the real value can be an integer. It can also be an integer double value, or a fraction
     // with only a whole number component.
@@ -60,12 +60,12 @@ message RatioExpression {
 // Values of this proto can be analyzed using MathExpressionSubject.
 message MathExpression {
   // The index within the input text stream at which point the expression starts (it's an inclusive
-  // index). If both this and the end index are zero then no parsing information is included for
+  // index). If both this and the end index are the same then no parsing information is included for
   // this specific expression.
   uint32 parse_start_index = 1;
 
   // The index within the input text stream at which point the expression ends, exclusively. If both
-  // this and the start index are zero then no parsing information is included for this specific
+  // this and the start index are the same then no parsing information is included for this specific
   // expression.
   uint32 parse_end_index = 2;
 
