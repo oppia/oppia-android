@@ -46,6 +46,16 @@ class FloatExtensionsTest {
   }
 
   @Test
+  fun testFloat_approximatelyEquals_zeroAndNonZeroValue_veryDifferent_returnsFalse() {
+    val leftFloat = 0f
+    val rightFloat = 7.3f
+
+    val result = leftFloat.approximatelyEquals(rightFloat)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
   fun testFloat_approximatelyEquals_nonZeroValues_outsideInterval_returnsFalse() {
     val leftFloat = 1.2f
     val rightFloat = leftFloat + FLOAT_EQUALITY_INTERVAL.toFloat() * 2f

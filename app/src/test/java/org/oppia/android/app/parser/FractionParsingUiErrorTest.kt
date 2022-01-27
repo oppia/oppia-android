@@ -1,26 +1,16 @@
-package org.oppia.android.app.devoptions
+package org.oppia.android.app.parser
 
 import android.app.Application
-import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -28,11 +18,12 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -57,7 +48,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -68,8 +59,9 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.math.FractionParser
+import org.oppia.android.util.math.FractionParser.FractionParsingError
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -77,82 +69,169 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ViewEventLogsActivity]. */
+/** Tests for [FractionParsingUiError]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = ViewEventLogsActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
-class ViewEventLogsActivityTest {
+@Config(application = FractionParsingUiErrorTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class FractionParsingUiErrorTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var context: Context
-
   @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  var activityRule =
+    ActivityScenarioRule<TestActivity>(
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
 
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    ViewEventLogsActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  private lateinit var fractionParser: FractionParser
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    fractionParser = FractionParser()
+  }
+
+  @Test
+  fun testSubmitTimeError_validMixedNumber_noErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getSubmitTimeError("11 22/33")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage).isNull()
+    }
+  }
+
+  @Test
+  fun testSubmitTimeError_tenDigitNumber_numberTooLong_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getSubmitTimeError("0123456789")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+    }
+  }
+
+  @Test
+  fun testSubmitTimeError_nonDigits_invalidFormat_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getSubmitTimeError("jdhfc")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
+  }
+
+  @Test
+  fun testSubmitTimeError_divisionByZero_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getSubmitTimeError("123/0")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage).isEqualTo("Please do not put 0 in the denominator")
+    }
+  }
+
+  @Test
+  fun testSubmitTimeError_ambiguousSpacing_invalidFormat_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getSubmitTimeError("1 2 3/4")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
+  }
+
+  @Test
+  fun testSubmitTimeError_emptyString_invalidFormat_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getSubmitTimeError("")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
+  }
+
+  @Test
+  fun testRealTimeError_validRegularFraction_noErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getRealTimeAnswerError("2/3")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage).isNull()
+    }
+  }
+
+  @Test
+  fun testRealTimeError_nonDigits_invalidChars_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getRealTimeAnswerError("abc")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please only use numerical digits, spaces or forward slashes (/)")
+    }
+  }
+
+  @Test
+  fun testRealTimeError_noNumerator_invalidFormat_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getRealTimeAnswerError("/3")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
+  }
+
+  @Test
+  fun testRealTimeError_severalSlashes_invalidFormat_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getRealTimeAnswerError("1/3/8")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
+  }
+
+  @Test
+  fun testRealTimeError_severalDashes_invalidFormat_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getRealTimeAnswerError("-1/-3")
+        .toUiError()
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Test
-  fun testViewEventLogsActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createViewEventLogsActivityIntent())
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.view_event_logs_activity_title))
+  private companion object {
+    private fun FractionParsingError.toUiError(): FractionParsingUiError =
+      FractionParsingUiError.createFromParsingError(this)
   }
-
-  @Test
-  fun testViewEventLogsActivity_viewEventLogsFragmentIsDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
-      onView(withId(R.id.view_event_logs_fragment_container)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_configChange_viewEventLogsFragmentIsDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.view_event_logs_fragment_container)).check(matches(isDisplayed()))
-    }
-  }
-
-  private fun createViewEventLogsActivityIntent(): Intent =
-    ViewEventLogsActivity.createViewEventLogsActivityIntent(context)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, DebugLogReportingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -162,31 +241,25 @@ class ViewEventLogsActivityTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(viewEventLogsActivityTest: ViewEventLogsActivityTest)
+    fun inject(fractionParsingUiErrorTest: FractionParsingUiErrorTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerViewEventLogsActivityTest_TestApplicationComponent.builder()
+      DaggerFractionParsingUiErrorTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    override fun onCreate() {
-      super.onCreate()
-      FirebaseApp.initializeApp(applicationContext)
-    }
-
-    fun inject(viewEventLogsActivityTest: ViewEventLogsActivityTest) {
-      component.inject(viewEventLogsActivityTest)
+    fun inject(fractionParsingUiErrorTest: FractionParsingUiErrorTest) {
+      component.inject(fractionParsingUiErrorTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
