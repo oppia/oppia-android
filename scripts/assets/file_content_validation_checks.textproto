@@ -287,6 +287,7 @@ file_content_checks {
   prohibited_content_regex: "OppiaParameterizedTestRunner"
   failure_message: "To use OppiaParameterizedTestRunner, please add an exemption to file_content_validation_checks.textproto and add an explanation for your use case in your PR description. Note that parameterized tests should only be used in special circumstances where a single behavior can be tested across multiple inputs, or for especially large test suites that can be trivially reduced."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionParserTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathTokenizerTest.kt"
   exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
 }

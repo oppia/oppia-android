@@ -19,7 +19,7 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/math:parser",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
     ],
 )
 
@@ -38,7 +38,7 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/math:parser",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
     ],
 )
 
@@ -112,7 +112,7 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/math:parser",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
     ],
 )
 
@@ -151,7 +151,7 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/math:parser",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
     ],
 )
 

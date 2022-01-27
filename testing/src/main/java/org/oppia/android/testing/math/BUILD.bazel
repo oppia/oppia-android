@@ -87,7 +87,7 @@ kt_android_library(
         ":math_expression_subject",
         ":real_subject",
         "//third_party:com_google_truth_truth",
-        "//utility/src/main/java/org/oppia/android/util/math:parsing_error",
+        "//utility/src/main/java/org/oppia/android/util/math:math_parsing_error",
     ],
 )
 
