@@ -131,7 +131,7 @@ class TokenSubject(
   }
 
   /**
-   * Truth subject for verifying properties of [Token]FunctionName.
+   * Truth subject for verifying properties of [FunctionName].
    *
    * Call [assertThat] to create the subject.
    */
