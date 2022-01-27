@@ -108,6 +108,7 @@ class MyDownloadsActivityTest {
       }
     }
   }
+
   @Singleton
   @Component(
     modules = [
