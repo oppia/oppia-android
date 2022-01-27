@@ -6,6 +6,32 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <compatible-screens>
+    <!-- all small size screens - except ldpi -->
+    <screen android:screenSize="small" android:screenDensity="mdpi" />
+    <screen android:screenSize="small" android:screenDensity="hdpi" />
+    <screen android:screenSize="small" android:screenDensity="xhdpi" />
+    <screen android:screenSize="small" android:screenDensity="xxhdpi" />
+    <screen android:screenSize="small" android:screenDensity="xxxhdpi" />
+    <!-- all normal size screens - except ldpi -->
+    <screen android:screenSize="normal" android:screenDensity="mdpi" />
+    <screen android:screenSize="normal" android:screenDensity="hdpi" />
+    <screen android:screenSize="normal" android:screenDensity="xhdpi" />
+    <screen android:screenSize="normal" android:screenDensity="xxhdpi" />
+    <screen android:screenSize="normal" android:screenDensity="xxxhdpi" />
+    <!-- all large size screens - except ldpi -->
+    <screen android:screenSize="large" android:screenDensity="mdpi" />
+    <screen android:screenSize="large" android:screenDensity="hdpi" />
+    <screen android:screenSize="large" android:screenDensity="xhdpi" />
+    <screen android:screenSize="large" android:screenDensity="xxhdpi" />
+    <screen android:screenSize="large" android:screenDensity="xxxhdpi" />
+    <!-- all xlarge size screens - except ldpi -->
+    <screen android:screenSize="xlarge" android:screenDensity="mdpi" />
+    <screen android:screenSize="xlarge" android:screenDensity="hdpi" />
+    <screen android:screenSize="xlarge" android:screenDensity="xhdpi" />
+    <screen android:screenSize="xlarge" android:screenDensity="xxhdpi" />
+    <screen android:screenSize="xlarge" android:screenDensity="xxxhdpi" />
+  </compatible-screens>
 
   <!-- TODO(#56): Reenable landscape support. -->
   <application
