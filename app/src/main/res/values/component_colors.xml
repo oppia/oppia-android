@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="text_input_edit_text_cursor_color">@color/primary_text_color</color>
-  <color name="toolbar_layout_background_color">@color/oppia_primary</color>
+  <color name="shared_edit_text_cursor_color">@color/primary_text_color</color>
+  <color name="shared_activity_toolbar_color">@color/oppia_primary</color>
   <!-- Themes.xml -->
   <color name="oppia_themes_status_bar_color">@color/oppia_primary_dark</color>
   <color name="oppia_action_bar_theme_background_color">@color/oppia_primary</color>
   <!-- Styles.xml -->
-  <color name="text_view_text_color">@color/primary_text_color</color>
-  <color name="text_view_heading_text_color">@color/highlighted_text_color</color>
-  <color name="text_input_layout_text_color">@color/primary_text_color</color>
-  <color name="text_input_layout_stroke_color">@color/primary_text_color</color>
-  <color name="text_input_edit_text_text_color">@color/primary_text_color</color>
-  <color name="input_interaction_edit_text_text_color">@color/primary_text_color</color>
-  <color name="text_input_layout_background_color">@color/text_input_background</color>
-  <color name="text_input_layout_error_color">@color/error_color</color>
+  <color name="shared_text_view_text_color">@color/primary_text_color</color>
+  <color name="shared_text_view_heading_text_color">@color/highlighted_text_color</color>
+  <color name="shared_text_input_layout_text_color">@color/primary_text_color</color>
+  <color name="shared_text_input_layout_stroke_color">@color/primary_text_color</color>
+  <color name="shared_text_input_edit_text_text_color">@color/primary_text_color</color>
+  <color name="shared_input_interaction_edit_text_text_color">@color/primary_text_color</color>
+  <color name="shared_text_input_layout_background_color">@color/text_input_background</color>
+  <color name="shared_text_input_layout_error_color">@color/error_color</color>
   <!-- Admin Auth Activity -->
   <color name="admin_auth_secondary_text_color">@color/description_text_color</color>
   <color name="admin_auth_layout_background_color">@color/background_color</color>
