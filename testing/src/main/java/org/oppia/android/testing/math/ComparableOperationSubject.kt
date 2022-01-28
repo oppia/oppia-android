@@ -7,16 +7,15 @@ import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoSubject
-import org.oppia.android.app.model.ComparableOperationList
-import org.oppia.android.app.model.ComparableOperationList.ComparableOperation
-import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase
+import org.oppia.android.app.model.ComparableOperation
+import org.oppia.android.app.model.ComparableOperation.ComparisonTypeCase
 import org.oppia.android.app.model.Real
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 
 // TODO(#4098): Add tests for this class.
 
 /**
- * Truth subject for verifying properties of [ComparableOperationList]s.
+ * Truth subject for verifying properties of [ComparableOperation]s.
  *
  * This subject makes use of a custom Kotlin DSL to test the structure of a comparable operation
  * list. This structure allows for recursive verification of the structure since the structure
@@ -25,7 +24,7 @@ import org.oppia.android.testing.math.RealSubject.Companion.assertThat
  * comparators for all syntactical options):
  *
  * ```kotlin
- * assertThat(comparableOperationList).hasStructureThatMatches {
+ * assertThat(ComparableOperation).hasStructureThatMatches {
  *   hasNegatedPropertyThat().isFalse()
  *   hasInvertedPropertyThat().isFalse()
  *   commutativeAccumulationWithType(SUMMATION) {
@@ -58,22 +57,21 @@ import org.oppia.android.testing.math.RealSubject.Companion.assertThat
  * The above verifies the following structure corresponding to the expression 1+3+4.
  *
  * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
- * [ComparableOperationList] proto can be verified through inherited methods.
+ * [ComparableOperation] proto can be verified through inherited methods.
  *
  * Call [assertThat] to create the subject.
  */
-class ComparableOperationListSubject private constructor(
+class ComparableOperationSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: ComparableOperationList
+  private val actual: ComparableOperation
 ) : LiteProtoSubject(metadata, actual) {
   /**
-   * Begins the structure syntax matcher for the root of the [ComparableOperationList] corresponding
-   * to this subject (per [ComparableOperationList.getRootOperation]).
+   * Begins the structure syntax matcher for [ComparableOperation] being tested as the subject.
    *
    * See [ComparableOperationComparator] for syntax.
    */
   fun hasStructureThatMatches(init: ComparableOperationComparator.() -> Unit) {
-    ComparableOperationComparator.createFrom(actual.rootOperation).also(init)
+    ComparableOperationComparator.createFrom(actual).also(init)
   }
 
   /**
@@ -124,7 +122,7 @@ class ComparableOperationListSubject private constructor(
      * specified type. See [CommutativeAccumulationComparator] for example syntax.
      */
     fun commutativeAccumulationWithType(
-      type: ComparableOperationList.CommutativeAccumulation.AccumulationType,
+      type: ComparableOperation.CommutativeAccumulation.AccumulationType,
       init: CommutativeAccumulationComparator.() -> Unit
     ) {
       CommutativeAccumulationComparator.createFrom(type, operation).also(init)
@@ -199,11 +197,11 @@ class ComparableOperationListSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class CommutativeAccumulationComparator private constructor(
-    private val accumulation: ComparableOperationList.CommutativeAccumulation
+    private val accumulation: ComparableOperation.CommutativeAccumulation
   ) {
     /**
      * Returns a [IntegerSubject] to test
-     * [ComparableOperationList.CommutativeAccumulation.getCombinedOperationsCount].
+     * [ComparableOperation.CommutativeAccumulation.getCombinedOperationsCount].
      *
      * This method never fails since the underlying property defaults to 0 if there are no
      * operations in the accumulation.
@@ -234,7 +232,7 @@ class ComparableOperationListSubject private constructor(
        * specified type.
        */
       fun createFrom(
-        type: ComparableOperationList.CommutativeAccumulation.AccumulationType,
+        type: ComparableOperation.CommutativeAccumulation.AccumulationType,
         operation: ComparableOperation
       ): CommutativeAccumulationComparator {
         assertThat(operation.comparisonTypeCase)
@@ -259,11 +257,11 @@ class ComparableOperationListSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class NonCommutativeOperationComparator private constructor(
-    private val operation: ComparableOperationList.NonCommutativeOperation
+    private val operation: ComparableOperation.NonCommutativeOperation
   ) {
     /**
      * Begins structure matching for this operation as an exponentiation per
-     * [ComparableOperationList.NonCommutativeOperation.getExponentiation].
+     * [ComparableOperation.NonCommutativeOperation.getExponentiation].
      *
      * This method will fail if the operation corresponding to the subject is not an exponentiation.
      * See [BinaryOperationComparator] for specifics on the operation comparator used here. Example
@@ -277,14 +275,14 @@ class ComparableOperationListSubject private constructor(
      */
     fun exponentiation(init: BinaryOperationComparator.() -> Unit) {
       verifyTypeAs(
-        ComparableOperationList.NonCommutativeOperation.OperationTypeCase.EXPONENTIATION
+        ComparableOperation.NonCommutativeOperation.OperationTypeCase.EXPONENTIATION
       )
       BinaryOperationComparator.createFrom(operation.exponentiation).also(init)
     }
 
     /**
      * Begins structure matching for this operation as a square root operation per
-     * [ComparableOperationList.NonCommutativeOperation.getSquareRoot].
+     * [ComparableOperation.NonCommutativeOperation.getSquareRoot].
      *
      * This method will fail if the operation corresponding to the subject is not a square root. The
      * argument is another [ComparableOperation] hence the utilization of
@@ -299,12 +297,12 @@ class ComparableOperationListSubject private constructor(
     fun squareRootWithArgument(
       init: ComparableOperationComparator.() -> Unit
     ) {
-      verifyTypeAs(ComparableOperationList.NonCommutativeOperation.OperationTypeCase.SQUARE_ROOT)
+      verifyTypeAs(ComparableOperation.NonCommutativeOperation.OperationTypeCase.SQUARE_ROOT)
       ComparableOperationComparator.createFrom(operation.squareRoot).also(init)
     }
 
     private fun verifyTypeAs(
-      type: ComparableOperationList.NonCommutativeOperation.OperationTypeCase
+      type: ComparableOperation.NonCommutativeOperation.OperationTypeCase
     ) {
       assertThat(operation.operationTypeCase).isEqualTo(type)
     }
@@ -344,11 +342,11 @@ class ComparableOperationListSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class BinaryOperationComparator private constructor(
-    private val operation: ComparableOperationList.NonCommutativeOperation.BinaryOperation
+    private val operation: ComparableOperation.NonCommutativeOperation.BinaryOperation
   ) {
     /**
      * Begins structure matching this operation's left operand per
-     * [ComparableOperationList.NonCommutativeOperation.BinaryOperation.getLeftOperand] for the
+     * [ComparableOperation.NonCommutativeOperation.BinaryOperation.getLeftOperand] for the
      * operation represented by this comparator.
      *
      * This method provides an [ComparableOperationComparator] to use to verify the constituent
@@ -362,7 +360,7 @@ class ComparableOperationListSubject private constructor(
 
     /**
      * Begins structure matching this operation's right operand per
-     * [ComparableOperationList.NonCommutativeOperation.BinaryOperation.getRightOperand] for the
+     * [ComparableOperation.NonCommutativeOperation.BinaryOperation.getRightOperand] for the
      * operation represented by this comparator.
      *
      * This method provides an [ComparableOperationComparator] to use to verify the constituent
@@ -380,7 +378,7 @@ class ComparableOperationListSubject private constructor(
        * binary operation.
        */
       fun createFrom(
-        operation: ComparableOperationList.NonCommutativeOperation.BinaryOperation
+        operation: ComparableOperation.NonCommutativeOperation.BinaryOperation
       ): BinaryOperationComparator = BinaryOperationComparator(operation)
     }
   }
@@ -458,10 +456,10 @@ class ComparableOperationListSubject private constructor(
     @DslMarker private annotation class ComparableOperationComparatorMarker
 
     /**
-     * Returns a new [ComparableOperationListSubject] to verify aspects of the specified
-     * [ComparableOperationList] value.
+     * Returns a new [ComparableOperationSubject] to verify aspects of the specified
+     * [ComparableOperation] value.
      */
-    fun assertThat(actual: ComparableOperationList): ComparableOperationListSubject =
-      assertAbout(::ComparableOperationListSubject).that(actual)
+    fun assertThat(actual: ComparableOperation): ComparableOperationSubject =
+      assertAbout(::ComparableOperationSubject).that(actual)
   }
 }
