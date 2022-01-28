@@ -40,9 +40,10 @@ fun Fraction.toDouble(): Double {
  */
 fun Fraction.toAnswerString(): String {
   return when {
-    isOnlyWholeNumber() -> {
-      // Fraction is only a whole number.
-      if (isNegative) "-$wholeNumber" else "$wholeNumber"
+    // Fraction is only a whole number.
+    isOnlyWholeNumber() -> when (wholeNumber) {
+      0 -> "0" // 0 is always 0 regardless of its negative sign.
+      else -> if (isNegative) "-$wholeNumber" else "$wholeNumber"
     }
     wholeNumber == 0 -> {
       // Fraction contains just a fraction (no whole number).
@@ -105,7 +106,7 @@ fun Fraction.toImproperForm(): Fraction {
 }
 
 /** Returns the inverse improper fraction representation of this fraction. */
-fun Fraction.toInvertedImproperForm(): Fraction {
+private fun Fraction.toInvertedImproperForm(): Fraction {
   return toImproperForm().let { improper ->
     improper.toBuilder().apply {
       numerator = improper.denominator
@@ -187,7 +188,25 @@ operator fun Fraction.div(rhs: Fraction): Fraction {
   return this * rhs.toInvertedImproperForm()
 }
 
-fun Fraction.pow(exp: Int): Fraction {
+/**
+ * Raises this [Fraction] to the specified [exp] power and returns the result.
+ *
+ * Note that since this is an infix operation it should be used as follows (as an example):
+ * ```kotlin
+ * val result = fraction pow integerPower
+ * ```
+ *
+ * This function can only fail when (exceptions are thrown in all cases):
+ * - This [Fraction] is malformed or incomplete (e.g. a default instance).
+ * - The resulting [Fraction] would result in a zero denominator.
+ *
+ * Some specific details about the returned value:
+ * - A proper-form fraction is always returned (per [toProperForm]).
+ * - Negative powers are supported (they will invert the resulting fraction).
+ * - 0^0 is special-cased to return a 1-valued fraction for consistency with the power function for
+ *   reals (see that KDoc and/or https://stackoverflow.com/a/19955996 for context).
+ */
+infix fun Fraction.pow(exp: Int): Fraction {
   return when {
     exp == 0 -> {
       Fraction.newBuilder().apply {
@@ -197,11 +216,11 @@ fun Fraction.pow(exp: Int): Fraction {
     }
     exp == 1 -> this
     // x^-2 == 1/(x^2).
-    exp < 1 -> pow(-exp).toInvertedImproperForm().toProperForm()
+    exp < 1 -> (this pow -exp).toInvertedImproperForm().toProperForm()
     else -> { // i > 1
       var newValue = this
       for (i in 1 until exp) newValue *= this
-      return newValue
+      return newValue.toProperForm()
     }
   }
 }
@@ -218,7 +237,7 @@ fun Int.toWholeNumberFraction(): Fraction {
 }
 
 /** Returns the greatest common divisor between two integers. */
-fun gcd(x: Int, y: Int): Int {
+private fun gcd(x: Int, y: Int): Int {
   return if (y == 0) x else gcd(y, x % y)
 }
 

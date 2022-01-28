@@ -1,5 +1,5 @@
 """
-TODO: document
+General testing utilities and truth subjects for math structures and utilities.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
@@ -75,6 +75,23 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "math_parsing_error_subject",
+    testonly = True,
+    srcs = [
+        "MathParsingErrorSubject.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":math_expression_subject",
+        ":real_subject",
+        "//third_party:com_google_truth_truth",
+        "//utility/src/main/java/org/oppia/android/util/math:math_parsing_error",
+    ],
+)
+
+kt_android_library(
     name = "polynomial_subject",
     testonly = True,
     srcs = [
@@ -106,5 +123,20 @@ kt_android_library(
         "//model/src/main/proto:math_java_proto_lite",
         "//third_party:com_google_truth_extensions_truth-liteproto-extension",
         "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_android_library(
+    name = "token_subject",
+    testonly = True,
+    srcs = [
+        "TokenSubject.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        "//third_party:com_google_truth_truth",
+        "//utility/src/main/java/org/oppia/android/util/math:tokenizer",
     ],
 )
