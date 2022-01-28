@@ -597,7 +597,7 @@
   <dimen name="story_fragment_padding_bottom">160dp</dimen>
 
 <!-- RevisionCardFragment -->
-  <dimen name="revision_card_fragment_layout_min_width">0dp</dimen>
+  <dimen name="revision_card_fragment_layout_tablet_min_width">0dp</dimen>
   <dimen name="revision_card_fragment_padding_bottom">160dp</dimen>
   <dimen name="revision_card_fragment_layout_margin_start">28dp</dimen>
   <dimen name="revision_card_fragment_layout_margin_end">28dp</dimen>

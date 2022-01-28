@@ -25,7 +25,7 @@
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="@dimen/revision_card_fragment_layout_min_width"
+        android:minWidth="@dimen/revision_card_fragment_layout_tablet_min_width"
         android:orientation="vertical"
         android:paddingBottom="@dimen/revision_card_fragment_padding_bottom">
 
