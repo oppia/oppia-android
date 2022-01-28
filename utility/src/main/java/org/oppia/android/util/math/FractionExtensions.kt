@@ -236,7 +236,6 @@ fun Int.toWholeNumberFraction(): Fraction {
   }.build()
 }
 
-
 /** Returns the greatest common divisor between two integers. */
 private fun gcd(x: Int, y: Int): Int {
   return if (y == 0) x else gcd(y, x % y)

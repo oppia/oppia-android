@@ -1,12 +1,12 @@
 package org.oppia.android.util.math
 
-import kotlin.math.absoluteValue
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Real
 import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
 import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
 import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
 import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
+import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 /**

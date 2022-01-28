@@ -188,9 +188,10 @@ class ExpressionToLatexConverterTest {
         ErrorCheckingMode.ALL_ERRORS
       ).getExpectedSuccess()
     }
-    
+
     private fun parseNumericExpressionInternal(
-      expression: String, errorCheckingMode: ErrorCheckingMode
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode
     ): MathExpression {
       return MathExpressionParser.parseNumericExpression(
         expression, errorCheckingMode

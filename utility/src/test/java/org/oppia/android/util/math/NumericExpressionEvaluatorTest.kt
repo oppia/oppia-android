@@ -218,7 +218,8 @@ class NumericExpressionEvaluatorTest {
 
   private companion object {
     private fun parseNumericExpression(
-      expression: String, errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
     ): MathExpression {
       return MathExpressionParser.parseNumericExpression(
         expression, errorCheckingMode
