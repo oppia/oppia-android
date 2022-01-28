@@ -88,6 +88,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableAccessibilityChecks
 
 /** Tests for [WalkthroughFinalFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -130,6 +131,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_firstTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -155,6 +157,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -180,6 +183,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_configChange_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -212,6 +216,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_yesNoBtnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -235,6 +240,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_clickNoBtn_noBtnWorksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()

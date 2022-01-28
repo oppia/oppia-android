@@ -84,6 +84,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableAccessibilityChecks
 
 /** Tests for [WalkthroughActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -141,6 +142,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_incProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -149,6 +151,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_incProgress_configChange_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -159,6 +162,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_pressNextBtn_configChange_pressBackBtn_backBtnWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -174,6 +178,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_incProgress_onBackPress_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -184,6 +189,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_incProgress_pressBackBtn_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
