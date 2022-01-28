@@ -189,7 +189,8 @@ message MathEquation {
   MathExpression right_side = 2;
 }
 
-// Represents a list of comparable mathematics operations.
+// An operation that can be compared in a way that does not change the value based on commutativity
+// or associativity.
 //
 // 'Comparable' here means that this structure provides a trivial way to compare commutative and
 // associative operations (i.e. by extracting terms from multiple subsequent commutative &
@@ -199,33 +200,29 @@ message MathEquation {
 // using standard proto equals checking). Also note that care must be taken when performing equality
 // checking since this structure can contain floating point values that require an epsilon check to
 // approximate equality.
-message ComparableOperationList {
-  // An operation that can be compared in a way that does not change the value based on
-  // commutativity or associativity.
-  message ComparableOperation {
-    // Indicates that this operation (e.g. x) should be treated as negated (e.g. -x).
-    bool is_negated = 1;
+message ComparableOperation {
+  // Indicates that this operation (e.g. x) should be treated as negated (e.g. -x).
+  bool is_negated = 1;
 
-    // Indicates that this operation (e.g. x) should be treated as a multiplicative inverse
-    // (e.g. 1/x).
-    bool is_inverted = 2;
+  // Indicates that this operation (e.g. x) should be treated as a multiplicative inverse
+  // (e.g. 1/x).
+  bool is_inverted = 2;
 
-    // The supported comparison types.
-    oneof comparison_type {
-      // Indicates that this operation is a commutative accumulation (that is, a list of subsequent
-      // operations of the same type that are commutative, e.g. addition or multiplication).
-      CommutativeAccumulation commutative_accumulation = 3;
+  // The supported comparison types.
+  oneof comparison_type {
+    // Indicates that this operation is a commutative accumulation (that is, a list of subsequent
+    // operations of the same type that are commutative, e.g. addition or multiplication).
+    CommutativeAccumulation commutative_accumulation = 3;
 
-      // Indicates that this operation is a non-commutative operation and thus cannot be
-      // accumulated (e.g. exponentiation).
-      NonCommutativeOperation non_commutative_operation = 4;
+    // Indicates that this operation is a non-commutative operation and thus cannot be
+    // accumulated (e.g. exponentiation).
+    NonCommutativeOperation non_commutative_operation = 4;
 
-      // Indicates that this operation represents a constant value.
-      Real constant_term = 5;
+    // Indicates that this operation represents a constant value.
+    Real constant_term = 5;
 
-      // Indicates that this operation represents a variable.
-      string variable_term = 6;
-    }
+    // Indicates that this operation represents a variable.
+    string variable_term = 6;
   }
 
   // Represents an accumulation of operations (such as a summation or product).
@@ -285,7 +282,4 @@ message ComparableOperationList {
       ComparableOperation right_operand = 2;
     }
   }
-
-  // The root of the operation list (i.e. the lowest precedent operation of the expression).
-  ComparableOperation root_operation = 1;
 }

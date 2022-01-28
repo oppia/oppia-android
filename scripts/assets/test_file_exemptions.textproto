@@ -646,7 +646,7 @@ exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/Ge
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/ImageViewMatcher.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/KonfettiViewMatcher.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/DefineAppLanguageLocaleContext.kt"
-exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/ComparableOperationListSubject.kt"
+exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/ComparableOperationSubject.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/FractionSubject.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/MathEquationSubject.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/MathExpressionSubject.kt"
