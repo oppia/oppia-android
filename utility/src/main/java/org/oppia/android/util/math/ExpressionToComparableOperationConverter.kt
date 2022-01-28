@@ -28,6 +28,8 @@ import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
+import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.invertNegation
+import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.toComparableOperation
 
 class ExpressionToComparableOperationConverter private constructor() {
   companion object {
@@ -105,7 +107,7 @@ class ExpressionToComparableOperationConverter private constructor() {
             ComparableOperation.getDefaultInstance()
         }
         UNARY_OPERATION -> when (unaryOperation.operator) {
-          NEGATE -> unaryOperation.operand.toComparableOperation().makeNegative()
+          NEGATE -> unaryOperation.operand.toComparableOperation().invertNegation()
           POSITIVE -> unaryOperation.operand.toComparableOperation()
           UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null ->
             ComparableOperation.getDefaultInstance()
@@ -140,8 +142,11 @@ class ExpressionToComparableOperationConverter private constructor() {
         commutativeAccumulation = CommutativeAccumulation.newBuilder().apply {
           accumulationType = PRODUCT
           val negativeCount =
-            addOperationToProduct(binaryOperation.leftOperand, forceInverse = false) +
-              addOperationToProduct(binaryOperation.rightOperand, forceInverse = isRhsInverted)
+            addOperationToProduct(
+              binaryOperation.leftOperand, forceInverse = false, invertNegation = false
+            ) + addOperationToProduct(
+              binaryOperation.rightOperand, forceInverse = isRhsInverted, invertNegation = false
+            )
           // If an odd number of terms were negative then the overall product is negative.
           isNegated = (negativeCount % 2) != 0
           sort()
@@ -153,23 +158,27 @@ class ExpressionToComparableOperationConverter private constructor() {
       expression: MathExpression,
       forceNegative: Boolean
     ) {
-      when (expression.binaryOperation.operator) {
-        ADD -> {
-          // If the whole operation is negative, carry it to the left-hand side of the operation.
+      when {
+        expression.binaryOperation.operator == ADD -> {
+          // The whole operation being negative distributes to both sides of the addition.
           addOperationToSum(expression.binaryOperation.leftOperand, forceNegative)
-          addOperationToSum(expression.binaryOperation.rightOperand, forceNegative = false)
+          addOperationToSum(expression.binaryOperation.rightOperand, forceNegative)
         }
-        SUBTRACT -> {
+        expression.binaryOperation.operator == SUBTRACT -> {
+          // Similar to addition, negation distributes but is inverted by this subtraction for the
+          // right-hand operand.
           addOperationToSum(expression.binaryOperation.leftOperand, forceNegative)
-          addOperationToSum(expression.binaryOperation.rightOperand, forceNegative = true)
+          addOperationToSum(expression.binaryOperation.rightOperand, !forceNegative)
         }
-        else -> when {
-          // Skip groups so that nested operations can be properly combined.
-          expression.expressionTypeCase == GROUP ->
-            addOperationToSum(expression.group, forceNegative)
-          forceNegative -> addCombinedOperations(expression.toComparableOperation().makeNegative())
-          else -> addCombinedOperations(expression.toComparableOperation())
-        }
+        expression.unaryOperation.operator == NEGATE ->
+          addOperationToSum(expression.unaryOperation.operand, !forceNegative)
+        // Positive unary can be treated similarly to groups (inline for nesting).
+        expression.unaryOperation.operator == POSITIVE ->
+          addOperationToSum(expression.unaryOperation.operand, forceNegative)
+        // Skip groups so that nested operations can be properly combined.
+        expression.expressionTypeCase == GROUP -> addOperationToSum(expression.group, forceNegative)
+        forceNegative -> addCombinedOperations(expression.toComparableOperation().invertNegation())
+        else -> addCombinedOperations(expression.toComparableOperation())
       }
     }
 
@@ -178,33 +187,55 @@ class ExpressionToComparableOperationConverter private constructor() {
      * collapsing subsequent products into a single list.
      *
      * @param forceInverse whether this expression is being divided rather than multiplied
+     * @param invertNegation whether to invert the negation sign for immediate constituent
+     *     operations
      * @return the number of negative operations that were made positive before being added to the
      *     accumulation
      */
     private fun CommutativeAccumulation.Builder.addOperationToProduct(
       expression: MathExpression,
-      forceInverse: Boolean
+      forceInverse: Boolean,
+      invertNegation: Boolean
     ): Int {
+      // Note that negation only distributes "leftward" since subsequent right-hand operations would
+      // otherwise actually reverse the negation.
       return when {
         expression.binaryOperation.operator == MULTIPLY -> {
-          // If the whole operation is inverted, carry it to the left-hand side of the operation.
-          addOperationToProduct(expression.binaryOperation.leftOperand, forceInverse) +
-            addOperationToProduct(expression.binaryOperation.rightOperand, forceInverse = false)
+          // If the entire operation is inverted, that means each part of the multiplication should
+          // be, i.e.: 1/(x*y)=(1/x)*(1/y).
+          addOperationToProduct(
+            expression.binaryOperation.leftOperand, forceInverse, invertNegation
+          ) + addOperationToProduct(
+            expression.binaryOperation.rightOperand, forceInverse, invertNegation = false
+          )
         }
         expression.binaryOperation.operator == DIVIDE -> {
-          addOperationToProduct(expression.binaryOperation.leftOperand, forceInverse) +
-            addOperationToProduct(expression.binaryOperation.rightOperand, forceInverse = true)
+          // Similar to multiplication, inversion for the whole operation results in distribution
+          // except the division inverts for the right-hand operand, i.e.: 1/(x/y)=(1/x)*y.
+          addOperationToProduct(
+            expression.binaryOperation.leftOperand, forceInverse, invertNegation
+          ) + addOperationToProduct(
+            expression.binaryOperation.rightOperand, !forceInverse, invertNegation = false
+          )
         }
+        expression.unaryOperation.operator == NEGATE ->
+          addOperationToProduct(expression.unaryOperation.operand, forceInverse, !invertNegation)
+        // Positive unary can be treated similarly to groups (inline for nesting).
+        expression.unaryOperation.operator == POSITIVE ->
+          addOperationToProduct(expression.unaryOperation.operand, forceInverse, invertNegation)
         // Skip groups so that nested operations can be properly combined.
         expression.expressionTypeCase == GROUP ->
-          addOperationToProduct(expression.group, forceInverse)
+          addOperationToProduct(expression.group, forceInverse, invertNegation)
         else -> {
           val operationExpression = expression.toComparableOperation()
-          val positiveConvertedOperation = operationExpression.makePositive()
+          val potentiallyInvertedExpression = if (invertNegation) {
+            operationExpression.invertNegation()
+          } else operationExpression
+          val positiveConvertedOperation = potentiallyInvertedExpression.makePositive()
           if (forceInverse) {
-            addCombinedOperations(positiveConvertedOperation.makeInverted())
+            addCombinedOperations(positiveConvertedOperation.invertInverted())
           } else addCombinedOperations(positiveConvertedOperation)
-          if (operationExpression.isNegated) 1 else 0
+          if (potentiallyInvertedExpression.isNegated) 1 else 0
         }
       }
     }
@@ -238,10 +269,10 @@ class ExpressionToComparableOperationConverter private constructor() {
     private fun ComparableOperation.makePositive(): ComparableOperation =
       toBuilder().apply { isNegated = false }.build()
 
-    private fun ComparableOperation.makeNegative(): ComparableOperation =
-      toBuilder().apply { isNegated = true }.build()
+    private fun ComparableOperation.invertNegation(): ComparableOperation =
+      toBuilder().apply { isNegated = !isNegated }.build()
 
-    private fun ComparableOperation.makeInverted(): ComparableOperation =
-      toBuilder().apply { isInverted = true }.build()
+    private fun ComparableOperation.invertInverted(): ComparableOperation =
+      toBuilder().apply { isInverted = !isInverted }.build()
   }
 }
