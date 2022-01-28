@@ -9,6 +9,7 @@ import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 
+// TODO: add tests.
 val REAL_COMPARATOR: Comparator<Real> by lazy { Comparator.comparing(Real::toDouble) }
 
 /**

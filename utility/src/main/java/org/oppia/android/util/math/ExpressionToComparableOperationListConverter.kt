@@ -2,17 +2,15 @@ package org.oppia.android.util.math
 
 import org.oppia.android.app.model.ComparableOperationList
 import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation
-import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType
-import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.ACCUMULATION_TYPE_UNSPECIFIED
 import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.PRODUCT
 import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.SUMMATION
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation
-import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase.COMPARISONTYPE_NOT_SET
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase.CONSTANT_TERM
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase.NON_COMMUTATIVE_OPERATION
 import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase.VARIABLE_TERM
 import org.oppia.android.app.model.ComparableOperationList.NonCommutativeOperation
 import org.oppia.android.app.model.ComparableOperationList.NonCommutativeOperation.OperationTypeCase
+import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE
 import org.oppia.android.app.model.MathBinaryOperation.Operator.EXPONENTIATE
@@ -28,13 +26,15 @@ import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERA
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.MathFunctionCall.FunctionType
 import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
+import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
-import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
-import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
 class ExpressionToComparableOperationListConverter private constructor() {
   companion object {
+    // TODO: consider eliminating the comparator extensions. Probably should verify full test suite
+    //  & the old tests before deleting the old tests.
+
     private val COMPARABLE_OPERATION_COMPARATOR: Comparator<ComparableOperation> by lazy {
       // Some of the comparators must be deferred since they indirectly reference this comparator
       // (which isn't valid until it's fully assembled).
@@ -87,9 +87,9 @@ class ExpressionToComparableOperationListConverter private constructor() {
         )
     }
 
-    fun MathExpression.toComparable(): ComparableOperationList {
+    fun MathExpression.toComparableOperationList(): ComparableOperationList {
       return ComparableOperationList.newBuilder().apply {
-        rootOperation = toComparableOperation().stabilizeNegation().sort()
+        rootOperation = toComparableOperation()
       }.build()
     }
 
@@ -137,6 +137,7 @@ class ExpressionToComparableOperationListConverter private constructor() {
           accumulationType = SUMMATION
           addOperationToSum(binaryOperation.leftOperand, forceNegative = false)
           addOperationToSum(binaryOperation.rightOperand, forceNegative = isRhsNegative)
+          sort()
         }.build()
       }.build()
     }
@@ -145,8 +146,12 @@ class ExpressionToComparableOperationListConverter private constructor() {
       return ComparableOperation.newBuilder().apply {
         commutativeAccumulation = CommutativeAccumulation.newBuilder().apply {
           accumulationType = PRODUCT
-          addOperationToProduct(binaryOperation.leftOperand, forceInverse = false)
-          addOperationToProduct(binaryOperation.rightOperand, forceInverse = isRhsInverted)
+          val negativeCount =
+            addOperationToProduct(binaryOperation.leftOperand, forceInverse = false) +
+              addOperationToProduct(binaryOperation.rightOperand, forceInverse = isRhsInverted)
+          // If an odd number of terms were negative then the overall product is negative.
+          isNegated = (negativeCount % 2) != 0
+          sort()
         }.build()
       }.build()
     }
@@ -165,30 +170,59 @@ class ExpressionToComparableOperationListConverter private constructor() {
           addOperationToSum(expression.binaryOperation.leftOperand, forceNegative)
           addOperationToSum(expression.binaryOperation.rightOperand, forceNegative = true)
         }
-        else -> if (forceNegative) {
-          addCombinedOperations(expression.toComparableOperation().makeNegative())
-        } else addCombinedOperations(expression.toComparableOperation())
+        else -> when {
+          // Skip groups so that nested operations can be properly combined.
+          expression.expressionTypeCase == GROUP ->
+            addOperationToSum(expression.group, forceNegative)
+          forceNegative -> addCombinedOperations(expression.toComparableOperation().makeNegative())
+          else -> addCombinedOperations(expression.toComparableOperation())
+        }
       }
     }
 
+    /**
+     * Recursively adds [expression] tp the ongoing product [CommutativeAccumulation.Builder] by
+     * collapsing subsequent products into a single list.
+     *
+     * @param forceInverse whether this expression is being divided rather than multiplied
+     * @return the number of negative operations that were made positive before being added to the
+     *     accumulation
+     */
     private fun CommutativeAccumulation.Builder.addOperationToProduct(
       expression: MathExpression,
       forceInverse: Boolean
-    ) {
-      when (expression.binaryOperation.operator) {
-        MULTIPLY -> {
+    ): Int {
+      return when {
+        expression.binaryOperation.operator == MULTIPLY -> {
           // If the whole operation is inverted, carry it to the left-hand side of the operation.
-          addOperationToProduct(expression.binaryOperation.leftOperand, forceInverse)
-          addOperationToProduct(expression.binaryOperation.rightOperand, forceInverse = false)
+          addOperationToProduct(expression.binaryOperation.leftOperand, forceInverse) +
+            addOperationToProduct(expression.binaryOperation.rightOperand, forceInverse = false)
         }
-        DIVIDE -> {
-          addOperationToProduct(expression.binaryOperation.leftOperand, forceInverse)
-          addOperationToProduct(expression.binaryOperation.rightOperand, forceInverse = true)
+        expression.binaryOperation.operator == DIVIDE -> {
+          addOperationToProduct(expression.binaryOperation.leftOperand, forceInverse) +
+            addOperationToProduct(expression.binaryOperation.rightOperand, forceInverse = true)
         }
-        else -> if (forceInverse) {
-          addCombinedOperations(expression.toComparableOperation().makeInverted())
-        } else addCombinedOperations(expression.toComparableOperation())
+        // Skip groups so that nested operations can be properly combined.
+        expression.expressionTypeCase == GROUP ->
+          addOperationToProduct(expression.group, forceInverse)
+        else -> {
+          val operationExpression = expression.toComparableOperation()
+          val positiveConvertedOperation = operationExpression.makePositive()
+          if (forceInverse) {
+            addCombinedOperations(positiveConvertedOperation.makeInverted())
+          } else addCombinedOperations(positiveConvertedOperation)
+          if (operationExpression.isNegated) 1 else 0
+        }
       }
+    }
+
+    private fun CommutativeAccumulation.Builder.sort() {
+      // Replace the list operations with a sorted list of operations. Note that the inner elements
+      // are already sorted since this is called during operation creation time (so nested
+      // operations would have already been sorted).
+      val operationsList = combinedOperationsList.toMutableList()
+      clearCombinedOperations()
+      addAllCombinedOperations(operationsList.sortedWith(COMPARABLE_OPERATION_COMPARATOR))
     }
 
     private fun MathExpression.toNonCommutativeOperation(
@@ -216,85 +250,5 @@ class ExpressionToComparableOperationListConverter private constructor() {
 
     private fun ComparableOperation.makeInverted(): ComparableOperation =
       toBuilder().apply { isInverted = true }.build()
-
-    private fun ComparableOperation.stabilizeNegation(): ComparableOperation {
-      return when (comparisonTypeCase) {
-        ComparableOperation.ComparisonTypeCase.COMMUTATIVE_ACCUMULATION -> {
-          val stabilizedOperations =
-            commutativeAccumulation.combinedOperationsList.map { it.stabilizeNegation() }
-          when (commutativeAccumulation.accumulationType) {
-            SUMMATION -> toBuilder().apply {
-              commutativeAccumulation = commutativeAccumulation.toBuilder().apply {
-                clearCombinedOperations()
-                addAllCombinedOperations(stabilizedOperations)
-              }.build()
-            }.build()
-            PRODUCT -> {
-              // Negations can be combined for all constituent operations & brought up to the
-              // top-level operation.
-              val negativeCount = stabilizedOperations.count {
-                it.isNegated
-              } + if (isNegated) 1 else 0
-              val positiveOperations = stabilizedOperations.map { it.makePositive() }
-              toBuilder().apply {
-                isNegated = (negativeCount % 2) == 1
-                commutativeAccumulation = commutativeAccumulation.toBuilder().apply {
-                  clearCombinedOperations()
-                  addAllCombinedOperations(positiveOperations)
-                }.build()
-              }.build()
-            }
-            ACCUMULATION_TYPE_UNSPECIFIED, AccumulationType.UNRECOGNIZED, null -> this
-          }
-        }
-        NON_COMMUTATIVE_OPERATION -> toBuilder().apply {
-          // Negation can't be extracted from commutative operations.
-          nonCommutativeOperation = when (nonCommutativeOperation.operationTypeCase) {
-            OperationTypeCase.EXPONENTIATION -> nonCommutativeOperation.toBuilder().apply {
-              exponentiation = nonCommutativeOperation.exponentiation.toBuilder().apply {
-                leftOperand = nonCommutativeOperation.exponentiation.leftOperand.stabilizeNegation()
-                rightOperand =
-                  nonCommutativeOperation.exponentiation.rightOperand.stabilizeNegation()
-              }.build()
-            }.build()
-            OperationTypeCase.SQUARE_ROOT -> nonCommutativeOperation.toBuilder().apply {
-              squareRoot = nonCommutativeOperation.squareRoot.stabilizeNegation()
-            }.build()
-            OperationTypeCase.OPERATIONTYPE_NOT_SET, null -> nonCommutativeOperation
-          }
-        }.build()
-        CONSTANT_TERM -> this
-        VARIABLE_TERM -> this
-        COMPARISONTYPE_NOT_SET, null -> this
-      }
-    }
-
-    private fun ComparableOperation.sort(): ComparableOperation {
-      return when (comparisonTypeCase) {
-        ComparableOperation.ComparisonTypeCase.COMMUTATIVE_ACCUMULATION -> toBuilder().apply {
-          commutativeAccumulation = commutativeAccumulation.toBuilder().apply {
-            clearCombinedOperations()
-            // Sort the operations themselves before sorting them relative to each other.
-            val innerSortedList = commutativeAccumulation.combinedOperationsList.map { it.sort() }
-            addAllCombinedOperations(innerSortedList.sortedWith(COMPARABLE_OPERATION_COMPARATOR))
-          }.build()
-        }.build()
-        NON_COMMUTATIVE_OPERATION -> toBuilder().apply {
-          nonCommutativeOperation = when (nonCommutativeOperation.operationTypeCase) {
-            OperationTypeCase.EXPONENTIATION -> nonCommutativeOperation.toBuilder().apply {
-              exponentiation = nonCommutativeOperation.exponentiation.toBuilder().apply {
-                leftOperand = nonCommutativeOperation.exponentiation.leftOperand.sort()
-                rightOperand = nonCommutativeOperation.exponentiation.rightOperand.sort()
-              }.build()
-            }.build()
-            OperationTypeCase.SQUARE_ROOT -> nonCommutativeOperation.toBuilder().apply {
-              squareRoot = nonCommutativeOperation.squareRoot.sort()
-            }.build()
-            OperationTypeCase.OPERATIONTYPE_NOT_SET, null -> nonCommutativeOperation
-          }
-        }.build()
-        CONSTANT_TERM, VARIABLE_TERM, COMPARISONTYPE_NOT_SET, null -> this
-      }
-    }
   }
 }
