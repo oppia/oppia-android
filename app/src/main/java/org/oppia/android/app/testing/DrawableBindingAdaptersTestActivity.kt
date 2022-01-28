@@ -5,7 +5,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 
-/** Test activity for DrawableBindingAdapters. */
+/** Test activity for [org.oppia.android.app.databinding.DrawableBindingAdapters]. */
 class DrawableBindingAdaptersTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
