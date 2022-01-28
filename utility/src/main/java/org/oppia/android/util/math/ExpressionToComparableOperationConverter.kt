@@ -1,15 +1,14 @@
 package org.oppia.android.util.math
 
-import org.oppia.android.app.model.ComparableOperationList
-import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation
-import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.PRODUCT
-import org.oppia.android.app.model.ComparableOperationList.CommutativeAccumulation.AccumulationType.SUMMATION
-import org.oppia.android.app.model.ComparableOperationList.ComparableOperation
-import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase.CONSTANT_TERM
-import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase.NON_COMMUTATIVE_OPERATION
-import org.oppia.android.app.model.ComparableOperationList.ComparableOperation.ComparisonTypeCase.VARIABLE_TERM
-import org.oppia.android.app.model.ComparableOperationList.NonCommutativeOperation
-import org.oppia.android.app.model.ComparableOperationList.NonCommutativeOperation.OperationTypeCase
+import org.oppia.android.app.model.ComparableOperation
+import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation
+import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.PRODUCT
+import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.SUMMATION
+import org.oppia.android.app.model.ComparableOperation.ComparisonTypeCase.CONSTANT_TERM
+import org.oppia.android.app.model.ComparableOperation.ComparisonTypeCase.NON_COMMUTATIVE_OPERATION
+import org.oppia.android.app.model.ComparableOperation.ComparisonTypeCase.VARIABLE_TERM
+import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation
+import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.OperationTypeCase
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE
@@ -30,7 +29,7 @@ import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
 
-class ExpressionToComparableOperationListConverter private constructor() {
+class ExpressionToComparableOperationConverter private constructor() {
   companion object {
     // TODO: consider eliminating the comparator extensions. Probably should verify full test suite
     //  & the old tests before deleting the old tests.
@@ -87,13 +86,7 @@ class ExpressionToComparableOperationListConverter private constructor() {
         )
     }
 
-    fun MathExpression.toComparableOperationList(): ComparableOperationList {
-      return ComparableOperationList.newBuilder().apply {
-        rootOperation = toComparableOperation()
-      }.build()
-    }
-
-    private fun MathExpression.toComparableOperation(): ComparableOperation {
+    fun MathExpression.toComparableOperation(): ComparableOperation {
       return when (expressionTypeCase) {
         CONSTANT -> ComparableOperation.newBuilder().apply {
           constantTerm = constant

@@ -59,10 +59,10 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "ExpressionToComparableOperationListConverterTest",
-    srcs = ["ExpressionToComparableOperationListConverterTest.kt"],
+    name = "ExpressionToComparableOperationConverterTest",
+    srcs = ["ExpressionToComparableOperationConverterTest.kt"],
     custom_package = "org.oppia.android.util.math",
-    test_class = "org.oppia.android.util.math.ExpressionToComparableOperationListConverterTest",
+    test_class = "org.oppia.android.util.math.ExpressionToComparableOperationConverterTest",
     test_manifest = "//utility:test_manifest",
     deps = [
         "//model/src/main/proto:math_java_proto_lite",

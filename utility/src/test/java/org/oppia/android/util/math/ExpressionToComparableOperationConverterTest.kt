@@ -11,12 +11,12 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingM
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [ExpressionToComparableOperationListConverter]. */
+/** Tests for [ExpressionToComparableOperationConverter]. */
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class ExpressionToComparableOperationListConverterTest {
+class ExpressionToComparableOperationConverterTest {
   // TODO: add high-level checks for the three types, but don't test in detail since there are
   //  separate suites. Also, document the separate suites' existence in this suites's KDoc.
 
