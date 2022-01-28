@@ -43,7 +43,7 @@ class ParameterizedRunnerDelegate(
 
   override fun testName(method: FrameworkMethod?): String {
     return if (methodName != null) {
-      "${fetchTestNameFromParent(method)}-$iterationName"
+      "${fetchTestNameFromParent(method)}_$iterationName"
     } else fetchTestNameFromParent(method)
   }
 
