@@ -28,14 +28,15 @@
       app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_margin : @dimen/profile_chooser_add_view_margin_bottom_profile_not_added}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_top_profile_already_added : @dimen/profile_chooser_add_view_margin_top_profile_not_added}">
 
-      <de.hdodenhof.circleimageview.CircleImageView
+      <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_add_button"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginBottom="8dp"
-        app:srcCompat="@{@drawable/ic_add_profile}"
-        app:civ_border_color="@color/avatar_border"
-        app:civ_border_width="1dp" />
+        android:src="@{@drawable/ic_add_profile}"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
+        app:strokeColor="@color/avatar_border"
+        app:strokeWidth="1dp" />
 
       <TextView
         android:id="@+id/add_profile_text"

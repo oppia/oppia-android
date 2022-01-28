@@ -20,7 +20,7 @@
     android:importantForAccessibility="no"
     android:paddingTop="32dp">
 
-    <com.jackandphantom.circularimageview.CircleImage
+    <com.google.android.material.imageview.ShapeableImageView
       android:id="@+id/profile_edit_image"
       android:layout_width="100dp"
       android:layout_height="100dp"

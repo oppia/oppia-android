@@ -35,13 +35,14 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <de.hdodenhof.circleimageview.CircleImageView
+      <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_avatar_img"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginBottom="8dp"
-        app:civ_border_color="@color/avatar_border"
-        app:civ_border_width="1dp"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
+        app:strokeColor="@color/avatar_border"
+        app:strokeWidth="1dp"
         profile:src="@{viewModel.profile.avatar}" />
 
       <LinearLayout

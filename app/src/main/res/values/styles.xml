@@ -459,4 +459,9 @@
     <item name="android:gravity">center_horizontal</item>
   </style>
 
+  <!-- ShapeableImageView -->
+  <style name="ShapeAppearanceOverlay.App.Circular" parent="">
+    <item name="cornerSize">50%</item>
+  </style>
+
 </resources>

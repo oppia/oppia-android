@@ -35,14 +35,15 @@
       android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_start_profile_not_added}"
       tools:ignore="RtlSymmetry">
 
-      <de.hdodenhof.circleimageview.CircleImageView
+      <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_add_button"
         android:layout_width="108dp"
         android:layout_height="108dp"
-        app:srcCompat="@{@drawable/ic_add_profile}"
+        android:src="@{@drawable/ic_add_profile}"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_circular_image_margin_top_profile_already_added : @dimen/space_0dp}"
-        app:civ_border_color="@color/avatar_border"
-        app:civ_border_width="1dp" />
+        app:strokeColor="@color/avatar_border"
+        app:strokeWidth="1dp"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular" />
 
       <LinearLayout
         android:layout_width="match_parent"
