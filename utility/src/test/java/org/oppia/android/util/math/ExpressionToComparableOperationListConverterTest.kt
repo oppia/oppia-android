@@ -11,39 +11,204 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingM
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [MathExpressionParser]. */
+/** Tests for [ExpressionToComparableOperationListConverter]. */
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-class ExpressionToComparableOperationListTest {
+class ExpressionToComparableOperationListConverterTest {
   // TODO: add high-level checks for the three types, but don't test in detail since there are
   //  separate suites. Also, document the separate suites' existence in this suites's KDoc.
 
-  @Test
-  fun testToComparableOperation() {
-    // TODO: split up & move to separate test suites. Finish test cases (if anymore are needed).
+  // TODO: use utility directly
+  // TODO: finish tests.
+  // TODO: add tests for comparator/sorting & negation simplification?
 
-    val exp1 = parseNumericExpressionSuccessfullyWithAllErrors("1")
-    assertThat(exp1.toComparableOperationList()).hasStructureThatMatches {
+  /* Operation creation */
+  // testConvert_constantExpression_returnsConstantOperation
+  // testConvert_variableExpression_returnsVariableOperation
+  // testConvert_addition_returnsSummation
+  // testConvert_subtraction_returnsSummationOfNegative
+  // testConvert_multiplication_returnsProduct
+  // testConvert_division_returnsProductOfInverted
+  // testConvert_exponentiation_returnsNonCommutativeOperation
+  // testConvert_squareRoot_returnsNonCommutativeOperation
+  // testConvert_negatedVariable_returnsNegativeVariableOperation
+  // testConvert_positiveVariable_returnsVariableOperation
+  // testConvert_positiveOfNegativeVariable_returnsNegativeVariableOperation
+  // testConvert_subtractionOfNegative_returnsSummationWithPositives
+  // testConvert_multipleAdditions_returnsCombinedSummation
+  // testConvert_multipleSubtractions_returnsCombinedSummation
+  // testConvert_additionsAndSubtractions_returnsCombinedSummation
+  // testConvert_additionsWithNestedAdds_returnsCompletelyCombinedSummation
+  // testConvert_subtractsWithNestedSubs_returnsCompletelyCombinedSummation
+  // testConvert_additionsAndSubtractionsWithNested_returnsCombinedSummation
+  // testConvert_multipleMultiplications_returnsCombinedProduct
+  // testConvert_multipleDivisions_returnsCombinedProduct
+  // testConvert_multiplicationsAndDivisions_returnsCombinedProduct
+  // testConvert_multiplicationsWithNestedMults_returnsCompletelyCombinedProduct
+  // testConvert_divisionsWithNestedDivs_returnsCompletelyCombinedProduct
+  // testConvert_multiplicationsAndDivisionsWithNested_returnsCombinedProduct
+  // testConvert_multiplicationWithOneNegative_returnsNegativeProduct
+  // testConvert_multiplicationWithTwoNegatives_returnsPositiveProduct
+  // testConvert_multiplicationWithThreeNegatives_returnsNegativeProduct
+  // testConvert_combinedMultDivWithNested_evenNegatives_returnsPositiveProduct
+  // testConvert_combinedMultDivWithNested_oddNegatives_returnsNegativeProduct
+  // testConvert_additionAndExp_returnsSummationWithNonCommutative
+  // testConvert_additionAndSquareRoot_returnsSummationWithNonCommutative
+  // testConvert_additionWithinExp_returnsSummationWithinNonCommutative
+  // testConvert_additionWithinSquareRoot_returnsSummationWithinNonCommutative
+  // testConvert_multiplicationAndExp_returnsProductWithNonCommutative
+  // testConvert_multiplicationAndSquareRoot_returnsProductWithNonCommutative
+  // testConvert_multiplicationWithinExp_returnsProductWithinNonCommutative
+  // testConvert_multiplicationWithinSquareRoot_returnsProductWithinNonCommutative
+  // testConvert_additionAndMultiplication_returnsSummationOfProduct
+  // testConvert_multiplicationAndGroupedAddition_returnsProductOfSummation
+
+  /* Top-level operation sorting */
+  // testConvert_additionThenSquareRoot_samePrecedence_returnsOpWithSummationFirst
+  // testConvert_squareRootThenAddition_samePrecedence_returnsOpWithSummationFirst
+  // testConvert_additionThenExp_samePrecedence_returnsOpWithSummationFirst
+  // testConvert_exponentiationThenAddition_samePrecedence_returnsOpWithSummationFirst
+  // testConvert_constantThenSquareRoot_samePrecedence_returnsOpWithNonCommutativeFirst
+  // testConvert_squareRootThenConstant_samePrecedence_returnsOpWithNonCommutativeFirst
+  // testConvert_constantThenExp_samePrecedence_returnsOpWithNonCommutativeFirst
+  // testConvert_exponentiationThenConstant_samePrecedence_returnsOpWithNonCommutativeFirst
+  // testConvert_constantThenVariable_samePrecedence_returnsOpWithConstantFirst
+  // testConvert_variableThenConstant_samePrecedence_returnsOpWithConstantFirst
+  // testConvert_twoVariables_negatedThenInverted_returnsOpWithNegatedFirst
+  // testConvert_twoVariables_invertedThenNegated_returnsOpWithNegatedFirst
+
+  /* Accumulator sorting */
+  // TODO: mention no tiebreakers since there can't be summations or products adjacent with others
+  //  of the same type.
+  // testConvert_additionAndMult_samePrecedence_returnsOpWithSummationFirst
+  // testConvert_multiplicationAndAddition_samePrecedence_returnsOpWithSummationFirst
+  // testConvert_additionAndMult_samePrecedenceAsNested_returnsOpWithSummationFirst
+  // testConvert_multiplicationAndAddition_samePrecedenceAsNested_returnsOpWithSummationFirst
+
+  /* Non-commutative sorting */
+  // testConvert_addExpThenSqrt_samePrecedence_returnsOpWithExpThenSqrt
+  // testConvert_addSqrtThenExp_samePrecedence_returnsOpWithExpThenSqrt
+  // testConvert_addTwoExps_lhs1Const_rhs1Const_lhs2Const_rhs2Const_returnsOpWithExp1Then2
+  // ... parameterized:
+  // const^const  const^const
+  // var^const    const^const
+  // const^var    const^const
+  // var^var      const^const
+  //
+  // const^const  var^const
+  // var^const    var^const
+  // const^var    var^const
+  // var^var      var^const
+  //
+  // const^const  const^var
+  // var^const    const^var
+  // const^var    const^var
+  // var^var      const^var
+  //
+  // const^const  var^var
+  // var^const    var^var
+  // const^var    var^var
+  // var^var      var^var
+  // ...
+  // testConvert_addTwoSqrts_leftConst_rightConst_returnsOpWithSqrt1ThenSqrt2
+  // testConvert_addTwoSqrts_leftVar_rightConst_returnsOpWithSqrt2ThenSqrt1
+  // testConvert_addTwoSqrts_leftConst_rightVar_returnsOpWithSqrt1ThenSqrt2
+  // testConvert_addTwoSqrts_leftVar_rightVar_returnsOpWithSqrt1ThenSqrt2
+
+  // testConvert_addTwoExps_lhs1Var_rhs1Const_lhs2Const_rhs2Const_returnsOpWithExp2Then1
+  // testConvert_addTwoExps_lhs1Const_rhs1Var_lhs2Const_rhs2Const_returnsOpWithExp2Then1
+  // testConvert_addTwoExps_lhs1Const_rhs1Var_lhs2Const_rhs2Var_returnsOpWithExp1Then2
+  // testConvert_addTwoExps_lhs1Const_rhs1Var_lhs2Var_rhs2Const_returnsOpWithExp1Then2
+
+  /* Constant sorting */
+  // testConvert_addTwoConstants_leftInteger2_rightInteger3_returnsOpWith2Then3
+  // ... parameterized:
+  // left: 2  right: 3
+  // left: 3  right: 2
+  //
+  // left: 2  right: 3.14
+  // left: 3.14  right: 2
+  //
+  // left: 4  right: 3.14
+  // left: 3.14  right: 4
+  //
+  // left: 3.14  right: 6.28
+  // left: 6.28  right: 3.14
+  // ...
+
+  /* Variable sorting */
+  // testConvert_addTwoVariables_leftX_rightX_returnsOpBothXs
+  // testConvert_addTwoVariables_leftX_rightY_returnsOpWithXThenY
+  // ... parameterized:
+  // x, y; y, x; y, z; z, y; x, y, z; z, y, x
+  // ...
+
+  /* Combined operations */
+  // testConvert_allOperations_withNestedGroups_returnsCorrectlyStructuredAndOrderedOperation
+
+  /* Equivalence checks */
+  // testEquals_twoAdditionOps_differentByCommutativity_areEqual
+  // testEquals_twoAdditionOps_differentByAssociativity_areEqual
+  // testEquals_twoAdditionOps_differentByAssociativityAndCommutativity_areEqual
+  // testEquals_twoAdditionOps_differentByValue_areNotEqual
+  // testEquals_twoAdditionOps_differentByEvaluation_areNotEqual
+  // testEquals_twoMultOps_differentByCommutativity_areEqual
+  // testEquals_twoMultOps_differentByAssociativity_areEqual
+  // testEquals_twoMultOps_differentByAssociativityAndCommutativity_areEqual
+  // testEquals_twoMultOps_differentByValue_areNotEqual
+  // testEquals_twoMultOps_differentByEvaluation_areNotEqual
+  // TODO: for this & the next one, test with three operations (e.g. 2 / 3 / 4).
+  // testEquals_twoSubOps_same_areEqual
+  // testEquals_twoSubOps_differentByOrder_areNotEqual
+  // testEquals_twoSubOps_differentByValue_areNotEqual
+  // testEquals_twoDivOps_same_areEqual
+  // testEquals_twoDivOps_differentByOrder_areNotEqual
+  // testEquals_twoDivOps_differentByValue_areNotEqual
+  // testEquals_twoExps_same_areEqual
+  // testEquals_twoExps_differentByOrder_areNotEqual
+  // testEquals_twoExps_differentByValue_areNotEqual
+  // testEquals_twoSqrts_same_areEqual
+  // testEquals_twoSqrts_differentByValue_areNotEqual
+  // testEquals_twoOps_addsAndSubs_differentByOrder_areEqual
+  // testEquals_twoOps_multsAndDivs_differentByOrder_areEqual
+  // testEquals_twoOps_addsSubsMultsAndDivs_differentByOrder_areEqual
+  // testEquals_twoOps_allOperations_differentByOrder_areEqual
+  // testEquals_twoOps_allOperations_oneNestedDifferentByValue_areNotEqual
+  // testEquals_twoOps_allOperations_oneMissingTerm_areNotEqual
+
+  @Test
+  fun test1() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       constantTerm {
         withValueThat().isIntegerThat().isEqualTo(1)
       }
     }
+  }
 
-    val exp2 = parseNumericExpressionSuccessfullyWithAllErrors("-1")
-    assertThat(exp2.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test2() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("-1")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
       hasInvertedPropertyThat().isFalse()
       constantTerm {
         withValueThat().isIntegerThat().isEqualTo(1)
       }
     }
+  }
 
-    val exp3 = parseNumericExpressionSuccessfullyWithAllErrors("1+3+4")
-    assertThat(exp3.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test3() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+3+4")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -71,9 +236,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp4 = parseNumericExpressionSuccessfullyWithAllErrors("-1-2-3")
-    assertThat(exp4.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test4() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("-1-2-3")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -101,9 +270,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp5 = parseNumericExpressionSuccessfullyWithAllErrors("1+2-3")
-    assertThat(exp5.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test5() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+2-3")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -131,9 +304,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp6 = parseNumericExpressionSuccessfullyWithAllErrors("2*3*4")
-    assertThat(exp6.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test6() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("2*3*4")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -161,9 +338,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp7 = parseNumericExpressionSuccessfullyWithAllErrors("1-2*3")
-    assertThat(exp7.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test7() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1-2*3")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -198,9 +379,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp8 = parseNumericExpressionSuccessfullyWithAllErrors("2*3-4")
-    assertThat(exp8.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test8() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("2*3-4")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -235,9 +420,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp9 = parseNumericExpressionSuccessfullyWithAllErrors("1+2*3-4+8*7*6-9")
-    assertThat(exp9.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test9() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+2*3-4+8*7*6-9")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -314,9 +503,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp10 = parseNumericExpressionSuccessfullyWithAllErrors("2/3/4")
-    assertThat(exp10.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test10() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("2/3/4")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -344,9 +537,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp11 = parseNumericExpressionSuccessfullyWithoutOptionalErrors("2^3^4")
-    assertThat(exp11.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test11() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithoutOptionalErrors("2^3^4")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       nonCommutativeOperation {
@@ -383,9 +580,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp12 = parseNumericExpressionSuccessfullyWithAllErrors("1+2/3+3")
-    assertThat(exp12.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test12() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+2/3+3")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -427,9 +628,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp13 = parseNumericExpressionSuccessfullyWithAllErrors("1+(2/3)+3")
-    assertThat(exp13.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test13() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+(2/3)+3")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -471,9 +676,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp14 = parseNumericExpressionSuccessfullyWithAllErrors("1+2^3+3")
-    assertThat(exp14.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test14() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+2^3+3")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -516,9 +725,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp15 = parseNumericExpressionSuccessfullyWithAllErrors("1+(2^3)+3")
-    assertThat(exp15.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test15() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+(2^3)+3")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -561,9 +774,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp16 = parseNumericExpressionSuccessfullyWithAllErrors("2*3/4*7")
-    assertThat(exp16.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test16() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("2*3/4*7")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -598,9 +815,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp17 = parseNumericExpressionSuccessfullyWithAllErrors("2*(3/4)*7")
-    assertThat(exp17.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test17() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("2*(3/4)*7")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -635,9 +856,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp18 = parseNumericExpressionSuccessfullyWithAllErrors("-3*sqrt(2)")
-    assertThat(exp18.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test18() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("-3*sqrt(2)")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -664,9 +889,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp19 = parseNumericExpressionSuccessfullyWithAllErrors("1+(2+(3+(4+5)))")
-    assertThat(exp19.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test19() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+(2+(3+(4+5)))")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -708,9 +937,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp20 = parseNumericExpressionSuccessfullyWithAllErrors("2*(3*(4*(5*6)))")
-    assertThat(exp20.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test20() {
+    // TODO: do something with this
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("2*(3*(4*(5*6)))")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -752,27 +985,39 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp21 = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
-    assertThat(exp21.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test21() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       variableTerm {
         withNameThat().isEqualTo("x")
       }
     }
+  }
 
-    val exp22 = parseAlgebraicExpressionSuccessfullyWithAllErrors("-x")
-    assertThat(exp22.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test22() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("-x")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
       hasInvertedPropertyThat().isFalse()
       variableTerm {
         withNameThat().isEqualTo("x")
       }
     }
+  }
 
-    val exp23 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x+y")
-    assertThat(exp23.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test23() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x+y")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -800,9 +1045,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp24 = parseAlgebraicExpressionSuccessfullyWithAllErrors("-1-x-y")
-    assertThat(exp24.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test24() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("-1-x-y")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -830,9 +1079,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp25 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x-y")
-    assertThat(exp25.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test25() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x-y")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -860,9 +1113,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp26 = parseAlgebraicExpressionSuccessfullyWithAllErrors("2xy")
-    assertThat(exp26.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test26() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("2xy")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -890,9 +1147,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp27 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1-xy")
-    assertThat(exp27.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test27() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1-xy")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -927,9 +1188,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp28 = parseAlgebraicExpressionSuccessfullyWithAllErrors("xy-4")
-    assertThat(exp28.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test28() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("xy-4")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -964,9 +1229,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp29 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+xy-4+yz-9")
-    assertThat(exp29.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test29() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+xy-4+yz-9")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -1036,9 +1305,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp30 = parseAlgebraicExpressionSuccessfullyWithAllErrors("2/x/y")
-    assertThat(exp30.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test30() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("2/x/y")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -1066,9 +1339,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp31 = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("x^3^4")
-    assertThat(exp31.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test31() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("x^3^4")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       nonCommutativeOperation {
@@ -1105,9 +1382,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp32 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x/y+z")
-    assertThat(exp32.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test32() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x/y+z")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -1149,9 +1430,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp33 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+(x/y)+z")
-    assertThat(exp33.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test33() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+(x/y)+z")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -1193,9 +1478,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp34 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x^3+y")
-    assertThat(exp34.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test34() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x^3+y")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -1238,9 +1527,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp35 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+(x^3)+y")
-    assertThat(exp35.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test35() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+(x^3)+y")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -1283,9 +1576,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp36 = parseAlgebraicExpressionSuccessfullyWithAllErrors("2*x/y*z")
-    assertThat(exp36.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test36() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("2*x/y*z")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -1320,9 +1617,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp37 = parseAlgebraicExpressionSuccessfullyWithAllErrors("2*(x/y)*z")
-    assertThat(exp37.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test37() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("2*(x/y)*z")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -1357,9 +1658,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp38 = parseAlgebraicExpressionSuccessfullyWithAllErrors("-2*sqrt(x)")
-    assertThat(exp38.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test38() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("-2*sqrt(x)")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -1386,9 +1691,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp39 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+(x+(3+(z+y)))")
-    assertThat(exp39.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test39() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+(x+(3+(z+y)))")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(SUMMATION) {
@@ -1430,9 +1739,13 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    val exp40 = parseAlgebraicExpressionSuccessfullyWithAllErrors("2*(x*(4*(zy)))")
-    assertThat(exp40.toComparableOperationList()).hasStructureThatMatches {
+  @Test
+  fun test40() {
+    // TODO: do something with this
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("2*(x*(4*(zy)))")
+    assertThat(exp.toComparableOperationList()).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
       hasInvertedPropertyThat().isFalse()
       commutativeAccumulationWithType(PRODUCT) {
@@ -1474,101 +1787,191 @@ class ExpressionToComparableOperationListTest {
         }
       }
     }
+  }
 
-    // Equality tests:
-    val list1 = createComparableOperationListFromNumericExpression("(1+2)+3")
-    val list2 = createComparableOperationListFromNumericExpression("1+(2+3)")
-    assertThat(list1).isEqualTo(list2)
+  // TODO: Equality tests:
+  @Test
+  fun test41() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("(1+2)+3")
+    val secondList = createComparableOperationListFromNumericExpression("1+(2+3)")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list3 = createComparableOperationListFromNumericExpression("1+2+3")
-    val list4 = createComparableOperationListFromNumericExpression("3+2+1")
-    assertThat(list3).isEqualTo(list4)
+  @Test
+  fun test42() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("1+2+3")
+    val secondList = createComparableOperationListFromNumericExpression("3+2+1")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list5 = createComparableOperationListFromNumericExpression("1-2-3")
-    val list6 = createComparableOperationListFromNumericExpression("-3 + -2 + 1")
-    assertThat(list5).isEqualTo(list6)
+  @Test
+  fun test43() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("1-2-3")
+    val secondList = createComparableOperationListFromNumericExpression("-3 + -2 + 1")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list7 = createComparableOperationListFromNumericExpression("1-2-3")
-    val list8 = createComparableOperationListFromNumericExpression("-3-2+1")
-    assertThat(list7).isEqualTo(list8)
+  @Test
+  fun test44() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("1-2-3")
+    val secondList = createComparableOperationListFromNumericExpression("-3-2+1")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list9 = createComparableOperationListFromNumericExpression("1-2-3")
-    val list10 = createComparableOperationListFromNumericExpression("-3-2+1")
-    assertThat(list9).isEqualTo(list10)
+  @Test
+  fun test45() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("1-2-3")
+    val secondList = createComparableOperationListFromNumericExpression("-3-2+1")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list11 = createComparableOperationListFromNumericExpression("1-2-3")
-    val list12 = createComparableOperationListFromNumericExpression("3-2-1")
-    assertThat(list11).isNotEqualTo(list12)
+  @Test
+  fun test46() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("1-2-3")
+    val secondList = createComparableOperationListFromNumericExpression("3-2-1")
+    assertThat(firstList).isNotEqualTo(secondList)
+  }
 
-    val list13 = createComparableOperationListFromNumericExpression("2*3*4")
-    val list14 = createComparableOperationListFromNumericExpression("4*3*2")
-    assertThat(list13).isEqualTo(list14)
+  @Test
+  fun test47() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2*3*4")
+    val secondList = createComparableOperationListFromNumericExpression("4*3*2")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list15 = createComparableOperationListFromNumericExpression("2*(3/4)")
-    val list16 = createComparableOperationListFromNumericExpression("3/4*2")
-    assertThat(list15).isEqualTo(list16)
+  @Test
+  fun test48() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2*(3/4)")
+    val secondList = createComparableOperationListFromNumericExpression("3/4*2")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list17 = createComparableOperationListFromNumericExpression("2*3/4")
-    val list18 = createComparableOperationListFromNumericExpression("3/4*2")
-    assertThat(list17).isEqualTo(list18)
+  @Test
+  fun test49() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2*3/4")
+    val secondList = createComparableOperationListFromNumericExpression("3/4*2")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list45 = createComparableOperationListFromNumericExpression("2*3/4")
-    val list46 = createComparableOperationListFromNumericExpression("2*3*4")
-    assertThat(list45).isNotEqualTo(list46)
+  @Test
+  fun test50() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2*3/4")
+    val secondList = createComparableOperationListFromNumericExpression("2*3*4")
+    assertThat(firstList).isNotEqualTo(secondList)
+  }
 
-    val list19 = createComparableOperationListFromNumericExpression("2*3/4")
-    val list20 = createComparableOperationListFromNumericExpression("2*4/3")
-    assertThat(list19).isNotEqualTo(list20)
+  @Test
+  fun test51() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2*3/4")
+    val secondList = createComparableOperationListFromNumericExpression("2*4/3")
+    assertThat(firstList).isNotEqualTo(secondList)
+  }
 
-    val list21 = createComparableOperationListFromNumericExpression("2*3/4*7")
-    val list22 = createComparableOperationListFromNumericExpression("3/4*7*2")
-    assertThat(list21).isEqualTo(list22)
+  @Test
+  fun test52() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2*3/4*7")
+    val secondList = createComparableOperationListFromNumericExpression("3/4*7*2")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list23 = createComparableOperationListFromNumericExpression("2*3/4*7")
-    val list24 = createComparableOperationListFromNumericExpression("7*(3*2/4)")
-    assertThat(list23).isEqualTo(list24)
+  @Test
+  fun test53() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2*3/4*7")
+    val secondList = createComparableOperationListFromNumericExpression("7*(3*2/4)")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list25 = createComparableOperationListFromNumericExpression("2*3/4*7")
-    val list26 = createComparableOperationListFromNumericExpression("7*3*2/4")
-    assertThat(list25).isEqualTo(list26)
+  @Test
+  fun test54() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2*3/4*7")
+    val secondList = createComparableOperationListFromNumericExpression("7*3*2/4")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list27 = createComparableOperationListFromNumericExpression("-2*3")
-    val list28 = createComparableOperationListFromNumericExpression("3*-2")
-    assertThat(list27).isEqualTo(list28)
+  @Test
+  fun test55() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("-2*3")
+    val secondList = createComparableOperationListFromNumericExpression("3*-2")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list29 = createComparableOperationListFromNumericExpression("2^3")
-    val list30 = createComparableOperationListFromNumericExpression("3^2")
-    assertThat(list29).isNotEqualTo(list30)
+  @Test
+  fun test56() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("2^3")
+    val secondList = createComparableOperationListFromNumericExpression("3^2")
+    assertThat(firstList).isNotEqualTo(secondList)
+  }
 
-    val list31 = createComparableOperationListFromNumericExpression("-(1+2)")
-    val list32 = createComparableOperationListFromNumericExpression("-1+2")
-    assertThat(list31).isNotEqualTo(list32)
+  @Test
+  fun test57() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("-(1+2)")
+    val secondList = createComparableOperationListFromNumericExpression("-1+2")
+    assertThat(firstList).isNotEqualTo(secondList)
+  }
 
-    val list33 = createComparableOperationListFromNumericExpression("-(1+2)")
-    val list34 = createComparableOperationListFromNumericExpression("-1-2")
-    assertThat(list33).isNotEqualTo(list34)
+  @Test
+  fun test58() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromNumericExpression("-(1+2)")
+    val secondList = createComparableOperationListFromNumericExpression("-1-2")
+    assertThat(firstList).isNotEqualTo(secondList)
+  }
 
-    val list35 = createComparableOperationListFromAlgebraicExpression("x(x+1)")
-    val list36 = createComparableOperationListFromAlgebraicExpression("(1+x)x")
-    assertThat(list35).isEqualTo(list36)
+  @Test
+  fun test59() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromAlgebraicExpression("x(x+1)")
+    val secondList = createComparableOperationListFromAlgebraicExpression("(1+x)x")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list37 = createComparableOperationListFromAlgebraicExpression("x(x+1)")
-    val list38 = createComparableOperationListFromAlgebraicExpression("x^2+x")
-    assertThat(list37).isNotEqualTo(list38)
+  @Test
+  fun test60() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromAlgebraicExpression("x(x+1)")
+    val secondList = createComparableOperationListFromAlgebraicExpression("x^2+x")
+    assertThat(firstList).isNotEqualTo(secondList)
+  }
 
-    val list39 = createComparableOperationListFromAlgebraicExpression("x^2*sqrt(x)")
-    val list40 = createComparableOperationListFromAlgebraicExpression("x")
-    assertThat(list39).isNotEqualTo(list40)
+  @Test
+  fun test61() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromAlgebraicExpression("x^2*sqrt(x)")
+    val secondList = createComparableOperationListFromAlgebraicExpression("x")
+    assertThat(firstList).isNotEqualTo(secondList)
+  }
 
-    val list41 = createComparableOperationListFromAlgebraicExpression("xyz")
-    val list42 = createComparableOperationListFromAlgebraicExpression("zyx")
-    assertThat(list41).isEqualTo(list42)
+  @Test
+  fun test62() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromAlgebraicExpression("xyz")
+    val secondList = createComparableOperationListFromAlgebraicExpression("zyx")
+    assertThat(firstList).isEqualTo(secondList)
+  }
 
-    val list43 = createComparableOperationListFromAlgebraicExpression("1+xy-2")
-    val list44 = createComparableOperationListFromAlgebraicExpression("-2+1+yx")
-    assertThat(list43).isEqualTo(list44)
-
-    // TODO: add tests for comparator/sorting & negation simplification?
+  @Test
+  fun test63() {
+    // TODO: do something with this
+    val firstList = createComparableOperationListFromAlgebraicExpression("1+xy-2")
+    val secondList = createComparableOperationListFromAlgebraicExpression("-2+1+yx")
+    assertThat(firstList).isEqualTo(secondList)
   }
 
   private fun createComparableOperationListFromNumericExpression(expression: String) =
