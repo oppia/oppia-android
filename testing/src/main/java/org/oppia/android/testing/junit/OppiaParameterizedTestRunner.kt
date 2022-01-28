@@ -56,7 +56,7 @@ import java.lang.reflect.Method
  * e.g.:
  *
  * ```bash
- * bazel run //...:ExampleParameterizedTest --test_filter=testParams_multipleVals_isConsistent-first
+ * bazel run //...:ExampleParameterizedTest --test_filter=testParams_multipleVals_isConsistent_first
  * ```
  *
  * Or, all of the iterations for that test can be run:
