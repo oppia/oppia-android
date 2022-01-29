@@ -25,7 +25,7 @@ fun <T: MessageLite> Comparator<T>.compareProtos(left: T, right: T): Int {
   val rightIsDefault = right == defaultValue
   return when {
     leftIsDefault && rightIsDefault -> 0 // Both are default, therefore equal.
-    leftIsDefault -> 1 // right > left since it's initialized.
+    leftIsDefault -> -1 // right > left since it's initialized.
     rightIsDefault -> 1 // left > right since it's initialized.
     else -> compare(left, right) // Both are initialized; perform a deep-comparison.
   }

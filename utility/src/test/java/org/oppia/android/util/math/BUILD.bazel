@@ -49,6 +49,7 @@ oppia_android_test(
     test_class = "org.oppia.android.util.math.ComparatorExtensionsTest",
     test_manifest = "//utility:test_manifest",
     deps = [
+        "//model/src/main/proto:test_models",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",

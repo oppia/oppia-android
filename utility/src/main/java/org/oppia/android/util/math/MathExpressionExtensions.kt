@@ -31,4 +31,4 @@ fun MathEquation.toRawLatex(divAsFraction: Boolean): String = convertToLatex(div
  */
 fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
 
-fun MathExpression.toComparableOperation(): ComparableOperation = toComparableOperation()
+fun MathExpression.toComparable(): ComparableOperation = toComparableOperation()
