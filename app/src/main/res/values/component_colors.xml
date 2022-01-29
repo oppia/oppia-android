@@ -3,8 +3,8 @@
   <color name="shared_edit_text_cursor_color">@color/primary_text_color</color>
   <color name="shared_activity_toolbar_color">@color/oppia_primary</color>
   <!-- Themes.xml -->
-  <color name="oppia_themes_status_bar_color">@color/oppia_primary_dark</color>
-  <color name="oppia_action_bar_theme_background_color">@color/oppia_primary</color>
+  <color name="shared_activity_status_bar_color">@color/oppia_primary_dark</color>
+  <color name="shared_activity_action_bar_color">@color/oppia_primary</color>
   <!-- Styles.xml -->
   <color name="shared_text_view_text_color">@color/primary_text_color</color>
   <color name="shared_text_view_heading_text_color">@color/highlighted_text_color</color>
