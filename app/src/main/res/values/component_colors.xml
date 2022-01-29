@@ -24,7 +24,7 @@
   <color name="add_profile_activity_switch_description_color">@color/description_text_color</color>
   <color name="add_profile_activity_layout_background_color">@color/background_color</color>
   <!-- Administrator Controls -->
-  <color name="admin_controls_background_color">@color/grey_background_color</color>
+  <color name="admin_controls_background_color">@color/dark_background_color</color>
   <color name="admin_controls_options_background_color">@color/container_background_color</color>
   <color name="admin_controls_options_highlighted_background_color">@color/highlight_blue</color>
   <color name="admin_controls_sub_heading_color">@color/primary_color</color>
