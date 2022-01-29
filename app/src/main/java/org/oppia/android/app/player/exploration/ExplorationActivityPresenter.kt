@@ -2,7 +2,6 @@ package org.oppia.android.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +10,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -107,8 +105,8 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.actionBottomSheet.setOnClickListener {
-      val bottomSheetFragment= BottomSheetFragment(internalProfileId)
-      bottomSheetFragment.show(activity.supportFragmentManager,bottomSheetFragment.tag)
+      val bottomSheetFragment = BottomSheetFragment(internalProfileId)
+      bottomSheetFragment.show(activity.supportFragmentManager, bottomSheetFragment.tag)
     }
 
     updateToolbarTitle(explorationId)

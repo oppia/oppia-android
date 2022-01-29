@@ -3,9 +3,6 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -184,7 +181,7 @@ class ExplorationActivity :
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
 
-  override fun handleOnOptionsItemSelected(itemId:Int){
+  override fun handleOnOptionsItemSelected(itemId: Int) {
     explorationActivityPresenter.handleOnOptionsItemSelected(itemId)
   }
 }
