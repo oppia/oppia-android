@@ -91,6 +91,9 @@ kt_android_library(
     srcs = [
         "ComparatorExtensions.kt",
     ],
+    deps = [
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
 )
 
 kt_android_library(

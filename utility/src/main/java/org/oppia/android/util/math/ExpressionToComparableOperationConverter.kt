@@ -4,11 +4,8 @@ import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.PRODUCT
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.SUMMATION
-import org.oppia.android.app.model.ComparableOperation.ComparisonTypeCase.CONSTANT_TERM
-import org.oppia.android.app.model.ComparableOperation.ComparisonTypeCase.NON_COMMUTATIVE_OPERATION
-import org.oppia.android.app.model.ComparableOperation.ComparisonTypeCase.VARIABLE_TERM
 import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation
-import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.OperationTypeCase
+import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.BinaryOperation
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE
@@ -28,65 +25,10 @@ import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
-import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.invertNegation
-import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.toComparableOperation
 
 class ExpressionToComparableOperationConverter private constructor() {
   companion object {
-    // TODO: consider eliminating the comparator extensions. Probably should verify full test suite
-    //  & the old tests before deleting the old tests.
-
-    private val COMPARABLE_OPERATION_COMPARATOR: Comparator<ComparableOperation> by lazy {
-      // Some of the comparators must be deferred since they indirectly reference this comparator
-      // (which isn't valid until it's fully assembled).
-      Comparator.comparing(ComparableOperation::getComparisonTypeCase)
-        .thenComparing(ComparableOperation::getIsNegated)
-        .thenComparing(ComparableOperation::getIsInverted)
-        .thenSelectAmong(
-          ComparableOperation::getComparisonTypeCase,
-          ComparableOperation.ComparisonTypeCase.COMMUTATIVE_ACCUMULATION to comparingDeferred(
-            ComparableOperation::getCommutativeAccumulation
-          ) { COMMUTATIVE_ACCUMULATION_COMPARATOR },
-          NON_COMMUTATIVE_OPERATION to comparingDeferred(
-            ComparableOperation::getNonCommutativeOperation
-          ) { NON_COMMUTATIVE_OPERATION_COMPARATOR },
-          CONSTANT_TERM to Comparator.comparing(
-            ComparableOperation::getConstantTerm, REAL_COMPARATOR
-          ),
-          VARIABLE_TERM to Comparator.comparing(ComparableOperation::getVariableTerm)
-        )
-    }
-
-    private val COMMUTATIVE_ACCUMULATION_COMPARATOR: Comparator<CommutativeAccumulation> by lazy {
-      Comparator.comparing(CommutativeAccumulation::getAccumulationType)
-        .thenComparing(
-          { accumulation ->
-            accumulation.combinedOperationsList.toSortedSet(COMPARABLE_OPERATION_COMPARATOR)
-          },
-          COMPARABLE_OPERATION_COMPARATOR.toSetComparator()
-        )
-    }
-
-    private val NON_COMMUTATIVE_BINARY_OPERATION_COMPARATOR by lazy {
-      Comparator.comparing(
-        NonCommutativeOperation.BinaryOperation::getLeftOperand, COMPARABLE_OPERATION_COMPARATOR
-      ).thenComparing(
-        NonCommutativeOperation.BinaryOperation::getRightOperand, COMPARABLE_OPERATION_COMPARATOR
-      )
-    }
-
-    private val NON_COMMUTATIVE_OPERATION_COMPARATOR: Comparator<NonCommutativeOperation> by lazy {
-      Comparator.comparing(NonCommutativeOperation::getOperationTypeCase)
-        .thenSelectAmong(
-          NonCommutativeOperation::getOperationTypeCase,
-          OperationTypeCase.EXPONENTIATION to Comparator.comparing(
-            NonCommutativeOperation::getExponentiation, NON_COMMUTATIVE_BINARY_OPERATION_COMPARATOR
-          ),
-          OperationTypeCase.SQUARE_ROOT to Comparator.comparing(
-            NonCommutativeOperation::getSquareRoot, COMPARABLE_OPERATION_COMPARATOR
-          ),
-        )
-    }
+    private val COMPARABLE_OPERATION_COMPARATOR by lazy { createComparableOperationComparator() }
 
     fun MathExpression.toComparableOperation(): ComparableOperation {
       return when (expressionTypeCase) {
@@ -244,20 +186,20 @@ class ExpressionToComparableOperationConverter private constructor() {
       // Replace the list operations with a sorted list of operations. Note that the inner elements
       // are already sorted since this is called during operation creation time (so nested
       // operations would have already been sorted).
-      val operationsList = combinedOperationsList.toMutableList()
+      val operationsList = combinedOperationsList.sortedWith(COMPARABLE_OPERATION_COMPARATOR)
       clearCombinedOperations()
-      addAllCombinedOperations(operationsList.sortedWith(COMPARABLE_OPERATION_COMPARATOR))
+      addAllCombinedOperations(operationsList)
     }
 
     private fun MathExpression.toNonCommutativeOperation(
       setOperation: NonCommutativeOperation.Builder.(
-        NonCommutativeOperation.BinaryOperation
+        BinaryOperation
       ) -> NonCommutativeOperation.Builder
     ): ComparableOperation {
       return ComparableOperation.newBuilder().apply {
         nonCommutativeOperation = NonCommutativeOperation.newBuilder().apply {
           setOperation(
-            NonCommutativeOperation.BinaryOperation.newBuilder().apply {
+            BinaryOperation.newBuilder().apply {
               leftOperand = binaryOperation.leftOperand.toComparableOperation()
               rightOperand = binaryOperation.rightOperand.toComparableOperation()
             }.build()
@@ -274,5 +216,55 @@ class ExpressionToComparableOperationConverter private constructor() {
 
     private fun ComparableOperation.invertInverted(): ComparableOperation =
       toBuilder().apply { isInverted = !isInverted }.build()
+
+    private fun createComparableOperationComparator(): Comparator<ComparableOperation> {
+      // Note that this & constituent comparators is designed to also verify undefined fields (such
+      // as all the possibilities of a oneof versus just one) for simpler syntax. Computationally,
+      // it shouldn't make a large difference since default protos are generally cached for proto
+      // lite, and compareProtos short-circuits for default protos. Further, a comparator is created
+      // for each staged of the execution since, unfortunately, there's no easy way to circularly
+      // reference cached fields.
+      return compareBy(ComparableOperation::getComparisonTypeCase)
+        .thenBy(ComparableOperation::getIsNegated)
+        .thenBy(ComparableOperation::getIsInverted)
+        .thenComparator { a, b ->
+          createCommutativeAccumulationComparator()
+            .compareProtos(a.commutativeAccumulation, b.commutativeAccumulation)
+        }.thenComparator { a, b ->
+          createNonCommutativeOperationComparator()
+            .compareProtos(a.nonCommutativeOperation, b.nonCommutativeOperation)
+        }.thenComparator { a, b ->
+          REAL_COMPARATOR.compareProtos(a.constantTerm, b.constantTerm)
+        }
+        .thenBy(ComparableOperation::getVariableTerm)
+    }
+
+    private fun createCommutativeAccumulationComparator(): Comparator<CommutativeAccumulation> {
+      return compareBy(CommutativeAccumulation::getAccumulationType)
+        .thenComparator { a, b ->
+          createComparableOperationComparator().compareIterables(
+            a.combinedOperationsList, b.combinedOperationsList
+          )
+        }
+    }
+
+    private fun createNonCommutativeOperationComparator(): Comparator<NonCommutativeOperation> {
+      return compareBy(NonCommutativeOperation::getOperationTypeCase)
+        .thenComparator { a, b ->
+          createBinaryOperationComparator().compareProtos(a.exponentiation, b.exponentiation)
+        }.thenComparator { a, b ->
+          createComparableOperationComparator().compareProtos(a.squareRoot, b.squareRoot)
+        }
+    }
+
+    private fun createBinaryOperationComparator(): Comparator<BinaryOperation> {
+      // Start with a trivial comparator to start the chain for nicer syntax.
+      return compareBy(BinaryOperation::hasLeftOperand)
+        .thenComparator { a, b ->
+          createComparableOperationComparator().compareProtos(a.leftOperand, b.leftOperand)
+        }.thenComparator { a, b ->
+          createComparableOperationComparator().compareProtos(a.rightOperand, b.rightOperand)
+        }
+    }
   }
 }
