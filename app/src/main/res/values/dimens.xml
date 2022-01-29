@@ -460,6 +460,12 @@
   <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">36dp</dimen>
   <dimen name="profile_chooser_profile_view_view_margin_top">60dp</dimen>
 
+  <dimen name="profile_chooser_fragment_layout_marginStart">32dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_marginEnd">32dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_height">128dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_marginBottom">32dp</dimen>
+
+
   <!-- Coming Soon Topic List -->
   <dimen name="coming_soon_topic_list_constraint_layout_padding_start">0dp</dimen>
   <dimen name="coming_soon_topic_list_constraint_layout_padding_end">0dp</dimen>

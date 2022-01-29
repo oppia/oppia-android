@@ -25,6 +25,14 @@
   <dimen name="profile_chooser_profile_view_margin_start_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_end_profile_not_added">24dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_top_profile_not_added">24dp</dimen>
+
+  <!-- Profile Chooser Fragment -->
+  <dimen name="profile_chooser_fragment_layout_marginStart">96dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_marginBottom">28dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_marginEnd">96dp</dimen>
+  <dimen name="profile_chooser_fragment_margin_top_profile_already_added">0dp</dimen>
+  <dimen name="profile_chooser_fragment_margin_top_profile_not_added">84dp</dimen>
+
   <dimen name="submitted_answer_exploration_split_view_margin_end_no_extra_interaction_answer">24dp</dimen>
   <dimen name="submitted_answer_exploration_split_view_margin_top_no_extra_interaction_answer">24dp</dimen>
   <dimen name="submitted_answer_exploration_view_margin_top">24dp</dimen>
