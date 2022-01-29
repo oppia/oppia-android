@@ -21,6 +21,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,6 +44,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakeSyncStatusManager
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -61,8 +64,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionSta
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -106,13 +107,13 @@ class LogUploadWorkerTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var syncStatusController: SyncStatusManager
+  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
 
   @Mock
-  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
+  lateinit var mockSyncStatusLiveDataObserverImpl: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
 
   @Captor
-  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
+  lateinit var syncStatusResultCaptorImpl: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
 
   private lateinit var context: Context
 
@@ -170,6 +171,35 @@ class LogUploadWorkerTest {
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fakeEventLogger.getMostRecentCachedEvent()).isEqualTo(eventLogTopicContext)
+  }
+
+  @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyCorrectSyncStatusSequence() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logTransitionEvent(
+      eventLogTopicContext.timestamp,
+      eventLogTopicContext.actionName,
+      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+    )
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val syncStatusList = fakeSyncStatusManager.getSyncStatusList()
+    assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.NETWORK_ERROR)
+    assertThat(syncStatusList[1]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+    assertThat(syncStatusList[2]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
   }
 
   @Test

@@ -32,7 +32,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DEFAULT
@@ -54,23 +53,23 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = SyncStatusManagerTest.TestApplication::class)
-class SyncStatusManagerTest {
+@Config(application = SyncStatusManagerImplTest.TestApplication::class)
+class SyncStatusManagerImplTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
-  lateinit var syncStatusManager: SyncStatusManager
+  lateinit var syncStatusManagerImpl: SyncStatusManagerImpl
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Mock
-  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatus>>
+  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
 
   @Captor
-  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatus>>
+  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
 
   private lateinit var notifierDispatcher: CoroutineDispatcher
 
@@ -82,7 +81,7 @@ class SyncStatusManagerTest {
 
   @Test
   fun testController_getSyncStatus_verifyDefaultCase() {
-    val syncStatus = syncStatusManager.getSyncStatus()
+    val syncStatus = syncStatusManagerImpl.getSyncStatus()
     syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -92,10 +91,10 @@ class SyncStatusManagerTest {
 
   @Test
   fun testController_getSyncStatus_updateSyncStatus_toDataUploading_verifyReturnsUpdatedStatus() {
-    val syncStatus = syncStatusManager.getSyncStatus()
+    val syncStatus = syncStatusManagerImpl.getSyncStatus()
     syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
 
-    syncStatusManager.setSyncStatus(DATA_UPLOADING)
+    syncStatusManagerImpl.setSyncStatus(DATA_UPLOADING)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
@@ -104,10 +103,10 @@ class SyncStatusManagerTest {
 
   @Test
   fun testController_getSyncStatus_updateSyncStatus_toDataUploaded_verifyReturnsUpdatedStatus() {
-    val syncStatus = syncStatusManager.getSyncStatus()
+    val syncStatus = syncStatusManagerImpl.getSyncStatus()
     syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
 
-    syncStatusManager.setSyncStatus(DATA_UPLOADED)
+    syncStatusManagerImpl.setSyncStatus(DATA_UPLOADED)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
@@ -116,10 +115,10 @@ class SyncStatusManagerTest {
 
   @Test
   fun testController_getSyncStatus_updateSyncStatus_toNetworkError_verifyReturnsUpdatedStatus() {
-    val syncStatus = syncStatusManager.getSyncStatus()
+    val syncStatus = syncStatusManagerImpl.getSyncStatus()
     syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
 
-    syncStatusManager.setSyncStatus(NETWORK_ERROR)
+    syncStatusManagerImpl.setSyncStatus(NETWORK_ERROR)
     testCoroutineDispatchers.runCurrent()
 
     verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
@@ -209,17 +208,17 @@ class SyncStatusManagerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(syncStatusControllerTest: SyncStatusManagerTest)
+    fun inject(syncStatusControllerTest: SyncStatusManagerImplTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSyncStatusManagerTest_TestApplicationComponent.builder()
+      DaggerSyncStatusManagerImplTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(syncStatusControllerTest: SyncStatusManagerTest) {
+    fun inject(syncStatusControllerTest: SyncStatusManagerImplTest) {
       component.inject(syncStatusControllerTest)
     }
 

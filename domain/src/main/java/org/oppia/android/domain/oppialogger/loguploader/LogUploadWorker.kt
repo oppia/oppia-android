@@ -57,8 +57,10 @@ class LogUploadWorker private constructor(
     val future = SettableFuture.create<Result>()
     result.invokeOnCompletion { failure ->
       if (failure != null) {
+        syncStatusManager.setSyncStatus(NETWORK_ERROR)
         future.setException(failure)
       } else {
+        syncStatusManager.setSyncStatus(DATA_UPLOADED)
         future.set(result.getCompleted())
       }
     }
@@ -94,11 +96,9 @@ class LogUploadWorker private constructor(
           analyticsController.removeFirstEventLogFromStore()
         }
       }
-      syncStatusManager.setSyncStatus(DATA_UPLOADED)
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, "Failed to upload events", e)
-      syncStatusManager.setSyncStatus(NETWORK_ERROR)
       Result.failure()
     }
   }
