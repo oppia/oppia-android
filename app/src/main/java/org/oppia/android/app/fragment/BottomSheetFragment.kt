@@ -26,10 +26,14 @@ class BottomSheetFragment(val internalProfileId : Int) : BottomSheetDialogFragme
   private fun setUpOnClickListeners(binding: FragmentBottomSheetBinding){
     val bottomSheetItemClickListener = activity as BottomSheetItemClickListener
     binding.actionHelp.setOnClickListener {
+
       bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_help)
+      dismiss()
     }
     binding.actionOptions.setOnClickListener {
+
       bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_options)
+      dismiss()
     }
   }
 }
