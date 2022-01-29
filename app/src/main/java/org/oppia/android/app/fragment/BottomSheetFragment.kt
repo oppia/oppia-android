@@ -9,7 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.player.exploration.BottomSheetItemClickListener
 import org.oppia.android.databinding.FragmentBottomSheetBinding
 
-class BottomSheetFragment(val internalProfileId : Int): BottomSheetDialogFragment() {
+class BottomSheetFragment(val internalProfileId: Int) : BottomSheetDialogFragment() {
 
   override fun onCreateView(
     inflater: LayoutInflater,
