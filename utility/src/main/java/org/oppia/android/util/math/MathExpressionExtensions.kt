@@ -4,7 +4,7 @@ import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.Real
-import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.toComparableOperation
+import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.convertToComparableOperation
 import org.oppia.android.util.math.ExpressionToLatexConverter.Companion.convertToLatex
 import org.oppia.android.util.math.NumericExpressionEvaluator.Companion.evaluate
 
@@ -31,4 +31,9 @@ fun MathEquation.toRawLatex(divAsFraction: Boolean): String = convertToLatex(div
  */
 fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
 
-fun MathExpression.toComparable(): ComparableOperation = toComparableOperation()
+/**
+ * Returns the [ComparableOperation] representation of this [MathExpression].
+ *
+ * See [convertToComparableOperation] for details.
+ */
+fun MathExpression.toComparableOperation(): ComparableOperation = convertToComparableOperation()

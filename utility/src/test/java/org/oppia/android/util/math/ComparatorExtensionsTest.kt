@@ -178,7 +178,8 @@ class ComparatorExtensionsTest {
 
     val compareResult = stringComparator.compareIterables(leftList, rightList)
 
-    // The first list has an extra element.
+    // The first list has an extra element. This also verifies that duplicates are correctly
+    // considered during comparison.
     assertThat(compareResult).isEqualTo(1)
   }
 

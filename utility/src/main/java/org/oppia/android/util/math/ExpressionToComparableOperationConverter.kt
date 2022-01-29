@@ -26,11 +26,31 @@ import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
 
+/**
+ * Converter from [MathExpression] to [ComparableOperation].
+ *
+ * See the separate proto details for context, and [convertToComparableOperation] for the actual conversion
+ * function.
+ */
 class ExpressionToComparableOperationConverter private constructor() {
   companion object {
     private val COMPARABLE_OPERATION_COMPARATOR by lazy { createComparableOperationComparator() }
 
-    fun MathExpression.toComparableOperation(): ComparableOperation {
+    /**
+     * Returns a new [ComparableOperation] representing this [MathExpression].
+     *
+     * Comparable operations are representations of math expressions that are deterministically
+     * arranged to ensure two expressions that only differ due to associativity or commutativity are
+     * still equal. This is done by combining neighboring arithmetic operations into accumulations,
+     * and still retaining the structures for non-commutative operations. The order of all
+     * operations is well-defined and deterministic. Further, how elements retain inverted or
+     * negated properties is also deterministic (and designed to minimize negative values).
+     *
+     * The tests for this method provide very thorough and broad examples of different cases that
+     * this function supports. In particular, the equality tests are useful to see what sorts of
+     * expressions can be considered the same per [ComparableOperation].
+     */
+    fun MathExpression.convertToComparableOperation(): ComparableOperation {
       return when (expressionTypeCase) {
         CONSTANT -> ComparableOperation.newBuilder().apply {
           constantTerm = constant
@@ -49,21 +69,21 @@ class ExpressionToComparableOperationConverter private constructor() {
             ComparableOperation.getDefaultInstance()
         }
         UNARY_OPERATION -> when (unaryOperation.operator) {
-          NEGATE -> unaryOperation.operand.toComparableOperation().invertNegation()
-          POSITIVE -> unaryOperation.operand.toComparableOperation()
+          NEGATE -> unaryOperation.operand.convertToComparableOperation().invertNegation()
+          POSITIVE -> unaryOperation.operand.convertToComparableOperation()
           UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null ->
             ComparableOperation.getDefaultInstance()
         }
         FUNCTION_CALL -> when (functionCall.functionType) {
           SQUARE_ROOT -> ComparableOperation.newBuilder().apply {
             nonCommutativeOperation = NonCommutativeOperation.newBuilder().apply {
-              squareRoot = functionCall.argument.toComparableOperation()
+              squareRoot = functionCall.argument.convertToComparableOperation()
             }.build()
           }.build()
           FunctionType.FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null ->
             ComparableOperation.getDefaultInstance()
         }
-        GROUP -> group.toComparableOperation()
+        GROUP -> group.convertToComparableOperation()
         EXPRESSIONTYPE_NOT_SET, null -> ComparableOperation.getDefaultInstance()
       }
     }
@@ -119,8 +139,8 @@ class ExpressionToComparableOperationConverter private constructor() {
           addOperationToSum(expression.unaryOperation.operand, forceNegative)
         // Skip groups so that nested operations can be properly combined.
         expression.expressionTypeCase == GROUP -> addOperationToSum(expression.group, forceNegative)
-        forceNegative -> addCombinedOperations(expression.toComparableOperation().invertNegation())
-        else -> addCombinedOperations(expression.toComparableOperation())
+        forceNegative -> addCombinedOperations(expression.convertToComparableOperation().invertNegation())
+        else -> addCombinedOperations(expression.convertToComparableOperation())
       }
     }
 
@@ -169,7 +189,7 @@ class ExpressionToComparableOperationConverter private constructor() {
         expression.expressionTypeCase == GROUP ->
           addOperationToProduct(expression.group, forceInverse, invertNegation)
         else -> {
-          val operationExpression = expression.toComparableOperation()
+          val operationExpression = expression.convertToComparableOperation()
           val potentiallyInvertedExpression = if (invertNegation) {
             operationExpression.invertNegation()
           } else operationExpression
@@ -200,8 +220,8 @@ class ExpressionToComparableOperationConverter private constructor() {
         nonCommutativeOperation = NonCommutativeOperation.newBuilder().apply {
           setOperation(
             BinaryOperation.newBuilder().apply {
-              leftOperand = binaryOperation.leftOperand.toComparableOperation()
-              rightOperand = binaryOperation.rightOperand.toComparableOperation()
+              leftOperand = binaryOperation.leftOperand.convertToComparableOperation()
+              rightOperand = binaryOperation.rightOperand.convertToComparableOperation()
             }.build()
           )
         }.build()

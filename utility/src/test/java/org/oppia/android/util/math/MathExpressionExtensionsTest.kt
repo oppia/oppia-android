@@ -78,8 +78,8 @@ class MathExpressionExtensionsTest {
     val expression1 = parseAlgebraicExpression("x+2/x-(-7*8-9)+sqrt((x+2)+1)+3xy^2")
     val expression2 = parseAlgebraicExpression("sqrt(x+(1+2))+2/x+x-(-9+8*-7-3y^2x)")
 
-    val operation1 = expression1.toComparable()
-    val operation2 = expression2.toComparable()
+    val operation1 = expression1.toComparableOperation()
+    val operation2 = expression2.toComparableOperation()
 
     assertThat(operation1).isEqualTo(operation2)
   }
@@ -89,8 +89,8 @@ class MathExpressionExtensionsTest {
     val expression1 = parseAlgebraicExpression("x+2/x-(-7*8-9)+sqrt((x+2)+1)+3xy^2")
     val expression2 = parseAlgebraicExpression("sqrt(x+(1+3))+2/x+x-(-9+8*-7-3y^2x)")
 
-    val operation1 = expression1.toComparable()
-    val operation2 = expression2.toComparable()
+    val operation1 = expression1.toComparableOperation()
+    val operation2 = expression2.toComparableOperation()
 
     assertThat(operation1).isNotEqualTo(operation2)
   }

@@ -2,7 +2,7 @@ package org.oppia.android.util.math
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.toComparableOperation
+import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.convertToComparableOperation
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.PRODUCT
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.SUMMATION
@@ -38,7 +38,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_integerConstantExpression_returnsConstantOperation() {
     val expression = parseNumericExpression("2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       constantTerm {
@@ -51,7 +51,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_decimalConstantExpression_returnsConstantOperation() {
     val expression = parseNumericExpression("3.14")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       constantTerm {
@@ -64,7 +64,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_variableExpression_returnsVariableOperation() {
     val expression = parseAlgebraicExpression("x")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       variableTerm {
@@ -77,7 +77,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addition_returnsSummation() {
     val expression = parseNumericExpression("1+2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(SUMMATION) {
@@ -102,7 +102,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addition_sameValues_returnsSummationWithBoth() {
     val expression = parseNumericExpression("1+1")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(SUMMATION) {
@@ -127,7 +127,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_subtraction_returnsSummationOfNegative() {
     val expression = parseNumericExpression("1-2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(SUMMATION) {
@@ -152,7 +152,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplication_returnsProduct() {
     val expression = parseNumericExpression("2*3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(PRODUCT) {
@@ -176,7 +176,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_division_returnsProductOfInverted() {
     val expression = parseNumericExpression("2/3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(PRODUCT) {
@@ -200,7 +200,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_exponentiation_returnsNonCommutativeOperation() {
     val expression = parseNumericExpression("2^3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       nonCommutativeOperation {
@@ -224,7 +224,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_squareRoot_returnsNonCommutativeOperation() {
     val expression = parseNumericExpression("sqrt(2)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       nonCommutativeOperation {
@@ -241,7 +241,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_variableTerm_returnsNonNegativeOperation() {
     val expression = parseAlgebraicExpression("x")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
@@ -252,7 +252,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_negatedVariable_returnsNegativeVariableOperation() {
     val expression = parseAlgebraicExpression("-x")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
@@ -266,7 +266,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_positiveVariable_returnsVariableOperation() {
     val expression = parseAlgebraicExpression("+x", errorCheckingMode = REQUIRED_ONLY)
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
@@ -280,7 +280,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_positiveOfNegativeVariable_returnsNegativeVariableOperation() {
     val expression = parseAlgebraicExpression("+-x", errorCheckingMode = REQUIRED_ONLY)
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
@@ -295,7 +295,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_subtractionOfNegative_returnsSummationWithPositives() {
     val expression = parseNumericExpression("1--2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the subtraction & negation cancel out each other.
     assertThat(comparable).hasStructureThatMatches {
@@ -322,7 +322,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_negativePlusPositive_returnsSummationWithFirstTermNegative() {
     val expression = parseNumericExpression("-2+1")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the negative only applies to the 2, not to the whole expression.
     assertThat(comparable).hasStructureThatMatches {
@@ -349,7 +349,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multipleAdditions_returnsCombinedSummation() {
     val expression = parseNumericExpression("1+2+3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
@@ -381,7 +381,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multipleSubtractions_returnsCombinedSummation() {
     val expression = parseNumericExpression("1-2-3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
@@ -413,7 +413,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_additionsAndSubtractions_returnsCombinedSummation() {
     val expression = parseNumericExpression("1+2-3-4+5")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
@@ -457,7 +457,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_additionsWithNestedAdds_returnsCompletelyCombinedSummation() {
     val expression = parseNumericExpression("1+((2+(3+4)+5)+6)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
@@ -507,7 +507,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_subtractsWithNesting_returnsSummationWithDistributedNegation() {
     val expression = parseNumericExpression("1-(2+3-4)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Both the 2 & 3 are negative since the subtraction distributes, and the 4 becomes positive.
     assertThat(comparable).hasStructureThatMatches {
@@ -546,7 +546,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_subtractsWithNestedSubs_returnsCompletelyCombinedSummation() {
     val expression = parseNumericExpression("1-((2-(3-4)-5)-6)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Some of these are positive because of distribution.
     assertThat(comparable).hasStructureThatMatches {
@@ -598,7 +598,7 @@ class ExpressionToComparableOperationConverterTest {
     val expression =
       parseNumericExpression("1++(2-3)+-(4+5--(2+3-1))", errorCheckingMode = REQUIRED_ONLY)
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // This also verifies that negation distributes in the same way as subtraction.
     assertThat(comparable).hasStructureThatMatches {
@@ -661,7 +661,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multipleMultiplications_returnsCombinedProduct() {
     val expression = parseNumericExpression("2*3*4")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasInvertedPropertyThat().isFalse()
@@ -693,7 +693,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multipleDivisions_returnsCombinedProduct() {
     val expression = parseNumericExpression("2/3/4")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasInvertedPropertyThat().isFalse()
@@ -725,7 +725,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationsAndDivisions_returnsCombinedProduct() {
     val expression = parseNumericExpression("2*3/4/5*6")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasInvertedPropertyThat().isFalse()
@@ -769,7 +769,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationsWithNestedMults_returnsCompletelyCombinedProduct() {
     val expression = parseNumericExpression("2*((3*(4*5)*6)*7)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasInvertedPropertyThat().isFalse()
@@ -819,7 +819,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_dividesWithNesting_returnsProductWithDistributedInversion() {
     val expression = parseNumericExpression("2/(3*4/5)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Both the 3 & 5 become inverted, and the 5 becomes regular multiplication due to the division
     // distribution.
@@ -860,7 +860,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_divisionsWithNestedDivs_returnsCompletelyCombinedProduct() {
     val expression = parseNumericExpression("2/((3/(4/5)/6)/7)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Some of these are non-inverted because of distribution.
     assertThat(comparable).hasStructureThatMatches {
@@ -911,7 +911,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationsAndDivisionsWithNested_returnsCombinedProduct() {
     val expression = parseNumericExpression("1*(2/3)/(4*5*(2*3/1))")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasInvertedPropertyThat().isFalse()
@@ -973,7 +973,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationWithNoNegatives_returnsPositiveProduct() {
     val expression = parseNumericExpression("2*3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
@@ -996,7 +996,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationWithOneNegative_returnsNegativeProduct() {
     val expression = parseNumericExpression("2*-3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The entire accumulation is considered negative.
     assertThat(comparable).hasStructureThatMatches {
@@ -1026,7 +1026,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationWithTwoNegatives_returnsPositiveProduct() {
     val expression = parseNumericExpression("-2*-3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The two negatives cancel out. This also verifies that negation can pipe up to top-level
     // negation.
@@ -1057,7 +1057,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationWithThreeNegatives_returnsNegativeProduct() {
     val expression = parseNumericExpression("-2*-3*-4")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // 3 negative operands results in the overall product being negative.
     assertThat(comparable).hasStructureThatMatches {
@@ -1094,7 +1094,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_combinedMultDivWithNested_evenNegatives_returnsPositiveProduct() {
     val expression = parseNumericExpression("-2*-3/-(4/-(3*2))")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // There are four negatives, so the overall expression is positive.
     assertThat(comparable).hasStructureThatMatches {
@@ -1108,7 +1108,7 @@ class ExpressionToComparableOperationConverterTest {
     val expression =
       parseNumericExpression("-2*-3/-(4/-(3*2*+(-3*7)))", errorCheckingMode = REQUIRED_ONLY)
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // There are five negatives, so the overall expression is negative. Note that this is also
     // verifying that the negation properly distributes with the group.
@@ -1127,7 +1127,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_additionAndExp_returnsSummationWithNonCommutative() {
     val expression = parseNumericExpression("1+2^3")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(SUMMATION) {
@@ -1161,7 +1161,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_additionAndSquareRoot_returnsSummationWithNonCommutative() {
     val expression = parseNumericExpression("1+sqrt(2)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(SUMMATION) {
@@ -1188,7 +1188,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_additionWithinExp_returnsSummationWithinNonCommutative() {
     val expression = parseNumericExpression("2^(1+3)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       nonCommutativeOperation {
@@ -1222,7 +1222,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_additionWithinSquareRoot_returnsSummationWithinNonCommutative() {
     val expression = parseNumericExpression("sqrt(1+3)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       nonCommutativeOperation {
@@ -1249,7 +1249,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationAndExp_returnsProductWithNonCommutative() {
     val expression = parseNumericExpression("2*3^4")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(PRODUCT) {
@@ -1283,7 +1283,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationAndSquareRoot_returnsProductWithNonCommutative() {
     val expression = parseNumericExpression("2*sqrt(3)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(PRODUCT) {
@@ -1310,7 +1310,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationWithinExp_returnsProductWithinNonCommutative() {
     val expression = parseNumericExpression("2^(3*4)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       nonCommutativeOperation {
@@ -1344,7 +1344,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationWithinSquareRoot_returnsProductWithinNonCommutative() {
     val expression = parseNumericExpression("sqrt(2*3)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       nonCommutativeOperation {
@@ -1371,7 +1371,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_additionAndMultiplication_returnsSummationOfProduct() {
     val expression = parseNumericExpression("2*3+1")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(SUMMATION) {
@@ -1404,7 +1404,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_multiplicationAndGroupedAddition_returnsProductOfSummation() {
     val expression = parseNumericExpression("2*(3+1)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(PRODUCT) {
@@ -1454,7 +1454,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_additionAndNonCommutativeOp_samePrecedence_returnsOpWithSummationFirst() {
     val expression = parseNumericExpression("$op1 * $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the summation is still first since it's higher priority during sorting.
     assertThat(comparable).hasStructureThatMatches {
@@ -1480,7 +1480,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_constantAndNonCommutativeOp_samePrecedence_returnsOpWithNonCommutativeFirst() {
     val expression = parseNumericExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the non-commutative operation is first since it's higher priority during sorting.
     assertThat(comparable).hasStructureThatMatches {
@@ -1504,7 +1504,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_constantAndVariable_samePrecedence_returnsOpWithConstantFirst() {
     val expression = parseAlgebraicExpression("$op1 * $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the constant is first since it's higher priority during sorting.
     assertThat(comparable).hasStructureThatMatches {
@@ -1528,7 +1528,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_positiveAndNegativeVariables_returnsOpWithNegatedLast() {
     val expression = parseAlgebraicExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the positive term is first since it's higher priority during sorting.
     assertThat(comparable).hasStructureThatMatches {
@@ -1554,7 +1554,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_invertedAndNonInvertedVariables_returnsOpWithInvertedLast() {
     val expression = parseAlgebraicExpression("$op1 * $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the non-inverted term is first since it's higher priority during sorting.
     assertThat(comparable).hasStructureThatMatches {
@@ -1590,7 +1590,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_twoAdditionsInProduct_smallerSumIsFirst() {
     val expression = parseNumericExpression("($op1)*($op2)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Summations are deterministically sorted regardless of how the original expression structures
     // them.
@@ -1635,7 +1635,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_twoMultiplicationsInSum_smallerProductIsFirst() {
     val expression = parseNumericExpression("($op1)+($op2)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Products are deterministically sorted regardless of how the original expression structures
     // them.
@@ -1676,7 +1676,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_expAndSqrt_samePrecedence_returnsOpWithExpThenSqrt() {
     val expression = parseNumericExpression("$op1+$op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the exponentiation is first since it's higher priority during sorting.
     assertThat(comparable).hasStructureThatMatches {
@@ -1719,7 +1719,7 @@ class ExpressionToComparableOperationConverterTest {
     val expression =
       parseAlgebraicExpression("($op1)+($op2)", errorCheckingMode = REQUIRED_ONLY)
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the exponentiations are ordered based on the left-hand operand's size.
     assertThat(comparable).hasStructureThatMatches {
@@ -1778,7 +1778,7 @@ class ExpressionToComparableOperationConverterTest {
         errorCheckingMode = REQUIRED_ONLY
       )
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Verify that the exponentiations are ordered based on the left-hand operand's lexicographical
     // ordering.
@@ -1819,7 +1819,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoSqrts_leftConst_rightConst_returnsOpWithSqrtsByArgSize() {
     val expression = parseNumericExpression("sqrt($op1)+sqrt($op2)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The square roots should be ordered based on their argument sorting.
     assertThat(comparable).hasStructureThatMatches {
@@ -1855,7 +1855,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoSqrts_leftVar_rightVar_returnsOpWithSqrtsByVariableOrder() {
     val expression = parseAlgebraicExpression("sqrt($op1)+sqrt($op2)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The square roots should be ordered based on their argument lexicographical sorting.
     assertThat(comparable).hasStructureThatMatches {
@@ -1891,7 +1891,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoSqrts_oneConst_oneVar_returnsOpWithSqrtsByConstFirst() {
     val expression = parseAlgebraicExpression("sqrt($op1)+sqrt($op2)")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Constant-before-variable ordering also affects peer square root orders.
     assertThat(comparable).hasStructureThatMatches {
@@ -1929,7 +1929,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoConstants_leftInteger_rightInteger_returnsOpSortedByValues() {
     val expression = parseNumericExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The order of the summation should be based on the constants' values.
     assertThat(comparable).hasStructureThatMatches {
@@ -1957,7 +1957,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoConstants_leftDouble_rightDouble_returnsOpSortedByValues() {
     val expression = parseNumericExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The order of the summation should be based on the constants' values.
     assertThat(comparable).hasStructureThatMatches {
@@ -1985,7 +1985,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoConstants_smallInt_largeDouble_returnsOpWithIntFirst() {
     val expression = parseNumericExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The order of the summation should be based on the constants' values.
     assertThat(comparable).hasStructureThatMatches {
@@ -2013,7 +2013,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoConstants_largeInt_smallDouble_returnsOpWithDoubleFirst() {
     val expression = parseNumericExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The order of the summation should be based on the constants' values.
     assertThat(comparable).hasStructureThatMatches {
@@ -2041,7 +2041,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addVarAndIntConstant_returnsOpWithConstantFirst() {
     val expression = parseAlgebraicExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Constants are always ordered before variables.
     assertThat(comparable).hasStructureThatMatches {
@@ -2069,7 +2069,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addVarAndDoubleConstant_returnsOpWithConstantFirst() {
     val expression = parseAlgebraicExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // The order of the summation should be based on the constants' values.
     assertThat(comparable).hasStructureThatMatches {
@@ -2093,7 +2093,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoVariables_leftX_rightX_returnsOpBothXs() {
     val expression = parseAlgebraicExpression("x + x")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       commutativeAccumulationWithType(SUMMATION) {
@@ -2120,7 +2120,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addTwoVariables_oneX_oneY_returnsOpWithXThenY() {
     val expression = parseAlgebraicExpression("$op1 + $op2")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Variables are sorted lexicographically.
     assertThat(comparable).hasStructureThatMatches {
@@ -2144,7 +2144,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_addMultipleVars_returnsOpWithThemInOrder() {
     val expression = parseAlgebraicExpression("x + z + x + y + x")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     // Variables are sorted lexicographically.
     assertThat(comparable).hasStructureThatMatches {
@@ -2185,7 +2185,7 @@ class ExpressionToComparableOperationConverterTest {
   fun testConvert_allOperations_withNestedGroups_returnsCorrectlyStructuredAndOrderedOperation() {
     val expression = parseAlgebraicExpression("√(1+2*3)+-2^3*4/7-(2yx+x^(2+1)*(17/3))/-(x+(y+1.2))")
 
-    val comparable = expression.toComparableOperation()
+    val comparable = expression.convertToComparableOperation()
 
     assertThat(comparable).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
@@ -2445,40 +2445,40 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_additionOps_differentByCommutativity_areEqual() {
-    val comparable1 = parseNumericExpression("1 + 2").toComparableOperation()
-    val comparable2 = parseNumericExpression("2 + 1").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 + 2").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2 + 1").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_additionOps_differentByAssociativity_areEqual() {
-    val comparable1 = parseNumericExpression("1 + (2 + 3)").toComparableOperation()
-    val comparable2 = parseNumericExpression("(1 + 2) + 3").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 + (2 + 3)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("(1 + 2) + 3").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_additionOps_differentByAssociativityAndCommutativity_areEqual() {
-    val comparable1 = parseNumericExpression("1 + (2 + 3)").toComparableOperation()
-    val comparable2 = parseNumericExpression("(2 + 1) + 3").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 + (2 + 3)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("(2 + 1) + 3").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_additionOps_differentByValue_areNotEqual() {
-    val comparable1 = parseNumericExpression("1 + 2").toComparableOperation()
-    val comparable2 = parseNumericExpression("1 + 3").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 + 2").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("1 + 3").convertToComparableOperation()
 
     assertThat(comparable1).isNotEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_additionOps_sameOnlyByEvaluation_areNotEqual() {
-    val comparable1 = parseNumericExpression("1 + 2 + 2 + 1").toComparableOperation()
-    val comparable2 = parseNumericExpression("1 + 2 + 3").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 + 2 + 2 + 1").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("1 + 2 + 3").convertToComparableOperation()
 
     // While the two expressions are numerically equivalent, they aren't comparable since there are
     // extra terms in one (more than trivial rearranging is required to determine that they're
@@ -2488,40 +2488,40 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_multiplicationOps_differentByCommutativity_areEqual() {
-    val comparable1 = parseNumericExpression("2 * 3").toComparableOperation()
-    val comparable2 = parseNumericExpression("3 * 2").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 * 3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("3 * 2").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_multiplicationOps_differentByAssociativity_areEqual() {
-    val comparable1 = parseNumericExpression("2 * (3 * 4)").toComparableOperation()
-    val comparable2 = parseNumericExpression("(2 * 3) * 4").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 * (3 * 4)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("(2 * 3) * 4").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_multiplicationOps_differentByAssociativityAndCommutativity_areEqual() {
-    val comparable1 = parseNumericExpression("2 * (3 * 4)").toComparableOperation()
-    val comparable2 = parseNumericExpression("(3 * 2) * 4").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 * (3 * 4)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("(3 * 2) * 4").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_multiplicationOps_differentByValue_areNotEqual() {
-    val comparable1 = parseNumericExpression("2 * 3").toComparableOperation()
-    val comparable2 = parseNumericExpression("2 * 4").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 * 3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2 * 4").convertToComparableOperation()
 
     assertThat(comparable1).isNotEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_multiplicationOps_sameOnlyByEvaluation_areNotEqual() {
-    val comparable1 = parseNumericExpression("2 * 3 * 4").toComparableOperation()
-    val comparable2 = parseNumericExpression("2 * 2 * 2 * 3").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 * 3 * 4").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2 * 2 * 2 * 3").convertToComparableOperation()
 
     // While the two expressions are numerically equivalent, they aren't comparable since there are
     // extra terms in one (more than trivial rearranging is required to determine that they're
@@ -2531,16 +2531,16 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_subtractionOps_same_areEqual() {
-    val comparable1 = parseNumericExpression("1 - 2").toComparableOperation()
-    val comparable2 = parseNumericExpression("1 - 2").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 - 2").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("1 - 2").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_subtractionOps_differentByOrder_areNotEqual() {
-    val comparable1 = parseNumericExpression("1 - 2").toComparableOperation()
-    val comparable2 = parseNumericExpression("2 - 1").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 - 2").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2 - 1").convertToComparableOperation()
 
     // Subtraction is not commutative.
     assertThat(comparable1).isNotEqualTo(comparable2)
@@ -2548,8 +2548,8 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_subtractionOps_differentByAssociativity_areNotEqual() {
-    val comparable1 = parseNumericExpression("1 - (2 - 3)").toComparableOperation()
-    val comparable2 = parseNumericExpression("(1 - 2) - 3").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 - (2 - 3)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("(1 - 2) - 3").convertToComparableOperation()
 
     // Subtraction is not associative.
     assertThat(comparable1).isNotEqualTo(comparable2)
@@ -2557,8 +2557,8 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_subtractionOps_sameOnlyByEvaluation_areNotEqual() {
-    val comparable1 = parseNumericExpression("1 - 2 - 3").toComparableOperation()
-    val comparable2 = parseNumericExpression("1 - 2 - 2 - 1").toComparableOperation()
+    val comparable1 = parseNumericExpression("1 - 2 - 3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("1 - 2 - 2 - 1").convertToComparableOperation()
 
     // While the two expressions are numerically equivalent, they aren't comparable since there are
     // extra terms in one (more than trivial rearranging is required to determine that they're
@@ -2568,16 +2568,16 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_divisionOps_same_areEqual() {
-    val comparable1 = parseNumericExpression("2 / 3").toComparableOperation()
-    val comparable2 = parseNumericExpression("2 / 3").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 / 3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2 / 3").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_divisionOps_differentByOrder_areNotEqual() {
-    val comparable1 = parseNumericExpression("2 / 3").toComparableOperation()
-    val comparable2 = parseNumericExpression("3 / 2").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 / 3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("3 / 2").convertToComparableOperation()
 
     // Division is not commutative.
     assertThat(comparable1).isNotEqualTo(comparable2)
@@ -2585,8 +2585,8 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_divisionOps_differentByAssociativity_areNotEqual() {
-    val comparable1 = parseNumericExpression("2 / (3 / 4)").toComparableOperation()
-    val comparable2 = parseNumericExpression("(2 / 3) / 4").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 / (3 / 4)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("(2 / 3) / 4").convertToComparableOperation()
 
     // Division is not associative.
     assertThat(comparable1).isNotEqualTo(comparable2)
@@ -2594,8 +2594,8 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_divisionOps_sameOnlyByEvaluation_areNotEqual() {
-    val comparable1 = parseNumericExpression("2 / 3 / 4").toComparableOperation()
-    val comparable2 = parseNumericExpression("2 / 3 / 2 / 2").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 / 3 / 4").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2 / 3 / 2 / 2").convertToComparableOperation()
 
     // While the two expressions are numerically equivalent, they aren't comparable since there are
     // extra terms in one (more than trivial rearranging is required to determine that they're
@@ -2605,16 +2605,16 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_exponentiationOps_same_areEqual() {
-    val comparable1 = parseNumericExpression("2 ^ 3").toComparableOperation()
-    val comparable2 = parseNumericExpression("2 ^ 3").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 ^ 3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2 ^ 3").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_exponentiationOps_differentByOrder_areNotEqual() {
-    val comparable1 = parseNumericExpression("2 ^ 3").toComparableOperation()
-    val comparable2 = parseNumericExpression("3 ^ 2").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 ^ 3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("3 ^ 2").convertToComparableOperation()
 
     // Exponentiation is not commutative.
     assertThat(comparable1).isNotEqualTo(comparable2)
@@ -2626,11 +2626,11 @@ class ExpressionToComparableOperationConverterTest {
     val comparable1 =
       parseNumericExpression(
         "2 ^ (3 ^ 4)", errorCheckingMode = REQUIRED_ONLY
-      ).toComparableOperation()
+      ).convertToComparableOperation()
     val comparable2 =
       parseNumericExpression(
         "(2 ^ 3) ^ 4", errorCheckingMode = REQUIRED_ONLY
-      ).toComparableOperation()
+      ).convertToComparableOperation()
 
     // Exponentiation is not associative.
     assertThat(comparable1).isNotEqualTo(comparable2)
@@ -2638,8 +2638,8 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_exponentiationOps_differentByValue_areNotEqual() {
-    val comparable1 = parseNumericExpression("2 ^ 3").toComparableOperation()
-    val comparable2 = parseNumericExpression("2 ^ 4").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 ^ 3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2 ^ 4").convertToComparableOperation()
 
     assertThat(comparable1).isNotEqualTo(comparable2)
   }
@@ -2647,9 +2647,9 @@ class ExpressionToComparableOperationConverterTest {
   @Test
   fun testEquals_exponentiationOps_sameOnlyByEvaluation_areNotEqual() {
     // Disable optional errors to allow nested exponentiation.
-    val comparable1 = parseNumericExpression("2 ^ 4").toComparableOperation()
+    val comparable1 = parseNumericExpression("2 ^ 4").convertToComparableOperation()
     val comparable2 =
-      parseNumericExpression("2 ^ 2 ^ 2", errorCheckingMode = REQUIRED_ONLY).toComparableOperation()
+      parseNumericExpression("2 ^ 2 ^ 2", errorCheckingMode = REQUIRED_ONLY).convertToComparableOperation()
 
     // While the two expressions are numerically equivalent, they aren't comparable since there are
     // extra terms in one (more than trivial rearranging is required to determine that they're
@@ -2659,24 +2659,24 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_squareRootOps_same_areEqual() {
-    val comparable1 = parseNumericExpression("sqrt(2)").toComparableOperation()
-    val comparable2 = parseNumericExpression("sqrt(2)").toComparableOperation()
+    val comparable1 = parseNumericExpression("sqrt(2)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("sqrt(2)").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_squareRootOps_differentByValue_areNotEqual() {
-    val comparable1 = parseNumericExpression("sqrt(2)").toComparableOperation()
-    val comparable2 = parseNumericExpression("sqrt(3)").toComparableOperation()
+    val comparable1 = parseNumericExpression("sqrt(2)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("sqrt(3)").convertToComparableOperation()
 
     assertThat(comparable1).isNotEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_squareRootOps_sameOnlyByEvaluation_areNotEqual() {
-    val comparable1 = parseNumericExpression("sqrt(2)").toComparableOperation()
-    val comparable2 = parseNumericExpression("sqrt(1 + 1)").toComparableOperation()
+    val comparable1 = parseNumericExpression("sqrt(2)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("sqrt(1 + 1)").convertToComparableOperation()
 
     // While the two expressions are numerically equivalent, they aren't comparable since there are
     // extra terms in one (more than trivial rearranging is required to determine that they're
@@ -2686,40 +2686,40 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_additionsAndSubtractions_differentByOrder_areEqual() {
-    val comparable1 = parseNumericExpression("1+2-3").toComparableOperation()
-    val comparable2 = parseNumericExpression("-3+2+1").toComparableOperation()
+    val comparable1 = parseNumericExpression("1+2-3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("-3+2+1").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_multiplicationsAndDivisions_differentByOrder_areEqual() {
-    val comparable1 = parseNumericExpression("2*3/4*7").toComparableOperation()
-    val comparable2 = parseNumericExpression("7*2*3/4").toComparableOperation()
+    val comparable1 = parseNumericExpression("2*3/4*7").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("7*2*3/4").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_allAccumulationOperations_differentByOrder_areEqual() {
-    val comparable1 = parseNumericExpression("1+2*3/4*7-8+3").toComparableOperation()
-    val comparable2 = parseNumericExpression("-8+3+7*3/4*2+1").toComparableOperation()
+    val comparable1 = parseNumericExpression("1+2*3/4*7-8+3").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("-8+3+7*3/4*2+1").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_allOperations_differentByOrder_areEqual() {
-    val comparable1 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-2*3)").toComparableOperation()
-    val comparable2 = parseNumericExpression("2^3*sqrt(3*2+1)/7-(-3*2+2)").toComparableOperation()
+    val comparable1 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-2*3)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("2^3*sqrt(3*2+1)/7-(-3*2+2)").convertToComparableOperation()
 
     assertThat(comparable1).isEqualTo(comparable2)
   }
 
   @Test
   fun testEquals_allOperations_oneNestedDifferentByValue_areNotEqual() {
-    val comparable1 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-2*3)").toComparableOperation()
-    val comparable2 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-4*3)").toComparableOperation()
+    val comparable1 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-2*3)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-4*3)").convertToComparableOperation()
 
     // Just one different term leads to the entire comparison failing.
     assertThat(comparable1).isNotEqualTo(comparable2)
@@ -2727,8 +2727,8 @@ class ExpressionToComparableOperationConverterTest {
 
   @Test
   fun testEquals_twoOps_allOperations_oneMissingTerm_areNotEqual() {
-    val comparable1 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-2*3)").toComparableOperation()
-    val comparable2 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-2)").toComparableOperation()
+    val comparable1 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-2*3)").convertToComparableOperation()
+    val comparable2 = parseNumericExpression("sqrt(1+2*3)*2^3/7-(2-2)").convertToComparableOperation()
 
     // Just one missing term leads to the entire comparison failing.
     assertThat(comparable1).isNotEqualTo(comparable2)

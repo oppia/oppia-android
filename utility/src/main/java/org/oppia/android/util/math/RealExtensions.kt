@@ -9,6 +9,11 @@ import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 
+/**
+ * [Comparator] for [Real]s that ensures two reals can be compared even if they are different types.
+ *
+ * Note that no reliance should be placed on how negative zeros for doubles and fractions behave.
+ */
 val REAL_COMPARATOR: Comparator<Real> by lazy { Comparator.comparing(Real::toDouble) }
 
 /**
