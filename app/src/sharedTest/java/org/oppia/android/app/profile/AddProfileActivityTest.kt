@@ -84,7 +84,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
@@ -123,7 +123,7 @@ class AddProfileActivityTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
-  val accessibilityTestRule = AccessibilityTestRule()
+  val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   val activityTestRule = ActivityTestRule(
@@ -169,6 +169,15 @@ class AddProfileActivityTest {
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(label).isEqualTo(context.getString(R.string.add_profile_activity_label))
+  }
+
+  @Test
+  fun testAddProfileActivity_hasRequiredTextPrefixedWithStar() {
+    launch(AddProfileActivity::class.java).use {
+      onView(allOf(withId(R.id.add_profile_activity_required_heading_text_view))).check(
+        matches(withText("*" + context.getString(R.string.add_profile_required)))
+      )
+    }
   }
 
   @Test

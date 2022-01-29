@@ -5,12 +5,6 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 
-/** Represents transformations for images loaded using [ImageLoader]. */
-enum class ImageTransformation {
-  /** Represents Blur Transformation on an [ImageTarget]. */
-  BLUR
-}
-
 /** Loads an image from the provided URL into the specified target, optionally caching it. */
 interface ImageLoader {
   /**

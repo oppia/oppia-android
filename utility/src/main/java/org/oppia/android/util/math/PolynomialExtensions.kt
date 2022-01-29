@@ -51,11 +51,19 @@ fun Polynomial.getConstant(): Real = getTerm(0).coefficient
 // https://www.varsitytutors.com/algebra_1-help/how-to-find-the-degree-of-a-polynomial.
 fun Polynomial.getDegree(): Int = getLeadingTerm().highestDegree()
 
+/**
+ * Returns a human-readable, plaintext representation of this [Polynomial].
+ *
+ * The returned string is guaranteed to be a syntactically correct algebraic expression representing
+ * the polynomial, e.g. "1+x-7x^2").
+ */
 fun Polynomial.toPlainText(): String {
-  return termList.map { it.toPlainText() }.reduce { acc, termAnswerStr ->
+  return termList.map {
+    it.toPlainText()
+  }.reduce { ongoingPolynomialStr, termAnswerStr ->
     if (termAnswerStr.startsWith("-")) {
-      "$acc - ${termAnswerStr.drop(1)}"
-    } else "$acc + $termAnswerStr"
+      "$ongoingPolynomialStr - ${termAnswerStr.drop(1)}"
+    } else "$ongoingPolynomialStr + $termAnswerStr"
   }
 }
 
