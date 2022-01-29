@@ -7,6 +7,10 @@
     <variable
       name="viewModel"
       type="org.oppia.android.app.profile.ProfileChooserViewModel" />
+
+    <variable
+      name="hasProfileEverBeenAddedValue"
+      type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,12 +54,14 @@
 
         <TextView
           android:id="@+id/profile_select_text"
-          style="@style/Heading1ViewStart"
-          android:layout_marginStart="36dp"
-          android:layout_marginTop="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
-          android:layout_marginEnd="36dp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/profile_chooser_fragment_layout_marginStart"
+          android:layout_marginTop="80dp"
+          android:fontFamily="sans-serif"
           android:text="@string/profile_chooser_select"
           android:textColor="@color/white"
+          android:textSize="36sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,27 +69,29 @@
           android:id="@+id/profile_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_marginStart="16dp"
-          android:layout_marginTop="@dimen/profile_chooser_fragment_profile_recycler_view_margin_top"
-          android:layout_marginEnd="16dp"
           android:clipToPadding="false"
           android:fadingEdge="horizontal"
           android:fadingEdgeLength="72dp"
           android:orientation="vertical"
           android:overScrollMode="never"
-          android:paddingBottom="@dimen/bottom_white_space"
+          android:paddingBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_padding_bottom_profile_already_added : @dimen/bottom_white_space}"
           android:requiresFadingEdge="vertical"
           android:scrollbars="none"
           android:tag="profile_recycler_view"
           app:data="@{viewModel.profiles}"
+          app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_end_profile_already_added : @dimen/space_0dp}"
+          app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_start_profile_already_added : @dimen/space_0dp}"
+          app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_fragment_margin_top_profile_already_added : @dimen/profile_chooser_fragment_margin_top_profile_not_added}"
           app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_select_text" />
       </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
     <View
       android:layout_width="match_parent"
-      android:layout_height="96dp"
+      android:layout_height="128dp"
       android:background="@drawable/profile_chooser_gradient"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -99,8 +107,9 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
-        style="@style/Subtitle1ViewCenter"
-        android:layout_marginBottom="24dp"
+        style="@style/Heading1ViewCenter"
+        android:layout_marginBottom="@dimen/profile_chooser_fragment_layout_marginBottom"
+        android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
         android:textColor="@color/profile_chooser_grey_text" />
@@ -109,12 +118,8 @@
         android:id="@+id/profile_chooser_setting_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="24dp"
-        android:paddingStart="8dp"
-        android:paddingTop="12dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="12dp"
+        android:layout_marginEnd="@dimen/profile_chooser_fragment_layout_marginEnd"
+        android:padding="8dp"
         app:srcCompat="@drawable/ic_settings_grey_48dp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
