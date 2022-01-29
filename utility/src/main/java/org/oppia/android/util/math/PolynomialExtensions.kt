@@ -393,3 +393,29 @@ private fun Real.maybeSimplifyRationalToInteger(): Real = when (realTypeCase) {
   Real.RealTypeCase.IRRATIONAL, Real.RealTypeCase.INTEGER, Real.RealTypeCase.REALTYPE_NOT_SET,
   null -> this
 }
+
+// TODO: figure out of this can be removed.
+private fun <T, U : Comparable<U>> Comparator<T>.thenComparingReversed(
+  keySelector: (T) -> U
+): Comparator<T> = thenComparing(Comparator.comparing(keySelector).reversed())
+
+// TODO: figure out of this can be removed.
+private fun <T> Comparator<T>.toSetComparator(): Comparator<SortedSet<T>> {
+  val itemComparator = this
+  return Comparator { first, second ->
+    // Reference: https://stackoverflow.com/a/30107086.
+    val firstIter = first.iterator()
+    val secondIter = second.iterator()
+    while (firstIter.hasNext() && secondIter.hasNext()) {
+      val comparison = itemComparator.compare(firstIter.next(), secondIter.next())
+      if (comparison != 0) return@Comparator comparison // Found a different item.
+    }
+
+    // Everything is equal up to here, see if the lists are different length.
+    return@Comparator when {
+      firstIter.hasNext() -> 1 // The first list is longer, therefore "greater."
+      secondIter.hasNext() -> -1 // Ditto, but for the second list.
+      else -> 0 // Otherwise, they're the same length with all equal items (and are thus equal).
+    }
+  }
+}

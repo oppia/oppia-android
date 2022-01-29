@@ -779,8 +779,8 @@ class ExpressionToPolynomialTest {
     assertThat(poly44).term(1).apply {
       hasCoefficientThat().isRationalThat().apply {
         hasNegativePropertyThat().isTrue()
-        hasWholeNumberThat().isEqualTo(0)
-        hasNumeratorThat().isEqualTo(3)
+        hasWholeNumberThat().isEqualTo(1)
+        hasNumeratorThat().isEqualTo(1)
         hasDenominatorThat().isEqualTo(2)
       }
       hasVariableCountThat().isEqualTo(0)
