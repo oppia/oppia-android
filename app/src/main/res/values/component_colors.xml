@@ -12,7 +12,7 @@
   <color name="shared_text_input_layout_stroke_color">@color/primary_text_color</color>
   <color name="shared_text_input_edit_text_text_color">@color/primary_text_color</color>
   <color name="shared_input_interaction_edit_text_text_color">@color/primary_text_color</color>
-  <color name="shared_text_input_layout_background_color">@color/text_input_background</color>
+  <color name="shared_text_input_layout_background_color">@color/text_input_background_color</color>
   <color name="shared_text_input_layout_error_color">@color/error_color</color>
   <!-- Admin Auth Activity -->
   <color name="admin_auth_secondary_text_color">@color/description_text_color</color>
@@ -24,7 +24,7 @@
   <color name="add_profile_activity_switch_description_color">@color/description_text_color</color>
   <color name="add_profile_activity_layout_background_color">@color/background_color</color>
   <!-- Administrator Controls -->
-  <color name="admin_controls_background_color">@color/background_color_grey</color>
+  <color name="admin_controls_background_color">@color/grey_background_color</color>
   <color name="admin_controls_options_background_color">@color/container_background_color</color>
   <color name="admin_controls_options_highlighted_background_color">@color/highlight_blue</color>
   <color name="admin_controls_sub_heading_color">@color/primary_color</color>

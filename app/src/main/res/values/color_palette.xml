@@ -6,9 +6,9 @@
   <color name="primary_text_color">@color/oppia_primary_text</color>
   <color name="highlighted_text_color">@color/oppia_primary_text</color>
   <color name="background_color">@color/oppia_background_yellow_ivory</color>
-  <color name="background_color_grey">@color/mid_grey_30</color>
+  <color name="grey_background_color">@color/mid_grey_30</color>
   <color name="description_text_color">@color/accessible_light_grey</color>
-  <color name="text_input_background">@color/white</color>
+  <color name="text_input_background_color">@color/white</color>
   <color name="dark_text_color">@color/oppia_primary_text_dark</color>
   <color name="error_color">@color/oppia_red</color>
   <color name="container_background_color">@color/white</color>
