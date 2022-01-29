@@ -37,5 +37,3 @@ class BottomSheetFragment(val internalProfileId : Int) : BottomSheetDialogFragme
     }
   }
 }
-
-
