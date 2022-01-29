@@ -6,7 +6,6 @@ import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.A
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.SUMMATION
 import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation
 import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.BinaryOperation
-import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE
 import org.oppia.android.app.model.MathBinaryOperation.Operator.EXPONENTIATE
@@ -22,15 +21,16 @@ import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERA
 import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.MathFunctionCall.FunctionType
 import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
-import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
+import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
+import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
 /**
  * Converter from [MathExpression] to [ComparableOperation].
  *
- * See the separate proto details for context, and [convertToComparableOperation] for the actual conversion
- * function.
+ * See the separate proto details for context, and [convertToComparableOperation] for the actual
+ * conversion function.
  */
 class ExpressionToComparableOperationConverter private constructor() {
   companion object {
@@ -139,7 +139,8 @@ class ExpressionToComparableOperationConverter private constructor() {
           addOperationToSum(expression.unaryOperation.operand, forceNegative)
         // Skip groups so that nested operations can be properly combined.
         expression.expressionTypeCase == GROUP -> addOperationToSum(expression.group, forceNegative)
-        forceNegative -> addCombinedOperations(expression.convertToComparableOperation().invertNegation())
+        forceNegative ->
+          addCombinedOperations(expression.convertToComparableOperation().invertNegation())
         else -> addCombinedOperations(expression.convertToComparableOperation())
       }
     }

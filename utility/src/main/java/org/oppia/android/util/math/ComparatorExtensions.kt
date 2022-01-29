@@ -39,7 +39,7 @@ fun <U> Comparator<U>.compareIterables(first: Iterable<U>, second: Iterable<U>):
  * [Comparator] isn't used). This short-circuiting behavior can be useful when comparing recursively
  * infinite proto structures to avoid stack overflows..
  */
-fun <T: MessageLite> Comparator<T>.compareProtos(left: T, right: T): Int {
+fun <T : MessageLite> Comparator<T>.compareProtos(left: T, right: T): Int {
   val defaultValue = left.defaultInstanceForType
   val leftIsDefault = left == defaultValue
   val rightIsDefault = right == defaultValue
