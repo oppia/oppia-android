@@ -26,7 +26,13 @@ class ProfileListActivity :
   }
 
   override fun routeToProfileEditActivity(profileId: Int) {
-    startActivity(ProfileEditActivity.createProfileEditActivity(this, profileId, false))
+    startActivity(
+      ProfileEditActivity.createProfileEditActivity(
+        context = this,
+        profileId = profileId,
+        isMultipane = false
+      )
+    )
   }
 
   companion object {

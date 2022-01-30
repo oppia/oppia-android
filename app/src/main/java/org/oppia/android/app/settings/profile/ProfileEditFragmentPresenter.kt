@@ -75,8 +75,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
     profileEditViewModel.profile.observe(
       fragment,
       Observer {
-        if (activity is ProfileEditActivity)
+        if (activity is ProfileEditActivity) {
           activity.title = it.name
+        }
       }
     )
 

@@ -94,10 +94,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       ) as AdministratorControlsFragment?
   }
 
-  /**
-   * Loads the profile list fragment as the [AdministratorControlsActivity] is
-   * started in multipane tablet mode.
-   */
+  /** Loads the profile list fragment as the [AdministratorControlsActivity] is started in multipane tablet mode. */
   fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)

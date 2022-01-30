@@ -26,13 +26,13 @@ const val SELECTED_PROFILE_ID_SAVED_KEY =
 /** Argument key for last loaded fragment in [AdministratorControlsActivity]. */
 const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
 
-/** Argument key for [ProfileListFragment]. */
+/** Argument key for identifying [ProfileListFragment] in the backstack. */
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 
-/** Argument key for [ProfileEditFragment]. */
+/** Argument key for identifying [ProfileEditFragment] in the backstack. */
 const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
 
-/** Argument key for [AppVersionFragment]. */
+/** Argument key for identifying [AppVersionFragment] in the backstack. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
@@ -62,8 +62,7 @@ class AdministratorControlsActivity :
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    val selectedProfileId =
-      savedInstanceState?.getInt(SELECTED_PROFILE_ID_SAVED_KEY)
+    val selectedProfileId = savedInstanceState?.getInt(SELECTED_PROFILE_ID_SAVED_KEY)
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,
@@ -85,11 +84,17 @@ class AdministratorControlsActivity :
       supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
       )
-
-    if (fragment is ProfileEditFragment)
+    /**
+     * when fragment is [ProfileEditFragment] then we should switch
+     * fragment to [ProfileListFragment] or else
+     * we just end the activity as then we are
+     * having [ProfileListFragment] on top.
+     */
+    if (fragment is ProfileEditFragment) {
       administratorControlsActivityPresenter.handleOnBackPressed()
-    else
+    } else {
       super.onBackPressed()
+    }
   }
 
   override fun loadProfileList() {
@@ -124,7 +129,7 @@ class AdministratorControlsActivity :
       return intent
     }
 
-    /** Returns an Argument key for internal ProfileId of User. */
+    /** Returns the argument key used to specify the user's internal profile ID. */
     fun getIntentKey(): String {
       return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
