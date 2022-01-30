@@ -20,5 +20,5 @@ kt_android_library(
     srcs = [
         "NameValidator.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//domain:__subpackages__","//utility:__subpackages__"],
 )
