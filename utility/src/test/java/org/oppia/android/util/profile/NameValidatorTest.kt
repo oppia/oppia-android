@@ -1,6 +1,5 @@
 package org.oppia.android.util.profile
 
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
