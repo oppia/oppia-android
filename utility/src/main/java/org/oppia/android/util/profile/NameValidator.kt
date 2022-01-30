@@ -6,7 +6,6 @@ import javax.inject.Singleton
 /** Utility to validate profile names*/
 @Singleton
 class NameValidator @Inject constructor() {
-  companion object {
     private val letterAndSymbolsRegex by lazy { Regex("^.[\\p{L}.'\\-]+\$") }
 
     private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[\\.'-]{2}") }
@@ -28,5 +27,4 @@ class NameValidator @Inject constructor() {
     private fun noRepeatedUseOfAllowedSymbols(name: String): Boolean {
       return !name.contains(noRepeatedAllowedSymbolsRegex)
     }
-  }
 }
