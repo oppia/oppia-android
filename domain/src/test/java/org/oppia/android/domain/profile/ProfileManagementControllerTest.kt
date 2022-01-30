@@ -51,7 +51,6 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.profile.NameValidator
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)

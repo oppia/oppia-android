@@ -1,8 +1,8 @@
 package org.oppia.android.util.profile
 
 import com.google.common.truth.Truth.assertThat
-import javax.inject.Inject
 import org.junit.Test
+import javax.inject.Inject
 
 class NameValidatorTest {
 
