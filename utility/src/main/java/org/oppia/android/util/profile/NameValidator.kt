@@ -7,10 +7,9 @@ import javax.inject.Singleton
 @Singleton
 class NameValidator @Inject constructor() {
   companion object {
-    private const val MATCH_LETTERS_AND_ALLOWED_SYMBOLS =
-      "^.[\\p{L}.'\\-]+\$"
+    private val letterAndSymbolsRegex by lazy { Regex("^.[\\p{L}.'\\-]+\$") }
 
-    private const val REJECT_REPEATED_USE_OF_ALLOWED_SYMBOLS = "[\\.'-]{2}"
+    private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[\\.'-]{2}") }
 
     /**
      * Validates names for a profile
@@ -23,11 +22,11 @@ class NameValidator @Inject constructor() {
     }
 
     private fun onlyLettersAndAllowedSymbols(name: String): Boolean {
-      return name.matches(Regex(MATCH_LETTERS_AND_ALLOWED_SYMBOLS))
+      return name.matches(letterAndSymbolsRegex)
     }
 
     private fun noRepeatedUseOfAllowedSymbols(name: String): Boolean {
-      return !name.contains(Regex(REJECT_REPEATED_USE_OF_ALLOWED_SYMBOLS))
+      return !name.contains(noRepeatedAllowedSymbolsRegex)
     }
   }
 }

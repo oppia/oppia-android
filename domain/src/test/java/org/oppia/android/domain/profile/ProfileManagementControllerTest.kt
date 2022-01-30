@@ -111,9 +111,9 @@ class ProfileManagementControllerTest {
     Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
   )
 
-  private val allowedNamesList = listOf<String>("जिष्णु", "Ben-Henning", "Rajat.T", "جيشنو")
+  private val allowedNames = listOf<String>("जिष्णु", "Ben-Henning", "Rajat.T", "جيشنو")
 
-  private val unAllowedNamesList = listOf<String>("जिष्णु7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
+  private val disallowedNames = listOf<String>("जिष्णु7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
 
   @Before
   fun setUp() {
@@ -171,11 +171,11 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testAddProfile_addProfilesWithUnAllowedNames_checkResultIsFailure() {
+  fun testAddProfile_addProfilesWithDisallowedNames_checkResultIsFailure() {
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    unAllowedNamesList.forEach {
+    disallowedNames.forEach {
       profileManagementController.addProfile(
         name = it,
         pin = "321",
@@ -203,11 +203,11 @@ class ProfileManagementControllerTest {
     val profiles = profileDatabase.profilesMap
 
     profiles.forEach { index, profile ->
-      assertThat(profile.name).isEqualTo(allowedNamesList[index])
+      assertThat(profile.name).isEqualTo(allowedNames[index])
       assertThat(File(getAbsoluteDirPath("$index")).isDirectory).isTrue()
     }
 
-    assertThat(profiles.size).isEqualTo(allowedNamesList.size)
+    assertThat(profiles.size).isEqualTo(allowedNames.size)
   }
 
   @Test
@@ -1028,7 +1028,7 @@ class ProfileManagementControllerTest {
   }
 
   private fun addAllowedNameProfiles() {
-    allowedNamesList.forEach {
+    allowedNames.forEach {
       profileManagementController.addProfile(
         name = it,
         pin = "314",
