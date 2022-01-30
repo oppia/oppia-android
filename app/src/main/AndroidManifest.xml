@@ -6,6 +6,7 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
+
   <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".app.application.OppiaApplication"
@@ -152,8 +153,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.splash.SplashActivity"
-      android:label="@string/app_name"
       android:screenOrientation="portrait"
+      android:label="@string/app_name"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
