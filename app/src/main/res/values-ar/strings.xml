@@ -263,7 +263,7 @@
   <string name="admin_settings_incorrect">رقم التعريف الشخصي الخاص بالمشرف غير صحيح. من فضلك حاول مجددًا.</string>
   <string name="admin_settings_enter_user_new_pin">رقم التعريف الشخصي الجديد الخاص ب%1$s.</string>
   <string name="reset_pin_enter">أدخل رقم تعريف شخصي جديد</string>
-  <string name="my_downloads">تنزيلاتي</string>
+  <string name="my_downloads_activity_title">تنزيلاتي</string>
   <string name="tab_downloads">التنزيلات</string>
   <string name="tab_updates">التحديثات (2)</string>
   <string name="home_activity_back_dialog_message">هل تريد الخروج من ملفك الشخصي؟</string>
