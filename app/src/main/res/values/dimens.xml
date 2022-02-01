@@ -595,6 +595,9 @@
   <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">32dp</dimen>
 
+  <!-- TopicSummaryView -->
+  <dimen name="topic_summary_lesson_count_text_view_padding_bottom">8dp</dimen>
+  
   <!-- TopicPracticeFragment -->
   <dimen name="topic_practice_fragment_padding_bottom">172dp</dimen>
   <dimen name="topic_practice_fragment_padding_start">0dp</dimen>
@@ -606,7 +609,7 @@
 
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
-   
+
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">160dp</dimen>
 
