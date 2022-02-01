@@ -59,7 +59,7 @@ kt_android_library(
     srcs = [
         "InteractionsModule.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         ":generic_interaction_classifier",
