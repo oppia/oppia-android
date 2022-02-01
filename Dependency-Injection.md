@@ -49,4 +49,4 @@ class PersistentCacheStore private constructor() {
 }
 ```
 
-Hence this calls for a framework that can help us with Dependency Injection in Android and Dagger seems the most favourable choice. [ReadMore]("Dagger.md")
+Hence this calls for a framework that can help us with Dependency Injection in Android and Dagger seems the most favourable choice. [ReadMore](https://github.com/oppia/oppia-android/wiki/Dagger)
