@@ -42,6 +42,7 @@
   * [[Buf Guide|https://github.com/oppia/oppia-android/wiki/Buf-Guide]]
   * [[Firebase Console Guide|https://github.com/oppia/oppia-android/wiki/Firebase-Console-Guide]]
   * [[Platform Parameters & Feature Flags|https://github.com/oppia/oppia-android/wiki/Platform-Parameters-&-Feature-Flags]]
+  * [[Work Manager|https://github.com/oppia/oppia-android/wiki/Work-Manager]]
   * [[Revert & regression policy|https://github.com/oppia/oppia-android/wiki/Revert-&-regression-policy]]
   * Bazel
     * [[Gradle Bazel Migration Best Practices and FAQ|https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ]]    
