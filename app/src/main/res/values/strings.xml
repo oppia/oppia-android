@@ -454,8 +454,6 @@
   </string>
   <!-- DrawableBindingAdaptersTestActivity -->
   <string name="drawable_binding_adapters_test_label">Drawable Binding Adapter Activity</string>
-  <!-- TextViewBindingAdaptersTestActivity -->
-  <string name="text_view_binding_adapters_tets_label">TextView Binding Adapters Activity</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
