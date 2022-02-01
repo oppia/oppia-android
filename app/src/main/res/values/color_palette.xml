@@ -12,4 +12,8 @@
   <color name="dark_text_color">@color/black_87</color>
   <color name="error_color">@color/oppia_red</color>
   <color name="container_background_color">@color/white</color>
+  <color name="toolbar_color">@color/oppia_green</color>
+  <color name="status_bar_color">@color/dark_green</color>
+  <color name="action_bar_color">@color/oppia_green</color>
+  <color name="highlighted_background_color">@color/highlight_blue</color>
 </resources>
