@@ -43,6 +43,7 @@
   * [[Firebase Console Guide|https://github.com/oppia/oppia-android/wiki/Firebase-Console-Guide]]
   * [[Platform Parameters & Feature Flags|https://github.com/oppia/oppia-android/wiki/Platform-Parameters-&-Feature-Flags]]
   * [[Work Manager|https://github.com/oppia/oppia-android/wiki/Work-Manager]]
+  * [[Dependency Injection|https://github.com/oppia/oppia-android/wiki/Dependency-Injection]] with [[Dagger|https://github.com/oppia/oppia-android/wiki/Dagger]]
   * [[Revert & regression policy|https://github.com/oppia/oppia-android/wiki/Revert-&-regression-policy]]
   * Bazel
     * [[Gradle Bazel Migration Best Practices and FAQ|https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ]]    
