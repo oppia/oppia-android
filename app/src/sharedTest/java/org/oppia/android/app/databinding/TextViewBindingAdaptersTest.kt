@@ -132,47 +132,48 @@ class TextViewBindingAdaptersTest {
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
+    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs()
+        /* setText= */ getCurrentTimeMs
       )
       assertThat(textView.text.toString()).isEqualTo("Last used just now")
 
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 60000
+        /* setText= */ getCurrentTimeMs - 60000
       )
       assertThat(textView.text.toString()).isEqualTo("Last used a minute ago")
 
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 120000
+        /* setText= */ getCurrentTimeMs - 120000
       )
       assertThat(textView.text.toString()).isEqualTo("Last used 2 minutes ago")
 
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 3600000
+        /* setText= */ getCurrentTimeMs - 3600000
       )
       assertThat(textView.text.toString()).isEqualTo("Last used an hour ago")
 
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 7200000
+        /* setText= */ getCurrentTimeMs - 7200000
       )
       assertThat(textView.text.toString()).isEqualTo("Last used 2 hours ago")
 
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 86400000
+        /* setText= */ getCurrentTimeMs - 86400000
       )
       assertThat(textView.text.toString()).isEqualTo("Last used yesterday")
 
       setProfileLastVisitedText(
         textView,
-        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 172800000
+        /* setText= */ getCurrentTimeMs - 172800000
       )
       assertThat(textView.text.toString()).isEqualTo("Last used 2 days ago")
     }
