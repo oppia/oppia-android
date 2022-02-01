@@ -382,6 +382,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/BindableAda
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ConceptCardFragmentTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ConceptCardFragmentTestActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/DragDropTestActivityPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/DrawableBindingAdaptersTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ExplorationInjectionActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ExplorationTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ExplorationTestActivityPresenter.kt"
