@@ -33,7 +33,7 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginBottom="8dp"
-        android:src="@{@drawable/ic_add_profile}"
+        app:srcCompat="@{@drawable/ic_add_profile}"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
         app:strokeColor="@color/avatar_border"
         app:strokeWidth="1dp" />
