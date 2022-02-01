@@ -198,9 +198,6 @@
     <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
     <activity
-      android:name=".app.testing.TextViewBindingAdaptersTestActivity"
-      android:label="@string/text_view_binding_adapters_tets_label" />
-    <activity
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
