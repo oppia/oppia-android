@@ -75,6 +75,7 @@
     <activity
       android:name=".app.mydownloads.MyDownloadsActivity"
       android:screenOrientation="portrait"
+      android:label="@string/my_downloads_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
@@ -173,6 +174,9 @@
     <activity android:name=".app.testing.BindableAdapterTestActivity" />
     <activity android:name=".app.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".app.testing.DragDropTestActivity" />
+    <activity
+      android:name=".app.testing.DrawableBindingAdaptersTestActivity"
+      android:label="@string/drawable_binding_adapters_test_label" />
     <activity android:name=".app.testing.ExplorationInjectionActivity" />
     <activity android:name=".app.testing.ExplorationTestActivity" />
     <activity

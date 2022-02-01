@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -87,6 +88,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -116,6 +118,9 @@ import javax.inject.Singleton
 class QuestionPlayerActivityLocalTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @Inject
+  lateinit var accessibilityManager: FakeAccessibilityService
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -163,6 +168,64 @@ class QuestionPlayerActivityLocalTest {
 
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testQuestionPlayer_portrait_submitCorrectAnswerWithFeedback_correctIsNotAnnounced() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+      clickContinueNavigationButton()
+      accessibilityManager.resetLatestAnnouncement()
+      submitCorrectAnswerToQuestion2PlayerFractionInput()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isNull()
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testQuestionPlayer_landscape_submitCorrectAnswerWithFeedback_correctIsNotAnnounced() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+      clickContinueNavigationButton()
+      accessibilityManager.resetLatestAnnouncement()
+      submitCorrectAnswerToQuestion2PlayerFractionInput()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isNull()
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "port")
+  fun testQuestionPlayer_portrait_submitCorrectAnswer_correctIsAnnounced() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testQuestionPlayer_landscape_submitCorrectAnswer_correctIsAnnounced() {
+    launchForQuestionPlayer(SKILL_ID_LIST).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
+
+      submitCorrectAnswerToQuestionPlayerFractionInput()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
     }
   }
 
@@ -296,6 +359,29 @@ class QuestionPlayerActivityLocalTest {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON))
     onView(withId(R.id.submit_answer_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun submitCorrectAnswerToQuestion2PlayerFractionInput() {
+    onView(withId(R.id.question_recycler_view))
+      .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
+    onView(withId(R.id.text_input_interaction_view)).perform(
+      editTextInputAction.appendText("1/4"),
+      closeSoftKeyboard()
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    onView(withId(R.id.question_recycler_view))
+      .perform(scrollToViewType(StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON))
+    onView(withId(R.id.submit_answer_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickContinueNavigationButton() {
+    onView(withId(R.id.question_recycler_view))
+      .perform(scrollToViewType(StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON))
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.continue_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
