@@ -125,8 +125,6 @@ class TextViewBindingAdaptersTest {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileDataText(textView, /* setText= */ TIMESTAMP)
       assertThat(textView.text.toString()).isEqualTo("Created on April 24, 2019")
-      setProfileDataText(textView, /* setText= */ 0)
-      assertThat(textView.text.toString()).isEqualTo("Created on January 1, 1970")
     }
   }
 
@@ -141,6 +139,42 @@ class TextViewBindingAdaptersTest {
         /* setText= */ fakeOppiaClock.getCurrentTimeMs()
       )
       assertThat(textView.text.toString()).isEqualTo("Last used just now")
+
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 60000
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used a minute ago")
+
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 120000
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used 2 minutes ago")
+
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 3600000
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used an hour ago")
+
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 7200000
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used 2 hours ago")
+
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 86400000
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used yesterday")
+
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ fakeOppiaClock.getCurrentTimeMs() - 172800000
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used 2 days ago")
     }
   }
 
