@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <color name="oppia_green">#00645C</color>
+  <color name="dark_green">#003933</color>
   <color name="oppia_dark_blue">#2D4A9D</color>
   <color name="oppia_light_green">#F0FFFF</color>
   <color name="oppia_light_yellow">#FFFFF0</color>
@@ -17,6 +19,7 @@
   <color name="black_12">#1F000000</color>
   <color name="black_26">#42000000</color>
   <color name="black_54">#8A000000</color>
+  <color name="black_87">#DE000000</color>
   <color name="white_light">#F9F9F9</color>
   <color name="accessible_grey">#333333</color>
   <color name="accessible_light_grey">#555555</color>
