@@ -115,23 +115,25 @@ class TextViewBindingAdaptersTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   // Time: Wed Apr 24 2019 08:22:00
-  private val MORNING_TIMESTAMP = 1556094120000
+  private val TIMESTAMP = 1556094120000
 
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileDataTextIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+    fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
-      setProfileDataText(textView, /* setText= */ MORNING_TIMESTAMP)
+      setProfileDataText(textView, /* setText= */ TIMESTAMP)
       assertThat(textView.text.toString()).isEqualTo("Created on April 24, 2019")
+      setProfileDataText(textView, /* setText= */ 0)
+      assertThat(textView.text.toString()).isEqualTo("Created on January 1, 1970")
     }
   }
 
   @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(MORNING_TIMESTAMP)
+    fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(

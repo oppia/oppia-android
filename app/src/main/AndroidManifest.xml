@@ -194,15 +194,15 @@
     <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
     <activity
+      android:name=".app.testing.TextViewBindingAdaptersTestActivity"
+      android:label="@string/text_view_binding_adapters_label" />
+    <activity
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.TopicRevisionTestActivity" />
-    <activity
-      android:name=".app.testing.TextViewBindingAdaptersTestActivity"
-      android:label="@string/text_view_binding_adapters_label" />
     <activity android:name=".app.testing.ViewBindingAdaptersTestActivity" />
     <activity
       android:name=".app.topic.questionplayer.QuestionPlayerActivity"

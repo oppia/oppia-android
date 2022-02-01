@@ -5,7 +5,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 
-/** Test activity for TextViewBindingAdapters. */
+/** Test activity for [org.oppia.android.app.databinding.TextViewBindingAdapters]. */
 class TextViewBindingAdaptersTestActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
