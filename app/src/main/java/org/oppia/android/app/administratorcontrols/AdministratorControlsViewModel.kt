@@ -36,7 +36,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val showLogoutDialogListener = activity as ShowLogoutDialogListener
   private lateinit var userProfileId: ProfileId
 
-  /** Sets index for the currently selected fragment. */
+  /** Sets the index for the currently selected fragment. */
   val selectedFragmentIndex = ObservableField<Int>(1)
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
