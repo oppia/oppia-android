@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- TODO(#4147): Remove this file after dark mode implementation -->
 <resources>
-  <!-- contains color declarations which are supposed to be in [color_defs.xml] but has not been
-   renamed yet to have actual color name instead of names linked to their use and components.
+  <!-- All of these colors will be replaced with one in color_defs.xml.
    This is a temporary measure to make sure other 4 color files follows the convention decided
    for them. -->
   <color name="oppia_primary">#00645C</color>
