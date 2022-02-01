@@ -44,7 +44,6 @@
         app:strokeColor="@color/avatar_border"
         app:strokeWidth="1dp"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
-
         profile:src="@{viewModel.profile.avatar}" />
 
       <LinearLayout
