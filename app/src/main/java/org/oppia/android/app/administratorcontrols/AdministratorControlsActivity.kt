@@ -26,13 +26,13 @@ const val SELECTED_PROFILE_ID_SAVED_KEY =
 /** Argument key for last loaded fragment in [AdministratorControlsActivity]. */
 const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
 
-/** Argument key for identifying [ProfileListFragment] in the backstack. */
+/** Argument key used to identify [ProfileListFragment] in the backstack. */
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 
-/** Argument key for identifying [ProfileEditFragment] in the backstack. */
+/** Argument key used to identify [ProfileEditFragment] in the backstack. */
 const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
 
-/** Argument key for identifying [AppVersionFragment] in the backstack. */
+/** Argument key used to identify [AppVersionFragment] in the backstack. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
@@ -84,11 +84,11 @@ class AdministratorControlsActivity :
       supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
       )
-    /**
-     * when fragment is [ProfileEditFragment] then we should switch
-     * fragment to [ProfileListFragment] or else
-     * we just end the activity as then we are
-     * having [ProfileListFragment] on top.
+    /*
+     when fragment is ProfileEditFragment then we should switch
+     fragment to ProfileListFragment or else
+     we just end the activity as then we are
+     having ProfileListFragment on top.
      */
     if (fragment is ProfileEditFragment) {
       administratorControlsActivityPresenter.handleOnBackPressed()

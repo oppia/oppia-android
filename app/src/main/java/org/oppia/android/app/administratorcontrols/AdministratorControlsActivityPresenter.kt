@@ -94,7 +94,10 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       ) as AdministratorControlsFragment?
   }
 
-  /** Loads the profile list fragment as the [AdministratorControlsActivity] is started in multipane tablet mode. */
+  /**
+   * Loads the profile list fragment as the [AdministratorControlsActivity]
+   * is started in multipane tablet mode.
+   */
   fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
@@ -150,14 +153,12 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       activity.supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
       )
-    if (currentFragment != null) {
-      when (currentFragment) {
-        is ProfileEditFragment -> {
-          setExtraControlsTitle(
-            resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
-          )
-          loadProfileList()
-        }
+    when (currentFragment) {
+      is ProfileEditFragment -> {
+        setExtraControlsTitle(
+          resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
+        )
+        loadProfileList()
       }
     }
   }

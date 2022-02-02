@@ -141,7 +141,7 @@ class AdministratorControlsFragmentTest {
   lateinit var context: Context
 
   @Before
-  fun setup() {
+  fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
