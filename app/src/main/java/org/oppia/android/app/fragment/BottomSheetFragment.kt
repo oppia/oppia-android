@@ -33,5 +33,8 @@ class BottomSheetFragment(val internalProfileId: Int) : BottomSheetDialogFragmen
       bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_options)
       dismiss()
     }
+    binding.actionClose.setOnClickListener {
+      dismiss()
+    }
   }
 }

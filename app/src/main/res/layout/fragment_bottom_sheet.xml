@@ -30,5 +30,16 @@
     android:drawablePadding="10dp"
     android:textSize="20sp"/>
 
+    <TextView
+      android:id="@+id/action_close"
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      android:drawableStart="@drawable/ic_close_black_24dp"
+      android:text="@string/menu_close"
+      android:textColor="@color/black"
+      android:gravity="center_vertical"
+      android:drawablePadding="10dp"
+      android:textSize="20sp"/>
+
 </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
