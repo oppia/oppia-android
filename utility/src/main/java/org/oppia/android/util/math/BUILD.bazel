@@ -10,7 +10,7 @@ android_library(
         "//:oppia_api_visibility",
     ],
     exports = [
-        ":comparable_operation_list_extensions",
+        ":comparable_operation_extensions",
         ":comparator_extensions",
         ":float_extensions",
         ":fraction_extensions",
@@ -88,9 +88,9 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "comparable_operation_list_extensions",
+    name = "comparable_operation_extensions",
     srcs = [
-        "ComparableOperationListExtensions.kt",
+        "ComparableOperationExtensions.kt",
     ],
     deps = [
         ":real_extensions",

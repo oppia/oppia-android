@@ -10,8 +10,9 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import javax.inject.Inject
-import org.oppia.android.util.math.approximatelyEquals
+import org.oppia.android.util.math.isApproximatelyEqualTo
 
+// TODO: add tests.
 class NumericExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
   private val consoleLogger: ConsoleLogger
@@ -31,7 +32,7 @@ class NumericExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject con
   ): Boolean {
     val answerExpression = parseNumericExpression(answer) ?: return false
     val inputExpression = parseNumericExpression(input) ?: return false
-    return answerExpression.approximatelyEquals(inputExpression)
+    return answerExpression.isApproximatelyEqualTo(inputExpression)
   }
 
   private fun parseNumericExpression(rawExpression: String): MathExpression? {

@@ -73,23 +73,24 @@ fun Real.isNegative(): Boolean = when (realTypeCase) {
   REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
 }
 
+// TODO: add tests.
 /**
  * Returns whether this [Real] approximately equals another, that is, if they evaluate to
- * approximately the same value (see [Double.approximatelyEquals]).
+ * approximately the same value (see [Double.isApproximatelyEqualTo]).
  */
-fun Real.approximatelyEquals(other: Real): Boolean {
-  return isApproximatelyEqualTo(other.toDouble())
+fun Real.isApproximatelyEqualTo(other: Real): Boolean {
+  return this@isApproximatelyEqualTo.isApproximatelyEqualTo(other.toDouble())
 }
 
 /**
  * Returns whether this [Real] is approximately equal to the specified [Double] per
- * [Double.approximatelyEquals].
+ * [Double.isApproximatelyEqualTo].
  */
 fun Real.isApproximatelyEqualTo(value: Double): Boolean {
-  return toDouble().approximatelyEquals(value)
+  return toDouble().isApproximatelyEqualTo(value)
 }
 
-/** Returns whether this [Real] is approximately zero per [Double.approximatelyEquals]. */
+/** Returns whether this [Real] is approximately zero per [Double.isApproximatelyEqualTo]. */
 fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
 
 /**

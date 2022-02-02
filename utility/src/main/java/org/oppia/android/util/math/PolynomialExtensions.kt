@@ -18,20 +18,21 @@ private val POLYNOMIAL_TERM_COMPARATOR by lazy { createTermComparator() }
 /** Returns whether this polynomial is a constant-only polynomial (contains no variables). */
 fun Polynomial.isConstant(): Boolean = termCount == 1 && getTerm(0).variableCount == 0
 
+// TODO: add tests.
 /**
  * Returns whether this [Polynomial] approximately equals an other, that is, that the polynomial has
- * the exact same terms and approximately equal coefficients (see [Real.approximatelyEquals]).
+ * the exact same terms and approximately equal coefficients (see [Real.isApproximatelyEqualTo]).
+ *
+ * This function assumes that both this and the other [Polynomial] are sorted before checking for
+ * equality.
  */
-fun Polynomial.approximatelyEquals(other: Polynomial): Boolean {
+fun Polynomial.isApproximatelyEqualTo(other: Polynomial): Boolean {
   if (termCount != other.termCount) return false
 
   // Terms can be zipped since they should be sorted prior to checking equivalence.
-  return termList.zip(other.termList).all { (first, second) -> first.approximatelyEquals(second) }
-}
-
-private fun Term.approximatelyEquals(other: Term): Boolean {
-  // The variable lists can be exactly matched since they're sorted.
-  return coefficient.approximatelyEquals(other.coefficient) && variableList == other.variableList
+  return termList.zip(other.termList).all { (first, second) ->
+    first.isApproximatelyEqualTo(second)
+  }
 }
 
 /**
@@ -294,6 +295,11 @@ private fun Polynomial.combineLikeTerms(): Polynomial {
   return Polynomial.newBuilder().apply {
     addAllTerm(newTerms)
   }.build().ensureAtLeastConstant()
+}
+
+private fun Term.isApproximatelyEqualTo(other: Term): Boolean {
+  // The variable lists can be exactly matched since they're sorted.
+  return coefficient.isApproximatelyEqualTo(other.coefficient) && variableList == other.variableList
 }
 
 private fun Polynomial.pow(exp: Real): Polynomial? {

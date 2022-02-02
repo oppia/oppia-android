@@ -1128,7 +1128,7 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
             binaryOperation.operator == DIVIDE &&
               binaryOperation.rightOperand.expressionTypeCase == CONSTANT &&
               binaryOperation.rightOperand.constant
-                .toDouble().absoluteValue.approximatelyEquals(0.0)
+                .toDouble().absoluteValue.isApproximatelyEqualTo(0.0)
           } ?: binaryOperation.leftOperand.findNextDivisionByZero()
             ?: binaryOperation.rightOperand.findNextDivisionByZero()
         }

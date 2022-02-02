@@ -1,7 +1,8 @@
 package org.oppia.android.domain.classify.rules.numericexpressioninput
 
+import javax.inject.Inject
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.Polynomial
+import org.oppia.android.app.model.Real
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
@@ -9,10 +10,10 @@ import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.toPolynomial
-import javax.inject.Inject
-import org.oppia.android.util.math.approximatelyEquals
+import org.oppia.android.util.math.evaluateAsNumericExpression
+import org.oppia.android.util.math.isApproximatelyEqualTo
 
+// TODO: add tests.
 class NumericExpressionInputIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
   private val consoleLogger: ConsoleLogger
@@ -30,18 +31,18 @@ class NumericExpressionInputIsEquivalentToRuleClassifierProvider @Inject constru
     input: String,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
-    val answerExpression = parsePolynomial(answer) ?: return false
-    val inputExpression = parsePolynomial(input) ?: return false
-    return answerExpression.approximatelyEquals(inputExpression)
+    val answerValue = evaluateNumericExpression(answer) ?: return false
+    val inputValue = evaluateNumericExpression(input) ?: return false
+    return answerValue.isApproximatelyEqualTo(inputValue)
   }
 
-  private fun parsePolynomial(rawExpression: String): Polynomial? {
+  private fun evaluateNumericExpression(rawExpression: String): Real? {
     return when (val expResult = MathExpressionParser.parseNumericExpression(rawExpression)) {
       is MathParsingResult.Success -> {
-        expResult.result.toPolynomial().also {
+        expResult.result.evaluateAsNumericExpression().also {
           if (it == null) {
             consoleLogger.w(
-              "NumericExpEquivalent", "Expression is not a supported polynomial: $rawExpression."
+              "NumericExpEquivalent", "Expression failed to evaluate: $rawExpression."
             )
           }
         }

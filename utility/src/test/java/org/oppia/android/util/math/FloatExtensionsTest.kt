@@ -18,7 +18,7 @@ class FloatExtensionsTest {
     val leftFloat = 0f
     val rightFloat = 0f
 
-    val result = leftFloat.approximatelyEquals(rightFloat)
+    val result = leftFloat.isApproximatelyEqualTo(rightFloat)
 
     assertThat(result).isTrue()
   }
@@ -28,7 +28,7 @@ class FloatExtensionsTest {
     val leftFloat = 1.2f
     val rightFloat = 1.2f
 
-    val result = leftFloat.approximatelyEquals(rightFloat)
+    val result = leftFloat.isApproximatelyEqualTo(rightFloat)
 
     assertThat(result).isTrue()
   }
@@ -38,7 +38,7 @@ class FloatExtensionsTest {
     val leftFloat = 1.2f
     val rightFloat = leftFloat + FLOAT_EQUALITY_INTERVAL.toFloat() / 10f
 
-    val result = leftFloat.approximatelyEquals(rightFloat)
+    val result = leftFloat.isApproximatelyEqualTo(rightFloat)
 
     // Verify that they are approximately equal, but not actually the same float.
     assertThat(result).isTrue()
@@ -50,7 +50,7 @@ class FloatExtensionsTest {
     val leftFloat = 0f
     val rightFloat = 7.3f
 
-    val result = leftFloat.approximatelyEquals(rightFloat)
+    val result = leftFloat.isApproximatelyEqualTo(rightFloat)
 
     assertThat(result).isFalse()
   }
@@ -60,7 +60,7 @@ class FloatExtensionsTest {
     val leftFloat = 1.2f
     val rightFloat = leftFloat + FLOAT_EQUALITY_INTERVAL.toFloat() * 2f
 
-    val result = leftFloat.approximatelyEquals(rightFloat)
+    val result = leftFloat.isApproximatelyEqualTo(rightFloat)
 
     assertThat(result).isFalse()
   }
@@ -70,7 +70,7 @@ class FloatExtensionsTest {
     val leftFloat = 1.2f
     val rightFloat = 7.3f
 
-    val result = leftFloat.approximatelyEquals(rightFloat)
+    val result = leftFloat.isApproximatelyEqualTo(rightFloat)
 
     assertThat(result).isFalse()
   }
@@ -80,7 +80,7 @@ class FloatExtensionsTest {
     val leftDouble = 0.0
     val rightDouble = 0.0
 
-    val result = leftDouble.approximatelyEquals(rightDouble)
+    val result = leftDouble.isApproximatelyEqualTo(rightDouble)
 
     assertThat(result).isTrue()
   }
@@ -90,7 +90,7 @@ class FloatExtensionsTest {
     val leftDouble = 1.2
     val rightDouble = 1.2
 
-    val result = leftDouble.approximatelyEquals(rightDouble)
+    val result = leftDouble.isApproximatelyEqualTo(rightDouble)
 
     assertThat(result).isTrue()
   }
@@ -100,7 +100,7 @@ class FloatExtensionsTest {
     val leftDouble = 1.2
     val rightDouble = leftDouble + FLOAT_EQUALITY_INTERVAL / 10.0
 
-    val result = leftDouble.approximatelyEquals(rightDouble)
+    val result = leftDouble.isApproximatelyEqualTo(rightDouble)
 
     // Verify that they are approximately equal, but not actually the same double.
     assertThat(result).isTrue()
@@ -112,7 +112,7 @@ class FloatExtensionsTest {
     val leftDouble = 1.2
     val rightDouble = leftDouble + FLOAT_EQUALITY_INTERVAL * 2
 
-    val result = leftDouble.approximatelyEquals(rightDouble)
+    val result = leftDouble.isApproximatelyEqualTo(rightDouble)
 
     assertThat(result).isFalse()
   }
@@ -122,7 +122,7 @@ class FloatExtensionsTest {
     val leftDouble = 1.2
     val rightDouble = 7.3
 
-    val result = leftDouble.approximatelyEquals(rightDouble)
+    val result = leftDouble.isApproximatelyEqualTo(rightDouble)
 
     assertThat(result).isFalse()
   }

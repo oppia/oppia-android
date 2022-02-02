@@ -54,31 +54,32 @@ fun MathExpression.toComparableOperation(): ComparableOperation = convertToCompa
  */
 fun MathExpression.toPolynomial(): Polynomial? = reduceToPolynomial()
 
+// TODO: add tests.
 /**
  * Returns whether this [MathExpression] approximately equals another, that is, that it fully
  * matches in its AST representation but all constants are compared using
- * [Real.approximatelyEquals]. Further, this does not check parser markers when considering
- * equivalence.
+ * [Real.isApproximatelyEqualTo]. Further, this does not check parser markers when considering
+ * equality.
  */
-fun MathExpression.approximatelyEquals(other: MathExpression): Boolean {
+fun MathExpression.isApproximatelyEqualTo(other: MathExpression): Boolean {
   if (expressionTypeCase != other.expressionTypeCase) return false
   return when (expressionTypeCase) {
-    CONSTANT -> constant.approximatelyEquals(other.constant)
+    CONSTANT -> constant.isApproximatelyEqualTo(other.constant)
     VARIABLE -> variable == other.variable
     BINARY_OPERATION -> {
       binaryOperation.operator == other.binaryOperation.operator
-        && binaryOperation.leftOperand.approximatelyEquals(other.binaryOperation.leftOperand)
-        && binaryOperation.rightOperand.approximatelyEquals(other.binaryOperation.rightOperand)
+        && binaryOperation.leftOperand.isApproximatelyEqualTo(other.binaryOperation.leftOperand)
+        && binaryOperation.rightOperand.isApproximatelyEqualTo(other.binaryOperation.rightOperand)
     }
     UNARY_OPERATION -> {
       unaryOperation.operator == other.unaryOperation.operator
-        && unaryOperation.operand.approximatelyEquals(other.unaryOperation.operand)
+        && unaryOperation.operand.isApproximatelyEqualTo(other.unaryOperation.operand)
     }
     FUNCTION_CALL -> {
       functionCall.functionType == other.functionCall.functionType
-        && functionCall.argument.approximatelyEquals(other.functionCall.argument)
+        && functionCall.argument.isApproximatelyEqualTo(other.functionCall.argument)
     }
-    GROUP -> group.approximatelyEquals(other.group)
+    GROUP -> group.isApproximatelyEqualTo(other.group)
     EXPRESSIONTYPE_NOT_SET, null -> true
   }
 }
