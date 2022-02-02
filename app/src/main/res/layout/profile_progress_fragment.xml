@@ -22,13 +22,14 @@
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profile_progress_list"
+        android:background="@color/transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="@dimen/profile_progress_fragment_margin_start"
+        android:layout_marginEnd="@dimen/profile_progress_fragment_margin_end"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="108dp"
+        android:paddingBottom="@dimen/profile_progress_fragment_padding_bottom"
         android:scrollbars="none"
         app:data="@{viewModel.refreshedPromotedActivityListViewModelLiveData}" />
     </FrameLayout>
