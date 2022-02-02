@@ -6,7 +6,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
-import org.oppia.android.testing.math.PolynomialSubject
 import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS

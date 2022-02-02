@@ -188,8 +188,9 @@ operator fun Polynomial.div(rhs: Polynomial): Polynomial? {
   val divisorVariable = leadingDivisorTerm.highestDegreeVariable()
   val divisorVariableName = divisorVariable?.name
   val divisorDegree = leadingDivisorTerm.highestDegree()
-  while (!remainder.isApproximatelyZero()
-    && (remainder.getDegree() ?: return null) >= divisorDegree) {
+  while (!remainder.isApproximatelyZero() &&
+    (remainder.getDegree() ?: return null) >= divisorDegree
+  ) {
     // Attempt to divide the leading terms (this may fail). Note that the leading term should always
     // be based on the divisor variable being used (otherwise subsequent division steps will be
     // inconsistent and potentially fail to resolve).

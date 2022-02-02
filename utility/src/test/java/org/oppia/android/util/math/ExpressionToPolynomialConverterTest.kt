@@ -1,7 +1,7 @@
 package org.oppia.android.util.math
 
-import com.google.common.truth.Truth.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathExpression
@@ -2310,7 +2310,8 @@ class ExpressionToPolynomialConverterTest {
 
   private companion object {
     private fun parseAlgebraicExpression(
-      expression: String, errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
     ): MathExpression {
       return MathExpressionParser.parseAlgebraicExpression(
         expression, allowedVariables = listOf("x", "y", "z"), errorCheckingMode

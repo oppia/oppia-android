@@ -32,14 +32,16 @@ fun <U> Comparator<U>.compareIterablesReversed(first: Iterable<U>, second: Itera
 }
 
 private fun <U> Comparator<U>.compareIterablesInternal(
-  first: Iterable<U>, second: Iterable<U>, reverseItemSort: Boolean
+  first: Iterable<U>,
+  second: Iterable<U>,
+  reverseItemSort: Boolean
 ): Int {
   // Reference: https://stackoverflow.com/a/30107086.
   val itemComparator = if (reverseItemSort) reversed() else this
   val firstIter = first.sortedWith(itemComparator).iterator()
   val secondIter = second.sortedWith(itemComparator).iterator()
   while (firstIter.hasNext() && secondIter.hasNext()) {
-    val comparison = this.compare(firstIter.next(), secondIter.next()).coerceIn(-1 .. 1)
+    val comparison = this.compare(firstIter.next(), secondIter.next()).coerceIn(-1..1)
     if (comparison != 0) return comparison // Found a different item.
   }
 

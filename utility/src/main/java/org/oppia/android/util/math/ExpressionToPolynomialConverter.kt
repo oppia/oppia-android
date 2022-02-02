@@ -21,9 +21,9 @@ import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
 import org.oppia.android.app.model.Polynomial
+import org.oppia.android.app.model.Real
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
-import org.oppia.android.app.model.Real
 
 /**
  * Converter from [MathExpression] to [Polynomial].
@@ -66,7 +66,7 @@ class ExpressionToPolynomialConverter private constructor() {
      * This function is only expected to be used in conjunction with algebraic expressions. It's
      * suggested to use evaluation when comparing for equivalence among numeric expressions as it
      * should yield the same result and be more performant.
-     * 
+     *
      * The tests for this method provide very thorough and broad examples of different cases that
      * this function supports. In particular, the equality tests are useful to see what sorts of
      * expressions can be considered the same per [Polynomial] representation.

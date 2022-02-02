@@ -3,13 +3,6 @@ package org.oppia.android.util.math
 import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.EXPRESSIONTYPE_NOT_SET
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
-import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Real
 import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.convertToComparableOperation

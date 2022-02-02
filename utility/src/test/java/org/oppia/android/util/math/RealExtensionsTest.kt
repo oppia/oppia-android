@@ -10,7 +10,6 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
-import org.oppia.android.testing.math.RealSubject
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.robolectric.annotation.LooperMode
 

@@ -12,9 +12,9 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.robolectric.annotation.LooperMode
-import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
 
 /** Tests for [Polynomial] extensions. */
 // FunctionName: test names are conventionally named with underscores.
