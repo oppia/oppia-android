@@ -9,14 +9,17 @@ import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 
+/** Represents an integer [Real] with value 0. */
 val ZERO: Real by lazy {
   Real.newBuilder().apply { integer = 0 }.build()
 }
 
+/** Represents an integer [Real] with value 1. */
 val ONE: Real by lazy {
   Real.newBuilder().apply { integer = 1 }.build()
 }
 
+/** Represents a rational fraction [Real] with value 1/2. */
 val ONE_HALF: Real by lazy {
   Real.newBuilder().apply {
     rational = Fraction.newBuilder().apply {
@@ -48,6 +51,12 @@ fun Real.isRational(): Boolean = realTypeCase == RATIONAL
  */
 fun Real.isInteger(): Boolean = realTypeCase == INTEGER
 
+/**
+ * Returns whether this [Real] is explicitly a whole number, that is, either an integer or a
+ * [Fraction] that's also a whole number.
+ *
+ * Note that this has the same limitations as [Fraction.isOnlyWholeNumber] for rational values.
+ */
 fun Real.isWholeNumber(): Boolean {
   return when (realTypeCase) {
     RATIONAL -> rational.isOnlyWholeNumber()
@@ -72,11 +81,14 @@ fun Real.isApproximatelyEqualTo(value: Double): Boolean {
   return toDouble().approximatelyEquals(value)
 }
 
+/** Returns whether this [Real] is approximately zero per [Double.approximatelyEquals]. */
 fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
 
 /**
  * Returns a [Double] representation of this [Real] that is approximately the same value (per
  * [isApproximatelyEqualTo]).
+ *
+ * This method throws an exception if this [Real] is invalid (such as a default proto instance).
  */
 fun Real.toDouble(): Double {
   return when (realTypeCase) {
@@ -87,6 +99,14 @@ fun Real.toDouble(): Double {
   }
 }
 
+/**
+ * Returns the whole-number representation of this [Real], or null if there isn't one.
+ *
+ * This function should only be called if [isWholeNumber] returns true. The contract of that
+ * function guarantees that a non-null integer can be returned here for whole number reals.
+ *
+ * This method throws an exception if this [Real] is invalid (such as a default proto instance).
+ */
 fun Real.asWholeNumber(): Int? {
   return when (realTypeCase) {
     RATIONAL -> if (rational.isOnlyWholeNumber()) rational.toWholeNumber() else null

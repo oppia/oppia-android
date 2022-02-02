@@ -10,8 +10,10 @@ fun Fraction.hasFractionalPart(): Boolean {
 }
 
 /**
- * Returns whether this fraction only represents a whole number. Note that for the fraction '0' this
- * will return true.
+ * Returns whether this fraction only represents a whole number.
+ *
+ * Note that for the fraction '0' this will return true. Furthermore, this will return false for
+ * whole number-like improper fractions such as '3/1'.
  */
 fun Fraction.isOnlyWholeNumber(): Boolean {
   return !hasFractionalPart()

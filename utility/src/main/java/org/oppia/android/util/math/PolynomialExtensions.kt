@@ -5,35 +5,15 @@ import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Polynomial.Term
 import org.oppia.android.app.model.Polynomial.Term.Variable
 import org.oppia.android.app.model.Real
-import java.util.SortedSet
 
+/** Represents a single-term constant polynomial with the value of 0. */
 val ZERO_POLYNOMIAL: Polynomial = createConstantPolynomial(ZERO)
 
+/** Represents a single-term constant polynomial with the value of 1. */
 val ONE_POLYNOMIAL: Polynomial = createConstantPolynomial(ONE)
 
-// TODO: Kotlin-ify.
-private val POLYNOMIAL_VARIABLE_COMPARATOR: Comparator<Variable> by lazy {
-  // Note that power is reversed because larger powers should actually be sorted ahead of smaller
-  // powers for the same variable name (but variable name still takes precedence). This ensures
-  // cases like x^2y+y^2x are sorted in that order.
-  Comparator.comparing(Variable::getName).thenComparingReversed(Variable::getPower)
-}
-
-private val POLYNOMIAL_TERM_COMPARATOR: Comparator<Term> by lazy {
-  // First, sort by all variable names to ensure xy is placed ahead of xz. Then, sort by variable
-  // powers in order of the variables (such that x^2y is ranked higher thank xy). Finally, sort by
-  // the coefficient to ensure equality through the comparator works correctly (though in practice
-  // like terms should always be combined). Note the specific reversing happening here. It's done in
-  // this way so that sorted set bigger/smaller list is reversed (which matches expectations since
-  // larger terms should appear earlier in the results). This is implementing an ordering similar to
-  // https://en.wikipedia.org/wiki/Polynomial#Definition, except for multi-variable functions (where
-  // variables of higher degree are preferred over lower degree by lexicographical order of variable
-  // names).
-  Comparator.comparing<Term, SortedSet<Variable>>(
-    { term -> term.variableList.toSortedSet(POLYNOMIAL_VARIABLE_COMPARATOR) },
-    POLYNOMIAL_VARIABLE_COMPARATOR.reversed().toSetComparator()
-  ).reversed().thenComparing(Term::getCoefficient, REAL_COMPARATOR.reversed())
-}
+private val POLYNOMIAL_VARIABLE_COMPARATOR by lazy { createVariableComparator() }
+private val POLYNOMIAL_TERM_COMPARATOR by lazy { createTermComparator() }
 
 /** Returns whether this polynomial is a constant-only polynomial (contains no variables). */
 fun Polynomial.isConstant(): Boolean = termCount == 1 && getTerm(0).variableCount == 0
@@ -63,6 +43,12 @@ fun Polynomial.toPlainText(): String {
   }
 }
 
+/**
+ * Returns a version of this [Polynomial] with all zero-coefficient terms removed.
+ *
+ * This function guarantees that the returned polynomial have at least 1 term (even if it's just the
+ * constant zero).
+ */
 fun Polynomial.removeUnnecessaryVariables(): Polynomial {
   return Polynomial.newBuilder().apply {
     addAllTerm(
@@ -73,6 +59,14 @@ fun Polynomial.removeUnnecessaryVariables(): Polynomial {
   }.build().ensureAtLeastConstant()
 }
 
+/**
+ * Returns a version of this [Polynomial] with all rational coefficients potentially simplified to
+ * integer terms.
+ *
+ * A rational coefficient can be simplified iff:
+ * - It has no fractional representation (which includes zero fraction cases).
+ * - It has a denominator of 1 (which represents a whole number, even for improper fractions).
+ */
 fun Polynomial.simplifyRationals(): Polynomial {
   return Polynomial.newBuilder().apply {
     addAllTerm(
@@ -85,6 +79,19 @@ fun Polynomial.simplifyRationals(): Polynomial {
   }.build()
 }
 
+/**
+ * Returns a sorted version of this [Polynomial].
+ *
+ * The returned version guarantees a repeatable and deterministic order that prioritizes variables
+ * earlier in the alphabet (or have lower lexicographical order), and have higher powers. Some
+ * examples:
+ * - 'x' will appear before '1'.
+ * - 'x^2' will appear before 'x'.
+ * - 'x' will appear before 'y'.
+ * - 'xy' will appear before 'x' and 'y'.
+ * - 'x^2y' will appear before 'xy^2', but after 'x^2y^2'.
+ * - 'xy^2' will appear before 'xy'.
+ */
 fun Polynomial.sort(): Polynomial = Polynomial.newBuilder().apply {
   // The double sorting here is less efficient, but it ensures both terms and variables are
   // correctly kept sorted. Fortunately, most internal operations will keep variables sorted by
@@ -99,6 +106,10 @@ fun Polynomial.sort(): Polynomial = Polynomial.newBuilder().apply {
   )
 }.build()
 
+/**
+ * Returns the negated version of this [Polynomial] such that the original polynomial plus the
+ * negative version would yield zero.
+ */
 operator fun Polynomial.unaryMinus(): Polynomial {
   // Negating a polynomial just requires flipping the signs on all coefficients.
   return toBuilder()
@@ -107,6 +118,14 @@ operator fun Polynomial.unaryMinus(): Polynomial {
     .build()
 }
 
+/**
+ * Returns the sum of this [Polynomial] with [rhs].
+ *
+ * The returned polynomial is guaranteed to:
+ * - Have all like terms combined.
+ * - Have simplified rational coefficients (per [simplifyRationals].
+ * - Have no zero coefficients (unless the entire polynomial is zero, in which case just 1).
+ */
 operator fun Polynomial.plus(rhs: Polynomial): Polynomial {
   // Adding two polynomials just requires combining their terms lists (taking into account combining
   // common terms).
@@ -115,11 +134,25 @@ operator fun Polynomial.plus(rhs: Polynomial): Polynomial {
   }.build().combineLikeTerms().simplifyRationals().removeUnnecessaryVariables()
 }
 
+/**
+ * Returns the subtraction of [rhs] from this [Polynomial].
+ *
+ * The returned polynomial, when added with [rhs], will always equal the original polynomial.
+ *
+ * The returned polynomial has the same guarantee as those returned from [Polynomial.plus].
+ */
 operator fun Polynomial.minus(rhs: Polynomial): Polynomial {
   // a - b = a + -b
   return this + -rhs
 }
 
+/**
+ * Returns the product of this [Polynomial] with [rhs].
+ *
+ * This will correctly cross-multiply terms, for example: (1+x)*(1-x) will become 1-x^2.
+ *
+ * The returned polynomial has the same guarantee as those returned from [Polynomial.plus].
+ */
 operator fun Polynomial.times(rhs: Polynomial): Polynomial {
   // Polynomial multiplication is simply multiplying each term in one by each term in the other.
   val crossMultipliedTerms = termList.flatMap { leftTerm ->
@@ -134,6 +167,15 @@ operator fun Polynomial.times(rhs: Polynomial): Polynomial {
   }.reduce(Polynomial::plus).simplifyRationals().removeUnnecessaryVariables()
 }
 
+/**
+ * Returns the division of [rhs] from this [Polynomial], or null if there's a remainder after
+ * attempting the division.
+ *
+ * If this function returns non-null, it's guaranteed that the quotient times the divisor will yield
+ * the dividend.
+ *
+ * The returned polynomial has the same guarantee as those returned from [Polynomial.plus].
+ */
 operator fun Polynomial.div(rhs: Polynomial): Polynomial? {
   // See https://en.wikipedia.org/wiki/Polynomial_long_division#Pseudocode for reference.
   if (rhs.isApproximatelyZero()) {
@@ -160,6 +202,17 @@ operator fun Polynomial.div(rhs: Polynomial): Polynomial? {
   return quotient.takeIf { remainder.isApproximatelyZero() }
 }
 
+/**
+ * Returns the [Polynomial] that represents this [Polynomial] raised to [exp], or null if the result
+ * is not a valid polynomial or if a proper polynomial could not be kept along the way.
+ *
+ * This function will fail in a number of cases, including:
+ * - If [exp] is not a constant polynomial.
+ * - If this polynomial has more than one term (since that requires factoring).
+ * - If the result would yield a polynomial with a negative power.
+ *
+ * The returned polynomial has the same guarantee as those returned from [Polynomial.plus].
+ */
 infix fun Polynomial.pow(exp: Polynomial): Polynomial? {
   // Polynomial exponentiation is only supported if the right side is a constant polynomial,
   // otherwise the result cannot be a polynomial (though could still be compared to another
@@ -415,28 +468,25 @@ private fun Real.maybeSimplifyRationalToInteger(): Real = when (realTypeCase) {
   null -> this
 }
 
-// TODO: figure out of this can be removed.
-private fun <T, U : Comparable<U>> Comparator<T>.thenComparingReversed(
-  keySelector: (T) -> U
-): Comparator<T> = thenComparing(Comparator.comparing(keySelector).reversed())
+private fun createTermComparator(): Comparator<Term> {
+  // First, sort by all variable names to ensure xy is placed ahead of xz. Then, sort by variable
+  // powers in order of the variables (such that x^2y is ranked higher thank xy). Finally, sort by
+  // the coefficient to ensure equality through the comparator works correctly (though in practice
+  // like terms should always be combined). Note the specific reversing happening here. It's done in
+  // this way so that sorted set bigger/smaller list is reversed (which matches expectations since
+  // larger terms should appear earlier in the results). This is implementing an ordering similar to
+  // https://en.wikipedia.org/wiki/Polynomial#Definition, except for multi-variable functions (where
+  // variables of higher degree are preferred over lower degree by lexicographical order of variable
+  // names).
+  val reversedVariableComparator = POLYNOMIAL_VARIABLE_COMPARATOR.reversed()
+  return compareBy<Term, Iterable<Variable>>(
+    reversedVariableComparator::compareIterablesReversed, Term::getVariableList
+  ).thenByDescending(REAL_COMPARATOR, Term::getCoefficient)
+}
 
-// TODO: figure out of this can be removed.
-private fun <T> Comparator<T>.toSetComparator(): Comparator<SortedSet<T>> {
-  val itemComparator = this
-  return Comparator { first, second ->
-    // Reference: https://stackoverflow.com/a/30107086.
-    val firstIter = first.iterator()
-    val secondIter = second.iterator()
-    while (firstIter.hasNext() && secondIter.hasNext()) {
-      val comparison = itemComparator.compare(firstIter.next(), secondIter.next())
-      if (comparison != 0) return@Comparator comparison // Found a different item.
-    }
-
-    // Everything is equal up to here, see if the lists are different length.
-    return@Comparator when {
-      firstIter.hasNext() -> 1 // The first list is longer, therefore "greater."
-      secondIter.hasNext() -> -1 // Ditto, but for the second list.
-      else -> 0 // Otherwise, they're the same length with all equal items (and are thus equal).
-    }
-  }
+private fun createVariableComparator(): Comparator<Variable> {
+  // Note that power is reversed because larger powers should actually be sorted ahead of smaller
+  // powers for the same variable name (but variable name still takes precedence). This ensures
+  // cases like x^2y+y^2x are sorted in that order.
+  return compareBy(Variable::getName).thenByDescending(Variable::getPower)
 }

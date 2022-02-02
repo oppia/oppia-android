@@ -47,4 +47,9 @@ fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
  */
 fun MathExpression.toComparableOperation(): ComparableOperation = convertToComparableOperation()
 
+/**
+ * Returns the [Polynomial] representation of this [MathExpression].
+ *
+ * See [reduceToPolynomial] for details.
+ */
 fun MathExpression.toPolynomial(): Polynomial? = reduceToPolynomial()
