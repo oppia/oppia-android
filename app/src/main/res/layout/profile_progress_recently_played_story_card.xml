@@ -35,7 +35,6 @@
         android:layout_height="0dp"
         android:contentDescription="@{viewModel.computeLessonThumbnailContentDescription()}"
         android:importantForAccessibility="no"
-        android:scaleType="fitCenter"
         app:entityId="@{viewModel.promotedStory.storyId}"
         app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="4:3"
