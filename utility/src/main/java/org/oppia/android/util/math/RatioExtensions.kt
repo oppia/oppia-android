@@ -21,3 +21,8 @@ fun RatioExpression.toSimplestForm(): List<Int> {
 fun RatioExpression.toAnswerString(): String {
   return ratioComponentList.joinToString(separator = ":")
 }
+
+/** Returns the greatest common divisor between two integers. */
+private fun gcd(x: Int, y: Int): Int {
+  return if (y == 0) x else gcd(y, x % y)
+}

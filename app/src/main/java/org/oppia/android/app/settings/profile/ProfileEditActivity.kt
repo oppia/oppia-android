@@ -7,17 +7,23 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/** Argument key for the Profile Id in [ProfileEditActivity]. */
 const val PROFILE_EDIT_PROFILE_ID_EXTRA_KEY = "ProfileEditActivity.profile_edit_profile_id"
+
+/** Argument key for the Multipane in tablet mode for [ProfileEditActivity]. */
 const val IS_MULTIPANE_EXTRA_KEY = "ProfileEditActivity.is_multipane"
+
+/** Argument key for the Profile deletion confirmation in [ProfileEditActivity]. */
 const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
   "ProfileEditActivity.is_profile_deletion_dialog_visible"
 
-/** Activity that allows user to edit a profile. */
+/** Activity [ProfileEditActivity] that allows user to edit a profile. */
 class ProfileEditActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 
   companion object {
+    /** Returns an [Intent] for opening the [ProfileEditActivity]. */
     fun createProfileEditActivity(
       context: Context,
       profileId: Int,
