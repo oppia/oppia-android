@@ -109,7 +109,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -131,7 +131,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createExplorationContext(
+      oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
@@ -169,7 +169,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -186,7 +186,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -203,7 +203,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -237,7 +237,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -259,7 +259,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createExplorationContext(
+      oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
@@ -297,7 +297,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -314,7 +314,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -331,7 +331,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
     )
 
     assertThat(fakeEventLogger.getMostRecentEvent().actionName)
@@ -368,7 +368,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -398,7 +398,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -445,7 +445,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -455,7 +455,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -485,7 +485,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -496,7 +496,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -564,7 +564,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       1556094120000,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -575,7 +575,7 @@ class AnalyticsControllerTest {
     analyticsController.logClickEvent(
       1556094110000,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -586,7 +586,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       1556093100000,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -597,7 +597,7 @@ class AnalyticsControllerTest {
     analyticsController.logTransitionEvent(
       1556094100000,
       EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID

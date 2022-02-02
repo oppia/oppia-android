@@ -1,7 +1,6 @@
 package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
@@ -14,19 +13,17 @@ class OppiaLogger @Inject constructor(
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
     timestamp: Long,
-    eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
-    analyticsController.logTransitionEvent(timestamp, eventAction, eventContext)
+    analyticsController.logTransitionEvent(timestamp, eventContext)
   }
 
   /** Logs click events. See [AnalyticsController.logClickEvent] for more context. */
   fun logClickEvent(
     timestamp: Long,
-    eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
-    analyticsController.logClickEvent(timestamp, eventAction, eventContext)
+    analyticsController.logClickEvent(timestamp, eventContext)
   }
 
   /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context */
@@ -94,14 +91,14 @@ class OppiaLogger @Inject constructor(
     consoleLogger.e(tag, msg, tr)
   }
 
-  /** Returns the context of an event related to exploration. */
-  fun createExplorationContext(
+  /** Returns the context of an event related to the opening of exploration activity. */
+  fun createOpenExplorationActivityContext(
     topicId: String,
     storyId: String,
     explorationId: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
-      .setExplorationContext(
+      .setOpenExplorationActivity(
         EventLog.ExplorationContext.newBuilder()
           .setTopicId(topicId)
           .setStoryId(storyId)
@@ -111,13 +108,13 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to question. */
-  fun createQuestionContext(
+  /** Returns the context of an event related to opening of question player. */
+  fun createOpenQuestionPlayerContext(
     questionId: String,
     skillId: List<String>
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
-      .setQuestionContext(
+      .setOpenQuestionPlayer(
         EventLog.QuestionContext.newBuilder()
           .setQuestionId(questionId)
           .addAllSkillId(skillId)
@@ -126,12 +123,12 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to topic. */
-  fun createTopicContext(
+  /** Returns the context of an event related to opening of practice tab. */
+  fun createOpenPracticeTabContext(
     topicId: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
-      .setTopicContext(
+      .setOpenPracticeTab(
         EventLog.TopicContext.newBuilder()
           .setTopicId(topicId)
           .build()
@@ -139,13 +136,52 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to story. */
-  fun createStoryContext(
+  /** Returns the context of an event related to opening of info tab. */
+  fun createOpenInfoTabContext(
+    topicId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setOpenInfoTab(
+        EventLog.TopicContext.newBuilder()
+          .setTopicId(topicId)
+          .build()
+      )
+      .build()
+  }
+
+  /** Returns the context of an event related to opening of lessons tab. */
+  fun createOpenLessonsTabContext(
+    topicId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setOpenLessonsTab(
+        EventLog.TopicContext.newBuilder()
+          .setTopicId(topicId)
+          .build()
+      )
+      .build()
+  }
+
+  /** Returns the context of an event related to opening of revision tab. */
+  fun createOpenRevisionTabContext(
+    topicId: String
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setOpenRevisionTab(
+        EventLog.TopicContext.newBuilder()
+          .setTopicId(topicId)
+          .build()
+      )
+      .build()
+  }
+
+  /** Returns the context of an event related to opening of story activity. */
+  fun createOpenStoryActivityContext(
     topicId: String,
     storyId: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
-      .setStoryContext(
+      .setOpenStoryActivity(
         EventLog.StoryContext.newBuilder()
           .setTopicId(topicId)
           .setStoryId(storyId)
@@ -154,12 +190,12 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to concept card. */
-  fun createConceptCardContext(
+  /** Returns the context of an event related to opening of concept card. */
+  fun createOpenConceptCardContext(
     skillId: String
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
-      .setConceptCardContext(
+      .setOpenConceptCard(
         EventLog.ConceptCardContext.newBuilder()
           .setSkillId(skillId)
           .build()
@@ -167,13 +203,13 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to revision card. */
-  fun createRevisionCardContext(
+  /** Returns the context of an event related to opening of revision card. */
+  fun createOpenRevisionCardContext(
     topicId: String,
     subTopicId: Int
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
-      .setRevisionCardContext(
+      .setOpenRevisionCard(
         EventLog.RevisionCardContext.newBuilder()
           .setTopicId(topicId)
           .setSubTopicId(subTopicId)

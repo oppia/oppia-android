@@ -357,8 +357,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_QUESTION_PLAYER,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         questionId,
         skillIds
       )

@@ -253,8 +253,7 @@ class StoryFragmentPresenter @Inject constructor(
   private fun logStoryActivityEvent(topicId: String, storyId: String) {
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_STORY_ACTIVITY,
-      oppiaLogger.createStoryContext(topicId, storyId)
+      oppiaLogger.createOpenStoryActivityContext(topicId, storyId)
     )
   }
 

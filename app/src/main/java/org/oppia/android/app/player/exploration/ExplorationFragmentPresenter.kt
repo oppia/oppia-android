@@ -77,8 +77,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_EXPLORATION_ACTIVITY,
-      oppiaLogger.createExplorationContext(topicId, storyId, explorationId)
+      oppiaLogger.createOpenExplorationActivityContext(topicId, storyId, explorationId)
     )
   }
 }

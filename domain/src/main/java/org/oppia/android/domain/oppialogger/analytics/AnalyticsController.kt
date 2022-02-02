@@ -1,7 +1,6 @@
 package org.oppia.android.domain.oppialogger.analytics
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -35,13 +34,11 @@ class AnalyticsController @Inject constructor(
    */
   fun logTransitionEvent(
     timestamp: Long,
-    eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
     uploadOrCacheEventLog(
       createEventLog(
         timestamp,
-        eventAction,
         eventContext,
         Priority.ESSENTIAL
       )
@@ -54,13 +51,11 @@ class AnalyticsController @Inject constructor(
    */
   fun logClickEvent(
     timestamp: Long,
-    eventAction: EventAction,
     eventContext: EventLog.Context?
   ) {
     uploadOrCacheEventLog(
       createEventLog(
         timestamp,
-        eventAction,
         eventContext,
         Priority.OPTIONAL
       )
@@ -70,13 +65,11 @@ class AnalyticsController @Inject constructor(
   /** Returns an event log containing relevant data for event reporting. */
   private fun createEventLog(
     timestamp: Long,
-    eventAction: EventAction,
     eventContext: EventLog.Context?,
     priority: Priority
   ): EventLog {
     val event: EventLog.Builder = EventLog.newBuilder()
     event.timestamp = timestamp
-    event.actionName = eventAction
     event.priority = priority
 
     if (eventContext != null)

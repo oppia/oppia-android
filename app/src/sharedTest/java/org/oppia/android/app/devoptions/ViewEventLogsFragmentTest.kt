@@ -528,13 +528,13 @@ class ViewEventLogsFragmentTest {
     oppiaLogger.logTransitionEvent(
       timestamp = TEST_TIMESTAMP + 30000,
       eventAction = EventAction.OPEN_STORY_ACTIVITY,
-      eventContext = oppiaLogger.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      eventContext = oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
     oppiaLogger.logTransitionEvent(
       timestamp = TEST_TIMESTAMP + 40000,
       eventAction = EventAction.OPEN_REVISION_CARD,
-      eventContext = oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      eventContext = oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
   }
 

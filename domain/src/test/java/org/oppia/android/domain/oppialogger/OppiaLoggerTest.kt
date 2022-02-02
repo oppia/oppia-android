@@ -174,7 +174,7 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createExplorationContext_returnsCorrectExplorationContext() {
-    val eventContext = oppiaLogger.createExplorationContext(
+    val eventContext = oppiaLogger.createOpenExplorationActivityContext(
       TEST_TOPIC_ID,
       TEST_STORY_ID,
       TEST_EXPLORATION_ID
@@ -190,7 +190,7 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createQuestionContext_returnsCorrectQuestionContext() {
-    val eventContext = oppiaLogger.createQuestionContext(
+    val eventContext = oppiaLogger.createOpenQuestionPlayerContext(
       TEST_QUESTION_ID,
       listOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID)
     )
@@ -205,7 +205,7 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createStoryContext_returnsCorrectStoryContext() {
-    val eventContext = oppiaLogger.createStoryContext(
+    val eventContext = oppiaLogger.createOpenStoryActivityContext(
       TEST_TOPIC_ID,
       TEST_STORY_ID
     )
@@ -229,7 +229,7 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createConceptCardContext_returnsCorrectConceptCardContext() {
-    val eventContext = oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
+    val eventContext = oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(
       EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
@@ -240,7 +240,7 @@ class OppiaLoggerTest {
   @Test
   fun testController_createRevisionCardContext_returnsCorrectRevisionCardContext() {
     val eventContext =
-      oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(
       EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT

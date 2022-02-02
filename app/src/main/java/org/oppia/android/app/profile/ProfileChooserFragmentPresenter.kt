@@ -249,7 +249,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun logProfileChooserEvent() {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(), EventLog.EventAction.OPEN_PROFILE_CHOOSER, eventContext = null
+      oppiaClock.getCurrentTimeMs(), eventContext = null
     )
   }
 }

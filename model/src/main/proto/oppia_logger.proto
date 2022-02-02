@@ -9,90 +9,97 @@ option java_multiple_files = true;
 message EventLog {
   // The timestamp of the event.
   int64 timestamp = 1;
-  // The action happening in the event.
-  EventAction action_name = 2;
   // The priority of the event.
-  Priority priority = 3;
+  Priority priority = 2;
   // The activity context of the event.
-  Context context = 4;
+  Context context = 3;
 
   // Structure of an activity context.
   message Context {
     oneof activity_context {
-      // The event being logged is related to exploration.
-      ExplorationContext exploration_context = 1;
+      // The event being logged is related to opening of exploration activity.
+      ExplorationContext open_exploration_activity = 1;
 
-      // The event being logged is related to the question player.
-      QuestionContext question_context = 2;
+      // The event being logged is related to opening of info tab under topic activity.
+      TopicContext open_info_tab = 2;
 
-      // The event being logged is related to the topic activity.
-      TopicContext topic_context = 3;
+      // The event being logged is related to opening of lessons tab under topic activity.
+      TopicContext open_lessons_tab = 3;
 
-      // The event being logged is related to the story activity.
-      StoryContext story_context = 4;
+      // The event being logged is related to opening of practice tab under topic activity.
+      TopicContext open_practice_tab = 4;
 
-      // The event being logged is related to the concept card.
-      ConceptCardContext concept_card_context = 5;
+      // The event being logged is related to opening of revision tab under topic activity.
+      TopicContext open_revision_tab = 5;
 
-      // The event being logged is related to the revision card.
-      RevisionCardContext revision_card_context = 6;
+      // The event being logged is related to the opening of question player.
+      QuestionContext open_question_player = 6;
+
+      // The event being logged is related to the opening of story activity.
+      StoryContext open_story_activity = 7;
+
+      // The event being logged is related to the opening of concept card.
+      ConceptCardContext open_concept_card = 8;
+
+      // The event being logged is related to the opening of revision card.
+      RevisionCardContext open_revision_card = 9;
 
       // The event being logged is related to starting an exploration card.
-      CardContext start_card_context = 7;
+      CardContext start_card_context = 10;
 
       // The event being logged is related to ending an exploration card.
-      CardContext end_card_context = 8;
+      CardContext end_card_context = 11;
 
       // The event being logged is related to offering a hint when it becomes available.
-      HintContext hint_offered_context = 9;
+      HintContext hint_offered_context = 12;
 
       // The event being logged is related to accessing a hint.
-      HintContext access_hint_context = 10;
+      HintContext access_hint_context = 13;
 
       // The event being logged is related to offering a solution when it becomes available.
-      ExplorationDetailsContext solution_offered_context = 11;
+      ExplorationContext solution_offered_context = 14;
 
       // The event being logged is related to accessing a solution.
-      ExplorationDetailsContext access_solution_context = 12;
+      ExplorationContext access_solution_context = 15;
 
       // The event being logged is related to submitting an answer.
-      SubmitAnswerContext submit_answer_context = 13;
+      SubmitAnswerContext submit_answer_context = 16;
 
       // The event being logged is related to playing a voiceover.
-      PlayVoiceOverContext play_voice_over_context = 14;
+      PlayVoiceOverContext play_voice_over_context = 17;
 
       // The event being logged is related to backgrounding of the application.
-      LearnerDetailsContext app_in_background_context = 15;
+      LearnerDetailsContext app_in_background_context = 18;
 
       // The event being logged is related to foregrounding of the application.
-      LearnerDetailsContext app_in_foreground_context = 16;
+      LearnerDetailsContext app_in_foreground_context = 19;
 
       // The event being logged is related to exiting an exploration.
-      ExplorationDetailsContext exit_exploration_context = 17;
+      ExplorationContext exit_exploration_context = 20;
 
       // The event being logged is related to finishing an exploration.
-      ExplorationDetailsContext finish_exploration_context = 18;
+      ExplorationContext finish_exploration_context = 21;
 
       // The event being logged is related to resuming an exploration.
-      LearnerDetailsContext resume_exploration_context = 19;
+      LearnerDetailsContext resume_exploration_context = 22;
 
       // The event being logged is related to restarting an exploration.
-      LearnerDetailsContext start_over_exploration_context = 20;
+      LearnerDetailsContext start_over_exploration_context = 23;
 
       // The event being logged is related to deleting a profile.
-      LearnerDetailsContext delete_profile_context = 21;
+      LearnerDetailsContext delete_profile_context = 24;
+
+      // The event being logged is related to the opening of home activity.
+      NullContext open_home = 25;
+
+      // The event being logged is related to the opening of profile chooser activity.
+      NullContext open_profile_chooser = 26;
     }
   }
 
-  // Structure of an exploration context.
-  message ExplorationContext {
-    // The active topic ID when the event is logged.
-    string topic_id = 1;
-    // The active story ID when the event is logged.
-    string story_id = 2;
-    // The active exploration ID when the event is logged.
-    string exploration_id = 3;
-  }
+  // Representation of a null context which can be used to represent events which don't require
+  // any additional data to be recorded.
+  message NullContext {}
 
   // Structure of a question context.
   message QuestionContext {
@@ -133,16 +140,16 @@ message EventLog {
   // Represents the event context for interacting with a card within an exploration.
   message CardContext {
     // Defined attributes that are common among other exploration related event log contexts.
-    ExplorationDetailsContext exploration_details = 1;
+    ExplorationContext exploration_details = 1;
 
-    // The ID of skill to which this exploration is associated.
+    // The ID of skill to which this exploration card is associated.
     string skill_id = 3;
   }
 
   // Represents the event context for a hint related event within an exploration.
   message HintContext {
     // Defined attributes that are common among other exploration related event log contexts.
-    ExplorationDetailsContext exploration_details = 1;
+    ExplorationContext exploration_details = 1;
 
     // Corresponds to the index of a hint or solution in a state. Help Index is used to determine which
     // hints can be shown, have been seen, whether the solution can be shown and whether the solution has
@@ -157,7 +164,7 @@ message EventLog {
   // Represents the event context for submitting an answer within an exploration.
   message SubmitAnswerContext {
     // Defined attributes that are common among other exploration related event log contexts.
-    ExplorationDetailsContext exploration_details = 1;
+    ExplorationContext exploration_details = 1;
 
     // Whether the answer that the learner submitted is the correct answer.
     bool is_answer_correct = 3;
@@ -166,7 +173,7 @@ message EventLog {
   // Represents the event context for playing a voiceover within an exploration.
   message PlayVoiceOverContext {
     // Defined attributes that are common among other exploration related event log contexts.
-    ExplorationDetailsContext exploration_details = 1;
+    ExplorationContext exploration_details = 1;
 
     // The content id of the voiceover recording being played.
     string content_id = 3;
@@ -183,7 +190,7 @@ message EventLog {
 
   // Represents the event context for all exploration related events containing learner-specific and
   // exploration-specific details.
-  message ExplorationDetailsContext {
+  message ExplorationContext {
     // The session id of the current learning session.
     string session_id = 1;
 
@@ -196,92 +203,14 @@ message EventLog {
     // The name of the current state of the exploration.
     string state_name = 4;
 
-    // Defined attributes that are common among all event log contexts.
+    // Defined attributes that are common among all learner analytics related event log contexts.
     LearnerDetailsContext learner_details = 5;
-  }
 
-  // Supported event actions for event logging.
-  enum EventAction {
-    // The undefined user action of an event.
-    EVENT_ACTION_UNSPECIFIED = 0;
+    // The active topic ID when the event is logged.
+    string topic_id = 6;
 
-    // Opening of home activity.
-    OPEN_HOME = 1;
-
-    // Opening of info tab under topic activity.
-    OPEN_INFO_TAB = 2;
-
-    // Opening of lessons tab under topic activity.
-    OPEN_LESSONS_TAB = 3;
-
-    // Opening of practice tab under topic activity.
-    OPEN_PRACTICE_TAB = 4;
-
-    // Opening of revision tab under topic activity.
-    OPEN_REVISION_TAB = 5;
-
-    // Opening of story activity.
-    OPEN_STORY_ACTIVITY = 6;
-
-    // Opening of exploration activity.
-    OPEN_EXPLORATION_ACTIVITY = 7;
-
-    // Opening of question player.
-    OPEN_QUESTION_PLAYER = 8;
-
-    // Opening of concept card.
-    OPEN_CONCEPT_CARD = 9;
-
-    // Opening of revision card.
-    OPEN_REVISION_CARD = 10;
-
-    // Opening of profile chooser activity.
-    OPEN_PROFILE_CHOOSER = 11;
-
-    // Starting an exploration card.
-    START_CARD = 12;
-
-    // Ending an exploration card.
-    END_CARD = 13;
-
-    // Offering a hint when it becomes available.
-    HINT_OFFERED = 14;
-
-    // Accessing a hint.
-    ACCESS_HINT = 15;
-
-    // Accessing a solution.
-    ACCESS_SOLUTION = 16;
-
-    // Offering a solution when it becomes available.
-    SOLUTION_OFFERED = 17;
-
-    // Submitting an answer.
-    SUBMIT_ANSWER = 18;
-
-    // Playing a voice over.
-    PLAY_VOICE_OVER = 19;
-
-    // Backgrounding of the application.
-    APP_IN_BACKGROUND = 20;
-
-    // Foregrounding of the application.
-    APP_IN_FOREGROUND = 21;
-
-    // Exiting an exploration.
-    EXIT_EXPLORATION = 22;
-
-    // Finishing an exploration.
-    FINISH_EXPLORATION = 23;
-
-    // Resuming an exploration.
-    RESUME_EXPLORATION = 24;
-
-    // Starting over an exploration.
-    START_OVER_EXPLORATION = 25;
-
-    // Deleting a profile.
-    DELETE_PROFILE = 26;
+    // The active story ID when the event is logged.
+    string story_id = 7;
   }
 
   // Supported priority of events for event logging
