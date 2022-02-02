@@ -52,7 +52,7 @@
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
   <dimen name="profile_chooser_profile_view_divider_margin_top">40dp</dimen>
 
-  <!-- profile-list-profile-view -->
+  <!-- Profile List Profile View -->
   <dimen name="profile_list_profile_view_margin_start">28dp</dimen>
 
   <dimen name="profile_chooser_profile_view_parent_padding">4dp</dimen>

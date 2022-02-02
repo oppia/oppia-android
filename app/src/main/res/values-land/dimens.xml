@@ -42,7 +42,7 @@
   <dimen name="profile_chooser_profile_view_margin_start">16dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_end">16dp</dimen>
 
-  <!-- profile-list-profile-view -->
+  <!-- Profile List Profile View -->
   <dimen name="profile_list_profile_view_margin_start">36dp</dimen>
 
   <dimen name="profile_chooser_add_view_margin_bottom_profile_not_added">28dp</dimen>
