@@ -23,11 +23,14 @@ import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
 import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
+import org.oppia.android.app.model.Real
 
 class ExpressionToPolynomialConverter private constructor() {
   companion object {
+    // TODO: document that this generally only relate to algebraic expressions.
     fun MathExpression.reduceToPolynomial(): Polynomial? =
-      replaceSquareRoots().reduceToPolynomialAux()
+      replaceSquareRoots()
+        .reduceToPolynomialAux()
         ?.removeUnnecessaryVariables()
         ?.simplifyRationals()
         ?.sort()
@@ -59,6 +62,7 @@ class ExpressionToPolynomialConverter private constructor() {
           }.build()
           FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null -> this
         }
+        // This also eliminates groups from the expression.
         GROUP -> group.replaceSquareRoots()
         CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> this
       }
@@ -83,7 +87,7 @@ class ExpressionToPolynomialConverter private constructor() {
         SUBTRACT -> leftPolynomial - rightPolynomial
         MULTIPLY -> leftPolynomial * rightPolynomial
         DIVIDE -> leftPolynomial / rightPolynomial
-        EXPONENTIATE -> leftPolynomial.pow(rightPolynomial)
+        EXPONENTIATE -> leftPolynomial pow rightPolynomial
         BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null -> null
       }
     }
@@ -109,5 +113,11 @@ class ExpressionToPolynomialConverter private constructor() {
         }.build()
       )
     }
+
+    private fun createConstantPolynomial(constant: Real): Polynomial =
+      createSingleTermPolynomial(Polynomial.Term.newBuilder().setCoefficient(constant).build())
+
+    private fun createSingleTermPolynomial(term: Polynomial.Term): Polynomial =
+      Polynomial.newBuilder().apply { addTerm(term) }.build()
   }
 }

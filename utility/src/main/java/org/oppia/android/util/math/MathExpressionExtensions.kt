@@ -47,28 +47,4 @@ fun MathExpression.evaluateAsNumericExpression(): Real? = evaluate()
  */
 fun MathExpression.toComparableOperation(): ComparableOperation = convertToComparableOperation()
 
-fun MathExpression.toPolynomial(): Polynomial? = stripGroups().reduceToPolynomial()
-
-// TODO: remove similar to comparable operations.
-private fun MathExpression.stripGroups(): MathExpression {
-  return when (expressionTypeCase) {
-    BINARY_OPERATION -> toBuilder().apply {
-      binaryOperation = binaryOperation.toBuilder().apply {
-        leftOperand = binaryOperation.leftOperand.stripGroups()
-        rightOperand = binaryOperation.rightOperand.stripGroups()
-      }.build()
-    }.build()
-    UNARY_OPERATION -> toBuilder().apply {
-      unaryOperation = unaryOperation.toBuilder().apply {
-        operand = unaryOperation.operand.stripGroups()
-      }.build()
-    }.build()
-    FUNCTION_CALL -> toBuilder().apply {
-      functionCall = functionCall.toBuilder().apply {
-        argument = functionCall.argument.stripGroups()
-      }.build()
-    }.build()
-    GROUP -> group.stripGroups()
-    CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> this
-  }
-}
+fun MathExpression.toPolynomial(): Polynomial? = reduceToPolynomial()

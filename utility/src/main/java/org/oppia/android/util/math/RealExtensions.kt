@@ -92,7 +92,7 @@ fun Real.asWholeNumber(): Int? {
     RATIONAL -> if (rational.isOnlyWholeNumber()) rational.toWholeNumber() else null
     INTEGER -> integer
     IRRATIONAL -> null
-    REALTYPE_NOT_SET, null -> throw Exception("Invalid real: $this.")
+    REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
 }
 
@@ -296,8 +296,7 @@ operator fun Real.div(rhs: Real): Real {
  * This function can fail in a few circumstances:
  * - One of the [Real]s is malformed or incomplete (such as a default instance).
  * - In cases where a root is being taken (i.e. when |[rhs]| < 1), if the root cannot be taken
- *   either an exception will be thrown or NaN will be returned (such as trying to take the even
- *   root of a negative value).
+ *   either null or NaN will be returned (such as trying to take the even root of a negative value).
  *
  * Further, note that this function represents the real value root rather than the principal root,
  * so negative bases are allowed so long as the root being used is odd. For non-integerlike powers,
@@ -326,7 +325,7 @@ operator fun Real.div(rhs: Real): Real {
  * (Note that the left column represents the left-hand side and the top row represents the
  * right-hand side of the operation).
  */
-infix fun Real.pow(rhs: Real): Real {
+infix fun Real.pow(rhs: Real): Real? {
   // Powers can really only be effectively done via floats or whole-number only fractions.
   return when (realTypeCase) {
     RATIONAL -> {
@@ -377,8 +376,7 @@ infix fun Real.pow(rhs: Real): Real {
  * Failure cases:
  * - An invalid [Real] is passed in (such as a default instance), resulting in an exception being
  *   thrown.
- * - A negative value is passed in (this will either result in an exception or a NaN being
- *   returned).
+ * - A negative value is passed in (this will either result in null or a NaN being returned).
  *
  * Similar to [Real.plus] & other operations, this function attempts to retain as much precision as
  * possible by first performing perfect roots before needing to perform a numerical approximation.
@@ -394,7 +392,7 @@ infix fun Real.pow(rhs: Real): Real {
  * | irrational | irrational     | irrational       |
  * |------------------------------------------------|
  */
-fun sqrt(real: Real): Real {
+fun sqrt(real: Real): Real? {
   return when (real.realTypeCase) {
     RATIONAL -> real.rational.root(base = 2, invert = false)
     IRRATIONAL -> createIrrationalReal(kotlin.math.sqrt(real.irrational))
@@ -439,7 +437,7 @@ private fun Int.pow(exp: Int): Real {
   }
 }
 
-private fun Fraction.root(base: Int, invert: Boolean): Real {
+private fun Fraction.root(base: Int, invert: Boolean): Real? {
   check(base > 0) { "Expected base of 1 or higher, not: $base" }
 
   val adjustedFraction = toImproperForm()
@@ -448,24 +446,28 @@ private fun Fraction.root(base: Int, invert: Boolean): Real {
   val adjustedDenom = adjustedFraction.denominator
   val rootedNumerator = if (invert) root(adjustedDenom, base) else root(adjustedNum, base)
   val rootedDenominator = if (invert) root(adjustedNum, base) else root(adjustedDenom, base)
-  return if (rootedNumerator.isInteger() && rootedDenominator.isInteger()) {
-    Real.newBuilder().apply {
-      rational = Fraction.newBuilder().apply {
-        isNegative = rootedNumerator.isNegative() || rootedDenominator.isNegative()
-        numerator = rootedNumerator.integer.absoluteValue
-        denominator = rootedDenominator.integer.absoluteValue
-      }.build().toProperForm()
-    }.build()
-  } else {
-    // One or both of the components of the fraction can't be rooted, so compute an irrational
-    // version.
-    Real.newBuilder().apply {
-      irrational = rootedNumerator.toDouble() / rootedDenominator.toDouble()
-    }.build()
+  return when {
+    rootedNumerator == null || rootedDenominator == null -> null
+    rootedNumerator.isInteger() && rootedDenominator.isInteger() -> {
+      Real.newBuilder().apply {
+        rational = Fraction.newBuilder().apply {
+          isNegative = rootedNumerator.isNegative() || rootedDenominator.isNegative()
+          numerator = rootedNumerator.integer.absoluteValue
+          denominator = rootedDenominator.integer.absoluteValue
+        }.build().toProperForm()
+      }.build()
+    }
+    else -> {
+      // One or both of the components of the fraction can't be rooted, so compute an irrational
+      // version.
+      Real.newBuilder().apply {
+        irrational = rootedNumerator.toDouble() / rootedDenominator.toDouble()
+      }.build()
+    }
   }
 }
 
-private fun root(int: Int, base: Int): Real {
+private fun root(int: Int, base: Int): Real? {
   // First, check if the integer is a root. Base reference for possible methods:
   // https://www.researchgate.net/post/How-to-decide-if-a-given-number-will-have-integer-square-root-or-not.
   if (int == 0 && base == 0) {
@@ -478,7 +480,7 @@ private fun root(int: Int, base: Int): Real {
   }
 
   check(base > 0) { "Expected base of 1 or higher, not: $base" }
-  check((int < 0 && base.isOdd()) || int >= 0) { "Radicand results in imaginary number: $int" }
+  if (int < 0 && !base.isOdd()) return null
 
   when {
     int == 0 -> {
@@ -502,7 +504,7 @@ private fun root(int: Int, base: Int): Real {
   }
 
   val radicand = int.absoluteValue
-  var potentialRoot = base
+  var potentialRoot = 1
   while (potentialRoot.pow(base).integer < radicand) {
     potentialRoot++
   }

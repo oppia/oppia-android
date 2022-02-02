@@ -10,6 +10,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.math.RealSubject
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.robolectric.annotation.LooperMode
 
@@ -51,6 +52,16 @@ class RealExtensionsTest {
       wholeNumber = 1
     }.build()
 
+    private val THREE_FRACTION = Fraction.newBuilder().apply {
+      wholeNumber = 3
+      denominator = 1
+    }.build()
+
+    private val THREE_ONES_FRACTION = Fraction.newBuilder().apply {
+      numerator = 3
+      denominator = 1
+    }.build()
+
     private val ZERO_REAL = createIntegerReal(0)
     private val TWO_REAL = createIntegerReal(2)
     private val NEGATIVE_TWO_REAL = createIntegerReal(-2)
@@ -59,6 +70,9 @@ class RealExtensionsTest {
     private val NEGATIVE_ONE_HALF_REAL = createRationalReal(-ONE_HALF_FRACTION)
     private val ONE_AND_ONE_HALF_REAL = createRationalReal(ONE_AND_ONE_HALF_FRACTION)
     private val NEGATIVE_ONE_AND_ONE_HALF_REAL = createRationalReal(-ONE_AND_ONE_HALF_FRACTION)
+    private val THREE_FRACTION_REAL = createRationalReal(THREE_FRACTION)
+    private val NEGATIVE_THREE_FRACTION_REAL = createRationalReal(-THREE_FRACTION)
+    private val THREE_ONES_REAL = createRationalReal(THREE_ONES_FRACTION)
 
     private val PI_REAL = createIrrationalReal(PI)
     private val NEGATIVE_PI_REAL = createIrrationalReal(-PI)
@@ -75,6 +89,32 @@ class RealExtensionsTest {
   @Parameter var expInt: Int = Int.MIN_VALUE
   @Parameter lateinit var expFrac: String
   @Parameter var expDouble: Double = Double.MIN_VALUE
+
+  @Test
+  fun testZero_isZeroInteger() {
+    val subject = ZERO
+
+    assertThat(subject).isIntegerThat().isEqualTo(0)
+  }
+
+  @Test
+  fun testOne_isOneInteger() {
+    val subject = ONE
+
+    assertThat(subject).isIntegerThat().isEqualTo(1)
+  }
+
+  @Test
+  fun testOneHalf_isOneHalfRational() {
+    val subject = ONE_HALF
+
+    assertThat(subject).isRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(0)
+      hasNumeratorThat().isEqualTo(1)
+      hasDenominatorThat().isEqualTo(2)
+    }
+  }
 
   @Test
   fun testIsRational_default_returnsFalse() {
@@ -137,6 +177,76 @@ class RealExtensionsTest {
   }
 
   @Test
+  fun testIsWholeNumber_default_returnsFalse() {
+    val defaultReal = Real.getDefaultInstance()
+
+    val result = defaultReal.isWholeNumber()
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsWholeNumber_twoInteger_returnsTrue() {
+    val result = TWO_REAL.isWholeNumber()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsWholeNumber_negativeTwoInteger_returnsTrue() {
+    val result = NEGATIVE_TWO_REAL.isWholeNumber()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsWholeNumber_oneHalfFraction_returnsFalse() {
+    val result = ONE_HALF_REAL.isWholeNumber()
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsWholeNumber_threeOnesFraction_returnsFalse() {
+    val result = THREE_ONES_REAL.isWholeNumber()
+
+    // 3/1 is treated as a fraction despite being numerically equivalent to a whole number.
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsWholeNumber_threeFraction_returnsTrue() {
+    val result = THREE_FRACTION_REAL.isWholeNumber()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsWholeNumber_negativeThreeFraction_returnsTrue() {
+    val result = NEGATIVE_THREE_FRACTION_REAL.isWholeNumber()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsWholeNumber_piIrrational_returnsFalse() {
+    val result = PI_REAL.isWholeNumber()
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsWholeNumber_threeIrrational_returnsFalse() {
+    val real = createIrrationalReal(3.0)
+
+    val result = real.isWholeNumber()
+
+    // Despite 3.0 being approximately a whole number, it isn't considered one since it's a double
+    // (and thus can have precision loss).
+    assertThat(result).isFalse()
+  }
+
+  @Test
   fun testIsNegative_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
@@ -188,6 +298,139 @@ class RealExtensionsTest {
   }
 
   @Test
+  fun testIsApproximatelyEqualTo_zeroAndOne_returnsFalse() {
+    val result = ZERO_REAL.isApproximatelyEqualTo(1.0)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_twoAndTwoWithinThreshold_returnsTrue() {
+    val result = TWO_REAL.isApproximatelyEqualTo(2.0 + FLOAT_EQUALITY_INTERVAL / 2.0)
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_twoAndTwoOutsideThreshold_returnsFalse() {
+    val result = TWO_REAL.isApproximatelyEqualTo(2.0 + FLOAT_EQUALITY_INTERVAL * 2.0)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_oneHalfAndOne_returnsFalse() {
+    val result = ONE_HALF_REAL.isApproximatelyEqualTo(1.0)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_oneHalfAndPointFive_returnsTrue() {
+    val result = ONE_HALF_REAL.isApproximatelyEqualTo(0.5)
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_oneHalfAndPointSix_returnsFalse() {
+    val result = ONE_HALF_REAL.isApproximatelyEqualTo(0.6)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_pointFiveAndPointFive_returnsTrue() {
+    val pointFiveReal = createIrrationalReal(0.5)
+
+    val result = pointFiveReal.isApproximatelyEqualTo(0.5)
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_pointFiveAndPointSix_returnsFalse() {
+    val pointFiveReal = createIrrationalReal(0.5)
+
+    val result = pointFiveReal.isApproximatelyEqualTo(0.6)
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyZero_default_throwsException() {
+    val defaultReal = Real.getDefaultInstance()
+
+    val exception = assertThrows(IllegalStateException::class) { defaultReal.isApproximatelyZero() }
+
+    assertThat(exception).hasMessageThat().contains("Invalid real")
+  }
+
+  @Test
+  fun testIsApproximatelyZero_zeroInteger_returnsTrue() {
+    val result = ZERO_REAL.isApproximatelyZero()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyZero_twoInteger_returnsFalse() {
+    val result = TWO_REAL.isApproximatelyZero()
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyZero_zeroFraction_returnsTrue() {
+    val real = createRationalReal(ZERO_FRACTION)
+
+    val result = real.isApproximatelyZero()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyZero_negativeZeroFraction_returnsTrue() {
+    val real = createRationalReal(-ZERO_FRACTION)
+
+    val result = real.isApproximatelyZero()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyZero_oneHalfFraction_returnsFalse() {
+    val result = ONE_HALF_REAL.isApproximatelyZero()
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyZero_zeroIrrational_returnsTrue() {
+    val real = createIrrationalReal(0.0)
+
+    val result = real.isApproximatelyZero()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyZero_irrationalCloseToZero_returnsTrue() {
+    val real = createIrrationalReal(0.000000001)
+
+    val result = real.isApproximatelyZero()
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyZero_piIrrational_returnsFalse() {
+    val result = PI_REAL.isApproximatelyZero()
+
+    assertThat(result).isFalse()
+  }
+
+  @Test
   fun testToDouble_default_returnsZeroDouble() {
     val defaultReal = Real.getDefaultInstance()
 
@@ -236,6 +479,76 @@ class RealExtensionsTest {
     val result = NEGATIVE_PI_REAL.toDouble()
 
     assertThat(result).isWithin(1e-5).of(-PI)
+  }
+
+  @Test
+  fun testAsWholeNumber_default_throwsException() {
+    val defaultReal = Real.getDefaultInstance()
+
+    val exception = assertThrows(IllegalStateException::class) { defaultReal.asWholeNumber() }
+
+    assertThat(exception).hasMessageThat().contains("Invalid real")
+  }
+
+  @Test
+  fun testAsWholeNumber_twoInteger_returnsTwo() {
+    val result = TWO_REAL.asWholeNumber()
+
+    assertThat(result).isEqualTo(2)
+  }
+
+  @Test
+  fun testAsWholeNumber_negativeTwoInteger_returnsNegativeTwo() {
+    val result = NEGATIVE_TWO_REAL.asWholeNumber()
+
+    assertThat(result).isEqualTo(-2)
+  }
+
+  @Test
+  fun testAsWholeNumber_oneHalfFraction_returnsNull() {
+    val result = ONE_HALF_REAL.asWholeNumber()
+
+    assertThat(result).isNull()
+  }
+
+  @Test
+  fun testAsWholeNumber_threeOnesFraction_returnsNull() {
+    val result = THREE_ONES_REAL.asWholeNumber()
+
+    // 3/1 is treated as a fraction despite being numerically equivalent to a whole number.
+    assertThat(result).isNull()
+  }
+
+  @Test
+  fun testAsWholeNumber_threeFraction_returnsThree() {
+    val result = THREE_FRACTION_REAL.asWholeNumber()
+
+    assertThat(result).isEqualTo(3)
+  }
+
+  @Test
+  fun testAsWholeNumber_negativeThreeFraction_returnsNegativeThree() {
+    val result = NEGATIVE_THREE_FRACTION_REAL.asWholeNumber()
+
+    assertThat(result).isEqualTo(-3)
+  }
+
+  @Test
+  fun testAsWholeNumber_piIrrational_returnsNull() {
+    val result = PI_REAL.asWholeNumber()
+
+    assertThat(result).isNull()
+  }
+
+  @Test
+  fun testAsWholeNumber_threeIrrational_returnsNull() {
+    val real = createIrrationalReal(3.0)
+
+    val result = real.asWholeNumber()
+
+    // Despite 3.0 being approximately a whole number, it isn't considered one since it's a double
+    // (and thus can have precision loss).
+    assertThat(result).isNull()
   }
 
   @Test
@@ -308,66 +621,6 @@ class RealExtensionsTest {
     val result = ZERO_REAL.isApproximatelyEqualTo(0.0)
 
     assertThat(result).isTrue()
-  }
-
-  @Test
-  fun testIsApproximatelyEqualTo_zeroAndOne_returnsFalse() {
-    val result = ZERO_REAL.isApproximatelyEqualTo(1.0)
-
-    assertThat(result).isFalse()
-  }
-
-  @Test
-  fun testIsApproximatelyEqualTo_twoAndTwoWithinThreshold_returnsTrue() {
-    val result = TWO_REAL.isApproximatelyEqualTo(2.0 + FLOAT_EQUALITY_INTERVAL / 2.0)
-
-    assertThat(result).isTrue()
-  }
-
-  @Test
-  fun testIsApproximatelyEqualTo_twoAndTwoOutsideThreshold_returnsFalse() {
-    val result = TWO_REAL.isApproximatelyEqualTo(2.0 + FLOAT_EQUALITY_INTERVAL * 2.0)
-
-    assertThat(result).isFalse()
-  }
-
-  @Test
-  fun testIsApproximatelyEqualTo_oneHalfAndOne_returnsFalse() {
-    val result = ONE_HALF_REAL.isApproximatelyEqualTo(1.0)
-
-    assertThat(result).isFalse()
-  }
-
-  @Test
-  fun testIsApproximatelyEqualTo_oneHalfAndPointFive_returnsTrue() {
-    val result = ONE_HALF_REAL.isApproximatelyEqualTo(0.5)
-
-    assertThat(result).isTrue()
-  }
-
-  @Test
-  fun testIsApproximatelyEqualTo_oneHalfAndPointSix_returnsFalse() {
-    val result = ONE_HALF_REAL.isApproximatelyEqualTo(0.6)
-
-    assertThat(result).isFalse()
-  }
-
-  @Test
-  fun testIsApproximatelyEqualTo_pointFiveAndPointFive_returnsTrue() {
-    val pointFiveReal = createIrrationalReal(0.5)
-
-    val result = pointFiveReal.isApproximatelyEqualTo(0.5)
-
-    assertThat(result).isTrue()
-  }
-
-  @Test
-  fun testIsApproximatelyEqualTo_pointFiveAndPointSix_returnsFalse() {
-    val pointFiveReal = createIrrationalReal(0.5)
-
-    val result = pointFiveReal.isApproximatelyEqualTo(0.6)
-
-    assertThat(result).isFalse()
   }
 
   @Test
@@ -1559,13 +1812,14 @@ class RealExtensionsTest {
   }
 
   @Test
-  fun testPow_negativeIntToOneHalfFraction_throwsException() {
+  fun testPow_negativeIntToOneHalfFraction_returnsNull() {
     val lhsReal = createIntegerReal(-3)
     val rhsReal = createRationalReal(ONE_HALF_FRACTION)
 
-    val exception = assertThrows(IllegalStateException::class) { lhsReal pow rhsReal }
+    val result = lhsReal pow rhsReal
 
-    assertThat(exception).hasMessageThat().contains("Radicand results in imaginary number")
+    // Cannot take the square root of a negative number.
+    assertThat(result).isNull()
   }
 
   @Test
@@ -1579,23 +1833,25 @@ class RealExtensionsTest {
   }
 
   @Test
-  fun testPow_negativeFractionToOneHalfFraction_throwsException() {
+  fun testPow_negativeFractionToOneHalfFraction_returnsNull() {
     val lhsReal = NEGATIVE_ONE_AND_ONE_HALF_REAL
     val rhsReal = createRationalReal(ONE_HALF_FRACTION)
 
-    val exception = assertThrows(IllegalStateException::class) { lhsReal pow rhsReal }
+    val result = lhsReal pow rhsReal
 
-    assertThat(exception).hasMessageThat().contains("Radicand results in imaginary number")
+    // Cannot take the square root of a negative number.
+    assertThat(result).isNull()
   }
 
   @Test
-  fun testPow_negativeFractionToNegativeFractionWithOddNumerator_throwsException() {
+  fun testPow_negativeFractionToNegativeFractionWithOddNumerator_returnsNull() {
     val lhsReal = createRationalReal((-4).toWholeNumberFraction())
     val rhsReal = createRationalReal(-ONE_AND_ONE_HALF_FRACTION)
 
-    val exception = assertThrows(IllegalStateException::class) { lhsReal pow rhsReal }
+    val result = lhsReal pow rhsReal
 
-    assertThat(exception).hasMessageThat().contains("Radicand results in imaginary number")
+    // Cannot take an even root of a negative number.
+    assertThat(result).isNull()
   }
 
   @Test
@@ -1640,12 +1896,13 @@ class RealExtensionsTest {
   }
 
   @Test
-  fun testSqrt_negativeInteger_throwsException() {
+  fun testSqrt_negativeInteger_returnsNull() {
     val real = createIntegerReal(-2)
 
-    val exception = assertThrows(IllegalStateException::class) { sqrt(real) }
+    val result = sqrt(real)
 
-    assertThat(exception).hasMessageThat().contains("Radicand results in imaginary number")
+    // Cannot take square root of a negative number.
+    assertThat(result).isNull()
   }
 
   @Test
@@ -1676,12 +1933,13 @@ class RealExtensionsTest {
   }
 
   @Test
-  fun testSqrt_negativeFraction_throwsException() {
+  fun testSqrt_negativeFraction_returnsNull() {
     val real = createRationalReal((-2).toWholeNumberFraction())
 
-    val exception = assertThrows(IllegalStateException::class) { sqrt(real) }
+    val result = sqrt(real)
 
-    assertThat(exception).hasMessageThat().contains("Radicand results in imaginary number")
+    // Cannot take the square root of a negative number.
+    assertThat(result).isNull()
   }
 
   @Test

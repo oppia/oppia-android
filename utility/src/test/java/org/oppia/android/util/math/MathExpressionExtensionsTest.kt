@@ -6,6 +6,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.testing.math.PolynomialSubject
+import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
@@ -20,7 +22,8 @@ import org.robolectric.annotation.LooperMode
  * verifications for operations like LaTeX conversion and expression evaluation are part of more
  * targeted test suites such as [ExpressionToLatexConverterTest] and
  * [NumericExpressionEvaluatorTest]. For comparable operations, see
- * [ExpressionToComparableOperationConverterTest].
+ * [ExpressionToComparableOperationConverterTest]. For polynomials, see
+ * [ExpressionToPolynomialConverterTest].
  */
 // FunctionName: test names are conventionally named with underscores.
 // SameParameterValue: tests should have specific context included/excluded for readability.
@@ -93,6 +96,43 @@ class MathExpressionExtensionsTest {
     val operation2 = expression2.toComparableOperation()
 
     assertThat(operation1).isNotEqualTo(operation2)
+  }
+
+  @Test
+  fun testToPolynomial_algebraicExpression_returnsCorrectPolynomial() {
+    val expression = parseAlgebraicExpression("(x^3-y^3)/(x-y)")
+
+    val polynomial = expression.toPolynomial()
+
+    assertThat(polynomial).hasTermCountThat().isEqualTo(3)
+    assertThat(polynomial).term(0).apply {
+      hasCoefficientThat().isIntegerThat().isEqualTo(1)
+      hasVariableCountThat().isEqualTo(1)
+      variable(0).apply {
+        hasNameThat().isEqualTo("x")
+        hasPowerThat().isEqualTo(2)
+      }
+    }
+    assertThat(polynomial).term(1).apply {
+      hasCoefficientThat().isIntegerThat().isEqualTo(1)
+      hasVariableCountThat().isEqualTo(2)
+      variable(0).apply {
+        hasNameThat().isEqualTo("x")
+        hasPowerThat().isEqualTo(1)
+      }
+      variable(1).apply {
+        hasNameThat().isEqualTo("y")
+        hasPowerThat().isEqualTo(1)
+      }
+    }
+    assertThat(polynomial).term(2).apply {
+      hasCoefficientThat().isIntegerThat().isEqualTo(1)
+      hasVariableCountThat().isEqualTo(1)
+      variable(0).apply {
+        hasNameThat().isEqualTo("y")
+        hasPowerThat().isEqualTo(2)
+      }
+    }
   }
 
   private companion object {
