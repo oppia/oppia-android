@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><!-- TODO(#59): Make this layout only accessible to tests. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="horizontal">
+
+  <ImageView
+    android:id="@+id/view_for_drawable_binding_adapters_test"
+    android:layout_width="match_parent"
+    android:layout_height="320dp" />
+</LinearLayout>
