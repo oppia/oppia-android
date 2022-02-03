@@ -26,9 +26,6 @@ class EventLogItemViewModel(
   fun formatContextString(): String =
     eventLog.context.activityContextCase.name.capitalizeWords()
 
-  /** Returns the event log action name in a human readable format. */
-  fun formatActionNameString(): String = eventLog.context.activityContextCase.name.capitalizeWords()
-
   private fun String.capitalizeWords(): String = machineLocale.run {
     // Use the machine locale for capitalization/case changes since this string is only used by
     // developers.
