@@ -154,7 +154,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   private fun logHomeActivityEvent() {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(), eventContext = null
+      oppiaClock.getCurrentTimeMs(), eventContext = oppiaLogger.createOpenHomeContext()
     )
   }
 }

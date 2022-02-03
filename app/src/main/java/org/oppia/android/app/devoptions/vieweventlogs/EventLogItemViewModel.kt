@@ -24,7 +24,7 @@ class EventLogItemViewModel(
 
   /** Returns the event log context in a human readable format. */
   fun formatContextString(): String =
-    eventLog.context.activityContextCase.name.capitalizeWords().substringBeforeLast(" ")
+    eventLog.context.activityContextCase.name.capitalizeWords()
 
   /** Returns the event log action name in a human readable format. */
   fun formatActionNameString(): String = eventLog.context.activityContextCase.name.capitalizeWords()

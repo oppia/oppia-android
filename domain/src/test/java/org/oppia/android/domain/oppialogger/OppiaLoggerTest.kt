@@ -173,7 +173,7 @@ class OppiaLoggerTest {
   }
 
   @Test
-  fun testController_createExplorationContext_returnsCorrectExplorationContext() {
+  fun testController_createOpenExplorationActivityContext_returnsCorrectExplorationContext() {
     val eventContext = oppiaLogger.createOpenExplorationActivityContext(
       TEST_TOPIC_ID,
       TEST_STORY_ID,
@@ -181,11 +181,29 @@ class OppiaLoggerTest {
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+      EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
     )
-    assertThat(eventContext.explorationContext.topicId).matches(TEST_TOPIC_ID)
-    assertThat(eventContext.explorationContext.storyId).matches(TEST_STORY_ID)
-    assertThat(eventContext.explorationContext.explorationId).matches(TEST_EXPLORATION_ID)
+    assertThat(eventContext.openExplorationActivity.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.openExplorationActivity.storyId).matches(TEST_STORY_ID)
+    assertThat(eventContext.openExplorationActivity.explorationId).matches(TEST_EXPLORATION_ID)
+  }
+
+  @Test
+  fun testController_createOpenHomeContext_returnsCorrectExplorationContext() {
+    val eventContext = oppiaLogger.createOpenHomeContext()
+
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.OPEN_HOME
+    )
+  }
+
+  @Test
+  fun testController_createOpenProfileChooserContext_returnsCorrectExplorationContext() {
+    val eventContext = oppiaLogger.createOpenProfileChooserContext()
+
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
+    )
   }
 
   @Test
@@ -196,10 +214,10 @@ class OppiaLoggerTest {
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
+      EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
     )
-    assertThat(eventContext.questionContext.questionId).matches(TEST_QUESTION_ID)
-    assertThat(eventContext.questionContext.skillIdList)
+    assertThat(eventContext.openQuestionPlayer.questionId).matches(TEST_QUESTION_ID)
+    assertThat(eventContext.openQuestionPlayer.skillIdList)
       .containsAtLeastElementsIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
   }
 
@@ -211,42 +229,72 @@ class OppiaLoggerTest {
     )
 
     assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.STORY_CONTEXT
+      EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
     )
-    assertThat(eventContext.storyContext.topicId).matches(TEST_TOPIC_ID)
-    assertThat(eventContext.storyContext.storyId).matches(TEST_STORY_ID)
+    assertThat(eventContext.openStoryActivity.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.openStoryActivity.storyId).matches(TEST_STORY_ID)
   }
 
   @Test
-  fun testController_createTopicContext_returnsCorrectTopicContext() {
-    val eventContext = oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+  fun testController_createOpenInfoTabContext_returnsCorrectTopicContext() {
+    val eventContext = oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
+      EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
     )
-    assertThat(eventContext.topicContext.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.openInfoTab.topicId).matches(TEST_TOPIC_ID)
   }
 
   @Test
-  fun testController_createConceptCardContext_returnsCorrectConceptCardContext() {
+  fun testController_createOpenLessonsTabContext_returnsCorrectTopicContext() {
+    val eventContext = oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
+    )
+    assertThat(eventContext.openLessonsTab.topicId).matches(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testController_createOpenPracticeTabContext_returnsCorrectTopicContext() {
+    val eventContext = oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
+    )
+    assertThat(eventContext.openPracticeTab.topicId).matches(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testController_createOpenRevisionTabContext_returnsCorrectTopicContext() {
+    val eventContext = oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(
+      EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
+    )
+    assertThat(eventContext.openRevisionTab.topicId).matches(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testController_createOpenConceptCardContext_returnsCorrectConceptCardContext() {
     val eventContext = oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
+      EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
     )
-    assertThat(eventContext.conceptCardContext.skillId).matches(TEST_SKILL_ID)
+    assertThat(eventContext.openConceptCard.skillId).matches(TEST_SKILL_ID)
   }
 
   @Test
-  fun testController_createRevisionCardContext_returnsCorrectRevisionCardContext() {
+  fun testController_createOpenRevisionCardContext_returnsCorrectRevisionCardContext() {
     val eventContext =
       oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
 
     assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
+      EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
     )
-    assertThat(eventContext.revisionCardContext.topicId).matches(TEST_TOPIC_ID)
-    assertThat(eventContext.revisionCardContext.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
+    assertThat(eventContext.openRevisionCard.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.openRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
   }
 
   private fun setUpTestApplicationComponent() {

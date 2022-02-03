@@ -91,6 +91,19 @@ class OppiaLogger @Inject constructor(
     consoleLogger.e(tag, msg, tr)
   }
 
+  /** Returns the context of an event related to the opening of home activity. */
+  fun createOpenHomeContext(): EventLog.Context {
+    return EventLog.Context.newBuilder().setOpenHome(EventLog.NullContext.newBuilder().build())
+      .build()
+  }
+
+  /** Returns the context of an event related to the opening of profile chooser activity. */
+  fun createOpenProfileChooserContext(): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setOpenProfileChooser(EventLog.NullContext.newBuilder().build())
+      .build()
+  }
+
   /** Returns the context of an event related to the opening of exploration activity. */
   fun createOpenExplorationActivityContext(
     topicId: String,
