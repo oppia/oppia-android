@@ -625,4 +625,25 @@
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
+
+  <!--  HintSummary-->
+  <dimen name="hint_summary_hint_summary_container_layout_marginTop">32dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_marginStart">28dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_marginEnd">28dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_marginBottom">20dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_paddingBottom">0dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_marginTop">12dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_marginBottom">12dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_paddingBottom">0dp</dimen>
+  <dimen name="hint_summary_reveal_hint_button_layout_marginTop">16dp</dimen>
+  <dimen name="hint_summary_reveal_hint_button_layout_marginBottom">32dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginStart">8dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginEnd">8dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginTop">0dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginBottom">8dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_constraintHorizontal_bias">0.966</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_constraintVertical_bias">0.0</dimen>
+  <dimen name="hint_summary_hint_list_container_layout_marginStart">40dp</dimen>
+  <dimen name="hint_summary_hint_list_container_layout_marginEnd">40dp</dimen>
+  <dimen name="hint_summary_hint_list_container_layout_marginTop">8dp</dimen>
 </resources>

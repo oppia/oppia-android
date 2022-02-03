@@ -419,4 +419,24 @@
   <dimen name="revision_card_fragment_layout_text_margin_top">36dp</dimen>
   <dimen name="revision_card_fragment_layout_button_margin_top">48dp</dimen>
 
+  <!--  HintSummary-->
+  <dimen name="hint_summary_hint_summary_container_layout_marginTop">0dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_marginStart">128dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_marginEnd">128dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_marginBottom">0dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_paddingBottom">4dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_marginTop">44dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_marginBottom">0dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_paddingBottom">28dp</dimen>
+  <dimen name="hint_summary_reveal_hint_button_layout_marginTop">0dp</dimen>
+  <dimen name="hint_summary_reveal_hint_button_layout_marginBottom">28dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginStart">0dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginEnd">0dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginTop">32dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginBottom">16dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_constraintHorizontal_bias">0.0</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_constraintVertical_bias">0.0</dimen>
+  <dimen name="hint_summary_hint_list_container_layout_marginStart">128dp</dimen>
+  <dimen name="hint_summary_hint_list_container_layout_marginEnd">128dp</dimen>
+  <dimen name="hint_summary_hint_list_container_layout_marginTop">0dp</dimen>
 </resources>
