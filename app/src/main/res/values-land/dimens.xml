@@ -425,7 +425,7 @@
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
 
-  <!--  HintSummary-->
+  <!-- HintsSummary -->
   <dimen name="hint_summary_hint_summary_container_layout_marginTop">32dp</dimen>
   <dimen name="hint_summary_hint_constraint_layout_marginStart">72dp</dimen>
   <dimen name="hint_summary_hint_constraint_layout_marginEnd">72dp</dimen>

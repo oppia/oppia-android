@@ -29,10 +29,7 @@
       android:layout_marginStart="@dimen/hint_summary_hint_constraint_layout_marginStart"
       android:layout_marginEnd="@dimen/hint_summary_hint_constraint_layout_marginEnd"
       android:layout_marginBottom="@dimen/hint_summary_hint_constraint_layout_marginBottom"
-      android:paddingBottom="@dimen/hint_summary_hint_constraint_layout_paddingBottom"
-      android:orientation="horizontal"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+      android:paddingBottom="@dimen/hint_summary_hint_constraint_layout_paddingBottom">
 
       <TextView
         android:id="@+id/hint_title"
@@ -40,7 +37,6 @@
         android:layout_marginTop="@dimen/hint_summary_hint_title_layout_marginTop"
         android:layout_marginBottom="@dimen/hint_summary_hint_title_layout_marginBottom"
         android:paddingBottom="@dimen/hint_summary_hint_title_layout_paddingBottom"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,7 +68,6 @@
         android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/hint_title"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="@dimen/hint_summary_expand_list_icon_layout_constraintHorizontal_bias"
         app:layout_constraintVertical_bias="@dimen/hint_summary_expand_list_icon_layout_constraintVertical_bias">
