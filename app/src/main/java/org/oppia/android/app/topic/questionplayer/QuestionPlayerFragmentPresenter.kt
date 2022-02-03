@@ -16,7 +16,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State

@@ -24,13 +24,13 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize

@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel

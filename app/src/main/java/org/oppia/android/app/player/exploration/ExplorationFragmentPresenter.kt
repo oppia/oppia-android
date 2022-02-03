@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
