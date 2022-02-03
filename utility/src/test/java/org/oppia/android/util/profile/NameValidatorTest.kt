@@ -1,6 +1,7 @@
 package org.oppia.android.util.profile
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
 
@@ -13,6 +14,11 @@ class NameValidatorTest {
 
   private val disallowedNames =
     listOf<String>("जिष्णु7", "Ben_Henning", "Rajat..T", "جيشنو^&&", " ", ".", "Ben Henning")
+
+  @Before
+  fun setup() {
+    nameValidator = NameValidator()
+  }
 
   @Test
   fun testNameValidator_addDisallowedName_returnFalse() {

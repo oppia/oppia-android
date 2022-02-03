@@ -3,12 +3,14 @@ package org.oppia.android.util.profile
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Utility to validate profile names*/
+/** Utility to validate profile names */
 @Singleton
 class NameValidator @Inject constructor() {
-  private val letterAndSymbolsRegex by lazy { Regex("^.[\\p{L}.'\\-]+\$") }
+  private val letterAndSymbolsRegex by lazy {
+    Regex("^.[${NameValidatorUtil.lettersAndSymbolsRegexString}]+\$")
+  }
 
-  private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[\\.'-]{2}") }
+  private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[.'-]{2}") }
 
   /**
    * Validates names for a profile
