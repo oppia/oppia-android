@@ -102,6 +102,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(audioFragment: AudioFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
+  fun inject(bottomSheetFragment: BottomSheetFragment)
   fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
