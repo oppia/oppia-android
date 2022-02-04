@@ -256,14 +256,14 @@ class RealExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_twoAndTwoWithinThreshold_returnsTrue() {
-    val result = TWO_REAL.isApproximatelyEqualTo(2.0 + FLOAT_EQUALITY_INTERVAL / 2.0)
+    val result = TWO_REAL.isApproximatelyEqualTo(2.0 + DOUBLE_EQUALITY_EPSILON / 2.0)
 
     assertThat(result).isTrue()
   }
 
   @Test
   fun testIsApproximatelyEqualTo_twoAndTwoOutsideThreshold_returnsFalse() {
-    val result = TWO_REAL.isApproximatelyEqualTo(2.0 + FLOAT_EQUALITY_INTERVAL * 2.0)
+    val result = TWO_REAL.isApproximatelyEqualTo(2.0 + DOUBLE_EQUALITY_EPSILON * 2.0)
 
     assertThat(result).isFalse()
   }

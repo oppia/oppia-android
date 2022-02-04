@@ -2,22 +2,36 @@ package org.oppia.android.util.math
 
 import kotlin.math.abs
 
-/** The error margin used for approximately [Float] and [Double] equality checking. */
-const val FLOAT_EQUALITY_INTERVAL = 1e-5
+/**
+ * The error margin used for approximately [Float] equality checking.
+ *
+ * Note that the machine epsilon value from https://en.wikipedia.org/wiki/Machine_epsilon is defined
+ * defined as the smallest value that, when added to, or subtract from, 1, will result in a value
+ * that is exactly equal to 1. A slightly larger value is picked here for some allowance in
+ * variance.
+ */
+const val FLOAT_EQUALITY_EPSILON: Float = 1e-6f
+
+/**
+ * The error margin used for approximately [Double] equality checking.
+ *
+ * See [FLOAT_EQUALITY_EPSILON] for an explanation of this value.
+ */
+const val DOUBLE_EQUALITY_EPSILON: Double = 1e-15
 
 /**
  * Returns whether this float approximately equals another based on a consistent epsilon value
- * ([FLOAT_EQUALITY_INTERVAL]).
+ * ([FLOAT_EQUALITY_EPSILON]).
  */
 fun Float.approximatelyEquals(other: Float): Boolean {
-  return abs(this - other) < FLOAT_EQUALITY_INTERVAL
+  return abs(this - other) < FLOAT_EQUALITY_EPSILON
 }
 
 /** Returns whether this double approximately equals another based on a consistent epsilon value
- * ([FLOAT_EQUALITY_INTERVAL]).
+ * ([DOUBLE_EQUALITY_EPSILON]).
  */
 fun Double.approximatelyEquals(other: Double): Boolean {
-  return abs(this - other) < FLOAT_EQUALITY_INTERVAL
+  return abs(this - other) < DOUBLE_EQUALITY_EPSILON
 }
 
 /**
