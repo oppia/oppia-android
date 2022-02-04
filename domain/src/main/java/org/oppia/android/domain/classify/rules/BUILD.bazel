@@ -8,8 +8,8 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 kt_android_library(
     name = "generic_rule_classifier",
     srcs = [
-        "InteractionObjectTypeExtractorRepository.kt",
         "GenericRuleClassifier.kt",
+        "InteractionObjectTypeExtractorRepository.kt",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
