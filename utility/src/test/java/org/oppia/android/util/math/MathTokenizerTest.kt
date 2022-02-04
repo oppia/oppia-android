@@ -370,6 +370,14 @@ class MathTokenizerTest {
   }
 
   @Test
+  fun testTokenize_enDashSymbol_producesMinusSymbol() {
+    val tokens = MathTokenizer.tokenize("–").toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens[0]).isMinusSymbol()
+  }
+
+  @Test
   fun testTokenize_minusSymbol_withSpaces_tokenHasCorrectIndices() {
     val tokens = MathTokenizer.tokenize("  −   ").toList()
 
@@ -645,7 +653,7 @@ class MathTokenizerTest {
     // Build a large list of unicode characters minus those which are actually allowed. The ASCII
     // range is excluded from this list.
     val characters = ('\u007f'..'\uffff').filterNot {
-      it in listOf('×', '÷', '−', '√')
+      it in listOf('×', '÷', '−', '–', '√')
     }
     val charStr = characters.joinToString("")
 
