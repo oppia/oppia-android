@@ -23,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -140,6 +141,24 @@ class ProfileEditActivityTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
+  @Test
+  fun testProfileEditActivity_hasCorrectActivityLabel() {
+
+    launch(
+      ProfileEditActivity::class.java
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(activity.title).isEqualTo(
+          context.getString(
+            R.string.profile_edit_activity_title
+          )
+        )
+      }
+    }
+  }
+
 
   @Test
   fun testProfileEdit_updateName_checkNewNameDisplayed() {
