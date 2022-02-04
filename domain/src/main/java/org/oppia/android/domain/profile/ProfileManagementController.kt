@@ -26,7 +26,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.profile.DirectoryManagementUtil
-import org.oppia.android.util.profile.NameValidator
+import org.oppia.android.util.profile.ProfileNameValidator
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
@@ -70,7 +70,7 @@ class ProfileManagementController @Inject constructor(
   private val exceptionsController: ExceptionsController,
   private val oppiaClock: OppiaClock,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val nameValidator: NameValidator
+  private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -199,7 +199,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!nameValidator.isNameValid(name)) {
+      if (!profileNameValidator.isNameValid(name)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(name, it)) {
@@ -311,7 +311,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!nameValidator.isNameValid(newName)) {
+      if (!profileNameValidator.isNameValid(newName)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(newName, it)) {

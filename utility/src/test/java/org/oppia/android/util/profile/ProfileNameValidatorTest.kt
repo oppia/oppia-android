@@ -5,10 +5,10 @@ import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
 
-class NameValidatorTest {
+class ProfileNameValidatorTest {
 
   @Inject
-  lateinit var nameValidator: NameValidator
+  lateinit var profileNameValidator: ProfileNameValidator
 
   private val allowedNames = listOf<String>("जिष्णु", "Ben-Henning", "Rajat.T", "جيشنو")
 
@@ -17,20 +17,20 @@ class NameValidatorTest {
 
   @Before
   fun setup() {
-    nameValidator = NameValidator()
+    profileNameValidator = ProfileNameValidator()
   }
 
   @Test
   fun testNameValidator_addDisallowedName_returnFalse() {
     disallowedNames.forEach {
-      assertThat(nameValidator.isNameValid(it)).isEqualTo(false)
+      assertThat(profileNameValidator.isNameValid(it)).isFalse()
     }
   }
 
   @Test
   fun testNameValidator_addAllowedName_returnTrue() {
     allowedNames.forEach {
-      assertThat(nameValidator.isNameValid(it)).isEqualTo(true)
+      assertThat(profileNameValidator.isNameValid(it)).isTrue()
     }
   }
 }
