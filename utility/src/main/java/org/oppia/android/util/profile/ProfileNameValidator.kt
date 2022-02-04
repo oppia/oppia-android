@@ -23,7 +23,7 @@ class ProfileNameValidator @Inject constructor() {
     "$allLanguageLettersRegex$allowedSymbolsRegex$hindiRegex"
 
   private val letterAndSymbolsRegex by lazy {
-    Regex("^.[${lettersAndSymbolsRegexString}]+\$")
+    Regex("^.[$lettersAndSymbolsRegexString]+\$")
   }
 
   private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[.'-]{2}") }
