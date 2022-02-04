@@ -7,7 +7,6 @@ import dagger.multibindings.StringKey
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.NumericExpressionInputRules
 
-// TODO: add tests.
 /** Module that binds rule classifiers corresponding to the numeric expression input interaction. */
 @Module
 class NumericExpressionInputModule {

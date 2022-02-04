@@ -18,23 +18,6 @@ private val POLYNOMIAL_TERM_COMPARATOR by lazy { createTermComparator() }
 /** Returns whether this polynomial is a constant-only polynomial (contains no variables). */
 fun Polynomial.isConstant(): Boolean = termCount == 1 && getTerm(0).variableCount == 0
 
-// TODO: add tests.
-/**
- * Returns whether this [Polynomial] approximately equals an other, that is, that the polynomial has
- * the exact same terms and approximately equal coefficients (see [Real.isApproximatelyEqualTo]).
- *
- * This function assumes that both this and the other [Polynomial] are sorted before checking for
- * equality.
- */
-fun Polynomial.isApproximatelyEqualTo(other: Polynomial): Boolean {
-  if (termCount != other.termCount) return false
-
-  // Terms can be zipped since they should be sorted prior to checking equivalence.
-  return termList.zip(other.termList).all { (first, second) ->
-    first.isApproximatelyEqualTo(second)
-  }
-}
-
 /**
  * Returns the first term coefficient from this polynomial. This corresponds to the whole value of
  * the polynomial iff isConstant() returns true, otherwise this value isn't useful.
@@ -122,6 +105,22 @@ fun Polynomial.sort(): Polynomial = Polynomial.newBuilder().apply {
     }.sortedWith(POLYNOMIAL_TERM_COMPARATOR)
   )
 }.build()
+
+/**
+ * Returns whether this [Polynomial] approximately equals an other, that is, that the polynomial has
+ * the exact same terms and approximately equal coefficients (see [Real.isApproximatelyEqualTo]).
+ *
+ * This function assumes that both this and the other [Polynomial] are sorted before checking for
+ * equality (i.e. via [sort]).
+ */
+fun Polynomial.isApproximatelyEqualTo(other: Polynomial): Boolean {
+  if (termCount != other.termCount) return false
+
+  // Terms can be zipped since they should be sorted prior to checking equivalence.
+  return termList.zip(other.termList).all { (first, second) ->
+    first.isApproximatelyEqualTo(second)
+  }
+}
 
 /**
  * Returns the negated version of this [Polynomial] such that the original polynomial plus the

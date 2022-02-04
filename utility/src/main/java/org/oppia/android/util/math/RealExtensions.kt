@@ -73,7 +73,6 @@ fun Real.isNegative(): Boolean = when (realTypeCase) {
   REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
 }
 
-// TODO: add tests.
 /**
  * Returns whether this [Real] approximately equals another, that is, if they evaluate to
  * approximately the same value (see [Double.isApproximatelyEqualTo]).

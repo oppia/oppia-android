@@ -54,7 +54,6 @@ fun MathExpression.toComparableOperation(): ComparableOperation = convertToCompa
  */
 fun MathExpression.toPolynomial(): Polynomial? = reduceToPolynomial()
 
-// TODO: add tests.
 /**
  * Returns whether this [MathExpression] approximately equals another, that is, that it fully
  * matches in its AST representation but all constants are compared using

@@ -43,6 +43,24 @@ oppia_android_test(
 )
 
 oppia_android_test(
+    name = "ComparableOperationExtensionsTest",
+    srcs = ["ComparableOperationExtensionsTest.kt"],
+    custom_package = "org.oppia.android.util.math",
+    test_class = "org.oppia.android.util.math.ComparableOperationExtensionsTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:fraction_parser",
+    ],
+)
+
+oppia_android_test(
     name = "ComparatorExtensionsTest",
     srcs = ["ComparatorExtensionsTest.kt"],
     custom_package = "org.oppia.android.util.math",
@@ -178,9 +196,11 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
         "//testing/src/main/java/org/oppia/android/testing/math:real_subject",
-        "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",

@@ -12,7 +12,6 @@ import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.O
 import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.OperationTypeCase.OPERATIONTYPE_NOT_SET
 import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.OperationTypeCase.SQUARE_ROOT
 
-// TODO: add tests.
 /**
  * Returns whether this [ComparableOperation] is approximately equal to another, that is,
  * whether it exactly matches the other except for constants (which instead utilize
