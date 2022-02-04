@@ -13,7 +13,6 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingRes
 import org.oppia.android.util.math.evaluateAsNumericExpression
 import org.oppia.android.util.math.isApproximatelyEqualTo
 
-// TODO: add tests.
 class NumericExpressionInputIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
   private val consoleLogger: ConsoleLogger

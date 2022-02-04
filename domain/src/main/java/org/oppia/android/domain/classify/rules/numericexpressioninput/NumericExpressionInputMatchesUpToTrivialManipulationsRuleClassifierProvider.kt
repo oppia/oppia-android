@@ -13,7 +13,6 @@ import org.oppia.android.util.math.toComparableOperation
 import javax.inject.Inject
 import org.oppia.android.util.math.isApproximatelyEqualTo
 
-// TODO: add tests.
 class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
