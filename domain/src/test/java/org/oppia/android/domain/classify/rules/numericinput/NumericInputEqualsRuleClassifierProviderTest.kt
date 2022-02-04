@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.testing.assertThrows
-import org.oppia.android.util.math.FLOAT_EQUALITY_INTERVAL
+import org.oppia.android.util.math.FLOAT_EQUALITY_EPSILON
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -33,13 +33,13 @@ class NumericInputEqualsRuleClassifierProviderTest {
   private val NEGATIVE_REAL_VALUE_3_5 =
     InteractionObjectTestBuilder.createReal(value = -3.5)
   private val FIVE_TIMES_FLOAT_EQUALITY_INTERVAL =
-    InteractionObjectTestBuilder.createReal(value = 5 * FLOAT_EQUALITY_INTERVAL)
+    InteractionObjectTestBuilder.createReal(value = 5 * FLOAT_EQUALITY_EPSILON)
   private val SIX_TIMES_FLOAT_EQUALITY_INTERVAL =
-    InteractionObjectTestBuilder.createReal(value = 6 * FLOAT_EQUALITY_INTERVAL)
+    InteractionObjectTestBuilder.createReal(value = 6 * FLOAT_EQUALITY_EPSILON)
   private val FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL =
     InteractionObjectTestBuilder.createReal(
-      value = 5 * FLOAT_EQUALITY_INTERVAL +
-        FLOAT_EQUALITY_INTERVAL / 10
+      value = 5 * FLOAT_EQUALITY_EPSILON +
+        FLOAT_EQUALITY_EPSILON / 10
     )
   private val STRING_VALUE =
     InteractionObjectTestBuilder.createString(value = "test")
