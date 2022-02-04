@@ -249,6 +249,36 @@ class TextViewBindingAdaptersTest {
   }
 
   @Test
+  fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrectCase9() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
+    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
+    activityRule.scenario.onActivity {
+      val textView: TextView = it.findViewById(R.id.test_text_view)
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ 0
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used ")
+    }
+  }
+
+  @Test
+  fun testTextViewBindingAdapters_ltrIsEnabled_port_profileLastVisitedTextIsCorrectCase10() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
+    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
+    activityRule.scenario.onActivity {
+      val textView: TextView = it.findViewById(R.id.test_text_view)
+      setProfileLastVisitedText(
+        textView,
+        /* setText= */ -1
+      )
+      assertThat(textView.text.toString()).isEqualTo("Last used ")
+    }
+  }
+
+  @Test
   fun testTextViewBindingAdapters_ltrIsEnabled_port_drawableEndCompactIsCorrect() {
     activityRule.scenario.onActivity {
       val drawable = ContextCompat.getDrawable(
