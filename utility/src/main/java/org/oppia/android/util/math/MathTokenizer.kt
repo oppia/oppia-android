@@ -50,7 +50,7 @@ class MathTokenizer private constructor() {
           '+' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.PlusSymbol(startIndex, endIndex)
           }
-          '-', '−' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+          '-', '−', '–' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.MinusSymbol(startIndex, endIndex)
           }
           '*', '×' -> tokenizeSymbol(chars) { startIndex, endIndex ->
