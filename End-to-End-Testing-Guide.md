@@ -66,7 +66,7 @@ The android_binary of a test suite generates a test apk with the same name as th
     ```
 2. install the oppia_test.apk and the test suite’s APK
     ```
-    adb install -r bazel-bin/oppia_test.apk && adb install -r bazel-bin/instrumentation/<test suite classname>.apk
+    adb install -r bazel-bin/instrumentation/oppia_test.apk && adb install -r bazel-bin/instrumentation/<test suite classname>.apk
     ```
     e.g.:
     ```
