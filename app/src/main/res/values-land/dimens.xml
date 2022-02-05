@@ -414,6 +414,13 @@
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">60dp</dimen>
 
+  <!-- RevisionCardFragment -->
+  <dimen name="revision_card_fragment_padding_bottom">145dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_start">52dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_end">52dp</dimen>
+  <dimen name="revision_card_fragment_layout_text_margin_top">24dp</dimen>
+  <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
+
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
