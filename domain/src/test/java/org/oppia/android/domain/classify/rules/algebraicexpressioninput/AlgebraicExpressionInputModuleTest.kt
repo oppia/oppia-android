@@ -31,8 +31,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class AlgebraicExpressionInputModuleTest {
-  @Inject
-  @AlgebraicExpressionInputRules
+  @field:[Inject AlgebraicExpressionInputRules]
   lateinit var algebraicExpressionInputClassifiers: Map<
     String, @JvmSuppressWildcards RuleClassifier>
 
