@@ -12,7 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -29,7 +29,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.rules.numericexpressioninput.DaggerNumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest_TestApplicationComponent as DaggerTestApplicationComponent
 import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider as RuleClassifierProvider
 

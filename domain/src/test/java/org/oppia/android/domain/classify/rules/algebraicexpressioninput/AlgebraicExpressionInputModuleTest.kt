@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.domain.classify.rules.AlgebraicExpressionInputRules
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -22,7 +23,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.classify.rules.AlgebraicExpressionInputRules
 
 /** Tests for [AlgebraicExpressionInputModule]. */
 // FunctionName: test names are conventionally named with underscores.

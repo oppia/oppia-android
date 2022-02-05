@@ -12,7 +12,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.model.SchemaObject
+import org.oppia.android.app.model.SchemaObjectList
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -29,12 +31,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.SchemaObject
-import org.oppia.android.app.model.SchemaObjectList
-import org.oppia.android.domain.classify.ClassificationContext
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider as RuleClassifierProvider
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.DaggerAlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest_TestApplicationComponent as DaggerTestApplicationComponent
 
 /**
- * Tests for [AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider].
+ * Tests for [RuleClassifierProvider].
  *
  * Note that the tests implemented in this suite are specifically set up to verify the cases
  * outlined in this sheet:
@@ -47,7 +48,7 @@ import org.oppia.android.domain.classify.ClassificationContext
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest {
-  @Inject internal lateinit var provider: AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
+  @Inject internal lateinit var provider: RuleClassifierProvider
 
   @Parameter lateinit var answer: String
   @Parameter lateinit var input: String
@@ -627,7 +628,7 @@ class AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvi
   }.build()
 
   private fun setUpTestApplicationComponent() {
-    DaggerAlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest_TestApplicationComponent
+    DaggerTestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }

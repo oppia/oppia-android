@@ -12,7 +12,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.model.SchemaObject
+import org.oppia.android.app.model.SchemaObjectList
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -29,9 +31,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.SchemaObject
-import org.oppia.android.app.model.SchemaObjectList
-import org.oppia.android.domain.classify.ClassificationContext
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.DaggerAlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest_TestApplicationComponent as DaggerTestApplicationComponent
 
 /**
  * Tests for [AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider].
@@ -388,7 +388,9 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
       "(a+b+c)^2!=a^2+b^2+c^2+2a*b+2a*c+2bc", "answer=(a+b+c)^2", "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
     ),
     Iteration(
-      "(-a -b -c)^2!=a^2+b^2+c^2+2a*b+2a*c+2bc", "answer=(-a -b -c)^2", "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+      "(-a -b -c)^2!=a^2+b^2+c^2+2a*b+2a*c+2bc",
+      "answer=(-a -b -c)^2",
+      "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
     ),
     Iteration("1 - 6x + 9x^2!=9x^2 − 6x + 1", "answer=1 - 6x + 9x^2", "input=9x^2 − 6x + 1"),
     Iteration("9x^2 + 1 - 6x!=9x^2 − 6x + 1", "answer=9x^2 + 1 - 6x", "input=9x^2 − 6x + 1"),
@@ -612,7 +614,7 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   }.build()
 
   private fun setUpTestApplicationComponent() {
-    DaggerAlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest_TestApplicationComponent
+    DaggerTestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }

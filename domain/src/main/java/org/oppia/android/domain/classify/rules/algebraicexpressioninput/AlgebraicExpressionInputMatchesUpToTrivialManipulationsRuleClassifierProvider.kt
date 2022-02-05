@@ -1,6 +1,5 @@
 package org.oppia.android.domain.classify.rules.algebraicexpressioninput
 
-import javax.inject.Inject
 import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.domain.classify.ClassificationContext
@@ -12,7 +11,17 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingRes
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toComparableOperation
+import javax.inject.Inject
 
+/**
+ * Provider for a classifier that determines whether an algebraic expression is equal to the
+ * creator-specific expression defined as the input to this interaction, with some manipulations.
+ *
+ * 'Trivial manipulations' indicates rearranging any operands for commutative operations, or changes
+ * in resolution order (i.e. associative) without changing the meaning of the expression.
+ *
+ * See this class's tests for a list of supported cases (both for matching and not matching).
+ */
 class AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
