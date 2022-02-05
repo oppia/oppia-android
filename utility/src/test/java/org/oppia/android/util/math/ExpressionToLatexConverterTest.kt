@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.util.math.ExpressionToLatexConverter.Companion.convertToLatex
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.robolectric.annotation.LooperMode
@@ -21,7 +22,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_number_returnsConstantLatex() {
     val exp = parseNumericExpressionWithAllErrors("1")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("1")
   }
@@ -30,7 +31,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_unaryPlus_withoutOptionalErrors_returnLatexWithUnaryPlus() {
     val exp = parseNumericExpressionWithoutOptionalErrors("+1")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("+1")
   }
@@ -39,7 +40,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_unaryMinus_returnLatexWithUnaryMinus() {
     val exp = parseNumericExpressionWithAllErrors("-1")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("-1")
   }
@@ -48,7 +49,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_addition_returnsLatexWithAddition() {
     val exp = parseNumericExpressionWithAllErrors("1+2")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("1 + 2")
   }
@@ -57,7 +58,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_subtraction_returnsLatexWithSubtract() {
     val exp = parseNumericExpressionWithAllErrors("1-2")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("1 - 2")
   }
@@ -66,7 +67,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_multiplication_returnsLatexWithMultiplication() {
     val exp = parseNumericExpressionWithAllErrors("2*3")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("2 \\times 3")
   }
@@ -75,7 +76,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_division_returnsLatexWithDivision() {
     val exp = parseNumericExpressionWithAllErrors("2/3")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("2 \\div 3")
   }
@@ -84,7 +85,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_division_divAsFraction_returnsLatexWithFraction() {
     val exp = parseNumericExpressionWithAllErrors("2/3")
 
-    val latex = exp.toRawLatex(divAsFraction = true)
+    val latex = exp.convertToLatex(divAsFraction = true)
 
     assertThat(latex).isEqualTo("\\frac{2}{3}")
   }
@@ -93,7 +94,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_multipleDivisions_divAsFraction_returnsLatexWithFractions() {
     val exp = parseNumericExpressionWithAllErrors("2/3/4")
 
-    val latex = exp.toRawLatex(divAsFraction = true)
+    val latex = exp.convertToLatex(divAsFraction = true)
 
     assertThat(latex).isEqualTo("\\frac{\\frac{2}{3}}{4}")
   }
@@ -102,7 +103,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_exponent_returnsLatexWithExponent() {
     val exp = parseNumericExpressionWithAllErrors("2^3")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("2 ^ {3}")
   }
@@ -111,7 +112,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_inlineSquareRoot_returnsLatexWithSquareRoot() {
     val exp = parseNumericExpressionWithAllErrors("√2")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("\\sqrt{2}")
   }
@@ -120,7 +121,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_inlineSquareRoot_operationArg_returnsLatexWithSquareRoot() {
     val exp = parseNumericExpressionWithAllErrors("√(1+2)")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("\\sqrt{(1 + 2)}")
   }
@@ -129,7 +130,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_squareRoot_returnsLatexWithSquareRoot() {
     val exp = parseNumericExpressionWithAllErrors("sqrt(2)")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("\\sqrt{2}")
   }
@@ -138,7 +139,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_squareRoot_operationArg_returnsLatexWithSquareRoot() {
     val exp = parseNumericExpressionWithAllErrors("sqrt(1+2)")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("\\sqrt{1 + 2}")
   }
@@ -147,7 +148,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_parentheses_returnsLatexWithGroup() {
     val exp = parseNumericExpressionWithAllErrors("2/(3+4)")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("2 \\div (3 + 4)")
   }
@@ -156,7 +157,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_numericExp_exponentToGroup_returnsCorrectlyWrappedLatex() {
     val exp = parseNumericExpressionWithAllErrors("2^(7-3)")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("2 ^ {(7 - 3)}")
   }
@@ -165,7 +166,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_algebraicExp_variable_returnsVariableLatex() {
     val exp = parseAlgebraicExpressionWithAllErrors("x")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("x")
   }
@@ -174,7 +175,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_algebraicExp_twoX_returnsLatexWithImplicitMultiplication() {
     val exp = parseAlgebraicExpressionWithAllErrors("2x")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("2x")
   }
@@ -183,7 +184,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_algebraicEq_xEqualsOne_returnsLatexWithEquals() {
     val exp = parseAlgebraicEquationWithAllErrors("x=1")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("x = 1")
   }
@@ -192,7 +193,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_algebraicEq_complexExpression_returnsCorrectLatex() {
     val exp = parseAlgebraicEquationWithAllErrors("(x+1)(x-2)=(x^3+2x^2-5x-6)/(x+3)")
 
-    val latex = exp.toRawLatex(divAsFraction = false)
+    val latex = exp.convertToLatex(divAsFraction = false)
 
     assertThat(latex).isEqualTo("(x + 1)(x - 2) = (x ^ {3} + 2x ^ {2} - 5x - 6) \\div (x + 3)")
   }
@@ -201,7 +202,7 @@ class ExpressionToLatexConverterTest {
   fun testConvert_algebraicEq_complexExpression_divAsFraction_returnsCorrectLatex() {
     val exp = parseAlgebraicEquationWithAllErrors("(x+1)(x-2)=(x^3+2x^2-5x-6)/(x+3)")
 
-    val latex = exp.toRawLatex(divAsFraction = true)
+    val latex = exp.convertToLatex(divAsFraction = true)
 
     assertThat(latex).isEqualTo("(x + 1)(x - 2) = \\frac{(x ^ {3} + 2x ^ {2} - 5x - 6)}{(x + 3)}")
   }
