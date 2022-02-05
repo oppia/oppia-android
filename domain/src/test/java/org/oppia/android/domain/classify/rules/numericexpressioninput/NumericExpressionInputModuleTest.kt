@@ -31,8 +31,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericExpressionInputModuleTest {
-  @Inject
-  @NumericExpressionInputRules
+  @field:[Inject NumericExpressionInputRules]
   lateinit var numericExpressionInputClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
 
   @Before
