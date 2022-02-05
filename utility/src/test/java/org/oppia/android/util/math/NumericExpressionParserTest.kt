@@ -160,6 +160,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-1)
   }
 
   @Test
@@ -526,6 +527,12 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(0)
+      hasNumeratorThat().isEqualTo(3)
+      hasDenominatorThat().isEqualTo(100000)
+    }
   }
 
   @Test
@@ -560,6 +567,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(300000)
   }
 
   @Test
