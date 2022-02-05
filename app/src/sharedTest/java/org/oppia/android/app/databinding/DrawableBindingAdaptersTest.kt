@@ -1,23 +1,19 @@
-package org.oppia.android.app.mydownloads
+package org.oppia.android.app.databinding
 
 import android.app.Application
-import android.widget.TextView
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeLeft
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.intent.Intents
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.instanceOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,12 +26,15 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundColor
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setTopBackgroundDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -60,7 +59,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -76,123 +75,74 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
-/** Tests for [MyDownloadsFragment]. */
+/** Tests for [DrawableBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = MyDownloadsFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class MyDownloadsFragmentTest {
+@Config(
+  application = DrawableBindingAdaptersTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class DrawableBindingAdaptersTest {
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  var activityRule: ActivityScenarioRule<DrawableBindingAdaptersTestActivity> =
+    ActivityScenarioRule(
+      Intent(
+        ApplicationProvider.getApplicationContext(),
+        DrawableBindingAdaptersTestActivity::class.java
+      )
+    )
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    Intents.init()
   }
 
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+
+  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
+
   @Test
-  fun testMyDownloadsFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.my_downloads_toolbar))
-        )
-      ).check(
-        matches(
-          withText(R.string.my_downloads_activity_title)
-        )
-      )
+  fun testSetBackgroundColor_hasCorrectBackgroundColor() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setBackgroundColor(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as ColorDrawable).color).isEqualTo(colorRgb)
     }
   }
 
   @Test
-  fun testMyDownloadsFragment_showsMyDownloadsFragmentWithMultipleTabs() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_container)).perform(click())
-        .check(matches(isDisplayed()))
+  fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
   @Test
-  fun testMyDownloadsFragment_swipePage_hasSwipedPage() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_viewpager)).perform(swipeLeft())
-      onView(withId(R.id.my_downloads_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              1
-            ).name
-          )
-        )
-      )
+  fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setTopBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
-  @Test
-  fun testMyDownloadsFragment_defaultTabIsDownloads_isSuccessful() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              0
-            ).name
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testMyDownloadsFragment_clickOnDownloadsTab_showsDownloadsTabSelected() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(
-        allOf(
-          withText(MyDownloadsTab.getTabForPosition(0).name),
-          isDescendantOfA(withId(R.id.my_downloads_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.my_downloads_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              0
-            ).name
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testMyDownloadsFragment_clickOnUpdatesTab_showsUpdatesTabSelected() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(
-        allOf(
-          withText(R.string.tab_updates),
-          isDescendantOfA(withId(R.id.my_downloads_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.my_downloads_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              1
-            ).name
-          )
-        )
-      )
-    }
+  private fun getView(it: DrawableBindingAdaptersTestActivity): View {
+    return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -210,7 +160,7 @@ class MyDownloadsFragmentTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
@@ -228,18 +178,18 @@ class MyDownloadsFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(myDownloadsFragmentTest: MyDownloadsFragmentTest)
+    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMyDownloadsFragmentTest_TestApplicationComponent.builder()
+      DaggerDrawableBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(myDownloadsFragmentTest: MyDownloadsFragmentTest) {
-      component.inject(myDownloadsFragmentTest)
+    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest) {
+      component.inject(drawableBindingAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

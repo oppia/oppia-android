@@ -488,19 +488,19 @@ class AlgebraicExpressionParserTest {
     // Similar to the previous test, but this ensures negation ordering (relative to variables &
     // implicit multiplication).
     assertThat(expression).hasStructureThatMatches {
-      negation {
-        operand {
-          multiplication(isImplicit = true) {
-            leftOperand {
+      multiplication(isImplicit = true) {
+        leftOperand {
+          negation {
+            operand {
               constant {
                 withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
-            rightOperand {
-              variable {
-                withNameThat().isEqualTo("x")
-              }
-            }
+          }
+        }
+        rightOperand {
+          variable {
+            withNameThat().isEqualTo("x")
           }
         }
       }
@@ -687,41 +687,41 @@ class AlgebraicExpressionParserTest {
     // This combines all of the distinct pieces tested earlier to demonstrate full polynomial
     // syntax.
     assertThat(expression).hasStructureThatMatches {
-      // -8x^3-7.4x^2+x-12√2 -> (((-(8*(x^3))) - (7.4*(x^2))) + x) - (12/√2)
+      // -8x^3-7.4x^2+x-12/√2 -> ((((-8) * (x^3)) - (7.4 * (x^2))) + x) - (12/√2)
       subtraction {
         leftOperand {
-          // ((-(8*(x^3))) - (7.4*(x^2))) + x
+          // (((-8) * (x^3)) - (7.4 * (x^2))) + x
           addition {
             leftOperand {
-              // (-(8*(x^3))) - (7.4*(x^2))
+              // ((-8) * (x^3)) - (7.4 * (x^2))
               subtraction {
                 leftOperand {
-                  // -(8*(x^3))
-                  negation {
-                    operand {
-                      // 8*(x^3)
-                      multiplication(isImplicit = true) {
-                        leftOperand {
+                  // (-8) * (x^3)
+                  multiplication(isImplicit = true) {
+                    leftOperand {
+                      // -8
+                      negation {
+                        operand {
                           // 8
                           constant {
                             withValueThat().isIntegerThat().isEqualTo(8)
                           }
                         }
+                      }
+                    }
+                    rightOperand {
+                      // x^3
+                      exponentiation {
+                        leftOperand {
+                          // x
+                          variable {
+                            withNameThat().isEqualTo("x")
+                          }
+                        }
                         rightOperand {
-                          // x^3
-                          exponentiation {
-                            leftOperand {
-                              // x
-                              variable {
-                                withNameThat().isEqualTo("x")
-                              }
-                            }
-                            rightOperand {
-                              // 3
-                              constant {
-                                withValueThat().isIntegerThat().isEqualTo(3)
-                              }
-                            }
+                          // 3
+                          constant {
+                            withValueThat().isIntegerThat().isEqualTo(3)
                           }
                         }
                       }
@@ -729,7 +729,7 @@ class AlgebraicExpressionParserTest {
                   }
                 }
                 rightOperand {
-                  // 7.4*(x^2)
+                  // 7.4 * (x^2)
                   multiplication(isImplicit = true) {
                     leftOperand {
                       // 7.4

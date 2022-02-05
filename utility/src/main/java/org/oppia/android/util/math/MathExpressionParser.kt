@@ -453,9 +453,9 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
   }
 
   private fun parseGenericNegatedTerm(): MathParsingResult<MathExpression> {
-    // generic_negated_term = minus_operator , generic_mult_div_expression ;
+    // generic_negated_term = minus_operator , generic_exp_expression ;
     val minusResult = parseContext.consumeTokenOfType<MinusSymbol>()
-    val expResult = minusResult.flatMap { parseGenericMultDivExpression() }
+    val expResult = minusResult.flatMap { parseGenericExpExpression() }
     return minusResult.combineWith(expResult) { minus, op ->
       MathExpression.newBuilder().apply {
         parseStartIndex = minus.startIndex
@@ -469,9 +469,9 @@ class MathExpressionParser private constructor(private val parseContext: ParseCo
   }
 
   private fun parseGenericPositiveTerm(): MathParsingResult<MathExpression> {
-    // generic_positive_term = plus_operator , generic_mult_div_expression ;
+    // generic_positive_term = plus_operator , generic_exp_expression ;
     val plusResult = parseContext.consumeTokenOfType<PlusSymbol>()
-    val expResult = plusResult.flatMap { parseGenericMultDivExpression() }
+    val expResult = plusResult.flatMap { parseGenericExpExpression() }
     return plusResult.combineWith(expResult) { plus, op ->
       MathExpression.newBuilder().apply {
         parseStartIndex = plus.startIndex
