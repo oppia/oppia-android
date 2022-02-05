@@ -29,6 +29,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.rules.numericexpressioninput.DaggerNumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest_TestApplicationComponent as DaggerTestApplicationComponent
 import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider as RuleClassifierProvider
 
@@ -364,7 +365,7 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
     return classifier.matches(
       answerExpression,
       inputs = mapOf("x" to inputExpression),
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
   }
 

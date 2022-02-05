@@ -29,6 +29,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.classify.ClassificationContext
 
 /**
  * Tests for [NumericExpressionInputIsEquivalentToRuleClassifierProvider].
@@ -349,7 +350,7 @@ class NumericExpressionInputIsEquivalentToRuleClassifierProviderTest {
     return classifier.matches(
       answerExpression,
       inputs = mapOf("x" to inputExpression),
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
   }
 
