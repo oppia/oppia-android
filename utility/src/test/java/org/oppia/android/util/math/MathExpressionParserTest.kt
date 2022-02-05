@@ -45,11 +45,16 @@ import org.robolectric.annotation.LooperMode
 @SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathExpressionParserTest {
-  @Parameter lateinit var lhsOp: String
-  @Parameter lateinit var rhsOp: String
-  @Parameter lateinit var binOp: String
-  @Parameter lateinit var subExp: String
-  @Parameter lateinit var func: String
+  @Parameter
+  lateinit var lhsOp: String
+  @Parameter
+  lateinit var rhsOp: String
+  @Parameter
+  lateinit var binOp: String
+  @Parameter
+  lateinit var subExp: String
+  @Parameter
+  lateinit var func: String
 
   @Test
   fun testParseNumExp_basicExpression_doesNotFail() {
@@ -546,22 +551,25 @@ class MathExpressionParserTest {
     Iteration("/*", "lhsOp=/", "rhsOp=*"), Iteration("÷*", "lhsOp=÷", "rhsOp=*"),
     Iteration("^*", "lhsOp=^", "rhsOp=*"), Iteration("+*", "lhsOp=+", "rhsOp=*"),
     Iteration("-*", "lhsOp=-", "rhsOp=*"), Iteration("−*", "lhsOp=−", "rhsOp=*"),
-    Iteration("*×", "lhsOp=*", "rhsOp=×"), Iteration("××", "lhsOp=×", "rhsOp=×"),
-    Iteration("/×", "lhsOp=/", "rhsOp=×"), Iteration("÷×", "lhsOp=÷", "rhsOp=×"),
-    Iteration("^×", "lhsOp=^", "rhsOp=×"), Iteration("+×", "lhsOp=+", "rhsOp=×"),
-    Iteration("-×", "lhsOp=-", "rhsOp=×"), Iteration("−×", "lhsOp=−", "rhsOp=×"),
+    Iteration("–*", "lhsOp=–", "rhsOp=*"), Iteration("*×", "lhsOp=*", "rhsOp=×"),
+    Iteration("××", "lhsOp=×", "rhsOp=×"), Iteration("/×", "lhsOp=/", "rhsOp=×"),
+    Iteration("÷×", "lhsOp=÷", "rhsOp=×"), Iteration("^×", "lhsOp=^", "rhsOp=×"),
+    Iteration("+×", "lhsOp=+", "rhsOp=×"), Iteration("-×", "lhsOp=-", "rhsOp=×"),
+    Iteration("−×", "lhsOp=−", "rhsOp=×"), Iteration("–×", "lhsOp=–", "rhsOp=×"),
     Iteration("*/", "lhsOp=*", "rhsOp=/"), Iteration("×/", "lhsOp=×", "rhsOp=/"),
     Iteration("//", "lhsOp=/", "rhsOp=/"), Iteration("÷/", "lhsOp=÷", "rhsOp=/"),
     Iteration("^/", "lhsOp=^", "rhsOp=/"), Iteration("+/", "lhsOp=+", "rhsOp=/"),
     Iteration("-/", "lhsOp=-", "rhsOp=/"), Iteration("−/", "lhsOp=−", "rhsOp=/"),
-    Iteration("*÷", "lhsOp=*", "rhsOp=÷"), Iteration("×÷", "lhsOp=×", "rhsOp=÷"),
-    Iteration("/÷", "lhsOp=/", "rhsOp=÷"), Iteration("÷÷", "lhsOp=÷", "rhsOp=÷"),
-    Iteration("^÷", "lhsOp=^", "rhsOp=÷"), Iteration("+÷", "lhsOp=+", "rhsOp=÷"),
-    Iteration("-÷", "lhsOp=-", "rhsOp=÷"), Iteration("−÷", "lhsOp=−", "rhsOp=÷"),
+    Iteration("–/", "lhsOp=–", "rhsOp=/"), Iteration("*÷", "lhsOp=*", "rhsOp=÷"),
+    Iteration("×÷", "lhsOp=×", "rhsOp=÷"), Iteration("/÷", "lhsOp=/", "rhsOp=÷"),
+    Iteration("÷÷", "lhsOp=÷", "rhsOp=÷"), Iteration("^÷", "lhsOp=^", "rhsOp=÷"),
+    Iteration("+÷", "lhsOp=+", "rhsOp=÷"), Iteration("-÷", "lhsOp=-", "rhsOp=÷"),
+    Iteration("−÷", "lhsOp=−", "rhsOp=÷"), Iteration("–÷", "lhsOp=–", "rhsOp=÷"),
     Iteration("*^", "lhsOp=*", "rhsOp=^"), Iteration("×^", "lhsOp=×", "rhsOp=^"),
     Iteration("/^", "lhsOp=/", "rhsOp=^"), Iteration("÷^", "lhsOp=÷", "rhsOp=^"),
     Iteration("^^", "lhsOp=^", "rhsOp=^"), Iteration("+^", "lhsOp=+", "rhsOp=^"),
-    Iteration("-^", "lhsOp=-", "rhsOp=^"), Iteration("−^", "lhsOp=−", "rhsOp=^")
+    Iteration("-^", "lhsOp=-", "rhsOp=^"), Iteration("−^", "lhsOp=−", "rhsOp=^"),
+    Iteration("–^", "lhsOp=–", "rhsOp=^")
   )
   fun testParseNumExp_adjacentBinaryOps_returnsSubsequentBinaryOperatorsErrorWithDetails() {
     val expression = "1 $lhsOp$rhsOp 2"
@@ -696,6 +704,7 @@ class MathExpressionParserTest {
     Iteration("something_to_power_of_nothing", "binOp=^"),
     Iteration("something_adds_nothing", "binOp=+"),
     Iteration("something_subtracts_nothing_hyphen", "binOp=-"),
+    Iteration("something_subtracts_nothing_en_dash", "binOp=–"),
     Iteration("something_subtracts_nothing", "binOp=−")
   )
   fun testParseNumExp_binaryOps_noRightValue_returnsNoVarOrNumAfterBinOperatorErrorWithDetails() {
@@ -720,6 +729,7 @@ class MathExpressionParserTest {
     Iteration("something_to_power_of_nothing", "binOp=^"),
     Iteration("something_adds_nothing", "binOp=+"),
     Iteration("something_subtracts_nothing_hyphen", "binOp=-"),
+    Iteration("something_subtracts_nothing_en_dash", "binOp=–"),
     Iteration("something_subtracts_nothing", "binOp=−")
   )
   fun testParseAlgExp_binaryOps_noRightValue_returnsNoVarOrNumAfterBinOperatorErrorWithDetails() {
@@ -1086,7 +1096,8 @@ class MathExpressionParserTest {
       "^" to EXPONENTIATE,
       "+" to ADD,
       "-" to SUBTRACT,
-      "−" to SUBTRACT
+      "−" to SUBTRACT,
+      "–" to SUBTRACT
     )
     private val LOWERCASE_LATIN_ALPHABET = listOf(
       "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",

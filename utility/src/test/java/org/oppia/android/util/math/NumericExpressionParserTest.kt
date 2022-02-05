@@ -130,6 +130,26 @@ class NumericExpressionParserTest {
   }
 
   @Test
+  fun testParse_subtraction_withEnDashSymbol_returnsExpressionWithBinaryOperation() {
+    val expression = parseNumericExpressionWithAllErrors("1 – 2")
+
+    assertThat(expression).hasStructureThatMatches {
+      subtraction {
+        leftOperand {
+          constant {
+            withValueThat().isIntegerThat().isEqualTo(1)
+          }
+        }
+        rightOperand {
+          constant {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+      }
+    }
+  }
+
+  @Test
   fun testParse_multiplication_returnsExpressionWithBinaryOperation() {
     val expression = parseNumericExpressionWithAllErrors("1 * 2")
 
