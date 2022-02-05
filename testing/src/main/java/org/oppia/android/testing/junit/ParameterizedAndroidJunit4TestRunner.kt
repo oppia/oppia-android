@@ -11,7 +11,7 @@ import org.junit.runners.model.Statement
  * This should be selected as the base runner when the test author wishes to use Espresso.
  */
 @Suppress("unused") // This class is constructed using reflection.
-class ParameterizedAndroidJUnit4ClassRunner internal constructor(
+class ParameterizedAndroidJunit4TestRunner internal constructor(
   testClass: Class<*>,
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,

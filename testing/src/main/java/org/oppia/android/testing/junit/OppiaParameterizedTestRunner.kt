@@ -210,6 +210,12 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     }.runnerType.java
   }
 
+  /**
+   * Defines which [OppiaParameterizedBaseRunner] should be used for running individual
+   * parameterized and non-parameterized test cases.
+   *
+   * See base classes for options.
+   */
   @Target(AnnotationTarget.CLASS)
   annotation class SelectRunnerPlatform(val runnerType: KClass<out OppiaParameterizedBaseRunner>)
 

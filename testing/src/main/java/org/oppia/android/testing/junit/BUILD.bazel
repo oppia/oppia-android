@@ -51,7 +51,7 @@ kt_android_library(
     name = "parameterized_android_junit4_class_runner",
     testonly = True,
     srcs = [
-        "ParameterizedAndroidJUnit4ClassRunner.kt",
+        "ParameterizedAndroidJunit4TestRunner.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
