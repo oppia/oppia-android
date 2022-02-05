@@ -40,12 +40,12 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
     input: String,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
-    val answerExpression = parseComparableOperationList(answer) ?: return false
-    val inputExpression = parseComparableOperationList(input) ?: return false
+    val answerExpression = parseComparableOperation(answer) ?: return false
+    val inputExpression = parseComparableOperation(input) ?: return false
     return answerExpression.isApproximatelyEqualTo(inputExpression)
   }
 
-  private fun parseComparableOperationList(rawExpression: String): ComparableOperation? {
+  private fun parseComparableOperation(rawExpression: String): ComparableOperation? {
     return when (val expResult = MathExpressionParser.parseNumericExpression(rawExpression)) {
       is MathParsingResult.Success -> expResult.result.toComparableOperation()
       is MathParsingResult.Failure -> {
