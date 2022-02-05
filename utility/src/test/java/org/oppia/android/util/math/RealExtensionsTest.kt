@@ -418,7 +418,7 @@ class RealExtensionsTest {
 
   @Test
   fun testIsApproximatelyZero_irrationalCloseToZero_returnsTrue() {
-    val real = createIrrationalReal(0.000000001)
+    val real = createIrrationalReal(0.00000000000000001)
 
     val result = real.isApproximatelyZero()
 

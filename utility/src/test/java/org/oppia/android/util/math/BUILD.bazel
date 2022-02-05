@@ -295,7 +295,7 @@ oppia_android_test(
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
-        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_junit_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
