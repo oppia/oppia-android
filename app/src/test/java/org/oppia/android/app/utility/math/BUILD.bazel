@@ -1,0 +1,30 @@
+"""
+Tests for UI-specific math utilities.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "MathExpressionAccessibilityUtilTest",
+    srcs = ["MathExpressionAccessibilityUtilTest.kt"],
+    custom_package = "org.oppia.android.app.utility.math",
+    test_class = "org.oppia.android.app.utility.math.MathExpressionAccessibilityUtilTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
+        "//model/src/main/proto:languages_java_proto_lite",
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/math:math_equation_subject",
+        "//testing/src/main/java/org/oppia/android/testing/math:math_expression_subject",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+    ],
+)
+
+dagger_rules()

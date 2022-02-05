@@ -1,7 +1,6 @@
 package org.oppia.android.app.utility.math
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.StringSubject
@@ -9,20 +8,11 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Module
-import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.activity.ActivityComponentFactory
-import org.oppia.android.app.application.ApplicationComponent
-import org.oppia.android.app.application.ApplicationInjector
-import org.oppia.android.app.application.ApplicationInjectorProvider
-import org.oppia.android.app.application.ApplicationModule
-import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.devoptions.DeveloperOptionsModule
-import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.OppiaLanguage
@@ -34,70 +24,25 @@ import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
-import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.domain.classify.InteractionsModule
-import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
-import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
-import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
-import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
-import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
-import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
-import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
-import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
-import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
-import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
-import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
-import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
-import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
-import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
-import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.math.MathEquationSubject
 import org.oppia.android.testing.math.MathEquationSubject.Companion.assertThat
 import org.oppia.android.testing.math.MathExpressionSubject
 import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.accessibility.AccessibilityTestModule
-import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.gcsresource.GcsResourceModule
-import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EnableConsoleLog
-import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.math.MathExpressionParser
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
-import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [MathExpressionAccessibilityUtil]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MathExpressionAccessibilityUtilTest.TestApplication::class)
 class MathExpressionAccessibilityUtilTest {
-  @Inject lateinit var util: MathExpressionAccessibilityUtil
+  @Inject
+  lateinit var util: MathExpressionAccessibilityUtil
+
+  // TODO: finish tests
 
   @Before
   fun setUp() {
@@ -105,113 +50,274 @@ class MathExpressionAccessibilityUtilTest {
   }
 
   @Test
-  fun testHumanReadableString() {
-    // TODO: split up & move to separate test suites. Finish test cases (if anymore are needed).
+  fun test1() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(ARABIC).doesNotConvertToString()
+  }
 
-    val exp1 = parseNumericExpressionSuccessfullyWithAllErrors("1")
-    assertThat(exp1).forHumanReadable(ARABIC).doesNotConvertToString()
+  @Test
+  fun test2() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(HINDI).doesNotConvertToString()
+  }
 
-    assertThat(exp1).forHumanReadable(HINDI).doesNotConvertToString()
+  @Test
+  fun test3() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(HINGLISH).doesNotConvertToString()
+  }
 
-    assertThat(exp1).forHumanReadable(HINGLISH).doesNotConvertToString()
+  @Test
+  fun test4() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(PORTUGUESE).doesNotConvertToString()
+  }
 
-    assertThat(exp1).forHumanReadable(PORTUGUESE).doesNotConvertToString()
+  @Test
+  fun test5() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(BRAZILIAN_PORTUGUESE).doesNotConvertToString()
+  }
 
-    assertThat(exp1).forHumanReadable(BRAZILIAN_PORTUGUESE).doesNotConvertToString()
+  @Test
+  fun test6() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(LANGUAGE_UNSPECIFIED).doesNotConvertToString()
+  }
 
-    assertThat(exp1).forHumanReadable(LANGUAGE_UNSPECIFIED).doesNotConvertToString()
+  @Test
+  fun test7() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(UNRECOGNIZED).doesNotConvertToString()
+  }
 
-    assertThat(exp1).forHumanReadable(UNRECOGNIZED).doesNotConvertToString()
+  @Test
+  fun test8() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp).forHumanReadable(ARABIC).doesNotConvertToString()
+  }
 
-    val exp2 = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
-    assertThat(exp2).forHumanReadable(ARABIC).doesNotConvertToString()
+  @Test
+  fun test9() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp).forHumanReadable(HINDI).doesNotConvertToString()
+  }
 
-    assertThat(exp2).forHumanReadable(HINDI).doesNotConvertToString()
+  @Test
+  fun test10() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp).forHumanReadable(HINGLISH).doesNotConvertToString()
+  }
 
-    assertThat(exp2).forHumanReadable(HINGLISH).doesNotConvertToString()
+  @Test
+  fun test11() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp).forHumanReadable(PORTUGUESE).doesNotConvertToString()
+  }
 
-    assertThat(exp2).forHumanReadable(PORTUGUESE).doesNotConvertToString()
+  @Test
+  fun test12() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp).forHumanReadable(BRAZILIAN_PORTUGUESE).doesNotConvertToString()
+  }
 
-    assertThat(exp2).forHumanReadable(BRAZILIAN_PORTUGUESE).doesNotConvertToString()
+  @Test
+  fun test13() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp).forHumanReadable(LANGUAGE_UNSPECIFIED).doesNotConvertToString()
+  }
 
-    assertThat(exp2).forHumanReadable(LANGUAGE_UNSPECIFIED).doesNotConvertToString()
+  @Test
+  fun test14() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp).forHumanReadable(UNRECOGNIZED).doesNotConvertToString()
+  }
 
-    assertThat(exp2).forHumanReadable(UNRECOGNIZED).doesNotConvertToString()
+  @Test
+  fun test15() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1")
+    assertThat(eq).forHumanReadable(ARABIC).doesNotConvertToString()
+  }
 
-    val eq1 = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1")
-    assertThat(eq1).forHumanReadable(ARABIC).doesNotConvertToString()
+  @Test
+  fun test16() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1")
+    assertThat(eq).forHumanReadable(HINDI).doesNotConvertToString()
+  }
 
-    assertThat(eq1).forHumanReadable(HINDI).doesNotConvertToString()
+  @Test
+  fun test17() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1")
+    assertThat(eq).forHumanReadable(HINGLISH).doesNotConvertToString()
+  }
 
-    assertThat(eq1).forHumanReadable(HINGLISH).doesNotConvertToString()
+  @Test
+  fun test18() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1")
+    assertThat(eq).forHumanReadable(PORTUGUESE).doesNotConvertToString()
+  }
 
-    assertThat(eq1).forHumanReadable(PORTUGUESE).doesNotConvertToString()
+  @Test
+  fun test19() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1")
+    assertThat(eq).forHumanReadable(BRAZILIAN_PORTUGUESE).doesNotConvertToString()
+  }
 
-    assertThat(eq1).forHumanReadable(BRAZILIAN_PORTUGUESE).doesNotConvertToString()
+  @Test
+  fun test20() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1")
+    assertThat(eq).forHumanReadable(LANGUAGE_UNSPECIFIED).doesNotConvertToString()
+  }
 
-    assertThat(eq1).forHumanReadable(LANGUAGE_UNSPECIFIED).doesNotConvertToString()
+  @Test
+  fun test21() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1")
+    assertThat(eq).forHumanReadable(UNRECOGNIZED).doesNotConvertToString()
+  }
 
-    assertThat(eq1).forHumanReadable(UNRECOGNIZED).doesNotConvertToString()
-
+  @Test
+  fun test22() {
+    // TODO: do something with this test.
     // specific cases (from rules & other cases):
-    val exp3 = parseNumericExpressionSuccessfullyWithAllErrors("1")
-    assertThat(exp3).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
-    assertThat(exp3).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  }
 
-    val exp49 = parseNumericExpressionSuccessfullyWithAllErrors("-1")
-    assertThat(exp49).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("negative 1")
+  @Test
+  fun test23() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("-1")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("negative 1")
+  }
 
-    val exp50 = parseNumericExpressionSuccessfullyWithAllErrors("+1")
-    assertThat(exp50).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("positive 1")
+  @Test
+  fun test24() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithoutOptionalErrors("+1")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("positive 1")
+  }
 
-    val exp4 = parseNumericExpressionSuccessfullyWithoutOptionalErrors("((1))")
-    assertThat(exp4).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  @Test
+  fun test25() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithoutOptionalErrors("((1))")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  }
 
-    val exp5 = parseNumericExpressionSuccessfullyWithAllErrors("1+2")
-    assertThat(exp5).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 plus 2")
+  @Test
+  fun test26() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+2")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 plus 2")
+  }
 
-    val exp6 = parseNumericExpressionSuccessfullyWithAllErrors("1-2")
-    assertThat(exp6).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 minus 2")
+  @Test
+  fun test27() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1-2")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 minus 2")
+  }
 
-    val exp7 = parseNumericExpressionSuccessfullyWithAllErrors("1*2")
-    assertThat(exp7).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 times 2")
+  @Test
+  fun test28() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1*2")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 times 2")
+  }
 
-    val exp8 = parseNumericExpressionSuccessfullyWithAllErrors("1/2")
-    assertThat(exp8).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 divided by 2")
+  @Test
+  fun test29() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1/2")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 divided by 2")
+  }
 
-    val exp9 = parseNumericExpressionSuccessfullyWithAllErrors("1+(1-2)")
-    assertThat(exp9)
+  @Test
+  fun test30() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("1+(1-2)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("1 plus open parenthesis 1 minus 2 close parenthesis")
+  }
 
-    val exp10 = parseNumericExpressionSuccessfullyWithAllErrors("2^3")
-    assertThat(exp10)
+  @Test
+  fun test31() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("2^3")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("2 raised to the power of 3")
+  }
 
-    val exp11 = parseNumericExpressionSuccessfullyWithAllErrors("2^(1+2)")
-    assertThat(exp11)
+  @Test
+  fun test32() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("2^(1+2)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("2 raised to the power of open parenthesis 1 plus 2 close parenthesis")
+  }
 
-    val exp12 = parseNumericExpressionSuccessfullyWithAllErrors("100000*2")
-    assertThat(exp12).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("100,000 times 2")
+  @Test
+  fun test33() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("100000*2")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("100,000 times 2")
+  }
 
-    val exp13 = parseNumericExpressionSuccessfullyWithAllErrors("sqrt(2)")
-    assertThat(exp13).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of 2")
+  @Test
+  fun test34() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("sqrt(2)")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of 2")
+  }
 
-    val exp14 = parseNumericExpressionSuccessfullyWithAllErrors("√2")
-    assertThat(exp14).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of 2")
+  @Test
+  fun test35() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("√2")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of 2")
+  }
 
-    val exp15 = parseNumericExpressionSuccessfullyWithAllErrors("sqrt(1+2)")
-    assertThat(exp15)
+  @Test
+  fun test36() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("sqrt(1+2)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("start square root 1 plus 2 end square root")
+  }
 
+  @Test
+  fun test37() {
+    // TODO: do something with this test.
     val singularOrdinalNames = mapOf(
       1 to "oneth",
       2 to "half",
@@ -238,296 +344,528 @@ class MathExpressionAccessibilityUtilTest {
     )
     for (denominatorToCheck in 1..10) {
       for (numeratorToCheck in 0..denominatorToCheck) {
-        val exp16 =
+        val exp =
           parseNumericExpressionSuccessfullyWithAllErrors("$numeratorToCheck/$denominatorToCheck")
 
         val ordinalName =
           if (numeratorToCheck == 1) {
             singularOrdinalNames.getValue(denominatorToCheck)
           } else pluralOrdinalNames.getValue(denominatorToCheck)
-        assertThat(exp16)
+        assertThat(exp)
           .forHumanReadable(ENGLISH)
           .convertsWithFractionsToStringThat()
           .isEqualTo("$numeratorToCheck $ordinalName")
       }
     }
+  }
 
-    val exp17 = parseNumericExpressionSuccessfullyWithAllErrors("-1/3")
-    assertThat(exp17)
+  @Test
+  fun test38() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("-1/3")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo("negative 1 third")
+  }
 
-    val exp18 = parseNumericExpressionSuccessfullyWithAllErrors("-2/3")
-    assertThat(exp18)
+  @Test
+  fun test39() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("-2/3")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo("negative 2 thirds")
+  }
 
-    val exp19 = parseNumericExpressionSuccessfullyWithAllErrors("10/11")
-    assertThat(exp19)
+  @Test
+  fun test40() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("10/11")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo("10 over 11")
+  }
 
-    val exp20 = parseNumericExpressionSuccessfullyWithAllErrors("121/7986")
-    assertThat(exp20)
+  @Test
+  fun test41() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("121/7986")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo("121 over 7,986")
+  }
 
-    val exp21 = parseNumericExpressionSuccessfullyWithAllErrors("8/7")
-    assertThat(exp21)
+  @Test
+  fun test42() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("8/7")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
-      .convertsWithFractionsToStringThat()
+      .convertsToStringThat()
       .isEqualTo("8 over 7")
+  }
 
-    val exp22 = parseNumericExpressionSuccessfullyWithAllErrors("-10/-30")
-    assertThat(exp22)
+  @Test
+  fun test43() {
+    // TODO: do something with this test.
+    val exp = parseNumericExpressionSuccessfullyWithAllErrors("-10/-30")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo("negative the fraction with numerator 10 and denominator negative 30")
+  }
 
-    val exp23 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1")
-    assertThat(exp23).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  @Test
+  fun test44() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  }
 
-    val exp24 = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("((1))")
-    assertThat(exp24).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  @Test
+  fun test45() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("((1))")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  }
 
-    val exp25 = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
-    assertThat(exp25).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("x")
+  @Test
+  fun test46() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("x")
+  }
 
-    val exp26 = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("((x))")
-    assertThat(exp26).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("x")
+  @Test
+  fun test47() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("((x))")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("x")
+  }
 
-    val exp51 = parseAlgebraicExpressionSuccessfullyWithAllErrors("-x")
-    assertThat(exp51).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("negative x")
+  @Test
+  fun test48() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("-x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("negative x")
+  }
 
-    val exp52 = parseAlgebraicExpressionSuccessfullyWithAllErrors("+x")
-    assertThat(exp52).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("positive x")
+  @Test
+  fun test49() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("+x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("positive x")
+  }
 
-    val exp27 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x")
-    assertThat(exp27).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 plus x")
+  @Test
+  fun test50() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 plus x")
+  }
 
-    val exp28 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1-x")
-    assertThat(exp28).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 minus x")
+  @Test
+  fun test51() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1-x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 minus x")
+  }
 
-    val exp29 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1*x")
-    assertThat(exp29).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 times x")
+  @Test
+  fun test52() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1*x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 times x")
+  }
 
-    val exp30 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1/x")
-    assertThat(exp30).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 divided by x")
+  @Test
+  fun test53() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1/x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1 divided by x")
+  }
 
-    val exp31 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1/x")
-    assertThat(exp31)
+  @Test
+  fun test54() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1/x")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo("the fraction with numerator 1 and denominator x")
+  }
 
-    val exp32 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+(1-x)")
-    assertThat(exp32)
+  @Test
+  fun test55() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1+(1-x)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("1 plus open parenthesis 1 minus x close parenthesis")
+  }
 
-    val exp33 = parseAlgebraicExpressionSuccessfullyWithAllErrors("2x")
-    assertThat(exp33).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("2 x")
+  @Test
+  fun test56() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("2x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("2 x")
+  }
 
-    val exp34 = parseAlgebraicExpressionSuccessfullyWithAllErrors("xy")
-    assertThat(exp34).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("x times y")
+  @Test
+  fun test57() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("xy")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("x times y")
+  }
 
-    val exp35 = parseAlgebraicExpressionSuccessfullyWithAllErrors("z")
-    assertThat(exp35).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("zed")
+  @Test
+  fun test58() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("z")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("zed")
+  }
 
-    val exp36 = parseAlgebraicExpressionSuccessfullyWithAllErrors("2xz")
-    assertThat(exp36).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("2 x times zed")
+  @Test
+  fun test59() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("2xz")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("2 x times zed")
+  }
 
-    val exp37 = parseAlgebraicExpressionSuccessfullyWithAllErrors("x^2")
-    assertThat(exp37)
+  @Test
+  fun test60() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x^2")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("x raised to the power of 2")
+  }
 
-    val exp38 = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("x^(1+x)")
-    assertThat(exp38)
+  @Test
+  fun test61() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("x^(1+x)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("x raised to the power of open parenthesis 1 plus x close parenthesis")
+  }
 
-    val exp39 = parseAlgebraicExpressionSuccessfullyWithAllErrors("100000*2")
-    assertThat(exp39).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("100,000 times 2")
+  @Test
+  fun test62() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("100000*2")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("100,000 times 2")
+  }
 
-    val exp40 = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(2)")
-    assertThat(exp40).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of 2")
+  @Test
+  fun test63() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(2)")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of 2")
+  }
 
-    val exp41 = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(x)")
-    assertThat(exp41).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of x")
+  @Test
+  fun test64() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(x)")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of x")
+  }
 
-    val exp42 = parseAlgebraicExpressionSuccessfullyWithAllErrors("√2")
-    assertThat(exp42).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of 2")
+  @Test
+  fun test65() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("√2")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of 2")
+  }
 
-    val exp43 = parseAlgebraicExpressionSuccessfullyWithAllErrors("√x")
-    assertThat(exp43).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of x")
+  @Test
+  fun test66() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("√x")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("square root of x")
+  }
 
-    val exp44 = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(1+2)")
-    assertThat(exp44)
+  @Test
+  fun test67() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(1+2)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("start square root 1 plus 2 end square root")
+  }
 
-    val exp45 = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(1+x)")
-    assertThat(exp45)
+  @Test
+  fun test68() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(1+x)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("start square root 1 plus x end square root")
+  }
 
-    val exp46 = parseAlgebraicExpressionSuccessfullyWithAllErrors("√(1+x)")
-    assertThat(exp46)
+  @Test
+  fun test69() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("√(1+x)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("start square root open parenthesis 1 plus x close parenthesis end square root")
+  }
 
+  @Test
+  fun test70() {
+    // TODO: do something with this test.
+    val singularOrdinalNames = mapOf(
+      1 to "oneth",
+      2 to "half",
+      3 to "third",
+      4 to "fourth",
+      5 to "fifth",
+      6 to "sixth",
+      7 to "seventh",
+      8 to "eighth",
+      9 to "ninth",
+      10 to "tenth",
+    )
+    val pluralOrdinalNames = mapOf(
+      1 to "oneths",
+      2 to "halves",
+      3 to "thirds",
+      4 to "fourths",
+      5 to "fifths",
+      6 to "sixths",
+      7 to "sevenths",
+      8 to "eighths",
+      9 to "ninths",
+      10 to "tenths",
+    )
     for (denominatorToCheck in 1..10) {
       for (numeratorToCheck in 0..denominatorToCheck) {
-        val exp16 =
+        val exp =
           parseAlgebraicExpressionSuccessfullyWithAllErrors("$numeratorToCheck/$denominatorToCheck")
 
         val ordinalName =
           if (numeratorToCheck == 1) {
             singularOrdinalNames.getValue(denominatorToCheck)
           } else pluralOrdinalNames.getValue(denominatorToCheck)
-        assertThat(exp16)
+        assertThat(exp)
           .forHumanReadable(ENGLISH)
           .convertsWithFractionsToStringThat()
           .isEqualTo("$numeratorToCheck $ordinalName")
       }
     }
+  }
 
-    val exp47 = parseAlgebraicExpressionSuccessfullyWithAllErrors("1")
-    assertThat(exp47).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  @Test
+  fun test71() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("1")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("1")
+  }
 
-    val exp48 = parseAlgebraicExpressionSuccessfullyWithAllErrors("x(5-y)")
-    assertThat(exp48)
+  @Test
+  fun test72() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("x(5-y)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("x times open parenthesis 5 minus y close parenthesis")
+  }
 
-    val eq2 = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1/y")
-    assertThat(eq2)
+  @Test
+  fun test73() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1/y")
+    assertThat(eq)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("x equals 1 divided by y")
+  }
 
-    val eq3 = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1/2")
-    assertThat(eq3)
+  @Test
+  fun test74() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1/2")
+    assertThat(eq)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("x equals 1 divided by 2")
+  }
 
-    val eq4 = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1/y")
-    assertThat(eq4)
+  @Test
+  fun test75() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1/y")
+    assertThat(eq)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo("x equals the fraction with numerator 1 and denominator y")
+  }
 
-    val eq5 = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1/2")
-    assertThat(eq5)
+  @Test
+  fun test76() {
+    // TODO: do something with this test.
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("x=1/2")
+    assertThat(eq)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo("x equals 1 half")
+  }
 
+  @Test
+  fun test77() {
+    // TODO: do something with this test.
     // Tests from examples in the PRD
-    val eq6 = parseAlgebraicEquationSuccessfullyWithAllErrors("3x^2+4y=62")
-    assertThat(eq6)
+    val eq = parseAlgebraicEquationSuccessfullyWithAllErrors("3x^2+4y=62")
+    assertThat(eq)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("3 x raised to the power of 2 plus 4 y equals 62")
+  }
 
-    val exp53 = parseAlgebraicExpressionSuccessfullyWithAllErrors("(x+6)/(x-4)")
-    assertThat(exp53)
+  @Test
+  fun test78() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("(x+6)/(x-4)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsWithFractionsToStringThat()
       .isEqualTo(
         "the fraction with numerator open parenthesis x plus 6 close parenthesis and denominator" +
           " open parenthesis x minus 4 close parenthesis"
       )
+  }
 
-    val exp54 = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("4*(x)^(2)+20x")
-    assertThat(exp54)
+  @Test
+  fun test79() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors("4*(x)^(2)+20x")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("4 times x raised to the power of 2 plus 20 x")
+  }
 
-    val exp55 = parseAlgebraicExpressionSuccessfullyWithAllErrors("3+x-5")
-    assertThat(exp55).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("3 plus x minus 5")
+  @Test
+  fun test80() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("3+x-5")
+    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo("3 plus x minus 5")
+  }
 
-    val exp56 =
+  @Test
+  fun test81() {
+    // TODO: do something with this test.
+    val exp =
       parseAlgebraicExpressionSuccessfullyWithAllErrors(
         "Z+A-Z", allowedVariables = listOf("A", "Z")
       )
-    assertThat(exp56).forHumanReadable(ENGLISH)
+    assertThat(exp).forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("Zed plus A minus Zed")
+  }
 
-    val exp57 =
+  @Test
+  fun test82() {
+    // TODO: do something with this test.
+    val exp =
       parseAlgebraicExpressionSuccessfullyWithAllErrors(
         "6C-5A-1", allowedVariables = listOf("A", "C")
       )
-    assertThat(exp57)
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("6 C minus 5 A minus 1")
+  }
 
-    val exp58 =
+  @Test
+  fun test83() {
+    // TODO: do something with this test.
+    val exp =
       parseAlgebraicExpressionSuccessfullyWithAllErrors(
         "5*Z-w", allowedVariables = listOf("Z", "w")
       )
-    assertThat(exp58)
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("5 times Zed minus w")
+  }
 
-    val exp59 =
+  @Test
+  fun test84() {
+    // TODO: do something with this test.
+    val exp =
       parseAlgebraicExpressionSuccessfullyWithAllErrors(
         "L*S-3S+L", allowedVariables = listOf("L", "S")
       )
-    assertThat(exp59)
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("L times S minus 3 S plus L")
+  }
 
-    val exp60 = parseAlgebraicExpressionSuccessfullyWithAllErrors("2*(2+6+3+4)")
-    assertThat(exp60)
+  @Test
+  fun test85() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("2*(2+6+3+4)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("2 times open parenthesis 2 plus 6 plus 3 plus 4 close parenthesis")
+  }
 
-    val exp61 = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(64)")
-    assertThat(exp61)
+  @Test
+  fun test86() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("sqrt(64)")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("square root of 64")
+  }
 
-    val exp62 =
+  @Test
+  fun test87() {
+    // TODO: do something with this test.
+    val exp =
       parseAlgebraicExpressionSuccessfullyWithAllErrors(
         "√(a+b)", allowedVariables = listOf("a", "b")
       )
-    assertThat(exp62)
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("start square root open parenthesis a plus b close parenthesis end square root")
+  }
 
-    val exp63 = parseAlgebraicExpressionSuccessfullyWithAllErrors("3*10^-5")
-    assertThat(exp63)
+  @Test
+  fun test88() {
+    // TODO: do something with this test.
+    val exp = parseAlgebraicExpressionSuccessfullyWithAllErrors("3*10^-5")
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo("3 times 10 raised to the power of negative 5")
+  }
 
-    val exp64 =
+  @Test
+  fun test89() {
+    // TODO: do something with this test.
+    val exp =
       parseAlgebraicExpressionSuccessfullyWithoutOptionalErrors(
         "((x+2y)+5*(a-2b)+z)", allowedVariables = listOf("x", "y", "a", "b", "z")
       )
-    assertThat(exp64)
+    assertThat(exp)
       .forHumanReadable(ENGLISH)
       .convertsToStringThat()
       .isEqualTo(
@@ -583,48 +921,12 @@ class MathExpressionAccessibilityUtilTest {
   }
 
   // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestModule {
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-  }
-
-  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
-      ImageParsingModule::class, AccessibilityTestModule::class, PracticeTabModule::class,
-      GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
-      NetworkModule::class, PlatformParameterModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class, InteractionsModule::class, ExplorationStorageModule::class,
-      QuestionModule::class, NetworkConfigProdModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
-      HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverModule::class,
-      GlideImageLoaderModule::class, PrimeTopicAssetsControllerModule::class,
-      HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
-      LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -636,7 +938,7 @@ class MathExpressionAccessibilityUtilTest {
     fun inject(test: MathExpressionAccessibilityUtilTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
       DaggerMathExpressionAccessibilityUtilTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -646,15 +948,11 @@ class MathExpressionAccessibilityUtilTest {
     fun inject(test: MathExpressionAccessibilityUtilTest) {
       component.inject(test)
     }
-
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
-
-    override fun getApplicationInjector(): ApplicationInjector = component
   }
 
   private companion object {
+    // TODO: finalize this API.
+
     private fun parseNumericExpressionSuccessfullyWithAllErrors(
       expression: String
     ): MathExpression {
