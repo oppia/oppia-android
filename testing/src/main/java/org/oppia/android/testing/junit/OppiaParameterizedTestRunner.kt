@@ -11,6 +11,7 @@ import org.junit.runners.Suite
 import java.lang.annotation.Repeatable
 import java.lang.reflect.Field
 import java.lang.reflect.Method
+import kotlin.reflect.KClass
 
 /**
  * JUnit test runner that enables support for parameterization, that is, running a single test
@@ -22,9 +23,9 @@ import java.lang.reflect.Method
  * use regular explicit tests, instead (since parameterized tests can hurt test maintainability and
  * readability).
  *
- * This runner behaves like AndroidJUnit4 in that it should work both locally (i.e. via Robolectric)
- * and on a device (i.e. with Espresso), though the correct Bazel dependency needs to be added based
- * on the environment in which the test is running.
+ * This runner behaves like AndroidJUnit4 in that it should work in different environments based on
+ * which base runner is configured using [SelectRunnerPlatform] (which automatically pulls in the
+ * necessary Bazel dependencies). However, it will only support the platform(s) selected.
  *
  * To introduce parameterized tests, add this runner along with one or more [Parameter]-annotated
  * fields and one or more [RunParameterized]-annotated methods (where each method should have
@@ -32,6 +33,7 @@ import java.lang.reflect.Method
  *
  * ```kotlin
  * @RunWith(OppiaParameterizedTestRunner::class)
+ * @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
  * class ExampleParameterizedTest {
  *   @Parameter lateinit var parameter: String
  *
@@ -73,14 +75,19 @@ import java.lang.reflect.Method
  */
 class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(testClass, listOf()) {
   private val parameterizedMethods = computeParameterizedMethods()
+  private val selectedRunnerClass by lazy { fetchSelectedRunnerPlatformClass() }
   private val childrenRunners by lazy {
     // Collect all parameterized methods (for each iteration they support) plus one test runner for
     // all non-parameterized methods.
     parameterizedMethods.flatMap { (methodName, method) ->
       method.iterationNames.map { iterationName ->
-        ProxyParameterizedTestRunner(testClass, parameterizedMethods, methodName, iterationName)
+        ProxyParameterizedTestRunner(
+          selectedRunnerClass, testClass, parameterizedMethods, methodName, iterationName
+        )
       }
-    } + ProxyParameterizedTestRunner(testClass, parameterizedMethods, methodName = null)
+    } + ProxyParameterizedTestRunner(
+      selectedRunnerClass, testClass, parameterizedMethods, methodName = null
+    )
   }
 
   override fun getChildren(): MutableList<Runner> = childrenRunners.toMutableList()
@@ -196,6 +203,22 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     }
   }
 
+  private fun fetchSelectedRunnerPlatformClass(): Class<*> {
+    return checkNotNull(testClass.getDeclaredAnnotation(SelectRunnerPlatform::class.java)) {
+      "All suites using OppiaParameterizedTestRunner must declare their base platform runner" +
+        " using SelectRunnerPlatform."
+    }.runnerType.java
+  }
+
+  /**
+   * Defines which [OppiaParameterizedBaseRunner] should be used for running individual
+   * parameterized and non-parameterized test cases.
+   *
+   * See base classes for options.
+   */
+  @Target(AnnotationTarget.CLASS)
+  annotation class SelectRunnerPlatform(val runnerType: KClass<out OppiaParameterizedBaseRunner>)
+
   /**
    * Defines a parameter that may have an injected value that comes from per-test [Iteration]
    * definitions.
@@ -244,6 +267,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
   )
 
   private class ProxyParameterizedTestRunner(
+    private val runnerClass: Class<*>,
     private val testClass: Class<*>,
     private val parameterizedMethods: Map<String, ParameterizedMethod>,
     private val methodName: String?,
@@ -269,30 +293,6 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     override fun sort(sorter: Sorter?) = delegateSortable.sort(sorter)
 
     private fun constructDelegate(): Any {
-      System.getProperty("android.junit.runner").also { customRunner ->
-        check(customRunner == null) {
-          "Detected a custom runner ($customRunner) in a parameterized test. This isn't yet" +
-            " supported."
-        }
-      }
-      val runningOnAndroid =
-        System.getProperty("java.runtime.name")?.contains("android", ignoreCase = true) ?: false
-
-      // Load the runner class using reflection since the Robolectric implementation relies on
-      // Robolectric (which can't be pulled into Espresso builds of shared tests).
-      val runnerClass = try {
-        if (runningOnAndroid) {
-          Class.forName("org.oppia.android.testing.junit.ParameterizedAndroidJUnit4ClassRunner")
-        } else Class.forName("org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner")
-      } catch (e: Exception) {
-        throw IllegalStateException(
-          "Failed to load delegate test runner class. Did you forget to add either" +
-            " parameterized_android_junit4_class_runner or parameterized_robolectric_test_runner" +
-            " as a dependency?",
-          e
-        )
-      }
-
       val constructor =
         runnerClass.getConstructor(
           Class::class.java, Map::class.java, String::class.java, String::class.java

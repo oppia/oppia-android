@@ -51,12 +51,25 @@ kt_android_library(
     name = "parameterized_android_junit4_class_runner",
     testonly = True,
     srcs = [
-        "ParameterizedAndroidJUnit4ClassRunner.kt",
+        "ParameterizedAndroidJunit4TestRunner.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":parameterized_runner_delegate_impl",
         "//third_party:androidx_test_runner",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_android_library(
+    name = "parameterized_junit_test_runner",
+    testonly = True,
+    srcs = [
+        "ParameterizedJunitTestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":parameterized_runner_delegate_impl",
         "//third_party:junit_junit",
     ],
 )
@@ -79,6 +92,7 @@ kt_android_library(
     name = "parameterized_runner_delegate_impl",
     testonly = True,
     srcs = [
+        "OppiaParameterizedBaseRunner.kt",
         "ParameterValue.kt",
         "ParameterizedMethod.kt",
         "ParameterizedRunnerDelegate.kt",

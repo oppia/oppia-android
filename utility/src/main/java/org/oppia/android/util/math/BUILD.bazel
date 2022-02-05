@@ -194,6 +194,9 @@ kt_android_library(
     srcs = [
         "ExpressionToLatexConverter.kt",
     ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
     deps = [
         ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
