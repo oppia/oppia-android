@@ -62,6 +62,19 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "parameterized_junit_test_runner",
+    testonly = True,
+    srcs = [
+        "ParameterizedJunitTestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":parameterized_runner_delegate_impl",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_android_library(
     name = "parameterized_robolectric_test_runner",
     testonly = True,
     srcs = [
@@ -79,6 +92,7 @@ kt_android_library(
     name = "parameterized_runner_delegate_impl",
     testonly = True,
     srcs = [
+        "OppiaParameterizedBaseRunner.kt",
         "ParameterValue.kt",
         "ParameterizedMethod.kt",
         "ParameterizedRunnerDelegate.kt",

@@ -7,14 +7,18 @@ import org.robolectric.RobolectricTestRunner
 /**
  * A [RobolectricTestRunner] which supports [OppiaParameterizedTestRunner] when running on a local
  * JVM using Robolectric.
+ *
+ * This should be selected as the base runner when the test author wishes to use Robolectric.
  */
 @Suppress("unused") // This class is constructed using reflection.
-internal class ParameterizedRobolectricTestRunner(
+class ParameterizedRobolectricTestRunner internal constructor(
   testClass: Class<*>,
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
   private val iterationName: String?
-) : RobolectricTestRunner(testClass), ParameterizedRunnerOverrideMethods {
+) : RobolectricTestRunner(testClass),
+  OppiaParameterizedBaseRunner,
+  ParameterizedRunnerOverrideMethods {
   private val delegate by lazy {
     ParameterizedRunnerDelegate(
       parameterizedMethods,
