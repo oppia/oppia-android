@@ -1,6 +1,6 @@
 package org.oppia.android.domain.classify.rules.mathequationinput
 
-import org.oppia.android.app.model.ComparableOperationList
+import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
@@ -9,10 +9,19 @@ import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
-import org.oppia.android.util.math.toComparableOperationList
+import org.oppia.android.util.math.isApproximatelyEqualTo
+import org.oppia.android.util.math.toComparableOperation
 import javax.inject.Inject
-import org.oppia.android.util.math.approximatelyEquals
 
+/**
+ * Provider for a classifier that determines whether a math equation is equal to the
+ * creator-specific equation defined as the input to this interaction, with some manipulations.
+ *
+ * 'Trivial manipulations' indicates rearranging any operands for commutative operations, or changes
+ * in resolution order (i.e. associative) without changing the meaning of the equation.
+ *
+ * See this class's tests for a list of supported cases (both for matching and not matching).
+ */
 class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -36,18 +45,18 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
     val (inputLhs, inputRhs) = parseComparableLists(input, allowedVariables) ?: return false
 
     // Sides must match (reordering around the '=' is not allowed by this classifier).
-    return answerLhs.approximatelyEquals(inputLhs) && answerRhs.approximatelyEquals(inputRhs)
+    return answerLhs.isApproximatelyEqualTo(inputLhs) && answerRhs.isApproximatelyEqualTo(inputRhs)
   }
 
   private fun parseComparableLists(
     rawEquation: String,
     allowedVariables: List<String>
-  ): Pair<ComparableOperationList, ComparableOperationList>? {
+  ): Pair<ComparableOperation, ComparableOperation>? {
     return when (val eqResult = parseAlgebraicEquation(rawEquation, allowedVariables)) {
       is MathParsingResult.Success -> {
         val lhsExp = eqResult.result.leftSide
         val rhsExp = eqResult.result.rightSide
-        lhsExp.toComparableOperationList() to rhsExp.toComparableOperationList()
+        lhsExp.toComparableOperation() to rhsExp.toComparableOperation()
       }
       is MathParsingResult.Failure -> {
         consoleLogger.e(

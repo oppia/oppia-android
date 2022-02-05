@@ -5,41 +5,60 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathEquation
+import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
 import org.oppia.android.testing.math.MathEquationSubject.Companion.assertThat
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [MathExpressionParser]. */
+/**
+ * Tests for [MathExpressionParser].
+ *
+ * Note that this test suite specifically focuses on verifying that the parser can correctly parse
+ * algebraic equations (i.e. via [MathExpressionParser.parseAlgebraicEquation]. This suite is not as
+ * thorough as may be expected because:
+ * 1. It relies heavily on [AlgebraicExpressionParserTest] for verifying that algebraic expressions
+ *   can be correctly parsed. This suite is mainly geared toward verifying that the parser
+ *   essentially just parses expressions for each side of the equation.
+ * 2. Error cases are tested in [MathExpressionParserTest] instead of here, including for equations.
+ */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class AlgebraicEquationParserTest {
   @Test
-  fun testLotsOfCasesForAlgebraicEquation() {
-    expectFailureWhenParsingAlgebraicEquation(" x =")
-    expectFailureWhenParsingAlgebraicEquation(" = y")
+  fun testParseAlgEq_simpleVariableAssignment_correctlyParsesBothSidesStructures() {
+    val equation = parseAlgebraicEquation("x = 1")
 
-    val equation1 = parseAlgebraicEquationSuccessfully("x = 1")
-    assertThat(equation1).hasLeftHandSideThat().hasStructureThatMatches {
+    assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("x")
       }
     }
-    assertThat(equation1).hasRightHandSideThat().evaluatesToIntegerThat().isEqualTo(1)
+    assertThat(equation).hasRightHandSideThat().hasStructureThatMatches {
+      constant {
+        withValueThat().isIntegerThat().isEqualTo(1)
+      }
+    }
+  }
 
-    val equation2 =
-      parseAlgebraicEquationSuccessfully(
+  @Test
+  fun testParseAlgEq_slopeInterceptForm_additionalVars_correctlyParsesBothSidesStructures() {
+    val equation =
+      parseAlgebraicEquation(
         "y = mx + b", allowedVariables = listOf("x", "y", "b", "m")
       )
-    assertThat(equation2).hasLeftHandSideThat().hasStructureThatMatches {
+
+    assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("y")
       }
     }
-    assertThat(equation2).hasRightHandSideThat().hasStructureThatMatches {
+    assertThat(equation).hasRightHandSideThat().hasStructureThatMatches {
       addition {
         leftOperand {
-          multiplication {
+          multiplication(isImplicit = true) {
             leftOperand {
               variable {
                 withNameThat().isEqualTo("m")
@@ -59,14 +78,18 @@ class AlgebraicEquationParserTest {
         }
       }
     }
+  }
 
-    val equation3 = parseAlgebraicEquationSuccessfully("y = (x+1)^2")
-    assertThat(equation3).hasLeftHandSideThat().hasStructureThatMatches {
+  @Test
+  fun testParseAlgEq_binomialAssignedToY_correctlyParsesBothSidesStructures() {
+    val equation = parseAlgebraicEquation("y = (x+1)^2")
+
+    assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("y")
       }
     }
-    assertThat(equation3).hasRightHandSideThat().hasStructureThatMatches {
+    assertThat(equation).hasRightHandSideThat().hasStructureThatMatches {
       exponentiation {
         leftOperand {
           group {
@@ -91,15 +114,19 @@ class AlgebraicEquationParserTest {
         }
       }
     }
+  }
 
-    val equation4 = parseAlgebraicEquationSuccessfully("y = (x+1)(x-1)")
-    assertThat(equation4).hasLeftHandSideThat().hasStructureThatMatches {
+  @Test
+  fun testParseAlgEq_factoredPolynomialAssignedToY_correctlyParsesBothSidesStructures() {
+    val equation = parseAlgebraicEquation("y = (x+1)(x-1)")
+
+    assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
       variable {
         withNameThat().isEqualTo("y")
       }
     }
-    assertThat(equation4).hasRightHandSideThat().hasStructureThatMatches {
-      multiplication {
+    assertThat(equation).hasRightHandSideThat().hasStructureThatMatches {
+      multiplication(isImplicit = true) {
         leftOperand {
           group {
             addition {
@@ -134,15 +161,16 @@ class AlgebraicEquationParserTest {
         }
       }
     }
+  }
 
-    expectFailureWhenParsingAlgebraicEquation("y = (x+1)(x-1) 2")
-    expectFailureWhenParsingAlgebraicEquation("y 2 = (x+1)(x-1)")
-
-    val equation5 =
-      parseAlgebraicEquationSuccessfully(
+  @Test
+  fun testParseAlgEq_generalLineEquation_onLeftSide_correctlyParsesBothSidesStructures() {
+    val equation =
+      parseAlgebraicEquation(
         "a*x^2 + b*x + c = 0", allowedVariables = listOf("x", "a", "b", "c")
       )
-    assertThat(equation5).hasLeftHandSideThat().hasStructureThatMatches {
+
+    assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
       addition {
         leftOperand {
           addition {
@@ -192,37 +220,52 @@ class AlgebraicEquationParserTest {
         }
       }
     }
-    assertThat(equation5).hasRightHandSideThat().hasStructureThatMatches {
+    assertThat(equation).hasRightHandSideThat().hasStructureThatMatches {
       constant {
         withValueThat().isIntegerThat().isEqualTo(0)
       }
     }
   }
 
-  private companion object {
-    // TODO: fix helper API.
+  @Test
+  fun testParseAlgEq_nonPolynomialEquation_correctlyParsesBothSidesStructures() {
+    val equation = parseAlgebraicEquation("x = 2^sqrt(3)")
 
-    private fun expectFailureWhenParsingAlgebraicEquation(expression: String): MathParsingError {
-      val result = parseAlgebraicEquationWithAllErrors(expression)
-      assertThat(result).isInstanceOf(MathParsingResult.Failure::class.java)
-      return (result as MathParsingResult.Failure<MathEquation>).error
+    assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
+      variable {
+        withNameThat().isEqualTo("x")
+      }
     }
+    assertThat(equation).hasRightHandSideThat().hasStructureThatMatches {
+      exponentiation {
+        leftOperand {
+          constant {
+            withValueThat().isIntegerThat().isEqualTo(2)
+          }
+        }
+        rightOperand {
+          functionCallTo(SQUARE_ROOT) {
+            argument {
+              constant {
+                withValueThat().isIntegerThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
-    private fun parseAlgebraicEquationSuccessfully(
+  private companion object {
+    private fun parseAlgebraicEquation(
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z")
     ): MathEquation {
-      val result = parseAlgebraicEquationWithAllErrors(expression, allowedVariables)
-      return (result as MathParsingResult.Success<MathEquation>).result
-    }
-
-    private fun parseAlgebraicEquationWithAllErrors(
-      expression: String,
-      allowedVariables: List<String> = listOf("x", "y", "z")
-    ): MathParsingResult<MathEquation> {
-      return MathExpressionParser.parseAlgebraicEquation(
+      val result = MathExpressionParser.parseAlgebraicEquation(
         expression, allowedVariables, ErrorCheckingMode.ALL_ERRORS
       )
+      assertThat(result).isInstanceOf(MathParsingResult.Success::class.java)
+      return (result as MathParsingResult.Success<MathEquation>).result
     }
   }
 }

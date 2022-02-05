@@ -246,7 +246,7 @@
   <string name="admin_settings_incorrect">PIN do administrador incorreto. Por favor, tente novamente.</string>
   <string name="admin_settings_enter_user_new_pin">Novo PIN de %1$s</string>
   <string name="reset_pin_enter">Insira um Novo Pin</string>
-  <string name="my_downloads">Meus Downloads</string>
+  <string name="my_downloads_activity_title">Meus Downloads</string>
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Atualizações (2)</string>
   <string name="home_activity_back_dialog_message">Você gostaria de sair do seu perfil?</string>
@@ -282,7 +282,7 @@
   <string name="profile_reset_pin_error_user_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Seu PIN deve ter 5 dígitos.</string>
   <string name="add_profile_create_a_3_digit_pin">Criar um PIN de 3 Dígitos</string>
-  <string name="add_profile_required">*Requerido</string>
+  <string name="add_profile_required">Requerido</string>
   <string name="back_button">Botão de Voltar</string>
   <string name="next">Próximo</string>
   <string name="administrator_controls_general_label">Geral</string>

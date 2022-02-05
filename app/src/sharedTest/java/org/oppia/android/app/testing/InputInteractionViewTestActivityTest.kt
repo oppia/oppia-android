@@ -125,6 +125,8 @@ class InputInteractionViewTestActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  // TODO(#4135): Move fraction input tests to a dedicated test suite.
+
   @Test
   fun testFractionInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(

@@ -6,7 +6,7 @@ import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.util.math.approximatelyEquals
+import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toDouble
 import javax.inject.Inject
 
@@ -34,6 +34,6 @@ class FractionInputIsEquivalentToRuleClassifierProvider @Inject constructor(
     input: Fraction,
     classificationContext: ClassificationContext
   ): Boolean {
-    return answer.toDouble().approximatelyEquals(input.toDouble())
+    return answer.toDouble().isApproximatelyEqualTo(input.toDouble())
   }
 }

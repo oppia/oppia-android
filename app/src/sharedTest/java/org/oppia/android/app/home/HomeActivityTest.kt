@@ -103,7 +103,6 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -160,9 +159,6 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 class HomeActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
