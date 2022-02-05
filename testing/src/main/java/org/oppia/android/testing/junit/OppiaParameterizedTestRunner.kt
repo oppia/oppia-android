@@ -111,7 +111,9 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
               " $rawValuePair)"
           }
 
-          val (fieldName, rawValue) = rawValuePair.split('=')
+          // Use substringBefore/After since values should be allowed to contain '='.
+          val fieldName = rawValuePair.substringBefore(delimiter = '=')
+          val rawValue = rawValuePair.substringAfter(delimiter = '=')
           check(fieldName in fieldsAndParsers) {
             "Property key does not correspond to any class fields: $fieldName (available:" +
               " ${fieldsAndParsers.keys})"

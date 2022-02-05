@@ -10,7 +10,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
 import javax.inject.Inject
-import org.oppia.android.util.math.approximatelyEquals
+import org.oppia.android.util.math.isApproximatelyEqualTo
 
 class MathEquationInputMatchesExactlyWithRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -62,8 +62,8 @@ class MathEquationInputMatchesExactlyWithRuleClassifierProvider @Inject construc
     }
 
     private fun MathEquation.approximatelyEquals(other: MathEquation): Boolean {
-      return leftSide.approximatelyEquals(other.leftSide)
-        && rightSide.approximatelyEquals(other.rightSide)
+      return leftSide.isApproximatelyEqualTo(other.leftSide)
+        && rightSide.isApproximatelyEqualTo(other.rightSide)
     }
   }
 }
