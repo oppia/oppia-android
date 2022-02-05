@@ -98,6 +98,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.parser.image.ImageViewTarget
 
 /** Tests for [ImageViewBindingAdaptersTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -200,14 +201,11 @@ class ImageViewBindingAdaptersTest {
       val url = profileAvatar.avatarImageUri.toString()
       setProfileImage(imageView, profileAvatar)
       testCoroutineDispatchers.runCurrent()
-      lateinit var imageBitmapSource: ImageTarget<Bitmap>
-      testGlideImageLoader.loadBitmap(url, imageBitmapSource)
+      var imageViewBitmap = ImageView(it)
+      testGlideImageLoader.loadBitmap(url, ImageViewTarget(imageViewBitmap))
+      var imageBitmapSource = (imageViewBitmap.drawable as BitmapDrawable)
       onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(
-          withDrawableDynamic(
-            imageBitmapSource as BitmapDrawable
-          )
-        )
+        matches(withDrawableDynamic(imageBitmapSource))
       )
     }
   }
