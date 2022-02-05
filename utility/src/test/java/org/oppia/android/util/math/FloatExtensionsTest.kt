@@ -36,7 +36,7 @@ class FloatExtensionsTest {
   @Test
   fun testFloat_approximatelyEquals_nonZeroValues_withinInterval_returnsTrue() {
     val leftFloat = 1.2f
-    val rightFloat = leftFloat + FLOAT_EQUALITY_INTERVAL.toFloat() / 10f
+    val rightFloat = leftFloat + FLOAT_EQUALITY_EPSILON / 10f
 
     val result = leftFloat.approximatelyEquals(rightFloat)
 
@@ -58,7 +58,7 @@ class FloatExtensionsTest {
   @Test
   fun testFloat_approximatelyEquals_nonZeroValues_outsideInterval_returnsFalse() {
     val leftFloat = 1.2f
-    val rightFloat = leftFloat + FLOAT_EQUALITY_INTERVAL.toFloat() * 2f
+    val rightFloat = leftFloat + FLOAT_EQUALITY_EPSILON * 2f
 
     val result = leftFloat.approximatelyEquals(rightFloat)
 
@@ -97,8 +97,8 @@ class FloatExtensionsTest {
 
   @Test
   fun testDouble_approximatelyEquals_nonZeroValues_withinInterval_returnsTrue() {
-    val leftDouble = 1.2
-    val rightDouble = leftDouble + FLOAT_EQUALITY_INTERVAL / 10.0
+    val leftDouble = 0.2
+    val rightDouble = leftDouble + DOUBLE_EQUALITY_EPSILON / 10.0
 
     val result = leftDouble.approximatelyEquals(rightDouble)
 
@@ -110,7 +110,7 @@ class FloatExtensionsTest {
   @Test
   fun testDouble_approximatelyEquals_nonZeroValues_outsideInterval_returnsFalse() {
     val leftDouble = 1.2
-    val rightDouble = leftDouble + FLOAT_EQUALITY_INTERVAL * 2
+    val rightDouble = leftDouble + DOUBLE_EQUALITY_EPSILON * 2
 
     val result = leftDouble.approximatelyEquals(rightDouble)
 

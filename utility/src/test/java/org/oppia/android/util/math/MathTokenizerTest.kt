@@ -7,6 +7,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.TokenSubject.Companion.assertThat
 import org.robolectric.annotation.LooperMode
 
@@ -14,6 +16,7 @@ import org.robolectric.annotation.LooperMode
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathTokenizerTest {
   @Parameter lateinit var variableName: String
@@ -370,6 +373,14 @@ class MathTokenizerTest {
   }
 
   @Test
+  fun testTokenize_enDashSymbol_producesMinusSymbol() {
+    val tokens = MathTokenizer.tokenize("–").toList()
+
+    assertThat(tokens).hasSize(1)
+    assertThat(tokens[0]).isMinusSymbol()
+  }
+
+  @Test
   fun testTokenize_minusSymbol_withSpaces_tokenHasCorrectIndices() {
     val tokens = MathTokenizer.tokenize("  −   ").toList()
 
@@ -645,7 +656,7 @@ class MathTokenizerTest {
     // Build a large list of unicode characters minus those which are actually allowed. The ASCII
     // range is excluded from this list.
     val characters = ('\u007f'..'\uffff').filterNot {
-      it in listOf('×', '÷', '−', '√')
+      it in listOf('×', '÷', '−', '–', '√')
     }
     val charStr = characters.joinToString("")
 
