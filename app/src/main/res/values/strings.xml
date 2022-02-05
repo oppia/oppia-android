@@ -288,7 +288,7 @@
   <!-- ResetPinDialogFragment -->
   <string name="reset_pin_enter">Enter a New Pin</string>
   <!-- MyDownloadsActivity -->
-  <string name="my_downloads">My Downloads</string>
+  <string name="my_downloads_activity_title">My Downloads</string>
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
   <!-- HomeActivityBackDialog -->
@@ -332,7 +332,7 @@
   <string name="profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
   <string name="add_profile_create_a_3_digit_pin">Create a 3-Digit PIN</string>
-  <string name="add_profile_required">*Required</string>
+  <string name="add_profile_required">Required</string>
   <string name="back_button">Back Button</string>
   <string name="next">Next</string>
   <!-- AdministratorControlsFragment -->
@@ -381,6 +381,7 @@
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_title">Stories Completed</string>
   <!-- WalkthroughActivity -->
+  <string name="walkthrough_activity_title">App walkthrough</string>
   <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
   <string name="welcome">"Welcome %s!"</string>
   <!-- WalkthroughTopicListFragment -->
