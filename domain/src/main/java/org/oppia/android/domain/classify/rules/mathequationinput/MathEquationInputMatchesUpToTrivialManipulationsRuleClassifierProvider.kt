@@ -9,10 +9,19 @@ import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
+import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toComparableOperation
 import javax.inject.Inject
-import org.oppia.android.util.math.isApproximatelyEqualTo
 
+/**
+ * Provider for a classifier that determines whether a math equation is equal to the
+ * creator-specific equation defined as the input to this interaction, with some manipulations.
+ *
+ * 'Trivial manipulations' indicates rearranging any operands for commutative operations, or changes
+ * in resolution order (i.e. associative) without changing the meaning of the equation.
+ *
+ * See this class's tests for a list of supported cases (both for matching and not matching).
+ */
 class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,

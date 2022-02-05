@@ -9,13 +9,23 @@ import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
-import org.oppia.android.util.math.toPolynomial
-import javax.inject.Inject
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.minus
 import org.oppia.android.util.math.sort
+import org.oppia.android.util.math.toPolynomial
 import org.oppia.android.util.math.unaryMinus
+import javax.inject.Inject
 
+/**
+ * Provider for a classifier that determines whether a math equation expression is mathematically
+ * equivalent to the creator-specific equation defined as the input to this interaction.
+ *
+ * Note that both equations are assumed and parsed as polynomial equations. Furthermore, this
+ * classifier allows the two sides of the equations to be rearranged in any way on either side of
+ * the '=' sign (but they can't be multiples of each other).
+ *
+ * See this class's tests for a list of supported cases (both for matching and not matching).
+ */
 class MathEquationInputIsEquivalentToRuleClassifierProvider @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
   private val consoleLogger: ConsoleLogger
@@ -48,9 +58,9 @@ class MathEquationInputIsEquivalentToRuleClassifierProvider @Inject constructor(
     // arranged. Furthermore, the '-1' check is correct since the order of the equation can flip
     // depending on how it was inputted, and '-1 * 0=0' so the new right-hand side remains
     // unaffected.
-    return newAnswerLhs.isApproximatelyEqualTo(newInputLhs)
-      || negativeAnswerLhs.isApproximatelyEqualTo(newInputLhs)
-      || newAnswerLhs.isApproximatelyEqualTo(negativeInputLhs)
+    return newAnswerLhs.isApproximatelyEqualTo(newInputLhs) ||
+      negativeAnswerLhs.isApproximatelyEqualTo(newInputLhs) ||
+      newAnswerLhs.isApproximatelyEqualTo(negativeInputLhs)
   }
 
   private fun parsePolynomials(

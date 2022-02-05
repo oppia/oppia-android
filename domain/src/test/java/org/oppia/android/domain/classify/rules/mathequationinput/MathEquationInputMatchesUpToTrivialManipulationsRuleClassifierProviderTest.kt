@@ -31,6 +31,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.classify.rules.mathequationinput.DaggerMathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest_TestApplicationComponent as DaggerTestApplicationComponent
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider as RuleClassifierProvider
 
 /**
  * Tests for [MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider].
@@ -46,7 +48,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest {
-  @Inject internal lateinit var provider: MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
+  @Inject internal lateinit var provider: RuleClassifierProvider
 
   @Parameter lateinit var answer: String
   @Parameter lateinit var input: String
@@ -373,7 +375,7 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
   }.build()
 
   private fun setUpTestApplicationComponent() {
-    DaggerMathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest_TestApplicationComponent
+    DaggerTestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
