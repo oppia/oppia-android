@@ -1379,7 +1379,7 @@ class PolynomialExtensionsTest {
     val first = createPolynomial(createTerm(coefficient = TWO_REAL))
     val second = createPolynomial(
       createTerm(coefficient = Real.newBuilder().apply {
-        irrational = 2.00000001
+        irrational = 2.00000000000000001
       }.build())
     )
 
@@ -1420,7 +1420,7 @@ class PolynomialExtensionsTest {
   fun testIsApproximatelyEqualTo_firstIsDoublePointThrees_secondIsFracOneThird_returnsTrue() {
     val first = createPolynomial(
       createTerm(coefficient = Real.newBuilder().apply {
-        irrational = 0.33333333333
+        irrational = 0.33333333333333333
       }.build())
     )
     val second = createPolynomial(createTerm(coefficient = ONE_THIRD_REAL))

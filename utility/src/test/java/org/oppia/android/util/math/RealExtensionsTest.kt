@@ -410,11 +410,11 @@ class RealExtensionsTest {
     Iteration("0==0.0", "lhsInt=0", "rhsDouble=0.0"),
     Iteration("1==1.0", "lhsInt=1", "rhsDouble=1.0"),
     Iteration("2==2.0", "lhsInt=2", "rhsDouble=2.0"),
-    Iteration("2==2.0000001", "lhsInt=2", "rhsDouble=2.0000001"),
-    Iteration("2==1.9999999", "lhsInt=2", "rhsDouble=1.9999999"),
+    Iteration("2==2.000000000000001", "lhsInt=2", "rhsDouble=2.000000000000001"),
+    Iteration("2==1.999999999999999", "lhsInt=2", "rhsDouble=1.999999999999999"),
     Iteration("-2==-2.0", "lhsInt=-2", "rhsDouble=-2.0"),
-    Iteration("-2==-2.0000001", "lhsInt=-2", "rhsDouble=-2.0000001"),
-    Iteration("-2==-1.9999999", "lhsInt=-2", "rhsDouble=-1.9999999")
+    Iteration("-2==-2.00000000000001", "lhsInt=-2", "rhsDouble=-2.00000000000001"),
+    Iteration("-2==-1.999999999999999", "lhsInt=-2", "rhsDouble=-1.999999999999999")
   )
   fun testIsApproximatelyEqualTo_oneIsInt_otherIsSimilarDouble_returnsTrue() {
     val first = createIntegerReal(lhsInt)
@@ -502,8 +502,8 @@ class RealExtensionsTest {
     Iteration("2==2.0", "lhsFrac=2", "rhsDouble=2.0"),
     Iteration("2/1==2.0", "lhsFrac=2/1", "rhsDouble=2.0"),
     Iteration("3/2==1.5", "lhsFrac=3/2", "rhsDouble=1.5"),
-    Iteration("1/3==0.33333333333", "lhsFrac=1/3", "rhsDouble=0.33333333333"),
-    Iteration("1 2/3==1.66666666666", "lhsFrac=1 2/3", "rhsDouble=1.66666666666"),
+    Iteration("1/3==0.33333333333333333", "lhsFrac=1/3", "rhsDouble=0.33333333333333333"),
+    Iteration("1 2/3==1.66666666666666666", "lhsFrac=1 2/3", "rhsDouble=1.66666666666666666"),
     Iteration("-2==-2.0", "lhsFrac=-2", "rhsDouble=-2.0"),
     Iteration("-3/2==-1.5", "lhsFrac=-3/2", "rhsDouble=-1.5")
   )
@@ -548,10 +548,18 @@ class RealExtensionsTest {
   @RunParameterized(
     Iteration("0.0==0.0", "lhsDouble=0.0", "rhsDouble=0.0"),
     Iteration("2.0==2.0", "lhsDouble=2.0", "rhsDouble=2.0"),
-    Iteration("2.0000000001==1.9999999999", "lhsDouble=2.0000000001", "rhsDouble=1.9999999999"),
+    Iteration(
+      "2.000000000000001==1.999999999999999",
+      "lhsDouble=2.000000000000001",
+      "rhsDouble=1.999999999999999"
+    ),
     Iteration("3.14==3.14", "lhsDouble=3.14", "rhsDouble=3.14"),
     Iteration("-2.0==-2.0", "lhsDouble=-2.0", "rhsDouble=-2.0"),
-    Iteration("-2.0000000001==-1.9999999999", "lhsDouble=-2.0000000001", "rhsDouble=-1.9999999999"),
+    Iteration(
+      "-2.000000000000001==-1.999999999999999",
+      "lhsDouble=-2.000000000000001",
+      "rhsDouble=-1.999999999999999"
+    ),
     Iteration("-3.14==-3.14", "lhsDouble=-3.14", "rhsDouble=-3.14")
   )
   fun testIsApproximatelyEqualTo_oneIsDouble_otherIsSimilarDouble_returnsTrue() {

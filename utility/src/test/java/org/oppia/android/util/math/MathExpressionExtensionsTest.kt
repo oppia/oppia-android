@@ -1,16 +1,16 @@
 package org.oppia.android.util.math
 
 import com.google.common.truth.Truth.assertThat
-import java.lang.IllegalStateException
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
@@ -35,6 +35,7 @@ import org.robolectric.annotation.LooperMode
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 @RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathExpressionExtensionsTest {
   @Parameter lateinit var exp1: String
@@ -173,7 +174,7 @@ class MathExpressionExtensionsTest {
   @Test
   @RunParameterized(
     Iteration("2==2", "exp1=2", "exp2=2"),
-    Iteration("2==2.000000001", "exp1=2", "exp2=2.000000001"),
+    Iteration("2==2.000000000000001", "exp1=2", "exp2=2.000000000000001"),
     Iteration("x+1==x+1", "exp1=x+1", "exp2=x+1"),
     Iteration("x-1==x-1", "exp1=x-1", "exp2=x-1"),
     Iteration("x*2==x*2", "exp1=x*2", "exp2=x*2"),

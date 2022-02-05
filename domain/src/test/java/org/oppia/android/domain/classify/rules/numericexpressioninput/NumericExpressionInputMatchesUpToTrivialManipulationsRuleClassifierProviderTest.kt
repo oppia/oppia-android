@@ -20,6 +20,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -32,6 +34,7 @@ import org.robolectric.annotation.LooperMode
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest {

@@ -129,7 +129,7 @@ class ComparableOperationExtensionsTest {
   @Test
   fun testIsApproximatelyEqualTo_firstIsConstInt2_secondIsConstDouble2PlusMargin_returnsTrue() {
     val first = createConstantOp(constant = 2)
-    val second = createConstantOp(constant = 2.0000001)
+    val second = createConstantOp(constant = 2.000000000000001)
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
