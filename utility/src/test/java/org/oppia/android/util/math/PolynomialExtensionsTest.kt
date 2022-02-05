@@ -3725,7 +3725,7 @@ class PolynomialExtensionsTest {
 
     val result = polynomial1 pow polynomial2
 
-    // (-9x^3)^(1/3)=-3x (demonstrates real number rooting, i.e. support for negative coefficients
+    // (-27x^3)^(1/3)=-3x (demonstrates real number rooting, i.e. support for negative coefficients
     // in certain cases).
     assertThat(result).apply {
       hasTermCountThat().isEqualTo(1)
