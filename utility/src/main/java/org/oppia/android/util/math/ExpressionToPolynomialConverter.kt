@@ -21,16 +21,63 @@ import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
 import org.oppia.android.app.model.Polynomial
+import org.oppia.android.app.model.Real
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
+/**
+ * Converter from [MathExpression] to [Polynomial].
+ *
+ * See the separate protos for specifics on structure, and [reduceToPolynomial] for the actual
+ * conversion function.
+ */
 class ExpressionToPolynomialConverter private constructor() {
   companion object {
-    fun MathExpression.reduceToPolynomial(): Polynomial? =
-      replaceSquareRoots().reduceToPolynomialAux()
+    /**
+     * Returns a new [Polynomial] that represents this [MathExpression], or null if it's not a valid
+     * polynomial.
+     *
+     * Polynomials are defined as a list of terms where each term has a coefficient and zero or more
+     * variables. There are a number of specific constraints that this function guarantees for all
+     * returned polynomials:
+     * - Terms will never have duplicate variable expressions (e.g. there will never be a returned
+     *   polynomial with multiple 'x' terms, but there can be an 'x' and 'x^2' term). This is
+     *   because effort is taken to combine like terms.
+     * - Terms are always sorted by lexicography of the variable names and variable powers which
+     *   allows for comparison that operates independently of commutativity, associativity, and
+     *   distributivity.
+     * - There will only ever be at most one constant term in the polynomial.
+     * - There will always be at least 1 term (even if it's the constant zero).
+     * - The polynomial will be mathematically equivalent to the original expression.
+     * - Coefficients will be kept to the highest possible precision (i.e. integers and fractions
+     *   will be preferred over irrationals unless a rounding error occurs).
+     * - Most polynomial operations will be computed, including unary negation, addition,
+     *   subtraction, multiplication (both implicit and explicit), division, and powers.
+     *
+     * Note that this will return null if a polynomial cannot be computed, such as in the cases:
+     * - The expression represents a division where the result has a remainder polynomial.
+     * - The expression results in a variable with a negative power or a division by an expression.
+     * - The expression results in a non-integer power (which includes a current limitation for
+     *   expressions like 'sqrt(x)^2'; these cannot pass because internally the method cannot
+     *   represent 'x^1/2').
+     * - The expression results in a power variable (which can never represent a polynomial).
+     * - The expression is invalid (e.g. a default proto instance).
+     *
+     * This function is only expected to be used in conjunction with algebraic expressions. It's
+     * suggested to use evaluation when comparing for equivalence among numeric expressions as it
+     * should yield the same result and be more performant.
+     *
+     * The tests for this method provide very thorough and broad examples of different cases that
+     * this function supports. In particular, the equality tests are useful to see what sorts of
+     * expressions can be considered the same per [Polynomial] representation.
+     */
+    fun MathExpression.reduceToPolynomial(): Polynomial? {
+      return replaceSquareRoots()
+        .reduceToPolynomialAux()
         ?.removeUnnecessaryVariables()
         ?.simplifyRationals()
         ?.sort()
+    }
 
     private fun MathExpression.replaceSquareRoots(): MathExpression {
       return when (expressionTypeCase) {
@@ -59,6 +106,7 @@ class ExpressionToPolynomialConverter private constructor() {
           }.build()
           FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null -> this
         }
+        // This also eliminates groups from the expression.
         GROUP -> group.replaceSquareRoots()
         CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> this
       }
@@ -83,7 +131,7 @@ class ExpressionToPolynomialConverter private constructor() {
         SUBTRACT -> leftPolynomial - rightPolynomial
         MULTIPLY -> leftPolynomial * rightPolynomial
         DIVIDE -> leftPolynomial / rightPolynomial
-        EXPONENTIATE -> leftPolynomial.pow(rightPolynomial)
+        EXPONENTIATE -> leftPolynomial pow rightPolynomial
         BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null -> null
       }
     }
@@ -109,5 +157,11 @@ class ExpressionToPolynomialConverter private constructor() {
         }.build()
       )
     }
+
+    private fun createConstantPolynomial(constant: Real): Polynomial =
+      createSingleTermPolynomial(Polynomial.Term.newBuilder().setCoefficient(constant).build())
+
+    private fun createSingleTermPolynomial(term: Polynomial.Term): Polynomial =
+      Polynomial.newBuilder().apply { addTerm(term) }.build()
   }
 }

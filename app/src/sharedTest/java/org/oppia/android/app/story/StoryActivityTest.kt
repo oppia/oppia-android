@@ -70,8 +70,8 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.DisableAccessibilityChecks
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -104,7 +104,7 @@ class StoryActivityTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
-  val accessibilityTestRule = AccessibilityTestRule()
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

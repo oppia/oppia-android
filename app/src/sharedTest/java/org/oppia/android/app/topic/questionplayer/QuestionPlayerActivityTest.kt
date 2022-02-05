@@ -111,7 +111,6 @@ import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
@@ -157,9 +156,6 @@ class QuestionPlayerActivityTest {
 
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
-
-  @get:Rule
-  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()

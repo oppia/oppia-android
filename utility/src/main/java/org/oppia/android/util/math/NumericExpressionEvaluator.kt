@@ -25,8 +25,54 @@ import org.oppia.android.app.model.Real
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
+/**
+ * Numeric evaluator for numeric [MathExpression]s.
+ *
+ * In order to use this evaluator, directly import [evaluate] and call it for any numeric
+ * [MathExpression]s that should be evaluated.
+ */
 class NumericExpressionEvaluator private constructor() {
   companion object {
+    /**
+     * Evaluates a math expression.
+     *
+     * This function only works with numeric expressions since variable expressions have no means
+     * for evaluation (so they'll always result in a ``null`` return value).
+     *
+     * The function generally attempts to retain the most precise representation of a value in the
+     * following order (from highest priority to lowest):
+     * 1. Integers
+     * 2. Fractions (rational values)
+     * 3. Doubles (irrational values)
+     *
+     * Doubles will only be used if there's no other choice as they do not have perfect precision
+     * unlike the other two structures. Further, it's possible for doubles to be used in cases where
+     * an integer could work, or fractions to represent whole integers (due to quirks in underlying
+     * routines). That being said, within a certain precision threshold values returned by this
+     * function should be deterministic across multiple calls (for the same [MathExpression]).
+     *
+     * There are a number of cases where this function will fail:
+     * - When trying to evaluate a variable expression.
+     * - When trying to evaluate an invalid [MathExpression] (i.e. one of the substructures within
+     *   the expression is not actually initialized per the proto structures).
+     * - When trying to perform an impossible math operation (such as divide by zero). Note that
+     *   this will sometimes result in a [Real] being returned with a value like NaN or infinity,
+     *   and other times may result in an exception being thrown.
+     *
+     * Note that there's no guard against overflowing values during computation, so care should be
+     * taken by the caller that this is possible for certain expressions.
+     *
+     * For more specifics on the constituent operations that "power" this function, see:
+     * - [Real.plus]
+     * - [Real.minus]
+     * - [Real.times]
+     * - [Real.div]
+     * - [Real.pow]
+     * - [Real.unaryMinus]
+     * - [sqrt]
+     *
+     * @return the [Real] representing the evaluated expression, or ``null`` if something went wrong
+     */
     fun MathExpression.evaluate(): Real? {
       return when (expressionTypeCase) {
         CONSTANT -> constant

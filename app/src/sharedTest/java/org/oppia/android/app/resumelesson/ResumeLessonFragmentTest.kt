@@ -69,7 +69,7 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.AccessibilityTestRule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -120,7 +120,7 @@ class ResumeLessonFragmentTest {
   )
 
   @get:Rule
-  val accessibilityTestRule = AccessibilityTestRule()
+  val oppiaTestRule = OppiaTestRule()
 
   @Before
   fun setUp() {

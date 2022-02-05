@@ -23,7 +23,6 @@ kt_android_library(
     srcs = [
         "InteractionObjectExtensions.kt",
         "JsonExtensions.kt",
-        "StringExtensions.kt",
         "WorkDataExtensions.kt",
     ],
     visibility = ["//domain:__subpackages__"],
