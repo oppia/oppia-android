@@ -8,8 +8,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,8 +27,17 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.domain.classify.rules.numericexpressioninput.DaggerNumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest_TestApplicationComponent as DaggerTestApplicationComponent
 
-/** Tests for [NumericExpressionInputMatchesExactlyWithRuleClassifierProvider]. */
+/**
+ * Tests for [NumericExpressionInputMatchesExactlyWithRuleClassifierProvider].
+ *
+ * Note that the tests implemented in this suite are specifically set up to verify the cases
+ * outlined in this sheet:
+ * https://docs.google.com/spreadsheets/d/1u1fQdah2WsmdYKWKGmuXy5TPT7Ot-b8A7O9iZF-j5XE/edit#gid=0.
+ */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
@@ -38,8 +45,6 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
-  // TODO: add details about the sheet to this test's KDoc.
-
   @Inject
   internal lateinit var provider: NumericExpressionInputMatchesExactlyWithRuleClassifierProvider
 
@@ -245,27 +250,33 @@ class NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
     Iteration(
       "0.06 + 0.5 + 4 + 30 + 200 + 1000!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
       "answer=0.06 + 0.5 + 4 + 30 + 200 + 1000",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"),
+      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    ),
     Iteration(
       "1234.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
       "answer=1234.56",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"),
+      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    ),
     Iteration(
       "123456/100!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
       "answer=123456/100",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"),
+      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    ),
     Iteration(
       "61728/50!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
       "answer=61728/50",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"),
+      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    ),
     Iteration(
       "1234 + 56/10!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
       "answer=1234 + 56/10",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"),
+      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    ),
     Iteration(
       "1230 + 4.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
       "answer=1230 + 4.56",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"),
+      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    ),
     Iteration(
       "2 * 2 * 3 * 3 * 1!=2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3 * 1", "input=2 * 2 * 3 * 3"
     ),
@@ -305,11 +316,13 @@ class NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
     Iteration(
       "123456!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
       "answer=123456",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"),
+      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    ),
     Iteration(
       "1000 + 200 + 30!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
       "answer=1000 + 200 + 30",
-      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"),
+      "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    ),
     Iteration("3 *2 – (− 4)!=6 − (− 4)", "answer=3 *2 – (− 4)", "input=6 − (− 4)"),
     Iteration("6 − 4!=6 − (− 4)", "answer=6 − 4", "input=6 − (− 4)"),
     Iteration("6 + (− 4)!=6 − (− 4)", "answer=6 + (− 4)", "input=6 − (− 4)"),
@@ -346,7 +359,7 @@ class NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   }.build()
 
   private fun setUpTestApplicationComponent() {
-    DaggerNumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest_TestApplicationComponent
+    DaggerTestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }

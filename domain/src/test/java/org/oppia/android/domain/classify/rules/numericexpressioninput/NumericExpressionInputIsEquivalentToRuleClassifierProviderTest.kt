@@ -8,8 +8,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,8 +27,16 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
-/** Tests for [NumericExpressionInputIsEquivalentToRuleClassifierProvider]. */
+/**
+ * Tests for [NumericExpressionInputIsEquivalentToRuleClassifierProvider].
+ *
+ * Note that the tests implemented in this suite are specifically set up to verify the cases
+ * outlined in this sheet:
+ * https://docs.google.com/spreadsheets/d/1u1fQdah2WsmdYKWKGmuXy5TPT7Ot-b8A7O9iZF-j5XE/edit#gid=0.
+ */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
@@ -38,8 +44,6 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericExpressionInputIsEquivalentToRuleClassifierProviderTest {
-  // TODO: add details about the sheet to this test's KDoc.
-
   @Inject
   internal lateinit var provider: NumericExpressionInputIsEquivalentToRuleClassifierProvider
 

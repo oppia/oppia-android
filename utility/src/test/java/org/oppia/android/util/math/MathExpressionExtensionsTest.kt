@@ -282,7 +282,8 @@ class MathExpressionExtensionsTest {
     }
 
     private fun parseAlgebraicExpression(
-      expression: String, errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
     ): MathExpression {
       return parseAlgebraicExpression(
         expression, allowedVariables = listOf("x", "y", "z"), errorCheckingMode

@@ -66,17 +66,17 @@ fun MathExpression.isApproximatelyEqualTo(other: MathExpression): Boolean {
     CONSTANT -> constant.isApproximatelyEqualTo(other.constant)
     VARIABLE -> variable == other.variable
     BINARY_OPERATION -> {
-      binaryOperation.operator == other.binaryOperation.operator
-        && binaryOperation.leftOperand.isApproximatelyEqualTo(other.binaryOperation.leftOperand)
-        && binaryOperation.rightOperand.isApproximatelyEqualTo(other.binaryOperation.rightOperand)
+      binaryOperation.operator == other.binaryOperation.operator &&
+        binaryOperation.leftOperand.isApproximatelyEqualTo(other.binaryOperation.leftOperand) &&
+        binaryOperation.rightOperand.isApproximatelyEqualTo(other.binaryOperation.rightOperand)
     }
     UNARY_OPERATION -> {
-      unaryOperation.operator == other.unaryOperation.operator
-        && unaryOperation.operand.isApproximatelyEqualTo(other.unaryOperation.operand)
+      unaryOperation.operator == other.unaryOperation.operator &&
+        unaryOperation.operand.isApproximatelyEqualTo(other.unaryOperation.operand)
     }
     FUNCTION_CALL -> {
-      functionCall.functionType == other.functionCall.functionType
-        && functionCall.argument.isApproximatelyEqualTo(other.functionCall.argument)
+      functionCall.functionType == other.functionCall.functionType &&
+        functionCall.argument.isApproximatelyEqualTo(other.functionCall.argument)
     }
     GROUP -> group.isApproximatelyEqualTo(other.group)
     EXPRESSIONTYPE_NOT_SET, null -> true

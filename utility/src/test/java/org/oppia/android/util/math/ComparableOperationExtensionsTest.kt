@@ -738,7 +738,8 @@ class ComparableOperationExtensionsTest {
   }.build()
 
   private fun createExpOp(
-    lhs: ComparableOperation, rhs: ComparableOperation
+    lhs: ComparableOperation,
+    rhs: ComparableOperation
   ) = ComparableOperation.newBuilder().apply {
     nonCommutativeOperation = NonCommutativeOperation.newBuilder().apply {
       exponentiation = NonCommutativeOperation.BinaryOperation.newBuilder().apply {
@@ -759,7 +760,7 @@ class ComparableOperationExtensionsTest {
   private fun createIntegerReal(value: Int) = Real.newBuilder().apply {
     integer = value
   }.build()
-  
+
   private fun createRationalReal(rawFractionExpression: String) = Real.newBuilder().apply {
     rational = fractionParser.parseFractionFromString(rawFractionExpression)
   }.build()

@@ -8,8 +8,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,8 +27,18 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.domain.classify.rules.numericexpressioninput.DaggerNumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest_TestApplicationComponent as DaggerTestApplicationComponent
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider as RuleClassifierProvider
 
-/** Tests for [NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider]. */
+/**
+ * Tests for [RuleClassifierProvider].
+ *
+ * Note that the tests implemented in this suite are specifically set up to verify the cases
+ * outlined in this sheet:
+ * https://docs.google.com/spreadsheets/dNumericExpressionInputIsEquivalentToRuleClassifierProvider/1u1fQdah2WsmdYKWKGmuXy5TPT7Ot-b8A7O9iZF-j5XE/edit#gid=0.
+ */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
@@ -38,10 +46,7 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest {
-  // TODO: add details about the sheet to this test's KDoc.
-
-  @Inject
-  internal lateinit var provider: NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
+  @Inject internal lateinit var provider: RuleClassifierProvider
 
   @Parameter lateinit var answer: String
   @Parameter lateinit var input: String
@@ -368,7 +373,7 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   }.build()
 
   private fun setUpTestApplicationComponent() {
-    DaggerNumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest_TestApplicationComponent
+    DaggerTestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }

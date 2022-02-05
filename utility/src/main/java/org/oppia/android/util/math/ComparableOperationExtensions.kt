@@ -53,8 +53,8 @@ private fun NonCommutativeOperation.isApproximatelyEqualTo(
   if (operationTypeCase != other.operationTypeCase) return false
   return when (operationTypeCase) {
     EXPONENTIATION -> {
-      exponentiation.leftOperand.isApproximatelyEqualTo(other.exponentiation.leftOperand)
-        && exponentiation.rightOperand.isApproximatelyEqualTo(other.exponentiation.rightOperand)
+      exponentiation.leftOperand.isApproximatelyEqualTo(other.exponentiation.leftOperand) &&
+        exponentiation.rightOperand.isApproximatelyEqualTo(other.exponentiation.rightOperand)
     }
     SQUARE_ROOT -> squareRoot.isApproximatelyEqualTo(other.squareRoot)
     OPERATIONTYPE_NOT_SET, null -> true
