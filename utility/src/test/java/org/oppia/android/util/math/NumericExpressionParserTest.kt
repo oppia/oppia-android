@@ -413,7 +413,7 @@ class NumericExpressionParserTest {
   fun testParse_negationAndExponentiation_returnsExpWithNegationResolvedLast() {
     val expression = parseNumericExpressionWithAllErrors("-3^4")
 
-    // Exponentiation is resolved first since negation is lower precedent.
+    // Exponentiation is resolved first since negation is higher precedence.
     assertThat(expression).hasStructureThatMatches {
       negation {
         operand {
@@ -428,6 +428,74 @@ class NumericExpressionParserTest {
                 withValueThat().isIntegerThat().isEqualTo(4)
               }
             }
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testParse_exponentiationAndNegatedMultiplication_returnsExpWithMultiplicationResolvedLast() {
+    val expression = parseNumericExpressionWithAllErrors("10^-5*3")
+
+    // Negation is isolated since multiplication is higher precedence.
+    assertThat(expression).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          exponentiation {
+            leftOperand {
+              constant {
+                withValueThat().isIntegerThat().isEqualTo(10)
+              }
+            }
+            rightOperand {
+              negation {
+                operand {
+                  constant {
+                    withValueThat().isIntegerThat().isEqualTo(5)
+                  }
+                }
+              }
+            }
+          }
+        }
+        rightOperand {
+          constant {
+            withValueThat().isIntegerThat().isEqualTo(3)
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  fun testParse_exponentiationAndPositiveMultiplication_returnsExpWithMultiplicationResolvedLast() {
+    val expression = parseNumericExpressionWithoutOptionalErrors("10^+5*3")
+
+    // Positive is isolated since multiplication is higher precedence.
+    assertThat(expression).hasStructureThatMatches {
+      multiplication {
+        leftOperand {
+          exponentiation {
+            leftOperand {
+              constant {
+                withValueThat().isIntegerThat().isEqualTo(10)
+              }
+            }
+            rightOperand {
+              positive {
+                operand {
+                  constant {
+                    withValueThat().isIntegerThat().isEqualTo(5)
+                  }
+                }
+              }
+            }
+          }
+        }
+        rightOperand {
+          constant {
+            withValueThat().isIntegerThat().isEqualTo(3)
           }
         }
       }
@@ -1364,25 +1432,24 @@ class NumericExpressionParserTest {
   fun testParse_multiplicationOfNegations_returnsExpWithCorrectStructure() {
     val expression = parseNumericExpressionWithAllErrors("-2*-3")
 
-    // Note that the following structure is not the same as (-2)*(-2) since unary negation has
-    // lower precedence than multiplication, so it's computed as first with its operand being the
-    // multiplication expression.
+    // Note that the following structure is the same as (-2)*(-2) since unary negation has higher
+    // precedence than multiplication.
     assertThat(expression).hasStructureThatMatches {
-      negation {
-        operand {
-          multiplication {
-            leftOperand {
+      multiplication {
+        leftOperand {
+          negation {
+            operand {
               constant {
                 withValueThat().isIntegerThat().isEqualTo(2)
               }
             }
-            rightOperand {
-              negation {
-                operand {
-                  constant {
-                    withValueThat().isIntegerThat().isEqualTo(3)
-                  }
-                }
+          }
+        }
+        rightOperand {
+          negation {
+            operand {
+              constant {
+                withValueThat().isIntegerThat().isEqualTo(3)
               }
             }
           }

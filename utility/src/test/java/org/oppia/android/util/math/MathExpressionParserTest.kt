@@ -14,6 +14,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.MathParsingErrorSubject.Companion.assertThat
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
@@ -40,6 +42,7 @@ import org.robolectric.annotation.LooperMode
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 @RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathExpressionParserTest {
   @Parameter lateinit var lhsOp: String
