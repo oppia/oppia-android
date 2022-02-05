@@ -11,6 +11,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.ComparableOperationSubject.Companion.assertThat
 import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.convertToComparableOperation
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
@@ -28,6 +30,7 @@ import org.robolectric.annotation.LooperMode
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ExpressionToComparableOperationConverterTest {
   @Parameter lateinit var op1: String
