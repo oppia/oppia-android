@@ -22,7 +22,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/oppia_primary"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/my_downloads"
+        app:title="@string/my_downloads_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
 
