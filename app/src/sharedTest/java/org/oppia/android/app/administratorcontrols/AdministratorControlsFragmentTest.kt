@@ -1,23 +1,22 @@
-package org.oppia.android.app.mydownloads
+package org.oppia.android.app.administratorcontrols
 
 import android.app.Application
-import android.widget.TextView
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeLeft
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.instanceOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,6 +24,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -32,10 +32,10 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.matchCurrentTabTitle
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -60,10 +60,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -79,133 +79,86 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [MyDownloadsFragment]. */
+/** Tests for [AdministratorControlsFragment]. */
 @RunWith(AndroidJUnit4::class)
-@LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = MyDownloadsFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class MyDownloadsFragmentTest {
+@Config(
+  application = AdministratorControlsFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class AdministratorControlsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
-  @Test
-  fun testMyDownloadsFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(
-        allOf(
-          instanceOf(TextView::class.java),
-          withParent(withId(R.id.my_downloads_toolbar))
-        )
-      ).check(
-        matches(
-          withText(R.string.my_downloads_activity_title)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testMyDownloadsFragment_showsMyDownloadsFragmentWithMultipleTabs() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_container)).perform(click())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testMyDownloadsFragment_swipePage_hasSwipedPage() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_viewpager)).perform(swipeLeft())
-      onView(withId(R.id.my_downloads_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              1
-            ).name
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testMyDownloadsFragment_defaultTabIsDownloads_isSuccessful() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              0
-            ).name
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testMyDownloadsFragment_clickOnDownloadsTab_showsDownloadsTabSelected() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(
-        allOf(
-          withText(MyDownloadsTab.getTabForPosition(0).name),
-          isDescendantOfA(withId(R.id.my_downloads_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.my_downloads_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              0
-            ).name
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testMyDownloadsFragment_clickOnUpdatesTab_showsUpdatesTabSelected() {
-    launch(MyDownloadsActivity::class.java).use {
-      onView(
-        allOf(
-          withText(R.string.tab_updates),
-          isDescendantOfA(withId(R.id.my_downloads_tabs_container))
-        )
-      ).perform(click())
-      onView(withId(R.id.my_downloads_tabs_container)).check(
-        matches(
-          matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              1
-            ).name
-          )
-        )
-      )
-    }
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Test
+  fun testAdministratorControlsFragment_clickEditProfile_checkSendingTheCorrectIntent() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.edit_profiles_text_view)).perform(click())
+      intended(hasComponent(ProfileListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickAppVersion_checkSendingTheCorrectIntent() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.administrator_controls_list)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          3
+        )
+      )
+      onView(withId(R.id.app_version_text_view)).perform(click())
+      intended(hasComponent(AppVersionActivity::class.java.name))
+    }
+  }
+
+  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
+    return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+      context,
+      profileId
+    )
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -228,18 +181,18 @@ class MyDownloadsFragmentTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(myDownloadsFragmentTest: MyDownloadsFragmentTest)
+    fun inject(testAdministratorControlsFragmentTest: AdministratorControlsFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMyDownloadsFragmentTest_TestApplicationComponent.builder()
+      DaggerAdministratorControlsFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(myDownloadsFragmentTest: MyDownloadsFragmentTest) {
-      component.inject(myDownloadsFragmentTest)
+    fun inject(testAdministratorControlsFragmentTest: AdministratorControlsFragmentTest) {
+      component.inject(testAdministratorControlsFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
