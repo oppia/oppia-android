@@ -1,6 +1,6 @@
 package org.oppia.android.domain.classify.rules.numericexpressioninput
 
-import org.oppia.android.app.model.ComparableOperationList
+import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
@@ -9,10 +9,19 @@ import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.toComparableOperationList
+import org.oppia.android.util.math.isApproximatelyEqualTo
+import org.oppia.android.util.math.toComparableOperation
 import javax.inject.Inject
-import org.oppia.android.util.math.approximatelyEquals
 
+/**
+ * Provider for a classifier that determines whether a numeric expression is equal to the
+ * creator-specific expression defined as the input to this interaction, with some manipulations.
+ *
+ * 'Trivial manipulations' indicates rearranging any operands for commutative operations, or changes
+ * in resolution order (i.e. associative) without changing the meaning of the expression.
+ *
+ * See this class's tests for a list of supported cases (both for matching and not matching).
+ */
 class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 @Inject constructor(
   private val classifierFactory: GenericRuleClassifier.Factory,
@@ -33,12 +42,12 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   ): Boolean {
     val answerExpression = parseComparableOperationList(answer) ?: return false
     val inputExpression = parseComparableOperationList(input) ?: return false
-    return answerExpression.approximatelyEquals(inputExpression)
+    return answerExpression.isApproximatelyEqualTo(inputExpression)
   }
 
-  private fun parseComparableOperationList(rawExpression: String): ComparableOperationList? {
+  private fun parseComparableOperationList(rawExpression: String): ComparableOperation? {
     return when (val expResult = MathExpressionParser.parseNumericExpression(rawExpression)) {
-      is MathParsingResult.Success -> expResult.result.toComparableOperationList()
+      is MathParsingResult.Success -> expResult.result.toComparableOperation()
       is MathParsingResult.Failure -> {
         consoleLogger.e(
           "NumericExpTrivialManips",

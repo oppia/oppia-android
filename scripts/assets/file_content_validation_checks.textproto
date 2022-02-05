@@ -1,16 +1,34 @@
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "^import .+?support.+?$"
   failure_message: "AndroidX should be used instead of the support library"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "announceForAccessibility\\("
+  failure_message: "Please use AccessibilityService instead."
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityServiceImpl.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "announceForAccessibilityForView\\("
+  failure_message: "When using announceForAccessibility, please add an exempt file in file_content_validation_checks.textproto."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
+  exempted_file_name: "app/src/test/java/org/oppia/android/app/accessibility/FakeAccessibilityServiceTest.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityService.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityServiceImpl.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/FakeAccessibilityService.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "CoroutineWorker"
   failure_message: "For stable tests, prefer using ListenableWorker with an Oppia-managed dispatcher."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "SettableFuture"
   failure_message: "SettableFuture should only be used in pre-approved locations since it's easy to potentially mess up & lead to a hanging ListenableFuture."
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
@@ -18,90 +36,90 @@ file_content_checks {
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "android:gravity=\"left\""
   failure_message: "Use android:gravity=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "android:gravity=\"right\""
   failure_message: "Use android:gravity=\"end\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "android:layout_gravity=\"left\""
   failure_message: "Use android:layout_gravity=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "android:layout_gravity=\"right\""
   failure_message: "Use android:layout_gravity=\"end\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "paddingLeft|paddingRight|drawableLeft|drawableRight|layout_alignLeft|layout_alignRight|layout_marginLeft|layout_marginRight|layout_alignParentLeft|layout_alignParentRight|layout_toLeftOf|layout_toRightOf|layout_constraintLeft_toLeftOf|layout_constraintLeft_toRightOf|layout_constraintRight_toLeftOf|layout_constraintRight_toRightOf|layout_goneMarginLeft|layout_goneMarginRight"
   failure_message: "Use start/end versions of layout properties, instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "app:barrierDirection=\"left\""
   failure_message: "Use app:barrierDirection=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "app:barrierDirection=\"right\""
   failure_message: "Use app:barrierDirection=\"end\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "motion:dragDirection=\"left\""
   failure_message: "Use motion:dragDirection=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "motion:dragDirection=\"right\""
   failure_message: "Use motion:dragDirection=\"end\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "motion:touchAnchorSide=\"left\""
   failure_message: "Use motion:touchAnchorSide=\"start\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "motion:touchAnchorSide=\"right\""
   failure_message: "Use motion:touchAnchorSide=\"end\", instead, for proper RTL support"
 }
 file_content_checks {
-  file_path_regex: "app/src/main/res/values/strings.xml"
+  file_path_regex: "app/src/main/res/values/strings\\.xml"
   prohibited_content_regex: "Oppia"
   failure_message: "Oppia should never used directly in a string (since it shouldn't be translated). Instead, use a parameter & insert the string retrieved from app_name."
 }
 file_content_checks {
-  file_path_regex: "app/src/main/res/values/strings.xml"
+  file_path_regex: "app/src/main/res/values/strings\\.xml"
   prohibited_content_regex: "translatable=\"false\""
   failure_message: "Untranslatable strings should go in untranslated_strings.xml, instead."
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "<string name=\"[^\"]+\">"
   failure_message: "All strings outside strings.xml must be marked as not translatable, or moved to strings.xml."
   exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "<plurals name=\"[^\"]+\">"
   failure_message: "All plurals outside strings.xml must be marked as not translatable, or moved to strings.xml."
   exempted_file_patterns: "app/src/main/res/values.*?/strings\\.xml"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "android.text.BidiFormatter"
   failure_message: "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for KitKat compatibility."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "androidx.core.text.BidiFormatter"
   failure_message: "Do not use AndroidX's BidiFormatter directly. Instead, use the wrapper utility OppiaBidiFormatter so that tests can verify that formatting actually occurs on select strings."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
@@ -110,7 +128,7 @@ file_content_checks {
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatterImpl.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "(format|getString|getStringArray|getQuantityString|getQuantityText|toLowerCase|toUpperCase|capitalize|decapitalize|lowercase|uppercase)\\("
   failure_message: "String formatting and resource retrieval should go through AppLanguageResourceHandler, OppiaLocale.DisplayLocale, or OppiaLocale.MachineLocale depending on the context (see each class's documentation for details on when each should be used)."
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/locale/DisplayLocaleImpl.kt"
@@ -119,6 +137,7 @@ file_content_checks {
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/WorkDataExtensions.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedMethod.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/extensions/BundleExtensions.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
@@ -128,29 +147,29 @@ file_content_checks {
   exempted_file_patterns: "scripts/.+"
 }
 file_content_checks {
-  file_path_regex: ".+?.java"
+  file_path_regex: ".+?\\.java"
   prohibited_content_regex: "(format|getString|getStringArray|getQuantityString|getQuantityText|toLowerCase|toUpperCase)\\("
   failure_message: "String formatting and resource retrieval should go through AppLanguageResourceHandler, OppiaLocale.DisplayLocale, or OppiaLocale.MachineLocale depending on the context (see each class's documentation for details on when each should be used)."
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "ignoreCase\\s*?="
   failure_message: "Case-insensitive string operations should be performed using MachineLocale."
-  exempted_file_patterns: "testing/src/main/.+?.kt"
+  exempted_file_patterns: "testing/src/main/.+?\\.kt"
   exempted_file_patterns: "scripts/.+"
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "(format|getString|getStringArray)\\("
   failure_message: "String formatting and resource retrieval in layouts should go through AppLanguageResourceHandler."
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "@string/[^\\s]+?\\("
   failure_message: "String formatting and quantity string building shouldn't be done directly through databinding. Instead, pass in AppLanguageResourceHandler from the view model or call a new function through the view model to compute the string. Both should use the handler's locale-safe formatting/quantity string methods."
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "@plurals/[^\\s]+?\\("
   failure_message: "String plurals shouldn't be constructed directly through databinding. Instead, pass in AppLanguageResourceHandler from the view model or call a new function through the view model to compute the string. Both should use the handler's locale-safe formatting/quantity string methods."
 }
@@ -160,13 +179,13 @@ file_content_checks {
   failure_message: "Only string type specifiers should use for strings (to avoid runtime errors due to bidirectional wrapping requirements)."
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "\\sActivity\\("
   failure_message: "Activity should never be subclassed. Use AppCompatActivity, instead."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "\\sAppCompatActivity\\("
   failure_message: "Never subclass AppCompatActivity directly. Instead, use InjectableAppCompatActivity."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
@@ -176,30 +195,30 @@ file_content_checks {
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/TextInputActionTestActivity.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "\\sDialogFragment\\("
   failure_message: "DialogFragment should never be subclassed. Use InjectableDialogFragment, instead."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/fragment/InjectableDialogFragment.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?AndroidManifest.xml"
+  file_path_regex: ".+?AndroidManifest\\.xml"
   prohibited_content_regex: "android:configChanges"
   failure_message: "Never explicitly handle configuration changes. Instead, use saved instance states for retaining state across rotations. For other types of configuration changes, follow up with the developer mailing list with how to proceed if you think this is a legitimate case."
 }
 file_content_checks {
-  file_path_regex: ".+?.xml"
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "(android:drawableStart)|(android:drawableEnd)|(android:drawableTop)|(android:drawableBottom)|(android:src)"
   failure_message: "Drawable start/end/top/bottom & image source should use the compat versions, instead, e.g.: app:drawableStartCompat or app:srcCompat, to ensure that vector drawables can load properly in SDK <21 environments."
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "java.util.Optional"
   failure_message: "Prefer using com.google.common.base.Optional (Guava's Optional) since desugaring has some incompatibilities between Bazel & KitKat builds."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "java\\.util\\.Calendar"
   failure_message: "Don't use Calendar directly. Instead, use OppiaClock and/or OppiaLocale for calendar-specific operations."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
@@ -209,7 +228,7 @@ file_content_checks {
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/system/OppiaClock.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "java\\.util\\.Date"
   failure_message: "Don't use Date directly. Instead, perform date-based operations using OppiaLocale."
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt"
@@ -221,7 +240,7 @@ file_content_checks {
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "java\\.text"
   failure_message: "Don't perform date/time formatting directly. Instead, use OppiaLocale."
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt"
@@ -232,7 +251,7 @@ file_content_checks {
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "java\\.util\\.Locale"
   failure_message: "Don't use Locale directly. Instead, use LocaleController, or OppiaLocale & its subclasses."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/player/audio/LanguageDialogFragment.kt"
@@ -242,6 +261,7 @@ file_content_checks {
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt"
   exempted_file_name: "app/src/test/java/org/oppia/android/app/player/state/StateFragmentLocalTest.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRule.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedMethod.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/robolectric/ShadowBidiFormatter.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/robolectric/ShadowBidiFormatterTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseEventLogger.kt"
@@ -252,8 +272,29 @@ file_content_checks {
   exempted_file_patterns: "utility/src/(?:((main)|(test)))/java/org/oppia/android/util/locale/.+?\\.kt"
 }
 file_content_checks {
-  file_path_regex: ".+?.kt"
+  file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "kotlin\\.properties\\.Delegates"
   failure_message: "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to null, instead. Delegates uses reflection internally, have a non-trivial initialization cost, and can cause breakages on KitKat devices. See #3939 for more context."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: "BUILD"
+  prohibited_content_regex: "^proto_library\\("
+  failure_message: "Don't use proto_library. Use oppia_proto_library instead."
+}
+file_content_checks {
+  file_path_regex: ".+?\\.kt"
+  prohibited_content_regex: "OppiaParameterizedTestRunner"
+  failure_message: "To use OppiaParameterizedTestRunner, please add an exemption to file_content_validation_checks.textproto and add an explanation for your use case in your PR description. Note that parameterized tests should only be used in special circumstances where a single behavior can be tested across multiple inputs, or for especially large test suites that can be trivially reduced."
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputIsEquivalentToRuleClassifierProviderTest.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/ExpressionToComparableOperationConverterTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionExtensionsTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionParserTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathTokenizerTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/PolynomialExtensionsTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/RealExtensionsTest.kt"
+  exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
 }
