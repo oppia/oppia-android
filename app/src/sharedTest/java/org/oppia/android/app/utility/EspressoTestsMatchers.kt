@@ -1,6 +1,6 @@
 package org.oppia.android.app.utility
 
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.view.View
 import org.hamcrest.Matcher
 import org.oppia.android.app.utility.TabMatcher.Companion.matchCurrentTabTitleCheck
@@ -17,7 +17,7 @@ object EspressoTestsMatchers {
     return DrawableMatcher(resourceId)
   }
 
-  fun withDrawableDynamic(bitmapDrawable: BitmapDrawable): Matcher<View> {
+  fun withDrawableDynamic(bitmapDrawable: Drawable): Matcher<View> {
     return DrawableMatcherDynamic(bitmapDrawable)
   }
 

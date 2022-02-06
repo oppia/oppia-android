@@ -68,7 +68,7 @@ class DrawableMatcher constructor(
 }
 
 class DrawableMatcherDynamic constructor(
-  private val expectedDrawable: BitmapDrawable?
+  private val expectedDrawable: Drawable?
 ) : TypeSafeMatcher<View>(View::class.java) {
 
   private var resourceName: String? = null

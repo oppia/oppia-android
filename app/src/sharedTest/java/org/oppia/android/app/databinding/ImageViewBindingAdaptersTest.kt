@@ -199,11 +199,11 @@ class ImageViewBindingAdaptersTest {
       val url = profileAvatar.avatarImageUri.toString()
       setProfileImage(imageView, profileAvatar)
       testCoroutineDispatchers.runCurrent()
-      var imageViewBitmap = ImageView(it)
+//      var imageViewBitmap = ImageView(it)
+//      testCoroutineDispatchers.runCurrent()
+//      testGlideImageLoader.loadBitmap(url, ImageViewTarget(imageViewBitmap))
       testCoroutineDispatchers.runCurrent()
-      testGlideImageLoader.loadBitmap(url, ImageViewTarget(imageViewBitmap))
-      testCoroutineDispatchers.runCurrent()
-      var imageBitmapSource = (imageViewBitmap.drawable as BitmapDrawable)
+      var imageBitmapSource = imageView.drawable
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawableDynamic(imageBitmapSource))
       )
