@@ -57,7 +57,7 @@ class AdministratorControlsActivity :
     val extraControlsTitle =
       savedInstanceState?.getStringFromBundle(SELECTED_CONTROLS_TITLE_SAVED_KEY)
     lastLoadedFragment = if (savedInstanceState != null) {
-      savedInstanceState.get(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
+      savedInstanceState.getStringFromBundle(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
     } else {
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
