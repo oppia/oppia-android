@@ -56,7 +56,7 @@
           android:id="@+id/profile_select_text"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginStart="@dimen/profile_chooser_fragment_layout_marginStart"
+          android:layout_marginStart="@dimen/profile_chooser_fragment_layout_margin_start"
           android:layout_marginTop="80dp"
           android:fontFamily="sans-serif"
           android:text="@string/profile_chooser_select"
@@ -108,7 +108,7 @@
 
       <TextView
         style="@style/Heading1ViewCenter"
-        android:layout_marginBottom="@dimen/profile_chooser_fragment_layout_marginBottom"
+        android:layout_marginBottom="@dimen/profile_chooser_fragment_layout_margin_bottom"
         android:gravity="center"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
@@ -118,7 +118,7 @@
         android:id="@+id/profile_chooser_setting_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="@dimen/profile_chooser_fragment_layout_marginEnd"
+        android:layout_marginEnd="@dimen/profile_chooser_fragment_layout_margin_end"
         android:padding="8dp"
         app:srcCompat="@drawable/ic_settings_grey_48dp" />
     </LinearLayout>

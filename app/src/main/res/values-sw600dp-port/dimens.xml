@@ -420,8 +420,8 @@
   <dimen name="revision_card_fragment_layout_button_margin_top">48dp</dimen>
 
   <!-- Profile Chooser Fragment -->
-  <dimen name="profile_chooser_fragment_layout_marginStart">64dp</dimen>
-  <dimen name="profile_chooser_fragment_layout_marginBottom">32dp</dimen>
-  <dimen name="profile_chooser_fragment_layout_marginEnd">64dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_margin_start">64dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_margin_bottom">32dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_margin_end">64dp</dimen>
 
 </resources>
