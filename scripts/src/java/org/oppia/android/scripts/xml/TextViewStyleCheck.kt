@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.xml
 
 import org.oppia.android.scripts.common.RepositoryFile
-import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 fun main(vararg args: String) {
@@ -16,12 +15,11 @@ fun main(vararg args: String) {
 
   val builderFactory = DocumentBuilderFactory.newInstance()
 
-  // val allErrorsList = searchFiles.flatMap { file ->
+  val allErrorsList = searchFiles.flatMap { file ->
     val docBuilder = builderFactory.newDocumentBuilder()
     val xmlSyntaxErrorHandler = XmlSyntaxErrorHandler()
     docBuilder.setErrorHandler(xmlSyntaxErrorHandler)
     val xmlDocument = docBuilder.parse(file.toFile())
-    val list= xmlDocument.
-    // fileErrorList.map
-  // }
+    val list = xmlDocument.fileErrorList.map
+  }
 }
