@@ -1,21 +1,19 @@
-package org.oppia.android.app.devoptions
+package org.oppia.android.app.databinding
 
 import android.app.Application
-import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.intent.Intents
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
 import dagger.Component
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,11 +26,15 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundColor
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setTopBackgroundDrawable
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -57,7 +59,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -68,91 +71,97 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ViewEventLogsActivity]. */
+/** Tests for [DrawableBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = ViewEventLogsActivityTest.TestApplication::class,
+  application = DrawableBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class ViewEventLogsActivityTest {
+class DrawableBindingAdaptersTest {
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var context: Context
-
   @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    ViewEventLogsActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  var activityRule: ActivityScenarioRule<DrawableBindingAdaptersTestActivity> =
+    ActivityScenarioRule(
+      Intent(
+        ApplicationProvider.getApplicationContext(),
+        DrawableBindingAdaptersTestActivity::class.java
+      )
+    )
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    Intents.init()
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+
+  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
+
+  @Test
+  fun testSetBackgroundColor_hasCorrectBackgroundColor() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setBackgroundColor(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as ColorDrawable).color).isEqualTo(colorRgb)
+    }
+  }
+
+  @Test
+  fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
+    }
+  }
+
+  @Test
+  fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setTopBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
+    }
+  }
+
+  private fun getView(it: DrawableBindingAdaptersTestActivity): View {
+    return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Test
-  fun testViewEventLogsActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createViewEventLogsActivityIntent())
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.view_event_logs_activity_title))
-  }
-
-  @Test
-  fun testViewEventLogsActivity_viewEventLogsFragmentIsDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
-      onView(withId(R.id.view_event_logs_fragment_container)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testMarkTopicsCompletedActivity_configChange_viewEventLogsFragmentIsDisplayed() {
-    launch(ViewEventLogsActivity::class.java).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.view_event_logs_fragment_container)).check(matches(isDisplayed()))
-    }
-  }
-
-  private fun createViewEventLogsActivityIntent(): Intent =
-    ViewEventLogsActivity.createViewEventLogsActivityIntent(context)
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, DebugLogReportingModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -162,31 +171,25 @@ class ViewEventLogsActivityTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(viewEventLogsActivityTest: ViewEventLogsActivityTest)
+    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerViewEventLogsActivityTest_TestApplicationComponent.builder()
+      DaggerDrawableBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    override fun onCreate() {
-      super.onCreate()
-      FirebaseApp.initializeApp(applicationContext)
-    }
-
-    fun inject(viewEventLogsActivityTest: ViewEventLogsActivityTest) {
-      component.inject(viewEventLogsActivityTest)
+    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest) {
+      component.inject(drawableBindingAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
