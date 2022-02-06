@@ -90,6 +90,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.ImageViewTarget
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -197,11 +198,11 @@ class ImageViewBindingAdaptersTest {
       val url = profileAvatar.avatarImageUri.toString()
       setProfileImage(imageView, profileAvatar)
       testCoroutineDispatchers.runCurrent()
-//      var imageViewBitmap = ImageView(it)
-//      testCoroutineDispatchers.runCurrent()
-//      testGlideImageLoader.loadBitmap(url, ImageViewTarget(imageViewBitmap))
+      var imageViewBitmap = ImageView(it)
       testCoroutineDispatchers.runCurrent()
-      var imageBitmapSource = imageView.drawable
+      testGlideImageLoader.loadBitmap(url, ImageViewTarget(imageViewBitmap))
+      testCoroutineDispatchers.runCurrent()
+      var imageBitmapSource = imageViewBitmap.drawable
       onView(withId(R.id.image_view_for_data_binding)).check(
         matches(withDrawableDynamic(imageBitmapSource))
       )
