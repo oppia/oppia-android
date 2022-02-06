@@ -13,7 +13,7 @@ class OppiaLogger @Inject constructor(
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
     timestamp: Long,
-    eventContext: EventLog.Context?
+    eventContext: EventLog.Context
   ) {
     analyticsController.logTransitionEvent(timestamp, eventContext)
   }
@@ -21,7 +21,7 @@ class OppiaLogger @Inject constructor(
   /** Logs click events. See [AnalyticsController.logClickEvent] for more context. */
   fun logClickEvent(
     timestamp: Long,
-    eventContext: EventLog.Context?
+    eventContext: EventLog.Context
   ) {
     analyticsController.logClickEvent(timestamp, eventContext)
   }
@@ -91,20 +91,17 @@ class OppiaLogger @Inject constructor(
     consoleLogger.e(tag, msg, tr)
   }
 
-  /** Returns the context of an event related to the opening of home activity. */
+  /** Returns the context of the event indicating that the user opened the home activity. */
   fun createOpenHomeContext(): EventLog.Context {
-    return EventLog.Context.newBuilder().setOpenHome(EventLog.NullContext.newBuilder().build())
-      .build()
+    return EventLog.Context.newBuilder().setOpenHome(true).build()
   }
 
-  /** Returns the context of an event related to the opening of profile chooser activity. */
+  /** Returns the context of the event indicating that the user opened the profile chooser activity. */
   fun createOpenProfileChooserContext(): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setOpenProfileChooser(EventLog.NullContext.newBuilder().build())
-      .build()
+    return EventLog.Context.newBuilder().setOpenProfileChooser(true).build()
   }
 
-  /** Returns the context of an event related to the opening of exploration activity. */
+  /** Returns the context of the event indicating that the user opened the exploration activity. */
   fun createOpenExplorationActivityContext(
     topicId: String,
     storyId: String,
@@ -121,7 +118,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to opening of question player. */
+  /** Returns the context of the event indicating that the user opened the question player. */
   fun createOpenQuestionPlayerContext(
     questionId: String,
     skillId: List<String>
@@ -136,7 +133,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to opening of practice tab. */
+  /** Returns the context of the event indicating that the user opened the practice tab. */
   fun createOpenPracticeTabContext(
     topicId: String
   ): EventLog.Context {
@@ -149,7 +146,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to opening of info tab. */
+  /** Returns the context of the event indicating that the user opened the info tab. */
   fun createOpenInfoTabContext(
     topicId: String
   ): EventLog.Context {
@@ -162,7 +159,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to opening of lessons tab. */
+  /** Returns the context of the event indicating that the user opened the lessons tab. */
   fun createOpenLessonsTabContext(
     topicId: String
   ): EventLog.Context {
@@ -175,7 +172,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to opening of revision tab. */
+  /** Returns the context of the event indicating that the user opened the revision tab. */
   fun createOpenRevisionTabContext(
     topicId: String
   ): EventLog.Context {
@@ -188,7 +185,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to opening of story activity. */
+  /** Returns the context of the event indicating that the user opened the story activity. */
   fun createOpenStoryActivityContext(
     topicId: String,
     storyId: String
@@ -203,7 +200,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to opening of concept card. */
+  /** Returns the context of the event indicating that the user opened the concept card. */
   fun createOpenConceptCardContext(
     skillId: String
   ): EventLog.Context {
@@ -216,7 +213,7 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to opening of revision card. */
+  /** Returns the context of the event indicating that the user opened the revision card. */
   fun createOpenRevisionCardContext(
     topicId: String,
     subTopicId: Int

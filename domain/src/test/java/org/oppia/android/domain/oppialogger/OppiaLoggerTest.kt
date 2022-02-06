@@ -13,7 +13,6 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -29,6 +28,17 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 
 private const val TEST_TOPIC_ID = "test_topicId"
 private const val TEST_STORY_ID = "test_storyId"
@@ -180,9 +190,7 @@ class OppiaLoggerTest {
       TEST_EXPLORATION_ID
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_EXPLORATION_ACTIVITY)
     assertThat(eventContext.openExplorationActivity.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.openExplorationActivity.storyId).matches(TEST_STORY_ID)
     assertThat(eventContext.openExplorationActivity.explorationId).matches(TEST_EXPLORATION_ID)
@@ -192,18 +200,14 @@ class OppiaLoggerTest {
   fun testController_createOpenHomeContext_returnsCorrectExplorationContext() {
     val eventContext = oppiaLogger.createOpenHomeContext()
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_HOME
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_HOME)
   }
 
   @Test
   fun testController_createOpenProfileChooserContext_returnsCorrectExplorationContext() {
     val eventContext = oppiaLogger.createOpenProfileChooserContext()
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_PROFILE_CHOOSER)
   }
 
   @Test
@@ -213,9 +217,7 @@ class OppiaLoggerTest {
       listOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID)
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_QUESTION_PLAYER)
     assertThat(eventContext.openQuestionPlayer.questionId).matches(TEST_QUESTION_ID)
     assertThat(eventContext.openQuestionPlayer.skillIdList)
       .containsAtLeastElementsIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
@@ -228,9 +230,7 @@ class OppiaLoggerTest {
       TEST_STORY_ID
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_STORY_ACTIVITY)
     assertThat(eventContext.openStoryActivity.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.openStoryActivity.storyId).matches(TEST_STORY_ID)
   }
@@ -239,9 +239,7 @@ class OppiaLoggerTest {
   fun testController_createOpenInfoTabContext_returnsCorrectTopicContext() {
     val eventContext = oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_INFO_TAB)
     assertThat(eventContext.openInfoTab.topicId).matches(TEST_TOPIC_ID)
   }
 
@@ -249,9 +247,7 @@ class OppiaLoggerTest {
   fun testController_createOpenLessonsTabContext_returnsCorrectTopicContext() {
     val eventContext = oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_LESSONS_TAB)
     assertThat(eventContext.openLessonsTab.topicId).matches(TEST_TOPIC_ID)
   }
 
@@ -259,9 +255,7 @@ class OppiaLoggerTest {
   fun testController_createOpenPracticeTabContext_returnsCorrectTopicContext() {
     val eventContext = oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_PRACTICE_TAB)
     assertThat(eventContext.openPracticeTab.topicId).matches(TEST_TOPIC_ID)
   }
 
@@ -269,9 +263,7 @@ class OppiaLoggerTest {
   fun testController_createOpenRevisionTabContext_returnsCorrectTopicContext() {
     val eventContext = oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_REVISION_TAB)
     assertThat(eventContext.openRevisionTab.topicId).matches(TEST_TOPIC_ID)
   }
 
@@ -279,9 +271,7 @@ class OppiaLoggerTest {
   fun testController_createOpenConceptCardContext_returnsCorrectConceptCardContext() {
     val eventContext = oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_CONCEPT_CARD)
     assertThat(eventContext.openConceptCard.skillId).matches(TEST_SKILL_ID)
   }
 
@@ -290,9 +280,7 @@ class OppiaLoggerTest {
     val eventContext =
       oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
-    )
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
     assertThat(eventContext.openRevisionCard.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.openRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
   }

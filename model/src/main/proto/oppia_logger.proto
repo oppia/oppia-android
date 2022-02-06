@@ -89,17 +89,15 @@ message EventLog {
       // The event being logged is related to deleting a profile.
       LearnerDetailsContext delete_profile_context = 24;
 
-      // The event being logged is related to the opening of home activity.
-      NullContext open_home = 25;
+      // The event being logged is related to the opening of home activity. The boolean value here has no
+      // importance and is always 'true'.
+      bool open_home = 25;
 
-      // The event being logged is related to the opening of profile chooser activity.
-      NullContext open_profile_chooser = 26;
+      // The event being logged is related to the opening of profile chooser activity. The boolean value here
+      // has no importance and is always 'true'.
+      bool open_profile_chooser = 26;
     }
   }
-
-  // Representation of a null context which can be used to represent events which don't require
-  // any additional data to be recorded.
-  message NullContext {}
 
   // Structure of a question context.
   message QuestionContext {

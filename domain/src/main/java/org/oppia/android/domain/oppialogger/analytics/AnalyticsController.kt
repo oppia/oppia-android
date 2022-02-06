@@ -34,7 +34,7 @@ class AnalyticsController @Inject constructor(
    */
   fun logTransitionEvent(
     timestamp: Long,
-    eventContext: EventLog.Context?
+    eventContext: EventLog.Context
   ) {
     uploadOrCacheEventLog(
       createEventLog(
@@ -51,7 +51,7 @@ class AnalyticsController @Inject constructor(
    */
   fun logClickEvent(
     timestamp: Long,
-    eventContext: EventLog.Context?
+    eventContext: EventLog.Context
   ) {
     uploadOrCacheEventLog(
       createEventLog(
@@ -65,16 +65,13 @@ class AnalyticsController @Inject constructor(
   /** Returns an event log containing relevant data for event reporting. */
   private fun createEventLog(
     timestamp: Long,
-    eventContext: EventLog.Context?,
+    eventContext: EventLog.Context,
     priority: Priority
   ): EventLog {
     val event: EventLog.Builder = EventLog.newBuilder()
     event.timestamp = timestamp
     event.priority = priority
-
-    if (eventContext != null)
-      event.context = eventContext
-
+    event.context = eventContext
     return event.build()
   }
 

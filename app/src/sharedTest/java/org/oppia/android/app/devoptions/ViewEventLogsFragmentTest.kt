@@ -170,6 +170,81 @@ class ViewEventLogsFragmentTest {
   }
 
   @Test
+  fun testViewEventLogsFragment_checkRecentLogsAreDisplayedFirst() {
+    launch(ViewEventLogsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 0,
+        stringToMatch = "Open Revision Card",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 1)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 1,
+        stringToMatch = "Open Story Activity",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 2)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 2,
+        stringToMatch = "Open Lessons Tab",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 3)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 3,
+        stringToMatch = "Open Home",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 4)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 4,
+        stringToMatch = "Open Profile Chooser",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+    }
+  }
+
+  @Test
+  fun testViewEventLogsFragment_configChange_checkRecentLogsAreDisplayedFirst() {
+    launch(ViewEventLogsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 0)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 0,
+        stringToMatch = "Open Revision Card",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 1)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 1,
+        stringToMatch = "Open Story Activity",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 2)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 2,
+        stringToMatch = "Open Lessons Tab",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 3)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 3,
+        stringToMatch = "Open Home",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+      scrollToPosition(position = 4)
+      verifyTextOnEventLogItemViewAtPosition(
+        position = 4,
+        stringToMatch = "Open Profile Chooser",
+        targetViewId = R.id.view_event_logs_context_text_view
+      )
+    }
+  }
+
+  @Test
   fun testViewEventLogsFragment_contextIsNotNull_contextIsCorrectlyDisplayed() {
     launch(ViewEventLogsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -200,7 +275,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "Open Info Tab",
+        stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
     }
@@ -238,7 +313,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "Open Info Tab",
+        stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
     }
@@ -408,7 +483,7 @@ class ViewEventLogsFragmentTest {
 
     oppiaLogger.logTransitionEvent(
       timestamp = TEST_TIMESTAMP + 20000,
-      eventContext = oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+      eventContext = oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
     )
 
     oppiaLogger.logTransitionEvent(
@@ -434,19 +509,6 @@ class ViewEventLogsFragmentTest {
         targetViewId = targetViewId
       )
     ).check(matches(withText(stringToMatch)))
-  }
-
-  private fun verifyItemNotDisplayedOnEventLogItemViewAtPosition(
-    position: Int,
-    targetViewId: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.view_event_logs_recycler_view,
-        position = position,
-        targetViewId = targetViewId
-      )
-    ).check(matches(not(isDisplayed())))
   }
 
   private fun verifyItemDisplayedOnEventLogItemViewAtPosition(
