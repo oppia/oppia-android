@@ -272,8 +272,8 @@
   <dimen name="profile_chooser_fragment_profile_select_text_margin_top">64dp</dimen>
   <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">12dp</dimen>
   <dimen name="profile_chooser_profile_view_view_margin_top">32dp</dimen>
-  <dimen name="profile_chooser_fragment_layout_marginStart">16dp</dimen>
-  <dimen name="profile_chooser_fragment_layout_marginEnd">16dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_margin_start">16dp</dimen>
+  <dimen name="profile_chooser_fragment_layout_margin_end">16dp</dimen>
   <dimen name="profile_chooser_fragment_layout_height">96dp</dimen>
 
   <!-- Coming Soon Topic List -->
