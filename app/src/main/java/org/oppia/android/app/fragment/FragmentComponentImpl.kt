@@ -37,6 +37,7 @@ import org.oppia.android.app.options.ReadingTextSizeFragment
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.CellularAudioDialogFragment
 import org.oppia.android.app.player.audio.LanguageDialogFragment
+import org.oppia.android.app.player.exploration.BottomSheetFragment
 import org.oppia.android.app.player.exploration.ExplorationFragment
 import org.oppia.android.app.player.exploration.ExplorationManagerFragment
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
@@ -102,7 +103,6 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(audioFragment: AudioFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
-  fun inject(bottomSheetFragment: BottomSheetFragment)
   fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)

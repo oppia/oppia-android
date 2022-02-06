@@ -1,4 +1,4 @@
-package org.oppia.android.app.fragment
+package org.oppia.android.app.player.exploration
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oppia.android.R
-import org.oppia.android.app.player.exploration.BottomSheetItemClickListener
 import org.oppia.android.databinding.FragmentBottomSheetBinding
 
 class BottomSheetFragment(val internalProfileId: Int) : BottomSheetDialogFragment() {

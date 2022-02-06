@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.fragment.BottomSheetFragment
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.Exploration
