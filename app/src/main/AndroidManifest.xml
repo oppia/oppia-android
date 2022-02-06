@@ -75,6 +75,7 @@
     <activity
       android:name=".app.mydownloads.MyDownloadsActivity"
       android:screenOrientation="portrait"
+      android:label="@string/my_downloads_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
@@ -216,6 +217,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.walkthrough.WalkthroughActivity"
+      android:label="@string/walkthrough_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.LessonThumbnailImageViewTestActivity" />
     <activity
