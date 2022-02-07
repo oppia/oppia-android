@@ -419,4 +419,10 @@
   <dimen name="revision_card_fragment_layout_text_margin_top">36dp</dimen>
   <dimen name="revision_card_fragment_layout_button_margin_top">48dp</dimen>
 
+  <!-- AdministratorControlAccountActionsView  -->
+  <dimen name="administrator_control_account_actions_view_upper_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_upper_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_lower_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_lower_text_view_padding_end">16dp</dimen>
+
 </resources>

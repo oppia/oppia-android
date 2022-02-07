@@ -424,4 +424,10 @@
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
+
+  <!-- AdministratorControlAccountActionsView  -->
+  <dimen name="administrator_control_account_actions_view_upper_text_view_padding_start">36dp</dimen>
+  <dimen name="administrator_control_account_actions_view_upper_text_view_padding_end">36dp</dimen>
+  <dimen name="administrator_control_account_actions_view_lower_text_view_padding_start">36dp</dimen>
+  <dimen name="administrator_control_account_actions_view_lower_text_view_padding_end">36dp</dimen>
 </resources>

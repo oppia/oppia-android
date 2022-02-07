@@ -625,4 +625,10 @@
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
+
+  <!-- AdministratorControlAccountActionsView  -->
+  <dimen name="administrator_control_account_actions_view_upper_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_upper_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_lower_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_lower_text_view_padding_end">16dp</dimen>
 </resources>
