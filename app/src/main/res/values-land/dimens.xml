@@ -434,5 +434,4 @@
   <dimen name="administrator_controls_download_permissions_view_lower_constraint_layout_padding_start">36dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_lower_constraint_layout_padding_end">36dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_lower_switch_compat_margin_end">0dp</dimen>
-
 </resources>
