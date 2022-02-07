@@ -424,4 +424,10 @@
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
+
+  <!-- TopicPracticeHeader -->
+  <dimen name="topic_practice_header_constraint_layout_margin_start">96dp</dimen>
+  <dimen name="topic_practice_header_constraint_layout_margin_top">32dp</dimen>
+  <dimen name="topic_practice_header_constraint_layout_margin_end">96dp</dimen>
+  <dimen name="topic_practice_header_constraint_layout_padding_bottom">24dp</dimen>
 </resources>
