@@ -23,10 +23,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private var isMultipane = false
-  private lateinit var lastLoadedFragment: String
-
   private lateinit var binding: AdministratorControlsActivityBinding
 
+  private lateinit var lastLoadedFragment: String
   private var selectedProfileId: Int? = null
 
   /** Initializes the [AdministratorControlsActivity] and sets the navigation drawer. */

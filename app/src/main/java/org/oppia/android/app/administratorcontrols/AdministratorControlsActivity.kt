@@ -49,6 +49,7 @@ class AdministratorControlsActivity :
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
+
   private lateinit var lastLoadedFragment: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,7 +142,7 @@ class AdministratorControlsActivity :
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
-    administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
     super.onSaveInstanceState(outState)
+    administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
   }
 }
