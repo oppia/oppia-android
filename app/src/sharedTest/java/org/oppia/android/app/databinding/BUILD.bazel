@@ -28,18 +28,6 @@ _TEST_FILES = [
 ]
 
 genrule(
-    name = "update_ImageViewBindingAdaptersTest",
-    srcs = ["ImageViewBindingAdaptersTest.kt"],
-    outs = ["ImageViewBindingAdaptersTest_updated.kt"],
-    cmd = """
-    cat $(SRCS) |
-    sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
-    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
-    sed 's/import org.oppia.android.app.databinding.ImageViewBindingAdapters./import org.oppia.android.app.databinding.ImageViewBindingAdapters_updated./g' > $(OUTS)
-    """,
-)
-
-genrule(
     name = "update_DrawableBindingAdaptersTest",
     srcs = ["DrawableBindingAdaptersTest.kt"],
     outs = ["DrawableBindingAdaptersTest_updated.kt"],
@@ -48,6 +36,18 @@ genrule(
     sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
     sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
     sed 's/import org.oppia.android.app.databinding.DrawableBindingAdapters./import org.oppia.android.app.databinding.DrawableBindingAdapters_updated./g' > $(OUTS)
+    """,
+)
+
+genrule(
+    name = "update_ImageViewBindingAdaptersTest",
+    srcs = ["ImageViewBindingAdaptersTest.kt"],
+    outs = ["ImageViewBindingAdaptersTest_updated.kt"],
+    cmd = """
+    cat $(SRCS) |
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
+    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' |
+    sed 's/import org.oppia.android.app.databinding.ImageViewBindingAdapters./import org.oppia.android.app.databinding.ImageViewBindingAdapters_updated./g' > $(OUTS)
     """,
 )
 
