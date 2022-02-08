@@ -17,7 +17,7 @@
       android:id="@+id/general_text_view"
       style="@style/Heading5ViewStart"
       android:layout_width="match_parent"
-      android:background="@color/oppia_grey_background"
+      android:background="@color/admin_controls_sub_heading_background_color"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
