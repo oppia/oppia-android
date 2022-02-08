@@ -17,17 +17,27 @@ class BulletTagHandler : CustomHtmlContentHandler.CustomTagHandler {
   private class Bullet
 
   override fun handleOpeningTag(output: Editable) {
+    appendNewLine(output)
     output.setSpan(Bullet(), output.length, output.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
   }
 
   override fun handleClosingTag(output: Editable) {
-    output.append("\n")
+    appendNewLine(output)
     output.getSpans(0, output.length, Bullet::class.java).lastOrNull()?.let {
       val start = output.getSpanStart(it)
       output.removeSpan(it)
       if (start != output.length) {
         output.setSpan(BulletSpan(), start, output.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
       }
+    }
+  }
+
+  /**
+   * Appends a new line to [output] if it doesn't already end in a new line
+   */
+  private fun appendNewLine(output: Editable) {
+    if (output.isNotEmpty() && output.last() != '\n') {
+      output.append("\n")
     }
   }
 }
