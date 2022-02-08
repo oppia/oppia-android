@@ -11,6 +11,7 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/AudioFragmen
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/BindableAdapterTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ConceptCardFragmentTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DragDropTestActivity"
+exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DrawableBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ExplorationInjectionActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ExplorationTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HomeFragmentTestActivity"
