@@ -460,6 +460,8 @@
   </style>
 
   <!-- ShapeableImageView -->
+  <!-- context for ShapeableimageView https://howtodoandroid.com/shapeableimageview-material-components-android/
+       -->
   <style name="ShapeAppearanceOverlay.App.Circular" parent="">
     <item name="cornerSize">50%</item>
   </style>

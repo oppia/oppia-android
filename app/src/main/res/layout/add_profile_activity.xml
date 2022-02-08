@@ -46,6 +46,8 @@
             android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
             app:add_shadow="true"
+            app:strokeColor="@color/avatar_border"
+            app:strokeWidth="1dp"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
