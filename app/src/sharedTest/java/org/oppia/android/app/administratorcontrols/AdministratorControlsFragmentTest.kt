@@ -730,8 +730,34 @@ class AdministratorControlsFragmentTest {
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControls_selectProfileUser_tabletConfigChange_displaysProfileEdit() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
+        matches(withText("Ben"))
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
     }
   }
 
