@@ -1,8 +1,10 @@
 package org.oppia.android.app.walkthrough
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
@@ -14,8 +16,10 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,6 +84,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [WalkthroughActivity]. */
@@ -93,7 +98,18 @@ class WalkthroughActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
+  @Inject
+  lateinit var context: Context
   // TODO(#3367): Use AccessibilityTestRule
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
 
   @Test
   fun testWalkthroughActivity_defaultProgressWorksCorrectly() {
@@ -173,6 +189,16 @@ class WalkthroughActivityTest {
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
       onView(withId(R.id.back_button)).perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(1)))
+    }
+  }
+
+  @Test
+  fun testWalkthroughActivity_hasCorrectActivityLabel() {
+    launch(WalkthroughActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+        assertThat(title).isEqualTo(context.getString(R.string.walkthrough_activity_title))
+      }
     }
   }
 

@@ -51,6 +51,7 @@ kt_android_library(
     visibility = ["//app:app_visibility"],
     deps = [
         "//app:view_models",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
     ],
 )
 

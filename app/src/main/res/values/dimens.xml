@@ -67,8 +67,6 @@
   <dimen name="home_welcome_outer_padding">28dp</dimen>
   <dimen name="home_welcome_text_view_margin_end">4dp</dimen>
   <dimen name="home_inner_margin">8dp</dimen>
-  <dimen name="home_tablet_land_outer_margin">96dp</dimen>
-  <dimen name="home_tablet_port_outer_margin">120dp</dimen>
   <dimen name="recently_played_margin_max">28dp</dimen>
   <dimen name="recently_played_margin_min">8dp</dimen>
   <dimen name="coming_soon_padding_end">16dp</dimen>
@@ -410,6 +408,10 @@
   <dimen name="audio_player_split_view_margin_start">32dp</dimen>
   <dimen name="audio_player_split_view_margin_end">32dp</dimen>
 
+  <!-- OptionAppLanguage -->
+  <dimen name="option_app_language_padding_start">16dp</dimen>
+  <dimen name="option_app_language_padding_end">16dp</dimen>
+
   <!-- FAQ Single -->
   <dimen name="faq_single_padding_start">24dp</dimen>
   <dimen name="faq_single_padding_top">22dp</dimen>
@@ -468,6 +470,11 @@
   <!-- Topic Practice Footer View -->
   <dimen name="topic_practice_footer_view_margin_top">36dp</dimen>
   <dimen name="topic_practice_footer_view_margin_bottom">108dp</dimen>
+
+  <!-- ProfileProgressFragment -->
+  <dimen name="profile_progress_fragment_margin_start">20dp</dimen>
+  <dimen name="profile_progress_fragment_margin_end">20dp</dimen>
+  <dimen name="profile_progress_fragment_padding_bottom">108dp</dimen>
 
   <!-- Completed Story Item -->
   <dimen name="completed_story_item_topic_container_margin_start">8dp</dimen>
@@ -588,4 +595,34 @@
   <dimen name="section_title_text_view_layout_margin_top">28dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">32dp</dimen>
 
+  <!-- TopicSummaryView -->
+  <dimen name="topic_summary_lesson_count_text_view_padding_bottom">8dp</dimen>
+  
+  <!-- TopicPracticeFragment -->
+  <dimen name="topic_practice_fragment_padding_bottom">172dp</dimen>
+  <dimen name="topic_practice_fragment_padding_start">0dp</dimen>
+  <dimen name="topic_practice_fragment_padding_end">0dp</dimen>
+
+  <!--  PromotedStoryList-->
+  <dimen name="promoted_story_list_layout_margin_end">28dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_start">28dp</dimen>
+
+  <!-- AudioLanguageFragment -->
+  <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
+
+  <!-- StoryFragment -->
+  <dimen name="story_fragment_padding_bottom">160dp</dimen>
+
+<!-- RevisionCardFragment -->
+  <dimen name="revision_card_fragment_layout_tablet_min_width">0dp</dimen>
+  <dimen name="revision_card_fragment_padding_bottom">160dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_start">28dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_end">28dp</dimen>
+  <dimen name="revision_card_fragment_layout_text_margin_top">36dp</dimen>
+  <dimen name="revision_card_fragment_layout_button_margin_top">48dp</dimen>
+
+  <!-- TopicLessonsTitle -->
+  <dimen name="topic_lessons_title_margin_start">32dp</dimen>
+  <dimen name="topic_lessons_title_margin_top">32dp</dimen>
+  <dimen name="topic_lessons_title_margin_end">32dp</dimen>
 </resources>

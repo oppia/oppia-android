@@ -5,7 +5,7 @@ import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.util.math.approximatelyEquals
+import org.oppia.android.util.math.isApproximatelyEqualTo
 import javax.inject.Inject
 
 /**
@@ -30,5 +30,5 @@ class NumericInputEqualsRuleClassifierProvider @Inject constructor(
     answer: Double,
     input: Double,
     classificationContext: ClassificationContext
-  ): Boolean = input.approximatelyEquals(answer)
+  ): Boolean = input.isApproximatelyEqualTo(answer)
 }
