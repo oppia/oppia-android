@@ -27,6 +27,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
 
   private lateinit var lastLoadedFragment: String
   private var selectedProfileId: Int? = null
+  private lateinit var extraControlsTitle: String
 
   /** Initializes the [AdministratorControlsActivity] and sets the navigation drawer. */
   fun handleOnCreate(
@@ -58,10 +59,12 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
         APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
         PROFILE_EDIT_FRAGMENT -> selectedProfileId?.let {
-          (activity as AdministratorControlsActivity).loadProfileEdit(
-            profileId = it,
-            profileName = "kjk"
-          )
+          if (extraControlsTitle != null) {
+            (activity as AdministratorControlsActivity).loadProfileEdit(
+              profileId = it,
+              profileName = extraControlsTitle
+            )
+          }
         }
       }
       setBackButtonClickListener()
@@ -119,8 +122,11 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   /** Loads the [ProfileEditFragment] when the user clicks on a profile in tablet multipane mode. */
-  fun loadProfileEdit(profileId: Int) {
+  fun loadProfileEdit(profileId: Int, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
+    selectedProfileId = profileId
+    extraControlsTitle = profileName
+    setExtraControlsTitle(extraControlsTitle)
     setMultipaneBackButtonVisibility(View.VISIBLE)
     val fragment = ProfileEditFragment.newInstance(profileId, isMultipane)
     activity.supportFragmentManager.beginTransaction().replace(
@@ -136,12 +142,11 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   /** Handles the back button according to the back stack of fragments. */
   fun handleOnBackPressed() {
     if (isMultipane) {
-      setBackButtonClickListener()
+      backButtonLogic()
     }
   }
 
   private fun setBackButtonClickListener() {
-    backButtonLogic()
     binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
       backButtonLogic()
     }
@@ -157,7 +162,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         setExtraControlsTitle(
           resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
         )
-//        loadProfileList()
+        loadProfileList()
       }
     }
   }
