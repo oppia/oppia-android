@@ -1,27 +1,23 @@
 package org.oppia.android.app.databinding
 
-import android.app.Activity
 import android.app.Application
 import android.content.Intent
-import android.widget.ImageView
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -30,15 +26,15 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
-import org.oppia.android.app.databinding.ImageViewBindingAdapters.setPlayStateDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundColor
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setTopBackgroundDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
+import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -84,26 +80,24 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
-/** Tests for [ImageViewBindingAdapters]. */
+/** Tests for [DrawableBindingAdapters]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = ImageViewBindingAdaptersTest.TestApplication::class,
+  application = DrawableBindingAdaptersTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class ImageViewBindingAdaptersTest {
-
-  // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
+class DrawableBindingAdaptersTest {
 
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
-  var activityRule: ActivityScenarioRule<ImageViewBindingAdaptersTestActivity> =
+  var activityRule: ActivityScenarioRule<DrawableBindingAdaptersTestActivity> =
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        ImageViewBindingAdaptersTestActivity::class.java
+        DrawableBindingAdaptersTestActivity::class.java
       )
     )
 
@@ -118,73 +112,41 @@ class ImageViewBindingAdaptersTest {
     Intents.release()
   }
 
+  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
+
   @Test
-  fun testSetPlayStateDrawableWithChapterPlayState_completedState_hasCorrectDrawable() {
-    activityRule.scenario.runWithActivity {
-      val imageView: ImageView = getImageView(it)
-      setPlayStateDrawable(imageView, ChapterPlayState.COMPLETED)
-      onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_solid_color_primary_32dp))
-      )
+  fun testSetBackgroundColor_hasCorrectBackgroundColor() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setBackgroundColor(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as ColorDrawable).color).isEqualTo(colorRgb)
     }
   }
 
   @Test
-  fun testSetPlayStateDrawableWithChapterPlayState_notStartedState_hasCorrectDrawable() {
-    activityRule.scenario.runWithActivity {
-      val imageView: ImageView = getImageView(it)
-      setPlayStateDrawable(imageView, ChapterPlayState.NOT_STARTED)
-      onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
-      )
+  fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
   @Test
-  fun testSetPlayStateDrawableWithChapterPlayState_startedNotCompletedState_hasCorrectDrawable() {
-    activityRule.scenario.runWithActivity {
-      val imageView: ImageView = getImageView(it)
-      setPlayStateDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
-      onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
-      )
+  fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
+    activityRule.scenario.onActivity {
+      val view: View = getView(it)
+      setTopBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
     }
   }
 
-  @Test
-  fun testSetPlayStateDrawableWithChapterPlayState_notPlayableState_hasCorrectDrawable() {
-    activityRule.scenario.runWithActivity {
-      val imageView: ImageView = getImageView(it)
-      setPlayStateDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-      onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
-      )
-    }
-  }
-
-  private fun getImageView(
-    imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity
-  ): ImageView {
-    return imageViewBindingAdaptersTestActivity.findViewById(R.id.image_view_for_data_binding)
-  }
-
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
-    // Use Mockito to ensure the routine is actually executed before returning the result.
-    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: ImageViewBindingAdaptersTest.Consumer<V> =
-      mock(ImageViewBindingAdaptersTest.Consumer::class.java)
-        as ImageViewBindingAdaptersTest.Consumer<V>
-    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
-    onActivity { fakeMock.consume(action(it)) }
-    verify(fakeMock).consume(valueCaptor.capture())
-    return valueCaptor.value
+  private fun getView(it: DrawableBindingAdaptersTestActivity): View {
+    return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<ImageViewBindingAdaptersTest.TestApplication>()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -212,30 +174,22 @@ class ImageViewBindingAdaptersTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
     ]
   )
-  /** Create a TestApplicationComponent. */
   interface TestApplicationComponent : ApplicationComponent {
-    /** Build the TestApplicationComponent. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    /** Inject [ImageViewBindingAdaptersTest] in TestApplicationComponent . */
-    fun inject(imageViewBindingAdaptersTest: ImageViewBindingAdaptersTest)
+    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest)
   }
 
-  /**
-   * Class to override a dependency throughout the test application, instead of overriding the
-   * dependencies in every test class, we can just do it once by extending the Application class.
-   */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerImageViewBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerDrawableBindingAdaptersTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    /** Inject [ImageViewBindingAdaptersTest] in TestApplicationComponent . */
-    fun inject(imageViewBindingAdaptersTest: ImageViewBindingAdaptersTest) {
-      component.inject(imageViewBindingAdaptersTest)
+    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest) {
+      component.inject(drawableBindingAdaptersTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
@@ -243,10 +197,5 @@ class ImageViewBindingAdaptersTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  private interface Consumer<T> {
-    /** Represents an operation that accepts a single input argument and returns no result. */
-    fun consume(value: T)
   }
 }
