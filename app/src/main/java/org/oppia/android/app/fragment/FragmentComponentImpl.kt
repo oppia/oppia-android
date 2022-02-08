@@ -37,7 +37,6 @@ import org.oppia.android.app.options.ReadingTextSizeFragment
 import org.oppia.android.app.player.audio.AudioFragment
 import org.oppia.android.app.player.audio.CellularAudioDialogFragment
 import org.oppia.android.app.player.audio.LanguageDialogFragment
-import org.oppia.android.app.player.exploration.BottomSheetFragment
 import org.oppia.android.app.player.exploration.ExplorationFragment
 import org.oppia.android.app.player.exploration.ExplorationManagerFragment
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
