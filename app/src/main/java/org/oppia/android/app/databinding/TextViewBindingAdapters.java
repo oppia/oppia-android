@@ -62,7 +62,7 @@ public final class TextViewBindingAdapters {
     long currentTimeMillis = getOppiaClock(view).getCurrentTimeMs();
 
     if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
-      return "";
+      return "recently";
     }
 
     long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
