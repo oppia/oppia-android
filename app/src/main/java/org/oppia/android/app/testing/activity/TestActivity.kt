@@ -7,8 +7,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil
-import javax.inject.Inject
 import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
+import javax.inject.Inject
 
 // TODO(#3830): Migrate all test activities over to using this test activity & make this closed.
 /**

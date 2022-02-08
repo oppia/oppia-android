@@ -1,9 +1,7 @@
 package org.oppia.android.app.utility.math
 
 import org.oppia.android.R
-import javax.inject.Inject
 import org.oppia.android.app.model.MathBinaryOperation
-import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE
 import org.oppia.android.app.model.MathBinaryOperation.Operator.EXPONENTIATE
@@ -21,7 +19,6 @@ import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.MathFunctionCall.FunctionType
 import org.oppia.android.app.model.MathFunctionCall.FunctionType.FUNCTION_UNSPECIFIED
 import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
-import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
 import org.oppia.android.app.model.OppiaLanguage
@@ -38,6 +35,9 @@ import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
 import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
 import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
+import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
+import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
 /**
  * Utility for computing an accessibility string for screenreaders to be able to read out parsed
