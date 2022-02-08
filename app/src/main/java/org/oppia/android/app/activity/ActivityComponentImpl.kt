@@ -54,6 +54,7 @@ import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
+import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.testing.ExplorationTestActivity
 import org.oppia.android.app.testing.HomeFragmentTestActivity
@@ -112,6 +113,7 @@ interface ActivityComponentImpl :
   fun inject(developerOptionsActivity: DeveloperOptionsActivity)
   fun inject(developerOptionsTestActivity: DeveloperOptionsTestActivity)
   fun inject(dragDropTestActivity: DragDropTestActivity)
+  fun inject(drawableBindingAdaptersTestActivity: DrawableBindingAdaptersTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
