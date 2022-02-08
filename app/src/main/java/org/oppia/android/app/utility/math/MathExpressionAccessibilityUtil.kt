@@ -30,25 +30,17 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
 import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
-import org.oppia.android.util.math.toPlainText
 import java.text.NumberFormat
 import java.util.Locale
 import javax.inject.Inject
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
+import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
+import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
+import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
 
 class MathExpressionAccessibilityUtil @Inject constructor() {
-  fun convertToHumanReadableString(
-    equation: MathEquation,
-    language: OppiaLanguage,
-    divAsFraction: Boolean
-  ): String? {
-    return when (language) {
-      ENGLISH -> equation.toHumanReadableEnglishString(divAsFraction)
-      ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, LANGUAGE_UNSPECIFIED,
-      UNRECOGNIZED -> null
-    }
-  }
+  // TODO: document that rationals aren't supported, and that irrationals are rounded during formatting (and maybe that ints are also formatted?).
 
   fun convertToHumanReadableString(
     expression: MathExpression,
@@ -62,33 +54,21 @@ class MathExpressionAccessibilityUtil @Inject constructor() {
     }
   }
 
+  fun convertToHumanReadableString(
+    equation: MathEquation,
+    language: OppiaLanguage,
+    divAsFraction: Boolean
+  ): String? {
+    return when (language) {
+      ENGLISH -> equation.toHumanReadableEnglishString(divAsFraction)
+      ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, LANGUAGE_UNSPECIFIED,
+      UNRECOGNIZED -> null
+    }
+  }
+
   private companion object {
     // TODO: move these to the UI layer & have them utilize non-translatable strings.
     private val numberFormat by lazy { NumberFormat.getNumberInstance(Locale.US) }
-    private val singularOrdinalNames = mapOf(
-      1 to "oneth",
-      2 to "half",
-      3 to "third",
-      4 to "fourth",
-      5 to "fifth",
-      6 to "sixth",
-      7 to "seventh",
-      8 to "eighth",
-      9 to "ninth",
-      10 to "tenth",
-    )
-    private val pluralOrdinalNames = mapOf(
-      1 to "oneths",
-      2 to "halves",
-      3 to "thirds",
-      4 to "fourths",
-      5 to "fifths",
-      6 to "sixths",
-      7 to "sevenths",
-      8 to "eighths",
-      9 to "ninths",
-      10 to "tenths",
-    )
 
     private fun MathEquation.toHumanReadableEnglishString(divAsFraction: Boolean): String? {
       val lhsStr = leftSide.toHumanReadableEnglishString(divAsFraction)
@@ -100,9 +80,13 @@ class MathExpressionAccessibilityUtil @Inject constructor() {
       // Reference:
       // https://docs.google.com/document/d/1P-dldXQ08O-02ZRG978paiWOSz0dsvcKpDgiV_rKH_Y/view.
       return when (expressionTypeCase) {
-        CONSTANT -> if (constant.realTypeCase == INTEGER) {
-          numberFormat.format(constant.integer.toLong())
-        } else constant.toPlainText()
+        CONSTANT -> when (constant.realTypeCase) {
+          IRRATIONAL -> numberFormat.format(constant.irrational)
+          INTEGER -> numberFormat.format(constant.integer.toLong())
+          // Note that rational types should not actually be encountered in raw expressions, so
+          // there's no explicit support for reading them out.
+          RATIONAL, REALTYPE_NOT_SET, null -> null
+        }
         VARIABLE -> when (variable) {
           "z" -> "zed"
           "Z" -> "Zed"
@@ -122,20 +106,13 @@ class MathExpressionAccessibilityUtil @Inject constructor() {
                 "$lhsStr $rhsStr"
               } else "$lhsStr times $rhsStr"
             }
-            DIVIDE -> {
-              if (divAsFraction && lhs.isConstantInteger() && rhs.isConstantInteger()) {
-                val numerator = lhs.constant.integer
-                val denominator = rhs.constant.integer
-                if (numerator in 0..10 && denominator in 1..10 && denominator >= numerator) {
-                  val ordinalName =
-                    if (numerator == 1) {
-                      singularOrdinalNames.getValue(denominator)
-                    } else pluralOrdinalNames.getValue(denominator)
-                  "$numerator $ordinalName"
-                } else "$lhsStr over $rhsStr"
-              } else if (divAsFraction) {
-                "the fraction with numerator $lhsStr and denominator $rhsStr"
-              } else "$lhsStr divided by $rhsStr"
+            DIVIDE -> when {
+              divAsFraction -> when {
+                binaryOperation.isOneHalf() -> "one half"
+                binaryOperation.isSimpleFraction() -> "$lhsStr over $rhsStr"
+                else -> "the fraction with numerator $lhsStr and denominator $rhsStr"
+              }
+              else -> "$lhsStr divided by $rhsStr"
             }
             EXPONENTIATE -> "$lhsStr raised to the power of $rhsStr"
             BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null -> null
@@ -176,8 +153,16 @@ class MathExpressionAccessibilityUtil @Inject constructor() {
       return rightOperand.isVariable() || rightOperand.isExponentiation()
     }
 
-    private fun MathExpression.isConstantInteger(): Boolean =
-      expressionTypeCase == CONSTANT && constant.realTypeCase == INTEGER
+    private fun MathBinaryOperation.isSimpleFraction(): Boolean {
+      // 'Simple' fractions are those with single term numerators and denominators (which are
+      // subsequently easier to read out), and whose constant numerator/denonominators are integers.
+      return leftOperand.isSimpleFractionTerm() && rightOperand.isSimpleFractionTerm()
+    }
+
+    private fun MathBinaryOperation.isOneHalf(): Boolean {
+      // If the either operand isn't an integer it will default to 0 per proto3 rules.
+      return leftOperand.constant.integer == 1 && rightOperand.constant.integer == 2
+    }
 
     private fun MathExpression.isConstant(): Boolean = expressionTypeCase == CONSTANT
 
@@ -191,6 +176,12 @@ class MathExpressionAccessibilityUtil @Inject constructor() {
       BINARY_OPERATION, UNARY_OPERATION -> false
       GROUP -> group.isSingleTerm()
       EXPRESSIONTYPE_NOT_SET, null -> false
+    }
+
+    private fun MathExpression.isSimpleFractionTerm(): Boolean = when (expressionTypeCase) {
+      CONSTANT -> constant.realTypeCase == INTEGER
+      VARIABLE -> true
+      BINARY_OPERATION, UNARY_OPERATION, FUNCTION_CALL, GROUP, EXPRESSIONTYPE_NOT_SET, null -> false
     }
   }
 }
