@@ -8,6 +8,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import javax.inject.Inject
+import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
 
 // TODO(#3830): Migrate all test activities over to using this test activity & make this closed.
 /**
@@ -35,6 +36,9 @@ open class TestActivity : InjectableAppCompatActivity() {
 
   @Inject
   lateinit var appLanguageWatcherMixin: AppLanguageWatcherMixin
+
+  @Inject
+  lateinit var mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
 
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(newBase)

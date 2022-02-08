@@ -1,17 +1,29 @@
 package org.oppia.android.app.utility.math
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Inject
 import javax.inject.Singleton
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.ActivityIntentFactoriesModule
+import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.application.ApplicationModule
+import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
@@ -27,6 +39,39 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
 import org.oppia.android.app.model.Real
+import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.activity.TestActivity
+import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -37,12 +82,27 @@ import org.oppia.android.testing.math.MathEquationSubject
 import org.oppia.android.testing.math.MathEquationSubject.Companion.assertThat
 import org.oppia.android.testing.math.MathExpressionSubject
 import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.math.MathExpressionParser
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.ONE_HALF
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
+import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -61,12 +121,27 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MathExpressionAccessibilityUtilTest.TestApplication::class)
 class MathExpressionAccessibilityUtilTest {
-  @Inject lateinit var util: MathExpressionAccessibilityUtil
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TestActivity>(
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
 
   @Parameter lateinit var language: String
   @Parameter lateinit var expression: String
   @Parameter lateinit var equation: String
   @Parameter lateinit var a11yStr: String
+
+  lateinit var util: MathExpressionAccessibilityUtil
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    activityRule.scenario.onActivity { util = it.mathExpressionAccessibilityUtil }
+  }
 
   @Test
   fun testConvertToString_defaultExp_english_returnsNull() {
@@ -1177,11 +1252,6 @@ class MathExpressionAccessibilityUtilTest {
     assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
   }
 
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
-  }
-
   private fun MathExpressionSubject.forHumanReadable(
     language: OppiaLanguage
   ): HumanReadableStringChecker {
@@ -1230,8 +1300,31 @@ class MathExpressionAccessibilityUtilTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component
-  interface TestApplicationComponent {
+  @Component(
+    modules = [
+      RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      PlatformParameterModule::class, LoggerModule::class, ContinueModule::class,
+      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
+      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
+      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      AssetModule::class, LocaleTestModule::class, ActivityRecreatorTestModule::class,
+      ActivityIntentFactoriesModule::class, PlatformParameterSingletonModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class
+    ]
+  )
+  interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1243,7 +1336,7 @@ class MathExpressionAccessibilityUtilTest {
     fun inject(test: MathExpressionAccessibilityUtilTest)
   }
 
-  class TestApplication : Application() {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerMathExpressionAccessibilityUtilTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1253,6 +1346,12 @@ class MathExpressionAccessibilityUtilTest {
     fun inject(test: MathExpressionAccessibilityUtilTest) {
       component.inject(test)
     }
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 
   private companion object {
