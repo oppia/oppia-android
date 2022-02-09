@@ -6,14 +6,8 @@ import org.junit.Test
 import javax.inject.Inject
 
 class ProfileNameValidatorTest {
-
   @Inject
   lateinit var profileNameValidator: ProfileNameValidator
-
-  private val allowedNames = listOf<String>("जिष्णु", "Ben-Henning", "Rajat.T", "جيشنو")
-
-  private val disallowedNames =
-    listOf<String>("जिष्णु7", "Ben_Henning", "Rajat..T", "جيشنو^&&", " ", ".", "Ben Henning")
 
   @Before
   fun setup() {
@@ -21,16 +15,57 @@ class ProfileNameValidatorTest {
   }
 
   @Test
-  fun testNameValidator_addDisallowedName_returnFalse() {
-    disallowedNames.forEach {
+  fun testIsNameValid_nameWithSpaces_returnsFalse() {
+    val nameWithSpaces = "Ben Henning"
+    assertThat(profileNameValidator.isNameValid(nameWithSpaces)).isFalse()
+  }
+
+  @Test
+  fun testIsNameValid_nameWithNumber_returnsFalse() {
+    val nameWithSpaces = "Jishnu7"
+    assertThat(profileNameValidator.isNameValid(nameWithSpaces)).isFalse()
+  }
+
+  @Test
+  fun testIsNameValid_nameWithDisallowedSymbol_returnsFalse() {
+    val namesWithSymbols =
+      listOf<String>("Ben#Henning", "Rajay@T", "जिष्णु**", "جيشنو^&&", "Jishnu_")
+    namesWithSymbols.forEach {
       assertThat(profileNameValidator.isNameValid(it)).isFalse()
     }
   }
 
   @Test
-  fun testNameValidator_addAllowedName_returnTrue() {
-    allowedNames.forEach {
+  fun testIsNameValid_nameWithAllowedSymbols_returnsTrue() {
+    val namesWithAllowedSymbol = listOf<String>("Ben-Henning", "Rajat.T", "G'Jishnu")
+    namesWithAllowedSymbol.forEach {
       assertThat(profileNameValidator.isNameValid(it)).isTrue()
     }
+  }
+
+  @Test
+  fun testIsNameValid_nameWithRepeatedAllowedSymbols_returnsFalse() {
+    val namesWithRepeatedAllowedSymbol = listOf<String>("Ben-.Henning", "Rajat..T")
+    namesWithRepeatedAllowedSymbol.forEach {
+      assertThat(profileNameValidator.isNameValid(it)).isFalse()
+    }
+  }
+
+  @Test
+  fun testIsNameValid_nameWithEnglishLetters_returnsTrue() {
+    val nameWithEnglishLetters = "BenHenning"
+    assertThat(profileNameValidator.isNameValid(nameWithEnglishLetters)).isTrue()
+  }
+
+  @Test
+  fun testIsNameValid_nameWithHindiLetters_returnsTrue() {
+    val nameWithHindiLetters = "जिष्णु"
+    assertThat(profileNameValidator.isNameValid(nameWithHindiLetters)).isTrue()
+  }
+
+  @Test
+  fun testIsNameValid_nameWithArabicLetters_returnsTrue() {
+    val nameWithArabicLetters = "جيشنو"
+    assertThat(profileNameValidator.isNameValid(nameWithArabicLetters)).isTrue()
   }
 }
