@@ -17,7 +17,7 @@
       android:id="@+id/profile_management_text_view"
       style="@style/CaptionViewStart"
       android:layout_width="match_parent"
-      android:background="@color/mid_grey_30"
+      android:background="@color/admin_controls_sub_heading_background_color"
       android:paddingStart="36dp"
       android:paddingTop="28dp"
       android:paddingEnd="36dp"
