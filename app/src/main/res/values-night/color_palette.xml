@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="primary_color">@color/oppia_turquoise</color>
+  <color name="primary_dark_color">@color/oppia_bangladesh_green</color>
+  <color name="accent_color">@color/oppia_metallic_blue</color>
+  <color name="primary_text_color">@color/oppia_silver</color>
+  <color name="highlighted_text_color">@color/white</color>
+  <color name="background_color">@color/oppia_light_black</color>
+  <color name="dark_background_color">@color/oppia_light_black</color>
+  <color name="description_text_color">@color/oppia_silver</color>
+  <color name="text_input_background_color">@color/oppia_dark_grey</color>
+  <color name="dark_text_color">@color/white</color>
+  <color name="error_color">@color/oppia_pink</color>
+  <color name="container_background_color">@color/oppia_grayish_black</color>
+  <color name="toolbar_color">@color/oppia_green</color>
+  <color name="status_bar_color">@color/dark_green</color>
+  <color name="action_bar_color">@color/oppia_green</color>
+  <color name="highlighted_background_color">@color/highlight_blue</color>
+</resources>
