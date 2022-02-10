@@ -141,9 +141,9 @@ class ProfileEditActivityTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
+
   @Test
   fun testProfileEditActivity_hasCorrectActivityLabel() {
-
     launch(
       ProfileEditActivity::class.java
     ).use { scenario ->
