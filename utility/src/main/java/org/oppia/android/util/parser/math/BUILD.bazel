@@ -9,7 +9,10 @@ kt_android_library(
     srcs = [
         "MathModel.kt",
     ],
-    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__",
+    ],
     deps = [
         "//third_party:com_github_bumptech_glide_glide",
     ],

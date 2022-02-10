@@ -37,8 +37,7 @@ class MathTagHandler(
     val content = MathContent.parseMathContent(
       attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     )
-    // TODO: add tests for these cases.
-    // TODO: file TODO for fixing vertical alignment.
+    // TODO(#4170): Fix vertical alignment centering for inline cached LaTeX.
     val useInlineRendering = when (attributes.getValue(CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE)) {
       "inline" -> true
       "block" -> false

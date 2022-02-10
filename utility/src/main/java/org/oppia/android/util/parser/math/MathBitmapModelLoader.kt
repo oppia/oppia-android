@@ -20,10 +20,21 @@ import io.github.karino2.kotlitex.view.MathExpressionSpan
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
-// Reference: https://bumptech.github.io/glide/tut/custom-modelloader.html#writing-the-modelloader.
+/**
+ * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
+ * [MathModel]s.
+ *
+ * This loader provides support for loading a bitmap version of rendered LaTeX that's been
+ * pre-rendered into a Glide-cacheable bitmap. Note that this is computationally more expensive to
+ * use than direct rendering since it includes steps to encode the image on-disk, but it's far more
+ * performant for repeated rendering of the the LaTeX (real-time LaTeX rendering is very expensive
+ * and blocks the main thread).
+ */
 class MathBitmapModelLoader private constructor(
   private val applicationContext: Context
 ): ModelLoader<MathModel, ByteBuffer> {
+  // Ref: https://bumptech.github.io/glide/tut/custom-modelloader.html#writing-the-modelloader.
+
   override fun buildLoadData(
     model: MathModel, width: Int, height: Int, options: Options
   ): ModelLoader.LoadData<ByteBuffer> {
@@ -96,6 +107,7 @@ class MathBitmapModelLoader private constructor(
     override fun getDataSource(): DataSource = DataSource.REMOTE
   }
 
+  /** [ModelLoaderFactory] for creating new [MathBitmapModelLoader]s. */
   class Factory(
     private val applicationContext: Context
   ): ModelLoaderFactory<MathModel, ByteBuffer> {

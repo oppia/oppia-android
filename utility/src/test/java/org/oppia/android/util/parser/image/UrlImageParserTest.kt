@@ -28,6 +28,8 @@ import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetrieve
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
 
 /** Tests for [UrlImageParser]. */
 @RunWith(AndroidJUnit4::class)
@@ -80,7 +82,7 @@ class UrlImageParserTest {
 
   @Test
   fun testLoadDrawable_bitmap_blockType_loadsBitmapImage() {
-    urlImageParser.loadDrawable("test_image.png", ImageRetriever.Type.BLOCK_IMAGE)
+    urlImageParser.loadDrawable("test_image.png", BLOCK_IMAGE)
 
     val loadedBitmaps = testGlideImageLoader.getLoadedBitmaps()
     assertThat(loadedBitmaps).hasSize(1)
@@ -89,7 +91,7 @@ class UrlImageParserTest {
 
   @Test
   fun testLoadDrawable_bitmap_inlineType_loadsBitmapImage() {
-    urlImageParser.loadDrawable("test_image.png", ImageRetriever.Type.INLINE_TEXT_IMAGE)
+    urlImageParser.loadDrawable("test_image.png", INLINE_TEXT_IMAGE)
 
     // The request to load the bitmap inline is ignored since inline bitmaps aren't supported. The
     // bitmap is instead loaded in block format.
@@ -101,7 +103,7 @@ class UrlImageParserTest {
 
   @Test
   fun testLoadDrawable_svg_blockType_loadsSvgBlockImage() {
-    urlImageParser.loadDrawable("test_image.svg", ImageRetriever.Type.BLOCK_IMAGE)
+    urlImageParser.loadDrawable("test_image.svg", BLOCK_IMAGE)
 
     val loadedBitmaps = testGlideImageLoader.getLoadedBlockSvgs()
     assertThat(loadedBitmaps).hasSize(1)
@@ -110,12 +112,57 @@ class UrlImageParserTest {
 
   @Test
   fun testLoadDrawable_svg_inlineType_loadsSvgTextImage() {
-    urlImageParser.loadDrawable("test_image.svg", ImageRetriever.Type.INLINE_TEXT_IMAGE)
+    urlImageParser.loadDrawable("test_image.svg", INLINE_TEXT_IMAGE)
 
     // The request to load the bitmap inline is ignored since inline bitmaps aren't supported.
     val loadedBitmaps = testGlideImageLoader.getLoadedTextSvgs()
     assertThat(loadedBitmaps).hasSize(1)
     assertThat(loadedBitmaps.first()).contains("test_image.svg")
+  }
+
+  @Test
+  fun testLoadDrawable_latex_inlineType_loadsInlineLatexImage() {
+    urlImageParser.loadMathDrawable(
+      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+    )
+
+    val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
+    assertThat(mathDrawables).hasSize(1)
+    assertThat(mathDrawables.first().rawLatex).isEqualTo("\\frac{2}{6}")
+    assertThat(mathDrawables.first().lineHeight).isWithin(1e-5f).of(20f)
+    assertThat(mathDrawables.first().useInlineRendering).isTrue()
+  }
+
+  @Test
+  fun testLoadDrawable_latex_blockType_loadsBlockLatexImage() {
+    urlImageParser.loadMathDrawable(
+      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = BLOCK_IMAGE
+    )
+
+    val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
+    assertThat(mathDrawables).hasSize(1)
+    assertThat(mathDrawables.first().rawLatex).isEqualTo("\\frac{2}{6}")
+    assertThat(mathDrawables.first().lineHeight).isWithin(1e-5f).of(20f)
+    assertThat(mathDrawables.first().useInlineRendering).isFalse()
+  }
+
+  @Test
+  fun testLoadDrawable_latex_multiple_loadsEachLatexImage() {
+    urlImageParser.loadMathDrawable(
+      rawLatex = "\\frac{1}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+    )
+    urlImageParser.loadMathDrawable(
+      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+    )
+    urlImageParser.loadMathDrawable(
+      rawLatex = "\\frac{2}{6}", lineHeight = 19f, type = INLINE_TEXT_IMAGE
+    )
+    urlImageParser.loadMathDrawable(
+      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = BLOCK_IMAGE
+    )
+
+    val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
+    assertThat(mathDrawables).hasSize(4)
   }
 
   private fun setUpTestApplicationComponent() {

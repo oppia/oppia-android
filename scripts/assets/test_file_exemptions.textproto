@@ -750,6 +750,7 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/R
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/RepositoryModelLoader.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/TestGlideImageLoader.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/TextPictureDrawable.kt"
+exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/math/MathBitmapModelLoader.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/BlockPictureDrawable.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/BlockSvgDrawableTranscoder.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/ScalableVectorGraphic.kt"
