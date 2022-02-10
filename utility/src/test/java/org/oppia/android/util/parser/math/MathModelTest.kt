@@ -1,8 +1,8 @@
 package org.oppia.android.util.parser.math
 
 import com.google.common.truth.Truth.assertThat
-import java.security.MessageDigest
 import org.junit.Test
+import java.security.MessageDigest
 
 /** Tests for [MathModel]. */
 // FunctionName: test names are conventionally named with underscores.

@@ -22,6 +22,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.mockito.capture
@@ -37,7 +38,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
-import org.mockito.Mockito.verifyNoMoreInteractions
 
 private const val MATH_MARKUP_1 =
   "<oppia-noninteractive-math math_content-with-value=\"{" +

@@ -19,11 +19,11 @@ import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import javax.inject.Inject
 import kotlin.math.max
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
 
 // TODO(#169): Replace this with exploration asset downloader.
 
@@ -94,7 +94,9 @@ class UrlImageParser private constructor(
   }
 
   override fun loadMathDrawable(
-    rawLatex: String, lineHeight: Float, type: ImageRetriever.Type
+    rawLatex: String,
+    lineHeight: Float,
+    type: ImageRetriever.Type
   ): Drawable {
     return ProxyDrawable().also { drawable ->
       imageLoader.loadMathDrawable(
@@ -264,7 +266,7 @@ class UrlImageParser private constructor(
      * that will not be resized or aligned beyond what the target itself requires, and what the
      * system performs automatically.
      */
-    class InlineTextImage<T, D: Drawable>(
+    class InlineTextImage<T, D : Drawable>(
       targetConfiguration: TargetConfiguration,
       private val computeDrawable: (T) -> D,
       private val computeDimensions: (D, TextView) -> Unit,

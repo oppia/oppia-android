@@ -5,6 +5,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
+import org.oppia.android.util.parser.math.MathBitmapModelLoader
+import org.oppia.android.util.parser.math.MathModel
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import org.oppia.android.util.parser.svg.BlockSvgDrawableTranscoder
 import org.oppia.android.util.parser.svg.ScalableVectorGraphic
@@ -12,8 +14,6 @@ import org.oppia.android.util.parser.svg.SvgDecoder
 import org.oppia.android.util.parser.svg.TextSvgDrawableTranscoder
 import java.io.InputStream
 import java.nio.ByteBuffer
-import org.oppia.android.util.parser.math.MathBitmapModelLoader
-import org.oppia.android.util.parser.math.MathModel
 
 /**
  * Custom [AppGlideModule] to enable loading images from

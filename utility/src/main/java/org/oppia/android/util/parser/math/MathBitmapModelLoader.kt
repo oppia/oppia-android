@@ -32,11 +32,14 @@ import java.nio.ByteBuffer
  */
 class MathBitmapModelLoader private constructor(
   private val applicationContext: Context
-): ModelLoader<MathModel, ByteBuffer> {
+) : ModelLoader<MathModel, ByteBuffer> {
   // Ref: https://bumptech.github.io/glide/tut/custom-modelloader.html#writing-the-modelloader.
 
   override fun buildLoadData(
-    model: MathModel, width: Int, height: Int, options: Options
+    model: MathModel,
+    width: Int,
+    height: Int,
+    options: Options
   ): ModelLoader.LoadData<ByteBuffer> {
     return ModelLoader.LoadData(
       model.toKeySignature(), LatexModelDataFetcher(applicationContext, model, width, height)
@@ -50,7 +53,7 @@ class MathBitmapModelLoader private constructor(
     private val model: MathModel,
     private val targetWidth: Int,
     private val targetHeight: Int
-  ): DataFetcher<ByteBuffer> {
+  ) : DataFetcher<ByteBuffer> {
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in ByteBuffer>) {
       val span = MathExpressionSpan(
         model.rawLatex, model.lineHeight, applicationContext.assets, !model.useInlineRendering
@@ -113,7 +116,7 @@ class MathBitmapModelLoader private constructor(
   /** [ModelLoaderFactory] for creating new [MathBitmapModelLoader]s. */
   class Factory(
     private val applicationContext: Context
-  ): ModelLoaderFactory<MathModel, ByteBuffer> {
+  ) : ModelLoaderFactory<MathModel, ByteBuffer> {
     override fun build(factory: MultiModelLoaderFactory): ModelLoader<MathModel, ByteBuffer> {
       return MathBitmapModelLoader(applicationContext)
     }

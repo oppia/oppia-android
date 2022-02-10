@@ -12,7 +12,9 @@ import java.security.MessageDigest
  * @property useInlineRendering whether the LaTeX will be inlined with text
  */
 data class MathModel(
-  val rawLatex: String, val lineHeight: Float, val useInlineRendering: Boolean
+  val rawLatex: String,
+  val lineHeight: Float,
+  val useInlineRendering: Boolean
 ) {
   /** Returns a Glide [Key] signature (see [MathModelSignature] for specifics). */
   fun toKeySignature(): MathModelSignature =
@@ -29,23 +31,29 @@ data class MathModel(
    * @property useInlineRendering whether the render is formatted to be displayed in-line with text
    */
   data class MathModelSignature(
-    val rawLatex: String, val lineHeightHundredX: Int, val useInlineRendering: Boolean
+    val rawLatex: String,
+    val lineHeightHundredX: Int,
+    val useInlineRendering: Boolean
   ) : Key {
     // Impl reference: http://bumptech.github.io/glide/doc/caching.html#custom-cache-invalidation.
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
       val rawLatexBytes = rawLatex.encodeToByteArray()
-      messageDigest.update(ByteBuffer.allocate(rawLatexBytes.size + Int.SIZE_BYTES + 1).apply {
-        put(rawLatexBytes)
-        putInt(lineHeightHundredX)
-        put(if (useInlineRendering) 1 else 0)
-      }.array())
+      messageDigest.update(
+        ByteBuffer.allocate(rawLatexBytes.size + Int.SIZE_BYTES + 1).apply {
+          put(rawLatexBytes)
+          putInt(lineHeightHundredX)
+          put(if (useInlineRendering) 1 else 0)
+        }.array()
+      )
     }
 
     internal companion object {
       /** Returns a new [MathModelSignature] for the specified [MathModel] properties. */
       internal fun createSignature(
-        rawLatex: String, lineHeight: Float, useInlineRendering: Boolean
+        rawLatex: String,
+        lineHeight: Float,
+        useInlineRendering: Boolean
       ): MathModelSignature {
         val lineHeightHundredX = (lineHeight * 100f).toInt()
         return MathModelSignature(rawLatex, lineHeightHundredX, useInlineRendering)

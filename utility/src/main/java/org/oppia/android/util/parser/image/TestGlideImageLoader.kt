@@ -2,10 +2,10 @@ package org.oppia.android.util.parser.image
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import org.oppia.android.util.parser.math.MathModel
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.parser.math.MathModel
 
 /**
  * [TestGlideImageLoader] is designed to be used in tests. It uses real [GlideImageLoader]
