@@ -116,12 +116,9 @@ Welcome! Please make sure to follow the onboarding instructions above if you hav
 
 **UI**
 
- - [RTL Exempted files](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+RTL+Exempted+file)
  - [Merge different versions of a xml into a single xml file](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+single+xml+file)
 
 **Bazel**
-
- - [Create bazel subpackage](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22Bazel+Stage+2%22+label%3A%22good+first+issue%22)
 
 **Accessibility**
 
