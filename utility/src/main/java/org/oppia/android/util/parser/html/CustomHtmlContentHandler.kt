@@ -173,6 +173,9 @@ class CustomHtmlContentHandler private constructor(
     /** Returns a new [Drawable] corresponding to the specified image filename and [Type]. */
     fun loadDrawable(filename: String, type: Type): Drawable
 
+    // TODO: add docs & tests.
+    fun loadMathDrawable(rawLatex: String, lineHeight: Float, type: Type): Drawable
+
     /** Corresponds to the types of images that can be retrieved. */
     enum class Type {
       /**

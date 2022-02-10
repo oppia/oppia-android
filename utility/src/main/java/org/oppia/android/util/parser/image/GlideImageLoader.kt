@@ -18,6 +18,7 @@ import org.oppia.android.util.parser.svg.SvgDecoder
 import org.oppia.android.util.parser.svg.SvgPictureDrawable
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.parser.math.MathModel
 
 /** An [ImageLoader] that uses Glide. */
 @Singleton
@@ -65,6 +66,18 @@ class GlideImageLoader @Inject constructor(
       .asDrawable()
       .load(imageDrawableResId)
       .transform(*transformations.toBitmapGlideTransformations().toTypedArray())
+      .intoTarget(target)
+  }
+
+  override fun loadMathDrawable(
+    rawLatex: String,
+    lineHeight: Float,
+    useInlineRendering: Boolean,
+    target: ImageTarget<Bitmap>
+  ) {
+    glide
+      .asBitmap()
+      .load(MathModel(rawLatex, lineHeight, useInlineRendering))
       .intoTarget(target)
   }
 

@@ -1,6 +1,7 @@
 package org.oppia.android.util.parser.image
 
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
@@ -47,5 +48,10 @@ interface ImageLoader {
     @DrawableRes imageDrawableResId: Int,
     target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation> = listOf()
+  )
+
+  // TODO: add docs & tests & verify tests.
+  fun loadMathDrawable(
+    rawLatex: String, lineHeight: Float, useInlineRendering: Boolean, target: ImageTarget<Bitmap>
   )
 }

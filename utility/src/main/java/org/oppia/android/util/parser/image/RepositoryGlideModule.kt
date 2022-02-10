@@ -11,6 +11,9 @@ import org.oppia.android.util.parser.svg.ScalableVectorGraphic
 import org.oppia.android.util.parser.svg.SvgDecoder
 import org.oppia.android.util.parser.svg.TextSvgDrawableTranscoder
 import java.io.InputStream
+import java.nio.ByteBuffer
+import org.oppia.android.util.parser.math.MathBitmapModelLoader
+import org.oppia.android.util.parser.math.MathModel
 
 /**
  * Custom [AppGlideModule] to enable loading images from
@@ -36,6 +39,12 @@ class RepositoryGlideModule : AppGlideModule() {
       ImageAssetFetcher::class.java,
       InputStream::class.java,
       RepositoryModelLoader.Factory()
+    )
+
+    registry.append(
+      MathModel::class.java,
+      ByteBuffer::class.java,
+      MathBitmapModelLoader.Factory(context.applicationContext)
     )
   }
 }

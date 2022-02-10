@@ -548,6 +548,10 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).perform(click())
   }
 
+  // TODO: finish tests.
+  // testHtmlContent_withMathTag_missingFileName_inlineMode_loadsNonMathModeKotlitexMathSpan
+  // testHtmlContent_withMathTag_missingFileName_nonInlineMode_loadsMathModeKotlitexMathSpan
+
   @Test
   fun testHtmlContent_withMathTag_loadsTextSvg() {
     val htmlParser = htmlParserFactory.create(

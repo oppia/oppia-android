@@ -7,11 +7,14 @@ import android.text.style.ImageSpan
 import io.github.karino2.kotlitex.view.MathExpressionSpan
 import org.json.JSONObject
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
 import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [MathTagHandler]. */
 const val CUSTOM_MATH_TAG = "oppia-noninteractive-math"
-private const val CUSTOM_MATH_SVG_PATH_ATTRIBUTE = "math_content-with-value"
+private const val CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE = "math_content-with-value"
+private const val CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE = "render-type"
 
 /**
  * A custom tag handler for properly formatting math items in HTML parsed with
@@ -21,7 +24,7 @@ class MathTagHandler(
   private val consoleLogger: ConsoleLogger,
   private val assetManager: AssetManager,
   private val lineHeight: Float,
-  private val useInlineRendering: Boolean
+  private val cacheLatexRendering: Boolean
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -32,22 +35,39 @@ class MathTagHandler(
   ) {
     // Only insert the image tag if it's parsed correctly.
     val content = MathContent.parseMathContent(
-      attributes.getJsonObjectValue(CUSTOM_MATH_SVG_PATH_ATTRIBUTE)
+      attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     )
+    // TODO: add tests for these cases.
+    // TODO: file TODO for fixing vertical alignment.
+    val useInlineRendering = when (attributes.getValue(CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE)) {
+      "inline" -> true
+      "block" -> false
+      else -> true
+    }
     val newSpan = when (content) {
       is MathContent.MathAsSvg -> {
         ImageSpan(
           imageRetriever.loadDrawable(
             content.svgFilename,
-            CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
+            INLINE_TEXT_IMAGE
           ),
           content.svgFilename
         )
       }
       is MathContent.MathAsLatex -> {
-        MathExpressionSpan(
-          content.rawLatex, lineHeight, assetManager, isMathMode = !useInlineRendering
-        )
+        if (cacheLatexRendering) {
+          ImageSpan(
+            imageRetriever.loadMathDrawable(
+              content.rawLatex,
+              lineHeight,
+              type = if (useInlineRendering) INLINE_TEXT_IMAGE else BLOCK_IMAGE
+            )
+          )
+        } else {
+          MathExpressionSpan(
+            content.rawLatex, lineHeight, assetManager, isMathMode = !useInlineRendering
+          )
+        }
       }
       null -> {
         consoleLogger.e("MathTagHandler", "Failed to parse math tag")
