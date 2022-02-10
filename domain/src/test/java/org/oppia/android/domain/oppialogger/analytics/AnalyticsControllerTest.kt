@@ -242,20 +242,6 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_logTransitionEvent_withNoContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      null
-    )
-
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
-  }
-
-  @Test
   fun testController_logClickEvent_withQuestionContext_checkLogsEvent() {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
@@ -388,20 +374,6 @@ class AnalyticsControllerTest {
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
       .isEqualTo(OPEN_CONCEPT_CARD)
-  }
-
-  @Test
-  fun testController_logClickEvent_withNoContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      null
-    )
-
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
   }
 
   // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
