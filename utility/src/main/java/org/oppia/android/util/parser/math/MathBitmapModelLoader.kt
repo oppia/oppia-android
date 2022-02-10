@@ -74,7 +74,10 @@ class MathBitmapModelLoader private constructor(
           /* includepad= */ true
         )
 
-      // Reference: https://stackoverflow.com/a/27631737/3689782.
+      // Reference for how Android manages different parts of text during rendering:
+      // https://stackoverflow.com/a/27631737/3689782. Note that the specifics of how text
+      // properties are used to compute these bounds are in the modified KotliTeX implementation
+      // (see the getter implementation for the property below).
       val bounds = span.drawableBounds
       val canvasBitmap =
         Bitmap.createBitmap(bounds.width(), bounds.height(), Bitmap.Config.ARGB_8888)
