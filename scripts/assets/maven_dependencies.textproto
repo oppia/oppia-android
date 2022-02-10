@@ -807,6 +807,9 @@ maven_dependency {
   license {
     license_name: "Eclipse Public License 1.0"
     original_link: "https://www.eclipse.org/legal/epl-v10.html"
+    extracted_copy_link {
+      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/eclipse-public-license-1.0.txt"
+    }
   }
 }
 maven_dependency {
@@ -824,12 +827,11 @@ maven_dependency {
   artifact_name: "net.sf.kxml:kxml2:2.3.0"
   artifact_version: "2.3.0"
   license {
-    license_name: "BSD style"
-    original_link: "https://kxml.cvs.sourceforge.net/viewvc/kxml/kxml2/license.txt?view=markup"
-  }
-  license {
-    license_name: "Public Domain"
-    original_link: "https://creativecommons.org/licenses/publicdomain"
+    license_name: "The MIT License"
+    original_link: "https://github.com/kobjects/kxml2/blob/master/license.txt"
+    scrapable_link {
+      url: "https://raw.githubusercontent.com/kobjects/kxml2/master/license.txt"
+    }
   }
 }
 maven_dependency {
