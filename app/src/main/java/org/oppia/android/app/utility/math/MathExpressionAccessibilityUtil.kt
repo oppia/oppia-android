@@ -1,5 +1,6 @@
 package org.oppia.android.app.utility.math
 
+import org.oppia.android.R
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathBinaryOperation.Operator.ADD
 import org.oppia.android.app.model.MathBinaryOperation.Operator.DIVIDE
@@ -30,26 +31,39 @@ import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.UNRECOGNIZED
 import org.oppia.android.app.model.Real.RealTypeCase.INTEGER
-import org.oppia.android.util.math.toPlainText
-import java.text.NumberFormat
-import java.util.Locale
+import org.oppia.android.app.model.Real.RealTypeCase.IRRATIONAL
+import org.oppia.android.app.model.Real.RealTypeCase.RATIONAL
+import org.oppia.android.app.model.Real.RealTypeCase.REALTYPE_NOT_SET
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 import org.oppia.android.app.model.MathBinaryOperation.Operator as BinaryOperator
 import org.oppia.android.app.model.MathUnaryOperation.Operator as UnaryOperator
 
-class MathExpressionAccessibilityUtil @Inject constructor() {
-  fun convertToHumanReadableString(
-    equation: MathEquation,
-    language: OppiaLanguage,
-    divAsFraction: Boolean
-  ): String? {
-    return when (language) {
-      ENGLISH -> equation.toHumanReadableEnglishString(divAsFraction)
-      ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, LANGUAGE_UNSPECIFIED,
-      UNRECOGNIZED -> null
-    }
-  }
-
+/**
+ * Utility for computing an accessibility string for screenreaders to be able to read out parsed
+ * [MathExpression]s and [MathEquation]s.
+ *
+ * See [convertToHumanReadableString] for the specific function.
+ */
+class MathExpressionAccessibilityUtil @Inject constructor(
+  private val resourceHandler: AppLanguageResourceHandler
+) {
+  /**
+   * Returns the human-readable string (for screenreaders) representation of the specified
+   * [expression].
+   *
+   * Note that rational ``Real``s are specifically not supported and will result in a null value
+   * being returned (for custom expression constructs should use a division operation and set
+   * [divAsFraction] to true. Further, irrational reals may be rounded during formatting if they are
+   * very large or have long decimals (for an easier time reading). Numbers will be formatted
+   * according to the user's locale.
+   *
+   * @param expression the expression to convert
+   * @param language the target language for which the expression should be generated
+   * @param divAsFraction whether divisions should be read out as fractions rather than divisions
+   * @return the human-readable string, or null if the expression is malformed or the target
+   *     language is unsupported
+   */
   fun convertToHumanReadableString(
     expression: MathExpression,
     language: OppiaLanguage,
@@ -62,111 +76,157 @@ class MathExpressionAccessibilityUtil @Inject constructor() {
     }
   }
 
-  private companion object {
-    // TODO: move these to the UI layer & have them utilize non-translatable strings.
-    private val numberFormat by lazy { NumberFormat.getNumberInstance(Locale.US) }
-    private val singularOrdinalNames = mapOf(
-      1 to "oneth",
-      2 to "half",
-      3 to "third",
-      4 to "fourth",
-      5 to "fifth",
-      6 to "sixth",
-      7 to "seventh",
-      8 to "eighth",
-      9 to "ninth",
-      10 to "tenth",
-    )
-    private val pluralOrdinalNames = mapOf(
-      1 to "oneths",
-      2 to "halves",
-      3 to "thirds",
-      4 to "fourths",
-      5 to "fifths",
-      6 to "sixths",
-      7 to "sevenths",
-      8 to "eighths",
-      9 to "ninths",
-      10 to "tenths",
-    )
-
-    private fun MathEquation.toHumanReadableEnglishString(divAsFraction: Boolean): String? {
-      val lhsStr = leftSide.toHumanReadableEnglishString(divAsFraction)
-      val rhsStr = rightSide.toHumanReadableEnglishString(divAsFraction)
-      return if (lhsStr != null && rhsStr != null) "$lhsStr equals $rhsStr" else null
+  /**
+   * Returns the human-readable string (for screenreaders) representation of the specified
+   * [equation].
+   *
+   * This function behaves in the same way as the [MathExpression] version of
+   * [convertToHumanReadableString]--see that method's documentation for more details.
+   */
+  fun convertToHumanReadableString(
+    equation: MathEquation,
+    language: OppiaLanguage,
+    divAsFraction: Boolean
+  ): String? {
+    return when (language) {
+      ENGLISH -> equation.toHumanReadableEnglishString(divAsFraction)
+      ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE, LANGUAGE_UNSPECIFIED,
+      UNRECOGNIZED -> null
     }
+  }
 
-    private fun MathExpression.toHumanReadableEnglishString(divAsFraction: Boolean): String? {
-      // Reference:
-      // https://docs.google.com/document/d/1P-dldXQ08O-02ZRG978paiWOSz0dsvcKpDgiV_rKH_Y/view.
-      return when (expressionTypeCase) {
-        CONSTANT -> if (constant.realTypeCase == INTEGER) {
-          numberFormat.format(constant.integer.toLong())
-        } else constant.toPlainText()
-        VARIABLE -> when (variable) {
-          "z" -> "zed"
-          "Z" -> "Zed"
-          else -> variable
-        }
-        BINARY_OPERATION -> {
-          val lhs = binaryOperation.leftOperand
-          val rhs = binaryOperation.rightOperand
-          val lhsStr = lhs.toHumanReadableEnglishString(divAsFraction)
-          val rhsStr = rhs.toHumanReadableEnglishString(divAsFraction)
-          if (lhsStr == null || rhsStr == null) return null
-          when (binaryOperation.operator) {
-            ADD -> "$lhsStr plus $rhsStr"
-            SUBTRACT -> "$lhsStr minus $rhsStr"
-            MULTIPLY -> {
-              if (binaryOperation.canBeReadAsImplicitMultiplication()) {
-                "$lhsStr $rhsStr"
-              } else "$lhsStr times $rhsStr"
-            }
-            DIVIDE -> {
-              if (divAsFraction && lhs.isConstantInteger() && rhs.isConstantInteger()) {
-                val numerator = lhs.constant.integer
-                val denominator = rhs.constant.integer
-                if (numerator in 0..10 && denominator in 1..10 && denominator >= numerator) {
-                  val ordinalName =
-                    if (numerator == 1) {
-                      singularOrdinalNames.getValue(denominator)
-                    } else pluralOrdinalNames.getValue(denominator)
-                  "$numerator $ordinalName"
-                } else "$lhsStr over $rhsStr"
-              } else if (divAsFraction) {
-                "the fraction with numerator $lhsStr and denominator $rhsStr"
-              } else "$lhsStr divided by $rhsStr"
-            }
-            EXPONENTIATE -> "$lhsStr raised to the power of $rhsStr"
-            BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null -> null
-          }
-        }
-        UNARY_OPERATION -> {
-          val operandStr = unaryOperation.operand.toHumanReadableEnglishString(divAsFraction)
-          when (unaryOperation.operator) {
-            NEGATE -> operandStr?.let { "negative $it" }
-            POSITIVE -> operandStr?.let { "positive $it" }
-            UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null -> null
-          }
-        }
-        FUNCTION_CALL -> {
-          val argStr = functionCall.argument.toHumanReadableEnglishString(divAsFraction)
-          when (functionCall.functionType) {
-            SQUARE_ROOT -> argStr?.let {
-              if (functionCall.argument.isSingleTerm()) {
-                "square root of $it"
-              } else "start square root $it end square root"
-            }
-            FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null -> null
-          }
-        }
-        GROUP -> group.toHumanReadableEnglishString(divAsFraction)?.let {
-          if (isSingleTerm()) it else "open parenthesis $it close parenthesis"
-        }
-        EXPRESSIONTYPE_NOT_SET, null -> null
+  private fun MathEquation.toHumanReadableEnglishString(divAsFraction: Boolean): String? {
+    val lhsStr = leftSide.toHumanReadableEnglishString(divAsFraction)
+    val rhsStr = rightSide.toHumanReadableEnglishString(divAsFraction)
+    return if (lhsStr != null && rhsStr != null) {
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.math_accessibility_a_equals_b, lhsStr, rhsStr
+      )
+    } else null
+  }
+
+  private fun MathExpression.toHumanReadableEnglishString(divAsFraction: Boolean): String? {
+    // Reference:
+    // https://docs.google.com/document/d/1P-dldXQ08O-02ZRG978paiWOSz0dsvcKpDgiV_rKH_Y/view.
+
+    // Note that extra bidi wrapping is occurring here since there's not an obvious way to wrap "at
+    // the end" for non-equations.
+    return when (expressionTypeCase) {
+      CONSTANT -> when (constant.realTypeCase) {
+        IRRATIONAL -> resourceHandler.formatDouble(constant.irrational)
+        INTEGER -> resourceHandler.formatLong(constant.integer.toLong())
+        // Note that rational types should not actually be encountered in raw expressions, so
+        // there's no explicit support for reading them out.
+        RATIONAL, REALTYPE_NOT_SET, null -> null
       }
+      VARIABLE -> when (variable) {
+        "z", "Z" -> {
+          val zed =
+            resourceHandler.getStringInLocale(R.string.math_accessibility_part_zed)
+          if (variable == "Z") {
+            resourceHandler.capitalizeForHumans(zed)
+          } else zed
+        }
+        else -> variable
+      }
+      BINARY_OPERATION -> {
+        val lhs = binaryOperation.leftOperand
+        val rhs = binaryOperation.rightOperand
+        val lhsStr = lhs.toHumanReadableEnglishString(divAsFraction)
+        val rhsStr = rhs.toHumanReadableEnglishString(divAsFraction)
+        if (lhsStr == null || rhsStr == null) return null
+        when (binaryOperation.operator) {
+          ADD -> {
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.math_accessibility_a_plus_b, lhsStr, rhsStr
+            )
+          }
+          SUBTRACT -> {
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.math_accessibility_a_minus_b, lhsStr, rhsStr
+            )
+          }
+          MULTIPLY -> {
+            val strResId = if (binaryOperation.canBeReadAsImplicitMultiplication()) {
+              R.string.math_accessibility_implicit_multiplication
+            } else R.string.math_accessibility_a_times_b
+            resourceHandler.getStringInLocaleWithWrapping(strResId, lhsStr, rhsStr)
+          }
+          DIVIDE -> when {
+            divAsFraction -> when {
+              binaryOperation.isOneHalf() -> {
+                resourceHandler.getStringInLocaleWithWrapping(
+                  R.string.math_accessibility_part_one_half
+                )
+              }
+              binaryOperation.isSimpleFraction() -> {
+                resourceHandler.getStringInLocaleWithWrapping(
+                  R.string.math_accessibility_simple_fraction, lhsStr, rhsStr
+                )
+              }
+              else -> {
+                resourceHandler.getStringInLocaleWithWrapping(
+                  R.string.math_accessibility_complex_fraction, lhsStr, rhsStr
+                )
+              }
+            }
+            else -> {
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.math_accessibility_a_divides_b, lhsStr, rhsStr
+              )
+            }
+          }
+          EXPONENTIATE -> {
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.math_accessibility_a_exp_b, lhsStr, rhsStr
+            )
+          }
+          BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null -> null
+        }
+      }
+      UNARY_OPERATION -> {
+        val operandStr = unaryOperation.operand.toHumanReadableEnglishString(divAsFraction)
+        when (unaryOperation.operator) {
+          NEGATE -> operandStr?.let {
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.math_accessibility_negative_a, it
+            )
+          }
+          POSITIVE -> operandStr?.let {
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.math_accessibility_positive_a, it
+            )
+          }
+          UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null -> null
+        }
+      }
+      FUNCTION_CALL -> {
+        val argStr = functionCall.argument.toHumanReadableEnglishString(divAsFraction)
+        when (functionCall.functionType) {
+          SQUARE_ROOT -> argStr?.let {
+            if (functionCall.argument.isSingleTerm()) {
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.math_accessibility_simple_square_root, it
+              )
+            } else {
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.math_accessibility_complex_square_root, it
+              )
+            }
+          }
+          FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null -> null
+        }
+      }
+      GROUP -> group.toHumanReadableEnglishString(divAsFraction)?.let {
+        if (!isSingleTerm()) {
+          resourceHandler.getStringInLocaleWithWrapping(R.string.math_accessibility_group, it)
+        } else it
+      }
+      EXPRESSIONTYPE_NOT_SET, null -> null
     }
+  }
 
+  private companion object {
     private fun MathBinaryOperation.canBeReadAsImplicitMultiplication(): Boolean {
       // Note that exponentiation is specialized since it's higher precedence than multiplication
       // which means the graph won't look like "constant * variable" for polynomial terms like 2x^4
@@ -176,8 +236,16 @@ class MathExpressionAccessibilityUtil @Inject constructor() {
       return rightOperand.isVariable() || rightOperand.isExponentiation()
     }
 
-    private fun MathExpression.isConstantInteger(): Boolean =
-      expressionTypeCase == CONSTANT && constant.realTypeCase == INTEGER
+    private fun MathBinaryOperation.isSimpleFraction(): Boolean {
+      // 'Simple' fractions are those with single term numerators and denominators (which are
+      // subsequently easier to read out), and whose constant numerator/denonominators are integers.
+      return leftOperand.isSimpleFractionTerm() && rightOperand.isSimpleFractionTerm()
+    }
+
+    private fun MathBinaryOperation.isOneHalf(): Boolean {
+      // If the either operand isn't an integer it will default to 0 per proto3 rules.
+      return leftOperand.constant.integer == 1 && rightOperand.constant.integer == 2
+    }
 
     private fun MathExpression.isConstant(): Boolean = expressionTypeCase == CONSTANT
 
@@ -191,6 +259,12 @@ class MathExpressionAccessibilityUtil @Inject constructor() {
       BINARY_OPERATION, UNARY_OPERATION -> false
       GROUP -> group.isSingleTerm()
       EXPRESSIONTYPE_NOT_SET, null -> false
+    }
+
+    private fun MathExpression.isSimpleFractionTerm(): Boolean = when (expressionTypeCase) {
+      CONSTANT -> constant.realTypeCase == INTEGER
+      VARIABLE -> true
+      BINARY_OPERATION, UNARY_OPERATION, FUNCTION_CALL, GROUP, EXPRESSIONTYPE_NOT_SET, null -> false
     }
   }
 }

@@ -5,14 +5,27 @@ General purposes utilities corresponding to displaying math expressions & constr
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
+# Resource shim needed so that MathExpressionAccessibilityUtil can build in both Gradle & Bazel.
+genrule(
+    name = "update_MathExpressionAccessibilityUtil",
+    srcs = ["MathExpressionAccessibilityUtil.kt"],
+    outs = ["MathExpressionAccessibilityUtil_updated.kt"],
+    cmd = """
+    cat $(SRCS) |
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' > $(OUTS)
+    """,
+)
+
 kt_android_library(
     name = "math_expression_accessibility_util",
     srcs = [
-        "MathExpressionAccessibilityUtil.kt",
+        "MathExpressionAccessibilityUtil_updated.kt",
     ],
     visibility = ["//app:app_visibility"],
     deps = [
         ":dagger",
+        "//app:resources",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//model/src/main/proto:languages_java_proto_lite",
         "//model/src/main/proto:math_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/math:extensions",

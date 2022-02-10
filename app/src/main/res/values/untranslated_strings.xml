@@ -27,6 +27,7 @@
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
+  <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>
   <string name="math_expression_parse_result_label" translatable="false">Parse result: %s</string>
   <string name="math_expression_input_hint" translatable="false">Expression/equation</string>
@@ -43,4 +44,37 @@
   <string name="math_expression_human_readable_string" translatable="false">Human-readable string</string>
   <string name="math_expression_allowed_variables_input_hint" translatable="false">Allowed variables (comma-separated)</string>
   <string name="math_expression_treat_divisions_as_fractions_label" translatable="false">Treat divisions as fractions</string>
+  <!-- AdministratorControlsFragment -->
+  <string name="administrator_controls_learner_analytics_title" translatable="false">Learner Study Analytics</string>
+  <string name="administrator_controls_learner_analytics_label" translatable="false">Profile &amp; Device IDs</string>
+  <!-- ProfileAndDeviceIDsActivity -->
+  <string name="profile_and_device_id_activity_title" translatable="false">Profile &amp; Device IDs</string>
+  <string name="learner_analytics_profile_id_label" translatable="false">Profile ID</string>
+  <string name="learner_analytics_profile_name_label" translatable="false">Profile Name</string>
+  <string name="learner_analytics_device_id_label" translatable="false">Device ID:</string>
+  <string name="learner_analytics_copy_to_clipboard_label" translatable="false">Copy</string>
+  <string name="learner_analytics_copied_to_clipboard_label" translatable="false">Copied</string>
+  <string name="learner_analytics_copied_to_clipboard_snackbar_text" translatable="false">Copied "%s"</string>
+  <!-- Learner Analytics Sync Statuses -->
+  <string name="learner_analytics_sync_status_default" translatable="false">No data has been collected yet to upload.</string>
+  <string name="learner_analytics_sync_status_data_uploading" translatable="false">Profile data is currently uploading…</string>
+  <string name="learner_analytics_sync_status_data_uploaded" translatable="false">All profile data has been uploaded.</string>
+  <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
+  <!-- Accessibility string generation for math expressions. Note that these are in lowercase on purpose. -->
+  <string name="math_accessibility_part_zed" translatable="false">zed</string>
+  <string name="math_accessibility_part_one_half" translatable="false">one half</string>
+  <string name="math_accessibility_a_equals_b" translatable="false">%s equals %s</string>
+  <string name="math_accessibility_a_plus_b" translatable="false">%s plus %s</string>
+  <string name="math_accessibility_a_minus_b" translatable="false">%s minus %s</string>
+  <string name="math_accessibility_a_times_b" translatable="false">%s times %s</string>
+  <string name="math_accessibility_a_divides_b" translatable="false">%s divided by %s</string>
+  <string name="math_accessibility_a_exp_b" translatable="false">%s raised to the power of %s</string>
+  <string name="math_accessibility_negative_a" translatable="false">negative %s</string>
+  <string name="math_accessibility_positive_a" translatable="false">positive %s</string>
+  <string name="math_accessibility_simple_square_root" translatable="false">square root of %s</string>
+  <string name="math_accessibility_complex_square_root" translatable="false">start square root %s end square root</string>
+  <string name="math_accessibility_group" translatable="false">open parenthesis %s close parenthesis</string>
+  <string name="math_accessibility_implicit_multiplication" translatable="false">%s %s</string>
+  <string name="math_accessibility_simple_fraction" translatable="false">%s over %s</string>
+  <string name="math_accessibility_complex_fraction" translatable="false">the fraction with numerator %s and denominator %s</string>
 </resources>

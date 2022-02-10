@@ -10,13 +10,14 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.parser.StringToFractionParser
+import org.oppia.android.app.parser.FractionParsingUiError
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.math.FractionParser
 
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel private constructor(
@@ -34,7 +35,7 @@ class FractionInteractionViewModel private constructor(
   var errorMessage = ObservableField<String>("")
 
   val hintText: CharSequence = deriveHintText(interaction)
-  private val stringToFractionParser: StringToFractionParser = StringToFractionParser()
+  private val fractionParser = FractionParser()
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -54,7 +55,7 @@ class FractionInteractionViewModel private constructor(
     if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
       answer = InteractionObject.newBuilder().apply {
-        fraction = stringToFractionParser.parseFractionFromString(answerTextString)
+        fraction = fractionParser.parseFractionFromString(answerTextString)
       }.build()
       plainAnswer = answerTextString
       this.writtenTranslationContext = this@FractionInteractionViewModel.writtenTranslationContext
@@ -65,14 +66,18 @@ class FractionInteractionViewModel private constructor(
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
       when (category) {
-        AnswerErrorCategory.REAL_TIME ->
+        AnswerErrorCategory.REAL_TIME -> {
           pendingAnswerError =
-            stringToFractionParser.getRealTimeAnswerError(answerText.toString())
-              .getErrorMessageFromStringRes(resourceHandler)
-        AnswerErrorCategory.SUBMIT_TIME ->
+            FractionParsingUiError.createFromParsingError(
+              fractionParser.getRealTimeAnswerError(answerText.toString())
+            ).getErrorMessageFromStringRes(resourceHandler)
+        }
+        AnswerErrorCategory.SUBMIT_TIME -> {
           pendingAnswerError =
-            stringToFractionParser.getSubmitTimeError(answerText.toString())
-              .getErrorMessageFromStringRes(resourceHandler)
+            FractionParsingUiError.createFromParsingError(
+              fractionParser.getSubmitTimeError(answerText.toString())
+            ).getErrorMessageFromStringRes(resourceHandler)
+        }
       }
       errorMessage.set(pendingAnswerError)
     }

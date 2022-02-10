@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
+import org.oppia.android.R
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
@@ -87,6 +88,7 @@ import org.oppia.android.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -121,6 +123,7 @@ private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
  * - [ReturnToTopicNavigationButtonListener] if the return to topic button is enabled
  */
 class StatePlayerRecyclerViewAssembler private constructor(
+  private val accessibilityService: AccessibilityService,
   val adapter: BindableAdapter<StateItemViewModel>,
   val rhsAdapter: BindableAdapter<StateItemViewModel>,
   private val playerFeatureSet: PlayerFeatureSet,
@@ -458,8 +461,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
   /**
    * Shows a celebratory animation with a congratulations message and confetti when the learner submits
    * a correct answer.
+   *
+   * @param feedback Oppia's feedback to the learner's most recent answer. If the feedback is empty,
+   *     talkback confirms correct answers by a separate announcement.
    */
-  fun showCelebrationOnCorrectAnswer() {
+  fun showCelebrationOnCorrectAnswer(feedback: SubtitledHtml) {
     check(playerFeatureSet.showCelebrationOnCorrectAnswer) {
       "Cannot show congratulations message for assembler that doesn't support it"
     }
@@ -472,9 +478,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val confettiConfig = checkNotNull(congratulationsTextConfettiConfig) {
       "Expected non-null reference to confetti animation configuration"
     }
-
     createBannerConfetti(confettiView, confettiConfig)
     animateCongratulationsTextView(textView)
+
+    if (feedback.html.isBlank()) {
+      accessibilityService.announceForAccessibilityForView(
+        textView,
+        resourceHandler.getStringInLocale(R.string.correct)
+      )
+    }
   }
 
   /** Shows confetti when the learner reaches the end of an exploration session. */
@@ -865,6 +877,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * using its injectable [Factory].
    */
   class Builder private constructor(
+    private var accessibilityService: AccessibilityService,
     private val htmlParserFactory: HtmlParser.Factory,
     private val resourceBucketName: String,
     private val entityType: String,
@@ -1337,6 +1350,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     fun build(): StatePlayerRecyclerViewAssembler {
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       val assembler = StatePlayerRecyclerViewAssembler(
+        accessibilityService,
         /* adapter= */ adapterBuilder.build(),
         /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
@@ -1367,6 +1381,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Fragment injectable factory to create new [Builder]s. */
     class Factory @Inject constructor(
+      private val accessibilityService: AccessibilityService,
       private val htmlParserFactory: HtmlParser.Factory,
       private val fragment: Fragment,
       private val context: Context,
@@ -1382,6 +1397,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
        */
       fun create(resourceBucketName: String, entityType: String, profileId: ProfileId): Builder {
         return Builder(
+          accessibilityService,
           htmlParserFactory,
           resourceBucketName,
           entityType,

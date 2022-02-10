@@ -549,6 +549,62 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withMathTag_missingFileName_inlineMode_loadsNonMathModeKotlitexMathSpan() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+    )
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "<oppia-noninteractive-math render-type=\"inline\" math_content-with-value=\"{" +
+          "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\frac{2}{5}&amp;quot;}\">" +
+          "</oppia-noninteractive-math>",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
+      textView.text = htmlResult
+    }
+
+    // The rendering mode should be inline for this render type.
+    val loadedInlineImages = testGlideImageLoader.getLoadedMathDrawables()
+    assertThat(loadedInlineImages).hasSize(1)
+    assertThat(loadedInlineImages.first().rawLatex).isEqualTo("\\frac{2}{5}")
+    assertThat(loadedInlineImages.first().useInlineRendering).isTrue()
+  }
+
+  @Test
+  fun testHtmlContent_withMathTag_missingFileName_blockMode_loadsMathModeKotlitexMathSpan() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+    )
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "<oppia-noninteractive-math render-type=\"block\" math_content-with-value=\"{" +
+          "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\frac{2}{5}&amp;quot;}\">" +
+          "</oppia-noninteractive-math>",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
+      textView.text = htmlResult
+    }
+
+    // The rendering mode should be non-inline for this render type.
+    val loadedInlineImages = testGlideImageLoader.getLoadedMathDrawables()
+    assertThat(loadedInlineImages).hasSize(1)
+    assertThat(loadedInlineImages.first().rawLatex).isEqualTo("\\frac{2}{5}")
+    assertThat(loadedInlineImages.first().useInlineRendering).isFalse()
+  }
+
+  @Test
   fun testHtmlContent_withMathTag_loadsTextSvg() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,

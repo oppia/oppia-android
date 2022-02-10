@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
+import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
@@ -19,8 +21,8 @@ class HtmlParser private constructor(
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean,
-  private val useInlineMathRendering: Boolean,
   private val consoleLogger: ConsoleLogger,
+  private val cacheLatexRendering: Boolean,
   customOppiaTagActionListener: CustomOppiaTagActionListener?
 ) {
   private val conceptCardTagHandler by lazy {
@@ -112,7 +114,7 @@ class HtmlParser private constructor(
         consoleLogger,
         context.assets,
         htmlContentTextView.lineHeight.toFloat(),
-        useInlineMathRendering
+        cacheLatexRendering
       )
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
@@ -153,7 +155,8 @@ class HtmlParser private constructor(
   class Factory @Inject constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
     private val consoleLogger: ConsoleLogger,
-    private val context: Context
+    private val context: Context,
+    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -164,8 +167,7 @@ class HtmlParser private constructor(
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean,
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
-      useInlineMathRendering: Boolean = true
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
     ): HtmlParser {
       return HtmlParser(
         context,
@@ -174,8 +176,8 @@ class HtmlParser private constructor(
         entityType,
         entityId,
         imageCenterAlign,
-        useInlineMathRendering,
         consoleLogger,
+        cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener
       )
     }

@@ -9,20 +9,33 @@ import org.oppia.android.app.model.MathBinaryOperation.Operator.SUBTRACT
 import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.MathUnaryOperation.Operator.NEGATE
 import org.oppia.android.app.model.MathUnaryOperation.Operator.POSITIVE
+import org.oppia.android.util.math.PeekableIterator.Companion.toPeekableIterator
 import java.lang.StringBuilder
 
-// TODO: rename to MathTokenizer & add documentation.
-// TODO: consider a more efficient implementation that uses 1 underlying buffer (which could still
-//  be sequence-backed) with a forced lookahead-of-1 API, to also avoid rebuffering when parsing
-//  sequences of characters like for integers.
-
-// TODO: add customization to omit certain symbols (such as variables for numeric expressions?)
+/**
+ * Input tokenizer for math (numeric & algebraic) expressions and equations.
+ *
+ * See https://docs.google.com/document/d/1JMpbjqRqdEpye67HvDoqBo_rtScY9oEaB7SwKBBspss/edit for the
+ * grammar specification supported by this tokenizer.
+ *
+ * This class implements an LL(1) single-pass tokenizer with no caching. Use [tokenize] to produce a
+ * sequence of [Token]s from the given input stream.
+ */
 class MathTokenizer private constructor() {
   companion object {
+    /**
+     * Returns a [Sequence] of [Token]s for the specified input string.
+     *
+     * Note that this tokenizer will attempt to recover if an invalid token is encountered (i.e.
+     * tokenization will continue). Further, tokenization occurs lazily (i.e. as the sequence is
+     * traversed), so calling this method is essentially zero-cost until tokens are actually needed.
+     * The sequence should be converted to a [List] if they need to be retained after initial
+     * tokenization since the sequence retains no memory.
+     */
     fun tokenize(input: String): Sequence<Token> = tokenize(input.toCharArray().asSequence())
 
-    fun tokenize(input: Sequence<Char>): Sequence<Token> {
-      val chars = PeekableIterator.fromSequence(input)
+    private fun tokenize(input: Sequence<Char>): Sequence<Token> {
+      val chars = input.toPeekableIterator()
       return generateSequence {
         // Consume any whitespace that might precede a valid token.
         chars.consumeWhitespace()
@@ -37,8 +50,7 @@ class MathTokenizer private constructor() {
           '+' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.PlusSymbol(startIndex, endIndex)
           }
-          // TODO: add tests for different subtraction/minus symbols.
-          '-', '−' -> tokenizeSymbol(chars) { startIndex, endIndex ->
+          '-', '−', '–' -> tokenizeSymbol(chars) { startIndex, endIndex ->
             Token.MinusSymbol(startIndex, endIndex)
           }
           '*', '×' -> tokenizeSymbol(chars) { startIndex, endIndex ->
@@ -73,6 +85,7 @@ class MathTokenizer private constructor() {
       val integerPart1 =
         parseInteger(chars)
           ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+      val integerEndIndex = chars.getRetrievalCount() // The end index for integers.
       chars.consumeWhitespace() // Whitespace is allowed between digits and the '.'.
       return if (chars.peek() == '.') {
         chars.next() // Parse the "." since it will be re-added later.
@@ -82,8 +95,7 @@ class MathTokenizer private constructor() {
         val integerPart2 = parseInteger(chars)
           ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
 
-        // TODO: validate that the result isn't NaN or INF.
-        val doubleValue = "$integerPart1.$integerPart2".toDoubleOrNull()
+        val doubleValue = "$integerPart1.$integerPart2".toValidDoubleOrNull()
           ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
         Token.PositiveRealNumber(doubleValue, startIndex, endIndex = chars.getRetrievalCount())
       } else {
@@ -91,7 +103,7 @@ class MathTokenizer private constructor() {
           integerPart1.toIntOrNull()
             ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount()),
           startIndex,
-          endIndex = chars.getRetrievalCount()
+          integerEndIndex
         )
       }
     }
@@ -250,39 +262,77 @@ class MathTokenizer private constructor() {
       } else null // Failed to parse; no digits.
     }
 
+    private fun String.toValidDoubleOrNull(): Double? {
+      return toDoubleOrNull()?.takeIf { it.isFinite() }
+    }
+
+    /** Represents a token that may act as a unary operator. */
     interface UnaryOperatorToken {
+      /**
+       * Returns the [MathUnaryOperation.Operator] that would be associated with this token if it's
+       * treated as a unary operator.
+       */
       fun getUnaryOperator(): MathUnaryOperation.Operator
     }
 
+    /** Represents a token that may act as a binary operator. */
     interface BinaryOperatorToken {
+      /**
+       * Returns the [MathBinaryOperation.Operator] that would be associated with this token if it's
+       * treated as a binary operator.
+       */
       fun getBinaryOperator(): MathBinaryOperation.Operator
     }
 
+    /** Represents a token that may be encountered during tokenization. */
     sealed class Token {
-      /** The index in the input stream at which point this token begins. */
+      /** The (inclusive) index in the input stream at which point this token begins. */
       abstract val startIndex: Int
 
       /** The (exclusive) index in the input stream at which point this token ends. */
       abstract val endIndex: Int
 
+      /**
+       * Represents a positive integer (i.e. no decimal point, and no negative sign).
+       *
+       * @property parsedValue the parsed value of the integer
+       */
       class PositiveInteger(
         val parsedValue: Int,
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /**
+       * Represents a positive real number (i.e. contains a decimal point, but no negative sign).
+       *
+       * @property parsedValue the parsed value of the real number as a [Double]
+       */
       class PositiveRealNumber(
         val parsedValue: Double,
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /**
+       * Represents a variable.
+       *
+       * @property parsedName the name of the variable
+       */
       class VariableName(
         val parsedName: String,
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /**
+       * Represents a recognized function name (otherwise sequential letters are treated as
+       * variables), e.g.: sqrt.
+       *
+       * @property parsedName the name of the function
+       * @property isAllowedFunction whether the function is supported by the parser. This helps
+       *     with error detection & management while parsing.
+       */
       class FunctionName(
         val parsedName: String,
         val isAllowedFunction: Boolean,
@@ -290,6 +340,10 @@ class MathTokenizer private constructor() {
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a square root sign, i.e. '√'. */
+      class SquareRootSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
+
+      /** Represents a minus sign, e.g. '-'. */
       class MinusSymbol(
         override val startIndex: Int,
         override val endIndex: Int
@@ -299,8 +353,7 @@ class MathTokenizer private constructor() {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = SUBTRACT
       }
 
-      class SquareRootSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
-
+      /** Represents a plus sign, e.g. '+'. */
       class PlusSymbol(
         override val startIndex: Int,
         override val endIndex: Int
@@ -310,6 +363,7 @@ class MathTokenizer private constructor() {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = ADD
       }
 
+      /** Represents a multiply sign, e.g. '*'. */
       class MultiplySymbol(
         override val startIndex: Int,
         override val endIndex: Int
@@ -317,6 +371,7 @@ class MathTokenizer private constructor() {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = MULTIPLY
       }
 
+      /** Represents a divide sign, e.g. '/'. */
       class DivideSymbol(
         override val startIndex: Int,
         override val endIndex: Int
@@ -324,6 +379,7 @@ class MathTokenizer private constructor() {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = DIVIDE
       }
 
+      /** Represents an exponent sign, i.e. '^'. */
       class ExponentiationSymbol(
         override val startIndex: Int,
         override val endIndex: Int
@@ -331,27 +387,31 @@ class MathTokenizer private constructor() {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = EXPONENTIATE
       }
 
+      /** Represents an equals sign, i.e. '='. */
       class EqualsSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
 
+      /** Represents a left parenthesis symbol, i.e. '('. */
       class LeftParenthesisSymbol(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents a right parenthesis symbol, i.e. ')'. */
       class RightParenthesisSymbol(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents an incomplete function name, e.g. 'sqr'. */
       class IncompleteFunctionName(
         override val startIndex: Int,
         override val endIndex: Int
       ) : Token()
 
+      /** Represents an invalid character that doesn't fit any of the other [Token] types. */
       class InvalidToken(override val startIndex: Int, override val endIndex: Int) : Token()
     }
 
-    // TODO: consider whether to use the more correct & expensive Java Char.isWhitespace().
     private fun Char.isWhitespace(): Boolean = when (this) {
       ' ', '\t', '\n', '\r' -> true
       else -> false

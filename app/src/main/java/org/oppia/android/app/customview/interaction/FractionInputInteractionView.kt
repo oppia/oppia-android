@@ -20,6 +20,8 @@ import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 //  background="@drawable/edit_text_background"
 //  maxLength="200".
 
+// TODO(#4135): Add a dedicated test suite for this class.
+
 /** The custom EditText class for fraction input interaction view. */
 class FractionInputInteractionView @JvmOverloads constructor(
   context: Context,
