@@ -9,6 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.settings.profile.LoadProfileDeletionDialogListener
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -28,12 +29,14 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var lastLoadedFragment: String
   private var selectedProfileId: Int? = null
   private lateinit var extraControlsTitle: String
+  private var isProfileDeletionDialogVisible: Boolean? = null
 
   /** Initializes the [AdministratorControlsActivity] and sets the navigation drawer. */
   fun handleOnCreate(
     extraControlsTitle: String?,
     lastLoadedFragment: String,
-    selectedProfileId: Int?
+    selectedProfileId: Int?,
+    isProfileDeletionDialogVisible: Boolean?
   ) {
     binding = DataBindingUtil.setContentView(
       activity,
@@ -42,6 +45,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     setUpNavigationDrawer()
     this.lastLoadedFragment = lastLoadedFragment
     this.selectedProfileId = selectedProfileId
+    this.isProfileDeletionDialogVisible = isProfileDeletionDialogVisible
     binding.extraControlsTitle?.apply {
       text = extraControlsTitle
     }
@@ -64,6 +68,13 @@ class AdministratorControlsActivityPresenter @Inject constructor(
               profileId = it,
               profileName = extraControlsTitle
             )
+            if (isProfileDeletionDialogVisible == true && it != 0) {
+              val fragment = activity.supportFragmentManager.findFragmentById(
+                R.id.administrator_controls_fragment_multipane_placeholder
+              )
+              (fragment as LoadProfileDeletionDialogListener).loadProfileDeletionDialog(it)
+              this.isProfileDeletionDialogVisible = false
+            }
           }
         }
       }
@@ -135,6 +146,10 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     ).commitNow()
   }
 
+  fun loadProfileDeletionDialog(profileDeletionDialogVisible: Boolean) {
+    isProfileDeletionDialogVisible = profileDeletionDialogVisible
+  }
+
   private fun setMultipaneBackButtonVisibility(visibility: Int) {
     binding.administratorControlsMultipaneOptionsBackButton!!.visibility = visibility
   }
@@ -179,6 +194,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       outState.putString(SELECTED_CONTROLS_TITLE_SAVED_KEY, titleTextView.text.toString())
     }
     outState.putString(LAST_LOADED_FRAGMENT_EXTRA_KEY, lastLoadedFragment)
+    isProfileDeletionDialogVisible?.let {
+      outState.putBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY, it)
+    }
     selectedProfileId?.let { outState.putInt(SELECTED_PROFILE_ID_SAVED_KEY, it) }
   }
 }

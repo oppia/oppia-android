@@ -32,6 +32,10 @@ const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 /** Argument key used to identify [ProfileEditFragment] in the backstack. */
 const val PROFILE_EDIT_FRAGMENT = "PROFILE_EDIT_FRAGMENT"
 
+/** Argument key for the Profile deletion confirmation in [ProfileEditActivity]. */
+const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
+  "ProfileEditActivity.is_profile_deletion_dialog_visible"
+
 /** Argument key used to identify [AppVersionFragment] in the backstack. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
 
@@ -43,6 +47,7 @@ class AdministratorControlsActivity :
   LoadProfileListListener,
   LoadAppVersionListener,
   LoadProfileEditListener,
+  ProfileDeletionDialogListener,
   ShowLogoutDialogListener {
   @Inject
   lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
@@ -51,12 +56,15 @@ class AdministratorControlsActivity :
   lateinit var resourceHandler: AppLanguageResourceHandler
 
   private lateinit var lastLoadedFragment: String
+  private var isProfileDeletionDialogVisible: Boolean? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val extraControlsTitle =
       savedInstanceState?.getStringFromBundle(SELECTED_CONTROLS_TITLE_SAVED_KEY)
+    isProfileDeletionDialogVisible =
+      savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY)
     lastLoadedFragment = if (savedInstanceState != null) {
       savedInstanceState.getStringFromBundle(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
     } else {
@@ -67,7 +75,8 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,
-      selectedProfileId
+      selectedProfileId,
+      isProfileDeletionDialogVisible
     )
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
   }
@@ -119,6 +128,11 @@ class AdministratorControlsActivity :
   override fun loadProfileEdit(profileId: Int, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
     administratorControlsActivityPresenter.loadProfileEdit(profileId, profileName)
+  }
+
+  override fun loadBooleanProfileDeletionDialog(isProfileDeletionDialogVisible: Boolean) {
+    this.isProfileDeletionDialogVisible = isProfileDeletionDialogVisible
+    administratorControlsActivityPresenter.loadProfileDeletionDialog(isProfileDeletionDialogVisible)
   }
 
   companion object {

@@ -10,7 +10,10 @@ import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains Profile Edit Screen. */
-class ProfileEditFragment : InjectableFragment(), ProfileEditDialogInterface {
+class ProfileEditFragment :
+  InjectableFragment(),
+  ProfileEditDialogInterface,
+  LoadProfileDeletionDialogListener {
   @Inject
   lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
@@ -57,5 +60,9 @@ class ProfileEditFragment : InjectableFragment(), ProfileEditDialogInterface {
 
   override fun deleteProfileByInternalProfileId(internalProfileId: Int) {
     profileEditFragmentPresenter.deleteProfile(internalProfileId)
+  }
+
+  override fun loadProfileDeletionDialog(internalProfileId: Int) {
+    profileEditFragmentPresenter.handleLoadProfileDeletionDialog(internalProfileId)
   }
 }
