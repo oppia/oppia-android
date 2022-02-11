@@ -4,9 +4,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
-import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByDesc
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByRes
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByText
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.scrollRecyclerViewTextIntoView
@@ -40,8 +38,8 @@ class TopicActivityTest {
     device.findObjectByText("LESSONS").click()
     val storyNameText = device.findObjectByRes("story_name_text_view").getText()
     device.findObjectByRes("story_name_text_view").click()
-    //Assert story fragment is opened.
-    //Find a better way?
+    // Assert story fragment is opened.
+    // Find a better way?
     val titleText = device.findObjectByRes("story_toolbar_title").getText()
     assertThat(titleText).isEqualTo(storyNameText)
   }
@@ -52,23 +50,23 @@ class TopicActivityTest {
 //  }
 
   @Test
-  fun testTopicActivity_practiceFragment_nothingChecked_startButtonsIsDisabled(){
+  fun testTopicActivity_practiceFragment_nothingChecked_startButtonsIsDisabled() {
     navigateToTopicActivity()
     device.findObjectByText("PRACTICE").click()
-    //Asserting button is disabled
+    // Asserting button is disabled
     val startButtonStatus = device.findObjectByText("START").isEnabled()
     assertThat(startButtonStatus).isFalse()
   }
 
-    @Test
-    fun testTopicActivity_practiceFragment_ItemsChecked_startButtonsIsEnabled(){
-      navigateToTopicActivity()
-      device.findObjectByText("PRACTICE").click()
-      device.findObjectByText("Mixed Numbers").click()
-      // Asserting button is Enabled
-      val startButtonStatus = device.findObjectByText("START").isEnabled()
-      assertThat(startButtonStatus).isTrue()
-    }
+  @Test
+  fun testTopicActivity_practiceFragment_ItemsChecked_startButtonsIsEnabled() {
+    navigateToTopicActivity()
+    device.findObjectByText("PRACTICE").click()
+    device.findObjectByText("Mixed Numbers").click()
+    // Asserting button is Enabled
+    val startButtonStatus = device.findObjectByText("START").isEnabled()
+    assertThat(startButtonStatus).isTrue()
+  }
   /*
       @Test
       fun testTopicActivity_practiceFragment_startButtonIsClicked_practiceModeOpens(){
