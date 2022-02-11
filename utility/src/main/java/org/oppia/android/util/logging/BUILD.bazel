@@ -33,6 +33,32 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "console_logger_injector",
+    srcs = [
+        "ConsoleLoggerInjector.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "console_logger_injector_provider",
+    srcs = [
+        "ConsoleLoggerInjectorProvider.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":console_logger_injector",
+    ],
+)
+
+kt_android_library(
     name = "event_bundle_creator",
     srcs = [
         "EventBundleCreator.kt",

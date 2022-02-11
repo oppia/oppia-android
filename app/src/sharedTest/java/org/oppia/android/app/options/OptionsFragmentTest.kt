@@ -104,6 +104,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
+import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -653,6 +657,15 @@ class OptionsFragmentTest {
     @EnableLanguageSelectionUi
     fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
+    }
+
+    @Provides
+    @CacheLatexRendering
+    fun provideCacheLatexRendering(
+      platformParameterSingleton: PlatformParameterSingleton
+    ): PlatformParameterValue<Boolean> {
+      return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
+        ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
     }
   }
 
