@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="privacy_policy_content" translatable="false"><![CDATA[
+<div class="oppia-page-cards-container protractor-test-privacy-page">
+  <div class="oppia-page-card oppia-long-text">
+    <h1>Privacy Policy</h1>
+
     <p>
       Oppia\'s mission is to make it easy for users to learn anything they
       want to in an effective and enjoyable way. As part of achieving that
@@ -23,6 +27,7 @@
       site or service.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="what-information-does-oppia-collect"></a>
     <h2>What information do we collect and how do we use it?</h2>
 
     <h3>Personal Information</h3>
@@ -248,6 +253,7 @@
       and disclose Personal Information as detailed in this Privacy Policy.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="how-is-your-information-shared-or-disclosed"></a>
     <h2>How is your information shared or disclosed?</h2>
 
     <p>
@@ -300,6 +306,7 @@
       proceedings).
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="how-do-we-protect-personal-information"></a>
     <h2>How do we protect Personal Information?</h2>
     <p>
       Oppia is committed to protecting your information. We seek to use
@@ -314,6 +321,7 @@
       email address: admin@oppia.org.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="choices-and-access"></a>
     <h2>Choices and access</h2>
     <p>
       If you register and provide Oppia with Personal Information, you may
@@ -341,6 +349,7 @@
       been reposted by another user.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="use-by-children"></a>
     <h2>Use by children</h2>
     <p>
       The Site is not directed to individuals under the age of thirteen (13).
@@ -351,6 +360,7 @@
       information removed.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="jurisdictional-issues"></a>
     <h2>Jurisdictional issues</h2>
     <p>
       The Site is controlled and operated by us from the United States, and
@@ -366,6 +376,7 @@
       your Personal Information.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="links-to-third-party-sites"></a>
     <h2>Links to third-party sites</h2>
     <p>
       Our Site and content may feature links to third party websites that
@@ -379,6 +390,7 @@
       Policy.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="changes-and-updates-to-this-privacy-policy"></a>
     <h2>Changes and updates to this Privacy Policy</h2>
     <p>
       Oppia will continue to evolve and we may update our Privacy Policy from
@@ -390,6 +402,7 @@
       Privacy Policy.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" name="contacting-us"></a>
     <h2>Contacting Us</h2>
     <p>
       If you have questions about this Privacy Policy or would like to
@@ -397,5 +410,7 @@
     </p>
 
     <em>Last updated: 24 May 2018</em>
+  </div>
+</div>
 ]]></string>
 </resources>

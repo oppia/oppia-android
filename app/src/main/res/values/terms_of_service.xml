@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="terms_of_service_content" translatable="false"><![CDATA[
+    <div class="oppia-page-cards-container protractor-test-terms-page">
+  <mat-card class="oppia-page-card oppia-long-text">
+    <h1>Terms of Use</h1>
+
     <p>
       Hello! Thanks for your interest in Oppia Foundation Inc., a nonprofit that
       operates the website located at https://www.oppia.org (the "Website"). The
@@ -18,6 +22,7 @@
       GUARDIAN, YOU MUST NOT REGISTER FOR OR ACCESS THIS WEBSITE.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" #ourServices></a>
     <h2>Our Services</h2>
     <p>
       Oppia is a learning platform that allows Users to participate in an
@@ -33,6 +38,7 @@
       Users for any of our services.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" #privacyPolicy></a>
     <h2>Privacy Policy</h2>
     <p>
       For more information about how we use your personal information and what
@@ -43,6 +49,7 @@
       </a>.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" #hostedCreatedContent></a>
     <h2>Hosted Created Content and Intellectual Property</h2>
     <p>
       All our Educational Content is meant to be shared, refined, and &mdash;
@@ -93,6 +100,7 @@
       such notices to admin@oppia.org.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" #refrainingFromCertainActivities></a>
     <h2 class="oppia-h2-text">Refraining from Certain Activities</h2>
 
     <p>
@@ -142,6 +150,7 @@
       </li>
     </ul>
 
+    <a class="oppia-privacy-terms-anchor" #termination></a>
     <h2>Termination</h2>
     <p>
       If you violate any of the Terms of Use above, break any laws, engage in
@@ -160,6 +169,7 @@
       let us know.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" #disclaimerOfWarranty></a>
     <h2>Disclaimer of Warranty</h2>
     <p>
       Oppia does not make any promises about its services. We make no
@@ -186,6 +196,7 @@
       FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" #limitationOfLiability></a>
     <h2>Limitation of Liability</h2>
     <p>
       In any event (and notwithstanding anything else in this Agreement),
@@ -205,6 +216,7 @@
       REPRESENTATIVES HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGES.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" #disputesAndJurisdiction></a>
     <h2>Disputes and Jurisdiction</h2>
     <p>
       These Terms shall be governed by and construed according to the laws of
@@ -214,6 +226,7 @@
       County.
     </p>
 
+    <a class="oppia-privacy-terms-anchor" #modificationsToTheseTerms></a>
     <h2>Modifications to These Terms</h2>
     <p>
       Oppia may update, change, modify, add, or remove portions of these Terms
@@ -239,5 +252,19 @@
       <li>26 Sep 2015: Revised terms added.</li>
     </ul>
   </mat-card>
+</div>
+
+<div class="nav oppia-terms-right-menu d-none d-md-block">
+  <strong>Terms of Use</strong>
+  <p><a (click)="scrollTo(ourServices)">Our Services</a></p>
+  <p><a (click)="scrollTo(privacyPolicy)">Privacy Policy</a></p>
+  <p><a (click)="scrollTo(hostedCreatedContent)">Hosted Created Content and IP</a></p>
+  <p><a (click)="scrollTo(refrainingFromCertainActivities)">Refraining from Certain Activities</a></p>
+  <p><a (click)="scrollTo(termination)">Termination</a></p>
+  <p><a (click)="scrollTo(disclaimerOfWarranty)">Disclaimer of Warranty</a></p>
+  <p><a (click)="scrollTo(limitationOfLiability)">Limitation of Liability</a></p>
+  <p><a (click)="scrollTo(disputesAndJurisdiction)">Disputes and Jurisdiction</a></p>
+  <p><a (click)="scrollTo(modificationsToTheseTerms)">Modifications to these Terms</a></p>
+</div>
 </]]></string>
 </resources>
