@@ -71,7 +71,7 @@ class MathBitmapModelLoader private constructor(
           renderableText,
           TextPaint(), // Any TextPaint can be used since the span will use its own.
           /* width= */ 0,
-          Layout.Alignment.ALIGN_LEFT,
+          Layout.Alignment.ALIGN_NORMAL,
           /* spacingmult= */ 1f,
           /* spacingadd= */ 0f,
           /* includepad= */ true
