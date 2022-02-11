@@ -41,8 +41,8 @@
 
     <TextView
       android:id="@+id/content_text_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_width="@dimen/content_item_textview_layout_width"
+      android:layout_height="@dimen/content_item_textview_layout_height"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
