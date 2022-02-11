@@ -28,7 +28,7 @@
         android:id="@+id/add_profile_activity_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/add_profile_background">
+        android:background="@color/add_profile_activity_layout_background_color">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@{viewModel.requiredTextWithStar}"
-            android:textColor="@color/oppia_primary_text"
+            android:textColor="@color/add_profile_activity_label_text_color"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,6 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/add_profile_pin_checkbox_margin_top"
+            android:textColor="@color/add_profile_activity_label_text_color"
             android:minHeight="48dp"
             android:text="@string/add_profile_create_a_3_digit_pin"
             app:layout_constraintStart_toStartOf="parent"
@@ -196,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@{viewModel.validPin ? @color/oppia_primary_text_dark : @color/accessible_grey}"
+                android:textColor="@{viewModel.validPin ? @color/add_profile_activity_switch_text_color : @color/add_profile_activity_switch_description_color}"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -208,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_sub"
-                android:textColor="@color/accessible_light_grey"
+                android:textColor="@color/add_profile_activity_switch_description_color"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
