@@ -24,7 +24,7 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_infoFragment_clickSeeMore_showSeeLess(){
+  fun testTopicActivity_infoFragment_clickSeeMore_showSeeLess() {
     navigateToTopicActivity()
     device.findObjectByText("See More").click()
     // Assert See Less is visible
@@ -33,7 +33,7 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_infoFragment_clickSeeLess_showSeeMore(){
+  fun testTopicActivity_infoFragment_clickSeeLess_showSeeMore() {
     navigateToTopicActivity()
     device.findObjectByText("See More").click()
     device.waitForText("See Less")
