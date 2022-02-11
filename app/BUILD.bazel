@@ -774,7 +774,9 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
         # TODO(#2432): Replace debug_module with prod_module when building the app in prod mode.
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector_provider",
         "//utility/src/main/java/org/oppia/android/util/statusbar:status_bar_color",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
     ],
 )
 

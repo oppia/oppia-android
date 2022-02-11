@@ -28,5 +28,7 @@ kt_android_library(
         ":math_latex_model",
         "//third_party:com_github_bumptech_glide_glide",
         "//third_party:io_github_karino2_kotlitex",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
     ],
 )
