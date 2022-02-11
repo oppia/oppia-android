@@ -30,8 +30,7 @@
       app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_end_profile_already_added : @dimen/profile_view_not_added_margin}"
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_start_profile_already_added : @dimen/profile_view_not_added_margin}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}">
-
-
+      
       <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_add_button"
         android:layout_width="72dp"

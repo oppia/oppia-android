@@ -468,6 +468,7 @@
   <!-- ShapeableImageView -->
   <!-- context for ShapeableimageView https://howtodoandroid.com/shapeableimageview-material-components-android/
        -->
+  <!-- Here key to the overlay behavior is the empty parent attribute. This is what causes the overlay behavior -->
   <style name="ShapeAppearanceOverlay.App.Circular" parent="">
     <item name="cornerSize">50%</item>
   </style>
