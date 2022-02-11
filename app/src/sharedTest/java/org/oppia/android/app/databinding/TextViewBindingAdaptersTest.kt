@@ -118,7 +118,7 @@ class TextViewBindingAdaptersTest {
   private val TIMESTAMP = 1556094120000
 
   @Test
-  fun testTextViewBindingAdapters_ltrIsEnabled_port_profileDataTextIsCorrect() {
+  fun testTextViewBindingAdapters_profileDataTextIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
     activityRule.scenario.onActivity {
