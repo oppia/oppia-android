@@ -58,7 +58,6 @@ public final class TextViewBindingAdapters {
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
     long timeStampMillis = ensureTimestampIsInMilliseconds(lastVisitedTimestamp);
     long currentTimeMillis = getOppiaClock(view).getCurrentTimeMs();
-
     AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
 
     if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
