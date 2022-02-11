@@ -30,6 +30,8 @@
   <color name="admin_controls_sub_heading_color">@color/primary_color</color>
   <color name="admin_controls_switch_description_color">@color/description_text_color</color>
   <color name="admin_controls_menu_options_text_color">@color/dark_text_color</color>
+  <color name="admin_controls_sub_heading_background_color">@color/dark_background_color</color>
+  <color name="admin_controls_view_divider_color">@color/dark_background_color</color>
   <!-- Admin Pin Activity -->
   <color name="admin_pin_activity_layout_background_color">@color/background_color</color>
   <!-- Pin Password Activity -->
