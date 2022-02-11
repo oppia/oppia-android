@@ -27,6 +27,7 @@ class TopicActivityTest {
     navigateToTopicActivity()
     device.findObjectByText("LESSONS").click()
     device.findObjectByRes("expand_list_icon").click()
+    device.waitForRes("chapter_list_container")
     // Assert list expanded
     val expandedList = device.findObjectByRes("chapter_list_container")
     assertThat(expandedList).isNotNull()
@@ -38,16 +39,23 @@ class TopicActivityTest {
     device.findObjectByText("LESSONS").click()
     val storyNameText = device.findObjectByRes("story_name_text_view").getText()
     device.findObjectByRes("story_name_text_view").click()
+    device.waitForRes("story_toolbar_title")
     // Assert story fragment is opened.
-    // Find a better way?
     val titleText = device.findObjectByRes("story_toolbar_title").getText()
     assertThat(titleText).isEqualTo(storyNameText)
   }
 
-// @Test
-//  fun testTopicActivity_lessonsFragment_chapterNameIsClicked_ChapterOpens(){
-//
-//  }
+  @Test
+  fun testTopicActivity_lessonsFragment_chapterNameIsClicked_ChapterOpens() {
+    navigateToTopicActivity()
+    device.findObjectByText("LESSONS").click()
+    device.findObjectByRes("expand_list_icon").click()
+    device.waitForRes("chapter_list_container")
+    device.findObjectByText("What is a Fraction?").click()
+
+    val chapterContinueButton = device.findObjectByText("CONTINUE")
+    assertThat(chapterContinueButton).isNotNull()
+  }
 
   @Test
   fun testTopicActivity_practiceFragment_nothingChecked_startButtonsIsDisabled() {
@@ -67,17 +75,28 @@ class TopicActivityTest {
     val startButtonStatus = device.findObjectByText("START").isEnabled()
     assertThat(startButtonStatus).isTrue()
   }
-  /*
-      @Test
-      fun testTopicActivity_practiceFragment_startButtonIsClicked_practiceModeOpens(){
 
-      }
+  @Test
+  fun testTopicActivity_practiceFragment_startButtonIsClicked_practiceModeOpens() {
+    navigateToTopicActivity()
+    device.findObjectByText("PRACTICE").click()
+    device.findObjectByText("Mixed Numbers").click()
+    device.findObjectByText("START").click()
+    //Asserting practice mode is opened
+    val practiceModeTitle = device.findObjectByText("Practice Mode")
+    assertThat(practiceModeTitle).isNotNull()
+  }
 
-      @Test
-      fun testTopicActivity_revisionFragment_itemIsClicked_revisionStarts(){
+  @Test
+  fun testTopicActivity_revisionFragment_itemIsClicked_revisionStarts() {
+    navigateToTopicActivity()
+    device.findObjectByText("REVISION").click()
+    device.findObjectByText("Fractions of a group").click()
+    //Asserting revision fragment is open
+    val returnButton = device.findObjectByText("RETURN TO TOPIC")
+    assertThat(returnButton).isNotNull()
+  }
 
-      }
-    */
   private fun navigateToTopicActivity() {
     device.findObjectByRes("skip_text_view").click()
     device.findObjectByRes("get_started_button").click()
