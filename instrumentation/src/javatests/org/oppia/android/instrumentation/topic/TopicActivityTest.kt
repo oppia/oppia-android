@@ -10,6 +10,7 @@ import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectBy
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.scrollRecyclerViewTextIntoView
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.startOppiaFromScratch
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
+import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForText
 
 /** Tests for TopicActivity. */
 class TopicActivityTest {
@@ -20,6 +21,26 @@ class TopicActivityTest {
     // Initialize UiDevice instance
     device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     device.startOppiaFromScratch()
+  }
+
+  @Test
+  fun testTopicActivity_infoFragment_clickSeeMore_showSeeLess(){
+    navigateToTopicActivity()
+    device.findObjectByText("See More").click()
+    // Assert See Less is visible
+    val seeLessText = device.findObjectByText("See Less")
+    assertThat(seeLessText).isNotNull()
+  }
+
+  @Test
+  fun testTopicActivity_infoFragment_clickSeeLess_showSeeMore(){
+    navigateToTopicActivity()
+    device.findObjectByText("See More").click()
+    device.waitForText("See Less")
+    device.findObjectByText("See Less").click()
+    // Assert See Less is visible
+    val seeMoreText = device.findObjectByText("See More")
+    assertThat(seeMoreText).isNotNull()
   }
 
   @Test
@@ -70,7 +91,7 @@ class TopicActivityTest {
   fun testTopicActivity_practiceFragment_ItemsChecked_startButtonsIsEnabled() {
     navigateToTopicActivity()
     device.findObjectByText("PRACTICE").click()
-    device.findObjectByText("Mixed Numbers").click()
+    checkSkillsForPracticeFragment()
     // Asserting button is Enabled
     val startButtonStatus = device.findObjectByText("START").isEnabled()
     assertThat(startButtonStatus).isTrue()
@@ -80,9 +101,9 @@ class TopicActivityTest {
   fun testTopicActivity_practiceFragment_startButtonIsClicked_practiceModeOpens() {
     navigateToTopicActivity()
     device.findObjectByText("PRACTICE").click()
-    device.findObjectByText("Mixed Numbers").click()
+    checkSkillsForPracticeFragment()
     device.findObjectByText("START").click()
-    //Asserting practice mode is opened
+    // Asserting practice mode is opened
     val practiceModeTitle = device.findObjectByText("Practice Mode")
     assertThat(practiceModeTitle).isNotNull()
   }
@@ -92,9 +113,16 @@ class TopicActivityTest {
     navigateToTopicActivity()
     device.findObjectByText("REVISION").click()
     device.findObjectByText("Fractions of a group").click()
-    //Asserting revision fragment is open
+    // Asserting revision fragment is open
     val returnButton = device.findObjectByText("RETURN TO TOPIC")
     assertThat(returnButton).isNotNull()
+  }
+
+  private fun checkSkillsForPracticeFragment() {
+    device.findObjectByText("What is a Fraction?").click()
+    device.findObjectByText("Fractions of a group").click()
+    device.findObjectByText("Mixed Numbers").click()
+    device.findObjectByText("Adding Fractions").click()
   }
 
   private fun navigateToTopicActivity() {
