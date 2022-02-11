@@ -162,11 +162,8 @@ class BazelClient(
     }
   }
 
-  private fun computeMaxArgumentLength(partitions: List<List<String>>): Int {
-    return checkNotNull(partitions.map(this::computeArgumentLength).maxOrNull()) {
-      "Expected at least one partition when computing argument lengths."
-    }
-  }
+  private fun computeMaxArgumentLength(partitions: List<List<String>>) =
+    partitions.map(this::computeArgumentLength).maxOrNull() ?: 0
 
   private fun computeArgumentLength(args: List<String>) = args.joinToString(" ").length
 
