@@ -407,7 +407,7 @@
   <string name="reveal">Reveal</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
-  <string name="recently">recently</string>
+  <string name="last_logged_in_recently">recently</string>
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>

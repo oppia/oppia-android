@@ -365,7 +365,6 @@
   <string name="just_now">الآن</string>
   <string name="time_ago">منذ %s</string>
   <string name="yesterday">أمس</string>
-  <string name="recently">مؤخرا</string>
   <string name="return_to_topic">العودة إلى الموضوع</string>
   <string name="explanation">الشرح:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">إذا تساوى عنصران، قم بدمجهم.</string>

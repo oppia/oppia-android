@@ -349,7 +349,6 @@
   <string name="just_now">Agora</string>
   <string name="time_ago">%s atrás</string>
   <string name="yesterday">ontem</string>
-  <string name="recently">recentemente</string>
   <string name="return_to_topic">Voltar ao tópico</string>
   <string name="explanation">Explicação:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">Se dois itens forem iguais, junte-os.</string>

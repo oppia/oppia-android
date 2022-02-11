@@ -159,7 +159,7 @@ class TextViewBindingAdaptersTest {
   }
 
   @Test
-  fun testSetProfileLastVisitedText_forTimeTwoMinuteAgo_setsLastUsedTwoMinutesAgoText() {
+  fun testSetProfileLastVisitedText_forTimeTwoMinutesAgo_setsLastUsedTwoMinutesAgoText() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
@@ -189,7 +189,7 @@ class TextViewBindingAdaptersTest {
   }
 
   @Test
-  fun testSetProfileLastVisitedText_forTimeTwoHourAgo_setsLastUsedTwoHoursAgoText() {
+  fun testSetProfileLastVisitedText_forTimeTwoHoursAgo_setsLastUsedTwoHoursAgoText() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
     val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
@@ -279,7 +279,7 @@ class TextViewBindingAdaptersTest {
   }
 
   @Test
-  fun testTextViewBindingAdapters_ltrIsEnabled_port_drawableEndCompactIsCorrect() {
+  fun testTextViewBindingAdapters_drawableEndCompactIsCorrect() {
     activityRule.scenario.onActivity {
       val drawable = ContextCompat.getDrawable(
         it,
