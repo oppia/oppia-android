@@ -1,4 +1,4 @@
-package org.oppia.android.instrumentation.player
+package org.oppia.android.instrumentation.topic
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
