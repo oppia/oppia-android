@@ -14,7 +14,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.math.MathExpressionParser
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.toComparableOperationList
+import org.oppia.android.util.math.toComparableOperation
 import org.oppia.android.util.math.toPolynomial
 import org.oppia.android.util.math.toRawLatex
 import org.oppia.android.util.parser.html.HtmlParser
@@ -136,7 +136,7 @@ class MathExpressionParserViewModel @Inject constructor(
     ): MathParsingResult<String> {
       return when (resultType) {
         ResultType.MATH_EXPRESSION -> this
-        ResultType.COMPARABLE_OPERATION_LIST -> map { it.toComparableOperationList() }
+        ResultType.COMPARABLE_OPERATION_LIST -> map { it.toComparableOperation() }
         ResultType.POLYNOMIAL -> map { it.toPolynomial() }
         ResultType.LATEX -> map { it.toRawLatex(useDivAsFractions).wrapAsLatexHtml() }
         ResultType.HUMAN_READABLE_STRING -> map {
@@ -155,8 +155,8 @@ class MathExpressionParserViewModel @Inject constructor(
       return when (resultType) {
         ResultType.MATH_EXPRESSION -> this
         ResultType.COMPARABLE_OPERATION_LIST -> map {
-          "Left side: ${it.leftSide.toComparableOperationList()}" +
-            "\n\nRight side: ${it.rightSide.toComparableOperationList()}"
+          "Left side: ${it.leftSide.toComparableOperation()}" +
+            "\n\nRight side: ${it.rightSide.toComparableOperation()}"
         }
         ResultType.POLYNOMIAL -> map {
           "Left side: ${it.leftSide.toPolynomial()}\n\nRight side: ${it.rightSide.toPolynomial()}"

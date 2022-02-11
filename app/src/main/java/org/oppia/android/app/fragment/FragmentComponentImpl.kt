@@ -60,6 +60,7 @@ import org.oppia.android.app.settings.profile.ProfileResetPinFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryFragment
+import org.oppia.android.app.testing.ExplorationTestActivityPresenter
 import org.oppia.android.app.testing.ImageRegionSelectionTestFragment
 import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -111,6 +112,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(exitProfileDialogFragment: ExitProfileDialogFragment)
   fun inject(explorationFragment: ExplorationFragment)
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
+  fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
   fun inject(faqListFragment: FAQListFragment)
   fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
   fun inject(helpFragment: HelpFragment)
