@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
-import org.oppia.android.app.administratorcontrols.ProfileDeletionDialogListener
+import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
@@ -112,7 +112,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
   }
 
   private fun showDeletionDialog(internalProfileId: Int) {
-    (activity as ProfileDeletionDialogListener).loadBooleanProfileDeletionDialog(true)
+    (activity as ProfileEditDeletionDialogListener).loadBooleanProfileEditDeletionDialog(true)
     val dialogFragment = ProfileEditDeletionDialogFragment
       .newInstance(internalProfileId)
     dialogFragment.showNow(fragment.childFragmentManager, TAG_PROFILE_DELETION_DIALOG)

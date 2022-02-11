@@ -9,7 +9,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
-import org.oppia.android.app.settings.profile.LoadProfileDeletionDialogListener
+import org.oppia.android.app.settings.profile.LoadProfileEditDeletionDialogListener
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -72,7 +72,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
               )
-              (fragment as LoadProfileDeletionDialogListener).loadProfileDeletionDialog(it)
+              (fragment as LoadProfileEditDeletionDialogListener).loadProfileEditDeletionDialog(it)
               this.isProfileDeletionDialogVisible = false
             }
           }

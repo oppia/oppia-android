@@ -13,7 +13,7 @@ import javax.inject.Inject
 class ProfileEditFragment :
   InjectableFragment(),
   ProfileEditDialogInterface,
-  LoadProfileDeletionDialogListener {
+  LoadProfileEditDeletionDialogListener {
   @Inject
   lateinit var profileEditFragmentPresenter: ProfileEditFragmentPresenter
 
@@ -62,7 +62,7 @@ class ProfileEditFragment :
     profileEditFragmentPresenter.deleteProfile(internalProfileId)
   }
 
-  override fun loadProfileDeletionDialog(internalProfileId: Int) {
+  override fun loadProfileEditDeletionDialog(internalProfileId: Int) {
     profileEditFragmentPresenter.handleLoadProfileDeletionDialog(internalProfileId)
   }
 }

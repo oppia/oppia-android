@@ -47,7 +47,7 @@ class AdministratorControlsActivity :
   LoadProfileListListener,
   LoadAppVersionListener,
   LoadProfileEditListener,
-  ProfileDeletionDialogListener,
+  ProfileEditDeletionDialogListener,
   ShowLogoutDialogListener {
   @Inject
   lateinit var administratorControlsActivityPresenter: AdministratorControlsActivityPresenter
@@ -130,7 +130,7 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter.loadProfileEdit(profileId, profileName)
   }
 
-  override fun loadBooleanProfileDeletionDialog(isProfileDeletionDialogVisible: Boolean) {
+  override fun loadBooleanProfileEditDeletionDialog(isProfileDeletionDialogVisible: Boolean) {
     this.isProfileDeletionDialogVisible = isProfileDeletionDialogVisible
     administratorControlsActivityPresenter.loadProfileDeletionDialog(isProfileDeletionDialogVisible)
   }
