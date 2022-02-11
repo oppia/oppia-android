@@ -20,12 +20,14 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
@@ -61,6 +63,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.settings.profile.ProfileListActivity
+import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -90,6 +93,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -760,6 +764,106 @@ class AdministratorControlsFragmentTest {
       onView(withId(R.id.profile_edit_allow_download_sub)).check(matches((isDisplayed())))
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches((isDisplayed())))
       onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @DisableAccessibilityChecks
+  fun testAdministratorControlsFragment_clickProfileDeletionButton_checkOpensDeletionDialog() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 1
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            isDisplayed()
+          )
+        )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @DisableAccessibilityChecks
+  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkDeletionDialogIsVisible() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_dialog_message))
+        .inRoot(isDialog())
+        .check(
+          matches(
+            isCompletelyDisplayed()
+          )
+        )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @DisableAccessibilityChecks
+  fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 1
+      )
+    ).use {
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileListFragment::class.java.name))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  @DisableAccessibilityChecks
+  fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 1
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileListFragment::class.java.name))
     }
   }
 
