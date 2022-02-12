@@ -1,8 +1,8 @@
 package org.oppia.android.scripts.xml
 
 import org.oppia.android.scripts.common.RepositoryFile
-import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Node
+import javax.xml.parsers.DocumentBuilderFactory
 
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
