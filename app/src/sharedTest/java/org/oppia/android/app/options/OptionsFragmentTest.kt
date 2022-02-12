@@ -25,8 +25,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -94,6 +92,8 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -621,46 +621,10 @@ class OptionsFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-//  @Module
-//  class TestModule {
-//    companion object {
-//      var forceEnableLanguageSelectionUi: Boolean = true
-//    }
-//
-//    @Provides
-//    @SplashScreenWelcomeMsg
-//    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-//      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-//    }
-//
-//    @Provides
-//    @SyncUpWorkerTimePeriodHours
-//    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-//      return PlatformParameterValue.createDefaultParameter(
-//        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-//      )
-//    }
-//
-//    @Provides
-//    @EnableLanguageSelectionUi
-//    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-//      return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
-//    }
-//
-//    @Provides
-//    @EnableEditAccountsOptionsUi
-//    fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
-//      return PlatformParameterValue.createDefaultParameter(
-//        false
-//      )
-//    }
-//  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-//      TestModule::class,
       PlatformParameterModule::class,
       RobolectricModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
