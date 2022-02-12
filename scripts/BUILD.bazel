@@ -95,7 +95,7 @@ kt_jvm_binary(
 kt_jvm_binary(
     name = "text_view_style_check",
     testonly = True,
-    main_class = "org.oppia.android.scripts.xml.TextViewStyleCheck",
+    main_class = "org.oppia.android.scripts.xml.TextViewStyleCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:text_view_style_check_lib"],
 )
 
