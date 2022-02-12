@@ -40,8 +40,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -87,6 +85,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -111,11 +110,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -165,7 +159,7 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
-    TestModule.forceEnableEditAccountsOptionsUi = true
+    PlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -184,7 +178,7 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
-    TestModule.forceEnableEditAccountsOptionsUi = true
+    PlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -206,7 +200,7 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
-    TestModule.forceEnableEditAccountsOptionsUi = false
+    PlatformParameterModule.forceEnableEditAccountsOptionsUi(false)
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -769,7 +763,7 @@ class AdministratorControlsActivityTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class,
+      PlatformParameterModule::class, RobolectricModule::class,
       PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
@@ -795,33 +789,6 @@ class AdministratorControlsActivityTest {
     interface Builder : ApplicationComponent.Builder
 
     fun inject(administratorControlsActivityTest: AdministratorControlsActivityTest)
-  }
-
-  @Module
-  class TestModule {
-    companion object {
-      var forceEnableEditAccountsOptionsUi: Boolean = false
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(false)
-    }
-
-    @Provides
-    @EnableEditAccountsOptionsUi
-    fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(
-        forceEnableEditAccountsOptionsUi
-      )
-    }
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
