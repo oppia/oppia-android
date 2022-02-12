@@ -12,14 +12,15 @@ fun main(vararg args: String) {
   val searchFiles = RepositoryFile.collectSearchFiles(
     repoPath = repoPath, expectedExtension = ".xml"
   )
-  val profileEditFragmentFile = searchFiles[452]
   val builderFactory = DocumentBuilderFactory.newInstance()
-  val builder = builderFactory.newDocumentBuilder()
-  val doc = builder.parse(profileEditFragmentFile)
-  val root = doc.getElementsByTagName("TextView")
-  for (i in 0 until root.length) {
-    val node = root.item(i)
-    textViewRTL(node as Node)
+  searchFiles.forEach { file ->
+    val builder = builderFactory.newDocumentBuilder()
+    val doc = builder.parse(file)
+    val textViewsElements = doc.getElementsByTagName("TextView")
+    for (i in 0 until textViewsElements.length) {
+      val node = textViewsElements.item(i)
+      textViewRTL(node as Node)
+    }
   }
 }
 
@@ -34,11 +35,11 @@ private fun textViewRTL(node: Node) {
       "android:layout_marginRight" -> {
         throw Exception("TextView has layout_marginRight")
       }
-      "android:layout_paddingLeft" -> {
-        throw Exception("TextView has layout_paddingLeft")
+      "android:paddingLeft" -> {
+        throw Exception("TextView has paddingLeft")
       }
-      "android:layout_paddingRight" -> {
-        throw Exception("TextView has layout_paddingRight")
+      "android:paddingRight" -> {
+        throw Exception("TextView has paddingRight")
       }
     }
   }
