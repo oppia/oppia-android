@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <dimen name="home_padding_end">64dp</dimen>
   <dimen name="home_padding_start">96dp</dimen>
   <dimen name="home_outer_margin">96dp</dimen>
@@ -345,6 +345,11 @@
   <dimen name="topic_practice_subtopic_layout_margin_end">0dp</dimen>
   <dimen name="topic_practice_subtopic_layout_width">360dp</dimen>
 
+  <!-- ProfileProgressFragment -->
+  <dimen name="profile_progress_fragment_margin_start">64dp</dimen>
+  <dimen name="profile_progress_fragment_margin_end">64dp</dimen>
+  <dimen name="profile_progress_fragment_padding_bottom">112dp</dimen>
+
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
 
@@ -396,7 +401,23 @@
   <dimen name="section_title_text_view_layout_margin_top">32dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">96dp</dimen>
 
+  <!-- TopicSummaryView -->
+  <dimen name="topic_summary_lesson_count_text_view_padding_bottom">12dp</dimen>
+  
+  <!-- TopicPracticeFragment -->
+  <dimen name="topic_practice_fragment_padding_bottom">112dp</dimen>
+
+  <!--  PromotedStoryList-->
+  <dimen name="promoted_story_list_layout_margin_end">96dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_start">96dp</dimen>
+
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
+
+  <!-- RevisionCardFragment -->
+  <dimen name="revision_card_fragment_layout_tablet_min_width">640dp</dimen>
+  <dimen name="revision_card_fragment_padding_bottom">148dp</dimen>
+  <dimen name="revision_card_fragment_layout_text_margin_top">32dp</dimen>
+  <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
 
 </resources>
