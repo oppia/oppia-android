@@ -625,4 +625,14 @@
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
+
+  <!-- AdministratorControlDownloadPermissionsView -->
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_widget_switch_compat_margin_end">4dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
 </resources>
