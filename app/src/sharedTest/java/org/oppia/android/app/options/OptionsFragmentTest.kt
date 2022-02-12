@@ -25,8 +25,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.Component
-import dagger.Module
-import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -67,6 +67,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -91,17 +92,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
-import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -128,7 +120,7 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    TestModule.forceEnableLanguageSelectionUi = true
+    PlatformParameterModule.forceEnableLanguageSelectionUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -339,7 +331,8 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
-    TestModule.forceEnableLanguageSelectionUi = true
+    PlatformParameterModule.forceEnableLanguageSelectionUi(true)
+
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -353,7 +346,8 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    TestModule.forceEnableLanguageSelectionUi = false
+    PlatformParameterModule.forceEnableLanguageSelectionUi(false)
+
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -627,46 +621,48 @@ class OptionsFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  @Module
-  class TestModule {
-    companion object {
-      var forceEnableLanguageSelectionUi: Boolean = true
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
-    }
-
-    @Provides
-    @EnableEditAccountsOptionsUi
-    fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(
-        false
-      )
-    }
-  }
+//  @Module
+//  class TestModule {
+//    companion object {
+//      var forceEnableLanguageSelectionUi: Boolean = true
+//    }
+//
+//    @Provides
+//    @SplashScreenWelcomeMsg
+//    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
+//      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
+//    }
+//
+//    @Provides
+//    @SyncUpWorkerTimePeriodHours
+//    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
+//      return PlatformParameterValue.createDefaultParameter(
+//        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+//      )
+//    }
+//
+//    @Provides
+//    @EnableLanguageSelectionUi
+//    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
+//      return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
+//    }
+//
+//    @Provides
+//    @EnableEditAccountsOptionsUi
+//    fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
+//      return PlatformParameterValue.createDefaultParameter(
+//        false
+//      )
+//    }
+//  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, PlatformParameterSingletonModule::class,
+//      TestModule::class,
+      PlatformParameterModule::class,
+      RobolectricModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

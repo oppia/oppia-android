@@ -43,7 +43,7 @@ class PlatformParameterModule {
   @EnableLanguageSelectionUi
   fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+      enableLanguageSelectionUi
     )
   }
 
@@ -51,7 +51,20 @@ class PlatformParameterModule {
   @EnableEditAccountsOptionsUi
   fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+      enableEditAccountsOptionsUi
     )
+  }
+
+  companion object {
+    private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+    private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+
+    fun forceEnableLanguageSelectionUi(value: Boolean) {
+      enableLanguageSelectionUi = value
+    }
+
+    fun forceEnableEditAccountsOptionsUi(value: Boolean) {
+      enableEditAccountsOptionsUi = value
+    }
   }
 }
