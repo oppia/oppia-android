@@ -13,7 +13,7 @@ private const val SYNC_STATUS_PROVIDER_ID = "sync_status_provider_id"
 class SyncStatusManagerImpl @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager
-): SyncStatusManager {
+) : SyncStatusManager {
   private var syncStatus: SyncStatusManager.SyncStatus = SyncStatusManager.SyncStatus.DEFAULT
 
   override fun getSyncStatus(): DataProvider<SyncStatusManager.SyncStatus> =
