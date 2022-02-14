@@ -94,12 +94,8 @@ class AdministratorControlsActivity :
       supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
       )
-    /*
-     when fragment is ProfileEditFragment then we should switch
-     fragment to ProfileListFragment or else
-     we just end the activity as then we are
-     having ProfileListFragment on top.
-     */
+    /* when fragment is ProfileEditFragment then we should switch fragment to ProfileListFragment or else
+       we just end the activity as then we are having ProfileListFragment on top. */
     if (fragment is ProfileEditFragment) {
       administratorControlsActivityPresenter.handleOnBackPressed()
     } else {

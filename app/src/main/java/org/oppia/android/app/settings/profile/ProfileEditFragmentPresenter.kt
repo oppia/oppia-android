@@ -17,6 +17,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
@@ -27,9 +28,13 @@ class ProfileEditFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val profileEditViewModel: ProfileEditViewModel,
   private val profileManagementController: ProfileManagementController
 ) {
+
+  @Inject
+  lateinit var profileEditViewModel: ProfileEditViewModel
+
+  private var isMultipane by Delegates.notNull<Boolean>()
 
   /** This handles OnCreateView() of [ProfileEditFragment]. */
   fun handleOnCreateView(
@@ -47,7 +52,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       viewModel = profileEditViewModel
       lifecycleOwner = fragment
     }
-
+    this.isMultipane = isMultipane
     profileEditViewModel.setProfileId(internalProfileId)
 
     binding.profileRenameButton.setOnClickListener {
@@ -112,7 +117,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
   }
 
   private fun showDeletionDialog(internalProfileId: Int) {
-    (activity as ProfileEditDeletionDialogListener).loadBooleanProfileEditDeletionDialog(true)
+    if (isMultipane) {
+      (activity as ProfileEditDeletionDialogListener).loadBooleanProfileEditDeletionDialog(true)
+    }
     val dialogFragment = ProfileEditDeletionDialogFragment
       .newInstance(internalProfileId)
     dialogFragment.showNow(fragment.childFragmentManager, TAG_PROFILE_DELETION_DIALOG)

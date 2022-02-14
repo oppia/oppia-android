@@ -61,8 +61,8 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -312,7 +312,7 @@ class AdministratorControlsFragmentTest {
           targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
-      onView(isRoot()).perform(OrientationChangeAction.orientationPortrait())
+      onView(isRoot()).perform(orientationPortrait())
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
@@ -709,10 +709,10 @@ class AdministratorControlsFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_delete_button)).check(matches(isDisplayed()))
     }
   }
 
