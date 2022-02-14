@@ -24,8 +24,6 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
@@ -52,7 +50,6 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
-import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -60,10 +57,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
-import org.oppia.android.app.settings.profile.ProfileListActivity
-import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -93,7 +87,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -131,7 +124,7 @@ class AdministratorControlsFragmentTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
-  val accessibilityTestRule = OppiaTestRule()
+  val oppiaTestRule = OppiaTestRule()
 
   private val internalProfileId = 0
 
@@ -431,19 +424,6 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_clickEditProfile_opensProfileListActivity() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.edit_profiles_text_view)).perform(click())
-      intended(hasComponent(ProfileListActivity::class.java.name))
-    }
-  }
-
-  @Test
   fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -494,23 +474,6 @@ class AdministratorControlsFragmentTest {
     }
   }
 
-  // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
-  @Test
-  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
-      onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
-      onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
-    }
-  }
-
   @Test
   fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
     launch<AdministratorControlsActivity>(
@@ -524,20 +487,6 @@ class AdministratorControlsFragmentTest {
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
-      onView(withId(R.id.app_version_text_view)).perform(click())
-      intended(hasComponent(AppVersionActivity::class.java.name))
     }
   }
 
@@ -769,13 +718,15 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  @DisableAccessibilityChecks
   fun testAdministratorControlsFragment_clickProfileDeletionButton_checkOpensDeletionDialog() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 1
       )
     ).use {
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
+        matches(withText("Ben"))
+      ).perform(click())
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog())
@@ -789,13 +740,16 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
+  fun testAdministratorControlsFragment_configChange_checkOpensDeletionDialog() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 1
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
+        matches(withText("Ben"))
+      ).perform(click())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
@@ -810,13 +764,15 @@ class AdministratorControlsFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  @DisableAccessibilityChecks
-  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkDeletionDialogIsVisible() {
+  fun testAdministratorControlsFragment_configChange_checkDeletionDialogIsVisible() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = 1
       )
     ).use {
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
+        matches(withText("Ben"))
+      ).perform(click())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -827,74 +783,6 @@ class AdministratorControlsFragmentTest {
             isCompletelyDisplayed()
           )
         )
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  @DisableAccessibilityChecks
-  fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = 1
-      )
-    ).use {
-      onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_positive))
-        .inRoot(isDialog())
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileListFragment::class.java.name))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  @DisableAccessibilityChecks
-  fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = 1
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_positive))
-        .inRoot(isDialog())
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileListFragment::class.java.name))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_clickEditProfile_checkSendingTheCorrectIntent() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        0
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.edit_profiles_text_view)).perform(click())
-      intended(hasComponent(ProfileListActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testAdministratorControlsFragment_clickAppVersion_checkSendingTheCorrectIntent() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        0
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
-      )
-      onView(withId(R.id.app_version_text_view)).perform(click())
-      intended(hasComponent(AppVersionActivity::class.java.name))
     }
   }
 
