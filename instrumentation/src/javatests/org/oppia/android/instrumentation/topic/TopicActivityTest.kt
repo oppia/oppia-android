@@ -10,7 +10,6 @@ import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectBy
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.scrollRecyclerViewTextIntoView
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.startOppiaFromScratch
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
-import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForText
 
 /** Tests for TopicActivity. */
 class TopicActivityTest {
