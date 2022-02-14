@@ -133,6 +133,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableAccessibilityChecks
 
 /** Tests for [StoryFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -193,7 +194,8 @@ class StoryFragmentTest {
   }
 
   @Test
-  // TODO(#3362): Enable AccessibilityChecks
+  // TODO(#3245): Throw Error URLSpan should be used in place of ClickableSpan
+  @DisableAccessibilityChecks
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -612,7 +614,9 @@ class StoryFragmentTest {
   }
 
   @Test
-  // TODO(#3362): Enable AccessibilityChecks
+  // TODO(#3245): Throwing Error View falls below the minimum recommended size for touch targets
+  //and URLSpan should be used in place of ClickableSpan
+  @DisableAccessibilityChecks
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()

@@ -90,6 +90,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableAccessibilityChecks
 
 /** Tests for [StoryActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -147,7 +148,8 @@ class StoryActivityTest {
   }
 
   @Test
-  // TODO(#3362): Enable AccessibilityChecks
+  // TODO(#3245): Error URLSpan should be used in place of ClickableSpan for improved accessibility
+  @DisableAccessibilityChecks
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(
