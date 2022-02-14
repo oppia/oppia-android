@@ -158,6 +158,7 @@ class ProfileEditActivityTest {
       }
     }
   }
+
   @Test
   fun testProfileEdit_updateName_checkNewNameDisplayed() {
     profileManagementController.updateName(
