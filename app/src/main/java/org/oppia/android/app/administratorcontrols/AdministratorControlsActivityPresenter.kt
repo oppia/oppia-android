@@ -146,6 +146,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     ).commitNow()
   }
 
+  /** Sets whether the user has clicked on the profile deletion [ProfileEditDeletionDialogFragment] in tablet mode. */
   fun loadProfileDeletionDialog(profileDeletionDialogVisible: Boolean) {
     isProfileDeletionDialogVisible = profileDeletionDialogVisible
   }
