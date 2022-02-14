@@ -16,8 +16,8 @@ class FAQSingleActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val question = intent.getStringExtra(FAQ_SINGLE_ACTIVITY_QUESTION)
-    val answer = intent.getStringExtra(FAQ_SINGLE_ACTIVITY_ANSWER)
+    val question = intent.getStringExtra(FAQ_SINGLE_ACTIVITY_QUESTION)!!
+    val answer = intent.getStringExtra(FAQ_SINGLE_ACTIVITY_ANSWER)!!
     faqSingleActivityPresenter.handleOnCreate(question, answer)
   }
 

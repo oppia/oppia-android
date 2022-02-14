@@ -36,7 +36,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     binding.adminAuthToolbar.setNavigationOnClickListener {
       (activity as AdminAuthActivity).finish()
     }
-    val adminPin = activity.intent.getStringExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY)
+    val adminPin = activity.intent.getStringExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY)!!
     binding.apply {
       lifecycleOwner = activity
       viewModel = authViewModel

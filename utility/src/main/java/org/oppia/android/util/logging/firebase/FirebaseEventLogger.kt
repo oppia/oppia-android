@@ -2,6 +2,7 @@ package org.oppia.android.util.logging.firebase
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.android.app.model.EventLog
@@ -30,8 +31,17 @@ class FirebaseEventLogger(
     firebaseAnalytics.logEvent(eventLog.actionName.toString(), bundle)
     // TODO(#3792): Remove this usage of Locale.
     firebaseAnalytics.setUserProperty(COUNTRY_USER_PROPERTY, Locale.getDefault().displayCountry)
-    firebaseAnalytics.setUserProperty(
-      NETWORK_USER_PROPERTY, connectivityManager.activeNetworkInfo.typeName
-    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      val networkCapabilities = connectivityManager.getNetworkCapabilities(
+        connectivityManager.activeNetwork
+      )
+      firebaseAnalytics.setUserProperty(
+        NETWORK_USER_PROPERTY, networkCapabilities?.transportInfo.toString()
+      )
+    } else {
+      firebaseAnalytics.setUserProperty(
+        NETWORK_USER_PROPERTY, connectivityManager.activeNetworkInfo?.typeName
+      )
+    }
   }
 }
