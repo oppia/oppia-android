@@ -42,6 +42,9 @@
   <dimen name="profile_chooser_profile_view_margin_start">16dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_end">16dp</dimen>
 
+  <!-- Profile List Profile View -->
+  <dimen name="profile_list_profile_view_margin_start">36dp</dimen>
+
   <dimen name="profile_chooser_add_view_margin_bottom_profile_not_added">28dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_bottom_profile_not_added">28dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_end">120dp</dimen>
@@ -162,6 +165,11 @@
   <dimen name="submitted_answer_item_question_view_margin_start">64dp</dimen>
   <dimen name="submitted_answer_item_question_view_margin_top">24dp</dimen>
   <dimen name="submitted_answer_item_question_view_margin_end">64dp</dimen>
+
+  <!-- ProfileProgressFragment -->
+  <dimen name="profile_progress_fragment_margin_start">6dp</dimen>
+  <dimen name="profile_progress_fragment_margin_end">56dp</dimen>
+  <dimen name="profile_progress_fragment_padding_bottom">108dp</dimen>
 
   <!-- Previous Responses Item: Exploration Split View -->
   <dimen name="previous_responses_item_exploration_split_view_margin_start">36dp</dimen>
@@ -324,6 +332,10 @@
   <dimen name="topic_practice_subtopic_layout_margin_start">104dp</dimen>
   <dimen name="topic_practice_subtopic_layout_margin_end">96dp</dimen>
 
+  <!-- OptionAppLanguage -->
+  <dimen name="option_app_language_padding_start">36dp</dimen>
+  <dimen name="option_app_language_padding_end">36dp</dimen>
+
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">80dp</dimen>
 
@@ -405,7 +417,18 @@
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">60dp</dimen>
 
+  <!-- RevisionCardFragment -->
+  <dimen name="revision_card_fragment_padding_bottom">145dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_start">52dp</dimen>
+  <dimen name="revision_card_fragment_layout_margin_end">52dp</dimen>
+  <dimen name="revision_card_fragment_layout_text_margin_top">24dp</dimen>
+  <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
+
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
+
+  <!-- Hints and Solution Fragment -->
+  <dimen name="hints_and_solution_recycler_view_padding_top">24dp</dimen>
+  <dimen name="hints_and_solution_recycler_view_padding_bottom">120dp</dimen>
 </resources>
