@@ -33,17 +33,6 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_infoFragment_clickSeeLess_showSeeMore() {
-    navigateToTopicActivity()
-    device.findObjectByText("See More").click()
-    device.waitForText("See Less")
-    device.findObjectByText("See Less").click()
-    // Assert See Less is visible
-    val seeMoreText = device.findObjectByText("See More")
-    assertThat(seeMoreText).isNotNull()
-  }
-
-  @Test
   fun testTopicActivity_lessonsFragment_expandListIsClicked_ListExpands() {
     navigateToTopicActivity()
     device.findObjectByText("LESSONS").click()
