@@ -34,7 +34,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
   @Inject
   lateinit var profileEditViewModel: ProfileEditViewModel
 
-  private var isMultipane by Delegates.notNull<Boolean>()
+  private var isMultipane: Boolean? = null
 
   /** This handles OnCreateView() of [ProfileEditFragment]. */
   fun handleOnCreateView(
@@ -117,7 +117,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
   }
 
   private fun showDeletionDialog(internalProfileId: Int) {
-    if (isMultipane) {
+    if (isMultipane == true) {
       (activity as ProfileEditDeletionDialogListener).loadBooleanProfileEditDeletionDialog(true)
     }
     val dialogFragment = ProfileEditDeletionDialogFragment
