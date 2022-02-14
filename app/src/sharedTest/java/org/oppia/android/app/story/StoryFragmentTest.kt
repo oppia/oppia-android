@@ -104,6 +104,7 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -133,7 +134,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.DisableAccessibilityChecks
 
 /** Tests for [StoryFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -615,7 +615,7 @@ class StoryFragmentTest {
 
   @Test
   // TODO(#3245): Throwing Error View falls below the minimum recommended size for touch targets
-  //and URLSpan should be used in place of ClickableSpan
+  // and URLSpan should be used in place of ClickableSpan
   @DisableAccessibilityChecks
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
