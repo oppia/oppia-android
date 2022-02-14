@@ -148,7 +148,7 @@ class StoryActivityTest {
   }
 
   @Test
-  // TODO(#3245): Error URLSpan should be used in place of ClickableSpan for improved accessibility
+  // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
   @DisableAccessibilityChecks
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(

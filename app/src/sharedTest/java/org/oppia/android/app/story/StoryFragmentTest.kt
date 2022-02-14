@@ -194,7 +194,7 @@ class StoryFragmentTest {
   }
 
   @Test
-  // TODO(#3245): Throw Error URLSpan should be used in place of ClickableSpan
+  // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
   @DisableAccessibilityChecks
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
@@ -614,8 +614,8 @@ class StoryFragmentTest {
   }
 
   @Test
-  // TODO(#3245): Throwing Error View falls below the minimum recommended size for touch targets
-  // and URLSpan should be used in place of ClickableSpan
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
+  // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
   @DisableAccessibilityChecks
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
