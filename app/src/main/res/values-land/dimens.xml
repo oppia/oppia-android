@@ -416,7 +416,7 @@
 
   <!-- AppLanguageFragment -->
   <dimen name="app_language_recycler_view_padding_bottom">96dp</dimen>
-  
+
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">60dp</dimen>
 
@@ -436,11 +436,11 @@
   <dimen name="profile_progress_recently_played_story_card_layout_margin_end">16dp</dimen>
   <dimen name="profile_progress_recently_played_story_card_layout_margin_top">24dp</dimen>
   <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">0dp</dimen>
-  
+
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">24dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">120dp</dimen>
-  
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">36dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">36dp</dimen>
@@ -482,4 +482,8 @@
   <!-- OptionAudioLanguage -->
   <dimen name="option_audio_language_padding_start">36dp</dimen>
   <dimen name="option_audio_language_padding_end">36dp</dimen>
+
+  <!-- Options story text size -->
+  <dimen name="option_story_text_size_padding_start">36dp</dimen>
+  <dimen name="option_story_text_size_padding_end">36dp</dimen>
 </resources>

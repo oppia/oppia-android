@@ -615,7 +615,7 @@
 
   <!-- AppLanguageFragment -->
   <dimen name="app_language_recycler_view_padding_bottom">132dp</dimen>
-   
+
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">160dp</dimen>
 
@@ -641,7 +641,7 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
-  
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
@@ -683,4 +683,8 @@
   <!-- OptionAudioLanguage -->
   <dimen name="option_audio_language_padding_start">16dp</dimen>
   <dimen name="option_audio_language_padding_end">16dp</dimen>
+
+  <!-- Options story text size -->
+  <dimen name="option_story_text_size_padding_start">16dp</dimen>
+  <dimen name="option_story_text_size_padding_end">16dp</dimen>
 </resources>
