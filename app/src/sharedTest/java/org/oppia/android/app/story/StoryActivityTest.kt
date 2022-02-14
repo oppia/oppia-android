@@ -148,7 +148,7 @@ class StoryActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
+ // TODO(#3362): Enable AccessibilityChecks
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(

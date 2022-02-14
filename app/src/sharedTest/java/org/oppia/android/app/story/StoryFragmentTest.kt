@@ -104,7 +104,6 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -194,7 +193,7 @@ class StoryFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
+  // TODO(#3362): Enable AccessibilityChecks
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -613,7 +612,7 @@ class StoryFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
+  // TODO(#3362): Enable AccessibilityChecks
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
