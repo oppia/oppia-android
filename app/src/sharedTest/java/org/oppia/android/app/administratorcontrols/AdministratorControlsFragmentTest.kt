@@ -724,9 +724,11 @@ class AdministratorControlsFragmentTest {
         profileId = 1
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog())
@@ -747,6 +749,7 @@ class AdministratorControlsFragmentTest {
       )
     ).use {
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       ).perform(click())
@@ -770,10 +773,12 @@ class AdministratorControlsFragmentTest {
         profileId = 1
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       ).perform(click())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
