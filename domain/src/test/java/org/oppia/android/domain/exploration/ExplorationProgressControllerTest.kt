@@ -67,7 +67,7 @@ import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -1674,7 +1674,7 @@ class ExplorationProgressControllerTest {
       profileId.internalId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
+      TEST_EXPLORATION_ID_13,
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
@@ -1695,7 +1695,7 @@ class ExplorationProgressControllerTest {
       profileId.internalId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
+      TEST_EXPLORATION_ID_13,
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
@@ -1727,7 +1727,7 @@ class ExplorationProgressControllerTest {
       profileId.internalId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
+      TEST_EXPLORATION_ID_13,
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )

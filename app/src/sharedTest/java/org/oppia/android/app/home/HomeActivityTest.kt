@@ -886,7 +886,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
-        stringToMatch = "2 Lessons"
+        stringToMatch = "3 Lessons"
       )
     }
   }

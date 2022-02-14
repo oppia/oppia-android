@@ -72,7 +72,7 @@ class ModifyLessonProgressControllerTest {
 
     private const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
     private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
-    private const val TEST_EXPLORATION_ID_5 = "13"
+    private const val TEST_EXPLORATION_ID_13 = "13"
     private const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
     private const val FRACTIONS_EXPLORATION_ID_1 = "MjZzEVOG47_1"
     private const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"

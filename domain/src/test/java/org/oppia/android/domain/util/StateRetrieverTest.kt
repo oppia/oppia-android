@@ -37,7 +37,7 @@ import javax.inject.Singleton
 
 private const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
-private const val TEST_EXPLORATION_ID_5 = "13"
+private const val TEST_EXPLORATION_ID_13 = "13"
 
 /** Tests for [StateRetriever]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -230,7 +230,7 @@ class StateRetrieverTest {
   fun testParseState_withImageRegionSelectionInteraction_parsesRuleIsInRegionRuleSpec() {
     val state = loadStateFromJson(
       stateName = "ImageClickInput",
-      explorationName = TEST_EXPLORATION_ID_5
+      explorationName = TEST_EXPLORATION_ID_13
     )
 
     val ruleSpecMap = state.interaction.answerGroupsList
@@ -243,7 +243,7 @@ class StateRetrieverTest {
   fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithIsInRegionWithValueAtX() {
     val state = loadStateFromJson(
       stateName = "ImageClickInput",
-      explorationName = TEST_EXPLORATION_ID_5
+      explorationName = TEST_EXPLORATION_ID_13
     )
 
     val ruleSpecMap = lookUpRuleSpec(state, "IsInRegion")

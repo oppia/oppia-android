@@ -25,7 +25,7 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -38,6 +38,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 
 private val EIGHT_DAYS_IN_MS = TimeUnit.DAYS.toMillis(8)
 
@@ -96,6 +97,23 @@ class StoryProgressTestHelper @Inject constructor(
       profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_13,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the third chapter of test topic 0 story 0 as completed, and any needed prerequisites.
+   * See [markCompletedTestTopic0Story0Exp0] for specifics on the parameters passed to this method,
+   * and any other nuances.
+   */
+  fun markCompletedTestTopic0Story0Exp2(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
+    // Must complete prerequisite chapter first.
+    markCompletedTestTopic0Story0Exp1(profileId, timestampOlderThanOneWeek)
+    recordCompletedChapter(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_5,
       timestampOlderThanOneWeek
     )
@@ -122,7 +140,7 @@ class StoryProgressTestHelper @Inject constructor(
    */
   fun markCompletedTestTopic0Story0(profileId: ProfileId, timestampOlderThanOneWeek: Boolean) {
     // Complete last chapter (+ previous automatically).
-    markCompletedTestTopic0Story0Exp1(profileId, timestampOlderThanOneWeek)
+    markCompletedTestTopic0Story0Exp2(profileId, timestampOlderThanOneWeek)
   }
 
   /**
@@ -367,7 +385,7 @@ class StoryProgressTestHelper @Inject constructor(
       profileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
+      TEST_EXPLORATION_ID_13,
       timestampOlderThanOneWeek
     )
   }
@@ -382,6 +400,44 @@ class StoryProgressTestHelper @Inject constructor(
   ) {
     // Must complete the previous chapter first.
     markCompletedTestTopic0Story0Exp0(profileId, timestampOlderThanOneWeek)
+    recordChapterAsInProgressNotSaved(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_13,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the third chapter of test topic 0 story 0 as in progress saved. For specifics on
+   * parameters and nuances, see: [markInProgressSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressSavedTestTopic0Story0Exp2(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    // Must complete the previous chapter first.
+    markCompletedTestTopic0Story0Exp1(profileId, timestampOlderThanOneWeek)
+    recordChapterAsInProgressSaved(
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_5,
+      timestampOlderThanOneWeek
+    )
+  }
+
+  /**
+   * Marks the third chapter of test topic 0 story 0 as in progress not saved. For specifics on
+   * parameters and nuances, see: [markInProgressNotSavedTestTopic0Story0Exp0].
+   */
+  fun markInProgressNotSavedTestTopic0Story0Exp2(
+    profileId: ProfileId,
+    timestampOlderThanOneWeek: Boolean
+  ) {
+    // Must complete the previous chapter first.
+    markCompletedTestTopic0Story0Exp1(profileId, timestampOlderThanOneWeek)
     recordChapterAsInProgressNotSaved(
       profileId,
       TEST_TOPIC_ID_0,

@@ -129,7 +129,7 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
@@ -690,7 +690,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -705,7 +705,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -725,7 +725,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -739,7 +739,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -754,7 +754,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -769,7 +769,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -789,7 +789,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -809,7 +809,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -825,7 +825,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 

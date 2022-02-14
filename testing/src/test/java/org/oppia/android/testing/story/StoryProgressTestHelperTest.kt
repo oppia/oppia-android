@@ -46,7 +46,7 @@ import org.oppia.android.domain.topic.RATIOS_STORY_ID_1
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -75,6 +75,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 
 /** Tests for [StoryProgressTestHelper]. */
 @RunWith(AndroidJUnit4::class)
@@ -157,7 +158,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkChapterDone_testTopic0_story0_exp5_chapterIsDone() {
+  fun testMarkChapterDone_testTopic0_story0_exp13_chapterIsDone() {
     storyProgressTestHelper.markCompletedTestTopic0Story0Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
@@ -165,20 +166,45 @@ class StoryProgressTestHelperTest {
 
     val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
     val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    val exp5 = story0.getChapter(TEST_EXPLORATION_ID_5)
-    assertThat(exp5.isCompleted()).isTrue()
+    val exp13 = story0.getChapter(TEST_EXPLORATION_ID_13)
+    assertThat(exp13.isCompleted()).isTrue()
+  }
+
+  @Test
+  fun testMarkChapterDone_testTopic0_story0_exp13_story0IsNotDone() {
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp1(
+      profileId = profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
+    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
+    assertThat(story0.isCompleted()).isFalse()
+  }
+
+  @Test
+  fun testMarkChapterDone_testTopic0_story0_exp5_chapterIsDone() {
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
+      profileId = profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
+    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
+    val exp13 = story0.getChapter(TEST_EXPLORATION_ID_5)
+    assertThat(exp13.isCompleted()).isTrue()
   }
 
   @Test
   fun testMarkChapterDone_testTopic0_story0_exp5_story0IsDone() {
-    storyProgressTestHelper.markCompletedTestTopic0Story0Exp1(
+    storyProgressTestHelper.markCompletedTestTopic0Story0Exp2(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
     )
 
     val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
     val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    // The story is completed since exp 5 requires exp 2 to be finished first.
+    // The story is completed since exp 5 requires exp 13 to be finished first.
     assertThat(story0.isCompleted()).isTrue()
   }
 
@@ -603,7 +629,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun testMarkInProgressSaved_testTopic0_story0_exp5_chapterIsInProgressSaved() {
+  fun testMarkInProgressSaved_testTopic0_story0_exp13_chapterIsInProgressSaved() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
@@ -611,12 +637,12 @@ class StoryProgressTestHelperTest {
 
     val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
     val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    val exp5 = story0.getChapter(TEST_EXPLORATION_ID_5)
-    assertThat(exp5.isInProgressSaved()).isTrue()
+    val exp13 = story0.getChapter(TEST_EXPLORATION_ID_13)
+    assertThat(exp13.isInProgressSaved()).isTrue()
   }
 
   @Test
-  fun testMarkChapterAsInProgressNotSaved_testTopic0_story0_exp5_chapterIsInProgressNotSaved() {
+  fun testMarkChapterAsInProgressNotSaved_testTopic0_story0_exp13_chapterIsInProgressNotSaved() {
     storyProgressTestHelper.markInProgressNotSavedTestTopic0Story0Exp1(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
@@ -624,12 +650,38 @@ class StoryProgressTestHelperTest {
 
     val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
     val story0 = testTopic0.getStory(TEST_STORY_ID_0)
-    val exp5 = story0.getChapter(TEST_EXPLORATION_ID_5)
-    assertThat(exp5.isInProgressNotSaved()).isTrue()
+    val exp13 = story0.getChapter(TEST_EXPLORATION_ID_13)
+    assertThat(exp13.isInProgressNotSaved()).isTrue()
   }
 
   @Test
-  fun markInProgressSavedForTestTopic0Story0Exp5() {
+  fun testMarkInProgressSaved_testTopic0_story0_exp5_chapterIsInProgressSaved() {
+    storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp2(
+      profileId = profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
+    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
+    val exp13 = story0.getChapter(TEST_EXPLORATION_ID_5)
+    assertThat(exp13.isInProgressSaved()).isTrue()
+  }
+
+  @Test
+  fun testMarkChapterAsInProgressNotSaved_testTopic0_story0_exp5_chapterIsInProgressNotSaved() {
+    storyProgressTestHelper.markInProgressNotSavedTestTopic0Story0Exp2(
+      profileId = profileId0,
+      timestampOlderThanOneWeek = false
+    )
+
+    val testTopic0 = getTopic(profileId0, TEST_TOPIC_ID_0)
+    val story0 = testTopic0.getStory(TEST_STORY_ID_0)
+    val exp13 = story0.getChapter(TEST_EXPLORATION_ID_5)
+    assertThat(exp13.isInProgressNotSaved()).isTrue()
+  }
+
+  @Test
+  fun markInProgressSavedForTestTopic0Story0Exp13() {
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
@@ -641,7 +693,7 @@ class StoryProgressTestHelperTest {
   }
 
   @Test
-  fun markInProgressNotSavedForTestTopic0Story0Exp5() {
+  fun markInProgressNotSavedForTestTopic0Story0Exp13() {
     storyProgressTestHelper.markInProgressNotSavedTestTopic0Story0Exp0(
       profileId = profileId0,
       timestampOlderThanOneWeek = false
@@ -1663,8 +1715,6 @@ class StoryProgressTestHelperTest {
   }
 
   private fun Topic.isNotStarted(): Boolean = storyList.all { it.isNotStarted() }
-
-  private fun Topic.isStartedNotCompleted(): Boolean = storyList.any { it.isStartedNotCompleted() }
 
   private fun Topic.isInProgressSaved(): Boolean = storyList.any { it.isInProgressSaved() }
 
