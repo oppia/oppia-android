@@ -20,6 +20,7 @@
     <TextView
       android:id="@+id/master_skills_text_view"
       style="@style/Heading2ViewStart"
+      android:layout_marginEnd="88dp"
       android:text="@string/topic_practice_master_these_skills"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
