@@ -17,7 +17,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
