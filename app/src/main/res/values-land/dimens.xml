@@ -424,4 +424,8 @@
   <!-- TopicLessonsTitle -->
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
+
+  <!-- Hints and Solution Fragment -->
+  <dimen name="hints_and_solution_recycler_view_padding_top">24dp</dimen>
+  <dimen name="hints_and_solution_recycler_view_padding_bottom">120dp</dimen>
 </resources>

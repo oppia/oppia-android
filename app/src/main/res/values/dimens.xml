@@ -625,4 +625,8 @@
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
+
+  <!-- Hints and Solution Fragment -->
+  <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
+  <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
 </resources>
