@@ -625,4 +625,18 @@
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
+
+  <!-- AdminPinActivity -->
+  <dimen name="admin_auth_container_padding_bottom">96dp</dimen>
+  <dimen name="admin_pin_main_text_margin_start">28dp</dimen>
+  <dimen name="admin_pin_main_text_margin_end">28dp</dimen>
+  <dimen name="admin_pin_warning_text_margin_start">28dp</dimen>
+  <dimen name="admin_pin_warning_text_margin_end">28dp</dimen>
+  <dimen name="admin_pin_input_pin_margin_start">28dp</dimen>
+  <dimen name="admin_pin_input_pin_margin_top">28dp</dimen>
+  <dimen name="admin_pin_input_pin_margin_end">28dp</dimen>
+  <dimen name="admin_pin_input_confirm_pin_margin_start">28dp</dimen>
+  <dimen name="admin_pin_input_confirm_pin_margin_end">28dp</dimen>
+  <dimen name="submit_button_margin_top">48dp</dimen>
+  <dimen name="submit_button_margin_end">28dp</dimen>
 </resources>
