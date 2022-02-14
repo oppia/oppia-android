@@ -17,8 +17,6 @@ import com.bumptech.glide.load.model.ModelLoaderFactory
 import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.request.target.Target
 import io.github.karino2.kotlitex.view.MathExpressionSpan
-import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -26,6 +24,8 @@ import kotlinx.coroutines.withContext
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ConsoleLoggerInjectorProvider
 import org.oppia.android.util.threading.DispatcherInjectorProvider
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
 
 /**
  * [ModelLoader] for rendering and caching bitmap representations of LaTeX represented by
@@ -109,8 +109,8 @@ class MathBitmapModelLoader private constructor(
         }
 
         // Use Android's StaticLayout to ensure the text is rendered correctly. Note that the
-        // constants are derived from TextView's defaults (except width which is defaulted to 0 since
-        // the width isn't necessarily known ahead of time).
+        // constants are derived from TextView's defaults (except width which is defaulted to 0
+        // since the width isn't necessarily known ahead of time).
         @Suppress("DEPRECATION") // This call is necessary for the supported min API version.
         val staticTextLayout =
           StaticLayout(
@@ -134,7 +134,8 @@ class MathBitmapModelLoader private constructor(
         staticTextLayout.draw(bitmapCanvas)
 
         val finalWidth = if (targetWidth == Target.SIZE_ORIGINAL) bounds.width() else targetWidth
-        val finalHeight = if (targetHeight == Target.SIZE_ORIGINAL) bounds.height() else targetHeight
+        val finalHeight =
+          if (targetHeight == Target.SIZE_ORIGINAL) bounds.height() else targetHeight
 
         // Compute the final bitmap (which might need to be scaled depending on options).
         val bitmap = if (canvasBitmap.width != finalWidth || canvasBitmap.height != finalHeight) {
