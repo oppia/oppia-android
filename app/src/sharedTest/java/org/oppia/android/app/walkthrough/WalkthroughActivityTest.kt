@@ -142,7 +142,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks //Disabled as this is a test file and will not be used by user
   fun testWalkthroughActivity_incProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -151,7 +151,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks //Disabled as this is a test file and will not be used by user
   fun testWalkthroughActivity_incProgress_configChange_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -162,7 +162,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks //Disabled as this is a test file and will not be used by user
   fun testWalkthroughActivity_pressNextBtn_configChange_pressBackBtn_backBtnWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -178,7 +178,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks //Disabled as this is a test file and will not be used by user
   fun testWalkthroughActivity_incProgress_onBackPress_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -189,7 +189,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks //Disabled as this is a test file and will not be used by user
   fun testWalkthroughActivity_incProgress_pressBackBtn_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
