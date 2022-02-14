@@ -3,14 +3,40 @@ package org.oppia.android.app.administratorcontrols
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.view.ViewParent
+import android.widget.FrameLayout
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -19,6 +45,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -26,6 +53,9 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
+import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -138,11 +168,177 @@ class AdministratorControlsActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Test
+  fun testAdministratorControlsFragment_clickEditProfile_opensProfileListActivity() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.edit_profiles_text_view)).perform(click())
+      intended(hasComponent(ProfileListActivity::class.java.name))
+    }
+  }
+
+  // TODO(#762): Replace [ProfileChooserActivity] to [LoginActivity] once it is added.
+  @Test
+  fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 3)
+      onView(withId(R.id.app_version_text_view)).perform(click())
+      intended(hasComponent(AppVersionActivity::class.java.name))
+    }
+  }
+
+  private fun ActivityScenario<AdministratorControlsActivity>.openNavigationDrawer() {
+    onView(withContentDescription(R.string.drawer_open_content_description))
+      .check(matches(isCompletelyDisplayed()))
+      .perform(click())
+
+    // Force the drawer animation to start. See https://github.com/oppia/oppia-android/pull/2204 for
+    // background context.
+    onActivity { activity ->
+      val drawerLayout =
+        activity.findViewById<DrawerLayout>(R.id.administrator_controls_activity_drawer_layout)
+      // Note that this only initiates a single computeScroll() in Robolectric. Normally, Android
+      // will compute several of these across multiple draw calls, but one seems sufficient for
+      // Robolectric. Note that Robolectric is also *supposed* to handle the animation loop one call
+      // to this method initiates in the view choreographer class, but it seems to not actually
+      // flush the choreographer per observation. In Espresso, this method is automatically called
+      // during draw (and a few other situations), but it's fine to call it directly once to kick it
+      // off (to avoid disparity between Espresso/Robolectric runs of the tests).
+      // NOTE TO DEVELOPERS: if this ever flakes, we can probably put this in a loop with fake time
+      // adjustments to simulate the render loop.
+      drawerLayout.computeScroll()
+    }
+
+    // Wait for the drawer to fully open (mostly for Espresso since Robolectric should synchronously
+    // stabilize the drawer layout after the previous logic completes).
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context = context,
       profileId = profileId
     )
+  }
+
+  /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
+  private fun nestedScrollTo(): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String {
+        return "View is not NestedScrollView"
+      }
+
+      override fun getConstraints(): org.hamcrest.Matcher<View> {
+        return Matchers.allOf(
+          ViewMatchers.isDescendantOfA(ViewMatchers.isAssignableFrom(NestedScrollView::class.java))
+        )
+      }
+
+      override fun perform(uiController: UiController, view: View) {
+        try {
+          val nestedScrollView =
+            findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
+          nestedScrollView.scrollTo(0, view.getTop())
+        } catch (e: Exception) {
+          throw PerformException.Builder()
+            .withActionDescription(this.description)
+            .withViewDescription(HumanReadables.describe(view))
+            .withCause(e)
+            .build()
+        }
+        uiController.loopMainThreadUntilIdle()
+      }
+    }
+  }
+
+  private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
+    var parent: ViewParent = FrameLayout(view.getContext())
+    lateinit var incrementView: ViewParent
+    var i = 0
+    while (!(parent.javaClass === parentClass)) {
+      if (i == 0) {
+        parent = findParent(view)
+      } else {
+        parent = findParent(incrementView)
+      }
+      incrementView = parent
+      i++
+    }
+    return parent as View
+  }
+
+  private fun findParent(view: View): ViewParent {
+    return view.getParent()
+  }
+
+  private fun findParent(view: ViewParent): ViewParent {
+    return view.getParent()
+  }
+
+  private fun verifyItemDisplayedOnAdministratorControlListItem(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(matches(isDisplayed()))
+  }
+
+  private fun verifyTextOnAdministratorListItemAtPosition(
+    itemPosition: Int,
+    targetViewId: Int,
+    @StringRes stringIdToMatch: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
+      )
+    ).check(matches(withText(context.getString(stringIdToMatch))))
+  }
+
+  private fun scrollToPosition(position: Int) {
+    onView(withId(R.id.administrator_controls_list)).perform(
+      scrollToPosition<RecyclerView.ViewHolder>(
+        position
+      )
+    )
+  }
+
+  private fun verifyTextInDialog(@StringRes textInDialogId: Int) {
+    onView(withText(context.getString(textInDialogId)))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
