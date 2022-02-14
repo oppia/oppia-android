@@ -625,4 +625,16 @@
   <dimen name="topic_lessons_title_margin_start">32dp</dimen>
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
+
+  <!-- Admin Auth Activity -->
+  <dimen name="admin_auth_heading_textview_margin_start">28dp</dimen>
+  <dimen name="admin_auth_heading_textview_margin_top">40dp</dimen>
+  <dimen name="admin_auth_heading_textview_margin_end">28dp</dimen>
+  <dimen name="admin_auth_input_pin_margin_start">28dp</dimen>
+  <dimen name="admin_auth_input_pin_margin_end">28dp</dimen>
+  <dimen name="admin_auth_submit_button_margin_top">48dp</dimen>
+  <dimen name="admin_auth_min_width">0dp</dimen>
+  <dimen name="admin_auth_input_pin_margin_top">48dp</dimen>
+  <dimen name="admin_auth_submit_button_min_height">48dp</dimen>
+  <dimen name="admin_auth_layout_width">-1px</dimen>
 </resources>
