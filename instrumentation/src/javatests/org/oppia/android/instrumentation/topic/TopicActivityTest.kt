@@ -10,7 +10,7 @@ import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectBy
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.scrollRecyclerViewTextIntoView
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.startOppiaFromScratch
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
-
+import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForText
 /** Tests for TopicActivity. */
 class TopicActivityTest {
   private lateinit var device: UiDevice
@@ -23,87 +23,34 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_infoFragment_clickSeeMore_showSeeLess() {
+  fun testTopicActivity_exploredFully_finishedSuccessfully(){
     navigateToTopicActivity()
     device.findObjectByText("See More").click()
-    // Assert See Less is visible
-    val seeLessText = device.findObjectByText("See Less")
-    assertThat(seeLessText).isNotNull()
-  }
+    device.waitForText("See Less")
+    device.findObjectByText("See Less").click()
 
-  @Test
-  fun testTopicActivity_lessonsFragment_expandListIsClicked_ListExpands() {
-    navigateToTopicActivity()
-    device.findObjectByText("LESSONS").click()
-    device.findObjectByRes("expand_list_icon").click()
-    device.waitForRes("chapter_list_container")
-    // Assert list expanded
-    val expandedList = device.findObjectByRes("chapter_list_container")
-    assertThat(expandedList).isNotNull()
-  }
-
-  @Test
-  fun testTopicActivity_lessonsFragment_storyNameIsClicked_storyFragmentOpens() {
-    navigateToTopicActivity()
-    device.findObjectByText("LESSONS").click()
-    val storyNameText = device.findObjectByRes("story_name_text_view").getText()
-    device.findObjectByRes("story_name_text_view").click()
-    device.waitForRes("story_toolbar_title")
-    // Assert story fragment is opened.
-    val titleText = device.findObjectByRes("story_toolbar_title").getText()
-    assertThat(titleText).isEqualTo(storyNameText)
-  }
-
-  @Test
-  fun testTopicActivity_lessonsFragment_chapterNameIsClicked_ChapterOpens() {
-    navigateToTopicActivity()
     device.findObjectByText("LESSONS").click()
     device.findObjectByRes("expand_list_icon").click()
     device.waitForRes("chapter_list_container")
     device.findObjectByText("What is a Fraction?").click()
+    device.waitForText("CONTINUE")
+    device.pressBack()
+    device.waitForRes("expand_list_icon")
+    device.findObjectByRes("expand_list_icon").click()
+    device.findObjectByRes("story_name_text_view").click()
+    device.waitForRes("story_toolbar_title")
+    device.pressBack()
 
-    val chapterContinueButton = device.findObjectByText("CONTINUE")
-    assertThat(chapterContinueButton).isNotNull()
-  }
-
-  @Test
-  fun testTopicActivity_practiceFragment_nothingChecked_startButtonsIsDisabled() {
-    navigateToTopicActivity()
-    device.findObjectByText("PRACTICE").click()
-    // Asserting button is disabled
-    val startButtonStatus = device.findObjectByText("START").isEnabled()
-    assertThat(startButtonStatus).isFalse()
-  }
-
-  @Test
-  fun testTopicActivity_practiceFragment_ItemsChecked_startButtonsIsEnabled() {
-    navigateToTopicActivity()
-    device.findObjectByText("PRACTICE").click()
-    checkSkillsForPracticeFragment()
-    // Asserting button is Enabled
-    val startButtonStatus = device.findObjectByText("START").isEnabled()
-    assertThat(startButtonStatus).isTrue()
-  }
-
-  @Test
-  fun testTopicActivity_practiceFragment_startButtonIsClicked_practiceModeOpens() {
-    navigateToTopicActivity()
     device.findObjectByText("PRACTICE").click()
     checkSkillsForPracticeFragment()
     device.findObjectByText("START").click()
-    // Asserting practice mode is opened
-    val practiceModeTitle = device.findObjectByText("Practice Mode")
-    assertThat(practiceModeTitle).isNotNull()
-  }
+    device.waitForText("PRACTICE MODE")
+    device.pressBack()
+    device.findObjectByText("LEAVE").click()
 
-  @Test
-  fun testTopicActivity_revisionFragment_itemIsClicked_revisionStarts() {
-    navigateToTopicActivity()
     device.findObjectByText("REVISION").click()
     device.findObjectByText("Fractions of a group").click()
-    // Asserting revision fragment is open
-    val returnButton = device.findObjectByText("RETURN TO TOPIC")
-    assertThat(returnButton).isNotNull()
+    device.findObjectByText("RETURN TO TOPIC").click()
   }
 
   private fun checkSkillsForPracticeFragment() {
