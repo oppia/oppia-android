@@ -56,7 +56,11 @@ class ExplorationActivity :
     internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
     topicId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY))
     storyId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY))
-    explorationId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY))
+    explorationId = checkNotNull(
+      intent.getStringExtra(
+        EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY
+      )
+    )
     backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
     isCheckpointingEnabled =
       intent.getBooleanExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, false)
