@@ -2,7 +2,6 @@ package org.oppia.android.instrumentation.topic
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByRes
@@ -23,7 +22,7 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testTopicActivity_exploredFully_finishedSuccessfully(){
+  fun testTopicActivity_exploredFully_finishedSuccessfully() {
     navigateToTopicActivity()
     device.findObjectByText("See More").click()
     device.waitForText("See Less")
