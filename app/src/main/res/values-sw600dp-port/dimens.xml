@@ -417,7 +417,7 @@
   <dimen name="profile_progress_recently_played_story_card_layout_margin_start">24dp</dimen>
   <dimen name="profile_progress_recently_played_story_card_layout_margin_end">24dp</dimen>
   <dimen name="profile_progress_recently_played_story_card_layout_margin_top">28dp</dimen>
-  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">28dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">0dp</dimen>
 
   <!-- RevisionCardFragment -->
   <dimen name="revision_card_fragment_layout_tablet_min_width">512dp</dimen>
