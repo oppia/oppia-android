@@ -76,10 +76,6 @@
   <dimen name="submitted_answer_question_split_view_margin_start_no_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
 
-  <!-- Content Item: TextView -->
-  <dimen name="content_item_textview_layout_height">48dp</dimen>
-  <dimen name="content_item_textview_layout_width">48dp</dimen>
-
   <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
   <dimen name="content_item_exploration_split_view_margin_top">24dp</dimen>
@@ -111,10 +107,6 @@
   <dimen name="content_item_question_view_margin_top">32dp</dimen>
   <dimen name="content_item_question_view_margin_end">128dp</dimen>
   <dimen name="content_item_question_view_margin_bottom">8dp</dimen>
-
-  <!-- Feedback Item: TextView -->
-  <dimen name="feedback_item_textview_layout_height">48dp</dimen>
-  <dimen name="feedback_item_textview_layout_width">48dp</dimen>
 
   <!-- Feedback Item: Exploration Split View -->
   <dimen name="feedback_item_exploration_split_view_margin_start">24dp</dimen>
