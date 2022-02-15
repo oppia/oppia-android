@@ -52,6 +52,9 @@
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
   <dimen name="profile_chooser_profile_view_divider_margin_top">40dp</dimen>
 
+  <!-- Profile List Profile View -->
+  <dimen name="profile_list_profile_view_margin_start">28dp</dimen>
+
   <dimen name="profile_chooser_profile_view_parent_padding">4dp</dimen>
   <dimen name="profile_chooser_profile_view_is_admin_margin_top">4dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_top_profile_not_added">4dp</dimen>
@@ -626,6 +629,10 @@
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
 
+  <!-- Hints and Solution Fragment -->
+  <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
+  <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
+  
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
