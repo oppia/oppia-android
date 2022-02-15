@@ -69,7 +69,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
-import org.oppia.android.util.accessibility.FakeAccessibilityChecker
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -105,7 +105,7 @@ class StateFragmentAccessibilityTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var fakeAccessibilityManager: FakeAccessibilityChecker
+  lateinit var fakeAccessibilityManager: FakeAccessibilityService
 
   private val internalProfileId: Int = 1
 
