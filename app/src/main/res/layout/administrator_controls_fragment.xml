@@ -16,7 +16,7 @@
     android:background="@color/mid_grey_30"
     android:clipToPadding="false"
     android:overScrollMode="never"
-    android:paddingBottom="80dp"
+    android:paddingBottom="@dimen/administrator_controls_fragment_padding_bottom"
     android:scrollbars="none"
     app:data="@{viewModel.administratorControlsLiveData}"
     app:layout_constraintBottom_toBottomOf="parent"
