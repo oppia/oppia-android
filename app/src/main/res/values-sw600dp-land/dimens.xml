@@ -419,7 +419,7 @@
   <dimen name="revision_card_fragment_padding_bottom">148dp</dimen>
   <dimen name="revision_card_fragment_layout_text_margin_top">32dp</dimen>
   <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
-  
+
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">4dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
