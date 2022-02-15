@@ -419,4 +419,16 @@
   <dimen name="revision_card_fragment_layout_text_margin_top">36dp</dimen>
   <dimen name="revision_card_fragment_layout_button_margin_top">48dp</dimen>
 
+  <!-- AdminPinActivity -->
+  <dimen name="admin_auth_container_padding_bottom">224dp</dimen>
+  <dimen name="admin_pin_main_text_margin_start">28dp</dimen>
+  <dimen name="admin_pin_main_text_margin_end">28dp</dimen>
+  <dimen name="admin_pin_warning_text_margin_start">28dp</dimen>
+  <dimen name="admin_pin_warning_text_margin_end">28dp</dimen>
+  <dimen name="admin_pin_input_pin_margin_start">28dp</dimen>
+  <dimen name="admin_pin_input_pin_margin_end">28dp</dimen>
+  <dimen name="admin_pin_input_pin_margin_top">28dp</dimen>
+  <dimen name="admin_pin_input_confirm_pin_margin_start">28dp</dimen>
+  <dimen name="admin_pin_input_confirm_pin_margin_end">28dp</dimen>
+  <dimen name="submit_button_margin_top">48dp</dimen>
 </resources>
