@@ -426,12 +426,6 @@
   <dimen name="administrator_control_account_actions_view_lower_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_control_account_actions_view_lower_text_view_padding_end">16dp</dimen>
 
-  <!-- AdministratorControlsAppInformationView -->
-  <dimen name="administrator_controls_app_information_view_app_information_head_text_view_padding_start">16dp</dimen>
-  <dimen name="administrator_controls_app_information_view_app_information_head_text_view_padding_end">16dp</dimen>
-  <dimen name="administrator_controls_app_information_view_app_version_text_view_padding_start">16dp</dimen>
-  <dimen name="administrator_controls_app_information_view_app_version_text_view_padding_end">16dp</dimen>
-
   <!-- AdministratorControlsFragment -->
   <dimen name="administrator_controls_fragment_padding_bottom">80dp</dimen>
 
@@ -441,13 +435,5 @@
   <dimen name="administrator_controls_general_view_general_text_view_padding_end">16dp</dimen>
   <dimen name="administrator_controls_general_view_edit_account_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_general_view_edit_account_text_view_padding_end">16dp</dimen>
-
-  <!-- AdministratorControlsProfileView -->
-  <dimen name="administrator_controls_profile_view_head_up_text_view_padding_start">16dp</dimen>
-  <dimen name="administrator_controls_profile_view_head_up_text_view_padding_end">16dp</dimen>
-  <dimen name="administrator_controls_profile_view_down_below_text_view_padding_start">16dp</dimen>
-  <dimen name="administrator_controls_profile_view_down_below_text_view_padding_end">16dp</dimen>
-
-
 
 </resources>

@@ -653,4 +653,4 @@
   <dimen name="administrator_controls_profile_view_head_up_text_view_padding_end">16dp</dimen>
   <dimen name="administrator_controls_profile_view_down_below_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_profile_view_down_below_text_view_padding_end">16dp</dimen>
-  </resources>
+</resources>
