@@ -4,7 +4,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.PoliciesArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler

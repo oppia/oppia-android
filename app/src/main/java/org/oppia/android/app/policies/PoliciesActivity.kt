@@ -40,7 +40,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
           .newBuilder()
           .setPolicyPage(policyPage)
           .build()
-     return  Intent(context, PoliciesActivity::class.java).also {
+      return Intent(context, PoliciesActivity::class.java).also {
         it.putProtoExtra(POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO, policiesArguments)
       }
     }
