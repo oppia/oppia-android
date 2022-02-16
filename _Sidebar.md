@@ -10,6 +10,7 @@
     * [[Installing Oppia-Android|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android]]
     * [[Troubleshooting Installation|https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation]]
     * [[Finding Something to do|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#finding-something-to-do]]
+    * [[How to Get Help | https://github.com/oppia/oppia-android/wiki/Get-Help]]
   * Bazel
     * [[Bazel setup instructions|https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions]]
     * [[Bazel Setup Instructions for Windows|https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows]]
@@ -18,7 +19,6 @@
     * [[Guidance on submitting a PR|https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR]]
     * [[Creating a screenshot|https://github.com/oppia/oppia-android/wiki/Creating-a-screenshot]]
     * [[Interpreting CI Results|https://github.com/oppia/oppia-android/wiki/Interpreting-CI-Results]]
-  * [[Get help | https://github.com/oppia/oppia-android/wiki/Get-Help]]
   * [[Overview of the Oppia Android codebase and architecture|https://github.com/oppia/oppia-android/wiki/Overview-of-the-Oppia-Android-codebase-and-architecture]]
   * Testing
     * [[Oppia Android Testing|https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing]]
