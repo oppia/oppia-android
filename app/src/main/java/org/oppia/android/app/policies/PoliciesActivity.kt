@@ -8,7 +8,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.PoliciesArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
 /** Activity for displaying the app policies. */
@@ -35,16 +35,14 @@ class PoliciesActivity : InjectableAppCompatActivity() {
 
     /** Returns the [Intent] for opening [PoliciesActivity] for the specified [policyPage]. */
     fun createPoliciesActivityIntent(context: Context, policyPage: PolicyPage): Intent {
-      val intent = Intent(context, PoliciesActivity::class.java)
       val policiesArguments =
         PoliciesArguments
           .newBuilder()
           .setPolicyPage(policyPage)
           .build()
-      val args = Bundle()
-      args.putProto(POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO, policiesArguments)
-      intent.putExtras(args)
-      return intent
+     return  Intent(context, PoliciesActivity::class.java).also {
+        it.putProtoExtra(POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO, policiesArguments)
+      }
     }
   }
 }

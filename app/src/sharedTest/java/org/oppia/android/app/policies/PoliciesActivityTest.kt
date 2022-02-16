@@ -1,19 +1,24 @@
 package org.oppia.android.app.policies
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -86,10 +91,11 @@ class PoliciesActivityTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<PoliciesActivity> = ActivityTestRule(
-    PoliciesActivity::class.java, /* initialTouchMode= */
-    true, /* launchActivity= */
-    false
+  var activityTestRule: ActivityScenarioRule<PoliciesActivity> = ActivityScenarioRule(
+    Intent(
+      ApplicationProvider.getApplicationContext(),
+      PoliciesActivity::class.java
+    )
   )
 
   @Inject
@@ -101,52 +107,49 @@ class PoliciesActivityTest {
   }
 
   @Test
-  fun testPoliciesActivity_hasCorrectPrivacyPolicyActivityLabel() {
-    activityTestRule.launchActivity(createPoliciesActivity(PolicyPage.PRIVACY_POLICY))
-    val titleToolbar =
-      activityTestRule.activity.findViewById<Toolbar>(R.id.policies_activity_toolbar)
+  fun testActivity_forPrivacyPolicy_hasCorrectActivityLabel() {
+    activityTestRule.scenario.runWithActivity {
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.PRIVACY_POLICY
+      )
+      val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.privacy_policy_title))
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.privacy_policy_title))
+    }
   }
 
   @Test
-  fun testPoliciesActivity_hasCorrectTermsOfServiceActivityLabel() {
-    activityTestRule.launchActivity(createPoliciesActivity(PolicyPage.TERMS_OF_SERVICE))
-    val titleToolbar =
-      activityTestRule.activity.findViewById<Toolbar>(R.id.policies_activity_toolbar)
+  fun testActivity_forTermsOfService_hasCorrectActivityLabel() {
+    activityTestRule.scenario.runWithActivity {
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
+      )
+      val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.terms_of_service_title))
+      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+      // correct string when it's read out.
+      assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.terms_of_service_title))
+    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createPoliciesActivity(policyPage: PolicyPage): Intent {
-    return when (policyPage) {
-      PolicyPage.PRIVACY_POLICY -> {
-        PoliciesActivity.createPoliciesActivityIntent(
-          ApplicationProvider.getApplicationContext(),
-          PolicyPage.PRIVACY_POLICY
-        )
-      }
-      PolicyPage.TERMS_OF_SERVICE -> {
-        PoliciesActivity.createPoliciesActivityIntent(
-          ApplicationProvider.getApplicationContext(),
-          PolicyPage.TERMS_OF_SERVICE
-        )
-      }
-      else -> {
-        PoliciesActivity.createPoliciesActivityIntent(
-          ApplicationProvider.getApplicationContext(),
-          PolicyPage.POLICY_PAGE_UNSPECIFIED
-        )
-      }
-    }
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
+    crossinline action: (A) -> V
+  ): V {
+    // Use Mockito to ensure the routine is actually executed before returning the result.
+    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
+    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
+    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
+    onActivity { fakeMock.consume(action(it)) }
+    verify(fakeMock).consume(valueCaptor.capture())
+    return valueCaptor.value
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -197,5 +200,10 @@ class PoliciesActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private interface Consumer<T> {
+    /** Represents an operation that accepts a single input argument and returns no result. */
+    fun consume(value: T)
   }
 }

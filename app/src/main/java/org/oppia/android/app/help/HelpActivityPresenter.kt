@@ -336,16 +336,12 @@ class HelpActivityPresenter @Inject constructor(
   private fun selectPoliciesFragment(policyPage: PolicyPage) {
     when (policyPage) {
       PolicyPage.PRIVACY_POLICY -> setMultipaneContainerTitle(
-        resourceHandler.getStringInLocale(
-          R.string.privacy_policy_title
-        )
+        resourceHandler.getStringInLocale(R.string.privacy_policy_title)
       )
       PolicyPage.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
-        resourceHandler.getStringInLocale(
-          R.string.terms_of_service_title
-        )
+        resourceHandler.getStringInLocale(R.string.terms_of_service_title)
       )
-      else -> PolicyPage.POLICY_PAGE_UNSPECIFIED
+      else -> {}
     }
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = POLICIES_FRAGMENT_TAG

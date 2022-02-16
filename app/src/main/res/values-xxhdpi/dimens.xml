@@ -6,18 +6,10 @@
   <dimen name="profile_chooser_profile_view_view_margin_top">60dp</dimen>
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">60dp</dimen>
 
-  <!-- Privacy Policy -->
-  <dimen name="privacy_policy_single_padding_start">24dp</dimen>
-  <dimen name="privacy_policy_single_padding_top">22dp</dimen>
-  <dimen name="privacy_policy_single_padding_end">28dp</dimen>
-  <dimen name="privacy_policy_single_padding_bottom">60dp</dimen>
-  <dimen name="privacy_policy_single_activity_scroll_padding_bottom">80dp</dimen>
-
-  <!-- Terms of Service -->
-  <dimen name="terms_of_service_single_padding_start">24dp</dimen>
-  <dimen name="terms_of_service_single_padding_top">22dp</dimen>
-  <dimen name="terms_of_service_single_padding_end">28dp</dimen>
-  <dimen name="terms_of_service_single_padding_bottom">60dp</dimen>
-  <dimen name="terms_of_service_single_activity_scroll_padding_bottom">80dp</dimen>
-
+  <!-- Policies -->
+  <dimen name="policies_single_padding_start">24dp</dimen>
+  <dimen name="policies_single_padding_top">22dp</dimen>
+  <dimen name="policies_single_padding_end">28dp</dimen>
+  <dimen name="policies_single_padding_bottom">60dp</dimen>
+  <dimen name="policies_single_activity_scroll_padding_bottom">80dp</dimen>
 </resources>

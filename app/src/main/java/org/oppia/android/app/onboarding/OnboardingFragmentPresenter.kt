@@ -18,7 +18,6 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
-import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
@@ -31,8 +30,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val htmlParserFactory: HtmlParser.Factory,
-  @DefaultResourceBucketName private val resourceBucketName: String
+  private val htmlParserFactory: HtmlParser.Factory
 ) : OnboardingNavigationListener, HtmlParser.PolicyOppiaTagActionListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding

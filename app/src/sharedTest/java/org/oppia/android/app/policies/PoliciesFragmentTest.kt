@@ -1,5 +1,6 @@
 package org.oppia.android.app.policies
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -7,6 +8,7 @@ import android.content.res.Resources
 import android.text.Spannable
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -14,14 +16,17 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -103,10 +108,11 @@ class PoliciesFragmentTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<PoliciesActivity> = ActivityTestRule(
-    PoliciesActivity::class.java, /* initialTouchMode= */
-    true, /* launchActivity= */
-    false
+  var activityTestRule: ActivityScenarioRule<PoliciesActivity> = ActivityScenarioRule(
+    Intent(
+      ApplicationProvider.getApplicationContext(),
+      PoliciesActivity::class.java
+    )
   )
 
   @Before
@@ -115,83 +121,92 @@ class PoliciesFragmentTest {
   }
 
   @Test
-  fun testPrivacyPolicyFragment_checkPrivacyPolicy_isDisplayed() {
-    launch<PoliciesActivity>(createPoliciesActivity(PolicyPage.PRIVACY_POLICY)).use {
-      onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testPrivacyPolicyFragment_checkPrivacyPolicyWebLink_isDisplayed() {
-    launch<PoliciesActivity>(createPoliciesActivity(PolicyPage.PRIVACY_POLICY)).use {
-      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testPrivacyPolicyFragment_checkTermsOfService_isDisplayed() {
-    launch<PoliciesActivity>(createPoliciesActivity(PolicyPage.TERMS_OF_SERVICE)).use {
-      onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testPrivacyPolicyFragment_checkTermsOfServiceWebLink_isDisplayed() {
-    launch<PoliciesActivity>(createPoliciesActivity(PolicyPage.TERMS_OF_SERVICE)).use {
-      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testPrivacyPolicyFragment_checkPrivacyPolicy_isCorrectlyParsed() {
-    activityTestRule.launchActivity(createPoliciesActivity(PolicyPage.PRIVACY_POLICY))
-    val privacyPolicyTextView = activityTestRule.activity.findViewById(
-      R.id.policies_description_text_view
-    ) as TextView
-    val htmlParser = htmlParserFactory.create()
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.privacy_policy_content),
-      privacyPolicyTextView
-    )
-    assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
-  }
-
-  @Test
-  fun testPrivacyPolicyFragment_checkTermsOfService_isCorrectlyParsed() {
-    activityTestRule.launchActivity(createPoliciesActivity(PolicyPage.TERMS_OF_SERVICE))
-    val privacyPolicyTextView = activityTestRule.activity.findViewById(
-      R.id.policies_description_text_view
-    ) as TextView
-    val htmlParser = htmlParserFactory.create()
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.terms_of_service_content),
-      privacyPolicyTextView
-    )
-    assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
-  }
-
-  private fun createPoliciesActivity(policies: PolicyPage): Intent {
-    return when (policies) {
-      PolicyPage.PRIVACY_POLICY -> {
-        PoliciesActivity.createPoliciesActivityIntent(
-          ApplicationProvider.getApplicationContext(),
-          PolicyPage.PRIVACY_POLICY
-        )
-      }
-      PolicyPage.TERMS_OF_SERVICE -> {
-        PoliciesActivity.createPoliciesActivityIntent(
-          ApplicationProvider.getApplicationContext(),
-          PolicyPage.TERMS_OF_SERVICE
-        )
-      }
-      else -> PoliciesActivity.createPoliciesActivityIntent(
+  fun testPoliciesFragment_forPrivacyPolicy_privacyPolicyPageIsDisplayed() {
+    launch<PoliciesActivity>(
+      PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        PolicyPage.POLICY_PAGE_UNSPECIFIED
+        PolicyPage.PRIVACY_POLICY
       )
+    ).use {
+      onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_checkPrivacyPolicyWebLink_isDisplayed() {
+    launch<PoliciesActivity>(
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.PRIVACY_POLICY
+      )
+    ).use {
+      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_forTermsOfService_termsOfServicePageIsDisplayed() {
+    launch<PoliciesActivity>(
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
+      )
+    ).use {
+      onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_checkTermsOfServiceWebLink_isDisplayed() {
+    launch<PoliciesActivity>(
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
+      )
+    ).use {
+      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_checkPrivacyPolicy_isCorrectlyParsed() {
+    activityTestRule.scenario.runWithActivity {
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.PRIVACY_POLICY
+      )
+      val privacyPolicyTextView = it.findViewById(
+        R.id.policies_description_text_view
+      ) as TextView
+      val htmlParser = htmlParserFactory.create()
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        getResources().getString(R.string.privacy_policy_content),
+        privacyPolicyTextView
+      )
+      assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_checkTermsOfService_isCorrectlyParsed() {
+    activityTestRule.scenario.runWithActivity {
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
+      )
+      val privacyPolicyTextView = it.findViewById(
+        R.id.policies_description_text_view
+      ) as TextView
+      val htmlParser = htmlParserFactory.create()
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        getResources().getString(R.string.terms_of_service_content),
+        privacyPolicyTextView
+      )
+      assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
     }
   }
 
@@ -201,6 +216,18 @@ class PoliciesFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
+    crossinline action: (A) -> V
+  ): V {
+    // Use Mockito to ensure the routine is actually executed before returning the result.
+    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
+    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
+    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
+    onActivity { fakeMock.consume(action(it)) }
+    verify(fakeMock).consume(valueCaptor.capture())
+    return valueCaptor.value
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -251,5 +278,10 @@ class PoliciesFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private interface Consumer<T> {
+    /** Represents an operation that accepts a single input argument and returns no result. */
+    fun consume(value: T)
   }
 }

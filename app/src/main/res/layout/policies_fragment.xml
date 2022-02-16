@@ -7,7 +7,7 @@
     android:background="@color/oppia_grey_background"
     android:clipToPadding="false"
     android:overScrollMode="never"
-    android:paddingBottom="@dimen/privacy_policy_single_activity_scroll_padding_bottom"
+    android:paddingBottom="@dimen/policies_single_activity_scroll_padding_bottom"
     android:scrollbars="none">
 
     <LinearLayout
@@ -15,10 +15,10 @@
       android:layout_height="wrap_content"
       android:background="@color/white"
       android:orientation="vertical"
-      android:paddingStart="@dimen/privacy_policy_single_padding_start"
-      android:paddingTop="@dimen/privacy_policy_single_padding_top"
-      android:paddingEnd="@dimen/privacy_policy_single_padding_end"
-      android:paddingBottom="@dimen/privacy_policy_single_padding_bottom">
+      android:paddingStart="@dimen/policies_single_padding_start"
+      android:paddingTop="@dimen/policies_single_padding_top"
+      android:paddingEnd="@dimen/policies_single_padding_end"
+      android:paddingBottom="@dimen/policies_single_padding_bottom">
 
       <TextView
         android:id="@+id/policies_description_text_view"

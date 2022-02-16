@@ -1217,7 +1217,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_selectPrivacyPolicyActivity_showPrivacyPolicyActivity() {
+  fun openHelpActivity_selectPolicyActivity_showPoliciesActivityLoadPrivacyPolicy() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
@@ -1235,7 +1235,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_selectPrivacyPolicyActivity_showTermsOfServiceActivity() {
+  fun openHelpActivity_selectPoliciesActivity_showPoliciesActivityLoadTermsOfServicePage() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,

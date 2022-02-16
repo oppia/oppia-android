@@ -11,7 +11,6 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
 /** The presenter for [PoliciesActivity]. */
-@ActivityScope
 class PoliciesActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler

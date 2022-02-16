@@ -50,7 +50,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.times
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
@@ -691,7 +691,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testHtmlContent_withPolicies_linkSupport_clickSpan_callsTagListener() {
+  fun testHtmlContent_withPolicies_linkSupport_clickSpan_callsTagListenerForTermsOfService() {
     val htmlParser = htmlParserFactory.create(
       policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
     )
@@ -721,18 +721,55 @@ class OnboardingFragmentTest {
           "Terms of Service and Privacy Policy."
       )
       assertThat(clickableSpans).hasLength(2)
-      clickableSpans[0].onClick(textView)
+      clickableSpans.first().onClick(textView)
+
+      // Verify that the tag listener is called.
+      verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
+        capture(policyPageCaptor)
+      )
+      assertThat(policyPageCaptor.value).isEqualTo(PolicyPage.TERMS_OF_SERVICE)
+    }
+  }
+
+  @Test
+  fun testHtmlContent_withPolicies_linkSupport_clickSpan_callsTagListenerForPrivacyPolicy() {
+    val htmlParser = htmlParserFactory.create(
+      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    launch(OnboardingActivity::class.java).use {
+      onView(withId(R.id.skip_text_view)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      val textView: TextView =
+        it.findViewById(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)
+
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">" +
+          " Terms of Service </oppia-noninteractive-policy> and <oppia-noninteractive-policy " +
+          "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = false
+      )
+      textView.text = htmlResult
+
+      // Verify the displayed text is correct & has a clickable span.
+      val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
+      assertThat(htmlResult.toString()).isEqualTo(
+        "By using %s, you agree to our \n" +
+          "Terms of Service and Privacy Policy."
+      )
+      assertThat(clickableSpans).hasLength(2)
       clickableSpans[1].onClick(textView)
 
       // Verify that the tag listener is called.
-      verify(mockPolicyOppiaTagActionListener, times(2)).onPolicyPageLinkClicked(
+      verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
         capture(policyPageCaptor)
       )
 
-      assertThat(policyPageCaptor.allValues).containsExactly(
-        PolicyPage.TERMS_OF_SERVICE,
-        PolicyPage.PRIVACY_POLICY
-      ).inOrder()
+      assertThat(policyPageCaptor.value).isEqualTo(PolicyPage.PRIVACY_POLICY)
     }
   }
 
@@ -777,10 +814,10 @@ class OnboardingFragmentTest {
   ): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.
     @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = Mockito.mock(Consumer::class.java) as Consumer<V>
+    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
     val valueCaptor = ArgumentCaptor.forClass(V::class.java)
     onActivity { fakeMock.consume(action(it)) }
-    Mockito.verify(fakeMock).consume(valueCaptor.capture())
+    verify(fakeMock).consume(valueCaptor.capture())
     return valueCaptor.value
   }
 
