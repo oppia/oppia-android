@@ -1,5 +1,3 @@
-## Teams at Oppia android
-
 The Oppia team is a distributed team of contributors from all over the world. To ensure that the project is as stable as possible, we have several infrastructure teams devoted to maintaining the health of various aspects of the development workflow. We also have an onboarding team that helps new contributors get started with the project and a welfare team responsible for assisting new contributors.
 
 This wiki page explains the different teams in Oppia and their composition.
