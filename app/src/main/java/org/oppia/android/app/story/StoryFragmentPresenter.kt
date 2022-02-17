@@ -12,6 +12,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -222,6 +223,7 @@ class StoryFragmentPresenter @Inject constructor(
     linearSmoothScroller.targetPosition = position
     linearLayoutManager.startSmoothScroll(linearSmoothScroller)
     binding.storyChapterList.layoutManager = linearLayoutManager
+    binding.storyToolbarTitle.sendAccessibilityEvent((AccessibilityEvent.TYPE_VIEW_FOCUSED))
   }
 
   private fun createSmoothScroller(): RecyclerView.SmoothScroller {
