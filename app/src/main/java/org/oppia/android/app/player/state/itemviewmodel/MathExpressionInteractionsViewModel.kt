@@ -93,15 +93,17 @@ class MathExpressionInteractionsViewModel private constructor(
       answer = InteractionObject.newBuilder().apply {
         mathExpression = answerTextString
       }.build()
-      plainAnswer = answerTextString
 
+      // Since the LaTeX is embedded without a JSON object, backslashes need to be double escaped.
       val answerAsLatex =
         interactionType.computeLatex(
           answerTextString, useFractionsForDivision, allowedVariables
         )?.replace("\\", "\\\\")
       if (answerAsLatex != null) {
         val mathContentValue = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$answerAsLatex&amp;quot;}"
-        htmlAnswer = "<oppia-noninteractive-math math_content-with-value=\"$mathContentValue\" />"
+        htmlAnswer =
+          "<oppia-noninteractive-math render-type=\"block\"" +
+            " math_content-with-value=\"$mathContentValue\" />"
       } else plainAnswer = answerTextString
 
       contentDescription =
@@ -109,10 +111,12 @@ class MathExpressionInteractionsViewModel private constructor(
           answerTextString,
           useFractionsForDivision,
           allowedVariables,
-          mathExpressionAccessibilityUtil
+          mathExpressionAccessibilityUtil,
+          this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
         ) ?: answerTextString
 
-      this.writtenTranslationContext = this@MathExpressionInteractionsViewModel.writtenTranslationContext
+      this.writtenTranslationContext =
+        this@MathExpressionInteractionsViewModel.writtenTranslationContext
     }
   }.build()
 
@@ -143,7 +147,6 @@ class MathExpressionInteractionsViewModel private constructor(
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
         }
-        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {
@@ -279,11 +282,12 @@ class MathExpressionInteractionsViewModel private constructor(
           answerText: String,
           useFractionsForDivision: Boolean,
           allowedVariables: List<String>,
-          mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+          mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+          language: OppiaLanguage
         ): String? {
           return parseAnswer(answerText, allowedVariables).getResult()?.let { exp ->
             mathExpressionAccessibilityUtil.convertToHumanReadableString(
-              exp, OppiaLanguage.ENGLISH, useFractionsForDivision
+              exp, language, useFractionsForDivision
             )
           }
         }
@@ -312,11 +316,12 @@ class MathExpressionInteractionsViewModel private constructor(
           answerText: String,
           useFractionsForDivision: Boolean,
           allowedVariables: List<String>,
-          mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+          mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+          language: OppiaLanguage
         ): String? {
           return parseAnswer(answerText, allowedVariables).getResult()?.let { exp ->
             mathExpressionAccessibilityUtil.convertToHumanReadableString(
-              exp, OppiaLanguage.ENGLISH, useFractionsForDivision
+              exp, language, useFractionsForDivision
             )
           }
         }
@@ -328,7 +333,7 @@ class MathExpressionInteractionsViewModel private constructor(
       },
       MATH_EQUATION(
         ViewType.MATH_EQUATION_INPUT_INTERACTION,
-        defaultHintTextStringId = R.string.algebraic_equation_default_hint_text,
+        defaultHintTextStringId = R.string.math_equation_default_hint_text,
         hasPlaceholder = false,
         hasCustomVariables = true
       ) {
@@ -344,11 +349,12 @@ class MathExpressionInteractionsViewModel private constructor(
           answerText: String,
           useFractionsForDivision: Boolean,
           allowedVariables: List<String>,
-          mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+          mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+          language: OppiaLanguage
         ): String? {
           return parseAnswer(answerText, allowedVariables).getResult()?.let { exp ->
             mathExpressionAccessibilityUtil.convertToHumanReadableString(
-              exp, OppiaLanguage.ENGLISH, useFractionsForDivision
+              exp, language, useFractionsForDivision
             )
           }
         }
@@ -471,12 +477,8 @@ class MathExpressionInteractionsViewModel private constructor(
                   error.operatorSymbol
                 )
               }
-              UnaryOperator.SUBTRACT -> {
-                appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_lhs_for_subtraction_operator,
-                  error.operatorSymbol
-                )
-              }
+              // Subtraction can't happen since these cases are treated as negation.
+              UnaryOperator.SUBTRACT -> error("This case should never happen.")
               UnaryOperator.MULTIPLY -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
                   R.string.math_expression_error_missing_lhs_for_multiplication_operator,
@@ -503,7 +505,7 @@ class MathExpressionInteractionsViewModel private constructor(
             }
             is NumberAfterVariableError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_number_after_var_term_or_func,
+                R.string.math_expression_error_number_after_var_term,
                 error.variable,
                 error.number.toPlainText()
               )
@@ -532,7 +534,7 @@ class MathExpressionInteractionsViewModel private constructor(
               )
             }
             is SubsequentUnaryOperatorsError -> {
-              appLanguageResourceHandler.getStringInLocaleWithWrapping(
+              appLanguageResourceHandler.getStringInLocale(
                 R.string.math_expression_error_consecutive_unary_operators
               )
             }
@@ -569,7 +571,8 @@ class MathExpressionInteractionsViewModel private constructor(
         answerText: String,
         useFractionsForDivision: Boolean,
         allowedVariables: List<String>,
-        mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+        mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+        language: OppiaLanguage
       ): String?
 
       protected abstract fun parseAnswer(

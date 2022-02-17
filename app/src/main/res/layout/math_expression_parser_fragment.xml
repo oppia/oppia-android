@@ -166,12 +166,12 @@
             android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.MATH_EXPRESSION)}" />
 
           <androidx.appcompat.widget.AppCompatRadioButton
-            android:id="@+id/math_expression_result_type_comparable_operation_list_radio_button"
+            android:id="@+id/math_expression_result_type_comparable_operation_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:checked="false"
-            android:text="@string/math_expression_result_type_comparable_operation_list"
+            android:text="@string/math_expression_result_type_comparable_operation"
             android:minWidth="20dp"
             android:minHeight="20dp"
             android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.COMPARABLE_OPERATION_LIST)}" />
@@ -188,7 +188,7 @@
             android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.POLYNOMIAL)}" />
 
           <androidx.appcompat.widget.AppCompatRadioButton
-            android:id="@+id/math_expression_result_type_latex_button"
+            android:id="@+id/math_expression_result_type_latex_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -199,7 +199,7 @@
             android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.LATEX)}" />
 
           <androidx.appcompat.widget.AppCompatRadioButton
-            android:id="@+id/math_expression_result_type_human_readable_string_button"
+            android:id="@+id/math_expression_result_type_human_readable_string_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"

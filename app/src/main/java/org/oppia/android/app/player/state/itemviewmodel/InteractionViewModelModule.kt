@@ -83,16 +83,6 @@ interface InteractionViewModelModule {
   @Module
   companion object {
     @Provides
-    @IntoSet
-    @SplitScreenInteractionIds
-    fun provideDragAndDropSortInputSplitScreenSupportIndication(): String = "DragAndDropSortInput"
-
-    @Provides
-    @IntoSet
-    @SplitScreenInteractionIds
-    fun provideImageClickInputSplitScreenSupportIndication(): String = "ImageClickInput"
-
-    @Provides
     @IntoMap
     @StringKey("NumericExpressionInput")
     @JvmStatic

@@ -62,6 +62,19 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "parameterized_auto_android_test_runner",
+    testonly = True,
+    srcs = [
+        "ParameterizedAutoAndroidTestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":parameterized_runner_delegate_impl",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_android_library(
     name = "parameterized_junit_test_runner",
     testonly = True,
     srcs = [

@@ -1,19 +1,25 @@
-package org.oppia.android.app.testing.player.split
+package org.oppia.android.app.devoptions.mathexpressionparser
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
 import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -23,10 +29,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.ExplorationTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -59,6 +62,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -74,152 +78,103 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
-// Devices reference: https://material.io/resources/devices/
+/** Tests for [MathExpressionParserActivity] and its presenter. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
-@Config(application = PlayerSplitScreenTest.TestApplication::class)
-class PlayerSplitScreenTest {
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(
+  application = MathExpressionParserActivityTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
+class MathExpressionParserActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    Intents.init()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
-    Intents.release()
+    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   @Test
-  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_continueInteraction_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
+  fun testActivity_hasCorrectActivityLabel() {
+    launchMathExpressionParserActivity().use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(activity.splitScreenManager.shouldSplitScreen("Continue")).isFalse()
+        assertThat(activity.title).isEqualTo(
+          context.getString(R.string.math_expression_parser_activity_title)
+        )
       }
     }
   }
 
   @Test
-  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_dragInteraction_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isFalse()
-      }
+  fun testActivity_hasMathExpressionParserFragmentPlaceholderDefined() {
+    launchMathExpressionParserActivity().use {
+      onView(withId(R.id.math_expression_parser_container)).check(matches(isCompletelyDisplayed()))
     }
   }
 
-  @Test
-  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_continueInteraction_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.splitScreenManager.shouldSplitScreen("Continue")).isFalse()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_dragInteraction_split() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isTrue()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w411dp-h731dp-xxxhdpi") // 5.5 (inch)
-  fun testSplitScreen_411x731_xxxhdpi_dragInteraction_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isFalse()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w540dp-h960dp-xhdpi") // 5.5 (inch)
-  fun testSplitScreen_540x960_xhdpi_imageClickInput_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isFalse()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w800dp-h1280dp-xhdpi") // 8.4 (inch)
-  fun testSplitScreen_800x1280_xhdpi_imageClickInput_split() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isTrue()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "w411dp-h731dp-xxxhdpi") // 5.5 (inch)
-  fun testSplitScreen_411x731_xxxhdpi_imageClickInput_noSplit() {
-    launch(ExplorationTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isFalse()
-      }
-    }
-  }
+  private fun launchMathExpressionParserActivity(): ActivityScenario<MathExpressionParserActivity> =
+    ActivityScenario.launch(MathExpressionParserActivity.createIntent(context))
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-  
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
+      RobolectricModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
+      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NetworkConfigProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      SplitScreenInteractionModule::class
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(playerSplitScreenTest: PlayerSplitScreenTest)
+    fun inject(mathExpressionParserActivityTest: MathExpressionParserActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlayerSplitScreenTest_TestApplicationComponent.builder()
+      DaggerMathExpressionParserActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(playerSplitScreenTest: PlayerSplitScreenTest) {
-      component.inject(playerSplitScreenTest)
+    fun inject(mathExpressionParserActivityTest: MathExpressionParserActivityTest) {
+      component.inject(mathExpressionParserActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

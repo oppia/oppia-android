@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package model;
 
+import "exploration.proto";
+import "translation.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -28,4 +31,18 @@ enum HighlightItem {
 
   // Indicates that the Developer Options item needs to be highlighted.
   DEVELOPER_OPTIONS_ITEM = 4;
+}
+
+// TODO(#59): Isolate this to a test-only proto once possible.
+// TODO: add documentation.
+message InputInteractionViewTestActivityParams {
+  Interaction interaction = 1;
+  WrittenTranslationContext written_translation_context = 2;
+  MathInteractionType math_interaction_type = 3;
+
+  enum MathInteractionType {
+    NUMERIC_EXPRESSION = 0;
+    ALGEBRAIC_EXPRESSION = 1;
+    MATH_EQUATION = 2;
+  }
 }

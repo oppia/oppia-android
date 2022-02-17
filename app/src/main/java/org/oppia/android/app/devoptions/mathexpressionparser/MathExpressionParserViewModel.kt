@@ -173,7 +173,8 @@ class MathExpressionParserViewModel @Inject constructor(
     private fun String.wrapAsLatexHtml(): String {
       val mathContentValue =
         "{&amp;quot;raw_latex&amp;quot;:&amp;quot;${this.replace("\\", "\\\\")}&amp;quot;}"
-      return "<oppia-noninteractive-math math_content-with-value=\"$mathContentValue\" />"
+      return "<oppia-noninteractive-math render-type=\"block\"" +
+        " math_content-with-value=\"$mathContentValue\" />"
     }
   }
 }

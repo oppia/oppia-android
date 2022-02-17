@@ -18,7 +18,7 @@ class MathExpressionParserActivityPresenter @Inject constructor(
     activity.setContentView(R.layout.math_expression_parser_activity)
 
     if (getMathExpressionParserFragment() == null) {
-      val forceNetworkTypeFragment = MathExpressionParserFragment.newInstance()
+      val forceNetworkTypeFragment = MathExpressionParserFragment.createNewInstance()
       activity.supportFragmentManager.beginTransaction().add(
         R.id.math_expression_parser_container,
         forceNetworkTypeFragment
@@ -28,6 +28,6 @@ class MathExpressionParserActivityPresenter @Inject constructor(
 
   private fun getMathExpressionParserFragment(): MathExpressionParserFragment? {
     return activity.supportFragmentManager
-      .findFragmentById(R.id.force_network_type_container) as MathExpressionParserFragment?
+      .findFragmentById(R.id.force_network_type_container) as? MathExpressionParserFragment
   }
 }

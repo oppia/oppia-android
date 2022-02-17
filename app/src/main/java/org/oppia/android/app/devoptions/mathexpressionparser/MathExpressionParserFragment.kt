@@ -16,7 +16,7 @@ class MathExpressionParserFragment : InjectableFragment() {
 
   companion object {
     /** Returns a new instance of [MathExpressionParserFragment]. */
-    fun newInstance(): MathExpressionParserFragment = MathExpressionParserFragment()
+    fun createNewInstance(): MathExpressionParserFragment = MathExpressionParserFragment()
   }
 
   override fun onAttach(context: Context) {

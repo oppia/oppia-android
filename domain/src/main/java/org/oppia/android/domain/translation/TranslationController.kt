@@ -281,6 +281,7 @@ class TranslationController @Inject constructor(
     // Translations that don't match this context are excluded (so app layer code is expected to
     // default to the base HTML translation).
     putAllTranslations(contentMapping)
+    language = writtenTranslationContentLocale.getCurrentLanguage()
   }.build()
 
   private fun computeAppLanguage(

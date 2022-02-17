@@ -11,19 +11,25 @@ import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
 import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 
-// TODO(#249): These are the attributes which should be defined in XML, that are required for this interaction view to work correctly
-//  hint="Write here."
+// TODO(#249): These are the attributes which should be defined in XML, that are required for this
+//  interaction view to work correctly:
+//  placeholder="Write here."
 //  inputType="text"
 //  background="@drawable/edit_text_background"
 //  maxLength="200".
 
-/** The custom [EditText] class for math expression interactions interaction view. */
+/**
+ * The custom [EditText] class for math expression interactions interaction view.
+ *
+ * Note that the hint should be set via [setPlaceholder] to ensure that it's properly initialized if
+ * using databinding, otherwise setting the hint through android:hint should work fine.
+ */
 class MathExpressionInteractionsView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private val hintText: CharSequence
+  private var hintText: CharSequence
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
@@ -43,8 +49,9 @@ class MathExpressionInteractionsView @JvmOverloads constructor(
   }
 
   override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
-    if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP)
-      this.clearFocus()
+    if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+      clearFocus()
+    }
     return super.onKeyPreIme(keyCode, event)
   }
 
@@ -53,5 +60,12 @@ class MathExpressionInteractionsView @JvmOverloads constructor(
       stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
     }
     super.onEditorAction(actionCode)
+  }
+
+  fun setPlaceholder(placeholderText: CharSequence) {
+    hintText = placeholderText
+    if (!hasFocus()) {
+      hint = placeholderText
+    }
   }
 }

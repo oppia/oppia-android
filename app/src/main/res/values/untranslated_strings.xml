@@ -38,7 +38,7 @@
   <string name="math_expression_parse_type_algebraic_equations" translatable="false">Algebraic equations</string>
   <string name="math_expression_result_type_label" translatable="false">Result type:</string>
   <string name="math_expression_result_type_math_expression" translatable="false">Math expression</string>
-  <string name="math_expression_result_type_comparable_operation_list" translatable="false">Comparable operation list</string>
+  <string name="math_expression_result_type_comparable_operation" translatable="false">Comparable operation</string>
   <string name="math_expression_result_type_polynomial" translatable="false">Polynomial</string>
   <string name="math_expression_result_latex" translatable="false">LaTeX</string>
   <string name="math_expression_human_readable_string" translatable="false">Human-readable string</string>

@@ -36,6 +36,7 @@ package_group(
 package_group(
     name = "app_testing_visibility",
     packages = [
+        "//app/src/sharedTest/...",
         "//app/src/test/...",
     ],
 )
@@ -44,6 +45,12 @@ filegroup(
     name = "test_manifest",
     srcs = ["src/test/AndroidManifest.xml"],
     visibility = ["//:oppia_testing_visibility"],
+)
+
+filegroup(
+    name = "data_binder_mapper_impl",
+    srcs = ["src/test/java/DataBinderMapperImpl.java"],
+    visibility = [":app_testing_visibility"],
 )
 
 # Source files for the migrated source files library. The files inside the migrated source files
@@ -542,6 +549,7 @@ android_library(
     resource_files = glob(DATABINDING_LAYOUTS),
     visibility = [
         "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:__pkg__",
     ],
     deps = [
         ":annotations",

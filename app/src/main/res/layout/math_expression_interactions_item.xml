@@ -23,7 +23,7 @@
     <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
       android:id="@+id/math_expression_input_interaction_view"
       style="@style/InputInteractionEditText"
-      android:hint="@{viewModel.hintText}"
+      app:placeholder="@{viewModel.hintText}"
       android:inputType="text"
       android:text="@={viewModel.answerText}"
       app:textChangedListener="@{viewModel.answerTextWatcher}"

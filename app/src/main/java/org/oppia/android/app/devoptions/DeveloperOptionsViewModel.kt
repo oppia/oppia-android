@@ -42,17 +42,17 @@ class DeveloperOptionsViewModel @Inject constructor(
 
   private fun processDeveloperOptionsList(): List<DeveloperOptionsItemViewModel> {
     return listOf(
-      DeveloperOptionsModifyLessonProgressViewModel(
-        routeToMarkChaptersCompletedListener,
-        routeToMarkStoriesCompletedListener,
-        routeToMarkTopicsCompletedListener
-      ),
-      DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
-      DeveloperOptionsOverrideAppBehaviorsViewModel(
-        forceCrashButtonClickListener,
-        routeToForceNetworkTypeListener,
-        showAllHintsAndSolutionController
-      ),
+//      DeveloperOptionsModifyLessonProgressViewModel(
+//        routeToMarkChaptersCompletedListener,
+//        routeToMarkStoriesCompletedListener,
+//        routeToMarkTopicsCompletedListener
+//      ),
+//      DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
+//      DeveloperOptionsOverrideAppBehaviorsViewModel(
+//        forceCrashButtonClickListener,
+//        routeToForceNetworkTypeListener,
+//        showAllHintsAndSolutionController
+//      ),
       DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener)
     )
   }

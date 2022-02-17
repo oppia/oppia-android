@@ -1,5 +1,7 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
@@ -20,11 +22,20 @@ import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import javax.inject.Inject
+import org.oppia.android.app.model.InputInteractionViewTestActivityParams
+import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION
+import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.MATH_EQUATION
+import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION
+import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.UNRECOGNIZED
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
+import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl as MathExpViewModelFactoryFactoryImpl
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 
 /**
  * This is a dummy activity to test input interaction views.
@@ -49,6 +60,9 @@ class InputInteractionViewTestActivity :
   @Inject
   lateinit var ratioViewModelFactory: RatioExpressionInputInteractionViewModel.FactoryImpl
 
+  @Inject
+  lateinit var mathExpViewModelFactoryFactory: MathExpViewModelFactoryFactoryImpl
+
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
 
   val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
@@ -66,16 +80,51 @@ class InputInteractionViewTestActivity :
     )
   }
 
+  lateinit var mathExpressionViewModel: MathExpressionInteractionsViewModel
+  lateinit var writtenTranslationContext: WrittenTranslationContext
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
       this, R.layout.activity_input_interaction_view_test
     )
+
+    val params =
+      intent.getProtoExtra(
+        TEST_ACTIVITY_PARAMS_ARGUMENT_KEY,
+        InputInteractionViewTestActivityParams.getDefaultInstance()
+      )
+    writtenTranslationContext = params.writtenTranslationContext
+    when (params.mathInteractionType) {
+      NUMERIC_EXPRESSION -> {
+        mathExpressionViewModel =
+          mathExpViewModelFactoryFactory
+            .createFactoryForNumericExpression()
+            .create(interaction = params.interaction)
+      }
+      ALGEBRAIC_EXPRESSION -> {
+        mathExpressionViewModel =
+          mathExpViewModelFactoryFactory
+            .createFactoryForAlgebraicExpression()
+            .create(interaction = params.interaction)
+      }
+      MATH_EQUATION -> {
+        mathExpressionViewModel =
+          mathExpViewModelFactoryFactory
+            .createFactoryForMathEquation()
+            .create(interaction = params.interaction)
+      }
+      UNRECOGNIZED, null -> {
+        // Do nothing.
+      }
+    }
+
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
     binding.fractionInteractionViewModel = fractionInteractionViewModel
     binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
+    binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
   }
 
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
@@ -109,7 +158,19 @@ class InputInteractionViewTestActivity :
       answerErrorReceiver = this@InputInteractionViewTestActivity,
       hasPreviousButton = false,
       isSplitView = false,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      writtenTranslationContext
     ) as T
+  }
+
+  companion object {
+    private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY = "InputInteractionViewTestActivity.params"
+
+    fun createIntent(
+      context: Context, extras: InputInteractionViewTestActivityParams
+    ): Intent {
+      return Intent(context, InputInteractionViewTestActivity::class.java).also {
+        it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)
+      }
+    }
   }
 }

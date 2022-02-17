@@ -22,6 +22,10 @@
     <variable
       name="ratioInteractionInputViewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel" />
+
+    <variable
+      name="mathExpressionInteractionsViewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel" />
   </data>
 
   <LinearLayout
@@ -150,6 +154,17 @@
       android:padding="8dp"
       android:singleLine="true"
       android:text="@={textInputViewModel.answerText}" />
+
+    <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
+      android:id="@+id/test_math_expression_input_interaction_view"
+      style="@style/InputInteractionEditText"
+      app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
+      android:inputType="text"
+      android:text="@={mathExpressionInteractionsViewModel.answerText}"
+      app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
       android:id="@+id/submit_button"

@@ -86,26 +86,25 @@
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
   <string name="numeric_expression_default_hint_text">Type an expression here, using only numbers.</string>
   <string name="algebraic_expression_default_hint_text">Type an expression here.</string>
-  <string name="algebraic_equation_default_hint_text">Type an equation here.</string>
+  <string name="math_equation_default_hint_text">Type an equation here.</string>
   <string name="math_expression_error_spaces_in_numerical_input">Please remove the spaces between numbers in your answer.</string>
   <string name="math_expression_error_unbalanced_parentheses">Please close or remove parentheses.</string>
-  <string name="math_expression_error_single_redundant_parentheses">Please remove the parentheses around the whole answer: "%s".</string>
-  <string name="math_expression_error_multiple_redundant_parentheses">Please remove extra parentheses around the "(%1$s)", for example: "%1$s".</string>
-  <string name="math_expression_error_redundant_parentheses_individual_term">Please remove the extra parentheses around "(%1$s)", for example: "%1$s".</string>
-  <string name="math_expression_error_unnecessary_symbols">There is an invalid "%s" in the answer. Please remove it.</string>
-  <string name="math_expression_error_number_after_var_term_or_func">Please rearrange the order of %1$s &amp; %2$s. For example: %2$s%1$s.</string>
+  <string name="math_expression_error_single_redundant_parentheses">Please remove the parentheses around the whole answer: \'%s\'.</string>
+  <string name="math_expression_error_multiple_redundant_parentheses">Please remove extra parentheses around the \'(%1$s)\', for example: \'%1$s\'.</string>
+  <string name="math_expression_error_redundant_parentheses_individual_term">Please remove the extra parentheses around \'(%1$s)\', for example: \'%1$s\'.</string>
+  <string name="math_expression_error_unnecessary_symbols">There is an invalid \'%s\' in the answer. Please remove it.</string>
+  <string name="math_expression_error_number_after_var_term">Please rearrange the order of %1$s &amp; %2$s. For example: %2$s%1$s.</string>
   <string name="math_expression_error_consecutive_binary_operators">%1$s and %2$s should be separated by a number or a variable.</string>
   <string name="math_expression_error_consecutive_unary_operators">Please remove the extra symbols in your answer.</string>
-  <string name="math_expression_error_missing_lhs_for_addition_operator">Is there a number or a variable missing before or after the addition symbol "%1$s"? If not, please remove the extra "%1$s".</string>
-  <string name="math_expression_error_missing_lhs_for_subtraction_operator">Is there a number or a variable missing before or after the subtraction symbol "%1$s"? If not, please remove the extra "%1$s".</string>
-  <string name="math_expression_error_missing_lhs_for_multiplication_operator">Is there a number or a variable missing before or after the multiplication symbol "%1$s"? If not, please remove the extra "%1$s".</string>
-  <string name="math_expression_error_missing_lhs_for_division_operator">Is there a number or a variable missing before or after the division symbol "%1$s"? If not, please remove the extra "%1$s".</string>
-  <string name="math_expression_error_missing_lhs_for_exponentiation_operator">Is there a number or a variable missing before or after the exponentiation symbol "%1$s"? If not, please remove the extra "%1$s".</string>
-  <string name="math_expression_error_missing_rhs_for_addition_operator">There seems to be a number or a variable missing after the addition symbol "%s".</string>
-  <string name="math_expression_error_missing_rhs_for_subtraction_operator">There seems to be a number or a variable missing after the subtraction symbol "%s".</string>
-  <string name="math_expression_error_missing_rhs_for_multiplication_operator">There seems to be a number or a variable missing after the multiplication symbol "%s".</string>
-  <string name="math_expression_error_missing_rhs_for_division_operator">There seems to be a number or a variable missing after the division symbol "%s".</string>
-  <string name="math_expression_error_missing_rhs_for_exponentiation_operator">There seems to be a number or a variable missing after the exponentiation symbol "%s".</string>
+  <string name="math_expression_error_missing_lhs_for_addition_operator">Is there a number or a variable missing before or after the addition symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
+  <string name="math_expression_error_missing_lhs_for_multiplication_operator">Is there a number or a variable missing before or after the multiplication symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
+  <string name="math_expression_error_missing_lhs_for_division_operator">Is there a number or a variable missing before or after the division symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
+  <string name="math_expression_error_missing_lhs_for_exponentiation_operator">Is there a number or a variable missing before or after the exponentiation symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_addition_operator">There seems to be a number or a variable missing after the addition symbol \'%s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_subtraction_operator">There seems to be a number or a variable missing after the subtraction symbol \'%s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_multiplication_operator">There seems to be a number or a variable missing after the multiplication symbol \'%s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_division_operator">There seems to be a number or a variable missing after the division symbol \'%s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_exponentiation_operator">There seems to be a number or a variable missing after the exponentiation symbol \'%s\'.</string>
   <string name="math_expression_error_exponent_has_variable">Sorry, variables in exponents are not supported by the app. Please revise your answer.</string>
   <string name="math_expression_error_exponent_too_large">Sorry, powers higher than 5 are not supported by the app. Please revise your answer.</string>
   <string name="math_expression_error_nested_exponent">Sorry, repeated powers/exponents are not supported by the app. Please limit your answer to one power.</string>
@@ -115,8 +114,8 @@
   <string name="math_expression_error_invalid_variable">Please use the variables specified in the question and not %s.</string>
   <string name="math_expression_error_missing_equals">Your equation is missing an \'=\' sign.</string>
   <string name="math_expression_error_more_than_one_equals">Your equation contains too many \'=\' signs. It should have only one.</string>
-  <string name="math_expression_error_hanging_equals">One of the sides of "=" in your equation is empty.</string>
-  <string name="math_expression_error_unsupported_function">Function "%s" is not supported. Please revise your answer.</string>
+  <string name="math_expression_error_hanging_equals">One of the sides of \'=\' in your equation is empty.</string>
+  <string name="math_expression_error_unsupported_function">Function \'%s\' is not supported. Please revise your answer.</string>
   <string name="math_expression_error_incomplete_function_name">Did you mean sqrt? If not, please separate the variables with multiplication symbols.</string>
   <string name="math_expression_error_generic">Sorry, we couldn\'t understand your answer. Please check it to make sure there aren\'t any errors.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>

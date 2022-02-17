@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -18,7 +19,10 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
@@ -99,6 +103,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 
 /** Tests for [DeveloperOptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -178,6 +184,28 @@ class DeveloperOptionsActivityTest {
       onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
         .perform(click())
       onView(withId(R.id.developer_options_list)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_selectMathExpressionsEquations_routesToMathExpressionParserActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      onView(withId(R.id.developer_options_list))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 3,
+          targetViewId = R.id.math_expressions_text_view
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(MathExpressionParserActivity::class.java.name))
     }
   }
 
