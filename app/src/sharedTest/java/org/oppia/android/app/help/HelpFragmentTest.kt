@@ -17,7 +17,9 @@ import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.BundleMatchers.hasEntry
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtras
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -28,6 +30,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.hamcrest.Matchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,6 +48,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import org.oppia.android.app.model.PoliciesArguments
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -1217,7 +1222,7 @@ class HelpFragmentTest {
   }
 
   @Test
-  fun openHelpActivity_selectPolicyActivity_showPoliciesActivityLoadPrivacyPolicy() {
+  fun testHelpFragment_selectPolicyActivity_openPoliciesActivityLoadPrivacyPolicy() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
@@ -1230,12 +1235,24 @@ class HelpFragmentTest {
           position = 2
         )
       ).perform(click())
+      val policiesArguments =
+        PoliciesArguments
+          .newBuilder()
+          .setPolicyPage(PolicyPage.PRIVACY_POLICY)
+          .build()
+
       intended(hasComponent(PoliciesActivity::class.java.name))
+      hasExtras(
+        hasEntry(
+          equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO),
+          equalTo(policiesArguments)
+        )
+      )
     }
   }
 
   @Test
-  fun openHelpActivity_selectPoliciesActivity_showPoliciesActivityLoadTermsOfServicePage() {
+  fun testHelpFragment_selectPoliciesActivity_openPoliciesActivityLoadTermsOfServicePage() {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
@@ -1249,6 +1266,18 @@ class HelpFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(PoliciesActivity::class.java.name))
+      val policiesArguments =
+        PoliciesArguments
+          .newBuilder()
+          .setPolicyPage(PolicyPage.TERMS_OF_SERVICE)
+          .build()
+      intended(hasComponent(PoliciesActivity::class.java.name))
+      hasExtras(
+        hasEntry(
+          equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO),
+          equalTo(policiesArguments)
+        )
+      )
     }
   }
 

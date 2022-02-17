@@ -41,7 +41,8 @@ class PoliciesActivityPresenter @Inject constructor(
         resourceHandler.getStringInLocale(R.string.privacy_policy_title)
       PolicyPage.TERMS_OF_SERVICE ->
         resourceHandler.getStringInLocale(R.string.terms_of_service_title)
-      else -> ""
+      PolicyPage.POLICY_PAGE_UNSPECIFIED -> ""
+      PolicyPage.UNRECOGNIZED -> ""
     }
     activity.setSupportActionBar(toolbar)
     return toolbar

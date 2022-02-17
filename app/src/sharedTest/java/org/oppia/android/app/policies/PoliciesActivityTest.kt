@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -90,14 +91,6 @@ class PoliciesActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityTestRule: ActivityScenarioRule<PoliciesActivity> = ActivityScenarioRule(
-    Intent(
-      ApplicationProvider.getApplicationContext(),
-      PoliciesActivity::class.java
-    )
-  )
-
   @Inject
   lateinit var context: Context
 
@@ -108,48 +101,42 @@ class PoliciesActivityTest {
 
   @Test
   fun testActivity_forPrivacyPolicy_hasCorrectActivityLabel() {
-    activityTestRule.scenario.runWithActivity {
+    launch<PoliciesActivity>(
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
-      val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
+    ).use { activityScenario ->
+      activityScenario.onActivity {
+        val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
 
-      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-      // correct string when it's read out.
-      assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.privacy_policy_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.privacy_policy_title))
+      }
     }
   }
 
   @Test
   fun testActivity_forTermsOfService_hasCorrectActivityLabel() {
-    activityTestRule.scenario.runWithActivity {
+    launch<PoliciesActivity>(
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
-      val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
+    ).use { activityScenario ->
+      activityScenario.onActivity {
+        val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
 
-      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-      // correct string when it's read out.
-      assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.terms_of_service_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(titleToolbar.title).isEqualTo(context.getString(R.string.terms_of_service_title))
+      }
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
-    // Use Mockito to ensure the routine is actually executed before returning the result.
-    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
-    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
-    onActivity { fakeMock.consume(action(it)) }
-    verify(fakeMock).consume(valueCaptor.capture())
-    return valueCaptor.value
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -200,10 +187,5 @@ class PoliciesActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  private interface Consumer<T> {
-    /** Represents an operation that accepts a single input argument and returns no result. */
-    fun consume(value: T)
   }
 }
