@@ -3,6 +3,7 @@
   * [Code of Conduct](https://github.com/oppia/oppia-android/blob/develop/.github/CODE_OF_CONDUCT.md)
   * **[[Get involved!|Home]]**
     * [Coders](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android)
+  * [Teams at oppia android](https://github.com/oppia/oppia-android/wiki/Teams-at-oppia-android)
 
 ---
 **Developing Oppia**
