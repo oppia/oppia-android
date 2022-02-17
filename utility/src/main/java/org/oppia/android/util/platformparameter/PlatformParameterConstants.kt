@@ -80,3 +80,10 @@ const val LEARNER_STUDY_ANALYTICS = "learner_study_analytics"
  * and working of learner study related analytics logging.
  */
 const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
+
+/** Qualifier for the feature flag corresponding to enabling the edit accounts options. */
+@Qualifier
+annotation class EnableEditAccountsOptionsUi
+
+/** Default value for the feature flag corresponding to [EnableEditAccountsOptionsUi]. */
+const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
