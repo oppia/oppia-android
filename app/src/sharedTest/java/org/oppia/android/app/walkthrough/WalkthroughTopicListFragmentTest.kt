@@ -138,7 +138,8 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled as this is a test file and will not be used by user
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
+  @DisableAccessibilityChecks
   fun testWalkthroughTopicListFragment_topicHeader_whatDoYouWantToLearnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -159,7 +160,8 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled as this is a test file and will not be used by user
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
+  @DisableAccessibilityChecks
   fun testWalkthroughTopicListFragment_topicCard_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -186,7 +188,8 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled as this is a test file and will not be used by user
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
+  @DisableAccessibilityChecks
   fun testWalkthroughTopicListFragment_topicCard_configChange_topicNameIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -214,7 +217,8 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled as this is a test file and will not be used by user
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
+  @DisableAccessibilityChecks
   fun testWalkthroughTopicListFragment_topicCard_lessonThumbnailIsCorrect() {
     // TODO(#59): Remove if-check & disable test.
     if (!testEnvironmentConfig.isUsingBazel()) {
@@ -247,7 +251,8 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled as this is a test file and will not be used by user
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
+  @DisableAccessibilityChecks
   fun testWalkthroughTopicListFragment_topicCard_lessonBackgroundColorIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()

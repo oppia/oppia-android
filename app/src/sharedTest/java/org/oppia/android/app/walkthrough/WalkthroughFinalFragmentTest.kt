@@ -131,6 +131,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
   @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_firstTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
@@ -157,6 +158,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
   @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
@@ -183,6 +185,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
   @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_configChange_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
@@ -216,6 +219,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
   @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_yesNoBtnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
@@ -240,6 +244,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets
   @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_clickNoBtn_noBtnWorksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
