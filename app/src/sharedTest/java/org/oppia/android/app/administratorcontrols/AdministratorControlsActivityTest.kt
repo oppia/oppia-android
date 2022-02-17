@@ -19,6 +19,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -158,6 +159,7 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
+    PlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -175,7 +177,9 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
+  fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
+    PlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -191,6 +195,38 @@ class AdministratorControlsActivityTest {
         targetViewId = R.id.edit_account_text_view,
         stringIdToMatch = R.string.administrator_controls_edit_account
       )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
+    PlatformParameterModule.forceEnableEditAccountsOptionsUi(false)
+
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 1,
         targetView = R.id.profile_management_text_view
@@ -669,6 +705,19 @@ class AdministratorControlsActivityTest {
     ).check(matches(isDisplayed()))
   }
 
+  private fun verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(doesNotExist())
+  }
+
   private fun verifyTextOnAdministratorListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -681,6 +730,19 @@ class AdministratorControlsActivityTest {
         targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
+  }
+
+  private fun verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+    itemPosition: Int,
+    targetViewId: Int,
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
+      )
+    ).check(doesNotExist())
   }
 
   private fun scrollToPosition(position: Int) {
