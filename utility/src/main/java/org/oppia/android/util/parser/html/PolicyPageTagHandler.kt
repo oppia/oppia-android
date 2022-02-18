@@ -5,7 +5,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ClickableSpan
 import android.view.View
-import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.PoliciesArguments.PolicyPage
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 

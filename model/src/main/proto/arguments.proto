@@ -34,17 +34,16 @@ enum HighlightItem {
 message PoliciesArguments {
   // The specific policy page that should be displayed.
   PolicyPage policy_page = 1;
+
+  // Represents the type of policy page.
+  enum PolicyPage {
+    // The policy page is unknown.
+    POLICY_PAGE_UNSPECIFIED = 0;
+
+    // Corresponds to the Privacy Policy page.
+    PRIVACY_POLICY = 1;
+
+    // Corresponds to the Terms of Service page.
+    TERMS_OF_SERVICE = 2;
+  }
 }
-
-// Represents the type of policy page.
-enum PolicyPage {
-  // The policy page is unknown.
-  POLICY_PAGE_UNSPECIFIED = 0;
-
-  // Corresponds to the Privacy Policy page.
-  PRIVACY_POLICY = 1;
-
-  // Corresponds to the Terms of Service page.
-  TERMS_OF_SERVICE = 2;
-}
-

@@ -17,7 +17,7 @@ import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
 import org.oppia.android.app.model.PoliciesArguments
-import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.PoliciesArguments.PolicyPage
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.putProto

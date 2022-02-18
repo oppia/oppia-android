@@ -7,7 +7,7 @@ import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.ViewCompat
-import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.PoliciesArguments.PolicyPage
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject

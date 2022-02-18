@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PoliciesArguments
-import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.PoliciesArguments.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.PoliciesFragmentBinding
 import org.oppia.android.util.parser.html.HtmlParser

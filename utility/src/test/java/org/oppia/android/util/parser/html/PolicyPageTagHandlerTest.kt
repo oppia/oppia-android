@@ -24,7 +24,7 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.PoliciesArguments.PolicyPage
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -61,8 +61,7 @@ class PolicyPageTagHandlerTest {
   @Captor
   lateinit var policyPageCaptor: ArgumentCaptor<PolicyPage>
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
@@ -111,7 +110,24 @@ class PolicyPageTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListener() {
+  fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListenerForPrivacyPolicy() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = POLICY_PAGE_LINK_MARKUP_1,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithPolicyPageSupport
+      )
+
+    val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
+    clickableSpans[1].onClick(testView)
+    verify(mockPolicyPageLinkClickListener)
+      .onPolicyPageLinkClicked(capture(policyPageCaptor))
+
+    assertThat(policyPageCaptor.value).isEqualTo(PolicyPage.PRIVACY_POLICY)
+  }
+
+  @Test
+  fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListenerForTermsOfService() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
@@ -121,14 +137,10 @@ class PolicyPageTagHandlerTest {
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
     clickableSpans[0].onClick(testView)
-    clickableSpans[1].onClick(testView)
-    verify(mockPolicyPageLinkClickListener, times(2))
+    verify(mockPolicyPageLinkClickListener)
       .onPolicyPageLinkClicked(capture(policyPageCaptor))
 
-    assertThat(policyPageCaptor.allValues).containsExactly(
-      PolicyPage.TERMS_OF_SERVICE,
-      PolicyPage.PRIVACY_POLICY
-    ).inOrder()
+    assertThat(policyPageCaptor.value).isEqualTo(PolicyPage.TERMS_OF_SERVICE)
   }
 
   @Test
@@ -146,6 +158,7 @@ class PolicyPageTagHandlerTest {
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
+
 
   private fun setUpTestApplicationComponent() {
     DaggerPolicyPageTagHandlerTest_TestApplicationComponent.builder()
