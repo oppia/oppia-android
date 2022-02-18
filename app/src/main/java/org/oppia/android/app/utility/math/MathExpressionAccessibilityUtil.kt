@@ -106,8 +106,7 @@ class MathExpressionAccessibilityUtil @Inject constructor(
   }
 
   private fun MathExpression.toHumanReadableEnglishString(divAsFraction: Boolean): String? {
-    // Reference:
-    // https://docs.google.com/document/d/1P-dldXQ08O-02ZRG978paiWOSz0dsvcKpDgiV_rKH_Y/view.
+    // Ref: https://docs.google.com/document/d/1SkzAD4k7SWLp5_3L5WNxsnR79ATlOk8pz4irfE2ls-4/view.
 
     // Note that extra bidi wrapping is occurring here since there's not an obvious way to wrap "at
     // the end" for non-equations.
