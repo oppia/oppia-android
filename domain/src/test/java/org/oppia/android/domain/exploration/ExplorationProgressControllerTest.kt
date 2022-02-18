@@ -52,7 +52,7 @@ import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
-import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
@@ -108,6 +108,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.WrittenTranslationContext
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -2931,7 +2932,10 @@ class ExplorationProgressControllerTest {
 
     // The context should be the default instance for English since the default strings of the
     // lesson are expected to be in English.
-    assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = OppiaLanguage.ENGLISH
+    }.build()
+    assertThat(ephemeralState.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -2986,8 +2990,11 @@ class ExplorationProgressControllerTest {
 
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
-    // English translations mean no context.
-    assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+    // English translations means only a language specification.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = OppiaLanguage.ENGLISH
+    }.build()
+    assertThat(ephemeralState.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -3623,7 +3630,7 @@ class ExplorationProgressControllerTest {
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class, SplitScreenInteractionModule::class
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

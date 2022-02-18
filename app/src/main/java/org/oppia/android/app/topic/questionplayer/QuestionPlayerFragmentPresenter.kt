@@ -266,7 +266,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     answerOutcomeLiveData.observe(
       fragment,
       Observer<AnsweredQuestionOutcome> { result ->
-        recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
           questionViewModel.setHintBulbVisibility(false)
           recyclerViewAssembler.showCelebrationOnCorrectAnswer(result.feedback)

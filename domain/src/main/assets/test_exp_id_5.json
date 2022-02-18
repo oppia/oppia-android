@@ -41,7 +41,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -147,7 +147,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -241,7 +241,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -342,7 +342,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -440,7 +440,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -538,7 +538,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -639,7 +639,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -737,7 +737,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -835,7 +835,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""

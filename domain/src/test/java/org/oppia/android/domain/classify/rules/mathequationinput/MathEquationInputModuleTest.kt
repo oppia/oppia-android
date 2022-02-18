@@ -89,7 +89,7 @@ class MathEquationInputModuleTest {
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class
+      MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent {

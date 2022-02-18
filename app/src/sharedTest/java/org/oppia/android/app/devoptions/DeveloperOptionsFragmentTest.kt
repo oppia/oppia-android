@@ -102,6 +102,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 
 /** Tests for [DeveloperOptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -553,6 +554,36 @@ class DeveloperOptionsFragmentTest {
       scrollToPosition(position = 0)
       onView(withId(R.id.mark_topics_completed_text_view)).perform(click())
       intended(hasComponent(MarkTopicsCompletedActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickMathExpressionsEquations_opensMathExpParserActivity() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 3)
+      onView(withId(R.id.math_expressions_text_view)).perform(click())
+
+      intended(hasComponent(MathExpressionParserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_land_clickMathExpressionsEquations_opensMathExpParserActivity() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 3)
+      onView(withId(R.id.math_expressions_text_view)).perform(click())
+
+      intended(hasComponent(MathExpressionParserActivity::class.java.name))
     }
   }
 

@@ -34,9 +34,15 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.MATH_EXPRESSION
+import org.oppia.android.app.model.SchemaObject
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.BOOL_VALUE
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SCHEMA_OBJECT_LIST
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SUBTITLED_UNICODE
 
 private const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
+private const val TEST_EXPLORATION_ID_5 = "test_exp_id_5"
 private const val TEST_EXPLORATION_ID_13 = "13"
 
 /** Tests for [StateRetriever]. */
@@ -378,6 +384,231 @@ class StateRetrieverTest {
     assertThat(ruleInputTranslations).containsKey("ar")
     assertThat(ruleInputTranslations?.get("pt")?.htmlList?.htmlList).containsExactly("finlandesa")
     assertThat(ruleInputTranslations?.get("ar")?.htmlList?.htmlList).containsExactly("الفنلندية")
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_matchesExactlyWith_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesExactlyWith")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_matchesUpTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesUpToTrivialManipulations",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesUpToTrivialManipulations")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_isEquivalentTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.IsEquivalentTo",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalentTo")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_customizationArgs_hasPlaceholder() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("placeholder")
+    assertThat(customArgs["placeholder"]?.objectTypeCase).isEqualTo(SUBTITLED_UNICODE)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_customizationArgs_hasDivAsFraction() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("useFractionForDivision")
+    assertThat(customArgs["useFractionForDivision"]?.objectTypeCase).isEqualTo(BOOL_VALUE)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_customizationArgs_doesNotHaveCustomVars() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    // Custom OSK letters are specific to algebraic interactions.
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).doesNotContainKey("customOskLetters")
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_matchesExactlyWith_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesExactlyWith")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_matchesUpTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesUpToTrivialManipulations",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesUpToTrivialManipulations")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_isEquivalentTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.IsEquivalentTo",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalentTo")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_customizationArgs_doesNotHavePlaceholder() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).doesNotContainKey("placeholder")
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_customizationArgs_hasDivAsFraction() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("useFractionForDivision")
+    assertThat(customArgs["useFractionForDivision"]?.objectTypeCase).isEqualTo(BOOL_VALUE)
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_customizationArgs_hasCustomVars() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    // Custom OSK letters are specific to algebraic interactions.
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("customOskLetters")
+    assertThat(customArgs["customOskLetters"]?.objectTypeCase).isEqualTo(SCHEMA_OBJECT_LIST)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_matchesExactlyWith_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesExactlyWith")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_matchesUpTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesUpToTrivialManipulations",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesUpToTrivialManipulations")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_isEquivalentTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.IsEquivalentTo",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalentTo")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_customizationArgs_doesNotHavePlaceholder() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).doesNotContainKey("placeholder")
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_customizationArgs_hasDivAsFraction() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("useFractionForDivision")
+    assertThat(customArgs["useFractionForDivision"]?.objectTypeCase).isEqualTo(BOOL_VALUE)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_customizationArgs_hasCustomVars() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    // Custom OSK letters are specific to algebraic interactions.
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("customOskLetters")
+    assertThat(customArgs["customOskLetters"]?.objectTypeCase).isEqualTo(SCHEMA_OBJECT_LIST)
   }
 
   /**

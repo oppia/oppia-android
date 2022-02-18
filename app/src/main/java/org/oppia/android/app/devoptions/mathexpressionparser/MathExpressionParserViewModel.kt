@@ -31,12 +31,12 @@ class MathExpressionParserViewModel @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory
 ) : ObservableViewModel() {
   private val htmlParser by lazy {
-    // TODO: replace this with a variant that doesn't require the GCS properties.
+    // TODO: replace this with a variant that doesn't require the GCS properties. Actually, file a TODO for this, instead.
     htmlParserFactory.create("", "", "", false)
   }
   private lateinit var parseResultTextView: TextView
   var mathExpression = ObservableField<String>()
-  var allowedVariables = ObservableField<String>("x,y")
+  var allowedVariables = ObservableField("x,y")
   private var parseType = ParseType.NUMERIC_EXPRESSION
   private var resultType = ResultType.MATH_EXPRESSION
   private var useDivAsFractions = false

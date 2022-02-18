@@ -99,6 +99,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -220,6 +221,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -324,6 +326,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -428,6 +431,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -548,6 +552,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -662,6 +667,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -776,6 +782,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -899,6 +906,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -1016,6 +1024,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
