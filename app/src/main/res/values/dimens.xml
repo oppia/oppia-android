@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <dimen name="match_parent">-1px</dimen>
+  <dimen name="wrap_content">-2px</dimen>
+
   <!-- Default screen margins, per the Android Design guidelines. -->
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
@@ -627,14 +630,14 @@
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
 
   <!-- Admin Auth Activity -->
-  <dimen name="admin_auth_heading_textview_margin_start">28dp</dimen>
+  <dimen name="admin_auth_inner_constraint_layout_width">@dimen/match_parent</dimen>
+  <dimen name="admin_auth_inner_constraint_layout_min_width">0dp</dimen>
+  <dimen name="admin_auth_heading_textview_margin_horizontal">28dp</dimen>
   <dimen name="admin_auth_heading_textview_margin_top">40dp</dimen>
-  <dimen name="admin_auth_heading_textview_margin_end">28dp</dimen>
-  <dimen name="admin_auth_input_pin_margin_start">28dp</dimen>
-  <dimen name="admin_auth_input_pin_margin_end">28dp</dimen>
-  <dimen name="admin_auth_submit_button_margin_top">48dp</dimen>
-  <dimen name="admin_auth_min_width">0dp</dimen>
+  <dimen name="admin_auth_input_pin_layout_width">0dp</dimen>
+  <dimen name="admin_auth_input_pin_min_width">0dp</dimen>
+  <dimen name="admin_auth_input_pin_margin_horizontal">28dp</dimen>
   <dimen name="admin_auth_input_pin_margin_top">48dp</dimen>
+  <dimen name="admin_auth_submit_button_margin_top">48dp</dimen>
   <dimen name="admin_auth_submit_button_min_height">48dp</dimen>
-  <dimen name="admin_auth_layout_width">-1px</dimen>
 </resources>

@@ -421,14 +421,14 @@
   <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
 
   <!-- Admin Auth Activity -->
-  <dimen name="admin_auth_heading_textview_margin_start">0dp</dimen>
+  <dimen name="admin_auth_inner_constraint_layout_width">@dimen/wrap_content</dimen>
+  <dimen name="admin_auth_inner_constraint_layout_min_width">360dp</dimen>
+  <dimen name="admin_auth_heading_textview_margin_horizontal">0dp</dimen>
   <dimen name="admin_auth_heading_textview_margin_top">48dp</dimen>
-  <dimen name="admin_auth_heading_textview_margin_end">0dp</dimen>
-  <dimen name="admin_auth_input_pin_margin_start">0dp</dimen>
-  <dimen name="admin_auth_input_pin_margin_end">0dp</dimen>
-  <dimen name="admin_auth_submit_button_margin_top">58dp</dimen>
-  <dimen name="admin_auth_min_width">360dp</dimen>
+  <dimen name="admin_auth_input_pin_layout_width">0dp</dimen>
+  <dimen name="admin_auth_input_pin_min_width">0dp</dimen>
+  <dimen name="admin_auth_input_pin_margin_horizontal">0dp</dimen>
   <dimen name="admin_auth_input_pin_margin_top">40dp</dimen>
+  <dimen name="admin_auth_submit_button_margin_top">58dp</dimen>
   <dimen name="admin_auth_submit_button_min_height">36dp</dimen>
-  <dimen name="admin_auth_layout_width">-2px</dimen>
 </resources>
