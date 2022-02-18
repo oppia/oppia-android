@@ -1,0 +1,21 @@
+"""
+Classifiers for the 'Continue' interaction.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "continue_module",
+    srcs = [
+        "ContinueModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+    ],
+)
+
+dagger_rules()
