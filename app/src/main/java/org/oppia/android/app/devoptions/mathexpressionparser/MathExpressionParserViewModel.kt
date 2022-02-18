@@ -31,33 +31,56 @@ class MathExpressionParserViewModel @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory
 ) : ObservableViewModel() {
   private val htmlParser by lazy {
-    // TODO: replace this with a variant that doesn't require the GCS properties. Actually, file a TODO for this, instead.
-    htmlParserFactory.create("", "", "", false)
+    // TODO(#4206): Replace this with the variant that doesn't require GCS properties.
+    htmlParserFactory.create(
+      gcsResourceName = "",
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false
+    )
   }
   private lateinit var parseResultTextView: TextView
+
+  /**
+   * Specifies the math expression currently being entered by the user. This is expected to be
+   * directly bound to the UI.
+   */
   var mathExpression = ObservableField<String>()
+
+  /**
+   * Specifies the comma-separated list of variables allowed for algebraic expressions/equations, as
+   * specified by the user. This is expected to be directly bound to the UI.
+   */
   var allowedVariables = ObservableField("x,y")
   private var parseType = ParseType.NUMERIC_EXPRESSION
   private var resultType = ResultType.MATH_EXPRESSION
   private var useDivAsFractions = false
 
+  /** Initializes the view model to use [parseResultTextView] for displaying the parse result. */
   fun initialize(parseResultTextView: TextView) {
     this.parseResultTextView = parseResultTextView
     updateParseResult()
   }
 
+  /** Callback for the UI to recompute the parse result. */
   fun onParseButtonClicked() {
     updateParseResult()
   }
 
+  /** Callback for the UI to update the current [ParseType] used. */
   fun onParseTypeSelected(parseType: ParseType) {
     this.parseType = parseType
   }
 
+  /** Callback for the UI to update the current [ResultType] used. */
   fun onResultTypeSelected(resultType: ResultType) {
     this.resultType = resultType
   }
 
+  /**
+   * Callback for the UI to update whether divisions should be treated as fractions for relevant
+   * [ResultType]s.
+   */
   fun onChangedUseDivAsFractions(useDivAsFractions: Boolean) {
     this.useDivAsFractions = useDivAsFractions
   }
@@ -107,17 +130,42 @@ class MathExpressionParserViewModel @Inject constructor(
     )
   }
 
+  /** Defines how text expressions should be parsed. */
   enum class ParseType {
+    /** Indicates that the user-inputted text should be parsed as a numeric expression. */
     NUMERIC_EXPRESSION,
+
+    /** Indicates that the user-inputted text should be parsed as an algebraic expression. */
     ALGEBRAIC_EXPRESSION,
+
+    /** Indicates that the user-inputted text should be parsed as an algebraic/math equation. */
     ALGEBRAIC_EQUATION
   }
 
+  /** Defines how the parsed expression/equation should be processed and displayed. */
   enum class ResultType {
+    /** Indicates that the raw parsed expression/equation proto should be displayed. */
     MATH_EXPRESSION,
-    COMPARABLE_OPERATION_LIST,
+
+    /**
+     * Indicates that the comparable operation representation proto of the expression/equation
+     * should be displayed.
+     */
+    COMPARABLE_OPERATION,
+
+    /**
+     * Indicates that the polynomial representation proto of the expression/equation should be
+     * displayed.
+     */
     POLYNOMIAL,
+
+    /** Indicates that the expression should be converted to LaTeX and rendered as an image. */
     LATEX,
+
+    /**
+     * Indicates that the expression should be converted to a human-readable accessibility string
+     * and displayed.
+     */
     HUMAN_READABLE_STRING
   }
 
@@ -136,7 +184,7 @@ class MathExpressionParserViewModel @Inject constructor(
     ): MathParsingResult<String> {
       return when (resultType) {
         ResultType.MATH_EXPRESSION -> this
-        ResultType.COMPARABLE_OPERATION_LIST -> map { it.toComparableOperation() }
+        ResultType.COMPARABLE_OPERATION -> map { it.toComparableOperation() }
         ResultType.POLYNOMIAL -> map { it.toPolynomial() }
         ResultType.LATEX -> map { it.toRawLatex(useDivAsFractions).wrapAsLatexHtml() }
         ResultType.HUMAN_READABLE_STRING -> map {
@@ -154,7 +202,7 @@ class MathExpressionParserViewModel @Inject constructor(
     ): MathParsingResult<String> {
       return when (resultType) {
         ResultType.MATH_EXPRESSION -> this
-        ResultType.COMPARABLE_OPERATION_LIST -> map {
+        ResultType.COMPARABLE_OPERATION -> map {
           "Left side: ${it.leftSide.toComparableOperation()}" +
             "\n\nRight side: ${it.rightSide.toComparableOperation()}"
         }

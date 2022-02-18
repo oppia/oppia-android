@@ -14,6 +14,10 @@ class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExploratio
   @Inject
   lateinit var presenter: ExplorationTestActivityPresenter
 
+  /**
+   * Exposes the [SplitScreenManager] corresponding to the fragment under test for tests to interact
+   * with.
+   */
   val splitScreenManager: SplitScreenManager
     get() = getTestFragment().splitScreenManager
 

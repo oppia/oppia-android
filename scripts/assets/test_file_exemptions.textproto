@@ -280,6 +280,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemvi
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionInteractionContentViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionInteractionViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SplitScreenInteractionIds.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SplitScreenInteractionModule.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/StateItemViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmitButtonViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt"

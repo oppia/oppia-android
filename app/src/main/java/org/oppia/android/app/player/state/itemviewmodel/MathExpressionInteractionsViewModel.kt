@@ -52,7 +52,10 @@ import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionE
 import org.oppia.android.util.math.toPlainText
 import org.oppia.android.util.math.toRawLatex
 
-/** [StateItemViewModel] for various math expression/equation input interaction. */
+/**
+ * [StateItemViewModel] for input for numeric expressions, algebraic expressions, and math
+ * (algebraic) equations.
+ */
 class MathExpressionInteractionsViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
@@ -64,11 +67,28 @@ class MathExpressionInteractionsViewModel private constructor(
   private val interactionType: InteractionType
 ) : StateItemViewModel(interactionType.viewType), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
+
+  /**
+   * Defines the current answer text being entered by the learner. This is expected to be directly
+   * bound to the corresponding edit text.
+   */
   var answerText: CharSequence = ""
+
+  /**
+   * Defines whether an answer is currently available to parse. This is expected to be directly
+   * bound to the UI.
+   */
   var isAnswerAvailable = ObservableField(false)
+
+  /**
+   * Specifies the current error caused by the current answer (if any; this is empty if there is no
+   * error). This is expected to be directly bound to the UI.
+   */
   var errorMessage = ObservableField("")
 
+  /** Specifies the text to show in the answer box when no text is entered. */
   val hintText: CharSequence = deriveHintText(interaction)
+
   private val allowedVariables = retrieveAllowedVariables(interaction)
   private val useFractionsForDivision =
     interaction.customizationArgsMap["useFractionForDivision"]?.boolValue ?: false
@@ -136,6 +156,10 @@ class MathExpressionInteractionsViewModel private constructor(
     return pendingAnswerError
   }
 
+  /**
+   * Returns the [TextWatcher] which helps track the current pending answer and whether there is one
+   * presently being entered.
+   */
   fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {
       override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -264,6 +288,7 @@ class MathExpressionInteractionsViewModel private constructor(
       val hasPlaceholder: Boolean,
       val hasCustomVariables: Boolean
     ) {
+      /** Defines the view model behaviors corresponding to numeric expressions. */
       NUMERIC_EXPRESSION(
         ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION,
         defaultHintTextStringId = R.string.numeric_expression_default_hint_text,
@@ -298,6 +323,8 @@ class MathExpressionInteractionsViewModel private constructor(
           return MathExpressionParser.parseNumericExpression(answerText)
         }
       },
+
+      /** Defines the view model behaviors corresponding to algebraic expressions. */
       ALGEBRAIC_EXPRESSION(
         ViewType.ALGEBRAIC_EXPRESSION_INPUT_INTERACTION,
         defaultHintTextStringId = R.string.algebraic_expression_default_hint_text,
@@ -331,6 +358,8 @@ class MathExpressionInteractionsViewModel private constructor(
         ): MathParsingResult<MathExpression> =
           MathExpressionParser.parseAlgebraicExpression(answerText, allowedVariables)
       },
+
+      /** Defines the view model behaviors corresponding to math equations. */
       MATH_EQUATION(
         ViewType.MATH_EQUATION_INPUT_INTERACTION,
         defaultHintTextStringId = R.string.math_equation_default_hint_text,
@@ -365,6 +394,10 @@ class MathExpressionInteractionsViewModel private constructor(
           MathExpressionParser.parseAlgebraicEquation(answerText, allowedVariables)
       };
 
+      /**
+       * Computes and returns the human-readable error corresponding to the specified answer and
+       * context, or null if there the answer has no errors.
+       */
       fun computeSubmitTimeError(
         answerText: String,
         allowedVariables: List<String>,
@@ -563,10 +596,18 @@ class MathExpressionInteractionsViewModel private constructor(
         }
       }
 
+      /**
+       * Returns the LaTeX representation of the specified answer with potential customization for
+       * treating divisions as fractions per [useFractionsForDivision].
+       */
       abstract fun computeLatex(
         answerText: String, useFractionsForDivision: Boolean, allowedVariables: List<String>
       ): String?
 
+      /**
+       * Returns the human-readable accessibility string corresponding to the specified answer with
+       * potential customization for treating divisions as fractions per [useFractionsForDivision].
+       */
       abstract fun computeHumanReadableString(
         answerText: String,
         useFractionsForDivision: Boolean,
@@ -575,11 +616,15 @@ class MathExpressionInteractionsViewModel private constructor(
         language: OppiaLanguage
       ): String?
 
+      /** Attempts to parse the provided raw answer and return the [MathParsingResult]. */
       protected abstract fun parseAnswer(
         answerText: String, allowedVariables: List<String>
       ): MathParsingResult<*>
 
       protected companion object {
+        /**
+         * Returns the successful result from this [MathParsingResult] or null if it's a failure.
+         */
         fun <T> MathParsingResult<T>.getResult(): T? = when (this) {
           is MathParsingResult.Success -> result
           is MathParsingResult.Failure -> null

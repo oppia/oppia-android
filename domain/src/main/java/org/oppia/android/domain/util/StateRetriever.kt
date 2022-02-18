@@ -311,7 +311,7 @@ class StateRetriever @Inject constructor() {
         createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
       "NumericExpressionInput", "AlgebraicExpressionInput", "MathEquationInput" -> {
         InteractionObject.newBuilder().apply {
-          mathExpression = inputJson.getString(keyName)
+          mathExpression = inputJson.getStringFromObject(keyName)
         }.build()
       }
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
@@ -761,7 +761,7 @@ class StateRetriever @Inject constructor() {
   private fun parseCustomOskLetters(jsonArray: JSONArray): SchemaObject {
     val letters = mutableListOf<String>()
     for (i in 0 until jsonArray.length()) {
-      letters += jsonArray.getString(i)
+      letters += jsonArray.getStringFromArray(i)
     }
     return SchemaObject.newBuilder().apply {
       schemaObjectList = SchemaObjectList.newBuilder().apply {

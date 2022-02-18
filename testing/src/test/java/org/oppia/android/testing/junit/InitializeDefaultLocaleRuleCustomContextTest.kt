@@ -74,6 +74,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 
 /**
  * Tests for [InitializeDefaultLocaleRule].
@@ -259,7 +260,7 @@ class InitializeDefaultLocaleRuleCustomContextTest {
       AssetModule::class, ActivityRecreatorTestModule::class, LocaleProdModule::class,
       PlatformParameterSingletonModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class
+      MathEquationInputModule::class, SplitScreenInteractionModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

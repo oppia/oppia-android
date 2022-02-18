@@ -62,6 +62,11 @@ class MathExpressionInteractionsView @JvmOverloads constructor(
     super.onEditorAction(actionCode)
   }
 
+  /**
+   * Sets the current placeholder text used by the view to [placeholderText].
+   *
+   * See the class's KDoc for caveats on how this relates to the text view's hint.
+   */
   fun setPlaceholder(placeholderText: CharSequence) {
     hintText = placeholderText
     if (!hasFocus()) {

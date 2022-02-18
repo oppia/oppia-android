@@ -34,15 +34,29 @@ enum HighlightItem {
 }
 
 // TODO(#59): Isolate this to a test-only proto once possible.
-// TODO: add documentation.
+// Represents the parameters needed to open InputInteractionViewTestActivity.
 message InputInteractionViewTestActivityParams {
+  // Corresponds to the interaction used to initialize the interaction's view in the test
+  // environment.
   Interaction interaction = 1;
+
+  // Corresponds to the translation context which may affect the interaction's classifiers during
+  // tests.
   WrittenTranslationContext written_translation_context = 2;
+
+  // Indicates that a math interaction should be displayed for this activity, and indicates which
+  // one is being used in tests.
   MathInteractionType math_interaction_type = 3;
 
+  // The type of math interaction to initialize for testing.
   enum MathInteractionType {
+    // Indicates that the numeric expression input interaction will be used for testing.
     NUMERIC_EXPRESSION = 0;
+
+    // Indicates that the algebraic expression input interaction will be used for testing.
     ALGEBRAIC_EXPRESSION = 1;
+
+    // Indicates that the math equation input interaction will be used for testing.
     MATH_EQUATION = 2;
   }
 }
