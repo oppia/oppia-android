@@ -29,22 +29,25 @@ import kotlin.reflect.KClass
  *
  * To introduce parameterized tests, add this runner along with one or more [Parameter]-annotated
  * fields and one or more [RunParameterized]-annotated methods (where each method should have
- * multiple [Iteration]s defined to describe each test iteration). Here's a simple example:
+ * multiple [Iteration]s defined to describe each test iteration). Note that only strings and
+ * primitive types (e.g. [Int], [Long], [Float], [Double], and [Boolean]) are supported for
+ * parameter injection. Here's a simple example:
  *
  * ```kotlin
  * @RunWith(OppiaParameterizedTestRunner::class)
  * @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
  * class ExampleParameterizedTest {
- *   @Parameter lateinit var parameter: String
+ *   @Parameter lateinit var strParam: String
+ *   @Parameter var intParam: Int = Int.MIN_VALUE // Inited because primitives can't be lateinit.
  *
  *   @Test
  *   @RunParameterized(
- *     Iteration("first", "parameter=first value"),
- *     Iteration("second", "parameter=second value"),
- *     Iteration("third", "parameter=third value")
+ *     Iteration("first", "strParam=first value", "intParam=12"),
+ *     Iteration("second", "strParam=second value", "intParam=-72"),
+ *     Iteration("third", "strParam=third value", "intParam=15")
  *   )
  *   fun testParams_multipleVals_isConsistent() {
- *     val result = performOperation(parameter)
+ *     val result = performOperation(strParam, intParam)
  *     assertThat(result).isEqualTo(consistentExpectedValue)
  *   }
  * }
