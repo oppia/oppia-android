@@ -1,0 +1,40 @@
+"""
+Classifiers for the 'NumberWithUnits' interaction.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "number_with_units_providers",
+    srcs = [
+        "NumberWithUnitsIsEqualToRuleClassifierProvider.kt",
+        "NumberWithUnitsIsEquivalentToRuleClassifierProvider.kt",
+    ],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "number_with_units_rule_module",
+    srcs = [
+        "NumberWithUnitsRuleModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":number_with_units_providers",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+    ],
+)
+
+dagger_rules()
