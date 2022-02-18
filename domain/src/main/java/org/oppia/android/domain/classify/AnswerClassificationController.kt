@@ -36,7 +36,6 @@ class AnswerClassificationController @Inject constructor(
         "expected one of: ${interactionClassifiers.keys}"
     }
     // TODO(#207): Add support for additional classification types.
-    interaction.customizationArgsMap
     return classifyAnswer(
       answer,
       interaction.answerGroupsList,

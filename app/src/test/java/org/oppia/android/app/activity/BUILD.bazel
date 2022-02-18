@@ -17,6 +17,7 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
