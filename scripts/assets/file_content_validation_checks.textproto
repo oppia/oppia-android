@@ -277,7 +277,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml|app/src/main/res/values/color_palette.xml"
-  prohibited_content_regex: "name=.+(?<!_color).>@"
+  prohibited_content_regex: "name=.+(?<!(?i)_color).>@"
   failure_message: "All color declarations in component_color.xml and color_palette.xml should end with _color suffix."
 }
 file_content_checks {

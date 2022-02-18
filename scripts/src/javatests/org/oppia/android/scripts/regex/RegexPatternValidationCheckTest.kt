@@ -126,12 +126,12 @@ class RegexPatternValidationCheckTest {
       " cost, and can cause breakages on KitKat devices. See #3939 for more context."
   private val doesNotHaveColorSuffix =
     "All color declarations in component_color.xml and color_palette.xml should end with" +
-      "_color suffix."
+      " _color suffix."
   private val hasColorKeyword =
     "Color declarations in color_defs.xml should not contain color keyword."
   private val hasHexColorValue =
     "Hex color declarations should only be in color_defs.xml and not in component_colors.xml" +
-      "or color_palette.xml"
+      " or color_palette.xml"
   private val doesNotHaveSnakeCase =
     "All color declarations should strictly follow snake_case naming convention."
   private val wikiReferenceNote =
@@ -1744,7 +1744,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $hasHexColorValue
+        $stringFilePath:2: $hasHexColorValue
         $stringFilePath:3: $hasHexColorValue
         $wikiReferenceNote
         """.trimIndent()
