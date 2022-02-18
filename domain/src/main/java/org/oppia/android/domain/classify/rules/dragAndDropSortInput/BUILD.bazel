@@ -1,0 +1,42 @@
+"""
+Classifiers for the 'DragAndDropSortInput' interaction.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "drag_and_drop_sort_input_providers",
+    srcs = [
+        "DragDropSortInputHasElementXAtPositionYClassifierProvider.kt",
+        "DragDropSortInputHasElementXBeforeElementYClassifierProvider.kt",
+        "DragDropSortInputIsEqualToOrderingClassifierProvider.kt",
+        "DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider.kt",
+    ],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "drag_and_drop_sort_input_module",
+    srcs = [
+        "DragDropSortInputModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":drag_and_drop_sort_input_providers",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+    ],
+)
+
+dagger_rules()

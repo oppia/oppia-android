@@ -1,0 +1,38 @@
+"""
+Rule classifier providers for classify domain components.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "generic_rule_classifier",
+    srcs = [
+        "GenericRuleClassifier.kt",
+        "InteractionObjectTypeExtractorRepository.kt",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        ":rule_classifier_provider",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "rule_classifier_provider",
+    srcs = [
+        "RuleClassifierProvider.kt",
+        "RuleQualifiers.kt",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()
