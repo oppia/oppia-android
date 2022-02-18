@@ -65,6 +65,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterForceMode
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -120,7 +121,8 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    PlatformParameterModule.forceEnableLanguageSelectionUi(true)
+    PlatformParameterModule
+      .forceEnableLanguageSelectionUi(true, PlatformParameterForceMode.TESTING)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -331,7 +333,8 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
-    PlatformParameterModule.forceEnableLanguageSelectionUi(true)
+    PlatformParameterModule
+      .forceEnableLanguageSelectionUi(true, PlatformParameterForceMode.TESTING)
 
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -346,7 +349,8 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    PlatformParameterModule.forceEnableLanguageSelectionUi(false)
+    PlatformParameterModule
+      .forceEnableLanguageSelectionUi(false, PlatformParameterForceMode.TESTING)
 
     launch<OptionsActivity>(
       createOptionActivityIntent(

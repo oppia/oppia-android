@@ -85,6 +85,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterForceMode
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -159,7 +160,8 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
-    PlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    PlatformParameterModule
+      .forceEnableEditAccountsOptionsUi(true, PlatformParameterForceMode.TESTING)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -178,7 +180,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
-    PlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    PlatformParameterModule
+      .forceEnableEditAccountsOptionsUi(true, PlatformParameterForceMode.TESTING)
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -200,7 +203,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
-    PlatformParameterModule.forceEnableEditAccountsOptionsUi(false)
+    PlatformParameterModule
+      .forceEnableEditAccountsOptionsUi(false, PlatformParameterForceMode.TESTING)
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
