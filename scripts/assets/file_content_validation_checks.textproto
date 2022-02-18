@@ -277,21 +277,21 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml|app/src/main/res/values/color_palette.xml"
-  prohibited_content_regex: "name=".+(?<!_color)""
+  prohibited_content_regex: "name=\".+(?<!_color)\""
   failure_message: "All color declarations in component_color.xml and color_palette.xml should end with _color suffix."
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/color_defs.xml"
-  prohibited_content_regex: "name=".*color.*""
+  prohibited_content_regex: "name=\".*color.*\""
   failure_message: "Color declarations in color_defs.xml should not contain color keyword."
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml|app/src/main/res/values/color_palette.xml"
-  prohibited_content_regex: "">[#]\w+<\/color>"
+  prohibited_content_regex: "\">[#]\w+<\/color>"
   failure_message: "Hex color declarations should only be in color_defs.xml and not in component_colors.xml or color_palette.xml"
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml|app/src/main/res/values/color_palette.xml|app/src/main/res/values/color_defs.xml"
-  prohibited_content_regex: "name=".*[A-Z].*""
+  prohibited_content_regex: "name=\".*[A-Z].*\""
   failure_message: "All color declarations should strictly follow snake_case naming convention."
 }
