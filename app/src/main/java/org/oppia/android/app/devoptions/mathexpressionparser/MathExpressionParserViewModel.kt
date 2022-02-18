@@ -2,7 +2,6 @@ package org.oppia.android.app.devoptions.mathexpressionparser
 
 import android.widget.TextView
 import androidx.databinding.ObservableField
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.MathEquation
@@ -18,6 +17,7 @@ import org.oppia.android.util.math.toComparableOperation
 import org.oppia.android.util.math.toPolynomial
 import org.oppia.android.util.math.toRawLatex
 import org.oppia.android.util.parser.html.HtmlParser
+import javax.inject.Inject
 
 /**
  * View model that provides different debugging scenarios for math expressions, equations, and
@@ -89,7 +89,7 @@ class MathExpressionParserViewModel @Inject constructor(
     val newText = computeParseResult()
     // Only parse HTML if there is HTML to preserve formatting.
     parseResultTextView.text = if ("oppia-noninteractive-math" in newText) {
-       htmlParser.parseOppiaHtml(newText.replace("\n", "<br />"), parseResultTextView)
+      htmlParser.parseOppiaHtml(newText.replace("\n", "<br />"), parseResultTextView)
     } else newText
   }
 

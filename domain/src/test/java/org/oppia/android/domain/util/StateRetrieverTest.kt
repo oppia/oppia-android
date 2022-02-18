@@ -14,9 +14,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AnswerGroup
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.MATH_EXPRESSION
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.RuleSpec
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.BOOL_VALUE
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SCHEMA_OBJECT_LIST
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SUBTITLED_UNICODE
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.TranslatableHtmlContentId
@@ -34,11 +38,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.MATH_EXPRESSION
-import org.oppia.android.app.model.SchemaObject
-import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.BOOL_VALUE
-import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SCHEMA_OBJECT_LIST
-import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SUBTITLED_UNICODE
 
 private const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"

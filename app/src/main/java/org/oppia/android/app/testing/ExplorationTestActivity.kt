@@ -6,8 +6,8 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.topic.TopicFragment
-import javax.inject.Inject
 import org.oppia.android.app.utility.SplitScreenManager
+import javax.inject.Inject
 
 /** The activity for testing [TopicFragment]. */
 class ExplorationTestActivity : InjectableAppCompatActivity(), RouteToExplorationListener {

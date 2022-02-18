@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.databinding.MathExpressionParserFragmentBinding
+import javax.inject.Inject
 
 /** The presenter for [MathExpressionParserFragment]. */
 class MathExpressionParserFragmentPresenter @Inject constructor(

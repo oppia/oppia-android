@@ -2,7 +2,6 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions
@@ -18,6 +17,7 @@ import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
+import javax.inject.Inject
 
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel private constructor(
@@ -94,7 +94,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
   class FactoryImpl @Inject constructor(
     private val resourceHandler: AppLanguageResourceHandler
-  ): InteractionItemFactory {
+  ) : InteractionItemFactory {
     override fun create(
       entityId: String,
       hasConversationView: Boolean,

@@ -201,8 +201,9 @@ class ExplorationProgressController @Inject constructor(
             }
           }
         } finally {
-          if (answerOutcome != null
-            && !doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
+          if (answerOutcome != null &&
+            !doesInteractionAutoContinue(answerOutcome.state.interaction.id)
+          ) {
             // If the answer was not submitted on behalf of the Continue interaction, update the
             // hint state and save checkpoint because it will be saved when the learner moves to the
             // next state.

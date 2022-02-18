@@ -1,40 +1,24 @@
 package org.oppia.android.app.customview.interaction
 
 import android.app.Application
-import android.content.Context
 import android.graphics.Typeface
-import android.view.KeyEvent
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.pressKey
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withHint
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoMoreInteractions
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -44,10 +28,19 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.CustomSchemaValue
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.SchemaObject
+import org.oppia.android.app.model.SchemaObjectList
+import org.oppia.android.app.model.SubtitledUnicode
+import org.oppia.android.app.model.Translation
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.REAL_TIME
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.SUBMIT_TIME
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.InputInteractionViewTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -62,7 +55,6 @@ import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
 import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
-import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
 import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
@@ -107,17 +99,8 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.oppia.android.app.model.CustomSchemaValue
-import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.SchemaObject
-import org.oppia.android.app.model.SchemaObjectList
-import org.oppia.android.app.model.SubtitledUnicode
-import org.oppia.android.app.model.Translation
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.SUBMIT_TIME
-import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.android.R
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.REAL_TIME
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Tests for [MathExpressionInteractionsView] & its view model.
@@ -342,9 +325,12 @@ class MathExpressionInteractionsViewTest {
   @Test
   fun testView_pendingAnswer_usesProvidedWrittenTranslationContext() {
     val writtenTranslationContext = WrittenTranslationContext.newBuilder().apply {
-      putTranslations("key", Translation.newBuilder().apply {
-        html = "value"
-      }.build())
+      putTranslations(
+        "key",
+        Translation.newBuilder().apply {
+          html = "value"
+        }.build()
+      )
       language = OppiaLanguage.ENGLISH
     }.build()
     launchForNumericExpressions(translationContext = writtenTranslationContext).use { scenario ->
@@ -1719,28 +1705,35 @@ class MathExpressionInteractionsViewTest {
 
   private fun createInteractionWithPlaceholder(placeholder: String): Interaction {
     return Interaction.newBuilder().apply {
-      putCustomizationArgs("placeholder", SchemaObject.newBuilder().apply {
-        subtitledUnicode = SubtitledUnicode.newBuilder().apply {
-          unicodeStr = placeholder
+      putCustomizationArgs(
+        "placeholder",
+        SchemaObject.newBuilder().apply {
+          subtitledUnicode = SubtitledUnicode.newBuilder().apply {
+            unicodeStr = placeholder
+          }.build()
         }.build()
-      }.build())
+      )
     }.build()
   }
 
   private fun createInteractionWithNestedPlaceholder(placeholder: String): Interaction {
     return Interaction.newBuilder().apply {
-      putCustomizationArgs("placeholder", SchemaObject.newBuilder().apply {
-        customSchemaValue = CustomSchemaValue.newBuilder().apply {
-          subtitledUnicode = SubtitledUnicode.newBuilder().apply {
-            unicodeStr = placeholder
+      putCustomizationArgs(
+        "placeholder",
+        SchemaObject.newBuilder().apply {
+          customSchemaValue = CustomSchemaValue.newBuilder().apply {
+            subtitledUnicode = SubtitledUnicode.newBuilder().apply {
+              unicodeStr = placeholder
+            }.build()
           }.build()
         }.build()
-      }.build())
+      )
     }.build()
   }
 
   private fun createInteraction(
-    allowedVariables: List<String> = listOf("x", "y", "z"), divAsFractions: Boolean = false
+    allowedVariables: List<String> = listOf("x", "y", "z"),
+    divAsFractions: Boolean = false
   ): Interaction {
     return Interaction.newBuilder().apply {
       putCustomizationArgs(

@@ -3,7 +3,6 @@ package org.oppia.android.app.player.state.itemviewmodel
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
-import javax.inject.Inject
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
@@ -22,6 +21,7 @@ import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
+import javax.inject.Inject
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel private constructor(
@@ -194,7 +194,7 @@ class DragAndDropSortInteractionViewModel private constructor(
   class FactoryImpl @Inject constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController
-  ): InteractionItemFactory {
+  ) : InteractionItemFactory {
     override fun create(
       entityId: String,
       hasConversationView: Boolean,

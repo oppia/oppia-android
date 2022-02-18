@@ -7,6 +7,7 @@ import dagger.Component
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -58,7 +59,6 @@ import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
-import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 
 /**
  * Root Dagger component for the application. All application-scoped modules should be included in

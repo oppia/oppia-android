@@ -765,11 +765,13 @@ class StateRetriever @Inject constructor() {
     }
     return SchemaObject.newBuilder().apply {
       schemaObjectList = SchemaObjectList.newBuilder().apply {
-        addAllSchemaObject(letters.map { letter ->
-          SchemaObject.newBuilder().apply {
-            normalizedString = letter
-          }.build()
-        })
+        addAllSchemaObject(
+          letters.map { letter ->
+            SchemaObject.newBuilder().apply {
+              normalizedString = letter
+            }.build()
+          }
+        )
       }.build()
     }.build()
   }

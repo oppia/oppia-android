@@ -11,31 +11,31 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
-import org.oppia.android.app.model.Interaction
-import org.oppia.android.app.model.SchemaObject
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
-import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
-import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
-import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
-import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
-import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
-import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
-import javax.inject.Inject
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.MATH_EQUATION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.UNRECOGNIZED
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.SchemaObject
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
-import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl as MathExpViewModelFactoryFactoryImpl
+import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
+import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
+import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
+import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
+import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import javax.inject.Inject
+import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl as MathExpViewModelFactoryFactoryImpl
 
 /**
  * This is a dummy activity to test input interaction views.
@@ -147,7 +147,7 @@ class InputInteractionViewTestActivity :
   override fun onEditorAction(actionCode: Int) {
   }
 
-  private inline fun <reified T: StateItemViewModel> InteractionItemFactory.create(
+  private inline fun <reified T : StateItemViewModel> InteractionItemFactory.create(
     interaction: Interaction = Interaction.getDefaultInstance()
   ): T {
     return create(
@@ -166,7 +166,8 @@ class InputInteractionViewTestActivity :
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY = "InputInteractionViewTestActivity.params"
 
     fun createIntent(
-      context: Context, extras: InputInteractionViewTestActivityParams
+      context: Context,
+      extras: InputInteractionViewTestActivityParams
     ): Intent {
       return Intent(context, InputInteractionViewTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)

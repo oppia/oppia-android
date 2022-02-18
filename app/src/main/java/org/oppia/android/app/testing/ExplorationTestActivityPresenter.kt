@@ -3,12 +3,14 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -16,9 +18,6 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import javax.inject.Inject
-import org.oppia.android.app.fragment.FragmentComponentImpl
-import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.utility.SplitScreenManager
 
 private const val INTERNAL_PROFILE_ID = 0
 private const val TOPIC_ID = TEST_TOPIC_ID_0
@@ -86,7 +85,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
     return activity.supportFragmentManager.findFragmentByTag(TEST_FRAGMENT_TAG) as? TestFragment
   }
 
-  class TestFragment: InjectableFragment() {
+  class TestFragment : InjectableFragment() {
     @Inject lateinit var splitScreenManager: SplitScreenManager
 
     override fun onAttach(context: Context) {

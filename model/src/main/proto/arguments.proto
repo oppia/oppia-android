@@ -50,13 +50,16 @@ message InputInteractionViewTestActivityParams {
 
   // The type of math interaction to initialize for testing.
   enum MathInteractionType {
+    // Indicates that no math interaction should  be loaded for testing.
+    MATH_INTERACTION_TYPE_UNSPECIFIED = 0;
+
     // Indicates that the numeric expression input interaction will be used for testing.
-    NUMERIC_EXPRESSION = 0;
+    NUMERIC_EXPRESSION = 1;
 
     // Indicates that the algebraic expression input interaction will be used for testing.
-    ALGEBRAIC_EXPRESSION = 1;
+    ALGEBRAIC_EXPRESSION = 2;
 
     // Indicates that the math equation input interaction will be used for testing.
-    MATH_EQUATION = 2;
+    MATH_EQUATION = 3;
   }
 }

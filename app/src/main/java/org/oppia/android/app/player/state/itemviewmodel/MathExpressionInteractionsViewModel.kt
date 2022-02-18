@@ -5,11 +5,9 @@ import android.text.TextWatcher
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.OppiaLanguage
@@ -51,6 +49,8 @@ import org.oppia.android.util.math.MathParsingError.UnnecessarySymbolsError
 import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionError
 import org.oppia.android.util.math.toPlainText
 import org.oppia.android.util.math.toRawLatex
+import javax.inject.Inject
+import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 
 /**
  * [StateItemViewModel] for input for numeric expressions, algebraic expressions, and math
@@ -123,17 +123,17 @@ class MathExpressionInteractionsViewModel private constructor(
         val mathContentValue = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$answerAsLatex&amp;quot;}"
         htmlAnswer =
           "<oppia-noninteractive-math render-type=\"block\"" +
-            " math_content-with-value=\"$mathContentValue\" />"
+          " math_content-with-value=\"$mathContentValue\" />"
       } else plainAnswer = answerTextString
 
       contentDescription =
         interactionType.computeHumanReadableString(
-          answerTextString,
-          useFractionsForDivision,
-          allowedVariables,
-          mathExpressionAccessibilityUtil,
-          this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
-        ) ?: answerTextString
+        answerTextString,
+        useFractionsForDivision,
+        allowedVariables,
+        mathExpressionAccessibilityUtil,
+        this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
+      ) ?: answerTextString
 
       this.writtenTranslationContext =
         this@MathExpressionInteractionsViewModel.writtenTranslationContext
@@ -220,7 +220,7 @@ class MathExpressionInteractionsViewModel private constructor(
     private val translationController: TranslationController,
     private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
     private val interactionType: InteractionType
-  ): InteractionItemFactory {
+  ) : InteractionItemFactory {
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
@@ -296,7 +296,9 @@ class MathExpressionInteractionsViewModel private constructor(
         hasCustomVariables = false
       ) {
         override fun computeLatex(
-          answerText: String, useFractionsForDivision: Boolean, allowedVariables: List<String>
+          answerText: String,
+          useFractionsForDivision: Boolean,
+          allowedVariables: List<String>
         ): String? {
           return parseAnswer(answerText, allowedVariables)
             .getResult()
@@ -318,7 +320,8 @@ class MathExpressionInteractionsViewModel private constructor(
         }
 
         override fun parseAnswer(
-          answerText: String, allowedVariables: List<String>
+          answerText: String,
+          allowedVariables: List<String>
         ): MathParsingResult<MathExpression> {
           return MathExpressionParser.parseNumericExpression(answerText)
         }
@@ -332,7 +335,9 @@ class MathExpressionInteractionsViewModel private constructor(
         hasCustomVariables = true
       ) {
         override fun computeLatex(
-          answerText: String, useFractionsForDivision: Boolean, allowedVariables: List<String>
+          answerText: String,
+          useFractionsForDivision: Boolean,
+          allowedVariables: List<String>
         ): String? {
           return parseAnswer(answerText, allowedVariables)
             .getResult()
@@ -354,7 +359,8 @@ class MathExpressionInteractionsViewModel private constructor(
         }
 
         override fun parseAnswer(
-          answerText: String, allowedVariables: List<String>
+          answerText: String,
+          allowedVariables: List<String>
         ): MathParsingResult<MathExpression> =
           MathExpressionParser.parseAlgebraicExpression(answerText, allowedVariables)
       },
@@ -367,7 +373,9 @@ class MathExpressionInteractionsViewModel private constructor(
         hasCustomVariables = true
       ) {
         override fun computeLatex(
-          answerText: String, useFractionsForDivision: Boolean, allowedVariables: List<String>
+          answerText: String,
+          useFractionsForDivision: Boolean,
+          allowedVariables: List<String>
         ): String? {
           return parseAnswer(answerText, allowedVariables)
             .getResult()
@@ -389,7 +397,8 @@ class MathExpressionInteractionsViewModel private constructor(
         }
 
         override fun parseAnswer(
-          answerText: String, allowedVariables: List<String>
+          answerText: String,
+          allowedVariables: List<String>
         ): MathParsingResult<MathEquation> =
           MathExpressionParser.parseAlgebraicEquation(answerText, allowedVariables)
       };
@@ -601,7 +610,9 @@ class MathExpressionInteractionsViewModel private constructor(
        * treating divisions as fractions per [useFractionsForDivision].
        */
       abstract fun computeLatex(
-        answerText: String, useFractionsForDivision: Boolean, allowedVariables: List<String>
+        answerText: String,
+        useFractionsForDivision: Boolean,
+        allowedVariables: List<String>
       ): String?
 
       /**
@@ -618,7 +629,8 @@ class MathExpressionInteractionsViewModel private constructor(
 
       /** Attempts to parse the provided raw answer and return the [MathParsingResult]. */
       protected abstract fun parseAnswer(
-        answerText: String, allowedVariables: List<String>
+        answerText: String,
+        allowedVariables: List<String>
       ): MathParsingResult<*>
 
       protected companion object {

@@ -10,11 +10,11 @@ import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivit
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
+import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
-import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :

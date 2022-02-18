@@ -41,6 +41,7 @@ import org.oppia.android.app.player.state.itemviewmodel.DragAndDropSortInteracti
 import org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.PreviousButtonViewModel
@@ -50,6 +51,7 @@ import org.oppia.android.app.player.state.itemviewmodel.ReplayButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
 import org.oppia.android.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
@@ -73,12 +75,12 @@ import org.oppia.android.databinding.DragDropInteractionItemBinding
 import org.oppia.android.databinding.FeedbackItemBinding
 import org.oppia.android.databinding.FractionInteractionItemBinding
 import org.oppia.android.databinding.ImageRegionSelectionInteractionItemBinding
+import org.oppia.android.databinding.MathExpressionInteractionsItemBinding
 import org.oppia.android.databinding.NextButtonItemBinding
 import org.oppia.android.databinding.NumericInputInteractionItemBinding
 import org.oppia.android.databinding.PreviousButtonItemBinding
 import org.oppia.android.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.android.databinding.RatioInputInteractionItemBinding
-import org.oppia.android.databinding.MathExpressionInteractionsItemBinding
 import org.oppia.android.databinding.ReplayButtonItemBinding
 import org.oppia.android.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.android.databinding.SelectionInteractionItemBinding
@@ -92,8 +94,6 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 

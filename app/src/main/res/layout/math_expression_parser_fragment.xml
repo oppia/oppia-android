@@ -174,7 +174,7 @@
             android:text="@string/math_expression_result_type_comparable_operation"
             android:minWidth="20dp"
             android:minHeight="20dp"
-            android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.COMPARABLE_OPERATION_LIST)}" />
+            android:onClick="@{(v) -> viewModel.onResultTypeSelected(ResultType.COMPARABLE_OPERATION)}" />
 
           <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/math_expression_result_type_polynomial_radio_button"
