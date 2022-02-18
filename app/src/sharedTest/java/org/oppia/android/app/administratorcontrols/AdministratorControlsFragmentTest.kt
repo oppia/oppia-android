@@ -240,7 +240,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_wifiSwitchIsUncheck_autoUpdateSwitchIsUncheck() {
+  fun testAdministratorControlsFragment_wifiSwitchIsUncheck_autoUpdateSwitchIsUnchecked() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId

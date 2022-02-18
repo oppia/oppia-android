@@ -151,7 +151,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       )
   }
 
-  /** This loads the dialog whenever requested by the listerner in [AdministratorControlsActivity]. */
+  /** This loads the dialog whenever requested by the listener in [AdministratorControlsActivity]. */
   fun handleLoadProfileDeletionDialog(internalProfileId: Int) {
     showDeletionDialog(internalProfileId)
   }

@@ -56,7 +56,7 @@ class AdministratorControlsActivity :
   lateinit var resourceHandler: AppLanguageResourceHandler
 
   private lateinit var lastLoadedFragment: String
-  private var isProfileDeletionDialogVisible: Boolean? = null
+  private var isProfileDeletionDialogVisible: Boolean = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -64,14 +64,14 @@ class AdministratorControlsActivity :
     val extraControlsTitle =
       savedInstanceState?.getStringFromBundle(SELECTED_CONTROLS_TITLE_SAVED_KEY)
     isProfileDeletionDialogVisible =
-      savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY)
+      savedInstanceState?.getBoolean(IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY) ?: false
     lastLoadedFragment = if (savedInstanceState != null) {
       savedInstanceState.getStringFromBundle(LAST_LOADED_FRAGMENT_EXTRA_KEY) as String
     } else {
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    val selectedProfileId = savedInstanceState?.getInt(SELECTED_PROFILE_ID_SAVED_KEY)
+    val selectedProfileId = savedInstanceState?.getInt(SELECTED_PROFILE_ID_SAVED_KEY) ?: -1
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,
@@ -94,8 +94,9 @@ class AdministratorControlsActivity :
       supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
       )
-    /* when fragment is ProfileEditFragment then we should switch fragment to ProfileListFragment or else
-       we just end the activity as then we are having ProfileListFragment on top. */
+    /* If we have current fragment ProfileListFragment then we should end the activity on back press
+       but if we have ProfileEditFragment as current fragment then we should inflate profileListFragment
+       which is done by the handleOnBackPressed method. */
     if (fragment is ProfileEditFragment) {
       administratorControlsActivityPresenter.handleOnBackPressed()
     } else {

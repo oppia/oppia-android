@@ -27,16 +27,16 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var binding: AdministratorControlsActivityBinding
 
   private lateinit var lastLoadedFragment: String
-  private var selectedProfileId: Int? = null
+  private var selectedProfileId: Int = -1
   private lateinit var extraControlsTitle: String
-  private var isProfileDeletionDialogVisible: Boolean? = null
+  private var isProfileDeletionDialogVisible: Boolean = false
 
   /** Initializes the [AdministratorControlsActivity] and sets the navigation drawer. */
   fun handleOnCreate(
     extraControlsTitle: String?,
     lastLoadedFragment: String,
-    selectedProfileId: Int?,
-    isProfileDeletionDialogVisible: Boolean?
+    selectedProfileId: Int,
+    isProfileDeletionDialogVisible: Boolean
   ) {
     binding = DataBindingUtil.setContentView(
       activity,
@@ -62,17 +62,17 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       when (lastLoadedFragment) {
         PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
         APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
-        PROFILE_EDIT_FRAGMENT -> selectedProfileId?.let {
+        PROFILE_EDIT_FRAGMENT -> selectedProfileId.let { profileId ->
           if (extraControlsTitle != null) {
             (activity as AdministratorControlsActivity).loadProfileEdit(
-              profileId = it,
+              profileId = profileId,
               profileName = extraControlsTitle
             )
-            if (isProfileDeletionDialogVisible == true && it != 0) {
+            if (isProfileDeletionDialogVisible && profileId != 0) {
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
               )
-              (fragment as LoadProfileEditDeletionDialogListener).loadProfileEditDeletionDialog(it)
+              (fragment as LoadProfileEditDeletionDialogListener).loadProfileEditDeletionDialog(profileId)
               this.isProfileDeletionDialogVisible = false
             }
           }
@@ -149,23 +149,23 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   }
 
   private fun setMultipaneBackButtonVisibility(visibility: Int) {
-    binding.administratorControlsMultipaneOptionsBackButton!!.visibility = visibility
+    binding.administratorControlsMultipaneOptionsBackButton?.visibility = visibility
   }
 
   /** Handles the back button according to the back stack of fragments. */
   fun handleOnBackPressed() {
     if (isMultipane) {
-      backButtonLogic()
+      setPreviousFragmentOnBackButtonClick()
     }
   }
 
   private fun setBackButtonClickListener() {
     binding.administratorControlsMultipaneOptionsBackButton!!.setOnClickListener {
-      backButtonLogic()
+      setPreviousFragmentOnBackButtonClick()
     }
   }
 
-  private fun backButtonLogic() {
+  private fun setPreviousFragmentOnBackButtonClick() {
     val currentFragment =
       activity.supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
