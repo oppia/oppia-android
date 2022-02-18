@@ -33,18 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/home_welcome_text_view_margin_end"
         android:fontFamily="sans-serif"
-        android:text="@{viewModel.greeting}"
+        android:text="@{viewModel.greeting + viewModel.computeProfileNameText()}"
         android:textColor="@color/oppia_primary_text"
         android:textSize="24sp" />
 
-      <TextView
-        android:id="@+id/profile_name_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@{viewModel.computeProfileNameText()}"
-        android:textColor="@color/oppia_primary_text"
-        android:textSize="24sp" />
     </com.google.android.flexbox.FlexboxLayout>
 
     <View
