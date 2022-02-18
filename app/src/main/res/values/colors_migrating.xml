@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TODO(#4147): Remove this file after dark mode implementation -->
+<resources>
+  <!-- All of these colors will be replaced with one in color_defs.xml.
+   This is a temporary measure to make sure other 4 color files follows the convention decided
+   for them. -->
+  <color name="oppia_primary">#00645C</color>
+  <color name="oppia_primary_dark">#003933</color>
+  <color name="oppia_accent">#2D4A9D</color>
+  <color name="progress_background_tint">#081661</color>
+  <color name="concept_card_background">#FFFFF0</color>
+  <color name="concept_toolbar_background">#BE563C</color>
+  <color name="concept_toolbar_heading">#A6503A</color>
+  <color name="ic_launcher_background">#26A69A</color>
+  <!-- OPPIA COLORS -->
+  <color name="oppia_primary_text">#333333</color>
+  <color name="oppia_primary_light">#009688</color>
+  <color name="oppia_primary_text_30">#4D333333</color>
+  <color name="oppia_primary_text_dark">#DE000000</color>
+  <color name="oppia_secondary_text">#666666</color>
+  <color name="oppia_background">#F2F2F2</color>
+  <color name="oppia_grey_background">#E5E5E5</color>
+  <color name="oppia_progress_chapter_finished">#E76F51</color>
+  <color name="oppia_progress_chapter_in_progress">#E7AC9B</color>
+  <color name="oppia_progress_chapter_not_finished">#999999</color>
+  <color name="oppia_admin_auth_secondary_text">#555555</color>
+  <color name="oppia_onboarding_divider">#707070</color>
+  <color name="oppia_disabled_button_background">#33999999</color>
+  <color name="oppia_text_shadow">#1F000000</color>
+  <color name="oppia_grey_border">#DDDDDD</color>
+  <color name="oppia_grey_border_dark">#666666</color>
+  <color name="oppia_dashed_divider">#80707070</color>
+  <color name="oppia_submitted_answer_text_color">#777777</color>
+  <color name="oppia_background_yellow_ivory">#FFFFF0</color>
+  <color name="oppia_faq_divider">#707070</color>
+  <color name="oppia_profile_chooser_divider">#707070</color>
+  <!--  CONFETTI COLORS -->
+  <color name="confetti_red">#FF1414</color>
+  <color name="confetti_yellow">#FFE558</color>
+  <color name="confetti_blue">#2D4A9D</color>
+  <!-- AUDIO COMPONENT -->
+  <color name="audio_component_background">@color/oppia_dark_blue</color>
+  <!-- PROFILE COMPONENT -->
+  <color name="avatar_border">#707070</color>
+  <color name="hints_and_solution_background">#E4F2F1</color>
+  <color name="profile_chooser_background">#212121</color>
+  <color name="profile_chooser_grey_text">#999999</color>
+  <color name="profile_edit_background">#E5E5E5</color>
+  <color name="general_navigation_background">#E5E5E5</color>
+  <color name="app_version_background">#E5E5E5</color>
+  <color name="highlighted_nav_menu_item">#BE563C</color>
+  <color name="highlighted_developer_options_nav_menu_item">#00609C</color>
+  <color name="navbar_header_background">#264653</color>
+  <!-- SUBMIT BUTTON INACTIVE -->
+  <color name="audio_language_activity_radio_button">#00A89F</color>
+  <color name="submit_button_inactive">#61999999</color>
+  <color name="submit_button_text_inactive">#61000000</color>
+  <color name="submit_button_inactive_text">#61000000</color>
+  <!-- INPUT LAYOUT EDITTEXT -->
+  <color name="mtrl_textinput_default_box_stroke_color">#666666</color>
+  <color name="edit_text_error">#923026</color>
+  <color name="edit_text_hint">#80333333</color>
+  <color name="chapter_card_shadow">#AAFFFFFF</color>
+  <color name="chapter_card_grey_border">#666666</color>
+  <color name="divider">#61000000</color>
+  <color name="toolbar_drop_shadow">#3D000000</color>
+  <!-- QUESTION COMPONENT -->
+  <color name="question_player_background">#F0FFFF</color>
+  <color name="question_player_progress_bar_gradient_start">#00E4F2F1</color>
+  <color name="question_player_progress_bar_gradient_center">#E4F2F1</color>
+  <color name="question_player_progress_bar_gradient_end">#E4F2F1</color>
+  <!-- AVATAR BACKGROUND COLORS -->
+  <color name="avatar_background_1">#E65C5C</color>
+  <color name="avatar_background_2">#E6935C</color>
+  <color name="avatar_background_3">#FFDB4E</color>
+  <color name="avatar_background_4">#CAE65C</color>
+  <color name="avatar_background_5">#93E65C</color>
+  <color name="avatar_background_6">#5CE6CA</color>
+  <color name="avatar_background_7">#5CCAE6</color>
+  <color name="avatar_background_8">#5C93E6</color>
+  <color name="avatar_background_9">#5C5CE6</color>
+  <color name="avatar_background_10">#935CE6</color>
+  <color name="avatar_background_11">#E65CCF</color>
+  <color name="avatar_background_12">#E65C97</color>
+  <color name="avatar_background_13">#CC2929</color>
+  <color name="avatar_background_14">#CC6A29</color>
+  <color name="avatar_background_15">#E6C12E</color>
+  <color name="avatar_background_16">#ABCC29</color>
+  <color name="avatar_background_17">#6ACC29</color>
+  <color name="avatar_background_18">#29CCAB</color>
+  <color name="avatar_background_19">#29ABCC</color>
+  <color name="avatar_background_20">#296ACC</color>
+  <color name="avatar_background_21">#6A29CC</color>
+  <color name="avatar_background_22">#AB29CC</color>
+  <color name="avatar_background_23">#CC29B1</color>
+  <color name="avatar_background_24">#CC2970</color>
+  <!-- ReadingTextSizeActivity -->
+  <color name="seekbar_divider">#707070</color>
+  <color name="topic_thumbnail_background">#C6DCDA</color>
+  <color name="topic_title_background">#2F6687</color>
+  <!-- STATUS BAR COLORS -->
+  <color name="profile_status_bar">#000000</color>
+  <color name="hint_full_dialog_status_bar">#00236E</color>
+  <color name="slide_drawer_open_status_bar">#001F2A</color>
+  <color name="walkthrough_status_bar">#CCCCCC</color>
+  <color name="onboarding_1_status_bar">#00847A</color>
+  <color name="onboarding_2_status_bar">#8B2A15</color>
+  <color name="onboarding_3_status_bar">#AD8500</color>
+  <color name="onboarding_4_status_bar">#3B5893</color>
+  <!-- ICON COLORS -->
+  <color name="merge_icon_enabled">#FF000000</color>
+  <color name="merge_icon_disabled">#999999</color>
+  <!-- HIGHLIGHTED COLORS -->
+  <color name="admin_highlighted">#A5D3EC</color>
+  <color name="coming_soon_end">#674172</color>
+  <color name="coming_soon_start">#7659B6</color>
+</resources>
