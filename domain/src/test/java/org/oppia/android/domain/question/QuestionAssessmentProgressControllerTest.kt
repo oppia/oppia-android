@@ -7,7 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import com.google.common.truth.extensions.proto.LiteProtoTruth
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -36,6 +36,7 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAssessmentPerformance
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -1442,7 +1443,10 @@ class QuestionAssessmentProgressControllerTest {
 
     // The context should be the default instance for English since the default strings of the
     // lesson are expected to be in English.
-    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = OppiaLanguage.ENGLISH
+    }.build()
+    assertThat(ephemeralState.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -1455,6 +1459,7 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
 
     // Arabic translations should be included per the locale.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
@@ -1467,7 +1472,7 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
 
     // No translations match to an unsupported language, so default to the built-in strings.
-    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+    assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
   }
 
   @Test
@@ -1479,8 +1484,11 @@ class QuestionAssessmentProgressControllerTest {
 
     val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
 
-    // English translations mean no context.
-    LiteProtoTruth.assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+    // English translations means only a language specification.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = OppiaLanguage.ENGLISH
+    }.build()
+    assertThat(ephemeralState.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -1499,6 +1507,7 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralState = monitor.ensureNextResultIsSuccess().ephemeralState
 
     // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
@@ -1515,6 +1524,7 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
 
     // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 

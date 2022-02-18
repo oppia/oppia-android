@@ -2953,6 +2953,7 @@ class ExplorationProgressControllerTest {
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
     // Arabic translations should be included per the locale.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
@@ -3017,6 +3018,7 @@ class ExplorationProgressControllerTest {
     val ephemeralState = monitor.ensureNextResultIsSuccess()
 
     // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
@@ -3039,6 +3041,7 @@ class ExplorationProgressControllerTest {
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
     // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 

@@ -14,6 +14,7 @@ import org.oppia.android.app.customview.interaction.TextInputInteractionView
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.ALGEBRAIC_EXPRESSION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.MATH_EQUATION
+import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.NUMERIC_EXPRESSION
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType.UNRECOGNIZED
 import org.oppia.android.app.model.Interaction
@@ -115,8 +116,12 @@ class InputInteractionViewTestActivity :
             .createFactoryForMathEquation()
             .create(interaction = params.interaction)
       }
-      UNRECOGNIZED, null -> {
-        // Do nothing.
+      MATH_INTERACTION_TYPE_UNSPECIFIED, UNRECOGNIZED, null -> {
+        // Default to numeric expression arbitrarily (since something needs to be defined).
+        mathExpressionViewModel =
+          mathExpViewModelFactoryFactory
+            .createFactoryForNumericExpression()
+            .create(interaction = params.interaction)
       }
     }
 
