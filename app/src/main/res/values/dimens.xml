@@ -52,6 +52,9 @@
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
   <dimen name="profile_chooser_profile_view_divider_margin_top">40dp</dimen>
 
+  <!-- Profile List Profile View -->
+  <dimen name="profile_list_profile_view_margin_start">28dp</dimen>
+
   <dimen name="profile_chooser_profile_view_parent_padding">4dp</dimen>
   <dimen name="profile_chooser_profile_view_is_admin_margin_top">4dp</dimen>
   <dimen name="profile_chooser_profile_view_last_visited_margin_top_profile_not_added">4dp</dimen>
@@ -631,18 +634,16 @@
   <dimen name="hint_summary_hint_constraint_layout_marginStart">28dp</dimen>
   <dimen name="hint_summary_hint_constraint_layout_marginEnd">28dp</dimen>
   <dimen name="hint_summary_hint_constraint_layout_marginBottom">20dp</dimen>
-  <dimen name="hint_summary_hint_constraint_layout_paddingBottom">0dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_paddingBottom">0dp</dimen>//
   <dimen name="hint_summary_hint_title_layout_marginTop">12dp</dimen>
   <dimen name="hint_summary_hint_title_layout_marginBottom">12dp</dimen>
-  <dimen name="hint_summary_hint_title_layout_paddingBottom">0dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_paddingBottom">0dp</dimen>//
   <dimen name="hint_summary_reveal_hint_button_layout_marginTop">16dp</dimen>
   <dimen name="hint_summary_reveal_hint_button_layout_marginBottom">32dp</dimen>
   <dimen name="hint_summary_expand_list_icon_layout_marginStart">8dp</dimen>
   <dimen name="hint_summary_expand_list_icon_layout_marginEnd">8dp</dimen>
-  <dimen name="hint_summary_expand_list_icon_layout_marginTop">0dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginTop">0dp</dimen>//
   <dimen name="hint_summary_expand_list_icon_layout_marginBottom">8dp</dimen>
-  <dimen name="hint_summary_expand_list_icon_layout_constraintHorizontal_bias">0.966</dimen>
-  <dimen name="hint_summary_expand_list_icon_layout_constraintVertical_bias">0.0</dimen>
   <dimen name="hint_summary_hint_list_container_layout_marginStart">40dp</dimen>
   <dimen name="hint_summary_hint_list_container_layout_marginEnd">40dp</dimen>
   <dimen name="hint_summary_hint_list_container_layout_marginTop">8dp</dimen>
@@ -651,4 +652,5 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
+
 </resources>

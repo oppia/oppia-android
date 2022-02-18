@@ -420,7 +420,20 @@
   <dimen name="revision_card_fragment_layout_text_margin_top">32dp</dimen>
   <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
 
+  <!-- HintsSummary -->
+  <dimen name="hint_summary_hint_constraint_layout_marginStart">128dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_marginEnd">128dp</dimen>
+  <dimen name="hint_summary_hint_constraint_layout_paddingBottom">4dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_marginTop">44dp</dimen>
+  <dimen name="hint_summary_hint_title_layout_paddingBottom">28dp</dimen>
+  <dimen name="hint_summary_reveal_hint_button_layout_marginBottom">28dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginTop">32dp</dimen>
+  <dimen name="hint_summary_expand_list_icon_layout_marginBottom">16dp</dimen>
+  <dimen name="hint_summary_hint_list_container_layout_marginStart">128dp</dimen>
+  <dimen name="hint_summary_hint_list_container_layout_marginEnd">128dp</dimen>
+
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">4dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
+
 </resources>
