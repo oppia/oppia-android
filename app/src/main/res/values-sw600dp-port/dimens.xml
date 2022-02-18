@@ -440,4 +440,7 @@
   <dimen name="hint_summary_hint_list_container_layout_marginEnd">128dp</dimen>
   <dimen name="hint_summary_hint_list_container_layout_marginTop">0dp</dimen>
 
+  <!-- Hints and Solution Fragment -->
+  <dimen name="hints_and_solution_recycler_view_padding_top">0dp</dimen>
+  <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
 </resources>
