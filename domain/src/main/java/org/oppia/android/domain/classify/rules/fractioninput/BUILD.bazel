@@ -1,0 +1,48 @@
+"""
+Classifiers for the 'FractionInput' interaction.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fraction_input_providers",
+    srcs = [
+        "FractionInputHasDenominatorEqualToRuleClassifierProvider.kt",
+        "FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider.kt",
+        "FractionInputHasIntegerPartEqualToRuleClassifierProvider.kt",
+        "FractionInputHasNoFractionalPartRuleClassifierProvider.kt",
+        "FractionInputHasNumeratorEqualToRuleClassifierProvider.kt",
+        "FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider.kt",
+        "FractionInputIsEquivalentToRuleClassifierProvider.kt",
+        "FractionInputIsExactlyEqualToRuleClassifierProvider.kt",
+        "FractionInputIsGreaterThanRuleClassifierProvider.kt",
+        "FractionInputIsLessThanRuleClassifierProvider.kt",
+    ],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "fraction_input_module",
+    srcs = [
+        "FractionInputModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":fraction_input_providers",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+    ],
+)
+
+dagger_rules()
