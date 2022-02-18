@@ -407,6 +407,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/SplashTestA
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/StateAssemblerMarginBindingAdaptersTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/StateAssemblerPaddingBindingAdaptersTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TestFontScaleConfigurationUtilActivityPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TextViewBindingAdaptersTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TopicRevisionTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TopicRevisionTestActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TopicTestActivity.kt"
