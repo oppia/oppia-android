@@ -15,6 +15,7 @@ kt_android_library(
     visibility = ["//domain:domain_testing_visibility"],
     deps = [
         ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/classify:classification_context",
         "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
