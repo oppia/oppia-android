@@ -65,6 +65,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -97,6 +99,9 @@ import javax.inject.Singleton
 class WalkthroughActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -140,6 +145,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_incProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -148,6 +154,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_incProgress_configChange_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -158,6 +165,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_pressNextBtn_configChange_pressBackBtn_backBtnWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -173,6 +181,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_incProgress_onBackPress_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
@@ -183,6 +192,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughActivity_incProgress_pressBackBtn_decProgress_progressWorksCorrectly() {
     launch(WalkthroughActivity::class.java).use {
       onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())

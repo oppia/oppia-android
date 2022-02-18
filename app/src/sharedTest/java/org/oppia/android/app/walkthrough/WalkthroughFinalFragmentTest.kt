@@ -68,6 +68,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -102,7 +104,8 @@ class WalkthroughFinalFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  // TODO(#3367): Use AccessibilityTestRule
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -131,6 +134,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_firstTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -156,6 +160,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -181,6 +186,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_configChange_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -213,6 +219,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_yesNoBtnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -236,6 +243,7 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
+  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_clickNoBtn_noBtnWorksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
