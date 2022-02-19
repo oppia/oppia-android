@@ -40,6 +40,7 @@
     * [[Kotlin Coroutines|https://github.com/oppia/oppia-android/wiki/Kotlin-Coroutines]]
     * [[DataProvider & LiveData|https://github.com/oppia/oppia-android/wiki/DataProvider-&-LiveData]]
     * [[PersistentCacheStore & In Memory Blocking Cache|https://github.com/oppia/oppia-android/wiki/PersistentCacheStore-&-In-Memory-Blocking-Cache]]  
+  * [[Dark mode|https://github.com/oppia/oppia-android/wiki/Dark-Mode]]
   * [[Developing skills|https://github.com/oppia/oppia-android/wiki/Developing-skills]]
   * [[Buf Guide|https://github.com/oppia/oppia-android/wiki/Buf-Guide]]
   * [[Firebase Console Guide|https://github.com/oppia/oppia-android/wiki/Firebase-Console-Guide]]
