@@ -218,7 +218,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withMorningGreeting_withAdminProfile_goodMorningWithProfileNameIsDisplayed() {
+  fun testHomeActivity_withMorningTimeAndAdminProfile_MorningWithProfileNameIsDisplayed(){
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -233,7 +233,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withMorningGreeting_withAdminProfile_configChange_goodMorningWithProfileNameIsDisplayed() {
+  fun testHomeActivity_withMorningAndAdminProfile_configChange_MorningWithProfileNameIsDisplayed(){
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(MORNING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -249,7 +249,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withAfternoonGreeting_withAdminProfile_goodAfternoonWithProfileNameIsDisplayed() {
+  fun testHomeActivity_withAfternoonTime_withAdminProfile_afternoonWithProfileNameIsDisplayed(){
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -264,7 +264,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withAfternoonGreeting_withAdminProfile_configChange_goodAfternoonWithProfileNameIsDisplayed() {
+  fun testHomeActivity_Afternoon_AdminProfile_configChange_AfternoonWithProfileNameIsDisplayed(){
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -280,7 +280,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withEveningGreeting_withAdminProfile_goodEveningWithProfileNameIsDisplayed() {
+  fun testHomeActivity_withEveningTime_withAdminProfile_goodEveningWithProfileNameIsDisplayed(){
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -295,7 +295,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_withEveningGreeting_withAdminProfile_configChange_goodEveningWithProfileNameIsDisplayed() {
+  fun testHomeActivity_withEvening_AdminProfile_configChange_EveningWithProfileNameIsDisplayed(){
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
