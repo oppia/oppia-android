@@ -3,10 +3,10 @@
 - [Atlassian's tutorial on pull requests](https://www.atlassian.com/git/tutorials/making-a-pull-request).
 
 Here are the steps for making a PR to the Oppia Android codebase:
-1. [Make a local code change](#making-a-local-code-change)
-2. [Create a PR on GitHub](#create-a-pr-on-github)
-3. [Address review comments until all reviewers give LGTM](#address-review-comments-until-all-reviewers-give-lgtm)
-4. [Tidy up and celebrate!](#tidy-up)
+1. [Make a local code change](#step-1-making-a-local-code-change)
+2. [Create a PR on GitHub](#step-2-create-a-pr-on-github)
+3. [Address review comments until all reviewers give LGTM](#step-3-address-review-comments-until-all-reviewers-give-lgtm)
+4. [Tidy up and celebrate!](#step-4-tidy-up-and-celebrate-confetti_ball)
 
 Note: If your change involves more than around 500 lines of code, we recommend first creating a [design doc](https://github.com/oppia/oppia/wiki/Writing-design-docs). This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
 
@@ -20,17 +20,17 @@ Before you make a PR, you'll need to make and test the changes locally. To do th
 
 1. **Update your repository.** The new branch should be based on the latest code in develop, so checkout the latest version of develop like this:
 
-```
-    git fetch upstream
-    git checkout develop
-    git merge upstream/develop
-```
+    ```
+        git fetch upstream
+        git checkout develop
+        git merge upstream/develop
+    ```
 
 2. **Create a new branch with a descriptive name.** In the example below, the branch is named `your-branch-name`. The branch name should be lowercase and hyphen-separated, e.g. `fuzzy-rules`. Make sure that your branch name doesn't start with `develop`, `release` or `test.`
 
-```
-    git checkout -b your-branch-name
-```
+    ```
+        git checkout -b your-branch-name
+    ```
 
 3. **Make commits locally to your feature branch.** Each commit should be self-contained and have a descriptive commit message that helps other developers understand why the changes were made. However, do not write "Fix #ISSUE_NUMBER" (e.g. "Fix #99999") in your commit messages (or any of the other closing phrases from GitHub's documentation), as this will cause Github to close the original issue automatically.
 
@@ -74,17 +74,17 @@ Before you make a PR, you'll need to make and test the changes locally. To do th
 
     On the bottom right side of your android studio screen you will find your branch name. Click on **branch_name** > **develop** > **Update**:
 
-<img width="1680" alt="10" src="https://user-images.githubusercontent.com/53645584/140925498-270c0ade-7ded-4e4b-a834-be25d70dcc63.png">
+    <img width="1680" alt="10" src="https://user-images.githubusercontent.com/53645584/140925498-270c0ade-7ded-4e4b-a834-be25d70dcc63.png">
 
 2. **Create a new branch with a descriptive name.** On the bottom right side of your Android Studio screen, you will find your branch name. Click on **branch_name** > **develop** > **New Branch from Selected** > _Enter your new branch name_ > **OK**.
 
    Then, create a new branch. In this example the branch is named `github`. The branch name should be lowercase and hyphen-separated, e.g. `fuzzy-rules`. Make sure that your branch name doesn’t start with `develop`, `release` or `test.`
 
-<img width="1680" alt="12" src="https://user-images.githubusercontent.com/53645584/140925250-d8687aa7-e5e2-407c-9037-801d5905497c.png">
+    <img width="1680" alt="12" src="https://user-images.githubusercontent.com/53645584/140925250-d8687aa7-e5e2-407c-9037-801d5905497c.png">
 
     If you want to go back to "develop" or any other branch/"check-out any branch" you may right-click and find options for that:
 
-<img width="1675" alt="11" src="https://user-images.githubusercontent.com/54615666/72599236-5200f380-3937-11ea-9ef4-e29ef9ef974d.png">
+    <img width="1675" alt="11" src="https://user-images.githubusercontent.com/54615666/72599236-5200f380-3937-11ea-9ef4-e29ef9ef974d.png">
 
 3. **Make commits locally to your feature branch.** Now, when you create a new activity, it will be unversioned and therefore displayed with a reddish-brown colour file name. To add the files to Git/version Select files and click the "Add" button.
 
@@ -192,18 +192,17 @@ You can use Android Studio to resolve merge conflicts through its UI-based Git f
 
 - Go to VCS > Git > Pull (set the remote to be upstream and branch to be develop). Or, use VCS > Git > Resolve Conflicts if you have already pulled the changes but haven’t resolved the conflicts.
 
-!["Pull Changes" dialog box in Android Studio](https://user-images.githubusercontent.com/10575562/154797367-bf8cbefd-c6da-4a82-8210-806d70411b05.png)
+    !["Pull Changes" dialog box in Android Studio](https://user-images.githubusercontent.com/10575562/154797367-bf8cbefd-c6da-4a82-8210-806d70411b05.png)
 
-Usually, this will automatically merge the files. However, in the case of conflicts, it will prompt you to tell it what to do with those files.
+- Usually, this will automatically merge the files. However, in the case of conflicts, it will prompt you to tell it what to do with those files.
 
-!["Conflicts" dialog box in Android Studio](https://user-images.githubusercontent.com/10575562/154797370-2d4d7d6c-42c4-4581-a83e-fcce727d5d70.png)
+    !["Conflicts" dialog box in Android Studio](https://user-images.githubusercontent.com/10575562/154797370-2d4d7d6c-42c4-4581-a83e-fcce727d5d70.png)
 
-You can either directly accept the changes from develop (discarding your local changes) or keep your own changes (discarding the changes from develop) based on the situation but it is suggested to go through each file line by line using the merge button in the prompt.
+- You can either directly accept the changes from develop (discarding your local changes) or keep your own changes (discarding the changes from develop) based on the situation but it is suggested to go through each file line by line using the merge button in the prompt.
 
-!["Conflicts diff" window in Android Studio](https://user-images.githubusercontent.com/10575562/154797371-9e2596ab-ad0c-4fa3-93ca-6e874528bb99.png)
+    !["Conflicts diff" window in Android Studio](https://user-images.githubusercontent.com/10575562/154797371-9e2596ab-ad0c-4fa3-93ca-6e874528bb99.png)
 
-
-The file on the left shows changes from your local working branch and the file on the right shows the changes from the develop branch while the centre file being the final state of it. You can decide accordingly which change (or both) you want to keep for each conflict one by one using the arrows and cross sign on those highlighted lines. Once the conflicts are successfully resolved you can then commit and push your changes to your working branch.
+   The file on the left shows changes from your local working branch and the file on the right shows the changes from the develop branch while the centre file being the final state of it. You can decide accordingly which change (or both) you want to keep for each conflict one by one using the arrows and cross sign on those highlighted lines. Once the conflicts are successfully resolved you can then commit and push your changes to your working branch.
 
 
 ## Step 4: Tidy up and celebrate! :confetti_ball:
