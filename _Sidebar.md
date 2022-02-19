@@ -16,7 +16,6 @@
     * [[Bazel setup instructions|https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions]]
     * [[Bazel Setup Instructions for Windows|https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows]]
   * Key Workflows
-    * [[Making a code change|https://github.com/oppia/oppia-android/wiki/making-a-code-change]]
     * [[Guidance on submitting a PR|https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR]]
     * [[Creating a screenshot|https://github.com/oppia/oppia-android/wiki/Creating-a-screenshot]]
     * [[Interpreting CI Results|https://github.com/oppia/oppia-android/wiki/Interpreting-CI-Results]]
