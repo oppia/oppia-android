@@ -112,7 +112,7 @@ For now, you generally won't need to do this, until the Android app supports on-
 ## Finding something to do
 **Starter projects for new contributors**
 
-Welcome! Please make sure to follow the onboarding instructions above if you haven’t already. After that, we’d strongly recommend tackling some part of one of the following starter issues.
+Welcome! Please make sure to follow the onboarding instructions above if you haven’t already, and also read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). After that, we’d strongly recommend tackling some part of one of the following starter issues.
 
 **UI**
 
