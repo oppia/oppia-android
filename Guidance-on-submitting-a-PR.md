@@ -1,6 +1,16 @@
-**Working on your first pull request?** Pull requests can be tricky to understand at first, so if the instructions on this page don't make sense to you, check out the free series [How to Contribute to an Open Source Project on GitHub](https://app.egghead.io/series/how-to-contribute-to-an-open-source-project-on-github) or [Atlassian's tutorial on pull requests](https://www.atlassian.com/git/tutorials/making-a-pull-request).
+**Working on your first pull request?** Pull requests (PRs) can be tricky to understand at first, so if the instructions on this page don't make sense to you, check out these resources:
+- The free series [How to Contribute to an Open Source Project on GitHub](https://app.egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+- [Atlassian's tutorial on pull requests](https://www.atlassian.com/git/tutorials/making-a-pull-request).
 
-Note: If your change involves more than around 500 lines of code, we recommend first creating a short [design doc](https://github.com/oppia/oppia/wiki/Writing-design-docs). This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
+Here are the steps for making a PR to the Oppia Android codebase:
+1. [Make a local code change](#making-a-local-code-change)
+2. [Create a PR on GitHub](#create-a-pull-request)
+3. [Address review comments until all reviewers give LGTM]((#address-review-comments-until-all-reviewers-give-lgtm))
+4. [Tidy up and celebrate!](#tidy-up)
+
+Note: If your change involves more than around 500 lines of code, we recommend first creating a [design doc](https://github.com/oppia/oppia/wiki/Writing-design-docs). This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
+
+## Making a local code change
 
 Before you make a PR, you'll need to make and test the changes locally. To do this, please follow the following instructions carefully! Otherwise, your code review may be delayed.
  - [Making a local code change using the terminal](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#making-a-local-code-change-using-the-terminal)
@@ -124,7 +134,7 @@ Once you push a branch to Git you wont be able to rename it so, be sure about th
 <img width="1676" alt="16" src="https://user-images.githubusercontent.com/54615666/72599241-53322080-3937-11ea-8ef6-3253acd58215.png">
 
 
-### Create a pull request
+## Create a pull request
 
 Once your feature is ready, you can open a pull request (PR)!
 
@@ -160,7 +170,7 @@ You have successfully created a pull request! Now, wait for your code to get rev
 
 
 
-### Address review comments until all reviewers give LGTM 
+## Address review comments until all reviewers give LGTM 
 
 When your reviewer has reviewed the code, you'll get an email. You'll need to respond in two ways:
 1. Make a new commit addressing the comments you agree with, and push it to the same branch. (Continue to use descriptive commit messages. If your commit addresses lots of disparate review comments, it's fine to refer to the original commit message and add something like "(address review comments)".)
@@ -169,7 +179,25 @@ When your reviewer has reviewed the code, you'll get an email. You'll need to re
 
     In addition, reply to each comment via the Files Changed tab, choosing the “Start a review” option for the first comment. Each reply should be either “Done” or a response explaining why the corresponding suggestion wasn’t implemented. When you’ve responded to all comments, submit the review to add all your messages to the main thread. All comments must be responded to and resolved before LGTM can be given.
 
-2. Resolve any merge conflicts that arise. To resolve conflicts between ‘new-branch-name’ (in your fork) and ‘develop’ (in the oppia repository), run:
+2. Resolve any merge conflicts that arise using [the terminal](#Resolving-merge-conflicts-using-the-terminal) or [Android Studio](#Resolving-merge-conflicts-using-Android-Studio). (Click the links for more details on how to do this.)
+
+Once you've finished addressing everything, and would like the reviewer to take another look, write a top-level comment** explicitly asking the reviewer to take another look (e.g. "@XXX PTAL"), and set them as the assignee for the PR.
+
+At the end, the reviewer will merge the pull request.
+
+
+### Tips for getting your PR merged after submission
+1. Keep track of **Assignees** section and reply to comments in the PR itself.
+2. PRs should not be merged if there are any requested changes, or if there are any unresolved conversation threads.
+3. Do not resolve a conversation if you didn't open it, unless the author explicitly says that you can. You should re-assign the PR to the author once you address all of the comments so that they can verify & mark the conversations as resolved.
+4. Make sure that the assignee list always reflects the contributors who have actionable items left on the PR (either to make requested changes, merge the PR, review it, or resolve open comment threads). Note that it's perfectly fine if sometimes both the author and reviewer of a PR are both assigned to it (one reviewer may have finished a review pass and requested changes--in this situation both another reviewer and author might have actionable work items to complete).
+5. Address all comments before sending a PR back to a reviewer. 'Address' can mean implementing a code change, asking a clarifying question, or providing an explanation why you don't think a suggestion should implemented. Make sure each comment thread has at a reply from you before sending the PR back to that reviewer.
+6. Once the PR is ready to merge, add a top-level comment confirming the merge decision, and merge the PR. If any issues need to be filed subsequently, file them and refer to them in the PR via a comment.
+
+
+### Resolving merge conflicts using the terminal
+
+To resolve conflicts between ‘new-branch-name’ (in your fork) and ‘develop’ (in the oppia repository), run:
 
 ```
 git checkout new-branch-name
@@ -178,10 +206,6 @@ git merge upstream/develop
 git commit -a
 git push origin new-branch-name
  ```
-
-Once you've finished addressing everything, and would like the reviewer to take another look, write a top-level comment** explicitly asking the reviewer to take another look (e.g. "@XXX PTAL"), and set them as the assignee for the PR.
-
-At the end, the reviewer will merge the pull request.
 
 ### Resolving merge conflicts using Android Studio
 
@@ -205,19 +229,8 @@ You can either directly accept the changes from develop (discarding your local c
 The file on the left shows changes from your local working branch and the file on the right shows the changes from the develop branch while the centre file being the final state of it. You can decide accordingly which change (or both) you want to keep for each conflict one by one using the arrows and cross sign on those highlighted lines. Once the conflicts are successfully resolved you can then commit and push your changes to your working branch.
 
 
-### Tidy up! 
-After the PR status has changed to "Merged", delete the feature branch from both your local clone and the GitHub repository
-
-### Celebrate. :confetti_ball: 
-Congratulations, you have contributed to the Oppia Android project!
+## Tidy up and celebrate! :confetti_ball:
+After the PR status has changed to "Merged", delete the feature branch from both your local clone and the GitHub repository. Congratulations, you have contributed to the Oppia Android project!
 
 If you have already completed 2 pull requests and been added as a collaborator to the project, you should also add a changelog label. If you are a new contributor, you don't have permission to do this. Don't worry! Oppiabot will automatically ask someone to do it for you.
 
-
-### Tips for getting your PR merged after submission
-1. Keep track of **Assignees** section and reply to comments in the PR itself.
-2. PRs should not be merged if there are any requested changes, or if there are any unresolved conversation threads.
-3. Do not resolve a conversation if you didn't open it, unless the author explicitly says that you can. You should re-assign the PR to the author once you address all of the comments so that they can verify & mark the conversations as resolved.
-4. Make sure that the assignee list always reflects the contributors who have actionable items left on the PR (either to make requested changes, merge the PR, review it, or resolve open comment threads). Note that it's perfectly fine if sometimes both the author and reviewer of a PR are both assigned to it (one reviewer may have finished a review pass and requested changes--in this situation both another reviewer and author might have actionable work items to complete).
-5. Address all comments before sending a PR back to a reviewer. 'Address' can mean implementing a code change, asking a clarifying question, or providing an explanation why you don't think a suggestion should implemented. Make sure each comment thread has at a reply from you before sending the PR back to that reviewer.
-6. Once the PR is ready to merge, add a top-level comment confirming the merge decision, and merge the PR. If any issues need to be filed subsequently, file them and refer to them in the PR via a comment.
