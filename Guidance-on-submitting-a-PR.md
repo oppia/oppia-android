@@ -4,8 +4,8 @@
 
 Here are the steps for making a PR to the Oppia Android codebase:
 1. [Make a local code change](#making-a-local-code-change)
-2. [Create a PR on GitHub](#create-a-pull-request)
-3. [Address review comments until all reviewers give LGTM]((#address-review-comments-until-all-reviewers-give-lgtm))
+2. [Create a PR on GitHub](#create-a-pr-on-github)
+3. [Address review comments until all reviewers give LGTM](#address-review-comments-until-all-reviewers-give-lgtm)
 4. [Tidy up and celebrate!](#tidy-up)
 
 Note: If your change involves more than around 500 lines of code, we recommend first creating a [design doc](https://github.com/oppia/oppia/wiki/Writing-design-docs). This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
@@ -134,7 +134,7 @@ Once you push a branch to Git you wont be able to rename it so, be sure about th
 <img width="1676" alt="16" src="https://user-images.githubusercontent.com/54615666/72599241-53322080-3937-11ea-8ef6-3253acd58215.png">
 
 
-## Create a pull request
+## Create a PR on GitHub
 
 Once your feature is ready, you can open a pull request (PR)!
 
@@ -186,7 +186,7 @@ Once you've finished addressing everything, and would like the reviewer to take 
 At the end, the reviewer will merge the pull request.
 
 
-### Tips for getting your PR merged after submission
+### Tips for getting your PR merged
 1. Keep track of **Assignees** section and reply to comments in the PR itself.
 2. PRs should not be merged if there are any requested changes, or if there are any unresolved conversation threads.
 3. Do not resolve a conversation if you didn't open it, unless the author explicitly says that you can. You should re-assign the PR to the author once you address all of the comments so that they can verify & mark the conversations as resolved.
