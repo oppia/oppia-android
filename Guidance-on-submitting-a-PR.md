@@ -113,13 +113,11 @@ Before you make a PR, you'll need to make and test the changes locally. To do th
 
 ## Step 2: Create a PR on GitHub
 
-Once your feature is ready, you can open a pull request (PR)!
+Once your feature is ready, you can open a pull request (PR)! Here is how to do so:
 
-Go to your fork on GitHub, select your branch from the dropdown menu, and click "pull request". Ensure that the base repository is oppia/oppia-android and that the base branch is develop. The head repository should be your fork, and the head branch should be your branch. If you don't see the repository, click the link to compare across forks.
-
-On this page, you can also see your commits and your changes. Read these changes carefully to make sure that the changes are correct. This is a good way to catch obvious errors that would otherwise lead to delays in the review process.
-
-Click "Create pull request".
+- Go to your fork on GitHub, select your branch from the dropdown menu, and click "pull request". Ensure that the base repository is oppia/oppia-android and that the base branch is develop. The head repository should be your fork, and the head branch should be your branch. If you don't see the repository, click the link to compare across forks.
+- On this page, you can also see your commits and your changes. Read these changes carefully to make sure that the changes are correct. This is a good way to catch obvious errors that would otherwise lead to delays in the review process.
+- Click "Create pull request".
 
 You have successfully created a pull request! Now, wait for your code to get reviewed! While you're waiting, it's totally fine to start work on a new PR if you like. Just follow these instructions again from the beginning.
 
@@ -132,9 +130,9 @@ You have successfully created a pull request! Now, wait for your code to get rev
     - Test the UI/UX with [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en). _(Tip: All your dimensions should be in multiples of 4dp.)_
 2. **Bug fixes**: While fixing an issue labelled **Bug**, make sure to write test cases which actually catch that bug.
 3. **Self Review**: Always self-review your PR first before assigning it to anyone else, so that you can fix nit changes at very early stage. This makes the review process faster.
-4. ** Undo unnecessary changes**: Sometimes, Android Studio automatically makes changes to files based on your local studio configuration. Mostly these changes are from `.idea` folder. You can revert these unnecessary changes by following these steps:
+4. **Undo unnecessary changes**: Sometimes, Android Studio automatically makes changes to files based on your local studio configuration. Mostly these changes are from `.idea` folder. You can revert these unnecessary changes by following these steps:
    - Once your PR is created, go to the `Files changed` section available on top of your pull request. For example:
-<img width="800" src="https://user-images.githubusercontent.com/9396084/130582005-c27dc017-e241-412a-a1e4-742b807ae4f4.png">
+     <img width="800" src="https://user-images.githubusercontent.com/9396084/130582005-c27dc017-e241-412a-a1e4-742b807ae4f4.png">
    - Then, check all the files in this section and if you see any change which was not done by you, revert it locally and commit again to the pull request. The `Files changed` section should contain only those changes which were done by you.
 
 
@@ -164,8 +162,8 @@ At the end, the reviewer will merge the pull request.
 
 
 ### Tips for getting your PR merged
-1. Keep track of **Assignees** section and reply to comments in the PR itself.
-2. PRs should not be merged if there are any requested changes, or if there are any unresolved conversation threads.
+1. Keep track of the **Assignees** section, and reply to comments in the PR itself.
+2. PRs will not be merged if there are any requested changes, or if there are any unresolved conversation threads.
 3. Do not resolve a conversation if you didn't open it, unless the author explicitly says that you can. You should re-assign the PR to the author once you address all of the comments so that they can verify & mark the conversations as resolved.
 4. Make sure that the assignee list always reflects the contributors who have actionable items left on the PR (either to make requested changes, merge the PR, review it, or resolve open comment threads). Note that it's perfectly fine if sometimes both the author and reviewer of a PR are both assigned to it (one reviewer may have finished a review pass and requested changes--in this situation both another reviewer and author might have actionable work items to complete).
 5. Address all comments before sending a PR back to a reviewer. 'Address' can mean implementing a code change, asking a clarifying question, or providing an explanation why you don't think a suggestion should implemented. Make sure each comment thread has at a reply from you before sending the PR back to that reviewer.
