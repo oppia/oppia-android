@@ -133,6 +133,8 @@ class RegexPatternValidationCheckTest {
   private val hasHexColorValue =
     "Hex color declarations should only be in color_defs.xml and not in component_colors.xml" +
       " or color_palette.xml"
+  private val doesNotHaveRawColorDeclaration =
+    "color_defs.xml should only have raw hex color declarations."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1762,6 +1764,53 @@ class RegexPatternValidationCheckTest {
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_doesNotHaveRawColorDeclaration_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+       <color name="oppia_metallic_blue">@color/color_name</color>
+       <color name="oppia_light_black">#24282B</color>
+       <color name="oppia_dark_grey">#4D4D4D</color>
+       <color name="oppia_pink">@color/another_color_name</color>
+       <color name="oppia_grayish_black">#32363B</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotHaveRawColorDeclaration
+        $stringFilePath:4: $doesNotHaveRawColorDeclaration
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_hasRawColorDeclaration_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="oppia_silver">#C4C4C4</color>
+        <color name="oppia_turquoise">#3bd1c4</color>
+        <color name="oppia_bangladesh_green">#03635B</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     runScript()
