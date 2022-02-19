@@ -1,12 +1,12 @@
-**Working on your first pull request?** Pull requests can be tricky to understand at first, so if the instructions on this page don't make sense to you, check out the free series [How to Contribute to an Open Source Project on GitHub](https://app.egghead.io/series/how-to-contribute-to-an-open-source-project-on-github) or [Atlassian's tutorial to pull requests.](https://www.atlassian.com/git/tutorials/making-a-pull-request)
+**Working on your first pull request?** Pull requests can be tricky to understand at first, so if the instructions on this page don't make sense to you, check out the free series [How to Contribute to an Open Source Project on GitHub](https://app.egghead.io/series/how-to-contribute-to-an-open-source-project-on-github) or [Atlassian's tutorial on pull requests](https://www.atlassian.com/git/tutorials/making-a-pull-request).
 
-Note: If your change involves more than around 500 lines of code, we recommend first creating a short [design doc.](https://github.com/oppia/oppia/wiki/Writing-design-docs) This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
+Note: If your change involves more than around 500 lines of code, we recommend first creating a short [design doc](https://github.com/oppia/oppia/wiki/Writing-design-docs). This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
 
-To make code changes, please follow the following instructions carefully! Otherwise, your code review may be delayed.
- - [Creating a pull request using the terminal](https://gist.github.com/MaskedCarrot/6ebb2d3b6c3e4870d8d2cb92eef4d52b#creating-a-pull-request-using-the-terminal)
- - [Creating a pull request using android studio's UI based Github workflow](https://gist.github.com/MaskedCarrot/6ebb2d3b6c3e4870d8d2cb92eef4d52b#creating-a-pull-requeset-using-android-studios-ui-based-github-workflow)
+Before you make a PR, you'll need to make and test the changes locally. To do this, please follow the following instructions carefully! Otherwise, your code review may be delayed.
+ - [Making a local code change using the terminal](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#making-a-local-code-change-using-the-terminal)
+ - [Making a local code change using Android Studio's UI-based Github workflow](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#making-a-local-code-change-using-android-studios-ui-based-github-workflow)
 
-### Making a code change using the terminal
+### Making a local code change using the terminal
 
 **Step 1: Update your repository**
 The new branch should be based on the latest code in develop, so checkout the latest version of develop like this:
@@ -23,7 +23,7 @@ Then create a new branch. In this example the branch is named `your-branch-name`
 git checkout -b your-branch-name
 ```
 
-**Step 2: Make commits locally to your feature branch**
+**Step 3: Make commits locally to your feature branch**
 Each commit should be self-contained and have a descriptive commit message that helps other developers understand why the changes were made.
 
 However, do not write "Fix #ISSUE_NUMBER" (e.g. "Fix #99999") in your commit messages (or any of the other closing phrases from GitHub's documentation), as this will cause Github to close the original issue automatically.
@@ -51,13 +51,13 @@ git commit -m "{{YOUR COMMIT MESSAGE HERE}}"
 ```
 *Note: There is no maximum or minimum number of commits required in a PR. Instead of aiming for a certain number, you should try to make each commit a logical "chunk" of work. There are many opinions about how big commits should be, but a useful rule of thumb is that you should be able to read the first lines of all your commit messages to get a good idea of what you changed. If you find yourself needing lots of clauses to capture what you changed, your commit is probably too big.*
 
-**Step 3: Push changes to your GitHub fork**
+**Step 4: Push changes to your GitHub fork**
 
 Before pushing, make sure to check the following things, otherwise you will incur delays with the review process or the automated checks:
 
-Do some manual testing on your local instance of Oppia to check that you haven't broken anything. This is important to avoid breakages. 
+- Do some manual testing on your local instance of Oppia to check that you haven't broken anything. This is important to avoid breakages. 
 
-Use a tool like `git diff upstream/develop` to check that the changes you've made are exactly what you want them to be, and that you haven't left in anything spurious like debugging code.
+- Use a tool like `git diff upstream/develop` to check that the changes you've made are exactly what you want them to be, and that you haven't left in anything spurious like debugging code.
 
 We don't allow force-pushing at Oppia, so once you push your commits, you can't change them. You can still add new commits though.
 
@@ -67,7 +67,7 @@ git push origin {{YOUR BRANCH NAME}}
 ```
 Make sure to do this from the command line (and not GitHub's Desktop client), since this also runs some important presubmit checks before your code gets uploaded to GitHub. If any of these checks fail, read the failure messages and fix the issues by making a new commit (see step 3), then repeat the previous instructions to retry the push. Do not bypass these presubmit checks! The checks get run on your PR too, so if you bypass failures on your local machine, you'll just have to fix them later when they fail on the PR.
 
-### Making a code change using android studio's UI based Github workflow
+### Making a local code change using Android Studio's UI-based Github workflow
 
 **Step 1: Update your repository**
 The new branch should be based on the latest code in develop, so checkout the latest version of develop like this:
@@ -130,49 +130,44 @@ Once your feature is ready, you can open a pull request (PR)!
 
 Go to your fork on GitHub, select your branch from the dropdown menu, and click "pull request". Ensure that the base repository is oppia/oppia-android and that the base branch is develop. The head repository should be your fork, and the head branch should be your branch. If you don't see the repository, click the link to compare across forks.
 
-On this page you can also see your commits and your changes. Read these changes carefully to make sure that the changes are correct. This is a good way to catch obvious errors that would otherwise lead to delays in the review process.
+On this page, you can also see your commits and your changes. Read these changes carefully to make sure that the changes are correct. This is a good way to catch obvious errors that would otherwise lead to delays in the review process.
 
 Click "Create pull request".
 
 You have successfully created a pull request! Now, wait for your code to get reviewed! While you're waiting, it's totally fine to start work on a new PR if you like. Just follow these instructions again from the beginning.
 
+**Note:** After a while, check your pull request to see whether the CI checks have passed. If not, follow our [instructions](https://github.com/oppia/oppia-android/wiki/Interpreting-CI-Results) to diagnose PR failures.
 
-### Important Points
+### Important Points to Keep in Mind
 
 1. **UI related issue/bug fix**: If your PR introduces changes to the UI/UX part of the app, do the following:
     - Include "before" and "after" screenshots (and possibly a video if needed).
     - Test the UI/UX with [Accessibility Scanner](https://support.google.com/accessibility/android/answer/6376570?hl=en). _(Tip: All your dimensions should be in multiples of 4dp.)_
 2. **Bug fixes**: While fixing an issue labelled **Bug**, make sure to write test cases which actually catch that bug.
-3. **Self Review**: Always self review your PR first before assigning it to anyone else, so that you can fix nit changes at very early stage. This makes the review process faster.
+3. **Self Review**: Always self-review your PR first before assigning it to anyone else, so that you can fix nit changes at very early stage. This makes the review process faster.
+4. ** Undo unnecessary changes**: Sometimes, Android Studio automatically makes changes to files based on your local studio configuration. Mostly these changes are from `.idea` folder. You can revert these unnecessary changes by following these steps:
+   - Once your PR is created, go to the `Files changed` section available on top of your pull request. For example:
+<img width="800" src="https://user-images.githubusercontent.com/9396084/130582005-c27dc017-e241-412a-a1e4-742b807ae4f4.png">
+   - Then, check all the files in this section and if you see any change which was not done by you, revert it locally and commit again to the pull request. The `Files changed` section should contain only those changes which were done by you.
+
 
 ### Clarification regarding **Assignees** and **Reviewers** section.
-1. **Reviewers**: This section will be filled automatically by Oppia-Bot. Once this section is filled out, it generally should not change throughout the timeline of the PR.
-2. **Assignees**: The Assignees field indicates the person(s) who the PR is currently blocked on. More specifically:
+1. **Reviewers**: This section is generally ignored by anyone who looks at the PR. It will be filled automatically by Oppiabot. Once this section is filled out, it generally should not change throughout the timeline of the PR.  
+2. **Assignees**: The main section to look at is the 'Assignees' field, which indicates the person(s) whom the PR is currently blocked on. Specifically:
    - Initially, when the PR is submitted, the **Assignees** and **Reviewers** sections should be the same. 
    - Once a reviewer has reviewed the PR, they should de-assign themselves and assign it back to the PR author.
    - Similarly, once the author has made the requested changes, they should assign it back to the appropriate reviewer and de-assign themselves.
 
 
-### Undo unnecessary changes
-Sometimes android studio automatically makes changes to files based on your local studio configuration. Mostly these changes are from `.idea` folder. You can revert these unnecessary changes by following these steps:
-1. Once you PR is created, go to `Files changed` section available on top of your pull request. For example:
-<img width="800" src="https://user-images.githubusercontent.com/9396084/130582005-c27dc017-e241-412a-a1e4-742b807ae4f4.png">
-
-2. Now check all the files in this section and if you see any change which was not done by you, revert it locally and commit again to the pull request.
-The `Files changed` section should contain only those changes which were done by you.
-
-
-
-After a while, check your pull request to see whether the CI checks have passed. If not, follow our [instructions](https://github.com/oppia/oppia-android/wiki/Interpreting-CI-Results) to diagnose PR failures.
 
 ### Address review comments until all reviewers give LGTM 
 
 When your reviewer has reviewed the code, you'll get an email. You'll need to respond in two ways:
 1. Make a new commit addressing the comments you agree with, and push it to the same branch. (Continue to use descriptive commit messages. If your commit addresses lots of disparate review comments, it's fine to refer to the original commit message and add something like "(address review comments)".)
-	- Always make commits locally, and then push to GitHub.** Don't make changes using the online GitHub editor -- this bypasses lint/presubmit checks, and will cause the code on GitHub to diverge from the code on your machine.
-	- Never force-push changes to GitHub, especially after reviews have started.** This will delay your review, because it overwrites history on GitHub and makes the incremental changes harder to review.
+       - **Always make commits locally, and then push to GitHub.** Don't make changes using the online GitHub editor -- this bypasses lint/presubmit checks, and will cause the code on GitHub to diverge from the code on your machine.
+       - ** Never force-push changes to GitHub, especially after reviews have started.** This is disallowed and may result in your PR being closed, because it overwrites history on GitHub and makes the incremental changes harder to review.
 
-	In addition, reply to each comment via the Files Changed tab, choosing the  	“Start a review” option for the first comment. Each reply should be either “Done” or a response explaining why the corresponding suggestion wasn’t implemented. When you’ve responded to all comments, submit the review to add all your messages to the main thread. All comments must be responded to and resolved before LGTM can be given.
+    In addition, reply to each comment via the Files Changed tab, choosing the “Start a review” option for the first comment. Each reply should be either “Done” or a response explaining why the corresponding suggestion wasn’t implemented. When you’ve responded to all comments, submit the review to add all your messages to the main thread. All comments must be responded to and resolved before LGTM can be given.
 
 2. Resolve any merge conflicts that arise. To resolve conflicts between ‘new-branch-name’ (in your fork) and ‘develop’ (in the oppia repository), run:
 
@@ -187,6 +182,28 @@ git push origin new-branch-name
 Once you've finished addressing everything, and would like the reviewer to take another look, write a top-level comment** explicitly asking the reviewer to take another look (e.g. "@XXX PTAL"), and set them as the assignee for the PR.
 
 At the end, the reviewer will merge the pull request.
+
+### Resolving merge conflicts using Android Studio
+
+Usually Git is able to automatically merge files when pulling changes from another branch. But sometimes a conflict arises when two separate branches have made edits to the same line in a file, or when a file has been deleted in one branch but edited in the other.
+
+You can use Android Studio to resolve merge conflicts through its UI-based Git features. Here's how to do it:
+
+- Go to VCS > Git > Pull (set the remote to be upstream and branch to be develop). Or, use VCS > Git > Resolve Conflicts if you have already pulled the changes but haven’t resolved the conflicts.
+
+!["Pull Changes" dialog box in Android Studio](https://user-images.githubusercontent.com/10575562/154797367-bf8cbefd-c6da-4a82-8210-806d70411b05.png)
+
+Usually, this will automatically merge the files. However, in the case of conflicts, it will prompt you to tell it what to do with those files.
+
+!["Conflicts" dialog box in Android Studio](https://user-images.githubusercontent.com/10575562/154797370-2d4d7d6c-42c4-4581-a83e-fcce727d5d70.png)
+
+You can either directly accept the changes from develop (discarding your local changes) or keep your own changes (discarding the changes from develop) based on the situation but it is suggested to go through each file line by line using the merge button in the prompt.
+
+!["Conflicts diff" window in Android Studio](https://user-images.githubusercontent.com/10575562/154797371-9e2596ab-ad0c-4fa3-93ca-6e874528bb99.png)
+
+
+The file on the left shows changes from your local working branch and the file on the right shows the changes from the develop branch while the centre file being the final state of it. You can decide accordingly which change (or both) you want to keep for each conflict one by one using the arrows and cross sign on those highlighted lines. Once the conflicts are successfully resolved you can then commit and push your changes to your working branch.
+
 
 ### Tidy up! 
 After the PR status has changed to "Merged", delete the feature branch from both your local clone and the GitHub repository
