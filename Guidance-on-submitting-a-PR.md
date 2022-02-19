@@ -10,7 +10,7 @@ Here are the steps for making a PR to the Oppia Android codebase:
 
 Note: If your change involves more than around 500 lines of code, we recommend first creating a [design doc](https://github.com/oppia/oppia/wiki/Writing-design-docs). This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
 
-## Making a local code change
+## Step 1: Making a local code change
 
 Before you make a PR, you'll need to make and test the changes locally. To do this, please follow the following instructions carefully! Otherwise, your code review may be delayed.
  - [Making a local code change using the terminal](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR#making-a-local-code-change-using-the-terminal)
@@ -18,123 +18,100 @@ Before you make a PR, you'll need to make and test the changes locally. To do th
 
 ### Making a local code change using the terminal
 
-**Step 1: Update your repository**
-The new branch should be based on the latest code in develop, so checkout the latest version of develop like this:
-```
-git fetch upstream
-git checkout develop
-git merge upstream/develop
-```
-
-**Step 2: Create a new branch with a descriptive name**
-Then create a new branch. In this example the branch is named `your-branch-name`. The branch name should be lowercase and hyphen-separated, e.g. `fuzzy-rules`. Make sure that your branch name doesn't start with `develop`, `release` or `test.`
+1. **Update your repository.** The new branch should be based on the latest code in develop, so checkout the latest version of develop like this:
 
 ```
-git checkout -b your-branch-name
+    git fetch upstream
+    git checkout develop
+    git merge upstream/develop
 ```
 
-**Step 3: Make commits locally to your feature branch**
-Each commit should be self-contained and have a descriptive commit message that helps other developers understand why the changes were made.
-
-However, do not write "Fix #ISSUE_NUMBER" (e.g. "Fix #99999") in your commit messages (or any of the other closing phrases from GitHub's documentation), as this will cause Github to close the original issue automatically.
-
-You can change your most recent commit message using `git commit --amend`. 
-
-*Note: It is difficult to change any commit messages other than your most recent one or messages on commits that have been pushed, so write your commit messages carefully!*
-
-Before making the commit, do some sanity-checks:
-- Ensure that your code follows the style rules.
-- Run robolectric and espresso tests to make sure you haven't broken anything! If you would to know more about testing on oppia-android check out [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing)
-
-
-Run git status to check that your changes are what you expect. To inspect the changes made to any particular file, use git diff your-file-name.
-
-Stage all your changes:
-```
-git add .
-```
-(`.` refers to your current directory)
-To actually make the commit, run:
+2. **Create a new branch with a descriptive name.** In the example below, the branch is named `your-branch-name`. The branch name should be lowercase and hyphen-separated, e.g. `fuzzy-rules`. Make sure that your branch name doesn't start with `develop`, `release` or `test.`
 
 ```
-git commit -m "{{YOUR COMMIT MESSAGE HERE}}"
+    git checkout -b your-branch-name
 ```
-*Note: There is no maximum or minimum number of commits required in a PR. Instead of aiming for a certain number, you should try to make each commit a logical "chunk" of work. There are many opinions about how big commits should be, but a useful rule of thumb is that you should be able to read the first lines of all your commit messages to get a good idea of what you changed. If you find yourself needing lots of clauses to capture what you changed, your commit is probably too big.*
 
-**Step 4: Push changes to your GitHub fork**
+3. **Make commits locally to your feature branch.** Each commit should be self-contained and have a descriptive commit message that helps other developers understand why the changes were made. However, do not write "Fix #ISSUE_NUMBER" (e.g. "Fix #99999") in your commit messages (or any of the other closing phrases from GitHub's documentation), as this will cause Github to close the original issue automatically.
 
-Before pushing, make sure to check the following things, otherwise you will incur delays with the review process or the automated checks:
+   You can change your most recent commit message using `git commit --amend`. *Note: It is difficult to change any commit messages other than your most recent one or messages on commits that have been pushed, so write your commit messages carefully!*
 
-- Do some manual testing on your local instance of Oppia to check that you haven't broken anything. This is important to avoid breakages. 
+   Before making the commit, do some sanity-checks:
+   - Ensure that your code follows the style rules.
+   - Run robolectric and espresso tests to make sure you haven't broken anything! If you would to know more about testing on oppia-android, check out [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing)
+   - Run git status to check that your changes are what you expect. To inspect the changes made to any particular file, use git diff your-file-name.
 
-- Use a tool like `git diff upstream/develop` to check that the changes you've made are exactly what you want them to be, and that you haven't left in anything spurious like debugging code.
+   Stage all your changes (the `.` at the end refers to your current directory):
 
-We don't allow force-pushing at Oppia, so once you push your commits, you can't change them. You can still add new commits though.
+   ```
+        git add .
+   ```
 
-When you're ready to push, run:
-```
-git push origin {{YOUR BRANCH NAME}}
-```
-Make sure to do this from the command line (and not GitHub's Desktop client), since this also runs some important presubmit checks before your code gets uploaded to GitHub. If any of these checks fail, read the failure messages and fix the issues by making a new commit (see step 3), then repeat the previous instructions to retry the push. Do not bypass these presubmit checks! The checks get run on your PR too, so if you bypass failures on your local machine, you'll just have to fix them later when they fail on the PR.
+   To actually make the commit, run:
+
+   ```
+        git commit -m "{{YOUR COMMIT MESSAGE HERE}}"
+   ```
+
+   *Note: There is no maximum or minimum number of commits required in a PR. Instead of aiming for a certain number, you should try to make each commit a logical "chunk" of work. There are many opinions about how big commits should be, but a useful rule of thumb is that you should be able to read the first lines of all your commit messages to get a good idea of what you changed. If you find yourself needing lots of clauses to capture what you changed, your commit is probably too big.*
+
+4. **Push changes to your GitHub fork.** Before pushing, make sure to check the following things, otherwise you will incur delays with the review process or the automated checks:
+     - Do some manual testing on your local instance of Oppia to check that you haven't broken anything. This is important to avoid breakages. 
+     - Use a tool like `git diff upstream/develop` to check that the changes you've made are exactly what you want them to be, and that you haven't left in anything spurious like debugging code.
+
+   We don't allow force-pushing at Oppia, so once you push your commits, you can't change them. You can still add new commits though.
+
+   When you're ready to push, run:
+    ```
+        git push origin {{YOUR BRANCH NAME}}
+    ```
+
+   Make sure to do this from the command line (and not GitHub's Desktop client), since this also runs some important presubmit checks before your code gets uploaded to GitHub. If any of these checks fail, read the failure messages and fix the issues by making a new commit (see step 3), then repeat the previous instructions to retry the push. Do not bypass these presubmit checks! The checks get run on your PR too, so if you bypass failures on your local machine, you'll just have to fix them later when they fail on the PR.
 
 ### Making a local code change using Android Studio's UI-based Github workflow
 
-**Step 1: Update your repository**
-The new branch should be based on the latest code in develop, so checkout the latest version of develop like this:
+1. **Update your repository.** The new branch should be based on the latest code in develop, so checkout the latest version of develop, like this:
 
-On the bottom right side of your android studio screen you will find you branch name.
-
-Click on **branch_name** > **develop** > **Update**
+    On the bottom right side of your android studio screen you will find your branch name. Click on **branch_name** > **develop** > **Update**:
 
 <img width="1680" alt="10" src="https://user-images.githubusercontent.com/53645584/140925498-270c0ade-7ded-4e4b-a834-be25d70dcc63.png">
 
-**Step 2: Create a new branch with a descriptive name**
+2. **Create a new branch with a descriptive name.** On the bottom right side of your Android Studio screen, you will find your branch name. Click on **branch_name** > **develop** > **New Branch from Selected** > _Enter your new branch name_ > **OK**.
 
-On the bottom right side of your android studio screen your branch.
-Click on **branch_name** > **develop** > **New Branch from Selected** > _Enter your new branch name_ > **OK**
-
-Then create a new branch. In this example the branch is named `github`. The branch name should be lowercase and hyphen-separated, e.g. `fuzzy-rules`. Make sure that your branch name doesn’t start with `develop`, `release` or `test.`
+   Then, create a new branch. In this example the branch is named `github`. The branch name should be lowercase and hyphen-separated, e.g. `fuzzy-rules`. Make sure that your branch name doesn’t start with `develop`, `release` or `test.`
 
 <img width="1680" alt="12" src="https://user-images.githubusercontent.com/53645584/140925250-d8687aa7-e5e2-407c-9037-801d5905497c.png">
 
-
-If you want to go back to "develop" or any other branch/"check-out any branch" you may right-click and find options for that
+    If you want to go back to "develop" or any other branch/"check-out any branch" you may right-click and find options for that:
 
 <img width="1675" alt="11" src="https://user-images.githubusercontent.com/54615666/72599236-5200f380-3937-11ea-9ef4-e29ef9ef974d.png">
 
-**Step 3: Make commits locally to your feature branch**
+3. **Make commits locally to your feature branch.** Now, when you create a new activity, it will be unversioned and therefore displayed with a reddish-brown colour file name. To add the files to Git/version Select files and click the "Add" button.
 
-Now, when you create a new activity, it will be unversioned and therefore displayed with a reddish-brown colour file name. To add the files to Git/version Select files and click the "Add" button.
+    <img width="1675" alt="5" src="https://user-images.githubusercontent.com/54615666/72599232-51685d00-3937-11ea-8efc-ca02a1840ede.png">
 
-<img width="1675" alt="5" src="https://user-images.githubusercontent.com/54615666/72599232-51685d00-3937-11ea-8efc-ca02a1840ede.png">
+    New/modified files will be displayed in green /blue colour respectively in the project window. (select file/folder/directory Ctrl+Alt|+A to manually version an unversioned file/files)
 
-New/modified files will be displayed in green /blue colour respectively in the project window. (select file/folder/directory Ctrl+Alt|+A to manually version an unversioned file/files)
+    <img width="1674" alt="8" src="https://user-images.githubusercontent.com/54615666/72599233-5200f380-3937-11ea-9303-f0c4b17aadf0.png">
 
-<img width="1674" alt="8" src="https://user-images.githubusercontent.com/54615666/72599233-5200f380-3937-11ea-9303-f0c4b17aadf0.png">
+    Click on the green tick symbol to commit your files. 
 
-Click on the green tick symbol to commit your files. 
+    <img width="1676" alt="9" src="https://user-images.githubusercontent.com/54615666/72599234-5200f380-3937-11ea-8ae6-c73b27e85d51.png">
 
-<img width="1676" alt="9" src="https://user-images.githubusercontent.com/54615666/72599234-5200f380-3937-11ea-8ae6-c73b27e85d51.png">
+    Now click on commit(This will save the reference of your changes for pushing to Git). If there are errors or warnings, review the code change and fix them before committing.
 
-Now click on commit(This will save the reference of your changes for pushing to Git).
-If there are errors or warnings, review the code change and fix them before committing.
+    <img width="1674" alt="13" src="https://user-images.githubusercontent.com/54615666/72599238-52998a00-3937-11ea-8392-45694c3752ee.png">
 
-<img width="1674" alt="13" src="https://user-images.githubusercontent.com/54615666/72599238-52998a00-3937-11ea-8392-45694c3752ee.png">
+4. **Push changes to your GitHub fork.** We need to push the code changes to local branch (origin) and upstream (remote). Right click **app > Git > Repository > Push**:
 
-**Step 4: Push changes to your GitHub fork**
+    <img width="1680" alt="15" src="https://user-images.githubusercontent.com/54615666/72599239-52998a00-3937-11ea-8a0c-9c4ae1536299.png">
 
-Now we need to Push the code changes to local branch(origin) and upstream(remote)
-Right click **app > Git > Repository > Push**
+    Your new branch needs to be added to both origin and upstream remote. Once you push a branch to Git, you won't be able to rename it, so be sure about the naming before pushing:
 
-<img width="1680" alt="15" src="https://user-images.githubusercontent.com/54615666/72599239-52998a00-3937-11ea-8a0c-9c4ae1536299.png">
-
-Your new branch needs to be added to both origin and upstream remote.
-Once you push a branch to Git you wont be able to rename it so, be sure about the naming before pushing.
-
-<img width="1676" alt="16" src="https://user-images.githubusercontent.com/54615666/72599241-53322080-3937-11ea-8ef6-3253acd58215.png">
+    <img width="1676" alt="16" src="https://user-images.githubusercontent.com/54615666/72599241-53322080-3937-11ea-8ef6-3253acd58215.png">
 
 
-## Create a PR on GitHub
+## Step 2: Create a PR on GitHub
 
 Once your feature is ready, you can open a pull request (PR)!
 
@@ -170,7 +147,7 @@ You have successfully created a pull request! Now, wait for your code to get rev
 
 
 
-## Address review comments until all reviewers give LGTM 
+## Step 3: Address review comments until all reviewers give LGTM 
 
 When your reviewer has reviewed the code, you'll get an email. You'll need to respond in two ways:
 1. Make a new commit addressing the comments you agree with, and push it to the same branch. (Continue to use descriptive commit messages. If your commit addresses lots of disparate review comments, it's fine to refer to the original commit message and add something like "(address review comments)".)
@@ -229,7 +206,7 @@ You can either directly accept the changes from develop (discarding your local c
 The file on the left shows changes from your local working branch and the file on the right shows the changes from the develop branch while the centre file being the final state of it. You can decide accordingly which change (or both) you want to keep for each conflict one by one using the arrows and cross sign on those highlighted lines. Once the conflicts are successfully resolved you can then commit and push your changes to your working branch.
 
 
-## Tidy up and celebrate! :confetti_ball:
+## Step 4: Tidy up and celebrate! :confetti_ball:
 After the PR status has changed to "Merged", delete the feature branch from both your local clone and the GitHub repository. Congratulations, you have contributed to the Oppia Android project!
 
 If you have already completed 2 pull requests and been added as a collaborator to the project, you should also add a changelog label. If you are a new contributor, you don't have permission to do this. Don't worry! Oppiabot will automatically ask someone to do it for you.
