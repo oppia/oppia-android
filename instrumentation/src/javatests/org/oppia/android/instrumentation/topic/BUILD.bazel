@@ -5,9 +5,9 @@ This library contains the test suite source files of the topic package.
 load("//instrumentation:oppia_instrumentation_test.bzl", "oppia_instrumentation_test")
 
 oppia_instrumentation_test(
-    name = "TopicActivityTest",
+    name = "TopicTest",
     srcs = [
-        "TopicActivityTest.kt",
+        "TopicTest.kt",
     ],
     deps = [
         "//instrumentation/src/java/org/oppia/android/instrumentation/testing:e2e_test_helper",
