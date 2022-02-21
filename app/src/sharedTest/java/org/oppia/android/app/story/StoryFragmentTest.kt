@@ -213,6 +213,7 @@ class StoryFragmentTest {
   }
 
   @Test
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -227,6 +228,7 @@ class StoryFragmentTest {
   }
 
   @Test
+  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -671,6 +673,8 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
+  // TODO(#4212): Error -> No views in hierarchy found matching: with
+  //  id: org.oppia.android:id/story_chapter_list
   @Test
   fun testStoryFragment_completedChapter_checkProgressDrawableIsCorrect() {
     setStoryPartialProgressForFractions()
@@ -687,6 +691,8 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
+  // TODO(#4212): Error -> No views in hierarchy found matching: with
+  //  id: org.oppia.android:id/story_chapter_list
   @Test
   fun testStoryFragment_notStartedChapter_checkProgressDrawableIsCorrect() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
@@ -702,6 +708,8 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
+  // TODO(#4212): Error -> No views in hierarchy found matching: with
+  //  id: org.oppia.android:id/story_chapter_list
   @Test
   fun testStoryFragment_lockedChapter_checkProgressDrawableIsCorrect() {
     launch<StoryActivity>(createRatiosStoryActivityIntent()).use {
@@ -717,6 +725,8 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
+  // TODO(#4212): Error -> No views in hierarchy found matching: with
+  //  id: org.oppia.android:id/story_chapter_list
   @Test
   fun testStoryFragment_completedChapter_pawIconIsVisible() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
@@ -733,6 +743,8 @@ class StoryFragmentTest {
 
   @Config(qualifiers = "+sw600dp")
   @Test
+  // TODO(#4212): Error -> No views in hierarchy found matching: with
+  //  id: org.oppia.android:id/story_chapter_list
   fun testStoryFragment_pendingChapter_pawIconIsGone() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -748,6 +760,8 @@ class StoryFragmentTest {
 
   @Config(qualifiers = "+sw600dp")
   @Test
+  // TODO(#4212): Error -> No views in hierarchy found matching: with
+  //  id: org.oppia.android:id/story_chapter_list
   fun testStoryFragment_completedChapter_verticalDashedLineIsVisible() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -762,6 +776,8 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
+  // TODO(#4212): Error -> No views in hierarchy found matching: with
+  //  id: org.oppia.android:id/story_chapter_list
   @Test
   fun testStoryFragment_lastChapter_verticalDashedLineIsGone() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
