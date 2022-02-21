@@ -9,12 +9,12 @@ fun main(vararg args: String) {
 
   // Work in progress...
 
-  val colorReferencedRegexPattern = Regex(pattern=">@color/(.+)<\\/color>")
-  val colorNameRegexPattern = Regex(pattern="<color name=.(.+).>@")
+  val colorReferencedRegexPattern = Regex(pattern = ">@color/(.+)<\\/color>")
+  val colorNameRegexPattern = Regex(pattern = "<color name=.(.+).>@")
 
-  componentColorsFile.forEachLine{
+  componentColorsFile.forEachLine {
     val _colorname = colorReferencedRegexPattern.find(it)?.groupValues?.get(1)
-    if(_colorname != null){
+    if (_colorname != null) {
       println(_colorname)
     }
   }
