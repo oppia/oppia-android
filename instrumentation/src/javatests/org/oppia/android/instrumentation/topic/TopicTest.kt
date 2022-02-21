@@ -29,6 +29,7 @@ class TopicTest {
     device.findObjectByText("See More").click()
     device.waitForText("See Less")
     device.findObjectByText("See Less").click()
+    assertThat(device.findObjectByText("See More")).isNotNull()
 
     device.findObjectByText("LESSONS").click()
     device.findObjectByRes("expand_list_icon").click()
@@ -50,7 +51,6 @@ class TopicTest {
 
     device.findObjectByText("PRACTICE").click()
     assertThat(device.findObjectByText("START").isEnabled()).isFalse()
-
     checkSkillsForPracticeFragment()
     device.findObjectByText("START").click()
     device.waitForText("PRACTICE MODE")
