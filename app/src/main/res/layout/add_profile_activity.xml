@@ -37,7 +37,13 @@
           android:minWidth="@dimen/add_profile_container_width"
           android:paddingTop="@dimen/add_profile_main_padding_top"
           android:paddingBottom="@dimen/add_profile_main_padding_bottom">
-
+          <FrameLayout
+            android:id="@+id/edit_image_frame_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
           <com.jackandphantom.circularimageview.CircleImage
             android:id="@+id/add_profile_activity_user_image_view"
             android:layout_width="120dp"
@@ -46,22 +52,19 @@
             android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
             app:add_shadow="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:shadow_radius="8"
             app:srcCompat="@drawable/ic_default_avatar" />
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="41dp"
+            android:layout_height="41dp"
             android:contentDescription="@string/edit_profile_picture_content_description"
-            android:paddingStart="12dp"
-            android:paddingTop="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
-            app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
+            android:layout_gravity="end|bottom"
+            android:paddingBottom="3dp"
+            android:paddingEnd="3dp"
             app:srcCompat="@drawable/rounded_white_background_with_shadow" />
+          </FrameLayout>
 
           <TextView
             android:id="@+id/add_profile_activity_required_heading_text_view"
@@ -75,7 +78,7 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_image_frame_layout" />
 
           <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_profile_activity_user_name"
