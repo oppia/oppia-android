@@ -47,18 +47,18 @@ fun main(vararg args: String) {
     }
   }
 
-  var componentColorsStatus = true;
-  var colorPaletteStatus = true;
+  var componentColorsStatus = true
+  var colorPaletteStatus = true
 
   colorsUsedInComponentColors.forEach {
     if (colorsInColorPalette.contains(it) == false) {
-      componentColorsStatus = false;
+      componentColorsStatus = false
     }
   }
 
   colorsUsedInColorPalette.forEach {
     if (colorsInColorDefs.contains(it) == false) {
-      colorPaletteStatus = false;
+      colorPaletteStatus = false
     }
   }
 
@@ -67,5 +67,4 @@ fun main(vararg args: String) {
   } else {
     println("COLOR FILES VALIDATION PASSED")
   }
-
 }
