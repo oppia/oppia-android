@@ -54,7 +54,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeEventLogger
-import org.oppia.android.testing.FakeSyncStatusManager
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -80,6 +79,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.FakeSyncStatusManager
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -137,6 +137,12 @@ class AnalyticsControllerTest {
 
   @Captor
   lateinit var oppiaEventLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaEventLogs>>
+
+  @Mock
+  lateinit var mockSyncStatusLiveDataObserverImpl: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
+
+  @Captor
+  lateinit var syncStatusResultCaptorImpl: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
 
   private val GENERIC_DATA = EventLog.GenericData.newBuilder()
     .setDeviceId(TEST_DEVICE_ID)
