@@ -157,7 +157,7 @@ class PolicyPageTagHandlerTest {
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
-  
+
   private fun setUpTestApplicationComponent() {
     DaggerPolicyPageTagHandlerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
