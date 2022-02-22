@@ -171,7 +171,7 @@ class PoliciesFragmentTest {
       onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
       onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
-        .perform(ViewActions.openLinkWithText("this page"));
+        .perform(ViewActions.openLinkWithText("this page"))
     }
   }
 
