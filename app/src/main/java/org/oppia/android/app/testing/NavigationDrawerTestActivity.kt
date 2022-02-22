@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.activity.ActivityRouter
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.HomeActivityPresenter
@@ -15,6 +16,9 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 
 class NavigationDrawerTestActivity :
   InjectableAppCompatActivity(),
@@ -26,6 +30,9 @@ class NavigationDrawerTestActivity :
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
+
+  @Inject
+  lateinit var activityRouter: ActivityRouter
 
   private var internalProfileId: Int = -1
 
@@ -66,11 +73,17 @@ class NavigationDrawerTestActivity :
   }
 
   override fun routeToRecentlyPlayed() {
-    startActivity(
-      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        this,
-        internalProfileId
-      )
+    val recentlyPlayedActivityIntentExtras =
+      RecentlyPlayedActivityIntentExtras
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityIntentExtras(recentlyPlayedActivityIntentExtras)
+        .build()
     )
   }
 }

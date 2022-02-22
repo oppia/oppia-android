@@ -27,6 +27,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -268,10 +269,16 @@ class RecentlyPlayedSpanTest {
     }
   }
 
-  private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
+  private fun createRecentlyPlayedActivityIntent(internalProfileId: Int): Intent {
+    val recentlyPlayedActivityIntentExtras =
+      RecentlyPlayedActivityIntentExtras
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-      context,
-      profileId
+      context = context,
+      recentlyPlayedActivityIntentExtras = recentlyPlayedActivityIntentExtras
     )
   }
 

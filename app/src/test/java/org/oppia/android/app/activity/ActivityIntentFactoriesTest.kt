@@ -72,6 +72,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 
 /** Tests for [ActivityIntentFactories]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -123,7 +124,8 @@ class ActivityIntentFactoriesTest {
   @Test
   fun testRecentlyPlayedActivityIntentFactory_createIntent_returnsIntentToStartCorrectActivity() {
     val intent =
-      getRecentlyPlayedActivityIntentFactory().createIntent(ProfileId.getDefaultInstance())
+      getRecentlyPlayedActivityIntentFactory().createIntent(
+        recentlyPlayedActivityIntentExtras = RecentlyPlayedActivityIntentExtras.getDefaultInstance())
 
     assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
     assertThat(intent).extras().integer(RECENTLY_PLAYED_PROFILE_ID_KEY).isEqualTo(0)

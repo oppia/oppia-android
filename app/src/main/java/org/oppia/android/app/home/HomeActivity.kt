@@ -15,6 +15,10 @@ import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.app.activity.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 
 /** The central activity for all users entering the app. */
 class HomeActivity :
@@ -27,6 +31,9 @@ class HomeActivity :
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
+
+  @Inject
+  lateinit var activityRouter: ActivityRouter
 
   private var internalProfileId: Int = -1
 
@@ -83,11 +90,17 @@ class HomeActivity :
   }
 
   override fun routeToRecentlyPlayed() {
-    startActivity(
-      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        this,
-        internalProfileId
-      )
+    val recentlyPlayedActivityIntentExtras =
+      RecentlyPlayedActivityIntentExtras
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityIntentExtras(recentlyPlayedActivityIntentExtras)
+        .build()
     )
   }
 }

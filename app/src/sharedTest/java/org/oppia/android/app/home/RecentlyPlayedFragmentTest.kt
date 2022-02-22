@@ -51,6 +51,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
@@ -116,7 +117,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-
 private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
 private const val TOLERANCE = 1e-5f
 
@@ -186,9 +186,15 @@ class RecentlyPlayedFragmentTest {
   }
 
   private fun createRecentlyPlayedActivityIntent(internalProfileId: Int): Intent {
+    val recentlyPlayedActivityIntentExtras =
+      RecentlyPlayedActivityIntentExtras
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context = context,
-      internalProfileId = internalProfileId
+      recentlyPlayedActivityIntentExtras = recentlyPlayedActivityIntentExtras
     )
   }
 
