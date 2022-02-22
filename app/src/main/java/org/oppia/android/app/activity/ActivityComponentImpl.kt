@@ -66,6 +66,7 @@ import org.oppia.android.app.testing.InputInteractionViewTestActivity
 import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
+import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
@@ -148,6 +149,7 @@ interface ActivityComponentImpl :
   fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
+  fun inject(profileEditFragmentTestActivity: ProfileEditFragmentTestActivity)
   fun inject(profileListActivity: ProfileListActivity)
   fun inject(profilePictureActivity: ProfilePictureActivity)
   fun inject(profileProgressActivity: ProfileProgressActivity)
