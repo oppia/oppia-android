@@ -428,11 +428,31 @@
   <dimen name="topic_lessons_title_margin_start">100dp</dimen>
   <dimen name="topic_lessons_title_margin_end">100dp</dimen>
 
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">16dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">16dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">24dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">0dp</dimen>
+  
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">24dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">120dp</dimen>
 
   <!-- Options story text size -->
+  <dimen name="option_story_text_size_padding_start">36dp</dimen>
+  <dimen name="option_story_text_size_padding_end">36dp</dimen>
+  
+  <!-- AdministratorControlDownloadPermissionsView -->
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_start">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_end">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_widget_switch_compat_margin_end">0dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">0dp</dimen>
+  
+    <!-- Options story text size -->
   <dimen name="option_story_text_size_padding_start">36dp</dimen>
   <dimen name="option_story_text_size_padding_end">36dp</dimen>
 </resources>
