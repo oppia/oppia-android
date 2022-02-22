@@ -635,7 +635,23 @@
   <dimen name="topic_practice_header_constraint_layout_margin_end">24dp</dimen>
   <dimen name="topic_practice_header_constraint_layout_padding_bottom">24dp</dimen>
 
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">8dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">12dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">12dp</dimen>
+
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
+  
+  <!-- AdministratorControlDownloadPermissionsView -->
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_widget_switch_compat_margin_end">4dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
 </resources>
