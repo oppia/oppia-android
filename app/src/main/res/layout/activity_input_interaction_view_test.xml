@@ -112,7 +112,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:minHeight="48dp"
-      android:maxHeight="48dp"
+      android:minWidth="48dp"
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:focusable="true"
