@@ -8,14 +8,20 @@
       name="viewModel"
       type="org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel" />
   </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginTop="@dimen/topic_practice_header_constraint_layout_margin_top"
+  android:paddingBottom="@dimen/topic_practice_header_constraint_layout_padding_bottom">
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/topic_practice_header_constraint_layout_margin_start"
-    android:layout_marginTop="@dimen/topic_practice_header_constraint_layout_margin_top"
     android:layout_marginEnd="@dimen/topic_practice_header_constraint_layout_margin_end"
-    android:paddingBottom="@dimen/topic_practice_header_constraint_layout_padding_bottom">
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
     <TextView
       android:id="@+id/master_skills_text_view"
@@ -34,4 +40,6 @@
       app:layout_constraintStart_toStartOf="@+id/master_skills_text_view"
       app:layout_constraintTop_toBottomOf="@+id/master_skills_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

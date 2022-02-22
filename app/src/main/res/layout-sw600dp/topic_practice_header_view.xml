@@ -9,7 +9,7 @@
       type="org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel" />
   </data>
 
-  <FrameLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="32dp"
@@ -18,7 +18,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="360dp"
       android:layout_height="wrap_content"
-      android:layout_gravity="center">
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
 
       <TextView
         android:id="@+id/master_skills_text_view"
@@ -36,5 +38,5 @@
         app:layout_constraintStart_toStartOf="@+id/master_skills_text_view"
         app:layout_constraintTop_toBottomOf="@+id/master_skills_text_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-  </FrameLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
