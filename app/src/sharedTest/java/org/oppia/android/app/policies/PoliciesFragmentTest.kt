@@ -12,6 +12,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -169,6 +170,8 @@ class PoliciesFragmentTest {
     ).use {
       onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
         .check(matches(isDisplayed()))
+      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
+        .perform(ViewActions.openLinkWithText("this page"));
     }
   }
 

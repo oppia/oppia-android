@@ -39,28 +39,28 @@ class PoliciesFragmentPresenter @Inject constructor(
     policyPage: PolicyPage,
     binding: PoliciesFragmentBinding
   ) {
-    var privacyPolicyDescription = ""
-    var privacyPolicyWebLink = ""
+    var policiesDescription = ""
+    var policiesWebLink = ""
 
     if (policyPage == PolicyPage.PRIVACY_POLICY) {
-      privacyPolicyDescription =
+      policiesDescription =
         resourceHandler.getStringInLocale(R.string.privacy_policy_content)
-      privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
+      policiesWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
     } else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
-      privacyPolicyDescription =
+      policiesDescription =
         resourceHandler.getStringInLocale(R.string.terms_of_service_content)
-      privacyPolicyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
+      policiesWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
     }
 
     binding.policiesDescriptionTextView.text = htmlParserFactory.create().parseOppiaHtml(
-      privacyPolicyDescription,
+      policiesDescription,
       binding.policiesDescriptionTextView,
       supportsLinks = true,
       supportsConceptCards = false
     )
 
     binding.policiesWebLinkTextView.text = htmlParserFactory.create().parseOppiaHtml(
-      privacyPolicyWebLink,
+      policiesWebLink,
       binding.policiesWebLinkTextView,
       supportsLinks = true,
       supportsConceptCards = false

@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
+import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
 import org.oppia.android.app.model.PoliciesArguments.PolicyPage
 import org.oppia.android.util.logging.ConsoleLogger
@@ -89,11 +90,10 @@ class HtmlParser private constructor(
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
 
-    Linkify.addLinks(htmlContentTextView, Linkify.WEB_URLS)
-
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
+      LinkifyCompat.addLinks(htmlContentTextView, Linkify.WEB_URLS)
     }
 
     val imageGetter = urlImageParserFactory.create(

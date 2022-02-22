@@ -17,6 +17,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -460,28 +461,25 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true
-    )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlParser = htmlParserFactory.create()
+    val (textView, htmlResult) = activityRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      return@runWithActivity htmlParser.parseOppiaHtml(
+      val htmlResult = htmlParser.parseOppiaHtml(
         "You can read more about the CC-BY-SA 4.0 license " +
           "<a href=\"https://creativecommons.org/licenses/by-sa/4.0/legalcode\"> here</a>",
         textView,
-        supportsConceptCards = false
+        supportsLinks = true,
       )
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
     }
-
-    // Verify the displayed text is correct & has a clickable span.
-    val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
-    assertThat(htmlResult.toString()).isEqualTo(
-      "You can read more about the CC-BY-SA 4.0 license here"
-    )
-    assertThat(clickableSpans).hasLength(1)
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_text_view))
+      .check(matches(isDisplayed()))
+    onView(withId(R.id.test_html_content_text_view))
+      .check(matches(withText(textView.text.toString())))
+    onView(withId(R.id.test_html_content_text_view))
+      .perform(openLinkWithText("here"))
   }
 
   @Test

@@ -33,7 +33,11 @@ class BulletTagHandler : CustomHtmlContentHandler.CustomTagHandler {
   }
 
   /**
-   * Appends a new line to [output] if it doesn't already end in a new line
+   * Appends a new line to [output] if it doesn't already end in a new line.
+   * We want the first line of list item to start on a separate line, and other content that comes
+   * after the list to also be on a separate line. We avoid appending multiple newline characters
+   * in a row by first checking if the last character in output is \n.
+   * https://medium.com/swlh/making-nested-lists-with-android-spannables-in-kotlin-4ad00052912c
    */
   private fun appendNewLine(output: Editable) {
     if (output.isNotEmpty() && output.last() != '\n') {
