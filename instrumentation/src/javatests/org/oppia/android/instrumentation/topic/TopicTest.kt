@@ -12,7 +12,7 @@ import org.oppia.android.instrumentation.testing.EndToEndTestHelper.startOppiaFr
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForText
 
-/** Tests for TopicActivity. */
+/** Tests for the topic viewer screen. */
 class TopicTest {
   private lateinit var device: UiDevice
 
@@ -45,6 +45,10 @@ class TopicTest {
     device.findObjectByRes("expand_list_icon").click()
     device.findObjectByRes("story_name_text_view").click()
     device.waitForRes("story_toolbar_title")
+    device.findObjectByText("Chapter 1: What is a Fraction?").click()
+    device.findObjectByText("START OVER").click()
+    device.waitForRes("continue_navigation_button")
+    device.pressBack()
     device.pressBack()
     // Asserting that lessons fragment is open
     assertThat(device.findObjectByText("Stories You Can Play")).isNotNull()
