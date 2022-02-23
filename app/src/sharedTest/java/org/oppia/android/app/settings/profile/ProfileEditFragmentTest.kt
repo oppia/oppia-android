@@ -102,7 +102,7 @@ class ProfileEditFragmentTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
-  val accessibilityTestRule = OppiaTestRule()
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
