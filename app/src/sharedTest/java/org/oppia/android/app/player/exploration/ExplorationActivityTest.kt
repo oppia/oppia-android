@@ -558,6 +558,7 @@ class ExplorationActivityTest {
         onView(withId(R.id.bottom_sheet_layout)).check(doesNotExist())
       }
     }
+
     @Test
     fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
       launch<ExplorationActivity>(
