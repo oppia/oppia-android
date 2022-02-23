@@ -438,10 +438,6 @@
   <dimen name="hints_and_solution_recycler_view_padding_top">24dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">120dp</dimen>
 
-  <!-- Options story text size -->
-  <dimen name="option_story_text_size_padding_start">36dp</dimen>
-  <dimen name="option_story_text_size_padding_end">36dp</dimen>
-  
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">36dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">36dp</dimen>
