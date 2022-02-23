@@ -2,11 +2,11 @@ The Oppia team is a distributed team of contributors from all over the world. To
 
 This wiki page explains the different teams in Oppia and their composition.
 
-### Clam Team
+### CLaM Team
 
-CLAM team is responsible for most of the UI based code (app-layer), which includes exploration player, question player, concept-card, subtopics, topics, etc. All these user-facing features must be RTL supportive, accessible by all and should work on all devices (mobile + tablet).
+CLaM team is responsible for most of the UI based code (app-layer), which includes exploration player, question player, concept-card, subtopics, topics, etc. All these user-facing features must be RTL supportive, accessible by all and should work on all devices (mobile + tablet).
 
-**Team contact:** Rajat Talesra (@rt4914) (lead), Yash Verma (@yash10019coder)
+**Team contact:** Rajat Talesra (@rt4914) (lead), Ayush Kumar (@ayush0402), Yash Verma (@yash10019coder)
 
 ### Dev-workflow Team
 The dev-workflow team ensures that the Oppia development process is smooth, stable and enjoyable, by ensuring that the following always hold:
