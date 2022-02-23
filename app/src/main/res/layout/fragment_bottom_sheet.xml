@@ -34,7 +34,7 @@
       android:layout_width="match_parent"
       android:layout_height="48dp"
       android:drawableStart="@drawable/ic_close_black_24dp"
-      android:text="@string/menu_close"
+      android:text="@string/bottom_sheet_options_menu_close"
       android:textColor="@color/black"
       android:gravity="center_vertical"
       android:drawablePadding="10dp"

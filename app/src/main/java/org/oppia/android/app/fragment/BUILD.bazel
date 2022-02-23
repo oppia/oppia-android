@@ -6,7 +6,6 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 # TODO(#59): Define these exported files as separate libraries from top-level targets.
 exports_files([
-    "BottomSheetFragment.kt",
     "FragmentComponentBuilderModule.kt",
     "FragmentComponentImpl.kt",
     "FragmentModule.kt",

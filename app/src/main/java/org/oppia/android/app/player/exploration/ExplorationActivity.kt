@@ -35,7 +35,7 @@ class ExplorationActivity :
   DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener,
-  BottomSheetItemClickListener {
+  BottomSheetOptionsMenuItemClickListener {
 
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter

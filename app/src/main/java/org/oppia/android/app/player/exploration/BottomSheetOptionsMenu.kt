@@ -8,7 +8,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oppia.android.R
 import org.oppia.android.databinding.FragmentBottomSheetBinding
 
-class BottomSheetFragment(val internalProfileId: Int) : BottomSheetDialogFragment() {
+/** Bottom sheet fragment for displaying options menu */
+class BottomSheetOptionsMenu(val internalProfileId: Int) : BottomSheetDialogFragment() {
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -21,7 +22,7 @@ class BottomSheetFragment(val internalProfileId: Int) : BottomSheetDialogFragmen
   }
 
   private fun setUpOnClickListeners(binding: FragmentBottomSheetBinding) {
-    val bottomSheetItemClickListener = activity as BottomSheetItemClickListener
+    val bottomSheetItemClickListener = activity as BottomSheetOptionsMenuItemClickListener
     binding.actionHelp.setOnClickListener {
 
       bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_help)

@@ -104,7 +104,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     binding.actionBottomSheet.setOnClickListener {
-      val bottomSheetFragment = BottomSheetFragment(internalProfileId)
+      val bottomSheetFragment = BottomSheetOptionsMenu(internalProfileId)
       bottomSheetFragment.show(activity.supportFragmentManager, bottomSheetFragment.tag)
     }
 
