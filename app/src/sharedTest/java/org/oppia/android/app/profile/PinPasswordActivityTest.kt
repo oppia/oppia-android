@@ -73,6 +73,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
@@ -110,7 +111,8 @@ class PinPasswordActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  // TODO(#3362): Use AccessibilityTestRule
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   val activityTestRule: ActivityTestRule<PinPasswordActivity> = ActivityTestRule(
@@ -160,49 +162,6 @@ class PinPasswordActivityTest {
       )
     ).use {
       onView(withId(R.id.pin_password_input_pin_edit_text)).check(matches(hasFocus()))
-    }
-  }
-
-  @Test
-  fun testPinPassword_pinView_hasContentDescription() {
-    ActivityScenario.launch<PinPasswordActivity>(
-      PinPasswordActivity.createPinPasswordActivityIntent(
-        context = context,
-        adminPin = adminPin,
-        profileId = adminId
-      )
-    ).use {
-      onView(withId(R.id.pin_password_input_pin_edit_text)).check(
-        matches(
-          withContentDescription(
-            context.resources.getString(
-              R.string.enter_your_pin
-            )
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testPinPassword_configChange_pinView_hasContentDescription() {
-    ActivityScenario.launch<PinPasswordActivity>(
-      PinPasswordActivity.createPinPasswordActivityIntent(
-        context = context,
-        adminPin = adminPin,
-        profileId = adminId
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.pin_password_input_pin_edit_text)).check(
-        matches(
-          withContentDescription(
-            context.resources.getString(
-              R.string.enter_your_pin
-            )
-          )
-        )
-      )
     }
   }
 
