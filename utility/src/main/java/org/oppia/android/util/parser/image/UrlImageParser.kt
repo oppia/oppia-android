@@ -106,7 +106,13 @@ class UrlImageParser private constructor(
         createCustomTarget(drawable) {
           when (type) {
             INLINE_TEXT_IMAGE -> AutoAdjustingImageTarget.InlineTextImage.createForMath(context, it)
-            BLOCK_IMAGE -> AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget.create(it)
+            BLOCK_IMAGE -> {
+              // Render the LaTeX as a block image, but don't automatically resize it since it's
+              // text (which means resizing may make it unreadable).
+              AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget.create(
+                it, autoResizeImage = false
+              )
+            }
           }
         }
       )
@@ -167,7 +173,8 @@ class UrlImageParser private constructor(
      * display them in a "block" fashion.
      */
     sealed class BlockImageTarget<T, D : Drawable>(
-      targetConfiguration: TargetConfiguration
+      targetConfiguration: TargetConfiguration,
+      private val autoResizeImage: Boolean
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
       override fun computeBounds(drawable: D, viewWidth: Int): Rect {
@@ -185,40 +192,42 @@ class UrlImageParser private constructor(
 
         var drawableWidth = drawable.intrinsicWidth.toFloat()
         var drawableHeight = drawable.intrinsicHeight.toFloat()
-        val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
-        if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
-          // The multipleFactor value is used to make sure that the aspect ratio of the image
-          // remains the same.
-          // Example: Height is 90, width is 60 and minimumImageSize is 120.
-          // Then multipleFactor will be 2 (120/60).
-          // The new height will be 180 and new width will be 120.
-          val multipleFactor = if (drawableHeight <= drawableWidth) {
-            // If height is less then the width, multipleFactor value is determined by height.
-            minimumImageSize.toFloat() / drawableHeight
-          } else {
-            // If height is less then the width, multipleFactor value is determined by width.
-            minimumImageSize.toFloat() / drawableWidth
+        if (autoResizeImage) {
+          val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
+          if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
+            // The multipleFactor value is used to make sure that the aspect ratio of the image
+            // remains the same.
+            // Example: Height is 90, width is 60 and minimumImageSize is 120.
+            // Then multipleFactor will be 2 (120/60).
+            // The new height will be 180 and new width will be 120.
+            val multipleFactor = if (drawableHeight <= drawableWidth) {
+              // If height is less then the width, multipleFactor value is determined by height.
+              minimumImageSize.toFloat() / drawableHeight
+            } else {
+              // If height is less then the width, multipleFactor value is determined by width.
+              minimumImageSize.toFloat() / drawableWidth
+            }
+            drawableHeight *= multipleFactor
+            drawableWidth *= multipleFactor
           }
-          drawableHeight *= multipleFactor
-          drawableWidth *= multipleFactor
-        }
-        val maxContentItemPadding =
-          context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
-        val maximumImageSize = maxAvailableWidth - maxContentItemPadding
-        if (drawableWidth >= maximumImageSize) {
-          // The multipleFactor value is used to make sure that the aspect ratio of the image
-          // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
-          // Then multipleFactor will be (200/440). The new height will be 191 and new width will
-          // be 200.
-          val multipleFactor = if (drawableHeight >= drawableWidth) {
-            // If height is greater then the width, multipleFactor value is determined by height.
-            (maximumImageSize.toFloat() / drawableHeight)
-          } else {
-            // If height is greater then the width, multipleFactor value is determined by width.
-            (maximumImageSize.toFloat() / drawableWidth)
+          val maxContentItemPadding =
+            context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
+          val maximumImageSize = maxAvailableWidth - maxContentItemPadding
+          if (drawableWidth >= maximumImageSize) {
+            // The multipleFactor value is used to make sure that the aspect ratio of the image
+            // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
+            // Then multipleFactor will be (200/440). The new height will be 191 and new width will
+            // be 200.
+            val multipleFactor = if (drawableHeight >= drawableWidth) {
+              // If height is greater then the width, multipleFactor value is determined by height.
+              (maximumImageSize.toFloat() / drawableHeight)
+            } else {
+              // If height is greater then the width, multipleFactor value is determined by width.
+              (maximumImageSize.toFloat() / drawableWidth)
+            }
+            drawableHeight *= multipleFactor
+            drawableWidth *= multipleFactor
           }
-          drawableHeight *= multipleFactor
-          drawableWidth *= multipleFactor
         }
         val drawableLeft = if (imageCenterAlign) {
           calculateInitialMargin(maxAvailableWidth, drawableWidth)
@@ -236,7 +245,9 @@ class UrlImageParser private constructor(
       /** A [BlockImageTarget] used to load & arrange SVGs. */
       internal class SvgTarget(
         targetConfiguration: TargetConfiguration
-      ) : BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(targetConfiguration) {
+      ) : BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(
+        targetConfiguration, autoResizeImage = true
+      ) {
         override fun retrieveDrawable(resource: BlockPictureDrawable): BlockPictureDrawable =
           resource
 
@@ -248,15 +259,17 @@ class UrlImageParser private constructor(
 
       /** A [BlockImageTarget] used to load & arrange bitmaps. */
       internal class BitmapTarget(
-        targetConfiguration: TargetConfiguration
-      ) : BlockImageTarget<Bitmap, BitmapDrawable>(targetConfiguration) {
+        targetConfiguration: TargetConfiguration,
+        autoResizeImage: Boolean
+      ) : BlockImageTarget<Bitmap, BitmapDrawable>(targetConfiguration, autoResizeImage) {
         override fun retrieveDrawable(resource: Bitmap): BitmapDrawable {
           return BitmapDrawable(context.resources, resource)
         }
 
         companion object {
           /** Returns a new [BitmapTarget] for the specified configuration. */
-          fun create(targetConfiguration: TargetConfiguration) = BitmapTarget(targetConfiguration)
+          fun create(targetConfiguration: TargetConfiguration, autoResizeImage: Boolean = true) =
+            BitmapTarget(targetConfiguration, autoResizeImage)
         }
       }
     }
