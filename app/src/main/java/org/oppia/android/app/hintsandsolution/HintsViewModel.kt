@@ -1,5 +1,6 @@
 package org.oppia.android.app.hintsandsolution
 
+import androidx.core.text.HtmlCompat
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
@@ -98,7 +99,10 @@ class HintsViewModel @Inject constructor(
   fun computeHintListDropDownIconContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.show_hide_hint_list,
-      hintsAndSolutionSummary.get() ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY
+      HtmlCompat.fromHtml(
+        hintsAndSolutionSummary.get() ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY,
+        HtmlCompat.FROM_HTML_MODE_LEGACY
+      )
     )
   }
 
