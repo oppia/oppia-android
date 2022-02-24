@@ -112,7 +112,6 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -432,7 +431,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3927): Feedback item should be min 48dp in height.
   fun testQuestionPlayer_terminalState_recyclerViewItemCount_countIsTwo() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -452,7 +450,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3927): Feedback item should be min 48dp in height.
   fun testQuestionPlayer_terminalState_recyclerView_contentItem_isNotEmpty() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
