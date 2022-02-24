@@ -120,7 +120,8 @@ class PinPasswordActivityTest {
     PinPasswordActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
