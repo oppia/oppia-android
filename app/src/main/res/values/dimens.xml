@@ -630,10 +630,11 @@
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
 
   <!-- TopicPracticeHeader -->
-  <dimen name="topic_practice_header_constraint_layout_margin_start">32dp</dimen>
-  <dimen name="topic_practice_header_constraint_layout_margin_top">32dp</dimen>
-  <dimen name="topic_practice_header_constraint_layout_margin_end">24dp</dimen>
-  <dimen name="topic_practice_header_constraint_layout_padding_bottom">24dp</dimen>
+  <dimen name="topic_practice_header_child_constraint_layout_margin_start">32dp</dimen>
+  <dimen name="topic_practice_header_parent_constraint_layout_margin_top">32dp</dimen>
+  <dimen name="topic_practice_header_child_constraint_layout_margin_end">24dp</dimen>
+  <dimen name="topic_practice_header_parent_constraint_layout_padding_bottom">24dp</dimen>
+  <dimen name="master_skills_text_view_margin_end">88dp</dimen>
 
   <!-- ProfileProgressRecentlyPlayedStoryCard -->
   <dimen name="profile_progress_recently_played_story_card_layout_margin_start">8dp</dimen>

@@ -12,12 +12,14 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="32dp"
-    android:paddingBottom="20dp">
+    android:layout_marginTop="@dimen/topic_practice_header_parent_constraint_layout_margin_top"
+    android:paddingBottom="@dimen/topic_practice_header_parent_constraint_layout_padding_bottom">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="360dp"
       android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/topic_practice_header_child_constraint_layout_margin_start"
+      android:layout_marginEnd="@dimen/topic_practice_header_child_constraint_layout_margin_end"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
@@ -25,6 +27,7 @@
       <TextView
         android:id="@+id/master_skills_text_view"
         style="@style/Heading2ViewStart"
+        android:layout_marginEnd="@dimen/master_skills_text_view_margin_end"
         android:text="@string/topic_practice_master_these_skills"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
