@@ -12,7 +12,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -24,6 +24,8 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
@@ -58,7 +60,7 @@ import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
-import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -98,8 +100,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class PoliciesFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
+
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
@@ -109,12 +114,18 @@ class PoliciesFragmentTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityTestRule: ActivityScenarioRule<PoliciesActivity> = ActivityScenarioRule(
+  var activityScenarioRule: ActivityScenarioRule<PoliciesActivity> = ActivityScenarioRule(
     Intent(
       ApplicationProvider.getApplicationContext(),
       PoliciesActivity::class.java
     )
   )
+
+  // Note that the locale rule must be initialized first since the scenario rule can depend on the
+  // locale being initialized.
+  @get:Rule
+  val chain: TestRule =
+    RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
 
   @Before
   fun setUp() {
@@ -129,7 +140,7 @@ class PoliciesFragmentTest {
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
-      onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
+      onView(withId(R.id.policies_description_text_view))
         .check(matches(isDisplayed()))
     }
   }
@@ -143,7 +154,7 @@ class PoliciesFragmentTest {
       )
     ).use {
       onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
+        .perform(openLinkWithText("this page"))
     }
   }
 
@@ -155,7 +166,7 @@ class PoliciesFragmentTest {
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
-      onView(withId(R.id.policies_description_text_view)).perform(scrollTo())
+      onView(withId(R.id.policies_description_text_view))
         .check(matches(isDisplayed()))
     }
   }
@@ -169,48 +180,46 @@ class PoliciesFragmentTest {
       )
     ).use {
       onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
-        .perform(ViewActions.openLinkWithText("this page"))
+        .perform(openLinkWithText("this page"))
     }
   }
 
   @Test
   fun testPoliciesFragment_checkPrivacyPolicy_isCorrectlyParsed() {
-    activityTestRule.scenario.runWithActivity {
+    val htmlParser = htmlParserFactory.create()
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
-      val privacyPolicyTextView = it.findViewById(
-        R.id.policies_description_text_view
-      ) as TextView
-      val htmlParser = htmlParserFactory.create()
+      val textView: TextView = it.findViewById(R.id.policies_description_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         getResources().getString(R.string.privacy_policy_content),
-        privacyPolicyTextView
+        textView
       )
-      assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
     }
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
   @Test
   fun testPoliciesFragment_checkTermsOfService_isCorrectlyParsed() {
-    activityTestRule.scenario.runWithActivity {
+    val htmlParser = htmlParserFactory.create()
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
-      val privacyPolicyTextView = it.findViewById(
-        R.id.policies_description_text_view
-      ) as TextView
-      val htmlParser = htmlParserFactory.create()
+      val textView: TextView = it.findViewById(R.id.policies_description_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         getResources().getString(R.string.terms_of_service_content),
-        privacyPolicyTextView
+        textView
       )
-      assertThat(privacyPolicyTextView.text.toString()).isEqualTo(htmlResult.toString())
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
     }
+    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
   private fun getResources(): Resources {
@@ -238,8 +247,7 @@ class PoliciesFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, PlatformParameterModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -247,15 +255,16 @@ class PoliciesFragmentTest {
       GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
+      PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
+      ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
+      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
+      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
