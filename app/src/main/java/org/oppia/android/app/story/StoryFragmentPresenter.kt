@@ -5,8 +5,8 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.text.style.TypefaceSpan
+import android.text.style.URLSpan
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -183,9 +183,11 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.missingPrerequisiteChapter.name
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
-            val clickableSpan = object : ClickableSpan() {
+            var url = "https://developer.android.com"
+            val urlspan = object : URLSpan(url) {
               override fun onClick(widget: View) {
                 smoothScrollToPosition(storyItemViewModel.index - 1)
+                super.onClick(widget)
               }
 
               override fun updateDrawState(ds: TextPaint) {
@@ -194,7 +196,7 @@ class StoryFragmentPresenter @Inject constructor(
               }
             }
             chapterLockedSpannable.setSpan(
-              clickableSpan,
+              urlspan,
               /* start= */ LOCKED_CARD_PREFIX_LENGTH,
               /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
               Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
