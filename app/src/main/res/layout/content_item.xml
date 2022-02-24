@@ -43,6 +43,8 @@
       android:id="@+id/content_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:minWidth="48dp"
+      android:minHeight="48dp"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
