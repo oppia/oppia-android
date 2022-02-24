@@ -73,7 +73,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -167,50 +166,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_pinView_hasContentDescription() {
-    ActivityScenario.launch<PinPasswordActivity>(
-      PinPasswordActivity.createPinPasswordActivityIntent(
-        context = context,
-        adminPin = adminPin,
-        profileId = adminId
-      )
-    ).use {
-      onView(withId(R.id.pin_password_input_pin_edit_text)).check(
-        matches(
-          withContentDescription(
-            context.resources.getString(
-              R.string.enter_your_pin
-            )
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testPinPassword_configChange_pinView_hasContentDescription() {
-    ActivityScenario.launch<PinPasswordActivity>(
-      PinPasswordActivity.createPinPasswordActivityIntent(
-        context = context,
-        adminPin = adminPin,
-        profileId = adminId
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.pin_password_input_pin_edit_text)).check(
-        matches(
-          withContentDescription(
-            context.resources.getString(
-              R.string.enter_your_pin
-            )
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_inputCorrectPin_opensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -228,7 +183,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_inputCorrectPin_opensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -246,7 +200,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_inputWrongPin_incorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -284,7 +237,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_inputWrongPin_incorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -306,7 +258,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_forgot_opensAdminForgotDialog() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -328,7 +279,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputWrongAdminPin_wrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -373,7 +323,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPinAndShortPin_pinLengthError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -432,7 +381,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPinAndNewPinAndOldPin_wrongPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -481,7 +429,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPinAndNewPin_opensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -528,7 +475,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPin_configChange_inputPinIsPresent() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -559,7 +505,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPin_submit_configChange_resetPinDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -589,7 +534,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPin_submit_inputNewPin_pinChanged() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -632,7 +576,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_forgot_configChange_opensAdminForgotDialog() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -652,7 +595,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputWrongAdminPin_configChange_wrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -696,7 +638,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPinAndIncorrectPin_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -739,7 +680,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -773,7 +713,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_configChange_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -808,7 +747,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_imeAction_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -839,7 +777,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_user_forgot_adminPinAndNullPin_configChange_imeAction_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -871,7 +808,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputNullAdminPin_configChange_wrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -915,7 +851,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withUser_forgot_inputAdminPinAndInvalidPin_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -961,7 +896,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_inputWrongPin_configChange_incorrectPinIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1041,7 +975,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_showHidePassword_textChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1057,7 +990,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_clickShowHideIcon_hasPasswordShownContentDescription() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1081,7 +1013,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_showHidePassword_imageChangesToShow() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1105,7 +1036,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_showHidePassword_configChange_showViewIsShown() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1131,7 +1061,6 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testPinPassword_checkInputType_showHidePassword_inputTypeIsSame() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
