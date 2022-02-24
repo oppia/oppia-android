@@ -30,8 +30,8 @@
 
     <ImageView
       android:id="@+id/back_button"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
       android:layout_margin="16dp"
       android:clickable="true"
       android:contentDescription="@string/back_button"
