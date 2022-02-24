@@ -19,8 +19,6 @@ import org.oppia.android.util.system.OppiaClockInjectorProvider;
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
 
-  // TODO(#3846): Add tests for these adapters.
-
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
@@ -60,14 +58,14 @@ public final class TextViewBindingAdapters {
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
     long timeStampMillis = ensureTimestampIsInMilliseconds(lastVisitedTimestamp);
     long currentTimeMillis = getOppiaClock(view).getCurrentTimeMs();
+    AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
 
     if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
-      return "";
+      return resourceHandler.getStringInLocale(R.string.last_logged_in_recently);
     }
 
     long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
 
-    AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
     if (timeDifferenceMillis < (int) TimeUnit.MINUTES.toMillis(1)) {
       return resourceHandler.getStringInLocale(R.string.just_now);
     } else if (timeDifferenceMillis < TimeUnit.MINUTES.toMillis(50)) {
