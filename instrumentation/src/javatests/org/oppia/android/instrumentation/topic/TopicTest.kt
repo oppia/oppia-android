@@ -24,13 +24,17 @@ class TopicTest {
   }
 
   @Test
-  fun testTopicActivity_exploredFully_finishedSuccessfully() {
+  fun testTopicActivity_exploreInfoFragment_finishesSuccessfully() {
     navigateToTopicActivity()
     device.findObjectByText("See More").click()
     device.waitForText("See Less")
     device.findObjectByText("See Less").click()
     assertThat(device.findObjectByText("See More")).isNotNull()
+  }
 
+  @Test
+  fun testTopicActivity_exploreLessonsFragment_finishesSuccessfully() {
+    navigateToTopicActivity()
     device.findObjectByText("LESSONS").click()
     device.findObjectByRes("expand_list_icon").click()
     device.waitForRes("chapter_list_container")
@@ -52,7 +56,11 @@ class TopicTest {
     device.pressBack()
     // Asserting that lessons fragment is open
     assertThat(device.findObjectByText("Stories You Can Play")).isNotNull()
+  }
 
+  @Test
+  fun testTopicActivity_explorePracticeFragment_finishesSuccessfully() {
+    navigateToTopicActivity()
     device.findObjectByText("PRACTICE").click()
     assertThat(device.findObjectByText("START").isEnabled()).isFalse()
     checkSkillsForPracticeFragment()
@@ -62,7 +70,11 @@ class TopicTest {
     device.findObjectByText("LEAVE").click()
     // Asserting that practice fragment is open
     assertThat(device.findObjectByText("Master These Skills")).isNotNull()
+  }
 
+  @Test
+  fun testTopicActivity_exploreRevisionFragment_finishesSuccessfully() {
+    navigateToTopicActivity()
     device.findObjectByText("REVISION").click()
     device.findObjectByText("Fractions of a group").click()
     device.findObjectByText("RETURN TO TOPIC").click()
