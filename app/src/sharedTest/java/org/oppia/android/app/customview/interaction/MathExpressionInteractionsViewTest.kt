@@ -337,9 +337,7 @@ class MathExpressionInteractionsViewTest {
       testCoroutineDispatchers.runCurrent()
 
       // Ensure there's a pending answer present.
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText("12+7"))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput("12+7")
 
       scenario.onActivity { activity ->
         val pendingAnswer = activity.mathExpressionViewModel.getPendingAnswer()
@@ -382,9 +380,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      replaceExpressionInput(text)
 
       scenario.onActivity { activity ->
         // The exact original expression should be retained, including spacing (except surrounding
@@ -437,9 +433,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      replaceExpressionInput(text)
 
       // Valid expressions/equations should produce corresponding LaTeX in block HTML format.
       scenario.onActivity { activity ->
@@ -490,9 +484,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Division-based expressions should produce divisions in LaTeX.
       scenario.onActivity { activity ->
@@ -550,9 +542,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Division-based expressions should produce fractions in LaTeX.
       scenario.onActivity { activity ->
@@ -577,9 +567,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // An erroneous expression/equation should result in original expression being shown in
       // plain-text (since there may not be a valid LaTeX representation).
@@ -646,9 +634,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction, translationContext).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      replaceExpressionInput(text)
 
       // Valid expressions/equations should produce corresponding readable a11y strings.
       scenario.onActivity { activity ->
@@ -722,9 +708,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction, translationContext).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Divisions should be correctly represented in the outputted content descriptions.
       scenario.onActivity { activity ->
@@ -798,9 +782,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction, translationContext).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Valid expressions/equations should produce corresponding readable a11y strings.
       scenario.onActivity { activity ->
@@ -826,9 +808,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction, translationContext).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // The content description will be the original expression since no valid human-readable
       // string could be produced.
@@ -868,9 +848,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction, translationContext).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Unsupported languages should produce content descriptions that are the original expression
       // (since no readable expression can be generated).
@@ -1061,9 +1039,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      replaceExpressionInput(text)
 
       // The expected error should occur for the given answer.
       scenario.onActivity { activity ->
@@ -1078,9 +1054,7 @@ class MathExpressionInteractionsViewTest {
     launchForNumericExpressions().use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText("x + 2"))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput("x + 2")
 
       // Variables aren't allowed in numeric expressions.
       scenario.onActivity { activity ->
@@ -1104,9 +1078,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Variables aren't allowed in exponents.
       scenario.onActivity { activity ->
@@ -1140,9 +1112,7 @@ class MathExpressionInteractionsViewTest {
     launchForMathEquations(interaction = createInteraction()).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       scenario.onActivity { activity ->
         val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(SUBMIT_TIME)
@@ -1163,9 +1133,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Functions like 'abs' are not supported.
       scenario.onActivity { activity ->
@@ -1203,9 +1171,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Terms with extra parentheses should be simplified.
       scenario.onActivity { activity ->
@@ -1242,9 +1208,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Terms with extra parentheses should be simplified.
       scenario.onActivity { activity ->
@@ -1281,9 +1245,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Terms with extra parentheses should be simplified.
       scenario.onActivity { activity ->
@@ -1392,9 +1354,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      replaceExpressionInput(text)
 
       // Operands should be on both sides of a binary operator.
       scenario.onActivity { activity ->
@@ -1499,9 +1459,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      replaceExpressionInput(text)
 
       // Operands should be on both sides of a binary operator.
       scenario.onActivity { activity ->
@@ -1522,9 +1480,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Cannot imply multiplication with the number on the right side.
       scenario.onActivity { activity ->
@@ -1546,9 +1502,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      replaceExpressionInput(text)
 
       // Cannot have subsequent binary operators.
       scenario.onActivity { activity ->
@@ -1570,9 +1524,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Invalid symbols should trigger a failure.
       scenario.onActivity { activity ->
@@ -1609,9 +1561,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
@@ -1633,9 +1583,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
@@ -1660,9 +1608,7 @@ class MathExpressionInteractionsViewTest {
     launch(interactionType, interaction).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.test_math_expression_input_interaction_view))
-        .perform(editTextInputAction.appendText(text))
-      testCoroutineDispatchers.runCurrent()
+      typeExpressionInput(text)
 
       // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
@@ -1701,6 +1647,34 @@ class MathExpressionInteractionsViewTest {
         }.build()
       )
     )
+  }
+
+  /**
+   * Types the specified text into the math expression input interaction view under test.
+   *
+   * This helper should always be used for this operation rather than using [EditTextInputAction]
+   * directly, or in the cases outlined by [replaceExpressionInput].
+   */
+  private fun typeExpressionInput(text: String) {
+    onView(withId(R.id.test_math_expression_input_interaction_view))
+      .perform(editTextInputAction.appendText(text))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  /**
+   * Replaces the text currently in the math expression input interaction view under test with the
+   * specified text.
+   *
+   * [typeExpressionInput] should be used for testing certain raw expressions/equations in all cases
+   * except those that require multiple spaces or Unicode characters (since Espresso handles both
+   * cases incorrectly).
+   */
+  private fun replaceExpressionInput(text: String) {
+    // Note that replaceText is used here since some answers can contain extra spaces (which will
+    // trigger an automatic period to be entered) or Unicode (which Espresso doesn't supported).
+    onView(withId(R.id.test_math_expression_input_interaction_view))
+      .perform(editTextInputAction.replaceText(text))
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun createInteractionWithPlaceholder(placeholder: String): Interaction {

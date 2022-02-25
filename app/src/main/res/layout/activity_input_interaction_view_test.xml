@@ -115,6 +115,7 @@
       android:id="@+id/test_number_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:minHeight="48dp"
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:focusable="true"
@@ -144,6 +145,7 @@
       android:id="@+id/test_text_input_interaction_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:minHeight="48dp"
       android:layout_margin="8dp"
       android:background="@drawable/edit_text_background"
       android:focusable="true"
@@ -158,6 +160,7 @@
     <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
       android:id="@+id/test_math_expression_input_interaction_view"
       style="@style/InputInteractionEditText"
+      android:minHeight="48dp"
       app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
       android:inputType="text"
       android:text="@={mathExpressionInteractionsViewModel.answerText}"

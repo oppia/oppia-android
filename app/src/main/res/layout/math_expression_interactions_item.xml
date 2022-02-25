@@ -29,7 +29,8 @@
       app:textChangedListener="@{viewModel.answerTextWatcher}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:layout_constraintTop_toTopOf="parent"
+      android:minHeight="48dp"/>
 
     <TextView
       android:id="@+id/math_expression_input_error"

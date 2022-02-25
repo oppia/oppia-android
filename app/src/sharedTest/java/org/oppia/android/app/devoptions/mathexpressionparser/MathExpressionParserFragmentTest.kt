@@ -1353,7 +1353,7 @@ class MathExpressionParserFragmentTest {
   private fun typeIntoView(@IdRes viewId: Int, text: String) {
     // First, ensure the view is visible before trying to input text.
     scrollToView(viewId)
-    onView(withId(viewId)).perform(editTextInputAction.appendText(text))
+    onView(withId(viewId)).perform(editTextInputAction.replaceText(text))
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -1366,13 +1366,13 @@ class MathExpressionParserFragmentTest {
 
   private fun initializeMathExpressionParserFragment() {
     activityScenarioRule.scenario.onActivity { it.addMathExpressionParserFragment() }
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun TestActivity.addMathExpressionParserFragment() {
     supportFragmentManager.beginTransaction().apply {
       add(R.id.test_fragment_placeholder, MathExpressionParserFragment.createNewInstance())
     }.commitNow()
-    testCoroutineDispatchers.runCurrent()
   }
 
   private inline fun <reified T> TextView.findSpansOfType(): List<T> {
