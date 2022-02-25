@@ -514,21 +514,6 @@ class AdministratorControlsFragmentTest {
     }
   }
 
-  @Test
-  fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      it.openNavigationDrawer()
-      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
-        .perform(click())
-      onView(withText(context.getString(R.string.administrator_controls_edit_account)))
-        .check(matches(isDisplayed()))
-    }
-  }
-
   private fun ActivityScenario<AdministratorControlsActivity>.openNavigationDrawer() {
     onView(withContentDescription(R.string.drawer_open_content_description))
       .check(matches(isCompletelyDisplayed()))

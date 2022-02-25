@@ -216,8 +216,23 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
+  fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      it.openNavigationDrawer()
+      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+        .perform(click())
+      onView(withText(context.getString(R.string.administrator_controls_edit_account)))
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_defaultTabletConfig_multipaneBackButtonGone() {
+  fun testAdministratorControls_defaultTabletConfig_multiPaneBackButtonGone() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -230,7 +245,7 @@ class AdministratorControlsActivityTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_tabletConfigChange_multipaneBackButtonGone() {
+  fun testAdministratorControls_tabletConfigChange_multiPaneBackButtonGone() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -278,18 +293,8 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_list_recycler_view,
-          0,
-          R.id.profile_list_admin_text
-        )
-      ).check(
-        matches(withText(context.resources.getString(R.string.profile_chooser_admin)))
-      )
+      isAdminProfileVisible()
+      isAdminTextVisible()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       )
@@ -307,18 +312,8 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_list_recycler_view,
-          0,
-          R.id.profile_list_admin_text
-        )
-      ).check(
-        matches(withText(context.resources.getString(R.string.profile_chooser_admin)))
-      )
+      isAdminProfileVisible()
+      isAdminTextVisible()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       )
@@ -334,9 +329,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      ).perform(click())
+      clickAdminProfile()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
@@ -361,9 +354,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      ).perform(click())
+      clickAdminProfile()
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
@@ -388,9 +379,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      ).perform(click())
+      clickAdminProfile()
       onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
@@ -499,6 +488,30 @@ class AdministratorControlsActivityTest {
           )
         )
     }
+  }
+
+  private fun isAdminProfileVisible() {
+    onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
+      matches(withText("Admin"))
+    )
+  }
+
+  private fun clickAdminProfile() {
+    onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
+      matches(withText("Admin"))
+    )
+  }
+
+  private fun isAdminTextVisible() {
+    onView(
+      atPositionOnView(
+        R.id.profile_list_recycler_view,
+        0,
+        R.id.profile_list_admin_text
+      )
+    ).check(
+      matches(withText(context.resources.getString(R.string.profile_chooser_admin)))
+    )
   }
 
   private fun ActivityScenario<AdministratorControlsActivity>.openNavigationDrawer() {
