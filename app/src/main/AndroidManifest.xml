@@ -194,6 +194,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.ProfileEditFragmentTestActivity"
+      android:label="@string/profile_edit_fragment_test_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
