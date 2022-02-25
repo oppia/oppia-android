@@ -439,7 +439,7 @@
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
 
-  <!-- Admin Auth Activity -->
+  <!-- AdminAuthActivity -->
   <dimen name="admin_auth_inner_constraint_layout_width">@dimen/wrap_content</dimen>
   <dimen name="admin_auth_inner_constraint_layout_min_width">360dp</dimen>
   <dimen name="admin_auth_heading_textview_margin_horizontal">0dp</dimen>
