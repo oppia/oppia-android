@@ -264,6 +264,29 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_bulletList_isAddedCorrectlyWithNewLine() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val htmlResult = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another<br></li></ul>",
+        textView
+      )
+    }
+    assertThat(htmlResult.toString()).isEqualTo(
+      "The counting numbers (1, 2, 3, 4, 5 ….)" +
+        "\nHow to tell whether one counting number is bigger or smaller than another"
+    )
+  }
+
+  @Test
   fun testHtmlContent_onlyWithImage_additionalSpacesAdded() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,

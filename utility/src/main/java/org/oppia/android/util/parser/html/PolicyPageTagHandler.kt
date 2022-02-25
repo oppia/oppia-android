@@ -37,7 +37,7 @@ class PolicyPageTagHandler(
     if (text != null) {
       when (text) {
         TERMS_OF_SERVICE_PAGE -> {
-          clickableSpanBuilder(
+          addPolicyPageClickableSpan(
             TERMS_OF_SERVICE,
             output,
             openIndex,
@@ -46,7 +46,7 @@ class PolicyPageTagHandler(
           )
         }
         PRIVACY_POLICY_PAGE -> {
-          clickableSpanBuilder(
+          addPolicyPageClickableSpan(
             PRIVACY_POLICY,
             output,
             openIndex,
@@ -58,7 +58,7 @@ class PolicyPageTagHandler(
     } else consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
   }
 
-  private fun clickableSpanBuilder(
+  private fun addPolicyPageClickableSpan(
     policyLink: String,
     output: Editable,
     openIndex: Int,
