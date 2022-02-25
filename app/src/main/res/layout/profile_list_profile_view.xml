@@ -25,6 +25,7 @@
       android:layout_marginTop="18dp"
       android:layout_marginBottom="18dp"
       android:background="@drawable/profile_image_shadow"
+      android:elevation="10dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
