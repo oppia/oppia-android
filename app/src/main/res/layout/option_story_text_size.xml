@@ -4,10 +4,6 @@
 
   <data>
     <variable
-      name="commonViewModel"
-      type="org.oppia.android.app.options.OptionControlsViewModel" />
-
-    <variable
       name="viewModel"
       type="org.oppia.android.app.options.OptionsReadingTextSizeViewModel" />
   </data>
