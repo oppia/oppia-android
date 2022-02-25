@@ -72,7 +72,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
               )
-              (fragment as LoadProfileEditDeletionDialogListener).loadProfileEditDeletionDialog(profileId)
+              (fragment as LoadProfileEditDeletionDialogListener)
+                .loadProfileEditDeletionDialog(profileId)
               this.isProfileDeletionDialogVisible = false
             }
           }

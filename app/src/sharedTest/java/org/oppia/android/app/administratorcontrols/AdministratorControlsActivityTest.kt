@@ -39,6 +39,7 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -61,6 +62,7 @@ import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -109,7 +111,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.utility.OrientationChangeAction
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -384,10 +385,10 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(Matchers.not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(Matchers.not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(Matchers.not(isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).check(matches(Matchers.not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
     }
