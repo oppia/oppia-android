@@ -285,13 +285,6 @@ class AdministratorControlsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
           position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).check(matches(not(isChecked())))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
           targetViewId = R.id.topic_update_on_wifi_constraint_layout
         )
       ).perform(click())
@@ -305,13 +298,6 @@ class AdministratorControlsFragmentTest {
           targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).check(matches(not(isChecked())))
       onView(isRoot()).perform(orientationPortrait())
       scrollToPosition(position = 2)
       onView(
@@ -321,6 +307,18 @@ class AdministratorControlsFragmentTest {
           targetViewId = R.id.topic_update_on_wifi_switch
         )
       ).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickWifiContainer_configChange_autoUpdateSwitchIsChecked() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.administrator_controls_list,
@@ -328,6 +326,32 @@ class AdministratorControlsFragmentTest {
           targetViewId = R.id.auto_update_topic_switch
         )
       ).check(matches(not(isChecked())))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
+        )
+      ).check(matches(isChecked()))
+      onView(isRoot()).perform(orientationPortrait())
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.administrator_controls_list,
+          position = 2,
+          targetViewId = R.id.auto_update_topic_switch
+        )
+      ).check(matches(isChecked()))
     }
   }
 
@@ -502,292 +526,6 @@ class AdministratorControlsFragmentTest {
         .perform(click())
       onView(withText(context.getString(R.string.administrator_controls_edit_account)))
         .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_defaultTabletConfig_multipaneBackButtonGone() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      onView(withId(R.id.administrator_controls_multipane_options_back_button))
-        .check(matches(withEffectiveVisibility(GONE)))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_tabletConfigChange_multipaneBackButtonGone() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.administrator_controls_multipane_options_back_button))
-        .check(matches(withEffectiveVisibility(GONE)))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_defaultTabletConfig_editProfileVisible() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      onView(withId(R.id.extra_controls_title))
-        .check(matches(withText(R.string.administrator_controls_edit_profiles)))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_tabletConfigChange_editProfileVisible() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.extra_controls_title))
-        .check(matches(withText(R.string.administrator_controls_edit_profiles)))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_defaultTabletConfig_profileListIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_list_recycler_view,
-          0,
-          R.id.profile_list_admin_text
-        )
-      ).check(
-        matches(withText(context.resources.getString(R.string.profile_chooser_admin)))
-      )
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
-        matches(withText("Ben"))
-      )
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_tabletConfigChange_profileListIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      )
-      onView(
-        atPositionOnView(
-          R.id.profile_list_recycler_view,
-          0,
-          R.id.profile_list_admin_text
-        )
-      ).check(
-        matches(withText(context.resources.getString(R.string.profile_chooser_admin)))
-      )
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
-        matches(withText("Ben"))
-      )
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_selectProfileAdmin_backButton_selectSecondProfileDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      onView(withId(R.id.administrator_controls_multipane_options_back_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name))
-        .check(matches(withText("Ben")))
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.extra_controls_title)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_selectProfileAdmin_backPressed_selectSecondProfileDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name))
-        .check(matches(withText("Ben")))
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.extra_controls_title)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_selectProfileAdmin_tabletConfigChange_displaysProfileEdit() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
-        matches(withText("Admin"))
-      ).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControls_selectProfileUser_tabletConfigChange_displaysProfileEdit() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
-        matches(withText("Ben"))
-      ).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(isDisplayed()))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(isDisplayed()))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isDisplayed()))
-      onView(withId(R.id.profile_delete_button)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControlsFragment_clickProfileDeletionButton_checkOpensDeletionDialog() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
-        matches(withText("Ben"))
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog())
-        .check(
-          matches(
-            isDisplayed()
-          )
-        )
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControlsFragment_configChange_checkOpensDeletionDialog() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = 1
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
-        matches(withText("Ben"))
-      ).perform(click())
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog())
-        .check(
-          matches(
-            isDisplayed()
-          )
-        )
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAdministratorControlsFragment_configChange_checkDeletionDialogIsVisible() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
-        profileId = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
-        matches(withText("Ben"))
-      ).perform(click())
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog())
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
-        )
     }
   }
 
