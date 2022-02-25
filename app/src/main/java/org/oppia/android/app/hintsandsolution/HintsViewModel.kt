@@ -1,8 +1,8 @@
 package org.oppia.android.app.hintsandsolution
 
-import androidx.core.text.HtmlCompat
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.HelpIndex
@@ -13,7 +13,9 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
-import javax.inject.Inject
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
 
 /**
  * RecyclerView items are 2 times of (No. of Hints + Solution),
@@ -28,7 +30,10 @@ private const val DEFAULT_HINT_AND_SOLUTION_SUMMARY = ""
 @FragmentScope
 class HintsViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val htmlParserFactory: HtmlParser.Factory,
+  @DefaultResourceBucketName private val resourceBucketName: String,
+  @ExplorationHtmlParserEntityType private val entityType: String
 ) : HintsAndSolutionItemViewModel() {
 
   val newAvailableHintIndex = ObservableField<Int>(-1)
@@ -97,17 +102,34 @@ class HintsViewModel @Inject constructor(
   }
 
   fun computeHintListDropDownIconContentDescription(): String {
+    val hintsViewModel = HintsViewModel(
+      resourceHandler,
+      translationController,
+      htmlParserFactory,
+      resourceBucketName,
+      entityType
+    )
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.show_hide_hint_list,
-      HtmlCompat.fromHtml(
-        hintsAndSolutionSummary.get() ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY,
-        HtmlCompat.FROM_HTML_MODE_LEGACY
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType,
+        hintsViewModel.explorationId.get()!!,
+        /* imageCenterAlign= */ true
+      ).parseOppiaHtml(
+        hintsAndSolutionSummary.get() ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY
       )
     )
   }
 
   private fun addHintToList(hintIndex: Int, hint: Hint) {
-    val hintsViewModel = HintsViewModel(resourceHandler, translationController)
+    val hintsViewModel = HintsViewModel(
+      resourceHandler,
+      translationController,
+      htmlParserFactory,
+      resourceBucketName,
+      entityType
+    )
     hintsViewModel.title.set(hint.hintContent.contentId)
     val hintContentHtml =
       translationController.extractString(hint.hintContent, writtenTranslationContext)
