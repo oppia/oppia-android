@@ -5,7 +5,7 @@ import javax.inject.Singleton
 
 /** Utility to validate that profile names are correctly formatted. */
 @Singleton
-class ProfileNameValidatorImpl @Inject constructor(): ProfileNameValidator {
+class ProfileNameValidatorImpl @Inject constructor() : ProfileNameValidator {
   private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[.'-]{2}") }
 
   /**

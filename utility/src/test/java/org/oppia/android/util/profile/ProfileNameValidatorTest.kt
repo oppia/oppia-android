@@ -5,7 +5,7 @@ import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
 
-class ProfileNameValidatorImplTest {
+class ProfileNameValidatorTest {
   @Inject
   lateinit var profileNameValidator: ProfileNameValidator
 
@@ -22,8 +22,8 @@ class ProfileNameValidatorImplTest {
 
   @Test
   fun testIsNameValid_nameWithNumber_returnsFalse() {
-    val nameWithSpaces = "Jishnu7"
-    assertThat(profileNameValidator.isNameValid(nameWithSpaces)).isFalse()
+    val nameWithNumber = "Jishnu7"
+    assertThat(profileNameValidator.isNameValid(nameWithNumber)).isFalse()
   }
 
   @Test
