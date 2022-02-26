@@ -684,7 +684,7 @@
   <dimen name="option_audio_language_padding_start">16dp</dimen>
   <dimen name="option_audio_language_padding_end">16dp</dimen>
 
-  <!-- Options story text size -->
+  <!-- OptionsStoryTextSize -->
   <dimen name="option_story_text_size_padding_start">16dp</dimen>
   <dimen name="option_story_text_size_padding_end">16dp</dimen>
 </resources>

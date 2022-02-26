@@ -443,7 +443,7 @@
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
 
-  <!-- Options story text size -->
+  <!-- OptionsStoryTextSize -->
   <dimen name="option_story_text_size_padding_start">16dp</dimen>
   <dimen name="option_story_text_size_padding_end">16dp</dimen>
 </resources>
