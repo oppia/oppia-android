@@ -47,6 +47,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -166,10 +170,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -1111,6 +1111,27 @@ class StateFragmentTest {
       onView(withId(R.id.hint_bulb)).check(
         matches(
           withContentDescription(R.string.show_hints_and_solution)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolution_hasCorrectContentDescription() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      onView(withId(R.id.hint_bulb)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.reveal_hint_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.hint_list_drop_down_icon)).check(
+        matches(
+          withContentDescription(
+            "Show/Hide hint list of Remember that two halves," +
+              " when added together, make one whole."
+          )
         )
       )
     }
