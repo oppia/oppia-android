@@ -17,5 +17,5 @@ message DestinationScreen {
 // Intent extras for RecentlyPlayedActivity.
 message RecentlyPlayedActivityIntentExtras {
   // The ID of current profile.
-  ProfileId profileId = 1;
+  ProfileId profile_id = 1;
 }
