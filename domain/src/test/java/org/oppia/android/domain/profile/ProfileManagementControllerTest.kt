@@ -112,9 +112,9 @@ class ProfileManagementControllerTest {
     Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
   )
 
-  private val allowedNames = listOf<String>("जिष्णु", "Ben-Henning", "Rajat.T", "جيشنو")
+  private val allowedNames = listOf<String>("नमन", "Ben-Henning", "Rajat.T", "جيشنو")
 
-  private val disallowedNames = listOf<String>("जिष्णु7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
+  private val disallowedNames = listOf<String>("नमन7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
 
   @Before
   fun setUp() {
