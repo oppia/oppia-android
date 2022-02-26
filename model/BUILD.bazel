@@ -190,7 +190,7 @@ proto_library(
 java_lite_proto_library(
     name = "route_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
-    deps = [":profile_proto"],
+    deps = [":route_proto"],
 )
 
 format_import_proto_library(
