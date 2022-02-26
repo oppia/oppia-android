@@ -5,13 +5,13 @@ import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
 
-class ProfileNameValidatorTest {
+class ProfileNameValidatorImplTest {
   @Inject
   lateinit var profileNameValidator: ProfileNameValidator
 
   @Before
   fun setup() {
-    profileNameValidator = ProfileNameValidator()
+    profileNameValidator = ProfileNameValidatorImpl()
   }
 
   @Test
