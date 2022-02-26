@@ -23,6 +23,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -72,7 +73,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
-import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 
 /** Tests for [ActivityIntentFactories]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -125,7 +125,8 @@ class ActivityIntentFactoriesTest {
   fun testRecentlyPlayedActivityIntentFactory_createIntent_returnsIntentToStartCorrectActivity() {
     val intent =
       getRecentlyPlayedActivityIntentFactory().createIntent(
-        recentlyPlayedActivityIntentExtras = RecentlyPlayedActivityIntentExtras.getDefaultInstance())
+        recentlyPlayedActivityIntentExtras = RecentlyPlayedActivityIntentExtras.getDefaultInstance()
+      )
 
     assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
     assertThat(intent).extras().integer(RECENTLY_PLAYED_PROFILE_ID_KEY).isEqualTo(0)

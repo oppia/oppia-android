@@ -1,11 +1,11 @@
 package org.oppia.android.app.activity
 
 import androidx.appcompat.app.AppCompatActivity
-import javax.inject.Inject
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.util.logging.ConsoleLogger
+import javax.inject.Inject
 
 class ActivityRouter @Inject constructor(
   private val activity: AppCompatActivity,

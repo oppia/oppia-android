@@ -9,10 +9,10 @@ import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
-import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -62,7 +62,6 @@ class RecentlyPlayedActivity :
     }
   }
 
-
   override fun routeToExploration(
     internalProfileId: Int,
     topicId: String,
@@ -108,7 +107,9 @@ class RecentlyPlayedActivity :
   class RecentlyPlayedActivityIntentFactoryImpl @Inject constructor(
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.RecentlyPlayedActivityIntentFactory {
-    override fun createIntent(recentlyPlayedActivityIntentExtras: RecentlyPlayedActivityIntentExtras): Intent =
-      createRecentlyPlayedActivityIntent(activity,recentlyPlayedActivityIntentExtras)
+    override fun createIntent(
+      recentlyPlayedActivityIntentExtras: RecentlyPlayedActivityIntentExtras
+    ): Intent =
+      createRecentlyPlayedActivityIntent(activity, recentlyPlayedActivityIntentExtras)
   }
 }

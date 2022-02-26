@@ -12,13 +12,12 @@ import org.oppia.android.app.home.HomeActivityPresenter
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import javax.inject.Inject
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 class NavigationDrawerTestActivity :
   InjectableAppCompatActivity(),
