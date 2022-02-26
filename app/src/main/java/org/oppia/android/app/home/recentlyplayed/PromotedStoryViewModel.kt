@@ -10,7 +10,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 // TODO(#297): Add download status information to promoted-story-card.
 
 /** [ViewModel] for displaying a promoted story. */
-class OngoingStoryViewModel(
+class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
   val ongoingStory: PromotedStory,
   val entityType: String,
