@@ -2,6 +2,7 @@
 General purposes utilities to manage directories.
 """
 
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -16,9 +17,34 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "name_validator",
+    name = "profile_name_validator",
     srcs = [
         "ProfileNameValidator.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
 )
+
+kt_android_library(
+    name = "profile_name_validator_impl",
+    srcs = [
+        "ProfileNameValidatorImpl.kt",
+    ],
+    deps = [
+        ":profile_name_validator",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "profile_name_validator_prod_module",
+    srcs = [
+        "ProfileNameValidatorModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":profile_name_validator_impl",
+    ],
+)
+
+dagger_rules()
