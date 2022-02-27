@@ -1117,6 +1117,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_showHintsAndSolution_hasCorrectContentDescription() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
