@@ -16,7 +16,7 @@
     android:paddingBottom="@dimen/topic_practice_header_parent_constraint_layout_padding_bottom">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="match_parent"
+      android:layout_width="@dimen/topic_practice_header_child_constraint_layout_width"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/topic_practice_header_child_constraint_layout_margin_start"
       android:layout_marginEnd="@dimen/topic_practice_header_child_constraint_layout_margin_end"
