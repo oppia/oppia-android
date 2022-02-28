@@ -648,4 +648,32 @@
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
+
+  <!-- AdministratorControlAccountActionsView  -->
+  <dimen name="administrator_control_account_actions_view_account_actions_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_account_actions_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_log_out_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_log_out_text_view_padding_end">16dp</dimen>
+
+  <!-- AdministratorControlsAppInformationView -->
+  <dimen name="administrator_controls_app_information_view_app_information_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_app_information_view_app_information_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_app_information_view_app_version_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_app_information_view_app_version_text_view_padding_end">16dp</dimen>
+
+  <!-- AdministratorControlsFragment -->
+  <dimen name="administrator_controls_fragment_padding_bottom">80dp</dimen>
+
+  <!-- AdministratorControlsGeneralView -->
+  <dimen name="administrator_controls_general_view_general_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_general_view_general_text_view_padding_top">20dp</dimen>
+  <dimen name="administrator_controls_general_view_general_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_general_view_edit_account_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_general_view_edit_account_text_view_padding_end">16dp</dimen>
+
+  <!-- AdministratorControlsProfileView -->
+  <dimen name="administrator_controls_profile_view_profile_management_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_profile_view_profile_management_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_profile_view_edit_profiles_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_profile_view_edit_profiles_text_view_padding_end">16dp</dimen>
 </resources>
