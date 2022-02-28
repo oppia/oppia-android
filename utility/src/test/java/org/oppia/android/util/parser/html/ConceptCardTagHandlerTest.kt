@@ -95,6 +95,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_emptyString_doesNotIncludeClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -108,6 +109,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_includesClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -121,6 +123,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_addsLinkText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -133,6 +136,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_missingSkillId_doesNotIncludeClickableSpanOrText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = CONCEPT_CARD_LINK_WITHOUT_SKILL_ID_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -147,6 +151,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_missingText_doesNotIncludeClickableSpanOrText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = CONCEPT_CARD_LINK_WITHOUT_TEXT_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -161,6 +166,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_noTagHandler_withConceptCardMarkup_doesNotIncludeClickableSpanOrText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = noTagHandlers
@@ -175,6 +181,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withMultipleConceptCardLinks_includesMultipleClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "$CONCEPT_CARD_LINK_MARKUP_1 and $CONCEPT_CARD_LINK_MARKUP_2",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -188,6 +195,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withMultipleConceptCardLinks_includesTextForBoth() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "$CONCEPT_CARD_LINK_MARKUP_1 and $CONCEPT_CARD_LINK_MARKUP_2",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -200,6 +208,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_clickSpan_callsClickListener() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -219,6 +228,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_andCustomLink_clickCustom_doesNotCallListener() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "Test and $CONCEPT_CARD_LINK_MARKUP_1",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
@@ -245,6 +255,7 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withMultipleConceptCardLinks_clickBoth_callsClickListenerWithCorrectSkillIds() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "$CONCEPT_CARD_LINK_MARKUP_2 and $CONCEPT_CARD_LINK_MARKUP_1",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
