@@ -36,7 +36,9 @@ class AdminAuthActivityPresenter @Inject constructor(
     binding.adminAuthToolbar.setNavigationOnClickListener {
       (activity as AdminAuthActivity).finish()
     }
-    val adminPin = checkNotNull(activity.intent.getStringExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY))
+    val adminPin = checkNotNull(activity.intent.getStringExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY)) {
+      "Expected ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY to be in intent extras."
+    }
     binding.apply {
       lifecycleOwner = activity
       viewModel = authViewModel

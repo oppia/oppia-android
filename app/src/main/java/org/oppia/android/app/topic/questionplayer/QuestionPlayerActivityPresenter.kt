@@ -93,7 +93,9 @@ class QuestionPlayerActivityPresenter @Inject constructor(
       activity.intent.getStringArrayListExtra(
         QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
       )
-    )
+    ) {
+      "Expected QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
+    }
     val startDataProvider =
       questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
     startDataProvider.toLiveData().observe(
