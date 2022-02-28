@@ -86,6 +86,7 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_emptyString_doesNotIncludeClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithPolicyPageSupport
@@ -99,6 +100,7 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_withPolicyPageMarkup_includesClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithPolicyPageSupport
@@ -112,6 +114,7 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListenerForPrivacyPolicy() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithPolicyPageSupport
@@ -129,6 +132,7 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListenerForTermsOfService() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithPolicyPageSupport
@@ -146,6 +150,7 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_noTagHandler_withPolicyPageMarkup_doesNotIncludeClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = noTagHandlers

@@ -84,6 +84,7 @@ class ImageTagHandlerTest {
   fun testParseHtml_emptyString_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport
@@ -97,6 +98,7 @@ class ImageTagHandlerTest {
   fun testParseHtml_withImageCardMarkup_includesImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport
@@ -110,6 +112,7 @@ class ImageTagHandlerTest {
   fun testParseHtml_withImageCardMarkup_hasNoReadableText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport
@@ -125,6 +128,7 @@ class ImageTagHandlerTest {
   fun testParseHtml_withImageCardMarkup_missingFilename_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = IMAGE_TAG_WITHOUT_FILEPATH_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport
@@ -138,6 +142,7 @@ class ImageTagHandlerTest {
   fun testParseHtml_noTagHandler_withImageCardMarkup_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = noTagHandlers
@@ -151,6 +156,7 @@ class ImageTagHandlerTest {
   fun testParseHtml_withMultipleImageCardLinks_includesMultipleImageSpans() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "$IMAGE_TAG_MARKUP_1 and $IMAGE_TAG_MARKUP_2",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport
@@ -163,6 +169,7 @@ class ImageTagHandlerTest {
   @Test
   fun testParseHtml_withImageCardMarkup_loadsBlockImageForFilename() {
     CustomHtmlContentHandler.fromHtml(
+      context,
       html = IMAGE_TAG_MARKUP_1,
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithImageTagSupport
@@ -176,6 +183,7 @@ class ImageTagHandlerTest {
   @Test
   fun testParseHtml_withMultipleImageCardLinks_loadsBlockImagesForBoth() {
     CustomHtmlContentHandler.fromHtml(
+      context,
       html = "$IMAGE_TAG_MARKUP_2 and $IMAGE_TAG_MARKUP_1",
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithImageTagSupport

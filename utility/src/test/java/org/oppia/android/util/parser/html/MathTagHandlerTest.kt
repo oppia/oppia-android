@@ -91,6 +91,7 @@ class MathTagHandlerTest {
   fun testParseHtml_emptyString_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithMathSupport
@@ -104,6 +105,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_includesImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithMathSupport
@@ -117,6 +119,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_hasNoReadableText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithMathSupport
@@ -132,6 +135,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_missingContentValue_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = MATH_WITHOUT_CONTENT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithMathSupport
@@ -145,6 +149,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_missingRawLatex_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = MATH_WITHOUT_RAW_LATEX_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithMathSupport
@@ -158,6 +163,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_missingFilename_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithMathSupport
@@ -171,6 +177,7 @@ class MathTagHandlerTest {
   fun testParseHtml_noTagHandler_withMathMarkup_doesNotIncludeImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = noTagHandlers
@@ -184,6 +191,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMultipleMathTags_includesMultipleImageSpans() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "$MATH_MARKUP_1 and $MATH_MARKUP_2",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithMathSupport
@@ -196,6 +204,7 @@ class MathTagHandlerTest {
   @Test
   fun testParseHtml_withMathMarkup_loadsInlineImageForFilename() {
     CustomHtmlContentHandler.fromHtml(
+      context,
       html = MATH_MARKUP_1,
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithMathSupport
@@ -209,6 +218,7 @@ class MathTagHandlerTest {
   @Test
   fun testParseHtml_withMultipleMathTags_loadsInlineImagesForBoth() {
     CustomHtmlContentHandler.fromHtml(
+      context,
       html = "$MATH_MARKUP_2 and $MATH_MARKUP_1",
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithMathSupport
