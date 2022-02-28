@@ -2,13 +2,13 @@ package org.oppia.android.util.logging.firebase
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val NETWORK_USER_PROPERTY = "NETWORK"
 private const val COUNTRY_USER_PROPERTY = "COUNTRY"
@@ -35,8 +35,10 @@ class FirebaseEventLogger(
 
   private fun getNetworkStatus(): String {
     return when (networkConnectionUtil.getCurrentConnectionStatus()) {
-      NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> NetworkConnectionUtil.ProdConnectionStatus.LOCAL.name
-      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> NetworkConnectionUtil.ProdConnectionStatus.CELLULAR.name
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL ->
+        NetworkConnectionUtil.ProdConnectionStatus.LOCAL.name
+      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR ->
+        NetworkConnectionUtil.ProdConnectionStatus.CELLULAR.name
       else -> NetworkConnectionUtil.ProdConnectionStatus.NONE.name
     }
   }
