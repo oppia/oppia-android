@@ -21,6 +21,7 @@
     android:minHeight="48dp"
     android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
     android:orientation="horizontal"
+    android:background="@color/topic_lessons_story_summary_card_background_color"
     android:paddingStart="4dp"
     android:paddingTop="4dp"
     android:paddingEnd="4dp">
@@ -44,7 +45,7 @@
       android:fontFamily="sans-serif"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:text="@{viewModel.computePlayChapterIndexText()}"
-      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppia_primary_text : @color/oppia_primary_text_30}"
+      android:textColor="@color/primary_text_color"
       android:textSize="14sp" />
 
     <TextView
@@ -58,7 +59,7 @@
       android:fontFamily="sans-serif"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:text="@{viewModel.chapterName}"
-      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppia_primary_text : @color/oppia_primary_text_30}"
+      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/primary_text_color : @color/disabled_text_color}"
       android:textSize="14sp" />
   </LinearLayout>
 </layout>

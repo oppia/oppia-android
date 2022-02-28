@@ -22,6 +22,7 @@
   <color name="black_87">#DE000000</color>
   <color name="white_light">#F9F9F9</color>
   <color name="accessible_grey">#333333</color>
+  <color name="accessible_grey_30">#4D333333</color>
   <color name="accessible_light_grey">#555555</color>
   <color name="grey">#CCCCCC</color>
   <color name="light_grey">#61000000</color>
@@ -39,6 +40,7 @@
   <color name="light_green">#D9F3E7</color>
   <color name="highlight_blue">#A5D3EC</color>
   <color name="oppia_silver">#C4C4C4</color>
+  <color name="oppia_silver_30">#4DC4C4C4</color>
   <color name="oppia_turquoise">#3bd1c4</color>
   <color name="oppia_bangladesh_green">#03635B</color>
   <color name="oppia_metallic_blue">#2B5F73</color>
