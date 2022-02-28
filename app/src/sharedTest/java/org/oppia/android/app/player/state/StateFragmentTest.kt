@@ -23,6 +23,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -1117,16 +1118,24 @@ class StateFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_showHintsAndSolution_hasCorrectContentDescription() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
-      onView(withId(R.id.hint_bulb)).perform(click())
+      typeFractionText("1")
+      clickSubmitAnswerButton()
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.reveal_hint_button)).perform(click())
+      scrollToViewType(FRACTION_INPUT_INTERACTION)
+      typeFractionText("1")
+      clickSubmitAnswerButton()
       testCoroutineDispatchers.runCurrent()
+
+      //Reveal the hint
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(0)
+
+      //checking content description of hint
       onView(withId(R.id.hint_list_drop_down_icon)).check(
         matches(
           withContentDescription(
@@ -2725,6 +2734,21 @@ class StateFragmentTest {
 
   private fun isOnRobolectric(): Boolean {
     return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
+  }
+
+  private fun openHintsAndSolutionsDialog() {
+    onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun pressRevealHintButton(hintPosition: Int) {
+    onView(withId(R.id.hints_and_solution_recycler_view))
+      .inRoot(isDialog())
+      .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(hintPosition * 2))
+    onView(allOf(withId(R.id.reveal_hint_button), isDisplayed()))
+      .inRoot(isDialog())
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
