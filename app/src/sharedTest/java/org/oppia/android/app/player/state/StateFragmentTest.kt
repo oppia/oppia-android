@@ -1131,11 +1131,11 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
       testCoroutineDispatchers.runCurrent()
 
-      //Reveal the hint
+      // Reveal the hint
       openHintsAndSolutionsDialog()
       pressRevealHintButton(0)
 
-      //checking content description of hint
+      // checking content description of hint
       onView(withId(R.id.hint_list_drop_down_icon)).check(
         matches(
           withContentDescription(
