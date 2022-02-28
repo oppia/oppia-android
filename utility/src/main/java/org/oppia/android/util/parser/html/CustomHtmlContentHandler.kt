@@ -12,7 +12,7 @@ import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
-import java.util.Stack
+import java.util.*
 import kotlin.collections.ArrayDeque
 
 /**
@@ -21,7 +21,7 @@ import kotlin.collections.ArrayDeque
  *
  * This is based on the implementation provided in https://stackoverflow.com/a/36528149.
  */
-class CustomHtmlContentHandler private constructor(
+class CustomHtmlContentHandler(
   private val context: Context,
   private val customTagHandlers: Map<String, CustomTagHandler>,
   private val imageRetriever: ImageRetriever

@@ -1,13 +1,20 @@
 package org.oppia.android.util.parser.html
 
+import android.app.Application
 import android.content.Context
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
 import android.text.style.BulletSpan
 import android.text.style.StyleSpan
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,10 +23,16 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.reflect.KClass
 
 /** Tests for [CustomHtmlContentHandler]. */
@@ -35,6 +48,11 @@ class CustomHtmlContentHandlerTest {
 
   @Mock
   lateinit var mockImageRetriever: FakeImageRetriever
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
 
   @Test
   fun testParseHtml_emptyString_returnsEmptyString() {
@@ -303,9 +321,42 @@ class CustomHtmlContentHandlerTest {
     }
   }
 
+  private fun setUpTestApplicationComponent() {
+    DaggerCustomHtmlContentHandlerTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
+  }
+
   /**
    * A fake image retriever that satisfies both the contracts of [Html.ImageGetter] and
    * [CustomHtmlContentHandler.ImageRetriever].
    */
   interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
+
+  @Module
+  interface TestModule {
+    @Binds
+    fun provideContext(application: Application): Context
+  }
+
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(
+    modules = [
+      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+    ]
+  )
+
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(customHtmlContentHandlerTest: CustomHtmlContentHandlerTest)
+  }
 }
