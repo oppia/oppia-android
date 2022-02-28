@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser.html
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Html
@@ -11,7 +12,7 @@ import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
-import java.util.ArrayDeque
+import java.util.*
 
 /**
  * A custom [ContentHandler] and [Html.TagHandler] for processing custom HTML tags. This class must
@@ -20,12 +21,14 @@ import java.util.ArrayDeque
  * This is based on the implementation provided in https://stackoverflow.com/a/36528149.
  */
 class CustomHtmlContentHandler private constructor(
+  private val context: Context,
   private val customTagHandlers: Map<String, CustomTagHandler>,
   private val imageRetriever: ImageRetriever
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
+  private val lists = Stack<CustomTagHandler>()
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
@@ -98,10 +101,23 @@ class CustomHtmlContentHandler private constructor(
           currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
-          customTagHandlers.getValue(tag).handleOpeningTag(output)
+          if (tag.equals(CUSTOM_BULLET_UL_LIST_TAG) || tag.equals(CUSTOM_BULLET_OL_LIST_TAG)) {
+            lists.push(BulletTagHandler(context, tag))
+          }
+          if (tag.equals(CUSTOM_BULLET_LIST_TAG)) {
+            if (lists.isNotEmpty())
+              lists.peek().handleOpeningTag(output)
+          }
         }
       }
       tag in customTagHandlers -> {
+        if (tag.equals(CUSTOM_BULLET_UL_LIST_TAG) || tag.equals(CUSTOM_BULLET_OL_LIST_TAG)) {
+          lists.pop()
+        }
+        if (tag.equals(CUSTOM_BULLET_LIST_TAG)) {
+          if (lists.isNotEmpty())
+            lists.peek().handleClosingTag(output, lists.size - 1)
+        }
         check(currentTrackedCustomTags.isNotEmpty()) {
           "Expected tracked custom tag to be initialized."
         }
@@ -110,7 +126,6 @@ class CustomHtmlContentHandler private constructor(
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
-        customTagHandlers.getValue(tag).handleClosingTag(output)
         customTagHandlers.getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
@@ -161,8 +176,9 @@ class CustomHtmlContentHandler private constructor(
      * This function will always be called before [handleClosingTag].
      *
      * @param output the destination [Editable] to which spans can be added
+     * @param indentation The zero-based indentation level of this item.
      */
-    fun handleClosingTag(output: Editable) {}
+    fun handleClosingTag(output: Editable, indentation: Int) {}
   }
 
   /**
@@ -180,6 +196,7 @@ class CustomHtmlContentHandler private constructor(
        * currently supported.
        */
       INLINE_TEXT_IMAGE,
+
       /**
        * Corresponds to a block image that should be positioned in a way that may break text, and
        * potentially centered depending on the configuration of the implementation.
@@ -195,6 +212,7 @@ class CustomHtmlContentHandler private constructor(
      * tags. All possible custom tags must be registered in the [customTagHandlers] map.
      */
     fun <T> fromHtml(
+      context: Context,
       html: String,
       imageRetriever: T,
       customTagHandlers: Map<String, CustomTagHandler>
@@ -205,7 +223,7 @@ class CustomHtmlContentHandler private constructor(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
-        CustomHtmlContentHandler(customTagHandlers, imageRetriever),
+        CustomHtmlContentHandler(context, customTagHandlers, imageRetriever),
       ) as Spannable
     }
   }

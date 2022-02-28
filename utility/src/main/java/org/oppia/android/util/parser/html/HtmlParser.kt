@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser.html
 
+import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
@@ -24,6 +25,7 @@ class HtmlParser private constructor(
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?
 ) {
+  private lateinit var context: Context
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
       object : ConceptCardTagHandler.ConceptCardLinkClickListener {
@@ -45,7 +47,7 @@ class HtmlParser private constructor(
       consoleLogger
     )
   }
-  private val bulletTagHandler by lazy { BulletTagHandler() }
+  private val bulletTagHandler by lazy { BulletTagHandler(context,"") }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
   private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
@@ -66,6 +68,7 @@ class HtmlParser private constructor(
     supportsConceptCards: Boolean = false
   ): Spannable {
 
+    context = htmlContentTextView.context
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
     when (getLayoutDirection(htmlContentTextView)) {
@@ -89,6 +92,14 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
+    if ("<ul>" in htmlContent) {
+      htmlContent = htmlContent.replace("<ul>", "<$CUSTOM_BULLET_UL_LIST_TAG>")
+        .replace("</ul>", "</$CUSTOM_BULLET_UL_LIST_TAG>")
+    }
+    if ("<ol>" in htmlContent) {
+      htmlContent = htmlContent.replace("<ol>", "<$CUSTOM_BULLET_OL_LIST_TAG>")
+        .replace("</ol>", "</$CUSTOM_BULLET_OL_LIST_TAG>")
+    }
 
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
@@ -100,14 +111,11 @@ class HtmlParser private constructor(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
+      htmlContentTextView.context,
       htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
     )
 
-    val spannableBuilder = CustomBulletSpan.replaceBulletSpan(
-      SpannableStringBuilder(htmlSpannable),
-      htmlContentTextView.context
-    )
-    return ensureNonEmpty(trimSpannable(spannableBuilder))
+    return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }
 
   private fun getLayoutDirection(view: View): Int {
@@ -119,6 +127,8 @@ class HtmlParser private constructor(
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_BULLET_UL_LIST_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_BULLET_OL_LIST_TAG] = bulletTagHandler
     handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
     handlersMap[CUSTOM_MATH_TAG] = mathTagHandler
     if (supportsConceptCards) {

@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser.html
 
+import android.content.Context
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
@@ -18,6 +19,7 @@ import org.mockito.junit.MockitoRule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
+import javax.inject.Inject
 import kotlin.reflect.KClass
 
 /** Tests for [CustomHtmlContentHandler]. */
@@ -28,12 +30,17 @@ class CustomHtmlContentHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock lateinit var mockImageRetriever: FakeImageRetriever
+  @Inject
+  lateinit var context: Context
+
+  @Mock
+  lateinit var mockImageRetriever: FakeImageRetriever
 
   @Test
   fun testParseHtml_emptyString_returnsEmptyString() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf()
       )
 
@@ -44,6 +51,7 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_standardBoldHtml_returnsStringWithBoldSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "<strong>Text</strong>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf()
@@ -56,6 +64,7 @@ class CustomHtmlContentHandlerTest {
   @Test
   fun testParseHtml_withImage_callsImageGetter() {
     CustomHtmlContentHandler.fromHtml(
+      context,
       html = "<img src=\"test_source.png\"></img>",
       imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf()
@@ -70,6 +79,7 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
@@ -85,6 +95,7 @@ class CustomHtmlContentHandlerTest {
     val fakeTagHandler = FakeTagHandler()
 
     CustomHtmlContentHandler.fromHtml(
+      context,
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
@@ -104,6 +115,7 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_withOneCustomTag_missingHandler_keepsContent() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf()
@@ -116,6 +128,7 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_withOneCustomTag_handlerReplacesText_correctlyUpdatesText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
@@ -134,6 +147,7 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = "<outer-tag>some <inner-tag>other</inner-tag> content</outer-tag>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
@@ -154,10 +168,11 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context,
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
+          CUSTOM_BULLET_LIST_TAG to BulletTagHandler(context, "")
         )
       )
 
@@ -268,7 +283,7 @@ class CustomHtmlContentHandlerTest {
       handleOpeningTagCallIndex = methodCallCount++
     }
 
-    override fun handleClosingTag(output: Editable) {
+    override fun handleClosingTag(output: Editable, indentation: Int) {
       handleClosingTagCalled = true
       handleClosingTagCallIndex = methodCallCount++
     }
