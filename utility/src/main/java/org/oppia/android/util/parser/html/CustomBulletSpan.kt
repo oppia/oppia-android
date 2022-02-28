@@ -72,7 +72,6 @@ class CustomBulletSpan(
         }
       }
     }
-
   }
 
   override fun getLeadingMargin(first: Boolean): Int = spacingBeforeText

@@ -47,7 +47,7 @@ class HtmlParser private constructor(
       consoleLogger
     )
   }
-  private val bulletTagHandler by lazy { BulletTagHandler(context,"") }
+  private val bulletTagHandler by lazy { BulletTagHandler(context, "") }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
   private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 

@@ -107,5 +107,4 @@ class BulletTagHandler(private val context: Context, private val tag: String) :
       text.setSpan(mark, currentPosition, currentPosition, Spanned.SPAN_MARK_MARK)
     }
   }
-
 }
