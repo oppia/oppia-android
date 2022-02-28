@@ -12,7 +12,6 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 
@@ -27,7 +26,6 @@ class SelectionInteractionViewModel(
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
-  private val interactionAnswerReceiver: InteractionAnswerReceiver,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
@@ -120,34 +118,27 @@ class SelectionInteractionViewModel(
 
   /** Catalogs an item being clicked by the user and returns whether the item should be considered selected. */
   fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
-    if (areCheckboxesBound()) {
-      if (isCurrentlySelected) {
-        selectedItems -= itemIndex
-        val wasSelectedItemListEmpty = isAnswerAvailable.get()
-        if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
-          isAnswerAvailable.set(selectedItems.isNotEmpty())
+    if (isCurrentlySelected) {
+      selectedItems -= itemIndex
+      updateIsAnswerAvailable()
+      return false
+    } else {
+      if (areCheckboxesBound()) {
+        if (selectedItems.size < maxAllowableSelectionCount) {
+          // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
+          //  number required.
+          selectedItems += itemIndex
+          updateIsAnswerAvailable()
+          return true
         }
-        return false
-      } else if (selectedItems.size < maxAllowableSelectionCount) {
-        // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
-        //  number required.
+      } else {
+        // Disable all items to simulate a radio button group.
+        choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
+        selectedItems.clear()
         selectedItems += itemIndex
-        val wasSelectedItemListEmpty = isAnswerAvailable.get()
-        if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
-          isAnswerAvailable.set(selectedItems.isNotEmpty())
-        }
+        updateIsAnswerAvailable()
         return true
       }
-    } else {
-      // Disable all items to simulate a radio button group.
-      choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
-      selectedItems.clear()
-      selectedItems += itemIndex
-      val wasSelectedItemListEmpty = isAnswerAvailable.get()
-      if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
-        isAnswerAvailable.set(selectedItems.isNotEmpty())
-      }
-      return true
     }
     // Do not change the current status if it isn't valid to do so.
     return isCurrentlySelected
@@ -155,6 +146,13 @@ class SelectionInteractionViewModel(
 
   private fun areCheckboxesBound(): Boolean {
     return interactionId == "ItemSelectionInput" && maxAllowableSelectionCount > 1
+  }
+
+  private fun updateIsAnswerAvailable() {
+    val wasSelectedItemListEmpty = isAnswerAvailable.get()
+    if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
+      isAnswerAvailable.set(selectedItems.isNotEmpty())
+    }
   }
 
   companion object {
