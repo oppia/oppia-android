@@ -6,7 +6,7 @@ package org.oppia.android.util.parser.html
 interface Mark
 
 /**
- * Marks the opening tag location of a list item inside an <ul> element.
+ * Marks the opening tag location of a list item inside a <ul> element.
  */
 class BulletListItem : Mark
 
