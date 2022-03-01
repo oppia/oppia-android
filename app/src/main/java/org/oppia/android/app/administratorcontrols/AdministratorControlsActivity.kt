@@ -94,9 +94,11 @@ class AdministratorControlsActivity :
       supportFragmentManager.findFragmentById(
         R.id.administrator_controls_fragment_multipane_placeholder
       )
-    /* If we have current fragment ProfileListFragment then we should end the activity on back press
-       but if we have ProfileEditFragment as current fragment then we should inflate profileListFragment
-       which is done by the handleOnBackPressed method. */
+    /*
+     * If the current fragment is ProfileListFragment then the activity should end on back press.
+     * If it's instead ProfileEditFragment then profileListFragment should be inflated via
+     * handleOnBackPressed.
+     */
     if (fragment is ProfileEditFragment) {
       administratorControlsActivityPresenter.handleOnBackPressed()
     } else {
