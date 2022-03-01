@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  android:background="@color/profile_progress_activity_dialog_background_color">
 
   <TextView
     android:id="@+id/profile_picture_edit_dialog_view_picture"
@@ -15,7 +16,7 @@
     android:paddingTop="24dp"
     android:paddingBottom="12dp"
     android:text="@string/profile_picture_edit_alert_dialog_view_profile_picture"
-    android:textColor="@color/black"
+    android:textColor="@color/profile_progress_activity_dialog_text_color"
     android:textSize="16sp" />
 
   <TextView
@@ -29,6 +30,6 @@
     android:paddingTop="12dp"
     android:paddingBottom="16dp"
     android:text="@string/profile_picture_edit_alert_dialog_choose_from_library"
-    android:textColor="@color/black"
+    android:textColor="@color/profile_progress_activity_dialog_text_color"
     android:textSize="16sp" />
 </LinearLayout>

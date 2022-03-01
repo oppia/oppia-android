@@ -16,4 +16,8 @@
   <color name="status_bar_color">@color/dark_green</color>
   <color name="action_bar_color">@color/oppia_green</color>
   <color name="highlighted_background_color">@color/highlight_blue</color>
+  <color name="image_background_color">@color/white_light</color>
+  <color name="secondary_text_color">@color/oppia_stroke_black</color>
+  <color name="primary_background_color">@color/white_light</color>
+  <color name="dialog_primary_text_color">@color/black</color>
 </resources>

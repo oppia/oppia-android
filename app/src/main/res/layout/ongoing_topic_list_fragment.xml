@@ -12,7 +12,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/ongoing_topicList_activity_layout_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/ongoing_topic_list_app_bar_layout"

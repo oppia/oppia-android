@@ -21,7 +21,7 @@
     android:clickable="true"
     android:focusable="true"
     android:onClick="@{(v) -> viewModel.onStoryItemClicked()}"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/profile_progress_activity_material_card_background_color"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -47,7 +47,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/profile_progress_activity_material_card_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,7 @@
           android:fontFamily="sans-serif"
           android:lines="2"
           android:text="@{viewModel.promotedStory.storyName}"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/profile_progress_activity_textview_highlighted_color"
           android:textSize="14sp"
           android:textStyle="bold"
           app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +86,7 @@
           android:maxLines="1"
           android:text="@{viewModel.promotedStory.topicName}"
           android:textAllCaps="true"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/profile_progress_activity_textview_highlighted_color"
           android:textSize="14sp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"

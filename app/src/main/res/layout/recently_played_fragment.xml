@@ -5,7 +5,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/recently_played_activity_layout_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/reading_list_app_bar_layout"
@@ -33,6 +33,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
+      android:background="@color/recently_played_activity_layout_background_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +43,7 @@
         android:id="@+id/ongoing_story_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/recently_played_activity_layout_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingTop="@dimen/recently_played_fragment_padding_top"

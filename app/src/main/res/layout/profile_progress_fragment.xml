@@ -11,18 +11,19 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/profile_progress_activity_layout_background_color">
 
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="@color/profile_progress_activity_recyclerview_background_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profile_progress_list"
-        android:background="@color/transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/profile_progress_fragment_margin_start"

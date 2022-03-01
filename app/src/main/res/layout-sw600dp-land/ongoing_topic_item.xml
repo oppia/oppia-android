@@ -17,6 +17,7 @@
     android:id="@+id/topic_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/ongoing_topicList_activity_layout_background_color"
     android:layout_marginStart="32dp"
     android:layout_marginTop="24dp"
     android:layout_marginEnd="32dp"
@@ -28,7 +29,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      android:background="@color/ongoing_topicList_activity_layout_container_color">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/topic_thumbnail"
@@ -47,7 +49,6 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/topic_title_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +66,7 @@
           android:fontFamily="sans-serif"
           android:lines="2"
           android:text="@{viewModel.topic.name}"
-          android:textColor="@color/white"
+          android:textColor="@color/ongoing_topicList_activity_textview_highlighted_color"
           android:textSize="14sp"
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +83,7 @@
           android:fontFamily="sans-serif-light"
           android:paddingBottom="12dp"
           android:text="@{viewModel.computeStoryCountText()}"
-          android:textColor="@color/white_80"
+          android:textColor="@color/ongoing_topicList_activity_textview_secondary_color"
           android:textSize="14sp"
           android:textStyle="italic"
           app:layout_constraintStart_toStartOf="parent"

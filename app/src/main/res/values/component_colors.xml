@@ -36,4 +36,27 @@
   <color name="admin_pin_activity_layout_background_color">@color/background_color</color>
   <!-- Pin Password Activity -->
   <color name="pin_password_activity_layout_background_color">@color/background_color</color>
+  <!-- Profile Progress Activity -->
+  <color name="profile_progress_activity_layout_background_color">@color/primary_background_color</color>
+  <color name="profile_progress_activity_recyclerview_background_color">@color/primary_background_color</color>
+  <color name="profile_progress_activity_circular_image_color">@color/image_background_color</color>
+  <color name="profile_progress_activity_textview_highlighted_color">@color/highlighted_text_color</color>
+  <color name="profile_progress_activity_textview_primary_color">@color/primary_color</color>
+  <color name="profile_progress_activity_material_card_background_color">@color/container_background_color</color>
+  <color name="profile_progress_activity_dialog_background_color">@color/container_background_color</color>
+  <color name="profile_progress_activity_dialog_text_color">@color/dialog_primary_text_color</color>
+  <!-- Recently Played Activity -->
+  <color name="recently_played_activity_layout_background_color">@color/primary_background_color</color>
+  <!-- Completed StoryList Activity -->
+  <color name="completed_storyList_activity_layout_background_color">@color/primary_background_color</color>
+  <color name="completed_storyList_activity_layout_container_color">@color/container_background_color</color>
+  <color name="completed_storyList_activity_material_card_background_color">@color/container_background_color</color>
+  <color name="completed_storyList_activity_textview_highlighted_color">@color/highlighted_text_color</color>
+  <color name="completed_storyList_activity_textview_secondary_color">@color/secondary_text_color</color>
+  <!-- Ongoing Topic List Activity -->
+  <color name="ongoing_topicList_activity_layout_background_color">@color/primary_background_color</color>
+  <color name="ongoing_topicList_activity_layout_container_color">@color/container_background_color</color>
+  <color name="ongoing_topicList_activity_material_card_background_color">@color/container_background_color</color>
+  <color name="ongoing_topicList_activity_textview_highlighted_color">@color/highlighted_text_color</color>
+  <color name="ongoing_topicList_activity_textview_secondary_color">@color/secondary_text_color</color>
 </resources>
