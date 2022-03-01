@@ -7,6 +7,8 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivitySc
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsFragmentPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/AdministratorControlsFragmentTestActivity.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/AdministratorControlsFragmentTestActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/LoadAppVersionListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileEditListener.kt"

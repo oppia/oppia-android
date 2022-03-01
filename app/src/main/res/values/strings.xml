@@ -508,4 +508,6 @@
   <string name="faq_answer_8"><![CDATA[<p>To download an Exploration:</p><p>1. From the Home Page, tap on a Topic or Exploration.</p><p>2. From that Topic Page, tap on the <strong>Info</strong> tab.</p><p>3. Tap on <strong>Download Topic</strong>. </p><p>4. Depending on your app settings, you may need Administrator approval or stable Wifi connection to complete your download. If needed, once these requirements are satisfied, the Topic has been downloaded onto the device and can be used offline by all profiles. <p>]]></string>
   <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
   <string name="profile_edit_fragment_test_activity_label">ProfilEditFragmentTestActivity</string>
+  <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity
+  </string>
 </resources>
