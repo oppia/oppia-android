@@ -32,7 +32,7 @@
       android:id="@+id/back_button"
       android:layout_width="48dp"
       android:layout_height="48dp"
-      android:layout_margin="16dp"
+      android:padding="16dp"
       android:clickable="true"
       android:contentDescription="@string/back_button"
       android:focusable="true"
