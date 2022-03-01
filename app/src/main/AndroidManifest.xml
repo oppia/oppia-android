@@ -6,7 +6,7 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
-  <!-- TODO(#56): Reenable landscape support. -->
+
   <application
     android:name=".app.application.OppiaApplication"
     android:allowBackup="true"
@@ -31,6 +31,9 @@
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
       android:label="@string/administrator_controls_title"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.testing.AdministratorControlsFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"

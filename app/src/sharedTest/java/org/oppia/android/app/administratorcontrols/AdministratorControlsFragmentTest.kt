@@ -9,9 +9,7 @@ import android.widget.FrameLayout
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -19,19 +17,15 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -56,6 +50,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -154,8 +149,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -183,8 +178,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -208,8 +203,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -238,8 +233,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_wifiSwitchIsUncheck_autoUpdateSwitchIsUnchecked() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -264,8 +259,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickWifiContainer_configChange_wifiSwitchIsChecked() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -309,8 +304,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControls_clickWifiContainer_configChange_autoUpdateSwitchIsChecked() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -354,8 +349,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickWifiContainer_wifiSwitchIsChecked() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -381,8 +376,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickAutoUpdateContainer_autoUpdateSwitchIsChecked() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -408,8 +403,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_nonDownloadPermissionProfile_wifiSwitchIsNonClickable() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -427,8 +422,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_autoUpdateSwitchIsNonClickable() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -446,8 +441,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -462,8 +457,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_configChange_clickLogout_logoutDialogIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -480,8 +475,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickLogout_configChange_logoutDialogIsDisplayed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = 0
       )
     ).use {
@@ -497,8 +492,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
-    launch<AdministratorControlsActivity>(
-      createAdministratorControlsActivityIntent(
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
@@ -511,35 +506,8 @@ class AdministratorControlsFragmentTest {
     }
   }
 
-  private fun ActivityScenario<AdministratorControlsActivity>.openNavigationDrawer() {
-    onView(withContentDescription(R.string.drawer_open_content_description))
-      .check(matches(isCompletelyDisplayed()))
-      .perform(click())
-
-    // Force the drawer animation to start. See https://github.com/oppia/oppia-android/pull/2204 for
-    // background context.
-    onActivity { activity ->
-      val drawerLayout =
-        activity.findViewById<DrawerLayout>(R.id.administrator_controls_activity_drawer_layout)
-      // Note that this only initiates a single computeScroll() in Robolectric. Normally, Android
-      // will compute several of these across multiple draw calls, but one seems sufficient for
-      // Robolectric. Note that Robolectric is also *supposed* to handle the animation loop one call
-      // to this method initiates in the view choreographer class, but it seems to not actually
-      // flush the choreographer per observation. In Espresso, this method is automatically called
-      // during draw (and a few other situations), but it's fine to call it directly once to kick it
-      // off (to avoid disparity between Espresso/Robolectric runs of the tests).
-      // NOTE TO DEVELOPERS: if this ever flakes, we can probably put this in a loop with fake time
-      // adjustments to simulate the render loop.
-      drawerLayout.computeScroll()
-    }
-
-    // Wait for the drawer to fully open (mostly for Espresso since Robolectric should synchronously
-    // stabilize the drawer layout after the previous logic completes).
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun createAdministratorControlsActivityIntent(profileId: Int): Intent {
-    return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+  private fun createAdministratorControlsFragmentTestActivityIntent(profileId: Int): Intent {
+    return AdministratorControlsFragmentTestActivity.createAdministratorControlsFragmentTestActivityIntent(
       context = context,
       profileId = profileId
     )

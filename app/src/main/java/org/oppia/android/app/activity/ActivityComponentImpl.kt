@@ -51,6 +51,7 @@ import org.oppia.android.app.settings.profile.ProfileRenameActivity
 import org.oppia.android.app.settings.profile.ProfileResetPinActivity
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.story.StoryActivity
+import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
@@ -105,6 +106,7 @@ interface ActivityComponentImpl :
   fun inject(addProfileActivity: AddProfileActivity)
   fun inject(adminAuthActivity: AdminAuthActivity)
   fun inject(administratorControlsActivity: AdministratorControlsActivity)
+  fun inject(administratorControlsFragmentTestActivity: AdministratorControlsFragmentTestActivity)
   fun inject(adminPinActivity: AdminPinActivity)
   fun inject(appLanguageActivity: AppLanguageActivity)
   fun inject(appVersionActivity: AppVersionActivity)
