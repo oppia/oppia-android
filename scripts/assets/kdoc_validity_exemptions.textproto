@@ -267,8 +267,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ImageRegion
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/InputInteractionViewTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/NavigationDrawerTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ProfileChooserFragmentTestActivity.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ProfileEditFragmentTestActivity.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ProfileEditFragmentTestActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/SplashTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/SplashTestActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TestFontScaleConfigurationUtilActivityPresenter.kt"

@@ -14,13 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -30,6 +30,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -62,7 +63,7 @@ import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -252,7 +253,7 @@ class AdministratorControlsActivityTest {
         profileId = internalProfileId
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.administrator_controls_multipane_options_back_button))
         .check(matches(ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
@@ -279,7 +280,7 @@ class AdministratorControlsActivityTest {
         profileId = internalProfileId
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.extra_controls_title))
         .check(matches(withText(R.string.administrator_controls_edit_profiles)))
     }
@@ -294,8 +295,8 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      isAdminProfileVisible()
-      isAdminTextVisible()
+      checkIsAdminProfileVisible()
+      checkIsAdminTextVisible()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       )
@@ -311,10 +312,10 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      isAdminProfileVisible()
-      isAdminTextVisible()
+      checkIsAdminProfileVisible()
+      checkIsAdminTextVisible()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       )
@@ -359,7 +360,7 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      Espresso.pressBack()
+      pressBack()
       testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name))
         .check(matches(withText("Ben")))
@@ -381,7 +382,7 @@ class AdministratorControlsActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickAdminProfile()
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
@@ -406,7 +407,7 @@ class AdministratorControlsActivityTest {
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       ).perform(click())
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
       onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(isDisplayed()))
@@ -448,12 +449,12 @@ class AdministratorControlsActivityTest {
         profileId = 1
       )
     ).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       ).perform(click())
-      onView(withId(R.id.profile_delete_button)).perform(ViewActions.scrollTo()).perform(click())
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog())
@@ -477,9 +478,9 @@ class AdministratorControlsActivityTest {
       onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
         matches(withText("Ben"))
       ).perform(click())
-      onView(withId(R.id.profile_delete_button)).perform(ViewActions.scrollTo()).perform(click())
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
         .inRoot(isDialog())
@@ -491,7 +492,7 @@ class AdministratorControlsActivityTest {
     }
   }
 
-  private fun isAdminProfileVisible() {
+  private fun checkIsAdminProfileVisible() {
     onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
       matches(withText("Admin"))
     )
@@ -503,7 +504,7 @@ class AdministratorControlsActivityTest {
     )
   }
 
-  private fun isAdminTextVisible() {
+  private fun checkIsAdminTextVisible() {
     onView(
       atPositionOnView(
         R.id.profile_list_recycler_view,
