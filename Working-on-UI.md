@@ -1,5 +1,9 @@
 Oppia-Android app mocks have been prepared on AdobeXD and the mocks have a version associated with them which is displayed on the bottom right corner of the "SplashScreen" page in mocks. Before working on any UI issue make sure that you have latest link of the mock associated with that UI.
 
+- [Mobile Portrait](https://xd.adobe.com/view/3dca36c2-5115-419c-b25e-0f10526b077c-6899/grid/)
+- [Mobile Landscape](https://xd.adobe.com/view/ee9e607b-dbd6-4372-48dc-b687d32af3da-98af/grid/)
+- [Tablet](https://xd.adobe.com/view/d405de00-a871-4f0f-73a0-f8acef30349b-a234/grid/)
+
 # Understanding the Mock Link:
 For understanding the mocks let's take one example. 
 Open [Admin Auth Mock Link](https://xd.adobe.com/view/0687f00c-695b-437a-79a6-688e7f4f7552-70b6/screen/a841330e-efe5-4bdb-acdd-4d6e52a59571/PC-MP-Admin-Authorization-Add-Profile-Empty-)
