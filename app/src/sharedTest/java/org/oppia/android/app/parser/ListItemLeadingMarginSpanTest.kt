@@ -77,7 +77,10 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ListItemLeadingMarginSpanTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@Config(
+  application = ListItemLeadingMarginSpanTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
+)
 class ListItemLeadingMarginSpanTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -181,8 +184,7 @@ class ListItemLeadingMarginSpanTest {
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
     val spannableString = SpannableStringBuilder(testStringWithBulletSpan)
-    val customBulletSpannable = ListItemLeadingMarginSpan.replaceBulletSpan(spannableString, context)
-    val leadingMargin = customBulletSpannable.getSpans(
+    val leadingMargin = spannableString.getSpans(
       0,
       spannableString.length,
       ListItemLeadingMarginSpan::class.java

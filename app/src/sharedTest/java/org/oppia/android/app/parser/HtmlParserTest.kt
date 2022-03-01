@@ -239,7 +239,11 @@ class HtmlParserTest {
 
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
     val bulletSpans =
-      htmlResult.getSpans<ListItemLeadingMarginSpan>(0, htmlResult.length, ListItemLeadingMarginSpan::class.java)
+      htmlResult.getSpans<ListItemLeadingMarginSpan>(
+        0,
+        htmlResult.length,
+        ListItemLeadingMarginSpan::class.java
+      )
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
