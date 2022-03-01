@@ -7,9 +7,9 @@
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">60dp</dimen>
 
   <!-- Policies -->
-  <dimen name="policies_single_padding_start">24dp</dimen>
-  <dimen name="policies_single_padding_top">22dp</dimen>
-  <dimen name="policies_single_padding_end">28dp</dimen>
-  <dimen name="policies_single_padding_bottom">60dp</dimen>
-  <dimen name="policies_single_activity_scroll_padding_bottom">80dp</dimen>
+  <dimen name="policies_fragment_page_padding_start">24dp</dimen>
+  <dimen name="policies_fragment_page_padding_top">22dp</dimen>
+  <dimen name="policies_fragment_page_padding_end">28dp</dimen>
+  <dimen name="policies_fragment_page_padding_bottom">60dp</dimen>
+  <dimen name="policies_fragment_page_scroll_padding_bottom">80dp</dimen>
 </resources>

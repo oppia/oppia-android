@@ -67,7 +67,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.CustomBulletSpan
+import org.oppia.android.util.parser.html.ListItemLeadingMarginSpan
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -77,8 +77,8 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = CustomBulletSpanTest.TestApplication::class, qualifiers = "port-xxhdpi")
-class CustomBulletSpanTest {
+@Config(application = ListItemLeadingMarginSpanTest.TestApplication::class, qualifiers = "port-xxhdpi")
+class ListItemLeadingMarginSpanTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -102,7 +102,7 @@ class CustomBulletSpanTest {
   }
   private val testStringWithCustomBulletSpan = SpannableString("Text With \nBullet Point").apply {
     this.setSpan(
-      CustomBulletSpan(context),
+      ListItemLeadingMarginSpan(context),
       10,
       22,
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -112,7 +112,7 @@ class CustomBulletSpanTest {
   @Test
   fun customBulletSpan_testReplaceBulletSpan_spannableStringWithoutBulletSpanRemainSame() {
     val spannableString1 = testStringWithoutBulletSpan
-    val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
+    val convertedSpannableStringBuilder = ListItemLeadingMarginSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
       context
     )
@@ -126,7 +126,7 @@ class CustomBulletSpanTest {
   @Test
   fun customBulletSpan_testReplaceBulletSpan_spannableStringWithBulletSpan_isNotSame() {
     val spannableString1 = testStringWithBulletSpan
-    val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
+    val convertedSpannableStringBuilder = ListItemLeadingMarginSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
       context
     )
@@ -141,7 +141,7 @@ class CustomBulletSpanTest {
   @Test
   fun customBulletSpan_testReplaceBulletSpan_includingUnderlineSpan_underlineSpanRemainsSame() {
     val spannableString1 = testStringWithMultipleBulletSpan
-    val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
+    val convertedSpannableStringBuilder = ListItemLeadingMarginSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
       context
     )
@@ -157,7 +157,7 @@ class CustomBulletSpanTest {
   @Test
   fun customBulletSpan_testReplaceBulletSpan_customBulletSpans_remainsSame() {
     val spannableString1 = testStringWithCustomBulletSpan
-    val convertedSpannableStringBuilder = CustomBulletSpan.replaceBulletSpan(
+    val convertedSpannableStringBuilder = ListItemLeadingMarginSpan.replaceBulletSpan(
       SpannableStringBuilder(spannableString1),
       context
     )
@@ -181,11 +181,11 @@ class CustomBulletSpanTest {
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
     val spannableString = SpannableStringBuilder(testStringWithBulletSpan)
-    val customBulletSpannable = CustomBulletSpan.replaceBulletSpan(spannableString, context)
+    val customBulletSpannable = ListItemLeadingMarginSpan.replaceBulletSpan(spannableString, context)
     val leadingMargin = customBulletSpannable.getSpans(
       0,
       spannableString.length,
-      CustomBulletSpan::class.java
+      ListItemLeadingMarginSpan::class.java
     )[0].getLeadingMargin(true)
     assertThat(leadingMargin).isEqualTo(expectedMargin)
   }
@@ -199,8 +199,8 @@ class CustomBulletSpanTest {
 
   private fun getCustomBulletSpans(
     spannableString: SpannableString
-  ): Array<out CustomBulletSpan> {
-    return spannableString.getSpans<CustomBulletSpan>(
+  ): Array<out ListItemLeadingMarginSpan> {
+    return spannableString.getSpans<ListItemLeadingMarginSpan>(
       0,
       spannableString.length
     )
@@ -253,7 +253,7 @@ class CustomBulletSpanTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(customBulletSpanTest: CustomBulletSpanTest)
+    fun inject(customBulletSpanTest: ListItemLeadingMarginSpanTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -263,7 +263,7 @@ class CustomBulletSpanTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(customBulletSpanTest: CustomBulletSpanTest) {
+    fun inject(customBulletSpanTest: ListItemLeadingMarginSpanTest) {
       component.inject(customBulletSpanTest)
     }
 

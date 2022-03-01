@@ -11,8 +11,8 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.model.PoliciesArguments
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -68,9 +68,9 @@ class HelpActivity :
     val selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
     selectedHelpOptionsTitle = savedInstanceState?.getStringFromBundle(HELP_OPTIONS_TITLE_SAVED_KEY)
       ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
-    val policiesArguments = savedInstanceState?.getProto(
+    val policiesActivityParams = savedInstanceState?.getProto(
       POLICIES_ARGUMENT_PROTO,
-      PoliciesArguments.getDefaultInstance()
+      PoliciesActivityParams.getDefaultInstance()
     )
     helpActivityPresenter.handleOnCreate(
       selectedHelpOptionsTitle,
@@ -78,7 +78,7 @@ class HelpActivity :
       selectedFragment,
       selectedDependencyIndex,
       selectedLicenseIndex,
-      policiesArguments
+      policiesActivityParams
     )
     title = resourceHandler.getStringInLocale(R.string.menu_help)
   }

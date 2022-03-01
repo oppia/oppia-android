@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.model.PoliciesArguments
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
@@ -24,7 +24,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
     policiesActivityPresenter.handleOnCreate(
       intent.getProtoExtra(
         POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO,
-        PoliciesArguments.getDefaultInstance()
+        PoliciesActivityParams.getDefaultInstance()
       )
     )
   }
@@ -35,13 +35,13 @@ class PoliciesActivity : InjectableAppCompatActivity() {
 
     /** Returns the [Intent] for opening [PoliciesActivity] for the specified [policyPage]. */
     fun createPoliciesActivityIntent(context: Context, policyPage: PolicyPage): Intent {
-      val policiesArguments =
-        PoliciesArguments
+      val policiesActivityParams =
+        PoliciesActivityParams
           .newBuilder()
           .setPolicyPage(policyPage)
           .build()
       return Intent(context, PoliciesActivity::class.java).also {
-        it.putProtoExtra(POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO, policiesArguments)
+        it.putProtoExtra(POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO, policiesActivityParams)
       }
     }
   }

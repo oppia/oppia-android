@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.PoliciesArguments
+import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -21,9 +21,9 @@ class PoliciesFragment : InjectableFragment() {
 
   companion object {
     /** Returns instance of [PoliciesFragment]. */
-    fun newInstance(policiesArguments: PoliciesArguments): PoliciesFragment {
+    fun newInstance(policiesFragmentArguments: PoliciesFragmentArguments): PoliciesFragment {
       val args = Bundle()
-      args.putProto(POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO, policiesArguments)
+      args.putProto(POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO, policiesFragmentArguments)
       val fragment = PoliciesFragment()
       fragment.arguments = args
       return fragment
@@ -46,7 +46,7 @@ class PoliciesFragment : InjectableFragment() {
     val policies =
       args.getProto(
         POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO,
-        PoliciesArguments.getDefaultInstance()
+        PoliciesFragmentArguments.getDefaultInstance()
       )
     return policiesFragmentPresenter.handleCreateView(inflater, container, policies)
   }

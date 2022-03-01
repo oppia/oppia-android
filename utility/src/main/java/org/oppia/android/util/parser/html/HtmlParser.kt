@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
@@ -23,9 +23,10 @@ class HtmlParser private constructor(
   private val imageCenterAlign: Boolean,
   private val consoleLogger: ConsoleLogger,
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
-  policyOppiaTagActionListener: PolicyOppiaTagActionListener?
+  policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
+  private val context: Context
 ) {
-  private lateinit var context: Context
+
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
       object : ConceptCardTagHandler.ConceptCardLinkClickListener {
@@ -47,7 +48,7 @@ class HtmlParser private constructor(
       consoleLogger
     )
   }
-  private val bulletTagHandler by lazy { BulletTagHandler(context, "") }
+  private val bulletTagHandler by lazy { LiTagHandler(context, "") }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
   private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
@@ -68,7 +69,6 @@ class HtmlParser private constructor(
     supportsConceptCards: Boolean = false
   ): Spannable {
 
-    context = htmlContentTextView.context
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
     when (getLayoutDirection(htmlContentTextView)) {
@@ -178,7 +178,8 @@ class HtmlParser private constructor(
   /** Factory for creating new [HtmlParser]s. */
   class Factory @Inject constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
-    private val consoleLogger: ConsoleLogger
+    private val consoleLogger: ConsoleLogger,
+    private val context: Context
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -200,7 +201,8 @@ class HtmlParser private constructor(
         imageCenterAlign,
         consoleLogger,
         customOppiaTagActionListener,
-        policyOppiaTagActionListener
+        policyOppiaTagActionListener,
+        context
       )
     }
 
@@ -222,7 +224,8 @@ class HtmlParser private constructor(
         imageCenterAlign = false,
         consoleLogger,
         customOppiaTagActionListener,
-        policyOppiaTagActionListener
+        policyOppiaTagActionListener,
+        context
       )
     }
   }

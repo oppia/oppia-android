@@ -102,22 +102,28 @@ class CustomHtmlContentHandler(
           currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
-          if (tag.equals(CUSTOM_BULLET_UL_LIST_TAG) || tag.equals(CUSTOM_BULLET_OL_LIST_TAG)) {
-            lists.push(BulletTagHandler(context, tag))
-          }
-          if (tag.equals(CUSTOM_BULLET_LIST_TAG)) {
-            if (lists.isNotEmpty())
-              lists.peek().handleOpeningTag(output)
+          when {
+            tag.equals(CUSTOM_BULLET_UL_LIST_TAG) || tag.equals(CUSTOM_BULLET_OL_LIST_TAG) -> {
+              lists.push(LiTagHandler(context, tag))
+            }
+            tag.equals(CUSTOM_BULLET_LIST_TAG) -> {
+              if (lists.isNotEmpty()) {
+                lists.peek().handleOpeningTag(output)
+              }
+            }
           }
         }
       }
       tag in customTagHandlers -> {
-        if (tag.equals(CUSTOM_BULLET_UL_LIST_TAG) || tag.equals(CUSTOM_BULLET_OL_LIST_TAG)) {
-          lists.pop()
-        }
-        if (tag.equals(CUSTOM_BULLET_LIST_TAG)) {
-          if (lists.isNotEmpty())
-            lists.peek().handleClosingTag(output, lists.size - 1)
+        when {
+          tag.equals(CUSTOM_BULLET_UL_LIST_TAG) || tag.equals(CUSTOM_BULLET_OL_LIST_TAG) -> {
+            lists.pop()
+          }
+          tag.equals(CUSTOM_BULLET_LIST_TAG) -> {
+            if (lists.isNotEmpty()) {
+              lists.peek().handleClosingTag(output, lists.size - 1)
+            }
+          }
         }
         check(currentTrackedCustomTags.isNotEmpty()) {
           "Expected tracked custom tag to be initialized."

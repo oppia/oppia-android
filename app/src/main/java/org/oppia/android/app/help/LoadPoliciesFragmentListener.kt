@@ -1,6 +1,6 @@
 package org.oppia.android.app.help
 
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
+import org.oppia.android.app.model.PolicyPage
 
 /**
  * Listener for when a selection should result in displaying a policy page (e.g. the Privacy Policy)

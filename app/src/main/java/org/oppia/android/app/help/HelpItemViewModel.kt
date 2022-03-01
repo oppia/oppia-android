@@ -2,7 +2,7 @@ package org.oppia.android.app.help
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel

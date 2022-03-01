@@ -5,7 +5,7 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 
-/** The custom tag corresponding to [BulletTagHandler]. */
+/** The custom tag corresponding to [LiTagHandler]. */
 const val CUSTOM_BULLET_LIST_TAG = "oppia-li"
 const val CUSTOM_BULLET_UL_LIST_TAG = "oppia-ul"
 const val CUSTOM_BULLET_OL_LIST_TAG = "oppia-ol"
@@ -14,7 +14,7 @@ const val CUSTOM_BULLET_OL_LIST_TAG = "oppia-ol"
  * A custom tag handler for properly formatting bullet items in HTML parsed with
  * [CustomHtmlContentHandler].
  */
-class BulletTagHandler(private val context: Context, private val tag: String) :
+class LiTagHandler(private val context: Context, private val tag: String) :
   CustomHtmlContentHandler.CustomTagHandler {
 
   private var index = 1
@@ -38,7 +38,7 @@ class BulletTagHandler(private val context: Context, private val tag: String) :
     when (tag) {
       CUSTOM_BULLET_UL_LIST_TAG -> {
         getLast<BulletListItem>(output)?.let { mark ->
-          setSpanFromMark(output, mark, CustomBulletSpan(context, indentation, "•", tag))
+          setSpanFromMark(output, mark, ListItemLeadingMarginSpan(context, indentation, "•", tag))
         }
       }
       CUSTOM_BULLET_OL_LIST_TAG -> {
@@ -46,7 +46,7 @@ class BulletTagHandler(private val context: Context, private val tag: String) :
           setSpanFromMark(
             output,
             mark,
-            CustomBulletSpan(context, indentation, "${mark.number}.", tag)
+            ListItemLeadingMarginSpan(context, indentation, "${mark.number}.", tag)
           )
         }
       }
@@ -79,18 +79,18 @@ class BulletTagHandler(private val context: Context, private val tag: String) :
      *
      * The last span corresponds to the top of the "stack".
      */
-    private inline fun <reified T : Mark> getLast(text: Spanned) =
+    private inline fun <reified T : ListItemMark> getLast(text: Spanned) =
       text.getSpans(0, text.length, T::class.java).lastOrNull()
 
     /**
-     * Pops out the invisible [mark] span and uses it to get the opening tag location.
+     * Pops out the invisible [listItemMark] span and uses it to get the opening tag location.
      * Then, sets a span from the opening tag position to closing tag position.
      */
-    private fun setSpanFromMark(text: Spannable, mark: Mark, styleSpan: Any) {
+    private fun setSpanFromMark(text: Spannable, listItemMark: ListItemMark, styleSpan: Any) {
       // Find the location where the mark is inserted in the string.
-      val markerLocation = text.getSpanStart(mark)
+      val markerLocation = text.getSpanStart(listItemMark)
       // Remove the mark now that the location is saved
-      text.removeSpan(mark)
+      text.removeSpan(listItemMark)
 
       val end = text.length
       if (markerLocation != end) {
@@ -99,12 +99,12 @@ class BulletTagHandler(private val context: Context, private val tag: String) :
     }
 
     /**
-     * Inserts an invisible [mark] span that doesn't do any styling.
+     * Inserts an invisible [listItemMark] span that doesn't do any styling.
      * Instead, [setSpanFromMark] will later find the location of this span so it knows where the opening tag was.
      */
-    private fun start(text: Spannable, mark: Mark) {
+    private fun start(text: Spannable, listItemMark: ListItemMark) {
       val currentPosition = text.length
-      text.setSpan(mark, currentPosition, currentPosition, Spanned.SPAN_MARK_MARK)
+      text.setSpan(listItemMark, currentPosition, currentPosition, Spanned.SPAN_MARK_MARK)
     }
   }
 }

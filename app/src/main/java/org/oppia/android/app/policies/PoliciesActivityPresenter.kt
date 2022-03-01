@@ -4,8 +4,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
-import org.oppia.android.app.model.PoliciesArguments
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PoliciesFragmentArguments
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
@@ -16,9 +17,9 @@ class PoliciesActivityPresenter @Inject constructor(
 ) {
 
   /** Handles onCreate() method of the [PoliciesActivity]. */
-  fun handleOnCreate(policiesArguments: PoliciesArguments) {
+  fun handleOnCreate(policiesActivityParams: PoliciesActivityParams) {
     activity.setContentView(R.layout.policies_activity)
-    val toolbar = setUpToolbar(policiesArguments.policyPage)
+    val toolbar = setUpToolbar(policiesActivityParams.policyPage)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
     toolbar.setNavigationOnClickListener {
@@ -26,9 +27,14 @@ class PoliciesActivityPresenter @Inject constructor(
     }
 
     if (getPoliciesFragment() == null) {
+      val policiesFragmentArguments =
+        PoliciesFragmentArguments
+          .newBuilder()
+          .setPolicyPage(policiesActivityParams.policyPage)
+          .build()
       activity.supportFragmentManager.beginTransaction().add(
         R.id.policies_fragment_placeholder,
-        PoliciesFragment.newInstance(policiesArguments)
+        PoliciesFragment.newInstance(policiesFragmentArguments)
       ).commitNow()
     }
   }

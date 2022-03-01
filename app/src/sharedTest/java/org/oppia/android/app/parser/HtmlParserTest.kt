@@ -96,7 +96,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.CustomBulletSpan
+import org.oppia.android.util.parser.html.ListItemLeadingMarginSpan
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -239,10 +239,10 @@ class HtmlParserTest {
 
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
     val bulletSpans =
-      htmlResult.getSpans<CustomBulletSpan>(0, htmlResult.length, CustomBulletSpan::class.java)
+      htmlResult.getSpans<ListItemLeadingMarginSpan>(0, htmlResult.length, ListItemLeadingMarginSpan::class.java)
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
-    val bulletSpan0 = bulletSpans[0] as CustomBulletSpan
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
     assertThat(bulletSpan0).isNotNull()
 
     val bulletRadius = activityRule.scenario.getDimensionPixelSize(
@@ -259,7 +259,7 @@ class HtmlParserTest {
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
-    val bulletSpan1 = bulletSpans[1] as CustomBulletSpan
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
     assertThat(bulletSpan1).isNotNull()
   }
 

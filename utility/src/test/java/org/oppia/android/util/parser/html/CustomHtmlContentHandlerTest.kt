@@ -190,7 +190,7 @@ class CustomHtmlContentHandlerTest {
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_BULLET_LIST_TAG to BulletTagHandler(context, "")
+          CUSTOM_BULLET_LIST_TAG to LiTagHandler(context, "")
         )
       )
 

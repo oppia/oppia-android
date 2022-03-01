@@ -19,7 +19,7 @@ import org.oppia.android.util.R
  * @param tag shows the custom tag.
  * Reference: https://medium.com/swlh/making-nested-lists-with-android-spannables-in-kotlin-4ad00052912c
  */
-class CustomBulletSpan(
+class ListItemLeadingMarginSpan(
   private val context: Context,
   private val indentation: Int,
   private val string: String,
@@ -36,7 +36,7 @@ class CustomBulletSpan(
   private val spacingBeforeText = resources.getDimensionPixelSize(R.dimen.spacing_before_text)
 
   override fun drawLeadingMargin(
-    c: Canvas,
+    canvas: Canvas,
     paint: Paint,
     x: Int,
     dir: Int,
@@ -47,7 +47,7 @@ class CustomBulletSpan(
     start: Int,
     end: Int,
     first: Boolean,
-    l: Layout
+    layout: Layout
   ) {
     val startCharOfSpan = (text as Spanned).getSpanStart(this)
     val isFirstCharacter = startCharOfSpan == start
@@ -64,11 +64,11 @@ class CustomBulletSpan(
           } else {
             paint.style = Paint.Style.STROKE
           }
-          c.drawCircle(trueX.toFloat(), yPosition, bulletRadius.toFloat(), paint)
+          canvas.drawCircle(trueX.toFloat(), yPosition, bulletRadius.toFloat(), paint)
           paint.style = style
         }
         CUSTOM_BULLET_OL_LIST_TAG -> {
-          c.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
+          canvas.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
         }
       }
     }

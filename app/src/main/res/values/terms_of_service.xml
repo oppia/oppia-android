@@ -239,20 +239,5 @@
       <li>13 Oct 2015: Minor updates for clarity.</li>
       <li>26 Sep 2015: Revised terms added.</li>
     </ul>
-  </mat-card>
-</div>
-
-<div class="nav oppia-terms-right-menu d-none d-md-block">
-  <strong>Terms of Use</strong>
-  <p><a (click)="scrollTo(ourServices)">Our Services</a></p>
-  <p><a (click)="scrollTo(privacyPolicy)">Privacy Policy</a></p>
-  <p><a (click)="scrollTo(hostedCreatedContent)">Hosted Created Content and IP</a></p>
-  <p><a (click)="scrollTo(refrainingFromCertainActivities)">Refraining from Certain Activities</a></p>
-  <p><a (click)="scrollTo(termination)">Termination</a></p>
-  <p><a (click)="scrollTo(disclaimerOfWarranty)">Disclaimer of Warranty</a></p>
-  <p><a (click)="scrollTo(limitationOfLiability)">Limitation of Liability</a></p>
-  <p><a (click)="scrollTo(disputesAndJurisdiction)">Disputes and Jurisdiction</a></p>
-  <p><a (click)="scrollTo(modificationsToTheseTerms)">Modifications to these Terms</a></p>
-</div>
 </]]></string>
 </resources>

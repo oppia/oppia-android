@@ -40,7 +40,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -140,7 +140,7 @@ class PoliciesFragmentTest {
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
-      onView(withId(R.id.policies_description_text_view))
+      onView(withId(R.id.policy_description_text_view))
         .check(matches(isDisplayed()))
     }
   }
@@ -153,7 +153,7 @@ class PoliciesFragmentTest {
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
-      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
+      onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         .perform(openLinkWithText("this page"))
     }
   }
@@ -166,7 +166,7 @@ class PoliciesFragmentTest {
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
-      onView(withId(R.id.policies_description_text_view))
+      onView(withId(R.id.policy_description_text_view))
         .check(matches(isDisplayed()))
     }
   }
@@ -179,7 +179,7 @@ class PoliciesFragmentTest {
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
-      onView(withId(R.id.policies_web_link_text_view)).perform(scrollTo())
+      onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         .perform(openLinkWithText("this page"))
     }
   }
@@ -192,7 +192,7 @@ class PoliciesFragmentTest {
         ApplicationProvider.getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
-      val textView: TextView = it.findViewById(R.id.policies_description_text_view)
+      val textView: TextView = it.findViewById(R.id.policy_description_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         getResources().getString(R.string.privacy_policy_content),
         textView
@@ -211,7 +211,7 @@ class PoliciesFragmentTest {
         ApplicationProvider.getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
-      val textView: TextView = it.findViewById(R.id.policies_description_text_view)
+      val textView: TextView = it.findViewById(R.id.policy_description_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         getResources().getString(R.string.terms_of_service_content),
         textView
