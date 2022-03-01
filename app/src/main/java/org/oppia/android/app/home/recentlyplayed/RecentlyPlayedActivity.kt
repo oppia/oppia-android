@@ -9,7 +9,7 @@ import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
@@ -32,11 +32,11 @@ class RecentlyPlayedActivity :
     val bundle = checkNotNull(intent.getBundleExtra(RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY)) {
       "Expected arguments to be passed to RecentlyPlayedActivity"
     }
-    val recentlyPlayedActivityIntentExtras = bundle.getProto(
+    val RecentlyPlayedActivityParams = bundle.getProto(
       RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-      RecentlyPlayedActivityIntentExtras.getDefaultInstance()
+      RecentlyPlayedActivityParams.getDefaultInstance()
     )
-    recentlyPlayedActivityPresenter.handleOnCreate(recentlyPlayedActivityIntentExtras)
+    recentlyPlayedActivityPresenter.handleOnCreate(RecentlyPlayedActivityParams)
   }
 
   companion object {
@@ -49,12 +49,12 @@ class RecentlyPlayedActivity :
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
     fun createRecentlyPlayedActivityIntent(
       context: Context,
-      recentlyPlayedActivityIntentExtras: RecentlyPlayedActivityIntentExtras
+      recentlyPlayedActivityParams: RecentlyPlayedActivityParams
     ): Intent {
       val bundle = Bundle()
       bundle.putProto(
         RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-        recentlyPlayedActivityIntentExtras
+        recentlyPlayedActivityParams
       )
       val intent = Intent(context, RecentlyPlayedActivity::class.java)
       intent.putExtra(RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY, bundle)
@@ -108,8 +108,8 @@ class RecentlyPlayedActivity :
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.RecentlyPlayedActivityIntentFactory {
     override fun createIntent(
-      recentlyPlayedActivityIntentExtras: RecentlyPlayedActivityIntentExtras
+      recentlyPlayedActivityParams: RecentlyPlayedActivityParams
     ): Intent =
-      createRecentlyPlayedActivityIntent(activity, recentlyPlayedActivityIntentExtras)
+      createRecentlyPlayedActivityIntent(activity, recentlyPlayedActivityParams)
   }
 }

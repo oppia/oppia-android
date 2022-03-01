@@ -14,7 +14,7 @@ import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.RecentlyPlayedActivityIntentExtras
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
@@ -89,8 +89,8 @@ class HomeActivity :
   }
 
   override fun routeToRecentlyPlayed() {
-    val recentlyPlayedActivityIntentExtras =
-      RecentlyPlayedActivityIntentExtras
+    val recentlyPlayedActivityParams =
+      RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .build()
@@ -98,7 +98,7 @@ class HomeActivity :
     activityRouter.routeToScreen(
       DestinationScreen
         .newBuilder()
-        .setRecentlyPlayedActivityIntentExtras(recentlyPlayedActivityIntentExtras)
+        .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
         .build()
     )
   }

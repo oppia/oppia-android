@@ -2,8 +2,23 @@ syntax = "proto3";
 
 package model;
 
+import "profile.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+
+// Corresponds to intent extras of destination activity.
+message DestinationScreen {
+  oneof destination_screen {
+    RecentlyPlayedActivityParams recently_played_activity_params = 1;
+  }
+}
+
+// Intent extras for RecentlyPlayedActivity.
+message RecentlyPlayedActivityParams {
+  // The ID of current profile.
+  ProfileId profile_id = 1;
+}
 
 // The fragment arguments passed to instances of ExitProfileDialogFragment.
 message ExitProfileDialogArguments {
