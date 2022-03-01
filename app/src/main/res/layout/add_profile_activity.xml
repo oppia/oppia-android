@@ -45,7 +45,7 @@
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
-            android:elevation="20dp"
+            android:elevation="8dp"
             app:add_shadow="true"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +61,7 @@
             android:contentDescription="@string/edit_profile_picture_content_description"
             android:paddingStart="12dp"
             android:paddingTop="12dp"
-            android:elevation="20dp"
+            android:elevation="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
             app:srcCompat="@drawable/rounded_white_background_with_shadow" />
