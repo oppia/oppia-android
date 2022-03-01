@@ -15,19 +15,18 @@ import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
+/** Activity [AdministratorControlsFragmentTestActivity] that allows user to change admin controls. */
 class AdministratorControlsFragmentTestActivity :
   TestActivity(),
   RouteToProfileListListener,
   RouteToAppVersionListener,
   ShowLogoutDialogListener {
   @Inject
-  lateinit var administratorControlsFragmentTestActivityPresenter: AdministratorControlsFragmentTestActivityPresenter
+  lateinit var administratorControlsFragmentTestActivityPresenter:
+    AdministratorControlsFragmentTestActivityPresenter
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
-
-  private lateinit var lastLoadedFragment: String
-  private var isProfileDeletionDialogVisible: Boolean = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -45,7 +44,10 @@ class AdministratorControlsFragmentTestActivity :
 
   companion object {
     /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsFragmentTestActivityIntent(context: Context, profileId: Int?): Intent {
+    fun createAdministratorControlsFragmentTestActivityIntent(
+      context: Context,
+      profileId: Int?
+    ): Intent {
       val intent = Intent(context, AdministratorControlsFragmentTestActivityPresenter::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent

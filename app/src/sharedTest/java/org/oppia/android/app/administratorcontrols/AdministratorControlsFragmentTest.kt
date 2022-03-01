@@ -507,10 +507,11 @@ class AdministratorControlsFragmentTest {
   }
 
   private fun createAdministratorControlsFragmentTestActivityIntent(profileId: Int): Intent {
-    return AdministratorControlsFragmentTestActivity.createAdministratorControlsFragmentTestActivityIntent(
-      context = context,
-      profileId = profileId
-    )
+    return AdministratorControlsFragmentTestActivity
+      .createAdministratorControlsFragmentTestActivityIntent(
+        context = context,
+        profileId = profileId
+      )
   }
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
