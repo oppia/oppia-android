@@ -15,7 +15,7 @@ import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
-/** Activity [AdministratorControlsFragmentTestActivity] that allows user to change admin controls. */
+/** Test activity for ``AdministratorControlsFragmentTestActivity``. */
 class AdministratorControlsFragmentTestActivity :
   TestActivity(),
   RouteToProfileListListener,
