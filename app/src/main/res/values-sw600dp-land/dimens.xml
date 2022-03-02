@@ -414,6 +414,12 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">32dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">32dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">28dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">0dp</dimen>
+
   <!-- RevisionCardFragment -->
   <dimen name="revision_card_fragment_layout_tablet_min_width">640dp</dimen>
   <dimen name="revision_card_fragment_padding_bottom">148dp</dimen>
@@ -423,4 +429,18 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">4dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
+  
+  <!-- AdministratorControlDownloadPermissionsView -->
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_widget_switch_compat_margin_end">4dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
+
+  <!-- OptionAudioLanguage -->
+  <dimen name="option_audio_language_padding_start">16dp</dimen>
+  <dimen name="option_audio_language_padding_end">16dp</dimen>
 </resources>
