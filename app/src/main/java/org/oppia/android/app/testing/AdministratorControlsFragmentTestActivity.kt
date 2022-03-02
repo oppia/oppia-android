@@ -22,7 +22,7 @@ import org.oppia.android.app.administratorcontrols.LoadProfileListListener
 import org.oppia.android.app.administratorcontrols.PROFILE_EDIT_FRAGMENT
 import org.oppia.android.app.administratorcontrols.PROFILE_LIST_FRAGMENT
 
-/** Activity [AdministratorControlsFragmentTestActivity] that allows user to change admin controls. */
+/** Test activity for ``AdministratorControlsFragmentTestActivity``. */
 class AdministratorControlsFragmentTestActivity :
   TestActivity(),
   RouteToProfileListListener,

@@ -9,7 +9,7 @@ import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.testing.activity.TestActivity
 import javax.inject.Inject
 
-/** Test Activity for testing [ProfileEditFragment] and it's view models. */
+/** Test Activity for testing [ProfileEditFragment] and its view models. */
 class ProfileEditFragmentTestActivity : TestActivity() {
   @Inject
   lateinit var profileEditFragmentTestActivityPresenter: ProfileEditFragmentTestActivityPresenter
