@@ -211,7 +211,8 @@ class StoryFragmentTest {
     }
   }
 
-  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
+  // its view
   fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -225,7 +226,8 @@ class StoryFragmentTest {
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
-  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
+  // its view
   fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
