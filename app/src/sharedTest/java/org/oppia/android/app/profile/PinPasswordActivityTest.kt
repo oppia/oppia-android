@@ -167,49 +167,6 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test
-  fun testPinPassword_pinView_hasContentDescription() {
-    ActivityScenario.launch<PinPasswordActivity>(
-      PinPasswordActivity.createPinPasswordActivityIntent(
-        context = context,
-        adminPin = adminPin,
-        profileId = adminId
-      )
-    ).use {
-      onView(withId(R.id.pin_password_input_pin_edit_text)).check(
-        matches(
-          withContentDescription(
-            context.resources.getString(
-              R.string.enter_your_pin
-            )
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testPinPassword_configChange_pinView_hasContentDescription() {
-    ActivityScenario.launch<PinPasswordActivity>(
-      PinPasswordActivity.createPinPasswordActivityIntent(
-        context = context,
-        adminPin = adminPin,
-        profileId = adminId
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.pin_password_input_pin_edit_text)).check(
-        matches(
-          withContentDescription(
-            context.resources.getString(
-              R.string.enter_your_pin
-            )
-          )
-        )
-      )
-    }
-  }
-
   @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
   @DisableAccessibilityChecks
   fun testPinPassword_withAdmin_inputCorrectPin_opensHomeActivity() {
