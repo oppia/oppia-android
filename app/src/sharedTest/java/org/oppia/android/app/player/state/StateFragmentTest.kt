@@ -2706,21 +2706,6 @@ class StateFragmentTest {
     return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
   }
 
-  private fun openHintsAndSolutionsDialog() {
-    onView(withId(R.id.hints_and_solution_fragment_container)).perform(click())
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun pressRevealHintButton(hintPosition: Int) {
-    onView(withId(R.id.hints_and_solution_recycler_view))
-      .inRoot(isDialog())
-      .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(hintPosition * 2))
-    onView(allOf(withId(R.id.reveal_hint_button), isDisplayed()))
-      .inRoot(isDialog())
-      .perform(click())
-    testCoroutineDispatchers.runCurrent()
-  }
-
   // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
   //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
   //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
