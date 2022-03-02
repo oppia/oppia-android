@@ -446,4 +446,8 @@
   <dimen name="topic_practice_header_child_constraint_layout_margin_end">0dp</dimen>
   <dimen name="master_skills_text_view_margin_end">0dp</dimen>
   <dimen name="topic_practice_header_child_constraint_layout_width">360dp</dimen>
+
+  <!-- OptionAudioLanguage -->
+  <dimen name="option_audio_language_padding_start">16dp</dimen>
+  <dimen name="option_audio_language_padding_end">16dp</dimen>
 </resources>
