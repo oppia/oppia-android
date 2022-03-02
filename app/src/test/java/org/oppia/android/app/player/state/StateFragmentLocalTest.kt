@@ -22,6 +22,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -1303,6 +1304,31 @@ class StateFragmentLocalTest {
       // done to trigger the
       onView(withId(R.id.hints_and_solution_summary))
         .check(matches(withText(containsString("Remember that two halves"))))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolution_hasCorrectContentDescription() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // checking content description of hint
+      onView(withId(R.id.hint_list_drop_down_icon)).check(
+        matches(
+          ViewMatchers.withContentDescription(
+            "Show/Hide hint list of Remember that two halves," +
+              " when added together, make one whole."
+          )
+        )
+      )
     }
   }
 

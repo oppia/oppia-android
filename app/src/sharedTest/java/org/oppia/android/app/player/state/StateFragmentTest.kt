@@ -1118,36 +1118,6 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_showHintsAndSolution_hasCorrectContentDescription() {
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-      clickContinueInteractionButton()
-
-      typeFractionText("1")
-      clickSubmitAnswerButton()
-      testCoroutineDispatchers.runCurrent()
-      scrollToViewType(FRACTION_INPUT_INTERACTION)
-      typeFractionText("1")
-      clickSubmitAnswerButton()
-      testCoroutineDispatchers.runCurrent()
-
-      // Reveal the hint
-      openHintsAndSolutionsDialog()
-      pressRevealHintButton(0)
-
-      // checking content description of hint
-      onView(withId(R.id.hint_list_drop_down_icon)).check(
-        matches(
-          withContentDescription(
-            "Show/Hide hint list of Remember that two halves," +
-              " when added together, make one whole."
-          )
-        )
-      )
-    }
-  }
-
-  @Test
   fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()

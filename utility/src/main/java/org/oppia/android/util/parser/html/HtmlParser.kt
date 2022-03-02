@@ -46,16 +46,24 @@ class HtmlParser private constructor(
    */
   fun parseOppiaHtml(
     rawString: String,
-    htmlContentTextView: TextView? = null,
+    htmlContentTextView: TextView,
     supportsLinks: Boolean = false,
     supportsConceptCards: Boolean = false
   ): Spannable {
 
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
+    when (getLayoutDirection(htmlContentTextView)) {
+      ViewCompat.LAYOUT_DIRECTION_RTL -> {
+        htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
+      }
+      ViewCompat.LAYOUT_DIRECTION_LTR -> {
+        htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
+      }
+    }
+    htmlContentTextView.invalidate()
+
     var htmlContent = rawString
-    val htmlSpannable: Spannable
-    val spannableBuilder: SpannableStringBuilder
     if ("\n\t" in htmlContent) {
       htmlContent = htmlContent.replace("\n\t", "")
     }
@@ -66,39 +74,41 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
         .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
     }
-    if (htmlContentTextView != null) {
-      when (getLayoutDirection(htmlContentTextView)) {
-        ViewCompat.LAYOUT_DIRECTION_RTL -> {
-          htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
-        }
-        ViewCompat.LAYOUT_DIRECTION_LTR -> {
-          htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
-        }
-      }
-      htmlContentTextView.invalidate()
 
-      // https://stackoverflow.com/a/8662457
-      if (supportsLinks) {
-        htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
-      }
-
-      val imageGetter = urlImageParserFactory.create(
-        htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
-      )
-      htmlSpannable = CustomHtmlContentHandler.fromHtml(
-        htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
-      )
-
-      spannableBuilder = CustomBulletSpan.replaceBulletSpan(
-        SpannableStringBuilder(htmlSpannable),
-        htmlContentTextView.context
-      )
-    } else {
-      htmlSpannable = CustomHtmlContentHandler.fromHtml(
-        htmlContent, null, computeCustomTagHandlers(supportsConceptCards)
-      )
-      spannableBuilder = SpannableStringBuilder(htmlSpannable)
+    // https://stackoverflow.com/a/8662457
+    if (supportsLinks) {
+      htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
     }
+
+    val imageGetter = urlImageParserFactory.create(
+      htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
+    )
+    val htmlSpannable = CustomHtmlContentHandler.fromHtml(
+      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
+    )
+
+    val spannableBuilder = CustomBulletSpan.replaceBulletSpan(
+      SpannableStringBuilder(htmlSpannable),
+      htmlContentTextView.context
+    )
+    return ensureNonEmpty(trimSpannable(spannableBuilder))
+  }
+
+  fun parseOppiaHtml(rawString: String): Spannable {
+    var htmlContent = rawString
+    if ("\n\t" in htmlContent) {
+      htmlContent = htmlContent.replace("\n\t", "")
+    }
+    if ("\n\n" in htmlContent) {
+      htmlContent = htmlContent.replace("\n\n", "")
+    }
+    if ("<li>" in htmlContent) {
+      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
+        .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+    }
+
+    val htmlSpannable = CustomHtmlContentHandler.fromHtml(htmlContent)
+    val spannableBuilder = SpannableStringBuilder(htmlSpannable)
     return ensureNonEmpty(trimSpannable(spannableBuilder))
   }
 

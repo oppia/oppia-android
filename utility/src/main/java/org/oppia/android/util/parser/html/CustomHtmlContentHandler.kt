@@ -196,22 +196,22 @@ class CustomHtmlContentHandler private constructor(
      */
     fun <T> fromHtml(
       html: String,
-      imageRetriever: T?,
+      imageRetriever: T,
       customTagHandlers: Map<String, CustomTagHandler>
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking.
-      if (imageRetriever != null) {
-        return HtmlCompat.fromHtml(
-          "<init-custom-handler/>$html",
-          HtmlCompat.FROM_HTML_MODE_LEGACY,
-          imageRetriever,
-          CustomHtmlContentHandler(customTagHandlers, imageRetriever),
-        ) as Spannable
-      }
       return HtmlCompat.fromHtml(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
+        imageRetriever,
+        CustomHtmlContentHandler(customTagHandlers, imageRetriever),
+      ) as Spannable
+    }
+
+    fun fromHtml(html: String): Spannable {
+      return HtmlCompat.fromHtml(
+        "<init-custom-handler/>$html", HtmlCompat.FROM_HTML_MODE_LEGACY,
       ) as Spannable
     }
   }
