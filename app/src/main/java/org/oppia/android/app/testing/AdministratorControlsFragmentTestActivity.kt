@@ -14,12 +14,22 @@ import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.R
+import org.oppia.android.app.administratorcontrols.APP_VERSION_FRAGMENT
+import org.oppia.android.app.administratorcontrols.LoadAppVersionListener
+import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
+import org.oppia.android.app.administratorcontrols.LoadProfileListListener
+import org.oppia.android.app.administratorcontrols.PROFILE_EDIT_FRAGMENT
+import org.oppia.android.app.administratorcontrols.PROFILE_LIST_FRAGMENT
 
 /** Activity [AdministratorControlsFragmentTestActivity] that allows user to change admin controls. */
 class AdministratorControlsFragmentTestActivity :
   TestActivity(),
   RouteToProfileListListener,
   RouteToAppVersionListener,
+  LoadProfileListListener,
+  LoadAppVersionListener,
+  LoadProfileEditListener,
   ShowLogoutDialogListener {
   @Inject
   lateinit var administratorControlsFragmentTestActivityPresenter:
@@ -42,13 +52,19 @@ class AdministratorControlsFragmentTestActivity :
     startActivity(ProfileListActivity.createProfileListActivityIntent(this))
   }
 
+  override fun loadProfileList() {}
+
+  override fun loadAppVersion() {}
+
+  override fun loadProfileEdit(profileId: Int, profileName: String) {}
+
   companion object {
     /** Returns an [Intent] to start this activity. */
     fun createAdministratorControlsFragmentTestActivityIntent(
       context: Context,
       profileId: Int?
     ): Intent {
-      val intent = Intent(context, AdministratorControlsFragmentTestActivityPresenter::class.java)
+      val intent = Intent(context, AdministratorControlsFragmentTestActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
     }
