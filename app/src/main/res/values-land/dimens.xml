@@ -461,7 +461,7 @@
   <dimen name="administrator_controls_app_information_view_app_version_text_view_padding_end">36dp</dimen>
 
   <!-- AdministratorControlsFragment -->
-  <dimen name="administrator_controls_fragment_padding_bottom">108dp</dimen>
+  <dimen name="administrator_controls_fragment_recycler_view_padding_bottom">108dp</dimen>
 
   <!-- AdministratorControlsGeneralView -->
   <dimen name="administrator_controls_general_view_general_text_view_padding_start">36dp</dimen>
