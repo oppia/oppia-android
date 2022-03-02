@@ -3,6 +3,9 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+    <variable
+      name="commonViewModel"
+      type="org.oppia.android.app.options.OptionControlsViewModel" />
 
     <variable
       name="viewModel"
@@ -13,12 +16,12 @@
     android:id="@+id/audio_laguage_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/general_item_background_border"
+    android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex ? @drawable/general_item_background_border_cyan : @drawable/general_item_background_border}"
     android:minHeight="48dp"
     android:onClick="@{(v) -> viewModel.onAudioLanguageClicked()}"
-    android:paddingStart="16dp"
+    android:paddingStart="@dimen/option_audio_language_padding_start"
     android:paddingTop="20dp"
-    android:paddingEnd="16dp"
+    android:paddingEnd="@dimen/option_audio_language_padding_end"
     android:paddingBottom="20dp">
 
     <TextView
