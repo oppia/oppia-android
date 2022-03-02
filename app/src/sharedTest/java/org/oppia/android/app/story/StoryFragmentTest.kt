@@ -193,8 +193,7 @@ class StoryFragmentTest {
     Intents.release()
   }
 
-  @Test
-  // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
+  @Test // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
   @DisableAccessibilityChecks
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
@@ -212,8 +211,7 @@ class StoryFragmentTest {
     }
   }
 
-  @Test
-  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   fun testStoryFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -227,8 +225,7 @@ class StoryFragmentTest {
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
   }
 
-  @Test
-  // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
+  @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   fun testStoryFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
     activityTestRule.launchActivity(createFractionsStoryActivityIntent())
     testCoroutineDispatchers.runCurrent()
@@ -615,8 +612,7 @@ class StoryFragmentTest {
     }
   }
 
-  @Test
-  // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets and
+  @Test // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets and
   // URLSpan should be used in place of ClickableSpan
   @DisableAccessibilityChecks
   fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
@@ -673,8 +669,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  // TODO(#4212): Error -> No views in hierarchy found matching
-  @Test
+  @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_completedChapter_checkProgressDrawableIsCorrect() {
     setStoryPartialProgressForFractions()
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
@@ -690,8 +685,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  // TODO(#4212): Error -> No views in hierarchy found matching
-  @Test
+  @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_notStartedChapter_checkProgressDrawableIsCorrect() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -706,8 +700,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  // TODO(#4212): Error -> No views in hierarchy found matching
-  @Test
+  @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_lockedChapter_checkProgressDrawableIsCorrect() {
     launch<StoryActivity>(createRatiosStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -722,8 +715,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  // TODO(#4212): Error -> No views in hierarchy found matching
-  @Test
+  @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_completedChapter_pawIconIsVisible() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -738,8 +730,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  @Test
-  // TODO(#4212): Error -> No views in hierarchy found matching
+  @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_pendingChapter_pawIconIsGone() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -754,8 +745,7 @@ class StoryFragmentTest {
   }
 
   @Config(qualifiers = "+sw600dp")
-  @Test
-  // TODO(#4212): Error -> No views in hierarchy found matching
+  @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_completedChapter_verticalDashedLineIsVisible() {
     launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
