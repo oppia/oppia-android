@@ -21,6 +21,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /** Tests for [HintsAndSolutionProdModule]. */
 @Suppress("FunctionName")
@@ -37,10 +38,9 @@ class HintsAndSolutionProdModuleTest {
   }
 
   @Test
+  @ObsoleteCoroutinesApi
   fun testHintHandlerFactoryInjection_constructNewHandler_providesFactoryForProdImplHandler() {
-    val hintHandler = hintHandlerFactory.create(object : HintHandler.HintMonitor {
-      override fun onHelpIndexChanged() {}
-    })
+    val hintHandler = hintHandlerFactory.create()
 
     assertThat(hintHandler).isInstanceOf(HintHandlerProdImpl::class.java)
   }

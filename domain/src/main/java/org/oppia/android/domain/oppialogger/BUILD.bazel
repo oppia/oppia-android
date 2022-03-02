@@ -31,7 +31,10 @@ kt_android_library(
     srcs = [
         "LogStorageModule.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__",
+    ],
     deps = [
         ":dagger",
     ],
