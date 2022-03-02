@@ -57,6 +57,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.FakeSyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -87,6 +89,9 @@ class AnalyticsControllerTest {
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
+
+  @Inject
+  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -561,6 +566,58 @@ class AnalyticsControllerTest {
     assertThat(secondEventLog.timestamp).isEqualTo(1556094100000)
   }
 
+  @Test
+  fun testController_logEvent_withoutNetwork_verifySyncStatusEqualsNetworkError() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logTransitionEvent(
+      1556094120000,
+      oppiaLogger.createOpenQuestionPlayerContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    assertThat(fakeSyncStatusManager.getSyncStatusList().last()).isEqualTo(
+      SyncStatusManager.SyncStatus.NETWORK_ERROR
+    )
+  }
+
+  @Test
+  fun testController_logEvent_afterCompletion_verifySyncStatusEqualsDataUploaded() {
+    analyticsController.logTransitionEvent(
+      1556094120000,
+      oppiaLogger.createOpenQuestionPlayerContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    assertThat(fakeSyncStatusManager.getSyncStatusList().last()).isEqualTo(
+      SyncStatusManager.SyncStatus.DATA_UPLOADED
+    )
+  }
+
+  @Test
+  fun testController_logEvent_beforeCompletion_verifySyncStatusEqualsDataUploading() {
+    analyticsController.logTransitionEvent(
+      1556094120000,
+      oppiaLogger.createOpenQuestionPlayerContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+    val syncStatusList = fakeSyncStatusManager.getSyncStatusList()
+    assertThat(syncStatusList.size).isEqualTo(2)
+    assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+    assertThat(syncStatusList[1]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -629,6 +686,10 @@ class AnalyticsControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @Provides
+    fun provideSyncStatusManager(fakeSyncStatusManager: FakeSyncStatusManager): SyncStatusManager =
+      fakeSyncStatusManager
   }
 
   @Module

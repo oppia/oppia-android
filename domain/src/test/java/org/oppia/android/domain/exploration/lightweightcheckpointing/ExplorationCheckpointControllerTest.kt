@@ -60,6 +60,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 /**
  * The base exploration id for every exploration used for testing [ExplorationCheckpointController].
@@ -531,7 +532,7 @@ class ExplorationCheckpointControllerTest {
       TestModule::class, TestLogReportingModule::class,
       TestExplorationStorageModule::class, TestDispatcherModule::class, RobolectricModule::class,
       LogStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class
+      LocaleProdModule::class, FakeOppiaClockModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

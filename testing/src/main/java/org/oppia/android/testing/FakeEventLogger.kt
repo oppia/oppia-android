@@ -4,14 +4,19 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.util.logging.EventLogger
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 
 /**  A test specific fake for the event logger. */
 @Singleton
-class FakeEventLogger @Inject constructor() : EventLogger {
+class FakeEventLogger @Inject constructor(
+  private val syncStatusManager: SyncStatusManager
+) : EventLogger {
   private val eventList = ArrayList<EventLog>()
 
   override fun logEvent(eventLog: EventLog) {
     eventList.add(eventLog)
+    syncStatusManager.setSyncStatus(DATA_UPLOADED)
   }
 
   /** Returns the most recently logged event. */

@@ -75,6 +75,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [PlatformParameterSyncUpWorker]. */
 @RunWith(AndroidJUnit4::class)
@@ -437,7 +438,7 @@ class PlatformParameterSyncUpWorkerTest {
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
       RetrofitTestModule::class, FakeOppiaClockModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      LocaleProdModule::class
+      LocaleProdModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

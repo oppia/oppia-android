@@ -43,6 +43,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -192,7 +193,7 @@ class LogUploadWorkManagerInitializerTest {
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class
+      LoggerModule::class, AssetModule::class, LoggerModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent {

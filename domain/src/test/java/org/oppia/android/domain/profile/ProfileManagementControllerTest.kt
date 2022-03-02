@@ -51,6 +51,7 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -1060,7 +1061,7 @@ class ProfileManagementControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -65,6 +65,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [QuestionTrainingController]. */
 @RunWith(AndroidJUnit4::class)
@@ -329,7 +330,8 @@ class QuestionTrainingControllerTest {
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class
+      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
+      SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

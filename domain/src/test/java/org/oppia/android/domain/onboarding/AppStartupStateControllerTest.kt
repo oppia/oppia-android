@@ -56,6 +56,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [AppStartupStateController]. */
 @RunWith(AndroidJUnit4::class)
@@ -435,7 +436,7 @@ class AppStartupStateControllerTest {
       LogStorageModule::class, RobolectricModule::class,
       TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
       NetworkConnectionUtilDebugModule::class,
-      OppiaClockModule::class, LocaleProdModule::class,
+      OppiaClockModule::class, LocaleProdModule::class, SyncStatusModule::class,
       ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
     ]
   )

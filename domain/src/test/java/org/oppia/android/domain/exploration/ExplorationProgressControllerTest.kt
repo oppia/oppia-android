@@ -104,6 +104,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -3618,7 +3619,7 @@ class ExplorationProgressControllerTest {
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleProdModule::class
+      AssetModule::class, LocaleProdModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

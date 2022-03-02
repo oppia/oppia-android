@@ -32,6 +32,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [TextInputStartsWithRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -411,7 +412,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
     modules = [
       LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
       TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class, TestModule::class
+      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
+      TestModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent {

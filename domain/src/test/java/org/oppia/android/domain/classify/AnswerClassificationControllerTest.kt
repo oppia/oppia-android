@@ -55,6 +55,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -844,7 +845,8 @@ class AnswerClassificationControllerTest {
       ImageClickInputModule::class, RatioInputModule::class, LocaleProdModule::class,
       FakeOppiaClockModule::class, LoggerModule::class, TestDispatcherModule::class,
       LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class
+      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
+      SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent {
