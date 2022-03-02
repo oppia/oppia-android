@@ -36,7 +36,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "profile_name_validator_prod_module",
+    name = "prod_module",
     srcs = [
         "ProfileNameValidatorModule.kt",
     ],
