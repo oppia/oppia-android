@@ -232,33 +232,19 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_wifiSwitchIsUncheck_autoUpdateSwitchIsUnchecked() {
+  fun testAdministratorControlsFragment_wifiSwitchIsUnchecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.topic_update_on_wifi_switch
-        )
-      ).check(matches(not(isChecked())))
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).check(matches(not(isChecked())))
+      checkUpdateOnWifiSwitchNotChecked()
     }
   }
 
   @Test
-  fun testAdministratorControlsFragment_clickWifiContainer_configChange_wifiSwitchIsChecked() {
+  fun testAdministratorControlsFragment_autoUpdateSwitchIsUnchecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -266,84 +252,7 @@ class AdministratorControlsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.topic_update_on_wifi_switch
-        )
-      ).check(matches(not(isChecked())))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.topic_update_on_wifi_constraint_layout
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.topic_update_on_wifi_switch
-        )
-      ).check(matches(isChecked()))
-      onView(isRoot()).perform(orientationPortrait())
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.topic_update_on_wifi_switch
-        )
-      ).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testAdministratorControls_clickWifiContainer_configChange_autoUpdateSwitchIsChecked() {
-    launch<AdministratorControlsFragmentTestActivity>(
-      createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).check(matches(not(isChecked())))
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).check(matches(isChecked()))
-      onView(isRoot()).perform(orientationPortrait())
-      scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).check(matches(isChecked()))
+      checkAutoUpdateSwitchIsUnchecked()
     }
   }
 
@@ -356,21 +265,79 @@ class AdministratorControlsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.topic_update_on_wifi_constraint_layout
-        )
-      ).perform(click())
+      clickUpdateOnWifiSwitch()
       testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.topic_update_on_wifi_switch
-        )
-      ).check(matches(isChecked()))
+      checkUpdateOnWifiSwitchIsChecked()
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickWifiContainer_orientationLand_wifiSwitchIsChecked() {
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      clickUpdateOnWifiSwitch()
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 2)
+      checkUpdateOnWifiSwitchIsChecked()
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickWifiContainer_configChange_wifiSwitchIsChecked() {
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      clickUpdateOnWifiSwitch()
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationPortrait())
+      scrollToPosition(position = 2)
+      checkUpdateOnWifiSwitchIsChecked()
+    }
+  }
+
+  @Test
+  fun testAdministratorControls_clickWifiContainer_orientationLand_autoUpdateSwitchIsChecked() {
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      clickAutoUpdateTopicSwitch()
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 2)
+      checkAutoUpdateTopicSwitchIsChecked()
+    }
+  }
+
+  @Test
+  fun testAdministratorControls_clickWifiContainer_configChange_autoUpdateSwitchIsChecked() {
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 2)
+      clickAutoUpdateTopicSwitch()
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(isRoot()).perform(orientationPortrait())
+      scrollToPosition(position = 2)
+      checkAutoUpdateTopicSwitchIsChecked()
     }
   }
 
@@ -383,21 +350,9 @@ class AdministratorControlsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_constraint_layout
-        )
-      ).perform(click())
+      clickAutoUpdateTopicContainer()
       testCoroutineDispatchers.runCurrent()
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).check(matches(isChecked()))
+      checkAutoUpdateTopicSwitchIsChecked()
     }
   }
 
@@ -410,13 +365,7 @@ class AdministratorControlsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.topic_update_on_wifi_switch
-        )
-      ).check(matches(not(isClickable())))
+      checkUpdateOnWifiSwitchNotClickable()
     }
   }
 
@@ -429,13 +378,7 @@ class AdministratorControlsFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.administrator_controls_list,
-          position = 2,
-          targetViewId = R.id.auto_update_topic_switch
-        )
-      ).check(matches(not(isClickable())))
+      checkAutoUpdateTopicSwitchNotClickable()
     }
   }
 
@@ -504,6 +447,96 @@ class AdministratorControlsFragmentTest {
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
     }
+  }
+
+  private fun clickAutoUpdateTopicContainer() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.auto_update_topic_constraint_layout
+      )
+    ).perform(click())
+  }
+
+  private fun checkUpdateOnWifiSwitchNotClickable() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.topic_update_on_wifi_switch
+      )
+    ).check(matches(not(isClickable())))
+  }
+
+  private fun checkAutoUpdateTopicSwitchNotClickable() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.auto_update_topic_switch
+      )
+    ).check(matches(not(isClickable())))
+  }
+
+  private fun checkUpdateOnWifiSwitchNotChecked() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.topic_update_on_wifi_switch
+      )
+    ).check(matches(not(isChecked())))
+  }
+
+  private fun clickAutoUpdateTopicSwitch() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.auto_update_topic_switch
+      )
+    ).perform(click())
+  }
+
+  private fun checkAutoUpdateTopicSwitchIsChecked() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.auto_update_topic_switch
+      )
+    ).check(matches(isChecked()))
+  }
+
+  private fun checkAutoUpdateSwitchIsUnchecked() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.auto_update_topic_switch
+      )
+    ).check(matches(not(isChecked())))
+  }
+
+  private fun checkUpdateOnWifiSwitchIsChecked() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.topic_update_on_wifi_switch
+      )
+    ).check(matches(isChecked()))
+  }
+
+  private fun clickUpdateOnWifiSwitch() {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = 2,
+        targetViewId = R.id.topic_update_on_wifi_constraint_layout
+      )
+    ).perform(click())
   }
 
   private fun createAdministratorControlsFragmentTestActivityIntent(profileId: Int): Intent {

@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
+import org.oppia.android.app.administratorcontrols.LoadAppVersionListener
+import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
+import org.oppia.android.app.administratorcontrols.LoadProfileListListener
 import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.RouteToAppVersionListener
 import org.oppia.android.app.administratorcontrols.RouteToProfileListListener
@@ -14,13 +17,6 @@ import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
-import org.oppia.android.R
-import org.oppia.android.app.administratorcontrols.APP_VERSION_FRAGMENT
-import org.oppia.android.app.administratorcontrols.LoadAppVersionListener
-import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
-import org.oppia.android.app.administratorcontrols.LoadProfileListListener
-import org.oppia.android.app.administratorcontrols.PROFILE_EDIT_FRAGMENT
-import org.oppia.android.app.administratorcontrols.PROFILE_LIST_FRAGMENT
 
 /** Test activity for ``AdministratorControlsFragmentTestActivity``. */
 class AdministratorControlsFragmentTestActivity :

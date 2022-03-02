@@ -20,7 +20,7 @@ class ProfileEditFragmentTestActivity : TestActivity() {
   }
 
   companion object {
-    /** Returns an [Intent] for opening the [ProfileEditFragmentTestActivitytivity]. */
+    /** Returns an [Intent] for opening the [ProfileEditFragmentTestActivity]. */
     fun createProfileEditFragmentTestActivity(context: Context, profileId: Int): Intent {
       val intent = Intent(context, ProfileEditFragmentTestActivity::class.java)
       intent.putExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, profileId)

@@ -252,7 +252,7 @@ class ProfileEditFragmentTest {
       name = "James",
       pin = "123",
       avatarImagePath = null,
-      allowDownloadAccess = true,
+      allowDownloadAccess = false,
       colorRgb = -10710042,
       isAdmin = false
     ).toLiveData()
