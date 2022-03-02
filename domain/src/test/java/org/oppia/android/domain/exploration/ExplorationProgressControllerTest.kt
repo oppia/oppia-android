@@ -104,6 +104,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.data.DataProvider
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -213,13 +214,13 @@ class ExplorationProgressControllerTest {
         INVALID_EXPLORATION_ID,
         shouldSavePartialProgress = false,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-      )
+      ).toLiveData()
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
     // An invalid exploration is not known until it's fully loaded, and that's observed via
     // getCurrentState.
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
   }
 
@@ -249,11 +250,11 @@ class ExplorationProgressControllerTest {
         TEST_EXPLORATION_ID_2,
         shouldSavePartialProgress = false,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-      )
+      ).toLiveData()
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
   }
 
@@ -306,13 +307,15 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.state.name).isEqualTo("Continue")
   }
 
+  // TODO: add pending cases for start/stop playing exploration methods.
+
   @Test
   fun testFinishExploration_beforePlaying_failWithError() {
-    val resultLiveData = explorationDataController.stopPlayingExploration()
+    val resultLiveData = explorationDataController.stopPlayingExploration().toLiveData()
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isFailure()).isTrue()
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
@@ -340,11 +343,11 @@ class ExplorationProgressControllerTest {
         TEST_EXPLORATION_ID_2,
         shouldSavePartialProgress = false,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-      )
+      ).toLiveData()
     resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isFailure()).isTrue()
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
@@ -386,7 +389,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testSubmitAnswer_beforePlaying_failsWithError() {
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0)).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -414,7 +417,7 @@ class ExplorationProgressControllerTest {
     )
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0)).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -443,7 +446,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2)).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -469,7 +472,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2)).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -497,7 +500,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0)).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -523,7 +526,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeMultipleChoiceState()
 
     val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0)).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -614,7 +617,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testMoveToNext_beforePlaying_failsWithError() {
-    val moveToStateResult = explorationProgressController.moveToNextState()
+    val moveToStateResult = explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
 
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
@@ -636,7 +639,7 @@ class ExplorationProgressControllerTest {
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
 
-    val moveToStateResult = explorationProgressController.moveToNextState()
+    val moveToStateResult = explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
 
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
@@ -658,7 +661,7 @@ class ExplorationProgressControllerTest {
     )
     waitForGetCurrentStateSuccessfulLoad()
 
-    val moveToStateResult = explorationProgressController.moveToNextState()
+    val moveToStateResult = explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -683,7 +686,7 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     submitPrototypeState1Answer()
 
-    val moveToStateResult = explorationProgressController.moveToNextState()
+    val moveToStateResult = explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -726,7 +729,7 @@ class ExplorationProgressControllerTest {
 
     // Try skipping past the current state.
     val moveToStateResult =
-      explorationProgressController.moveToNextState()
+      explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -741,7 +744,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToPrevious_beforePlaying_failsWithError() {
     val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
+      explorationProgressController.moveToPreviousState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -765,7 +768,7 @@ class ExplorationProgressControllerTest {
     )
 
     val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
+      explorationProgressController.moveToPreviousState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -789,7 +792,7 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
 
     val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
+      explorationProgressController.moveToPreviousState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -815,7 +818,7 @@ class ExplorationProgressControllerTest {
     submitPrototypeState1Answer()
 
     val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
+      explorationProgressController.moveToPreviousState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -841,7 +844,7 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
 
     val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
+      explorationProgressController.moveToPreviousState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -888,7 +891,7 @@ class ExplorationProgressControllerTest {
     moveToPreviousState()
 
     val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
+      explorationProgressController.moveToPreviousState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -915,7 +918,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish")).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -943,7 +946,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon")).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1032,7 +1035,7 @@ class ExplorationProgressControllerTest {
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
     waitForGetCurrentStateSuccessfulLoad()
-    val result = explorationProgressController.submitSolutionIsRevealed()
+    val result = explorationProgressController.submitSolutionIsRevealed().toLiveData()
     result.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1125,7 +1128,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0).toLiveData()
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1154,7 +1157,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0).toLiveData()
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1186,7 +1189,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0).toLiveData()
     result.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1219,7 +1222,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val hintResult = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    val hintResult = explorationProgressController.submitHintIsRevealed(hintIndex = 0).toLiveData()
     hintResult.observeForever(mockAsyncHintObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1227,7 +1230,7 @@ class ExplorationProgressControllerTest {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
     testCoroutineDispatchers.runCurrent()
 
-    val solutionResult = explorationProgressController.submitSolutionIsRevealed()
+    val solutionResult = explorationProgressController.submitSolutionIsRevealed().toLiveData()
     solutionResult.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1282,7 +1285,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
+      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish")).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1309,7 +1312,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  "))
+      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  ")).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1338,7 +1341,7 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeTextInputState()
 
     val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
+      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon")).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1523,7 +1526,8 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeNumericInputState()
 
-    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121.0))
+    val result =
+      explorationProgressController.submitAnswer(createNumericInputAnswer(121.0)).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1552,7 +1556,7 @@ class ExplorationProgressControllerTest {
 
     val result = explorationProgressController.submitAnswer(
       createNumericInputAnswer(122.0)
-    )
+    ).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1579,7 +1583,8 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     // The first state of the exploration is the Continue interaction.
 
-    val result = explorationProgressController.submitAnswer(createContinueButtonAnswer())
+    val result =
+      explorationProgressController.submitAnswer(createContinueButtonAnswer()).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1653,7 +1658,7 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     playThroughPrototypeExploration()
 
-    val moveToStateResult = explorationProgressController.moveToNextState()
+    val moveToStateResult = explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
 
@@ -1741,7 +1746,7 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_beforePlaying_failsWithError_logsException() {
     val moveToStateResult =
-      explorationProgressController.moveToNextState()
+      explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     val exception = fakeExceptionLogger.getMostRecentException()
 
@@ -1765,7 +1770,7 @@ class ExplorationProgressControllerTest {
     moveToPreviousState()
 
     val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
+      explorationProgressController.moveToPreviousState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
     val exception = fakeExceptionLogger.getMostRecentException()
@@ -1779,7 +1784,7 @@ class ExplorationProgressControllerTest {
   fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
     val result = explorationProgressController.submitAnswer(
       createMultipleChoiceAnswer(0)
-    )
+    ).toLiveData()
     result.observeForever(mockAsyncAnswerOutcomeObserver)
     testCoroutineDispatchers.runCurrent()
     val exception = fakeExceptionLogger.getMostRecentException()
@@ -1823,7 +1828,7 @@ class ExplorationProgressControllerTest {
       explorationCheckpointController.retrieveExplorationCheckpoint(
         profileId,
         TEST_EXPLORATION_ID_2
-      ).toLiveData()
+      )
 
     verifyOperationSucceeds(retrieveCheckpointLiveData)
   }
@@ -2845,7 +2850,7 @@ class ExplorationProgressControllerTest {
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
     testCoroutineDispatchers.runCurrent()
 
-    val solutionResult = explorationProgressController.submitSolutionIsRevealed()
+    val solutionResult = explorationProgressController.submitSolutionIsRevealed().toLiveData()
     solutionResult.observeForever(mockAsyncSolutionObserver)
     testCoroutineDispatchers.runCurrent()
     endExploration()
@@ -3536,14 +3541,17 @@ class ExplorationProgressControllerTest {
   }
 
   /**
-   * Verifies that the specified live data provides at least one successful operation. This will
-   * change test-wide mock state, and synchronizes background execution.
+   * Verifies that the specified data provider provides at least one successful operation. This
+   * will change test-wide mock state, and synchronizes background execution.
    */
+  private fun <T : Any?> verifyOperationSucceeds(dataProvider: DataProvider<T>) =
+    verifyOperationSucceeds(dataProvider.toLiveData())
+
   private fun <T : Any?> verifyOperationSucceeds(liveData: LiveData<AsyncResult<T>>) {
     reset(mockAsyncResultLiveDataObserver)
     liveData.observeForever(mockAsyncResultLiveDataObserver)
     testCoroutineDispatchers.runCurrent()
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
+    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     asyncResultCaptor.value.apply {
       // This bit of conditional logic is used to add better error reporting when failures occur.
       if (isFailure()) {

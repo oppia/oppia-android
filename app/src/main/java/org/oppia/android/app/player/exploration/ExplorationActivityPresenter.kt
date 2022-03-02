@@ -238,7 +238,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun stopExploration() {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
-    explorationDataController.stopPlayingExploration()
+    explorationDataController.stopPlayingExploration().toLiveData()
       .observe(
         activity,
         Observer<AsyncResult<Any?>> {

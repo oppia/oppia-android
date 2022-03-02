@@ -170,7 +170,7 @@ class StateFragmentPresenter @Inject constructor(
   fun onNextButtonClicked() = moveToNextState()
 
   fun onPreviousButtonClicked() {
-    explorationProgressController.moveToPreviousState()
+    explorationProgressController.moveToPreviousState().toLiveData()
   }
 
   fun onReturnToTopicButtonClicked() {
@@ -248,11 +248,11 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(hintIndex: Int) {
-    subscribeToHintSolution(explorationProgressController.submitHintIsRevealed(hintIndex))
+    subscribeToHintSolution(explorationProgressController.submitHintIsRevealed(hintIndex).toLiveData())
   }
 
   fun revealSolution() {
-    subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
+    subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed().toLiveData())
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -400,7 +400,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
   }
 
   fun dismissConceptCard() {
@@ -413,7 +413,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun moveToNextState() {
     viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
-    explorationProgressController.moveToNextState().observe(
+    explorationProgressController.moveToNextState().toLiveData().observe(
       fragment,
       Observer {
         recyclerViewAssembler.collapsePreviousResponses()

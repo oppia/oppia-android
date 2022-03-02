@@ -119,8 +119,12 @@ class DataProviderTestMonitor<T> private constructor(
 
   private fun retrieveSuccess(operation: () -> AsyncResult<T>): T {
     return operation().also {
-      // Sanity check.
-      check(it.isSuccess()) { "Expected next result to be a success, not: $it" }
+      // Sanity check. Ensure that the full failure stack trace is thrown.
+      if (!it.isSuccess()) {
+        throw IllegalStateException(
+          "Expected next result to be a success, not: $it", it.getErrorOrNull()
+        )
+      }
     }.getOrThrow()
   }
 

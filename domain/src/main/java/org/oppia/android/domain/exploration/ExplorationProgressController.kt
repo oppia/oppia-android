@@ -1,7 +1,6 @@
 package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
@@ -20,15 +19,42 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
-import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.concurrent.withLock
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.LOADING_EXPLORATION
+import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.NOT_PLAYING
+import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.SUBMITTING_ANSWER
+import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.VIEWING_STATE
+import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.threading.BackgroundDispatcher
 
-private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
+private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.begin_exploration_result"
+private const val FINISH_EXPLORATION_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.finish_exploration_result"
+private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_answer_result"
+private const val SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_hint_revealed_result"
+private const val SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_solution_revealed_result"
+private const val MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.move_to_previous_state_result"
+private const val MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.move_to_next_state_result"
+private const val CURRENT_STATE_PROVIDER_ID = "ExplorationProgressController.current_state"
+private const val LOCALIZED_STATE_PROVIDER_ID = "ExplorationProgressController.localized_state"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
@@ -50,8 +76,10 @@ class ExplorationProgressController @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   private val hintHandlerFactory: HintHandler.Factory,
-  private val translationController: TranslationController
-) : HintHandler.HintMonitor {
+  private val translationController: TranslationController,
+  private val dataProviders: DataProviders,
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
+) {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
   //  blocking cache to simplify state locking. However, doing this correctly requires a fix in
@@ -65,54 +93,83 @@ class ExplorationProgressController @Inject constructor(
   //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
   //  make decisions based on a value of the checkpointState which might not be up-to date.
 
-  private val explorationProgress = ExplorationProgress()
-  private val explorationProgressLock = ReentrantLock()
-  private lateinit var hintHandler: HintHandler
+  // TODO: update documentation & callsites to properly handle that returned providers will initially provide pending states.
+  // TODO: update documentation to clarify that DataProviders will reset their state between submit calls.
+  // TODO: update documentation & PR description to explain that this now eagerly compute ephemeral state rather than lazily due to it being a better fit with flows.
+
+  // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
+  //  for getCurrentState).
+  private lateinit var profileId: ProfileId
+
+  private val controllerCommandQueue by lazy { createControllerCommandActor() }
+  private val ephemeralStateFlow by lazy { createAsyncResultStateFlow<EphemeralState>() }
+  private val beginExplorationResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
+  private val finishExplorationResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
+  private val submitAnswerResultFlow by lazy { createAsyncResultStateFlow<AnswerOutcome>() }
+  private val submitHintRevealedResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
+  private val submitSolutionRevealedResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
+  private val moveToPreviousStateResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
+  private val moveToNextStateResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
+  private val ephemeralStateDataProvider by lazy {
+    dataProviders.run {
+      ephemeralStateFlow.convertAsyncToAutomaticDataProvider(CURRENT_STATE_PROVIDER_ID)
+    }
+  }
+  private val beginExplorationResultDataProvider by lazy {
+    beginExplorationResultFlow.convertToDataProvider(BEGIN_EXPLORATION_RESULT_PROVIDER_ID)
+  }
+  private val finishExplorationResultDataProvider by lazy {
+    finishExplorationResultFlow.convertToDataProvider(FINISH_EXPLORATION_RESULT_PROVIDER_ID)
+  }
+  private val submitAnswerResultDataProvider by lazy {
+    submitAnswerResultFlow.convertToDataProvider(SUBMIT_ANSWER_RESULT_PROVIDER_ID)
+  }
+  private val submitHintRevealedResultDataProvider by lazy {
+    submitHintRevealedResultFlow.convertToDataProvider(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID)
+  }
+  private val submitSolutionRevealedResultDataProvider by lazy {
+    submitSolutionRevealedResultFlow.convertToDataProvider(
+      SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID
+    )
+  }
+  private val moveToPreviousStateResultDataProvider by lazy {
+    moveToPreviousStateResultFlow.convertToDataProvider(MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID)
+  }
+  private val moveToNextStateResultDataProvider by lazy {
+    moveToNextStateResultFlow.convertToDataProvider(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID)
+  }
 
   /** Resets this controller to begin playing the specified [Exploration]. */
   internal fun beginExplorationAsync(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
-  ) {
-    explorationProgressLock.withLock {
-      check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
-        "Expected to finish previous exploration before starting a new one."
-      }
-
-      explorationProgress.apply {
-        currentProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-        currentTopicId = topicId
-        currentStoryId = storyId
-        currentExplorationId = explorationId
-        this.shouldSavePartialProgress = shouldSavePartialProgress
-        checkpointState = CheckpointState.CHECKPOINT_UNSAVED
-        this.explorationCheckpoint = explorationCheckpoint
-      }
-      hintHandler = hintHandlerFactory.create(this)
-      explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
-      asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+  ): DataProvider<Any?> {
+    val initializeMessage =
+      ControllerMessage.InitializeController(
+        profileId,
+        topicId,
+        storyId,
+        explorationId,
+        shouldSavePartialProgress,
+        explorationCheckpoint
+      )
+    this.profileId = profileId
+    check(controllerCommandQueue.offer(initializeMessage)) {
+      "Failed to schedule command for initializing the exploration progress controller."
     }
+    return beginExplorationResultDataProvider
   }
 
   /** Indicates that the current exploration being played is now completed. */
-  internal fun finishExplorationAsync() {
-    explorationProgressLock.withLock {
-      check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
-        "Cannot finish playing an exploration that hasn't yet been started"
-      }
-      explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.NOT_PLAYING)
+  internal fun finishExplorationAsync(): DataProvider<Any?> {
+    check(controllerCommandQueue.offer(ControllerMessage.FinishExploration)) {
+      "Failed to schedule command for cleaning up after finishing the exploration."
     }
-  }
-
-  override fun onHelpIndexChanged() {
-    explorationProgressLock.withLock {
-      saveExplorationCheckpoint()
-    }
-    asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+    return finishExplorationResultDataProvider
   }
 
   /**
@@ -142,84 +199,14 @@ class ExplorationProgressController @Inject constructor(
    * failed answer submission.
    *
    * No assumptions should be made about the completion order of the returned [LiveData] vs. the
-   * [LiveData] from  [getCurrentState]. Also note that the returned [LiveData] will only have a
+   * [LiveData] from [getCurrentState]. Also note that the returned [LiveData] will only have a
    * single value and not be reused after that point.
    */
-  fun submitAnswer(userAnswer: UserAnswer): LiveData<AsyncResult<AnswerOutcome>> {
-    try {
-      explorationProgressLock.withLock {
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.NOT_PLAYING
-        ) {
-          "Cannot submit an answer if an exploration is not being played."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.LOADING_EXPLORATION
-        ) {
-          "Cannot submit an answer while the exploration is being loaded."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
-        ) {
-          "Cannot submit an answer while another answer is pending."
-        }
-
-        // Notify observers that the submitted answer is currently pending.
-        explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.SUBMITTING_ANSWER)
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-
-        lateinit var answerOutcome: AnswerOutcome
-        try {
-          val topPendingState = explorationProgress.stateDeck.getPendingTopState()
-          val outcome =
-            answerClassificationController.classify(
-              topPendingState.interaction,
-              userAnswer.answer,
-              userAnswer.writtenTranslationContext
-            ).outcome
-          answerOutcome =
-            explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
-          explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
-
-          // Follow the answer's outcome to another part of the graph if it's different.
-          val ephemeralState = computeBaseCurrentEphemeralState()
-          when {
-            answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
-              val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
-              explorationProgress.stateDeck.pushState(newState, prohibitSameStateName = true)
-              hintHandler.finishState(newState)
-            }
-            ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
-              // Schedule, or show immediately, a new hint or solution based on the current
-              // ephemeral state of the exploration because a new wrong answer was submitted.
-              hintHandler.handleWrongAnswerSubmission(ephemeralState.pendingState.wrongAnswerCount)
-            }
-          }
-        } finally {
-          if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
-            // If the answer was not submitted on behalf of the Continue interaction, update the
-            // hint state and save checkpoint because it will be saved when the learner moves to the
-            // next state.
-            saveExplorationCheckpoint()
-          }
-
-          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
-          // in an 'always submitting answer' situation. This can specifically happen if answer
-          // classification throws an exception.
-          explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
-        }
-
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-
-        return MutableLiveData(AsyncResult.success(answerOutcome))
-      }
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+  fun submitAnswer(userAnswer: UserAnswer): DataProvider<AnswerOutcome> {
+    sendCommandForOperation(submitAnswerResultFlow, ControllerMessage.SubmitAnswer(userAnswer)) {
+      "Failed to schedule command for answer submission."
     }
+    return submitAnswerResultDataProvider
   }
 
   /**
@@ -230,42 +217,13 @@ class ExplorationProgressController @Inject constructor(
    * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
-  fun submitHintIsRevealed(hintIndex: Int): LiveData<AsyncResult<Any?>> {
-    try {
-      explorationProgressLock.withLock {
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.NOT_PLAYING
-        ) {
-          "Cannot submit an answer if an exploration is not being played."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.LOADING_EXPLORATION
-        ) {
-          "Cannot submit an answer while the exploration is being loaded."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
-        ) {
-          "Cannot submit an answer while another answer is pending."
-        }
-        try {
-          hintHandler.viewHint(hintIndex)
-        } finally {
-          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
-          // in an 'always showing hint' situation. This can specifically happen if hint throws an
-          // exception.
-          explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
-        }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(null))
-      }
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+  fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
+    sendCommandForOperation(
+      submitHintRevealedResultFlow, ControllerMessage.HintIsRevealed(hintIndex)
+    ) {
+      "Failed to schedule command for revealing hint: $hintIndex."
     }
+    return submitHintRevealedResultDataProvider
   }
 
   /**
@@ -274,43 +232,13 @@ class ExplorationProgressController @Inject constructor(
    * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
-  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Any?>> {
-    try {
-      explorationProgressLock.withLock {
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.NOT_PLAYING
-        ) {
-          "Cannot submit an answer if an exploration is not being played."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.LOADING_EXPLORATION
-        ) {
-          "Cannot submit an answer while the exploration is being loaded."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
-        ) {
-          "Cannot submit an answer while another answer is pending."
-        }
-        try {
-          hintHandler.viewSolution()
-        } finally {
-          // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
-          // in an 'always showing solution' situation. This can specifically happen if solution
-          // throws an exception.
-          explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
-        }
-
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(null))
-      }
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+  fun submitSolutionIsRevealed(): DataProvider<Any?> {
+    sendCommandForOperation(
+      submitSolutionRevealedResultFlow, ControllerMessage.SolutionIsRevealed
+    ) {
+      "Failed to schedule command for revealing the solution."
     }
+    return submitSolutionRevealedResultDataProvider
   }
 
   /**
@@ -324,36 +252,11 @@ class ExplorationProgressController @Inject constructor(
    *     that calling code only listen to this result for failures, and instead rely on
    *     [getCurrentState] for observing a successful transition to another state.
    */
-  fun moveToPreviousState(): LiveData<AsyncResult<Any?>> {
-    try {
-      explorationProgressLock.withLock {
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.NOT_PLAYING
-        ) {
-          "Cannot navigate to a previous state if an exploration is not being played."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.LOADING_EXPLORATION
-        ) {
-          "Cannot navigate to a previous state if an exploration is being loaded."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
-        ) {
-          "Cannot navigate to a previous state if an answer submission is pending."
-        }
-        hintHandler.navigateToPreviousState()
-        explorationProgress.stateDeck.navigateToPreviousState()
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-      }
-      return MutableLiveData(AsyncResult.success(null))
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+  fun moveToPreviousState(): DataProvider<Any?> {
+    sendCommandForOperation(moveToPreviousStateResultFlow, ControllerMessage.MoveToPreviousState) {
+      "Failed to schedule command for moving to the previous state."
     }
+    return moveToPreviousStateResultDataProvider
   }
 
   /**
@@ -371,43 +274,11 @@ class ExplorationProgressController @Inject constructor(
    *     listen to this result for failures, and instead rely on [getCurrentState] for observing a
    *     successful transition to another state.
    */
-  fun moveToNextState(): LiveData<AsyncResult<Any?>> {
-    try {
-      explorationProgressLock.withLock {
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.NOT_PLAYING
-        ) {
-          "Cannot navigate to a next state if an exploration is not being played."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.LOADING_EXPLORATION
-        ) {
-          "Cannot navigate to a next state if an exploration is being loaded."
-        }
-        check(
-          explorationProgress.playStage !=
-            ExplorationProgress.PlayStage.SUBMITTING_ANSWER
-        ) {
-          "Cannot navigate to a next state if an answer submission is pending."
-        }
-        explorationProgress.stateDeck.navigateToNextState()
-
-        if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
-          hintHandler.navigateBackToLatestPendingState()
-
-          // Only mark checkpoint if current state is pending state. This ensures that checkpoints
-          // will not be marked on any of the completed states.
-          saveExplorationCheckpoint()
-        }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-      }
-      return MutableLiveData(AsyncResult.success(null))
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+  fun moveToNextState(): DataProvider<Any?> {
+    sendCommandForOperation(moveToNextStateResultFlow, ControllerMessage.MoveToNextState) {
+      "Failed to schedule command for moving to the next state."
     }
+    return moveToNextStateResultDataProvider
   }
 
   /**
@@ -432,69 +303,320 @@ class ExplorationProgressController @Inject constructor(
    * exploration, it should return a pending state.
    */
   fun getCurrentState(): DataProvider<EphemeralState> {
-    return translationController.getWrittenTranslationContentLocale(
-      explorationProgress.currentProfileId
-    ).transformAsync(CURRENT_STATE_DATA_PROVIDER_ID) { contentLocale ->
-      return@transformAsync retrieveCurrentStateAsync(contentLocale)
+    val writtenTranslationContentLocale =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return writtenTranslationContentLocale.combineWith(
+      ephemeralStateDataProvider, LOCALIZED_STATE_PROVIDER_ID
+    ) { locale, ephemeralState ->
+      ephemeralState.toBuilder().apply {
+        // Augment the state to include translation information (which may not necessarily be
+        // up-to-date in the state deck).
+        writtenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            state.writtenTranslationsMap, locale
+          )
+      }.build()
     }
   }
 
-  private suspend fun retrieveCurrentStateAsync(
-    writtenTranslationContentLocale: OppiaLocale.ContentLocale
-  ): AsyncResult<EphemeralState> {
+  private fun createControllerCommandActor(): SendChannel<ControllerMessage> {
+    val controllerState = ControllerState(ExplorationProgress())
+    // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
+    // the main thread or scheduling an extra coroutine.
+    return CoroutineScope(backgroundCoroutineDispatcher).actor(capacity = Channel.UNLIMITED) {
+      for (message in channel) {
+        @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
+        val unused = when (message) {
+          is ControllerMessage.InitializeController -> {
+            controllerState.beginExplorationInternal(
+              message.profileId,
+              message.topicId,
+              message.storyId,
+              message.explorationId,
+              message.shouldSavePartialProgress,
+              message.explorationCheckpoint
+            )
+          }
+          ControllerMessage.FinishExploration -> controllerState.finishExplorationInternal()
+          is ControllerMessage.SubmitAnswer ->
+            controllerState.submitAnswerInternal(message.userAnswer)
+          is ControllerMessage.HintIsRevealed ->
+            controllerState.submitHintIsRevealedInternal(message.hintIndex)
+          ControllerMessage.SolutionIsRevealed -> controllerState.submitSolutionIsRevealedInternal()
+          ControllerMessage.MoveToPreviousState -> controllerState.moveToPreviousStateInternal()
+          ControllerMessage.MoveToNextState -> controllerState.moveToNextStateInternal()
+        }
+      }
+    }
+  }
+
+  private fun <T> sendCommandForOperation(
+    resultFlow: MutableStateFlow<AsyncResult<T>>,
+    message: ControllerMessage,
+    lazyFailureMessage: () -> String
+  ) {
+    // Ensure that the result is first reset since there will be a delay before the message is
+    // processed.
+    resultFlow.value = AsyncResult.pending()
+
+    // This must succeed or the app will be entered into a bad state. Crash instead of trying to
+    // recover (though recovery may be possible in the future with some changes and user messaging).
+    check(controllerCommandQueue.offer(message), lazyFailureMessage)
+  }
+
+  private suspend fun ControllerState.beginExplorationInternal(
+    profileId: ProfileId,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint
+  ) {
+    tryOperation(BEGIN_EXPLORATION_RESULT_PROVIDER_ID, beginExplorationResultFlow) {
+      check(explorationProgress.playStage == NOT_PLAYING) {
+        "Expected to finish previous exploration before starting a new one."
+      }
+
+      explorationProgress.apply {
+        currentProfileId = profileId
+        currentTopicId = topicId
+        currentStoryId = storyId
+        currentExplorationId = explorationId
+        this.shouldSavePartialProgress = shouldSavePartialProgress
+        checkpointState = CheckpointState.CHECKPOINT_UNSAVED
+        this.explorationCheckpoint = explorationCheckpoint
+      }
+      hintHandler = hintHandlerFactory.create()
+      hintHandler.getCurrentHelpIndex().onEach {
+        recomputeCurrentStateAndNotify()
+      }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
+      explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
+
+      // Reset the finish flow since the exploration is beginning.
+      finishExplorationResultFlow.value = AsyncResult.pending()
+      return@tryOperation null
+    }
+  }
+
+  private suspend fun ControllerState.finishExplorationInternal() {
+    tryOperation(
+      FINISH_EXPLORATION_RESULT_PROVIDER_ID, finishExplorationResultFlow, recomputeState = false
+    ) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot finish playing an exploration that hasn't yet been started"
+      }
+      explorationProgress.advancePlayStageTo(NOT_PLAYING)
+      return@tryOperation null
+    }
+
+    // Ensure all state is reset since an exploration is no longer being played.
+    ephemeralStateFlow.value = AsyncResult.pending()
+    beginExplorationResultFlow.value = AsyncResult.pending()
+    submitAnswerResultFlow.value = AsyncResult.pending()
+    submitHintRevealedResultFlow.value = AsyncResult.pending()
+    submitSolutionRevealedResultFlow.value = AsyncResult.pending()
+    moveToPreviousStateResultFlow.value = AsyncResult.pending()
+    moveToNextStateResultFlow.value = AsyncResult.pending()
+  }
+
+  private suspend fun ControllerState.submitAnswerInternal(userAnswer: UserAnswer) {
+    tryOperation(SUBMIT_ANSWER_RESULT_PROVIDER_ID, submitAnswerResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot submit an answer if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot submit an answer while the exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot submit an answer while another answer is pending."
+      }
+
+      // Notify observers that the submitted answer is currently pending.
+      explorationProgress.advancePlayStageTo(SUBMITTING_ANSWER)
+      recomputeCurrentStateAndNotify()
+
+      lateinit var answerOutcome: AnswerOutcome
+      try {
+        val topPendingState = explorationProgress.stateDeck.getPendingTopState()
+        val outcome =
+          answerClassificationController.classify(
+            topPendingState.interaction,
+            userAnswer.answer,
+            userAnswer.writtenTranslationContext
+          ).outcome
+        answerOutcome =
+          explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
+        explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
+
+        // Follow the answer's outcome to another part of the graph if it's different.
+        val ephemeralState = computeBaseCurrentEphemeralState()
+        when {
+          answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
+            val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
+            explorationProgress.stateDeck.pushState(newState, prohibitSameStateName = true)
+            hintHandler.finishState(newState)
+          }
+          ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
+            // Schedule, or show immediately, a new hint or solution based on the current
+            // ephemeral state of the exploration because a new wrong answer was submitted.
+            hintHandler.handleWrongAnswerSubmission(ephemeralState.pendingState.wrongAnswerCount)
+          }
+        }
+      } finally {
+        if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
+          // If the answer was not submitted on behalf of the Continue interaction, update the
+          // hint state and save checkpoint because it will be saved when the learner moves to the
+          // next state.
+          saveExplorationCheckpoint()
+        }
+
+        // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
+        // in an 'always submitting answer' situation. This can specifically happen if answer
+        // classification throws an exception.
+        explorationProgress.advancePlayStageTo(VIEWING_STATE)
+      }
+
+      return@tryOperation answerOutcome
+    }
+  }
+
+  private suspend fun ControllerState.submitHintIsRevealedInternal(hintIndex: Int) {
+    tryOperation(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID, submitHintRevealedResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot submit an answer if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot submit an answer while the exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot submit an answer while another answer is pending."
+      }
+      try {
+        hintHandler.viewHint(hintIndex)
+      } finally {
+        // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
+        // in an 'always showing hint' situation. This can specifically happen if hint throws an
+        // exception.
+        explorationProgress.advancePlayStageTo(VIEWING_STATE)
+      }
+    }
+  }
+
+  private suspend fun ControllerState.submitSolutionIsRevealedInternal() {
+    tryOperation(SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID, submitSolutionRevealedResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot submit an answer if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot submit an answer while the exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot submit an answer while another answer is pending."
+      }
+      try {
+        hintHandler.viewSolution()
+      } finally {
+        // Ensure that the user always returns to the VIEWING_STATE stage to avoid getting stuck
+        // in an 'always showing solution' situation. This can specifically happen if solution
+        // throws an exception.
+        explorationProgress.advancePlayStageTo(VIEWING_STATE)
+      }
+    }
+  }
+
+  private suspend fun ControllerState.moveToPreviousStateInternal() {
+    tryOperation(MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID, moveToPreviousStateResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot navigate to a previous state if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot navigate to a previous state if an exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot navigate to a previous state if an answer submission is pending."
+      }
+      hintHandler.navigateToPreviousState()
+      explorationProgress.stateDeck.navigateToPreviousState()
+    }
+  }
+
+  private suspend fun ControllerState.moveToNextStateInternal() {
+    tryOperation(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID, moveToNextStateResultFlow) {
+      check(explorationProgress.playStage != NOT_PLAYING) {
+        "Cannot navigate to a next state if an exploration is not being played."
+      }
+      check(explorationProgress.playStage != LOADING_EXPLORATION) {
+        "Cannot navigate to a next state if an exploration is being loaded."
+      }
+      check(explorationProgress.playStage != SUBMITTING_ANSWER) {
+        "Cannot navigate to a next state if an answer submission is pending."
+      }
+      explorationProgress.stateDeck.navigateToNextState()
+
+      if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
+        hintHandler.navigateBackToLatestPendingState()
+
+        // Only mark checkpoint if current state is pending state. This ensures that checkpoints
+        // will not be marked on any of the completed states.
+        saveExplorationCheckpoint()
+      }
+    }
+  }
+
+  private suspend fun <T> ControllerState.tryOperation(
+    providerId: String,
+    resultFlow: MutableStateFlow<AsyncResult<T>>,
+    recomputeState: Boolean = true,
+    operation: suspend ControllerState.() -> T
+  ) {
+    try {
+      resultFlow.value = AsyncResult.success(operation())
+      if (recomputeState) {
+        recomputeCurrentStateAndNotify()
+      }
+    } catch (e: Exception) {
+      exceptionsController.logNonFatalException(e)
+      resultFlow.value = AsyncResult.failed(e)
+    }
+    asyncDataSubscriptionManager.notifyChangeAsync(providerId)
+  }
+
+  private suspend fun ControllerState.recomputeCurrentStateAndNotify() {
+    ephemeralStateFlow.value = retrieveCurrentStateAsync()
+    asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
+  }
+
+  private suspend fun ControllerState.retrieveCurrentStateAsync(): AsyncResult<EphemeralState> {
     return try {
-      retrieveCurrentStateWithinCacheAsync(writtenTranslationContentLocale)
+      retrieveStateWithinCache()
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       AsyncResult.failed(e)
     }
   }
 
-  @Suppress("RedundantSuspendModifier") // Function is 'suspend' to restrict calling some methods.
-  private suspend fun retrieveCurrentStateWithinCacheAsync(
-    writtenTranslationContentLocale: OppiaLocale.ContentLocale
-  ): AsyncResult<EphemeralState> {
-    val explorationId: String? = explorationProgressLock.withLock {
-      if (explorationProgress.playStage == ExplorationProgress.PlayStage.LOADING_EXPLORATION) {
-        explorationProgress.currentExplorationId
-      } else null
-    }
-
-    val exploration = explorationId?.let(explorationRetriever::loadExploration)
-
-    explorationProgressLock.withLock {
-      // It's possible for the exploration ID or stage to change between critical sections. However,
-      // this is the only way to ensure the exploration is loaded since suspended functions cannot
-      // be called within a mutex. Note that it's also possible for the stage to change between
-      // critical sections, sometimes due to this suspend function being called multiple times and a
-      // former call finishing the exploration load.
-      check(
-        exploration == null ||
-          explorationProgress.currentExplorationId == explorationId
-      ) {
-        "Encountered race condition when retrieving exploration. ID changed from $explorationId" +
-          " to ${explorationProgress.currentExplorationId}"
-      }
-      return when (explorationProgress.playStage) {
-        ExplorationProgress.PlayStage.NOT_PLAYING -> AsyncResult.pending()
-        ExplorationProgress.PlayStage.LOADING_EXPLORATION -> {
-          try {
-            // The exploration must be available for this stage since it was loaded above.
-            finishLoadExploration(exploration!!, explorationProgress)
-            AsyncResult.success(computeCurrentEphemeralState(writtenTranslationContentLocale))
-          } catch (e: Exception) {
-            exceptionsController.logNonFatalException(e)
-            AsyncResult.failed(e)
-          }
+  private suspend fun ControllerState.retrieveStateWithinCache(): AsyncResult<EphemeralState> {
+    return when (explorationProgress.playStage) {
+      NOT_PLAYING -> AsyncResult.pending()
+      LOADING_EXPLORATION -> {
+        try {
+          val exploration =
+            explorationRetriever.loadExploration(explorationProgress.currentExplorationId)
+          finishLoadExploration(exploration, explorationProgress)
+          AsyncResult.success(computeCurrentEphemeralState())
+        } catch (e: Exception) {
+          exceptionsController.logNonFatalException(e)
+          AsyncResult.failed(e)
         }
-        ExplorationProgress.PlayStage.VIEWING_STATE ->
-          AsyncResult.success(computeCurrentEphemeralState(writtenTranslationContentLocale))
-        ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
       }
+      VIEWING_STATE -> AsyncResult.success(computeCurrentEphemeralState())
+      SUBMITTING_ANSWER -> AsyncResult.pending()
     }
   }
 
-  private fun finishLoadExploration(exploration: Exploration, progress: ExplorationProgress) {
+  private suspend fun ControllerState.finishLoadExploration(
+    exploration: Exploration, progress: ExplorationProgress
+  ) {
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
     progress.stateGraph.reset(exploration.statesMap)
@@ -515,30 +637,24 @@ class ExplorationProgressController @Inject constructor(
 
     // Advance the stage, but do not notify observers since the current state can be reported
     // immediately to the UI.
-    progress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
+    progress.advancePlayStageTo(VIEWING_STATE)
 
     // Mark a checkpoint in the exploration once the exploration has loaded.
     saveExplorationCheckpoint()
   }
 
-  private fun computeBaseCurrentEphemeralState(): EphemeralState =
-    explorationProgress.stateDeck.getCurrentEphemeralState(computeCurrentHelpIndex())
+  private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
+    explorationProgress.stateDeck.getCurrentEphemeralState(retrieveCurrentHelpIndex())
 
-  private fun computeCurrentEphemeralState(
-    writtenTranslationContentLocale: OppiaLocale.ContentLocale
-  ): EphemeralState {
+  private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
     return computeBaseCurrentEphemeralState().toBuilder().apply {
-      // Ensure that the state has an up-to-date checkpoint state & translation context (which may
-      // not necessarily be up-to-date in the state deck).
+      // Ensure that the state has an up-to-date checkpoint state.
       checkpointState = explorationProgress.checkpointState
-      writtenTranslationContext =
-        translationController.computeWrittenTranslationContext(
-          state.writtenTranslationsMap, writtenTranslationContentLocale
-        )
     }.build()
   }
 
-  private fun computeCurrentHelpIndex(): HelpIndex = hintHandler.getCurrentHelpIndex()
+  private fun ControllerState.retrieveCurrentHelpIndex(): HelpIndex =
+    hintHandler.getCurrentHelpIndex().value
 
   /**
    * Checks if checkpointing is enabled, if checkpointing is enabled this function creates a
@@ -547,8 +663,11 @@ class ExplorationProgressController @Inject constructor(
    * This function also waits for the save operation to complete, upon completion this function
    * uses the function [processSaveCheckpointResult] to mark the exploration as
    * IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED depending upon the result.
+   *
+   * Note that while this is changing internal ephemeral state, it does not notify of changes (it
+   * instead expects callers to do this when it's best to notify frontend observers of the changes).
    */
-  private fun saveExplorationCheckpoint() {
+  private fun ControllerState.saveExplorationCheckpoint() {
     // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
     // when the current exploration has been already completed previously.
     if (!explorationProgress.shouldSavePartialProgress) return
@@ -562,7 +681,7 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.currentExploration.version,
         explorationProgress.currentExploration.title,
         oppiaClock.getCurrentTimeMs(),
-        computeCurrentHelpIndex()
+        retrieveCurrentHelpIndex()
       )
 
     val deferred = explorationCheckpointController.recordExplorationCheckpointAsync(
@@ -607,7 +726,7 @@ class ExplorationProgressController @Inject constructor(
    * @param newCheckpointState the latest state obtained after saving checkpoint successfully or
    *     unsuccessfully
    */
-  private fun processSaveCheckpointResult(
+  private fun ControllerState.processSaveCheckpointResult(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -615,38 +734,34 @@ class ExplorationProgressController @Inject constructor(
     lastPlayedTimestamp: Long,
     newCheckpointState: CheckpointState
   ) {
-    explorationProgressLock.withLock {
-      // Only processes the result of the last save operation if the checkpointState has changed.
-      if (explorationProgress.checkpointState != newCheckpointState) {
-        // Mark exploration as IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED if the checkpointState has
-        // either changed from UNSAVED to SAVED or vice versa.
-        if (
-          explorationProgress.checkpointState != CheckpointState.CHECKPOINT_UNSAVED &&
-          newCheckpointState == CheckpointState.CHECKPOINT_UNSAVED
-        ) {
-          markExplorationAsInProgressNotSaved(
-            profileId,
-            topicId,
-            storyId,
-            explorationId,
-            lastPlayedTimestamp
-          )
-        } else if (
-          explorationProgress.checkpointState == CheckpointState.CHECKPOINT_UNSAVED &&
-          newCheckpointState != CheckpointState.CHECKPOINT_UNSAVED
-        ) {
-          markExplorationAsInProgressSaved(
-            profileId,
-            topicId,
-            storyId,
-            explorationId,
-            lastPlayedTimestamp
-          )
-        }
-        explorationProgress.updateCheckpointState(newCheckpointState)
-        // Notify observers that the checkpoint state has changed.
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+    // Only processes the result of the last save operation if the checkpointState has changed.
+    if (explorationProgress.checkpointState != newCheckpointState) {
+      // Mark exploration as IN_PROGRESS_SAVED or IN_PROGRESS_NOT_SAVED if the checkpointState has
+      // either changed from UNSAVED to SAVED or vice versa.
+      if (
+        explorationProgress.checkpointState != CheckpointState.CHECKPOINT_UNSAVED &&
+        newCheckpointState == CheckpointState.CHECKPOINT_UNSAVED
+      ) {
+        markExplorationAsInProgressNotSaved(
+          profileId,
+          topicId,
+          storyId,
+          explorationId,
+          lastPlayedTimestamp
+        )
+      } else if (
+        explorationProgress.checkpointState == CheckpointState.CHECKPOINT_UNSAVED &&
+        newCheckpointState != CheckpointState.CHECKPOINT_UNSAVED
+      ) {
+        markExplorationAsInProgressSaved(
+          profileId,
+          topicId,
+          storyId,
+          explorationId,
+          lastPlayedTimestamp
+        )
       }
+      explorationProgress.updateCheckpointState(newCheckpointState)
     }
   }
 
@@ -687,5 +802,38 @@ class ExplorationProgressController @Inject constructor(
       explorationId,
       lastPlayedTimestamp
     )
+  }
+
+  private fun <T> createAsyncResultStateFlow(): MutableStateFlow<AsyncResult<T>> =
+    MutableStateFlow(AsyncResult.pending())
+
+  private fun <T> StateFlow<AsyncResult<T>>.convertToDataProvider(id: Any): DataProvider<T> =
+    dataProviders.run { convertAsyncToSimpleDataProvider(id) }
+
+  private class ControllerState(val explorationProgress: ExplorationProgress) {
+    lateinit var hintHandler: HintHandler
+  }
+
+  private sealed class ControllerMessage {
+    data class InitializeController(
+      val profileId: ProfileId,
+      val topicId: String,
+      val storyId: String,
+      val explorationId: String,
+      val shouldSavePartialProgress: Boolean,
+      val explorationCheckpoint: ExplorationCheckpoint
+    ) : ControllerMessage()
+
+    object FinishExploration : ControllerMessage()
+
+    data class SubmitAnswer(val userAnswer: UserAnswer) : ControllerMessage()
+
+    data class HintIsRevealed(val hintIndex: Int) : ControllerMessage()
+
+    object SolutionIsRevealed : ControllerMessage()
+
+    object MoveToPreviousState : ControllerMessage()
+
+    object MoveToNextState : ControllerMessage()
   }
 }

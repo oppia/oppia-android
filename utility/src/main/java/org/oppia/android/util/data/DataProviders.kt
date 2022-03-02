@@ -12,6 +12,10 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transform
 
 /**
  * Various functions to create or manipulate [DataProvider]s.
@@ -212,6 +216,27 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<T> {
         return loadFromMemoryAsync()
       }
+    }
+  }
+
+  // TODO: document & add tests, plus explain cases for when the automatic ones should be used (vs. simple versions providers).
+  fun <T> StateFlow<T>.convertToSimpleDataProvider(id: Any): DataProvider<T> =
+    createInMemoryDataProvider(id) { value }
+
+  fun <T> StateFlow<AsyncResult<T>>.convertAsyncToSimpleDataProvider(id: Any): DataProvider<T> =
+    createInMemoryDataProviderAsync(id) { value }
+
+  fun <T> StateFlow<T>.convertToAutomaticDataProvider(id: Any): DataProvider<T> {
+    return convertToSimpleDataProvider(id).also {
+      // Synchronously notify subscribers whenever the flow's state changes.
+      onEach { asyncDataSubscriptionManager.notifyChange(id) }
+    }
+  }
+
+  fun <T> StateFlow<AsyncResult<T>>.convertAsyncToAutomaticDataProvider(id: Any): DataProvider<T> {
+    return convertAsyncToSimpleDataProvider(id).also {
+      // Synchronously notify subscribers whenever the flow's state changes.
+      onEach { asyncDataSubscriptionManager.notifyChange(id) }
     }
   }
 

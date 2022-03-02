@@ -1,0 +1,82 @@
+"""
+Tests for lightweight exploration player domain components.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "ExplorationDataControllerTest",
+    srcs = ["ExplorationDataControllerTest.kt"],
+    custom_package = "org.oppia.android.domain.exploration",
+    test_class = "org.oppia.android.domain.exploration.ExplorationDataControllerTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        ":dagger",
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput:drag_and_drop_sort_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:fraction_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/imageClickInput:image_click_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/itemselectioninput:item_selection_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/multiplechoiceinput:multiple_choice_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numberwithunits:number_with_units_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:storage_module",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    ],
+)
+
+oppia_android_test(
+    name = "ExplorationProgressControllerTest",
+    srcs = ["ExplorationProgressControllerTest.kt"],
+    custom_package = "org.oppia.android.domain.exploration",
+    test_class = "org.oppia.android.domain.exploration.ExplorationProgressControllerTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        ":dagger",
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput:drag_and_drop_sort_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:fraction_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/imageClickInput:image_click_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/itemselectioninput:item_selection_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/multiplechoiceinput:multiple_choice_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numberwithunits:number_with_units_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:storage_module",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    ],
+)
+
+dagger_rules()

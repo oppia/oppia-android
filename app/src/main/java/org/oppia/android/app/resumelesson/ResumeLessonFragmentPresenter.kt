@@ -166,7 +166,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       // ResumeLessonFragment implies that learner has not completed the lesson.
       shouldSavePartialProgress = true,
       explorationCheckpoint
-    ).observe(
+    ).toLiveData().observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when {
