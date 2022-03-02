@@ -1201,6 +1201,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // Entering incorrect answer twice.
@@ -1222,6 +1223,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // Entering incorrect answer twice.
@@ -1247,6 +1249,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // Entering incorrect answer twice.
@@ -1272,6 +1275,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // This answer is incorrect and a detected misconception.
@@ -1296,6 +1300,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // This answer is incorrect and a detected misconception.
@@ -1319,6 +1324,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
       typeFractionText("3/2") // Misconception.
       clickSubmitAnswerButton()
@@ -1342,6 +1348,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
       typeFractionText("3/2") // Misconception.
       clickSubmitAnswerButton()
@@ -1864,6 +1871,7 @@ class StateFragmentTest {
       playThroughPrototypeState2()
 
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("Eagle")))
     }
@@ -1902,6 +1910,7 @@ class StateFragmentTest {
       playThroughPrototypeState2()
 
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
+      clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
         .check(matches(withText(containsString("النسر"))))
@@ -1918,6 +1927,7 @@ class StateFragmentTest {
       playThroughPrototypeState1()
       playThroughPrototypeState2()
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
+      clickSubmitAnswerButton()
 
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
