@@ -31,6 +31,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util"
     ],
 )
 
