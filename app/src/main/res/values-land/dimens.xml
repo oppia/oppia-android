@@ -475,4 +475,8 @@
   <dimen name="administrator_controls_profile_view_profile_management_text_view_padding_end">36dp</dimen>
   <dimen name="administrator_controls_profile_view_edit_profiles_text_view_padding_start">36dp</dimen>
   <dimen name="administrator_controls_profile_view_edit_profiles_text_view_padding_end">36dp</dimen>
+
+  <!-- OptionAudioLanguage -->
+  <dimen name="option_audio_language_padding_start">36dp</dimen>
+  <dimen name="option_audio_language_padding_end">36dp</dimen>
 </resources>
