@@ -5,8 +5,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.text.Spannable
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -19,7 +17,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
@@ -42,6 +39,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -114,10 +112,10 @@ class PoliciesFragmentTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityScenarioRule: ActivityScenarioRule<PoliciesActivity> = ActivityScenarioRule(
+  var activityScenarioRule: ActivityScenarioRule<PoliciesFragmentTestActivity> = ActivityScenarioRule(
     Intent(
       ApplicationProvider.getApplicationContext(),
-      PoliciesActivity::class.java
+      PoliciesFragmentTestActivity::class.java
     )
   )
 
@@ -134,8 +132,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_forPrivacyPolicy_privacyPolicyPageIsDisplayed() {
-    launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
+    launch<PoliciesFragmentTestActivity>(
+      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
@@ -147,8 +145,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_checkPrivacyPolicyWebLink_isDisplayed() {
-    launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
+    launch<PoliciesFragmentTestActivity>(
+      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
@@ -160,8 +158,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_forTermsOfService_termsOfServicePageIsDisplayed() {
-    launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
+    launch<PoliciesFragmentTestActivity>(
+      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
@@ -173,8 +171,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_checkTermsOfServiceWebLink_isDisplayed() {
-    launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
+    launch<PoliciesFragmentTestActivity>(
+      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
@@ -182,44 +180,6 @@ class PoliciesFragmentTest {
       onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         .perform(openLinkWithText("this page"))
     }
-  }
-
-  @Test
-  fun testPoliciesFragment_checkPrivacyPolicy_isCorrectlyParsed() {
-    val htmlParser = htmlParserFactory.create()
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
-      PoliciesActivity.createPoliciesActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
-      val textView: TextView = it.findViewById(R.id.policy_description_text_view)
-      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-        getResources().getString(R.string.privacy_policy_content),
-        textView
-      )
-      textView.text = htmlResult
-      return@runWithActivity textView to htmlResult
-    }
-    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
-  }
-
-  @Test
-  fun testPoliciesFragment_checkTermsOfService_isCorrectlyParsed() {
-    val htmlParser = htmlParserFactory.create()
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
-      PoliciesActivity.createPoliciesActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-      val textView: TextView = it.findViewById(R.id.policy_description_text_view)
-      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-        getResources().getString(R.string.terms_of_service_content),
-        textView
-      )
-      textView.text = htmlResult
-      return@runWithActivity textView to htmlResult
-    }
-    assertThat(textView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
   private fun getResources(): Resources {

@@ -256,7 +256,7 @@ class HtmlParserTest {
       org.oppia.android.util.R.dimen.spacing_before_bullet
     )
     val spacingBeforeText = activityRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_text
+      org.oppia.android.util.R.dimen.spacing_before_bullet_text
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
 
