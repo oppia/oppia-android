@@ -6,7 +6,8 @@
   <!-- Space between the start of the line and the bullet in a bullet span. -->
   <dimen name="spacing_before_bullet">8dp</dimen>
   <!-- Space between bullet and the text in a bullet span. -->
-  <dimen name="spacing_before_text">20dp</dimen>
+  <dimen name="spacing_before_bullet_text">24dp</dimen>
+  <dimen name="spacing_before_numbered_text">28dp</dimen>
   <dimen name="maximum_content_item_padding">24dp</dimen>
   <dimen name="minimum_image_size">48dp</dimen>
   <dimen name="maximum_image_size">200dp</dimen>
