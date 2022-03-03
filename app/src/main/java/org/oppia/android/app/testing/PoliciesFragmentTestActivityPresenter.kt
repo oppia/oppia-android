@@ -21,7 +21,8 @@ class PoliciesFragmentTestActivityPresenter @Inject constructor(
           .newBuilder()
           .setPolicyPage(policiesActivityParams.policyPage)
           .build()
-      val policiesFragment: PoliciesFragment = PoliciesFragment.newInstance(policiesFragmentArguments)
+      val policiesFragment: PoliciesFragment =
+        PoliciesFragment.newInstance(policiesFragmentArguments)
 
       activity
         .supportFragmentManager

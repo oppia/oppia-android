@@ -112,12 +112,13 @@ class PoliciesFragmentTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityScenarioRule: ActivityScenarioRule<PoliciesFragmentTestActivity> = ActivityScenarioRule(
-    Intent(
-      ApplicationProvider.getApplicationContext(),
-      PoliciesFragmentTestActivity::class.java
+  var activityScenarioRule: ActivityScenarioRule<PoliciesFragmentTestActivity> =
+    ActivityScenarioRule(
+      Intent(
+        ApplicationProvider.getApplicationContext(),
+        PoliciesFragmentTestActivity::class.java
+      )
     )
-  )
 
   // Note that the locale rule must be initialized first since the scenario rule can depend on the
   // locale being initialized.

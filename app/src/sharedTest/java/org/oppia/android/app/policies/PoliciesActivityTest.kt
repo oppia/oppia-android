@@ -144,9 +144,7 @@ class PoliciesActivityTest {
         assertThat(titleToolbar.title).isEqualTo("")
       }
     }
-
-}
-
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
