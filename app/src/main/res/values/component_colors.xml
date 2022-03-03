@@ -39,4 +39,5 @@
 <!--  Topic Activity-->
   <color name="topic_activity_layout_background_color">@color/background_color</color>
   <color name="topic_lessons_story_summary_card_background_color">@color/container_background_color</color>
+  <color name="topic_practice_subtitle_text_color">@color/secondary_text_color</color>
 </resources>

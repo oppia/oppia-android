@@ -48,4 +48,6 @@
   <color name="oppia_dark_grey">#4D4D4D</color>
   <color name="oppia_pink">#FF938F</color>
   <color name="oppia_grayish_black">#32363B</color>
+  <color name="grey_granite">#666666</color>
+  <color name="grey_silver_sand">#C4C4C4</color>
 </resources>

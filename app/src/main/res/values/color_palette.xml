@@ -5,6 +5,7 @@
   <color name="accent_color">@color/oppia_dark_blue</color>
   <color name="primary_text_color">@color/accessible_grey</color>
   <color name="disabled_text_color">@color/accessible_grey_30</color>
+  <color name="secondary_text_color">@color/grey_granite</color>
   <color name="highlighted_text_color">@color/accessible_grey</color>
   <color name="background_color">@color/oppia_light_yellow</color>
   <color name="dark_background_color">@color/mid_grey_30</color>
