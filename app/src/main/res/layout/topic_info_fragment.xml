@@ -14,7 +14,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/topic_activity_layout_background_color"
     android:overScrollMode="never"
     android:scrollbars="none">
 
@@ -56,7 +56,6 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topic.name}"
-        android:textColor="@color/oppia_primary_text"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/topic_thumbnail_image_view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +72,6 @@
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.storyCountText}"
-        android:textColor="@color/oppia_primary_text"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -135,7 +133,6 @@
         android:layout_marginStart="12dp"
         android:fontFamily="sans-serif"
         android:text="@string/topic_downloaded"
-        android:textColor="@color/oppia_primary_text"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
         app:layout_constraintHorizontal_bias="0.0"
@@ -151,7 +148,6 @@
         android:layout_marginEnd="32dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topicSizeText}"
-        android:textColor="@color/oppia_primary_text"
         android:textSize="18sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/download_status_image_view"
