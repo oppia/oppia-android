@@ -18,7 +18,11 @@ class FAQSingleActivity : InjectableAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
     val question = intent.getStringExtra(FAQ_SINGLE_ACTIVITY_QUESTION)
     val answer = intent.getStringExtra(FAQ_SINGLE_ACTIVITY_ANSWER)
-    faqSingleActivityPresenter.handleOnCreate(question, answer)
+    if (question != null) {
+      if (answer != null) {
+        faqSingleActivityPresenter.handleOnCreate(question, answer)
+      }
+    }
   }
 
   companion object {

@@ -92,56 +92,54 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     val skillIds =
       activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
     val startDataProvider =
-      questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
-    startDataProvider.toLiveData().observe(
-      activity,
-      {
-        when {
-          it.isPending() -> oppiaLogger.d(
+      skillIds?.let { questionTrainingController.startQuestionTrainingSession(profileId, it) }
+    startDataProvider?.toLiveData()?.observe(
+      activity
+    ) {
+      when {
+        it.isPending() -> oppiaLogger.d(
+          "QuestionPlayerActivity",
+          "Starting training session"
+        )
+        it.isFailure() -> {
+          oppiaLogger.e(
             "QuestionPlayerActivity",
-            "Starting training session"
+            "Failed to start training session",
+            it.getErrorOrNull()!!
           )
-          it.isFailure() -> {
-            oppiaLogger.e(
-              "QuestionPlayerActivity",
-              "Failed to start training session",
-              it.getErrorOrNull()!!
-            )
-            activity.finish() // Can't recover from the session failing to start.
-          }
-          else -> {
-            oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
-            callback()
-          }
+          activity.finish() // Can't recover from the session failing to start.
+        }
+        else -> {
+          oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
+          callback()
         }
       }
-    )
+    }
   }
 
   private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
     questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
-      activity,
-      {
-        when {
-          it.isPending() -> oppiaLogger.d(
+      activity
+    ) {
+      when {
+        it.isPending() -> oppiaLogger.d(
+          "QuestionPlayerActivity",
+          "Stopping training session"
+        )
+        it.isFailure() -> {
+          oppiaLogger.e(
             "QuestionPlayerActivity",
-            "Stopping training session"
+            "Failed to stop training session",
+            it.getErrorOrNull()!!
           )
-          it.isFailure() -> {
-            oppiaLogger.e(
-              "QuestionPlayerActivity",
-              "Failed to stop training session",
-              it.getErrorOrNull()!!
-            )
-            activity.finish() // Can't recover from the session failing to stop.
-          }
-          else -> {
-            oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
-            callback()
-          }
+          activity.finish() // Can't recover from the session failing to stop.
+        }
+        else -> {
+          oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
+          callback()
         }
       }
-    )
+    }
   }
 
   fun onKeyboardAction(actionCode: Int) {

@@ -18,12 +18,12 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    prefKey = intent.getStringExtra(AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY)
+    prefKey = intent.getStringExtra(AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY).toString()
     prefSummaryValue = if (savedInstanceState != null) {
       savedInstanceState.get(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY) as String
-    } else {
+    } else ({
       intent.getStringExtra(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY)
-    }
+    }).toString()
     audioLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
   }
 

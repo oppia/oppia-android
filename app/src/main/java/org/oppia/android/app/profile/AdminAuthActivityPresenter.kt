@@ -92,10 +92,12 @@ class AdminAuthActivityPresenter @Inject constructor(
             activity.finish()
           }
         }
-      } else if (inputPin.length == adminPin.length) {
-        authViewModel.errorMessage.set(
-          resourceHandler.getStringInLocale(R.string.admin_auth_incorrect)
-        )
+      } else if (adminPin != null) {
+        if (inputPin.length == adminPin.length) {
+          authViewModel.errorMessage.set(
+            resourceHandler.getStringInLocale(R.string.admin_auth_incorrect)
+          )
+        }
       }
     }
   }

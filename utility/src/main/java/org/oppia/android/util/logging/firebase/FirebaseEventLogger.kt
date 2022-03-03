@@ -31,7 +31,7 @@ class FirebaseEventLogger(
     // TODO(#3792): Remove this usage of Locale.
     firebaseAnalytics.setUserProperty(COUNTRY_USER_PROPERTY, Locale.getDefault().displayCountry)
     firebaseAnalytics.setUserProperty(
-      NETWORK_USER_PROPERTY, connectivityManager.activeNetworkInfo.typeName
+      NETWORK_USER_PROPERTY, connectivityManager.activeNetworkInfo?.typeName
     )
   }
 }

@@ -17,10 +17,10 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    prefKey = intent.getStringExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY)
-    prefSummaryValue = if (savedInstanceState == null) {
+    prefKey = intent.getStringExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY).toString()
+    prefSummaryValue = if (savedInstanceState == null) ({
       intent.getStringExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY)
-    } else {
+    }).toString() else {
       savedInstanceState.get(SELECTED_LANGUAGE_EXTRA_KEY) as String
     }
     appLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)

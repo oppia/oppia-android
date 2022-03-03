@@ -18,7 +18,7 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    prefKey = intent.getStringExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE)
+    prefKey = intent.getStringExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE).toString()
     prefSummaryValue = (
       if (savedInstanceState != null) {
         savedInstanceState.get(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
