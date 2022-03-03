@@ -105,7 +105,7 @@ class ListItemLeadingMarginSpanTest {
   }
   private val testStringWithCustomBulletSpan = SpannableString("Text With \nBullet Point").apply {
     this.setSpan(
-      ListItemLeadingMarginSpan(context,"1"),
+      ListItemLeadingMarginSpan(context,1,"","<oppia-ul>"),
       10,
       22,
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -180,7 +180,7 @@ class ListItemLeadingMarginSpanTest {
       org.oppia.android.util.R.dimen.spacing_before_bullet
     )
     val spacingBeforeText = context.resources.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_text
+      org.oppia.android.util.R.dimen.spacing_before_bullet_text
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
     val spannableString = SpannableStringBuilder(testStringWithBulletSpan)
