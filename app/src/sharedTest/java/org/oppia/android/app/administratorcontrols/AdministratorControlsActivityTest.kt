@@ -501,7 +501,7 @@ class AdministratorControlsActivityTest {
   private fun clickAdminProfile() {
     onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
       matches(withText("Admin"))
-    )
+    ).perform(click())
   }
 
   private fun checkIsAdminTextVisible() {
