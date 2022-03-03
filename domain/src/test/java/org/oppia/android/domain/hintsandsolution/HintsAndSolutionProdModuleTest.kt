@@ -38,7 +38,6 @@ class HintsAndSolutionProdModuleTest {
   }
 
   @Test
-  @ObsoleteCoroutinesApi
   fun testHintHandlerFactoryInjection_constructNewHandler_providesFactoryForProdImplHandler() {
     val hintHandler = hintHandlerFactory.create()
 

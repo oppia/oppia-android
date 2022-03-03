@@ -405,34 +405,6 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_whileLoading_failsWithError() {
-    // Start playing an exploration, but don't wait for it to complete.
-    explorationDataController.startPlayingExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
-
-    val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0)).toLiveData()
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    // Verify that the answer submission failed.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isFailure()).isTrue()
-    assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot submit an answer while the exploration is being loaded.")
-  }
-
-  @Test
   fun testSubmitAnswer_forMultipleChoice_correctAnswer_succeeds() {
     playExploration(
       profileId.internalId,
@@ -619,34 +591,13 @@ class ExplorationProgressControllerTest {
   fun testMoveToNext_beforePlaying_failsWithError() {
     val moveToStateResult = explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
 
     verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
     assertThat(asyncResultCaptor.value.isFailure()).isTrue()
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to a next state if an exploration is not being played.")
-  }
-
-  @Test
-  fun testMoveToNext_whileLoadingExploration_failsWithError() {
-    // Start playing an exploration, but don't wait for it to complete.
-    explorationDataController.startPlayingExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
-
-    val moveToStateResult = explorationProgressController.moveToNextState().toLiveData()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to a next state if an exploration is being loaded.")
   }
 
   @Test
@@ -753,30 +704,6 @@ class ExplorationProgressControllerTest {
     assertThat(asyncResultCaptor.value.getErrorOrNull())
       .hasMessageThat()
       .contains("Cannot navigate to a previous state if an exploration is not being played.")
-  }
-
-  @Test
-  fun testMoveToPrevious_whileLoadingExploration_failsWithError() {
-    // Start playing an exploration, but don't wait for it to complete.
-    explorationDataController.startPlayingExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
-
-    val moveToStateResult =
-      explorationProgressController.moveToPreviousState().toLiveData()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to a previous state if an exploration is being loaded.")
   }
 
   @Test
@@ -1748,6 +1675,7 @@ class ExplorationProgressControllerTest {
     val moveToStateResult =
       explorationProgressController.moveToNextState().toLiveData()
     moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
     val exception = fakeExceptionLogger.getMostRecentException()
 
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
@@ -2790,7 +2718,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_SolutionIsVisible_resumeExp_unrevealedSolutionIsVisibleOnPendingState() {
+  fun testCheckpointing_solutionIsVisible_resumeExp_unrevealedSolutionIsVisibleOnPendingState() {
     playExploration(
       profileId.internalId,
       TEST_TOPIC_ID_0,

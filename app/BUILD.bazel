@@ -36,6 +36,7 @@ package_group(
 package_group(
     name = "app_testing_visibility",
     packages = [
+        "//app/src/sharedTest/...",
         "//app/src/test/...",
     ],
 )
@@ -44,6 +45,12 @@ filegroup(
     name = "test_manifest",
     srcs = ["src/test/AndroidManifest.xml"],
     visibility = ["//:oppia_testing_visibility"],
+)
+
+filegroup(
+    name = "data_binder_mapper_impl",
+    srcs = ["src/test/java/DataBinderMapperImpl.java"],
+    visibility = [":app_testing_visibility"],
 )
 
 # Source files for the migrated source files library. The files inside the migrated source files
@@ -806,7 +813,10 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
     ],
-    visibility = ["//app:__subpackages__"],
+    visibility = [
+        ":app_testing_visibility",
+        "//app:__subpackages__",
+    ],
     deps = [
         ":app",
         "//testing",

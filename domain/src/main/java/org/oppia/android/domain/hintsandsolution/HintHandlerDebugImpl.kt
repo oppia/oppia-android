@@ -1,13 +1,11 @@
 package org.oppia.android.domain.hintsandsolution
 
 import javax.inject.Inject
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
-import org.oppia.android.util.data.AsyncResult
 
 /**
  * Debug implementation of [HintHandler] that conditionally always shows hints & solutions if
@@ -16,43 +14,32 @@ import org.oppia.android.util.data.AsyncResult
  */
 class HintHandlerDebugImpl private constructor() : HintHandler {
   private val helpIndexFlow by lazy { MutableStateFlow(HelpIndex.getDefaultInstance()) }
-  /**
-   * Represents an [AsyncResult] that always passes for operations that don't change the handler.
-   */
-  private val alwaysSucceedingResult by lazy { MutableStateFlow(AsyncResult.success(null)) }
 
-  override suspend fun startWatchingForHintsInNewState(state: State): StateFlow<AsyncResult<Nothing?>> {
+  override suspend fun startWatchingForHintsInNewState(state: State) {
     recomputeHelpIndex(state)
-    return alwaysSucceedingResult
   }
 
   override suspend fun resumeHintsForSavedState(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,
     state: State
-  ): StateFlow<AsyncResult<Nothing?>> = alwaysSucceedingResult
+  ) {}
 
-  override suspend fun finishState(newState: State): StateFlow<AsyncResult<Nothing?>> {
+  override suspend fun finishState(newState: State) {
     startWatchingForHintsInNewState(newState)
-    return alwaysSucceedingResult
   }
 
-  override suspend fun handleWrongAnswerSubmission(
-    wrongAnswerCount: Int
-  ): StateFlow<AsyncResult<Nothing?>> = alwaysSucceedingResult
+  override suspend fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {}
 
   // This is never called as everything is already revealed when the state is loaded.
-  override suspend fun viewHint(hintIndex: Int): StateFlow<AsyncResult<Nothing?>> =
-    alwaysSucceedingResult
+  override suspend fun viewHint(hintIndex: Int) {}
 
   // This is never called as everything is already revealed when the state is loaded.
-  override suspend fun viewSolution(): StateFlow<AsyncResult<Nothing?>> = alwaysSucceedingResult
+  override suspend fun viewSolution() {}
 
-  override suspend fun navigateToPreviousState(): StateFlow<AsyncResult<Nothing?>> =
-    alwaysSucceedingResult
+  override suspend fun navigateToPreviousState() {}
 
-  override suspend fun navigateBackToLatestPendingState(): StateFlow<AsyncResult<Nothing?>> =
-    alwaysSucceedingResult
+  override suspend fun navigateBackToLatestPendingState() {}
 
   override fun getCurrentHelpIndex(): StateFlow<HelpIndex> = helpIndexFlow
 
@@ -68,7 +55,6 @@ class HintHandlerDebugImpl private constructor() : HintHandler {
   }
 
   /** Debug implementation of [HintHandler.Factory]. */
-  @ObsoleteCoroutinesApi
   class FactoryDebugImpl @Inject constructor(
     private val hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl,
     private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController

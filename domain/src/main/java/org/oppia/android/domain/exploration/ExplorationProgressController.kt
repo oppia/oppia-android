@@ -345,6 +345,16 @@ class ExplorationProgressController @Inject constructor(
           ControllerMessage.SolutionIsRevealed -> controllerState.submitSolutionIsRevealedInternal()
           ControllerMessage.MoveToPreviousState -> controllerState.moveToPreviousStateInternal()
           ControllerMessage.MoveToNextState -> controllerState.moveToNextStateInternal()
+          is ControllerMessage.ProcessSavedCheckpointResult ->
+            controllerState.processSaveCheckpointResult(
+              message.profileId,
+              message.topicId,
+              message.storyId,
+              message.explorationId,
+              message.lastPlayedTimestamp,
+              message.newCheckpointState
+            )
+          ControllerMessage.SaveCheckpoint -> controllerState.saveExplorationCheckpoint()
         }
       }
     }
@@ -388,6 +398,9 @@ class ExplorationProgressController @Inject constructor(
       }
       hintHandler = hintHandlerFactory.create()
       hintHandler.getCurrentHelpIndex().onEach {
+        // Fire an event to save the latest progress state in a checkpoint to avoid cross-thread
+        // synchronization being required (since the state of hints/solutions has changed).
+        controllerCommandQueue.send(ControllerMessage.SaveCheckpoint)
         recomputeCurrentStateAndNotify()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
@@ -435,7 +448,7 @@ class ExplorationProgressController @Inject constructor(
       explorationProgress.advancePlayStageTo(SUBMITTING_ANSWER)
       recomputeCurrentStateAndNotify()
 
-      lateinit var answerOutcome: AnswerOutcome
+      var answerOutcome: AnswerOutcome? = null
       try {
         val topPendingState = explorationProgress.stateDeck.getPendingTopState()
         val outcome =
@@ -446,7 +459,9 @@ class ExplorationProgressController @Inject constructor(
           ).outcome
         answerOutcome =
           explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
-        explorationProgress.stateDeck.submitAnswer(userAnswer, answerOutcome.feedback)
+        explorationProgress.stateDeck.submitAnswer(
+          userAnswer, answerOutcome.feedback, answerOutcome.labelledAsCorrectAnswer
+        )
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
@@ -463,7 +478,8 @@ class ExplorationProgressController @Inject constructor(
           }
         }
       } finally {
-        if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
+        if (answerOutcome != null &&
+          !doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
           // If the answer was not submitted on behalf of the Continue interaction, update the
           // hint state and save checkpoint because it will be saved when the learner moves to the
           // next state.
@@ -476,7 +492,7 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.advancePlayStageTo(VIEWING_STATE)
       }
 
-      return@tryOperation answerOutcome
+      return@tryOperation checkNotNull(answerOutcome) { "Expected answer outcome." }
     }
   }
 
@@ -578,12 +594,12 @@ class ExplorationProgressController @Inject constructor(
       exceptionsController.logNonFatalException(e)
       resultFlow.value = AsyncResult.failed(e)
     }
-    asyncDataSubscriptionManager.notifyChangeAsync(providerId)
+    asyncDataSubscriptionManager.notifyChange(providerId)
   }
 
   private suspend fun ControllerState.recomputeCurrentStateAndNotify() {
     ephemeralStateFlow.value = retrieveCurrentStateAsync()
-    asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
+    asyncDataSubscriptionManager.notifyChange(CURRENT_STATE_PROVIDER_ID)
   }
 
   private suspend fun ControllerState.retrieveCurrentStateAsync(): AsyncResult<EphemeralState> {
@@ -699,14 +715,15 @@ class ExplorationProgressController @Inject constructor(
         // complete successfully.
         CheckpointState.CHECKPOINT_UNSAVED
       }
-      processSaveCheckpointResult(
-        profileId,
-        topicId,
-        storyId,
-        explorationId,
-        oppiaClock.getCurrentTimeMs(),
-        checkpointState
+
+      // Schedule an event to process the checkpoint results in a synchronized environment to avoid
+      // needing to lock on ControllerState.
+      val processEvent = ControllerMessage.ProcessSavedCheckpointResult(
+        profileId, topicId, storyId, explorationId, oppiaClock.getCurrentTimeMs(), checkpointState
       )
+      check(controllerCommandQueue.offer(processEvent)) {
+        "Failed to schedule command for processing a saved checkpoint."
+      }
     }
   }
 
@@ -726,7 +743,7 @@ class ExplorationProgressController @Inject constructor(
    * @param newCheckpointState the latest state obtained after saving checkpoint successfully or
    *     unsuccessfully
    */
-  private fun ControllerState.processSaveCheckpointResult(
+  private suspend fun ControllerState.processSaveCheckpointResult(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -762,6 +779,9 @@ class ExplorationProgressController @Inject constructor(
         )
       }
       explorationProgress.updateCheckpointState(newCheckpointState)
+
+      // The ephemeral state technically changes when a checkpoint is successfully saved.
+      recomputeCurrentStateAndNotify()
     }
   }
 
@@ -835,5 +855,16 @@ class ExplorationProgressController @Inject constructor(
     object MoveToPreviousState : ControllerMessage()
 
     object MoveToNextState : ControllerMessage()
+
+    object SaveCheckpoint : ControllerMessage()
+
+    data class ProcessSavedCheckpointResult(
+      val profileId: ProfileId,
+      val topicId: String,
+      val storyId: String,
+      val explorationId: String,
+      val lastPlayedTimestamp: Long,
+      val newCheckpointState: CheckpointState
+    ): ControllerMessage()
   }
 }

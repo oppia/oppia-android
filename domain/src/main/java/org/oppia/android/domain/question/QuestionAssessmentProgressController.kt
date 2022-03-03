@@ -165,7 +165,9 @@ class QuestionAssessmentProgressController @Inject constructor(
             )
           answeredQuestionOutcome =
             progress.stateList.computeAnswerOutcomeForResult(classificationResult.outcome)
-          progress.stateDeck.submitAnswer(answer, answeredQuestionOutcome.feedback)
+          progress.stateDeck.submitAnswer(
+            answer, answeredQuestionOutcome.feedback, answeredQuestionOutcome.isCorrectAnswer
+          )
 
           // Track the number of answers the user submitted, including any misconceptions
           val misconception = if (classificationResult is OutcomeWithMisconception) {

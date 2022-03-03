@@ -52,7 +52,6 @@ import org.oppia.android.util.threading.BlockingDispatcher
 
 /** Tests for [HintHandlerDebugImpl]. */
 @Suppress("FunctionName")
-@ObsoleteCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HintHandlerDebugImplTest.TestApplication::class)
@@ -115,7 +114,7 @@ class HintHandlerDebugImplTest {
   /* Tests for startWatchingForHintsInNewState */
 
   @Test
-  fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_callsMonitor() {
+  fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_changesHelpIndex() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
     // Use the direct HintHandler factory to avoid testing the module setup.
     val hintHandler = hintHandlerDebugImplFactory.create()
@@ -141,7 +140,7 @@ class HintHandlerDebugImplTest {
   }
 
   @Test
-  fun testStartWatchingForHints_showAllHelpsEnabled_stateWithHints_callsMonitor() {
+  fun testStartWatchingForHints_showAllHelpsEnabled_stateWithHints_changesHelpIndex() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
     // Use the direct HintHandler factory to avoid testing the module setup.
     val hintHandler = hintHandlerDebugImplFactory.create()
@@ -172,7 +171,7 @@ class HintHandlerDebugImplTest {
   /* Tests for finishState */
 
   @Test
-  fun testFinishState_showAllHelpsEnabled_defaultState_callsMonitor() {
+  fun testFinishState_showAllHelpsEnabled_defaultState_changesHelpIndex() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(isEnabled = true)
     // Use the direct HintHandler factory to avoid testing the module setup.
     val hintHandler = hintHandlerDebugImplFactory.create()
