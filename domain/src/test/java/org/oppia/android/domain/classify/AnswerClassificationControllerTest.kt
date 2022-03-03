@@ -55,6 +55,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.util.logging.SyncStatusModule
 
 // For context:
@@ -846,7 +849,8 @@ class AnswerClassificationControllerTest {
       FakeOppiaClockModule::class, LoggerModule::class, TestDispatcherModule::class,
       LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, PlatformParameterModule::class, LoggingIdentifierModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {

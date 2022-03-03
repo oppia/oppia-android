@@ -39,8 +39,19 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
+import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
+private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
 private const val TEST_STORY_ID = "test_storyId"
 private const val TEST_EXPLORATION_ID = "test_explorationId"
@@ -81,6 +92,9 @@ class OppiaLoggerTest {
 
   @Inject
   lateinit var oppiaLogger: OppiaLogger
+
+  @Inject
+  lateinit var fakeEventLogger: FakeEventLogger
 
   private val TEST_VERBOSE_EXCEPTION = Throwable(TEST_VERBOSE_LOG_EXCEPTION)
   private val TEST_DEBUG_EXCEPTION = Throwable(TEST_DEBUG_LOG_EXCEPTION)
@@ -286,6 +300,30 @@ class OppiaLoggerTest {
     assertThat(eventContext.openRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
   }
 
+  @Test
+  fun testController_featureDisabled_logLearnerAnalyticsEvent_verifyEventNotLogged() {
+    TestPlatformParameterModule.forceLearnerAnalyticsStudy = false
+    oppiaLogger.logLearnerAnalyticsEvent(
+      TEST_TIMESTAMP,
+      oppiaLogger.createOpenHomeContext()
+    )
+
+    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testController_featureEnabled_logLearnerAnalyticsEvent_verifyEventLogged() {
+    TestPlatformParameterModule.forceLearnerAnalyticsStudy = true
+    setUpTestApplicationComponent()
+
+    oppiaLogger.logLearnerAnalyticsEvent(
+      TEST_TIMESTAMP,
+      oppiaLogger.createOpenHomeContext()
+    )
+
+    assertThat(fakeEventLogger.noEventsPresent()).isFalse()
+  }
+
   private fun setUpTestApplicationComponent() {
     DaggerOppiaLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -318,6 +356,42 @@ class OppiaLoggerTest {
   }
 
   @Module
+  class TestPlatformParameterModule {
+
+    companion object {
+      var forceLearnerAnalyticsStudy: Boolean = false
+    }
+
+    @Provides
+    @SplashScreenWelcomeMsg
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
+    }
+
+    @Provides
+    @SyncUpWorkerTimePeriodHours
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @EnableLanguageSelectionUi
+    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(
+        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @LearnerStudyAnalytics
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
+    }
+  }
+
+  @Module
   class TestLogStorageModule {
 
     @Provides
@@ -331,7 +405,9 @@ class OppiaLoggerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, SyncStatusModule::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, SyncStatusModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class
     ]
   )
   interface TestApplicationComponent {

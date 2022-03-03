@@ -49,6 +49,9 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [AudioPlayerControllerTest]. */
@@ -486,7 +489,8 @@ class AudioPlayerControllerTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, PlatformParameterModule::class, LoggingIdentifierModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {

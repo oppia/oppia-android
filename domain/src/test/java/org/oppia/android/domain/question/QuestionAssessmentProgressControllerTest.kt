@@ -86,6 +86,9 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.util.logging.SyncStatusModule
 
 private const val TOLERANCE = 1e-5
@@ -1833,7 +1836,9 @@ class QuestionAssessmentProgressControllerTest {
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       CachingTestModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleProdModule::class, SyncStatusModule::class
+      AssetModule::class, LocaleProdModule::class, SyncStatusModule::class,
+      PlatformParameterModule::class, LoggingIdentifierModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

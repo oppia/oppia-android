@@ -48,6 +48,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeSyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager
 
@@ -265,7 +268,8 @@ class LogUploadWorkerTest {
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class
+      LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
+      LoggingIdentifierModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {

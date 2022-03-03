@@ -4,11 +4,15 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
+import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
@@ -24,6 +28,19 @@ class OppiaLogger @Inject constructor(
     eventContext: EventLog.Context
   ) {
     analyticsController.logClickEvent(timestamp, eventContext)
+  }
+
+  /** Logs transition events which are specifically related to Learner Study Analytics. These events
+   * will only get logged if the value of [LearnerStudyAnalytics] platform parameter is set to true.
+   * See [AnalyticsController.logTransitionEvent] for more context.
+   */
+  fun logLearnerAnalyticsEvent(
+    timestamp: Long,
+    eventContext: EventLog.Context
+  ) {
+    if (learnerStudyAnalytics.value) {
+      analyticsController.logTransitionEvent(timestamp, eventContext)
+    }
   }
 
   /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context */
@@ -226,5 +243,195 @@ class OppiaLogger @Inject constructor(
           .build()
       )
       .build()
+  }
+
+  /**
+   * Returns a learner details data object that contains [deviceId] and [learnerId]. These
+   * identifiers are logged across all Learner Study Analytics events.
+   *
+   * @param deviceId: device-specific identifier which is unique to each device.
+   * @param learnerId: profile-specific identifier which is unique to each profile on a device.
+   * */
+  fun createLearnerDetailsContext(
+    deviceId: String,
+    learnerId: String
+  ): EventLog.LearnerDetailsContext {
+    return EventLog.LearnerDetailsContext.newBuilder()
+      .setDeviceId(deviceId)
+      .setLearnerId(learnerId)
+      .build()
+  }
+
+  /**
+   * Returns an exploration-specific data object that contains [sessionId], [explorationId],
+   * [explorationVersion] and [stateName].
+   *
+   * @param sessionId: session-specific identifier which is unique to each session.
+   * @param explorationId: id of the exploration.
+   * @param explorationVersion: version of the exploration.
+   * @param stateName: name of the current state.
+   * @param learnerDetails:
+   */
+  fun createExplorationDetailsContext(
+    sessionId: String,
+    explorationId: String,
+    explorationVersion: String,
+    stateName: String,
+    learnerDetails: EventLog.LearnerDetailsContext
+  ): EventLog.ExplorationContext {
+    return EventLog.ExplorationContext.newBuilder()
+      .setSessionId(sessionId)
+      .setExplorationId(explorationId)
+      .setExplorationVersion(explorationVersion)
+      .setStateName(stateName)
+      .setLearnerDetails(learnerDetails)
+      .build()
+  }
+
+  /** Returns the context of an event related to starting an exploration card. */
+  fun createStartCardContext(
+    skillId: String,
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setStartCardContext(
+        EventLog.CardContext.newBuilder()
+          .setSkillId(skillId)
+          .setExplorationDetails(explorationContext)
+          .build()
+      ).build()
+  }
+
+  /** Returns the context of an event related to ending an exploration card. */
+  fun createEndCardContext(
+    skillId: String,
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setEndCardContext(
+        EventLog.CardContext.newBuilder()
+          .setSkillId(skillId)
+          .setExplorationDetails(explorationContext)
+          .build()
+      ).build()
+  }
+
+  /** Returns the context of an event related to offering a hint when it becomes available. */
+  fun createHintOfferedContext(
+    hintIndex: HelpIndex,
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setHintOfferedContext(
+        EventLog.HintContext.newBuilder()
+          .setHelpIndex(hintIndex)
+          .setExplorationDetails(explorationContext)
+          .build()
+      ).build()
+  }
+
+  /** Returns the context of an event related to accessing a hint. */
+  fun createAccessHintContext(
+    hintIndex: HelpIndex,
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setAccessHintContext(
+        EventLog.HintContext.newBuilder()
+          .setHelpIndex(hintIndex)
+          .setExplorationDetails(explorationContext)
+          .build()
+      ).build()
+  }
+
+  /** Returns the context of an event related to offering a solution when it becomes available. */
+  fun createSolutionOfferedContext(
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setSolutionOfferedContext(explorationContext).build()
+  }
+
+  /** Returns the context of an event related to accessing a solution. */
+  fun createAccessSolutionContext(
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setAccessSolutionContext(explorationContext).build()
+  }
+
+  /** Returns the context of an event related to submitting an answer. */
+  fun createSubmitAnswerContext(
+    isAnswerCorrect: Boolean,
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setSubmitAnswerContext(
+        EventLog.SubmitAnswerContext.newBuilder()
+          .setIsAnswerCorrect(isAnswerCorrect)
+          .setExplorationDetails(explorationContext)
+          .build()
+      ).build()
+  }
+
+  /** Returns the context of an event related to playing a voice over. */
+  fun createPlayVoiceOverContext(
+    contentId: String,
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder()
+      .setPlayVoiceOverContext(
+        EventLog.PlayVoiceOverContext.newBuilder()
+          .setContentId(contentId)
+          .setExplorationDetails(explorationContext)
+          .build()
+      ).build()
+  }
+
+  /** Returns the context of an event related to backgrounding of the application. */
+  fun createAppInBackgroundContext(
+    learnerDetails: EventLog.LearnerDetailsContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setAppInBackgroundContext(learnerDetails).build()
+  }
+
+  /** Returns the context of an event related to foregrounding of the application. */
+  fun createAppInForegroundContext(
+    learnerDetails: EventLog.LearnerDetailsContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setAppInForegroundContext(learnerDetails).build()
+  }
+
+  /** Returns the context of an event related to exiting an exploration. */
+  fun createExitExplorationContext(
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setExitExplorationContext(explorationContext).build()
+  }
+
+  /** Returns the context of an event related to finishing an exploration. */
+  fun createFinishExplorationContext(
+    explorationContext: EventLog.ExplorationContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setFinishExplorationContext(explorationContext).build()
+  }
+
+  /** Returns the context of an event related to resuming an exploration. */
+  fun createResumeExplorationContext(
+    learnerDetails: EventLog.LearnerDetailsContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setResumeExplorationContext(learnerDetails).build()
+  }
+
+  /** Returns the context of an event related to starting over an exploration. */
+  fun createStartOverExplorationContext(
+    learnerDetails: EventLog.LearnerDetailsContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setStartOverExplorationContext(learnerDetails).build()
+  }
+
+  /** Returns the context of an event related to deleting a profile. */
+  fun createDeleteProfileContext(
+    learnerDetails: EventLog.LearnerDetailsContext
+  ): EventLog.Context {
+    return EventLog.Context.newBuilder().setDeleteProfileContext(learnerDetails).build()
   }
 }
