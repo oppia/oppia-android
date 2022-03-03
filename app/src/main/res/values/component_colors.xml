@@ -41,4 +41,5 @@
   <color name="topic_lessons_story_summary_card_background_color">@color/container_background_color</color>
   <color name="topic_practice_subtitle_text_color">@color/secondary_text_color</color>
   <color name="topic_info_thumbnail_gradient_end">@color/background_color</color>
+  <color name="topic_activity_tab_layout_color">@color/tab_bar_color</color>
 </resources>

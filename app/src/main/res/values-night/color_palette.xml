@@ -18,4 +18,5 @@
   <color name="status_bar_color">@color/dark_green</color>
   <color name="action_bar_color">@color/oppia_green</color>
   <color name="highlighted_background_color">@color/highlight_blue</color>
+  <color name="tab_bar_color">@color/green_tropical</color>
 </resources>
