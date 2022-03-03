@@ -105,7 +105,7 @@ class ListItemLeadingMarginSpanTest {
   }
   private val testStringWithCustomBulletSpan = SpannableString("Text With \nBullet Point").apply {
     this.setSpan(
-      ListItemLeadingMarginSpan(context,1,"","<oppia-ul>"),
+      ListItemLeadingMarginSpan(context, 1, "", "<oppia-ul>"),
       10,
       22,
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
