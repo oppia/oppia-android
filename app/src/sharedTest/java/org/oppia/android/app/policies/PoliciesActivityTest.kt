@@ -128,6 +128,26 @@ class PoliciesActivityTest {
     }
   }
 
+  @Test
+  fun testPoliciesFragment_forUnspecified_policyPageIsUnspecified() {
+    launch<PoliciesActivity>(
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.POLICY_PAGE_UNSPECIFIED
+      )
+    ).use { activityScenario ->
+      activityScenario.onActivity {
+        val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
+
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(titleToolbar.title).isEqualTo("")
+      }
+    }
+
+}
+
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }

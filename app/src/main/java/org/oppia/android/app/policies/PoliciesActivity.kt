@@ -23,7 +23,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
 
     policiesActivityPresenter.handleOnCreate(
       intent.getProtoExtra(
-        POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO,
+        POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO,
         PoliciesActivityParams.getDefaultInstance()
       )
     )
@@ -31,7 +31,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
 
   companion object {
     /** Argument key for policy page in [PoliciesActivity]. */
-    const val POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
+    const val POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO = "PoliciesActivity.policy_page"
 
     /** Returns the [Intent] for opening [PoliciesActivity] for the specified [policyPage]. */
     fun createPoliciesActivityIntent(context: Context, policyPage: PolicyPage): Intent {
@@ -41,7 +41,7 @@ class PoliciesActivity : InjectableAppCompatActivity() {
           .setPolicyPage(policyPage)
           .build()
       return Intent(context, PoliciesActivity::class.java).also {
-        it.putProtoExtra(POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO, policiesActivityParams)
+        it.putProtoExtra(POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO, policiesActivityParams)
       }
     }
   }

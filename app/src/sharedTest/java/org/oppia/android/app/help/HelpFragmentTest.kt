@@ -48,8 +48,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
-import org.oppia.android.app.model.PoliciesArguments
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -1146,7 +1146,7 @@ class HelpFragmentTest {
           withText(R.string.terms_of_service_title)
         )
       )
-      onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -1171,7 +1171,7 @@ class HelpFragmentTest {
           withText(R.string.terms_of_service_title)
         )
       )
-      onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -1236,7 +1236,7 @@ class HelpFragmentTest {
         )
       ).perform(click())
       val policiesArguments =
-        PoliciesArguments
+        PoliciesActivityParams
           .newBuilder()
           .setPolicyPage(PolicyPage.PRIVACY_POLICY)
           .build()
@@ -1244,7 +1244,7 @@ class HelpFragmentTest {
       intended(hasComponent(PoliciesActivity::class.java.name))
       hasExtras(
         hasEntry(
-          equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO),
+          equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
           equalTo(policiesArguments)
         )
       )
@@ -1267,14 +1267,14 @@ class HelpFragmentTest {
       ).perform(click())
       intended(hasComponent(PoliciesActivity::class.java.name))
       val policiesArguments =
-        PoliciesArguments
+        PoliciesActivityParams
           .newBuilder()
           .setPolicyPage(PolicyPage.TERMS_OF_SERVICE)
           .build()
       intended(hasComponent(PoliciesActivity::class.java.name))
       hasExtras(
         hasEntry(
-          equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_ARGUMENT_PROTO),
+          equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
           equalTo(policiesArguments)
         )
       )
@@ -1301,7 +1301,7 @@ class HelpFragmentTest {
           withText(R.string.privacy_policy_title)
         )
       )
-      onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -1326,7 +1326,7 @@ class HelpFragmentTest {
           withText(R.string.privacy_policy_title)
         )
       )
-      onView(withId(R.id.policies_description_text_view)).check(matches(isDisplayed()))
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
