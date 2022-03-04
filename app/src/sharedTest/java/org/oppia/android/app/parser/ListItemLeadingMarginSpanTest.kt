@@ -98,6 +98,7 @@ class ListItemLeadingMarginSpanTest {
   private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
 
   private var context: Context = ApplicationProvider.getApplicationContext<TestApplication>()
+
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
 
@@ -116,12 +117,12 @@ class ListItemLeadingMarginSpanTest {
         ListItemLeadingMarginSpanTestActivity::class.java
       )
     )
+
   // Note that the locale rule must be initialized first since the scenario rule can depend on the
   // locale being initialized.
   @get:Rule
   val chain: TestRule =
     RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
-
 
   @Before
   fun setUp() {
@@ -176,7 +177,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
     assertThat(bulletSpan1).isNotNull()
   }
-  
+
   @Test
   fun testListLeadingMarginSpan_nestedBulletLeadingMargin_isComputedToProperlyIndentText() {
     val htmlParser = htmlParserFactory.create(
@@ -356,7 +357,7 @@ class ListItemLeadingMarginSpanTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
-  
+
   @Singleton
   @Component(
     modules = [
