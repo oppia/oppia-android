@@ -42,6 +42,9 @@
   <dimen name="profile_chooser_profile_view_margin_start">16dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_end">16dp</dimen>
 
+  <!-- Profile List Profile View -->
+  <dimen name="profile_list_profile_view_margin_start">36dp</dimen>
+
   <dimen name="profile_chooser_add_view_margin_bottom_profile_not_added">28dp</dimen>
   <dimen name="profile_chooser_profile_view_margin_bottom_profile_not_added">28dp</dimen>
   <dimen name="state_fragment_non_split_view_margin_end">120dp</dimen>
@@ -410,6 +413,9 @@
 
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">96dp</dimen>
+
+  <!-- AppLanguageFragment -->
+  <dimen name="app_language_recycler_view_padding_bottom">96dp</dimen>
   
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">60dp</dimen>
@@ -438,4 +444,28 @@
   <dimen name="admin_pin_input_confirm_pin_margin_end">168dp</dimen>
   <dimen name="submit_button_margin_top">24dp</dimen>
   <dimen name="submit_button_margin_end">0dp</dimen>
+
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">16dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">16dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">24dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">0dp</dimen>
+  
+  <!-- Hints and Solution Fragment -->
+  <dimen name="hints_and_solution_recycler_view_padding_top">24dp</dimen>
+  <dimen name="hints_and_solution_recycler_view_padding_bottom">120dp</dimen>
+  
+  <!-- AdministratorControlDownloadPermissionsView -->
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_start">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_end">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_widget_switch_compat_margin_end">0dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">36dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">0dp</dimen>
+
+  <!-- OptionAudioLanguage -->
+  <dimen name="option_audio_language_padding_start">36dp</dimen>
+  <dimen name="option_audio_language_padding_end">36dp</dimen>
 </resources>

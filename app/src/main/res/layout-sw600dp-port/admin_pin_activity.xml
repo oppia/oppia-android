@@ -12,7 +12,7 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppia_background_yellow_ivory"
+    android:background="@color/admin_pin_activity_layout_background_color"
     android:orientation="vertical">
 
     <View
