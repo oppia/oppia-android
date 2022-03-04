@@ -118,7 +118,7 @@ class ProfileChooserFragmentTest {
   )
 
   @Inject
-
+  lateinit var profileTestHelper: ProfileTestHelper
 
   @Inject
   lateinit var profileManagementController: ProfileManagementController
