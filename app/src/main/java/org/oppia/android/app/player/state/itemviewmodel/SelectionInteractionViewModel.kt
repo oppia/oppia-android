@@ -118,20 +118,13 @@ class SelectionInteractionViewModel(
 
   /** Catalogs an item being clicked by the user and returns whether the item should be considered selected. */
   fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
-    if (isCurrentlySelected) {
-      selectedItems -= itemIndex
-      updateIsAnswerAvailable()
-      return false
-    } else {
-      if (areCheckboxesBound()) {
-        if (selectedItems.size < maxAllowableSelectionCount) {
-          // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
-          //  number required.
-          selectedItems += itemIndex
-          updateIsAnswerAvailable()
-          return true
-        }
-      } else {
+    when {
+      isCurrentlySelected -> {
+        selectedItems -= itemIndex
+        updateIsAnswerAvailable()
+        return false
+      }
+      !areCheckboxesBound() -> {
         // Disable all items to simulate a radio button group.
         choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
         selectedItems.clear()
@@ -139,9 +132,17 @@ class SelectionInteractionViewModel(
         updateIsAnswerAvailable()
         return true
       }
+      selectedItems.size < maxAllowableSelectionCount -> {
+        // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
+        //  number required.
+        selectedItems += itemIndex
+        updateIsAnswerAvailable()
+        return true
+      }
+      else -> {
+        return isCurrentlySelected
+      }
     }
-    // Do not change the current status if it isn't valid to do so.
-    return isCurrentlySelected
   }
 
   private fun areCheckboxesBound(): Boolean {

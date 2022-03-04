@@ -547,7 +547,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_hasSubmitButton() {
+  fun testStateFragment_loadExp_thirdState_hasDisabledSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -562,7 +562,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasSubmitButton() {
+  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasDisabledSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -574,11 +574,12 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_submitAnswer_submitButtonIsEnabled() {
+  fun testStateFragment_loadExp_thirdState_selectAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -592,7 +593,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_submitAnswer_clickSubmit_continueButtonIsVisible() {
+  fun testStateFragment_loadExp_thirdState_selectAnswer_clickSubmit_continueButtonIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -609,7 +610,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_landscape_thirdState_submitAnswer_submitButtonIsEnabled() {
+  fun testStateFragment_loadExp_landscape_thirdState_selectAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -624,7 +625,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_land_thirdState_submitAnswer_clickSubmit_continueIsVisible() {
+  fun testStateFragment_loadExp_land_thirdState_selectAnswer_clickSubmit_continueIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       rotateToLandscape()
@@ -642,7 +643,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_disablesSubmitAndShowsError() {
+  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_disablesSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -659,7 +660,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_disablesSubmitAndShowsError() {
+  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_disablesSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -681,7 +682,6 @@ class StateFragmentTest {
       startPlayingExploration()
       playThroughPrototypeState1()
       playThroughPrototypeState2()
-
       // Attempt to submit an invalid answer.
       selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
       clickSubmitAnswerButton()
