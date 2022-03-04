@@ -1,6 +1,5 @@
 package org.oppia.android.app.options
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,14 +31,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
     languageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.languageRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
-    }
-
-    binding.appLanguageToolbar?.setNavigationOnClickListener {
-      val message = languageSelectionViewModel.selectedLanguage.value
-      val intent = Intent()
-      intent.putExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY, message)
-      (fragment.activity as AppLanguageActivity).setResult(REQUEST_CODE_APP_LANGUAGE, intent)
-      (fragment.activity as AppLanguageActivity).finish()
     }
 
     return binding.root
