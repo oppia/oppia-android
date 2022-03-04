@@ -2,7 +2,6 @@ package org.oppia.android.domain.exploration
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -10,19 +9,11 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -53,6 +44,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -63,8 +55,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -75,43 +65,22 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ExplorationDataController]. */
+// Function name: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationDataControllerTest.TestApplication::class)
 class ExplorationDataControllerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @Inject lateinit var explorationDataController: ExplorationDataController
+  @Inject lateinit var explorationProgressController: ExplorationProgressController
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
-
-  @Inject
-  lateinit var explorationProgressController: ExplorationProgressController
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockCurrentStateLiveDataObserver: Observer<AsyncResult<EphemeralState>>
-
-  @Mock
-  lateinit var mockExplorationObserver: Observer<AsyncResult<Exploration>>
-
-  @Captor
-  lateinit var explorationResultCaptor: ArgumentCaptor<AsyncResult<Exploration>>
-
-  val internalProfileId: Int = -1
+  private val internalProfileId: Int = -1
 
   @Before
   fun setUp() {
@@ -124,15 +93,9 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_providesInitialLiveDataForFractions0Exploration() {
-    val explorationLiveData =
-      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0).toLiveData()
-    explorationLiveData.observeForever(mockExplorationObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
+    val explorationResult = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0)
 
-    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow()
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
     assertThat(exploration.title).isEqualTo("What is a Fraction?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(25)
@@ -140,15 +103,9 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_providesInitialLiveDataForFractions1Exploration() {
-    val explorationLiveData =
-      explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1).toLiveData()
-    explorationLiveData.observeForever(mockExplorationObserver)
-    testCoroutineDispatchers.runCurrent()
+    val explorationResult = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
 
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow()
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
     assertThat(exploration.title).isEqualTo("The Meaning of \"Equal Parts\"")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(18)
@@ -156,15 +113,9 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_providesInitialLiveDataForRatios0Exploration() {
-    val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0).toLiveData()
-    explorationLiveData.observeForever(mockExplorationObserver)
-    testCoroutineDispatchers.runCurrent()
+    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0)
 
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow()
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
     assertThat(exploration.title).isEqualTo("What is a Ratio?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(26)
@@ -172,15 +123,9 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_providesInitialLiveDataForRatios1Exploration() {
-    val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1).toLiveData()
-    explorationLiveData.observeForever(mockExplorationObserver)
-    testCoroutineDispatchers.runCurrent()
+    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1)
 
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow()
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
     assertThat(exploration.title).isEqualTo("Order is Important")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(22)
@@ -188,15 +133,9 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_providesInitialLiveDataForRatios2Exploration() {
-    val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2).toLiveData()
-    explorationLiveData.observeForever(mockExplorationObserver)
-    testCoroutineDispatchers.runCurrent()
+    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2)
 
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow()
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
     assertThat(exploration.title).isEqualTo("Equivalent Ratios")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(24)
@@ -204,15 +143,9 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_providesInitialLiveDataForRatios3Exploration() {
-    val explorationLiveData =
-      explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3).toLiveData()
-    explorationLiveData.observeForever(mockExplorationObserver)
-    testCoroutineDispatchers.runCurrent()
+    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3)
 
-    verify(mockExplorationObserver, atLeastOnce()).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationResultCaptor.value.getOrThrow()).isNotNull()
-    val exploration = explorationResultCaptor.value.getOrThrow()
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
     assertThat(exploration.title).isEqualTo("Writing Ratios in Simplest Form")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(21)
@@ -220,13 +153,9 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_returnsFailedForNonExistentExploration() {
-    val explorationLiveData =
-      explorationDataController.getExplorationById("NON_EXISTENT_TEST").toLiveData()
-    explorationLiveData.observeForever(mockExplorationObserver)
-    testCoroutineDispatchers.runCurrent()
+    val explorationResult = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
 
-    verify(mockExplorationObserver).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isFailure()).isTrue()
+    monitorFactory.waitForNextFailureResult(explorationResult)
     val exception = fakeExceptionLogger.getMostRecentException()
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat().contains("Asset doesn't exist: NON_EXISTENT_TEST")
@@ -234,13 +163,9 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_returnsFailed_logsException() {
-    val explorationLiveData =
-      explorationDataController.getExplorationById("NON_EXISTENT_TEST").toLiveData()
-    explorationLiveData.observeForever(mockExplorationObserver)
-    testCoroutineDispatchers.runCurrent()
+    val explorationResult = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
 
-    verify(mockExplorationObserver).onChanged(explorationResultCaptor.capture())
-    assertThat(explorationResultCaptor.value.isFailure()).isTrue()
+    monitorFactory.waitForNextFailureResult(explorationResult)
     val exception = fakeExceptionLogger.getMostRecentException()
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat().contains("Asset doesn't exist: NON_EXISTENT_TEST")

@@ -96,6 +96,7 @@ class ExplorationProgressController @Inject constructor(
   // TODO: update documentation & callsites to properly handle that returned providers will initially provide pending states.
   // TODO: update documentation to clarify that DataProviders will reset their state between submit calls.
   // TODO: update documentation & PR description to explain that this now eagerly compute ephemeral state rather than lazily due to it being a better fit with flows.
+  // TODO: update relevant method documentations to indicate that data providers for operations do not necessarily need to be monitored for their action to complete.
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentState).
@@ -407,7 +408,6 @@ class ExplorationProgressController @Inject constructor(
 
       // Reset the finish flow since the exploration is beginning.
       finishExplorationResultFlow.value = AsyncResult.pending()
-      return@tryOperation null
     }
   }
 
@@ -419,7 +419,6 @@ class ExplorationProgressController @Inject constructor(
         "Cannot finish playing an exploration that hasn't yet been started"
       }
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
-      return@tryOperation null
     }
 
     // Ensure all state is reset since an exploration is no longer being played.
@@ -598,6 +597,9 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.recomputeCurrentStateAndNotify() {
+    // Note the explicit notification here is chosen instead of emit() because emit() won't notify
+    // observers if the value hasn't changed and it may be the case that previous state hasn't yet
+    // been notified even though the flow looks different from the perspective of StateFlow.
     ephemeralStateFlow.value = retrieveCurrentStateAsync()
     asyncDataSubscriptionManager.notifyChange(CURRENT_STATE_PROVIDER_ID)
   }

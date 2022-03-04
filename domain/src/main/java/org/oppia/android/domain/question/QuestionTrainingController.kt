@@ -16,8 +16,6 @@ private const val RETRIEVE_QUESTION_FOR_SKILLS_ID_PROVIDER_ID =
   "retrieve_question_for_skills_id_provider_id"
 private const val START_QUESTION_TRAINING_SESSION_PROVIDER_ID =
   "start_question_training_session_provider_id"
-private const val STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID =
-  "stop_question_training_session_provider_id"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
@@ -47,14 +45,11 @@ class QuestionTrainingController @Inject constructor(
   fun startQuestionTrainingSession(
     profileId: ProfileId,
     skillIdsList: List<String>
-  ): DataProvider<Any> {
+  ): DataProvider<Any?> {
     return try {
-      val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
       questionAssessmentProgressController.beginQuestionTrainingSession(
-        retrieveQuestionsDataProvider, profileId
+        questionsListDataProvider = retrieveQuestionsForSkillIds(skillIdsList), profileId
       )
-      // Convert the data provider type to 'Any' via a transformation.
-      retrieveQuestionsDataProvider.transform(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) { it }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       dataProviders.createInMemoryDataProviderAsync(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) {
@@ -112,15 +107,6 @@ class QuestionTrainingController @Inject constructor(
    * method should only be called if there is a training session is being played, otherwise an
    * exception will be thrown.
    */
-  fun stopQuestionTrainingSession(): DataProvider<Any> {
-    return try {
-      questionAssessmentProgressController.finishQuestionTrainingSession()
-      dataProviders.createInMemoryDataProvider(STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID) { }
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      dataProviders.createInMemoryDataProviderAsync(STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID) {
-        AsyncResult.failed(e)
-      }
-    }
-  }
+  fun stopQuestionTrainingSession(): DataProvider<Any?> =
+    questionAssessmentProgressController.finishQuestionTrainingSession()
 }

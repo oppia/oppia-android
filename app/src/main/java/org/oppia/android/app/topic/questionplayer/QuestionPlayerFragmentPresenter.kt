@@ -107,11 +107,15 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(hintIndex: Int) {
-    subscribeToHintSolution(questionAssessmentProgressController.submitHintIsRevealed(hintIndex))
+    subscribeToHintSolution(
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex).toLiveData()
+    )
   }
 
   fun revealSolution() {
-    subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
+    subscribeToHintSolution(
+      questionAssessmentProgressController.submitSolutionIsRevealed().toLiveData()
+    )
   }
 
   fun dismissConceptCard() {
@@ -254,7 +258,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
-    subscribeToAnswerOutcome(questionAssessmentProgressController.submitAnswer(answer))
+    subscribeToAnswerOutcome(questionAssessmentProgressController.submitAnswer(answer).toLiveData())
   }
 
   /** This function listens to and processes the result of submitAnswer from QuestionAssessmentProgressController. */

@@ -27,6 +27,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:storage_module",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
