@@ -54,7 +54,6 @@ kt_android_library(
         ":resources",
         "//app:crashlytics",
         "//app:crashlytics_deps",
-        "//model:arguments_java_proto_lite",
         "//model:event_logger_java_proto_lite",
         "//model:platform_parameter_java_proto_lite",
         "//third_party:androidx_appcompat_appcompat",

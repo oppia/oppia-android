@@ -23,7 +23,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.PoliciesArguments.PolicyPage
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -58,7 +57,7 @@ class PolicyPageTagHandlerTest {
   lateinit var mockPolicyPageLinkClickListener: PolicyPageLinkClickListener
 
   @Captor
-  lateinit var policyPageCaptor: ArgumentCaptor<PolicyPage>
+  lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
@@ -123,9 +122,9 @@ class PolicyPageTagHandlerTest {
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
     clickableSpans[1].onClick(testView)
     verify(mockPolicyPageLinkClickListener)
-      .onPolicyPageLinkClicked(capture(policyPageCaptor))
+      .onPolicyPageLinkClicked(capture(policyTypeCaptor))
 
-    assertThat(policyPageCaptor.value).isEqualTo(PolicyPage.PRIVACY_POLICY)
+    assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
   }
 
   @Test
@@ -141,9 +140,9 @@ class PolicyPageTagHandlerTest {
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
     clickableSpans[0].onClick(testView)
     verify(mockPolicyPageLinkClickListener)
-      .onPolicyPageLinkClicked(capture(policyPageCaptor))
+      .onPolicyPageLinkClicked(capture(policyTypeCaptor))
 
-    assertThat(policyPageCaptor.value).isEqualTo(PolicyPage.TERMS_OF_SERVICE)
+    assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.TERMS_OF_SERVICE)
   }
 
   @Test

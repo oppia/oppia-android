@@ -113,6 +113,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
@@ -149,7 +150,7 @@ class OnboardingFragmentTest {
   lateinit var resourceBucketName: String
 
   @Captor
-  lateinit var policyPageCaptor: ArgumentCaptor<PolicyPage>
+  lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
 
   @Mock
   lateinit var mockPolicyOppiaTagActionListener: HtmlParser.PolicyOppiaTagActionListener
@@ -724,9 +725,9 @@ class OnboardingFragmentTest {
 
       // Verify that the tag listener is called.
       verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
-        capture(policyPageCaptor)
+        capture(policyTypeCaptor)
       )
-      assertThat(policyPageCaptor.value).isEqualTo(PolicyPage.TERMS_OF_SERVICE)
+      assertThat(policyTypeCaptor.value).isEqualTo(PolicyPage.TERMS_OF_SERVICE)
     }
   }
 
@@ -765,10 +766,10 @@ class OnboardingFragmentTest {
 
       // Verify that the tag listener is called.
       verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
-        capture(policyPageCaptor)
+        capture(policyTypeCaptor)
       )
 
-      assertThat(policyPageCaptor.value).isEqualTo(PolicyPage.PRIVACY_POLICY)
+      assertThat(policyTypeCaptor.value).isEqualTo(PolicyPage.PRIVACY_POLICY)
     }
   }
 

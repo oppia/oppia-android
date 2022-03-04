@@ -141,7 +141,7 @@ class HtmlParserTest {
   lateinit var resourceBucketName: String
 
   @get:Rule
-  var activityRule: ActivityScenarioRule<HtmlParserTestActivity> =
+  var activityScenarioRule: ActivityScenarioRule<HtmlParserTestActivity> =
     ActivityScenarioRule(
       Intent(ApplicationProvider.getApplicationContext(), HtmlParserTestActivity::class.java)
     )
@@ -165,7 +165,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val (textView, htmlResult) = activityRule.scenario.runWithActivity {
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
@@ -197,7 +197,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val (textView, htmlResult) = activityRule.scenario.runWithActivity {
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "\u003cp\u003e\"Let's try one last question,\" said Mr. Baker. \"Here's a " +
@@ -226,7 +226,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "<p>You should know the following before going on:<br></p>" +
@@ -249,13 +249,13 @@ class HtmlParserTest {
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
     assertThat(bulletSpan0).isNotNull()
 
-    val bulletRadius = activityRule.scenario.getDimensionPixelSize(
+    val bulletRadius = activityScenarioRule.scenario.getDimensionPixelSize(
       org.oppia.android.util.R.dimen.bullet_radius
     )
-    val spacingBeforeBullet = activityRule.scenario.getDimensionPixelSize(
+    val spacingBeforeBullet = activityScenarioRule.scenario.getDimensionPixelSize(
       org.oppia.android.util.R.dimen.spacing_before_bullet
     )
-    val spacingBeforeText = activityRule.scenario.getDimensionPixelSize(
+    val spacingBeforeText = activityScenarioRule.scenario.getDimensionPixelSize(
       org.oppia.android.util.R.dimen.spacing_before_bullet_text
     )
     val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
@@ -275,7 +275,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
@@ -298,7 +298,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
@@ -370,7 +370,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "A<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
@@ -396,7 +396,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true,
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "A<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
@@ -421,7 +421,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true,
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "A<oppia-noninteractive-image filepath-with-value=\"test.svg\">" +
@@ -446,7 +446,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -470,7 +470,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true
     )
-    val htmlResult = activityRule.scenario.runWithActivity {
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -489,7 +489,7 @@ class HtmlParserTest {
   @Test
   fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
     val htmlParser = htmlParserFactory.create()
-    val (textView, htmlResult) = activityRule.scenario.runWithActivity {
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "You can read more about the CC-BY-SA 4.0 license " +
@@ -518,7 +518,7 @@ class HtmlParserTest {
       imageCenterAlign = true,
       customOppiaTagActionListener = mockCustomOppiaTagActionListener
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -546,7 +546,7 @@ class HtmlParserTest {
       imageCenterAlign = true,
       customOppiaTagActionListener = mockCustomOppiaTagActionListener
     )
-    val textView = activityRule.scenario.runWithActivity {
+    val textView = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -579,7 +579,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true,
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -604,7 +604,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true,
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-math math_content-with-value=\"{" +
@@ -627,7 +627,7 @@ class HtmlParserTest {
     htmlParser: HtmlParser,
     layoutDirection: Int
   ): TextView {
-    return activityRule.scenario.runWithActivity {
+    return activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       ViewCompat.setLayoutDirection(textView, layoutDirection)
       htmlParser.parseOppiaHtml(

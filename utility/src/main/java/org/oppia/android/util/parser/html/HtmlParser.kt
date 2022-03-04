@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
-import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
@@ -41,8 +40,8 @@ class HtmlParser private constructor(
   private val policyPageTagHandler by lazy {
     PolicyPageTagHandler(
       object : PolicyPageTagHandler.PolicyPageLinkClickListener {
-        override fun onPolicyPageLinkClicked(policyPage: PolicyPage) {
-          policyOppiaTagActionListener?.onPolicyPageLinkClicked(policyPage)
+        override fun onPolicyPageLinkClicked(policyType: PolicyType) {
+          policyOppiaTagActionListener?.onPolicyPageLinkClicked(policyType)
         }
       },
       consoleLogger
@@ -172,7 +171,7 @@ class HtmlParser private constructor(
     /**
      * Called when a policy page link is clicked that corresponds to the page that should be shown.
      */
-    fun onPolicyPageLinkClicked(policyPage: PolicyPage)
+    fun onPolicyPageLinkClicked(policyType: PolicyType)
   }
 
   /** Factory for creating new [HtmlParser]s. */

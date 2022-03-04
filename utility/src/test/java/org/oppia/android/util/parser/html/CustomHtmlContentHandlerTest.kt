@@ -182,7 +182,8 @@ class CustomHtmlContentHandlerTest {
 
   @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
-    val htmlString = "<p>Paragraph 1</p><ul><oppia-li>Item</oppia-li></ul><p>Paragraph 2.</p>"
+    val htmlString = "<p>Paragraph 1</p><oppia-ul><oppia-li>Item</oppia-li></oppia-ul>" +
+      "<p>Paragraph 2.</p>"
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(

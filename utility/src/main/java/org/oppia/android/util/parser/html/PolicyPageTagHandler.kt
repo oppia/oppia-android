@@ -5,7 +5,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ClickableSpan
 import android.view.View
-import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 
@@ -42,7 +41,7 @@ class PolicyPageTagHandler(
             output,
             openIndex,
             closeIndex,
-            PolicyPage.TERMS_OF_SERVICE
+            PolicyType.TERMS_OF_SERVICE
           )
         }
         PRIVACY_POLICY_PAGE -> {
@@ -51,7 +50,7 @@ class PolicyPageTagHandler(
             output,
             openIndex,
             closeIndex,
-            PolicyPage.PRIVACY_POLICY
+            PolicyType.PRIVACY_POLICY
           )
         }
       }
@@ -63,13 +62,13 @@ class PolicyPageTagHandler(
     output: Editable,
     openIndex: Int,
     closeIndex: Int,
-    policyPage: PolicyPage
+    policyType: PolicyType
   ) {
     val spannableBuilder = SpannableStringBuilder(policyLink)
     spannableBuilder.setSpan(
       object : ClickableSpan() {
         override fun onClick(view: View) {
-          listener.onPolicyPageLinkClicked(policyPage)
+          listener.onPolicyPageLinkClicked(policyType)
         }
       },
       /* start= */ 0, /* end= */ policyLink.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
@@ -83,6 +82,6 @@ class PolicyPageTagHandler(
      * Called when a policy page link is called in the specified view corresponding to the
      * specified policy link.
      */
-    fun onPolicyPageLinkClicked(policyPage: PolicyPage)
+    fun onPolicyPageLinkClicked(policyType: PolicyType)
   }
 }

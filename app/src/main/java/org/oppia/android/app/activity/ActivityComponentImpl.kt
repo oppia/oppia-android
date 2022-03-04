@@ -64,6 +64,7 @@ import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.testing.ImageRegionSelectionTestActivity
 import org.oppia.android.app.testing.ImageViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.InputInteractionViewTestActivity
+import org.oppia.android.app.testing.ListItemLeadingMarginSpanTestActivity
 import org.oppia.android.app.testing.MarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.NavigationDrawerTestActivity
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
@@ -134,6 +135,7 @@ interface ActivityComponentImpl :
   fun inject(inputInteractionViewTestActivity: InputInteractionViewTestActivity)
   fun inject(licenseListActivity: LicenseListActivity)
   fun inject(licenseTextViewerActivity: LicenseTextViewerActivity)
+  fun inject(listItemLeadingMarginSpanTestActivity: ListItemLeadingMarginSpanTestActivity)
   fun inject(markChaptersCompletedActivity: MarkChaptersCompletedActivity)
   fun inject(markChaptersCompletedTestActivity: MarkChaptersCompletedTestActivity)
   fun inject(markStoriesCompletedActivity: MarkStoriesCompletedActivity)

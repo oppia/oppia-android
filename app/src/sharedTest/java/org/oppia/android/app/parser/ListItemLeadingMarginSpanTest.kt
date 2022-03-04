@@ -1,21 +1,29 @@
 package org.oppia.android.app.parser
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.BulletSpan
-import android.text.style.UnderlineSpan
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.getSpans
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.intent.Intents
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -26,6 +34,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.ListItemLeadingMarginSpanTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -52,7 +61,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -61,19 +69,24 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.html.ListItemLeadingMarginSpan
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.reflect.KClass
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -82,151 +95,268 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ListItemLeadingMarginSpanTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
 
   private var context: Context = ApplicationProvider.getApplicationContext<TestApplication>()
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
 
-  private val testStringWithoutBulletSpan = SpannableString("Text Without BulletSpan")
-  private val testStringWithBulletSpan = SpannableString("Text With \nBullet Point").apply {
-    setSpan(BulletSpan(), 10, 22, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-  }
-  private val testStringWithMultipleBulletSpan = SpannableString(
-    "Text With \nfirst \nsecond \nthird \nfour \nfive"
-  ).apply {
-    setSpan(BulletSpan(), 10, 18, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(), 18, 27, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(), 27, 35, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(BulletSpan(), 35, 42, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    setSpan(UnderlineSpan(), 42, 43, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-  }
-  private val testStringWithCustomBulletSpan = SpannableString("Text With \nBullet Point").apply {
-    this.setSpan(
-      ListItemLeadingMarginSpan(context, 1, "", "<oppia-ul>"),
-      10,
-      22,
-      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
+
+  @Inject
+  @field:DefaultResourceBucketName
+  lateinit var resourceBucketName: String
+
+  @get:Rule
+  var activityScenarioRule: ActivityScenarioRule<ListItemLeadingMarginSpanTestActivity> =
+    ActivityScenarioRule(
+      Intent(
+        ApplicationProvider.getApplicationContext(),
+        ListItemLeadingMarginSpanTestActivity::class.java
+      )
     )
+  // Note that the locale rule must be initialized first since the scenario rule can depend on the
+  // locale being initialized.
+  @get:Rule
+  val chain: TestRule =
+    RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
+
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    Intents.init()
   }
 
-  @Test
-  fun customBulletSpan_testReplaceBulletSpan_spannableStringWithoutBulletSpanRemainSame() {
-    val spannableString1 = testStringWithoutBulletSpan
-    val convertedSpannableStringBuilder = ListItemLeadingMarginSpan.replaceBulletSpan(
-      SpannableStringBuilder(spannableString1),
-      context
-    )
-    val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
-    assertThat(getBulletSpanCount(spannableString1)).isEqualTo(0)
-    assertThat(getCustomBulletSpanCount(spannableString1)).isEqualTo(0)
-    assertThat(getBulletSpanCount(spannableString2)).isEqualTo(0)
-    assertThat(getCustomBulletSpanCount(spannableString2)).isEqualTo(0)
-  }
-
-  @Test
-  fun customBulletSpan_testReplaceBulletSpan_spannableStringWithBulletSpan_isNotSame() {
-    val spannableString1 = testStringWithBulletSpan
-    val convertedSpannableStringBuilder = ListItemLeadingMarginSpan.replaceBulletSpan(
-      SpannableStringBuilder(spannableString1),
-      context
-    )
-    val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
-
-    assertThat(getBulletSpanCount(spannableString1)).isEqualTo(1)
-    assertThat(getCustomBulletSpanCount(spannableString1)).isEqualTo(0)
-    assertThat(getBulletSpanCount(spannableString2)).isEqualTo(0)
-    assertThat(getCustomBulletSpanCount(spannableString2)).isEqualTo(1)
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   @Test
-  fun customBulletSpan_testReplaceBulletSpan_includingUnderlineSpan_underlineSpanRemainsSame() {
-    val spannableString1 = testStringWithMultipleBulletSpan
-    val convertedSpannableStringBuilder = ListItemLeadingMarginSpan.replaceBulletSpan(
-      SpannableStringBuilder(spannableString1),
-      context
+  fun testListLeadingMarginSpan_forBulletItemsLeadingMargin_isComputedToProperlyIndentText() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
     )
-    val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
-    assertThat(getBulletSpanCount(spannableString1)).isEqualTo(4)
-    assertThat(getCustomBulletSpanCount(spannableString1)).isEqualTo(0)
-    assertThat(getUnderlineSpanCount(spannableString1)).isEqualTo(1)
-    assertThat(getBulletSpanCount(spannableString2)).isEqualTo(0)
-    assertThat(getCustomBulletSpanCount(spannableString2)).isEqualTo(4)
-    assertThat(getUnderlineSpanCount(spannableString2)).isEqualTo(1)
-  }
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "<p>You should know the following before going on:<br></p>" +
+          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another</li></ul>",
+        textView
+      )
+    }
 
-  @Test
-  fun customBulletSpan_testReplaceBulletSpan_customBulletSpans_remainsSame() {
-    val spannableString1 = testStringWithCustomBulletSpan
-    val convertedSpannableStringBuilder = ListItemLeadingMarginSpan.replaceBulletSpan(
-      SpannableStringBuilder(spannableString1),
-      context
-    )
-    val spannableString2 = SpannableString.valueOf(convertedSpannableStringBuilder)
-    assertThat(getBulletSpanCount(spannableString1)).isEqualTo(0)
-    assertThat(getCustomBulletSpanCount(spannableString1)).isEqualTo(1)
-    assertThat(getBulletSpanCount(spannableString2)).isEqualTo(0)
-    assertThat(getCustomBulletSpanCount(spannableString2)).isEqualTo(1)
-  }
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans =
+      htmlResult.getSpans(
+        0,
+        htmlResult.length,
+        ListItemLeadingMarginSpan::class.java
+      )
+    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
-  @Test
-  fun customBulletSpan_testLeadMargin_isComputedToProperlyIndentText() {
-    val bulletRadius = context.resources.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.bullet_radius
-    )
-    val spacingBeforeBullet = context.resources.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_bullet
-    )
-    val spacingBeforeText = context.resources.getDimensionPixelSize(
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
+    assertThat(bulletSpan0).isNotNull()
+
+    val spacingBeforeBulletText = context.resources.getDimensionPixelSize(
       org.oppia.android.util.R.dimen.spacing_before_bullet_text
     )
-    val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
-    val spannableString = SpannableStringBuilder(testStringWithBulletSpan)
-    val leadingMargin = spannableString.getSpans(
-      0,
-      spannableString.length,
-      ListItemLeadingMarginSpan::class.java
-    )[0].getLeadingMargin(true)
-    assertThat(leadingMargin).isEqualTo(expectedMargin)
-  }
+    val expectedMargin = spacingBeforeBulletText
 
-  private fun getBulletSpans(spannableString: SpannableString): Array<out BulletSpan> {
-    return spannableString.getSpans<BulletSpan>(
-      0,
-      spannableString.length
+    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
+    assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
+
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
+    assertThat(bulletSpan1).isNotNull()
+  }
+  
+  @Test
+  fun testListLeadingMarginSpan_nestedBulletLeadingMargin_isComputedToProperlyIndentText() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
     )
-  }
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "<ul>" +
+          "        <li>" +
+          "          \"Usage Data\", such as:" +
+          "          <ul>" +
+          "            <li>your answers to Lessons;</li>" +
+          "            <li>when you begin and end a Lesson;</li>" +
+          "            <li>" +
+          "              the page from which you navigated to the Site and the page to" +
+          "              which you navigate when you leave the Site;" +
+          "            </li>" +
+          "            <li>" +
+          "              any contributions you make to the Site (such as feedback on" +
+          "              Lessons, edits to Lessons, and Lessons created);" +
+          "            </li>" +
+          "          </ul>" +
+          "        </li>" +
+          "      </ul>",
+        textView
+      )
+    }
 
-  private fun getCustomBulletSpans(
-    spannableString: SpannableString
-  ): Array<out ListItemLeadingMarginSpan> {
-    return spannableString.getSpans<ListItemLeadingMarginSpan>(
-      0,
-      spannableString.length
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans =
+      htmlResult.getSpans(
+        0,
+        htmlResult.length,
+        ListItemLeadingMarginSpan::class.java
+      )
+    assertThat(bulletSpans.size.toLong()).isEqualTo(5)
+
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
+    assertThat(bulletSpan0).isNotNull()
+
+    val spacingBeforeBulletText = context.resources.getDimensionPixelSize(
+      org.oppia.android.util.R.dimen.spacing_before_bullet_text
     )
+    val expectedMargin = spacingBeforeBulletText
+
+    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
+    assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
+
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
+    assertThat(bulletSpan1).isNotNull()
+
+    val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
+    assertThat(bulletSpan1Margin).isEqualTo(expectedMargin)
   }
 
-  private fun getUnderlineSpans(spannableString: SpannableString): Array<out UnderlineSpan> {
-    return spannableString.getSpans<UnderlineSpan>(
-      0,
-      spannableString.length
+  @Test
+  fun testListLeadingMarginSpan_nestedNumberedItemsLeadingMargin_isComputedToProperlyIndentText() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
     )
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "<ol>" +
+          "        <li>" +
+          "          \"Usage Data\", such as:" +
+          "          <ol>" +
+          "            <li>your answers to Lessons;</li>" +
+          "            <li>when you begin and end a Lesson;</li>" +
+          "            <li>" +
+          "              the page from which you navigated to the Site and the page to" +
+          "              which you navigate when you leave the Site;" +
+          "            </li>" +
+          "            <li>" +
+          "              any contributions you make to the Site (such as feedback on" +
+          "              Lessons, edits to Lessons, and Lessons created);" +
+          "            </li>" +
+          "          </ol>" +
+          "        </li>" +
+          "        </ol>",
+        textView
+      )
+    }
+
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans =
+      htmlResult.getSpans(
+        0,
+        htmlResult.length,
+        ListItemLeadingMarginSpan::class.java
+      )
+    assertThat(bulletSpans.size.toLong()).isEqualTo(5)
+
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
+    assertThat(bulletSpan0).isNotNull()
+
+    val spacingBeforeNumberedText = context.resources.getDimensionPixelSize(
+      org.oppia.android.util.R.dimen.spacing_before_numbered_text
+    )
+    val expectedMargin = spacingBeforeNumberedText
+
+    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
+    assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
+
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
+    assertThat(bulletSpan1).isNotNull()
+
+    val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
+    assertThat(bulletSpan1Margin).isEqualTo(expectedMargin)
   }
 
-  private fun getBulletSpanCount(spannableString: SpannableString): Int {
-    return getBulletSpans(spannableString).size
+  @Test
+  fun testListLeadingMarginSpan_forNumberedItemsLeadingMargin_isComputedToProperlyIndentText() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true
+    )
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "<p>You should know the following before going on:<br></p>" +
+          "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
+          "<li>How to tell whether one counting number is bigger or " +
+          "smaller than another</li></ol>",
+        textView
+      )
+    }
+
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans =
+      htmlResult.getSpans(
+        0,
+        htmlResult.length,
+        ListItemLeadingMarginSpan::class.java
+      )
+    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
+
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
+    assertThat(bulletSpan0).isNotNull()
+
+    val spacingBeforeNumberedText = context.resources.getDimensionPixelSize(
+      org.oppia.android.util.R.dimen.spacing_before_numbered_text
+    )
+    val expectedMargin = spacingBeforeNumberedText
+
+    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
+    assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
+
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
+    assertThat(bulletSpan1).isNotNull()
   }
 
-  private fun getCustomBulletSpanCount(spannableString: SpannableString): Int {
-    return getCustomBulletSpans(spannableString).size
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
+    crossinline action: (A) -> V
+  ): V {
+    // Use Mockito to ensure the routine is actually executed before returning the result.
+    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
+    val fakeMock: Consumer<V> = Mockito.mock(Consumer::class.java) as Consumer<V>
+    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
+    onActivity { fakeMock.consume(action(it)) }
+    Mockito.verify(fakeMock).consume(valueCaptor.capture())
+    return valueCaptor.value
   }
 
-  private fun getUnderlineSpanCount(spannableString: SpannableString): Int {
-    return getUnderlineSpans(spannableString).size
-  }
+  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
+    getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+  
   @Singleton
   @Component(
     modules = [
@@ -255,18 +385,18 @@ class ListItemLeadingMarginSpanTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(customBulletSpanTest: ListItemLeadingMarginSpanTest)
+    fun inject(listItemLeadingMarginSpanTest: ListItemLeadingMarginSpanTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCustomBulletSpanTest_TestApplicationComponent.builder()
+      DaggerListItemLeadingMarginSpanTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(customBulletSpanTest: ListItemLeadingMarginSpanTest) {
-      component.inject(customBulletSpanTest)
+    fun inject(listItemLeadingMarginSpanTest: ListItemLeadingMarginSpanTest) {
+      component.inject(listItemLeadingMarginSpanTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
@@ -274,5 +404,9 @@ class ListItemLeadingMarginSpanTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private interface Consumer<T> {
+    fun consume(value: T)
   }
 }
