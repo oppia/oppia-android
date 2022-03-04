@@ -31,6 +31,7 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -57,6 +58,7 @@ private const val UPDATE_READING_TEXT_SIZE_PROVIDER_ID =
 private const val UPDATE_APP_LANGUAGE_PROVIDER_ID = "update_app_language_provider_id"
 private const val UPDATE_AUDIO_LANGUAGE_PROVIDER_ID =
   "update_audio_language_provider_id"
+private const val UPDATE_LEARNER_ID_PROVIDER_ID = "update_learner_id_provider_id"
 
 /** Controller for retrieving, adding, updating, and deleting profiles. */
 @Singleton
@@ -68,7 +70,8 @@ class ProfileManagementController @Inject constructor(
   private val directoryManagementUtil: DirectoryManagementUtil,
   private val exceptionsController: ExceptionsController,
   private val oppiaClock: OppiaClock,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val loggingIdentifierController: LoggingIdentifierController
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -212,6 +215,7 @@ class ProfileManagementController @Inject constructor(
 
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
+      val learnerId = loggingIdentifierController.createLearnerId()
 
       val newProfileBuilder = Profile.newBuilder()
         .setName(name)
@@ -223,6 +227,7 @@ class ProfileManagementController @Inject constructor(
         .setReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
         .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
         .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+        .setLearnerId(learnerId)
 
       if (avatarImagePath != null) {
         val imageUri =
@@ -522,6 +527,35 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(
       UPDATE_APP_LANGUAGE_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Updates the learner ID of the profile.
+   *
+   * @param profileId the ID corresponding to the profile being updated.
+   */
+  fun updateLearnerId(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
+        )
+      val learnerId = loggingIdentifierController.createLearnerId()
+      val updatedProfile = profile.toBuilder().setLearnerId(learnerId).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(
+      UPDATE_LEARNER_ID_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }

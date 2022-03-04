@@ -12,6 +12,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val consoleLogger: ConsoleLogger,
+  private val loggingIdentifierController: LoggingIdentifierController,
   @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
@@ -253,11 +254,10 @@ class OppiaLogger @Inject constructor(
    * @param learnerId: profile-specific identifier which is unique to each profile on a device.
    * */
   fun createLearnerDetailsContext(
-    deviceId: String,
     learnerId: String
   ): EventLog.LearnerDetailsContext {
     return EventLog.LearnerDetailsContext.newBuilder()
-      .setDeviceId(deviceId)
+      .setDeviceId(loggingIdentifierController.deviceId)
       .setLearnerId(learnerId)
       .build()
   }
