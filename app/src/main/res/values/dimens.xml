@@ -616,6 +616,9 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
+  <!-- AppLanguageFragment -->
+  <dimen name="app_language_recycler_view_padding_bottom">132dp</dimen>
+
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">160dp</dimen>
 
@@ -663,4 +666,8 @@
   <dimen name="admin_auth_input_pin_margin_top">48dp</dimen>
   <dimen name="admin_auth_submit_button_margin_top">48dp</dimen>
   <dimen name="admin_auth_submit_button_min_height">48dp</dimen>
+
+  <!-- OptionAudioLanguage -->
+  <dimen name="option_audio_language_padding_start">16dp</dimen>
+  <dimen name="option_audio_language_padding_end">16dp</dimen>
 </resources>

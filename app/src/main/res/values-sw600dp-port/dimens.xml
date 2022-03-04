@@ -413,6 +413,9 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
+  <!-- AppLanguageFragment -->
+  <dimen name="app_language_recycler_view_padding_bottom">132dp</dimen>
+
   <!-- ProfileProgressRecentlyPlayedStoryCard -->
   <dimen name="profile_progress_recently_played_story_card_layout_margin_start">24dp</dimen>
   <dimen name="profile_progress_recently_played_story_card_layout_margin_end">24dp</dimen>
@@ -450,4 +453,8 @@
   <dimen name="admin_auth_input_pin_margin_top">40dp</dimen>
   <dimen name="admin_auth_submit_button_margin_top">48dp</dimen>
   <dimen name="admin_auth_submit_button_min_height">36dp</dimen>
+
+  <!-- OptionAudioLanguage -->
+  <dimen name="option_audio_language_padding_start">16dp</dimen>
+  <dimen name="option_audio_language_padding_end">16dp</dimen>
 </resources>
