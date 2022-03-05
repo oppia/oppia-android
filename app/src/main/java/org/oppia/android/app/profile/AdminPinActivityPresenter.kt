@@ -11,12 +11,13 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AdminPinActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 
 /** The presenter for [AdminPinActivity]. */
 @ActivityScope
@@ -114,7 +115,7 @@ class AdminPinActivityPresenter @Inject constructor(
       profileManagementController.updatePin(profileId, inputPin).toLiveData().observe(
         activity,
         Observer {
-          if (it.isSuccess()) {
+          if (it is AsyncResult.Success) {
             when (activity.intent.getIntExtra(ADMIN_PIN_ENUM_EXTRA_KEY, 0)) {
               AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
                 activity.startActivity(

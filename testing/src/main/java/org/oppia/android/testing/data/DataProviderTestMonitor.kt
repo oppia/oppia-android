@@ -3,6 +3,7 @@ package org.oppia.android.testing.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.platform.app.InstrumentationRegistry
+import java.lang.IllegalStateException
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
@@ -118,21 +119,24 @@ class DataProviderTestMonitor<T> private constructor(
   }
 
   private fun retrieveSuccess(operation: () -> AsyncResult<T>): T {
-    return operation().also {
+    return when (val result = operation()) {
       // Sanity check. Ensure that the full failure stack trace is thrown.
-      if (!it.isSuccess()) {
+      is AsyncResult.Failure -> {
         throw IllegalStateException(
-          "Expected next result to be a success, not: $it", it.getErrorOrNull()
+          "Expected next result to be a success, not: $result", result.error
         )
       }
-    }.getOrThrow()
+      is AsyncResult.Pending -> error("Expected next result to be a success, not: $result")
+      is AsyncResult.Success -> result.value
+    }
   }
 
   private fun retrieveFailing(operation: () -> AsyncResult<T>): Throwable {
-    return operation().also {
-      // Sanity check.
-      check(it.isFailure()) { "Expected next result to be a failure, not: $it" }
-    }.getErrorOrNull() ?: error("Expect result to have a failure error")
+    return when (val result = operation()) {
+      is AsyncResult.Failure -> result.error
+      is AsyncResult.Pending, is AsyncResult.Success ->
+        error("Expected next result to be a failure, not: $result")
+    }
   }
 
   /**
@@ -150,6 +154,17 @@ class DataProviderTestMonitor<T> private constructor(
         // the current monitor.
         it.startObservingDataProvider()
       }
+    }
+
+    // TODO: add documentation explaining this is useful for arrangement since it's not making
+    //  assumptions about the result (other than there is one), which is necessary since LiveData
+    //  must be active. Also, add tests & verify that users of the next two functions switch to this
+    //  one, instead, when the extra assertion isn't needed.
+    fun <T> ensureDataProviderExecutes(dataProvider: DataProvider<T>) {
+      // Waiting for a result is the same as ensuring the conditions are right for the provider to
+      // execute (since it must return a result if it's executed, even if it's pending).
+      val monitor = createMonitor(dataProvider)
+      monitor.waitForNextResult().also { monitor.stopObservingDataProvider() }
     }
 
     /**

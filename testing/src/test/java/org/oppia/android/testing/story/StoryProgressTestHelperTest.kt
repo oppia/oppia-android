@@ -2,7 +2,6 @@ package org.oppia.android.testing.story
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -10,18 +9,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
@@ -53,6 +46,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -61,9 +55,6 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -72,49 +63,21 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [StoryProgressTestHelper]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryProgressTestHelperTest.TestApplication::class)
 class StoryProgressTestHelperTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var topicController: TopicController
-
-  @Inject
-  lateinit var persistentCacheStoreFactory: PersistentCacheStore.Factory
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Mock
-  lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
-
-  @Captor
-  lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
-
-  @Mock
-  lateinit var mockTopicProgressDatabaseObserver: Observer<AsyncResult<TopicProgressDatabase>>
-
-  @Captor
-  lateinit var topicProgressDatabaseResultCaptor: ArgumentCaptor<AsyncResult<TopicProgressDatabase>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var topicController: TopicController
+  @Inject lateinit var persistentCacheStoreFactory: PersistentCacheStore.Factory
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val profileId0: ProfileId by lazy { ProfileId.newBuilder().setInternalId(0).build() }
   private val profileId1: ProfileId by lazy { ProfileId.newBuilder().setInternalId(1).build() }
@@ -1652,19 +1615,14 @@ class StoryProgressTestHelperTest {
     assertThat(exp2.isStartedNotCompleted()).isFalse()
   }
 
-  private fun getTopic(profileId: ProfileId, topicId: String): Topic {
-    return retrieveSuccessfulResult(
-      topicController.getTopic(profileId, topicId), mockTopicObserver, topicResultCaptor
-    )
-  }
+  private fun getTopic(profileId: ProfileId, topicId: String): Topic =
+    monitorFactory.waitForNextSuccessfulResult(topicController.getTopic(profileId, topicId))
 
   private fun Topic.getStory(storyId: String): StorySummary {
     return storyList.find { it.storyId == storyId } ?: error("Failed to find story: $storyId")
   }
 
   private fun Topic.isNotStarted(): Boolean = storyList.all { it.isNotStarted() }
-
-  private fun Topic.isStartedNotCompleted(): Boolean = storyList.any { it.isStartedNotCompleted() }
 
   private fun Topic.isInProgressSaved(): Boolean = storyList.any { it.isInProgressSaved() }
 
@@ -1679,9 +1637,6 @@ class StoryProgressTestHelperTest {
   }
 
   private fun StorySummary.isNotStarted(): Boolean = chapterList.all { it.isNotStarted() }
-
-  private fun StorySummary.isStartedNotCompleted(): Boolean =
-    chapterList.any { it.isStartedNotCompleted() }
 
   private fun StorySummary.isInProgressSaved(): Boolean = chapterList.any { it.isInProgressSaved() }
 
@@ -1714,9 +1669,7 @@ class StoryProgressTestHelperTest {
         TopicProgressDatabase.getDefaultInstance(),
         profileId
       )
-    return retrieveSuccessfulResult(
-      persistentCacheStore, mockTopicProgressDatabaseObserver, topicProgressDatabaseResultCaptor
-    )
+    return monitorFactory.waitForNextSuccessfulResult(persistentCacheStore)
   }
 
   private fun TopicProgressDatabase.getTopicProgress(topicId: String): TopicProgress {
@@ -1729,25 +1682,6 @@ class StoryProgressTestHelperTest {
 
   private fun StoryProgress.getChapterProgress(expId: String): ChapterProgress {
     return chapterProgressMap[expId] ?: error("Failed to get progress for chapter: $expId")
-  }
-
-  private fun <T> retrieveSuccessfulResult(
-    dataProvider: DataProvider<T>,
-    mockObserver: Observer<AsyncResult<T>>,
-    mockResultCaptor: ArgumentCaptor<AsyncResult<T>>
-  ): T {
-    val requestLiveData = dataProvider.toLiveData()
-    reset(mockObserver)
-    requestLiveData.observeForever(mockObserver)
-
-    // Provide time for the topic retrieval to complete.
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockObserver, atLeastOnce()).onChanged(mockResultCaptor.capture())
-    requestLiveData.removeObserver(mockObserver)
-    val result = mockResultCaptor.value
-    assertThat(result.isSuccess()).isTrue()
-    return result.getOrThrow()
   }
 
   // TODO(#89): Move this to a common test application component.

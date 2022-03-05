@@ -279,14 +279,11 @@ class StoryFragmentPresenter @Inject constructor(
     ).toLiveData().observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> oppiaLogger.d("Story Fragment", "Loading exploration")
-          result.isFailure() -> oppiaLogger.e(
-            "Story Fragment",
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
+        when (result) {
+          is AsyncResult.Pending -> oppiaLogger.d("Story Fragment", "Loading exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e("Story Fragment", "Failed to load exploration", result.error)
+          is AsyncResult.Success -> {
             oppiaLogger.d("Story Fragment", "Successfully loaded exploration: $explorationId")
             routeToExplorationListener.routeToExploration(
               internalProfileId,

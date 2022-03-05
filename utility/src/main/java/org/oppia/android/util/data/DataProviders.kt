@@ -12,7 +12,6 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
@@ -54,7 +53,7 @@ class DataProviders @Inject constructor(
             this@transform.retrieveData().transform(function)
           } catch (e: Exception) {
             dataProviders.exceptionLogger.logException(e)
-            AsyncResult.failed(e)
+            AsyncResult.Failure(e)
           }
         }
       }
@@ -123,7 +122,7 @@ class DataProviders @Inject constructor(
             this@combineWith.retrieveData().combineWith(dataProvider.retrieveData(), function)
           } catch (e: Exception) {
             dataProviders.exceptionLogger.logException(e)
-            AsyncResult.failed(e)
+            AsyncResult.Failure(e)
           }
         }
       }
@@ -191,10 +190,10 @@ class DataProviders @Inject constructor(
 
       override suspend fun retrieveData(): AsyncResult<T> {
         return try {
-          AsyncResult.success(loadFromMemory())
+          AsyncResult.Success(loadFromMemory())
         } catch (e: Exception) {
           exceptionLogger.logException(e)
-          AsyncResult.failed(e)
+          AsyncResult.Failure(e)
         }
       }
     }

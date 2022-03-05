@@ -51,21 +51,19 @@ class ExplorationTestActivityPresenter @Inject constructor(
     ).toLiveData().observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
-          result.isFailure() -> oppiaLogger.e(
-            TAG_EXPLORATION_TEST_ACTIVITY,
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
+        when (result) {
+          is AsyncResult.Pending ->
+            oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.error)
+          is AsyncResult.Success -> {
             oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               INTERNAL_PROFILE_ID,
               TOPIC_ID,
               STORY_ID,
               EXPLORATION_ID,
-              /* backflowScreen= */ null,
+              backflowScreen = null,
               isCheckpointingEnabled = false
             )
           }

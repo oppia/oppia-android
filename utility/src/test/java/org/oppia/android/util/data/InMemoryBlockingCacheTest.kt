@@ -35,6 +35,8 @@ private const val CREATED_ASYNC_VALUE = "created async value"
 private const val UPDATED_ASYNC_VALUE = "updated async value"
 
 /** Tests for [InMemoryBlockingCache]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)

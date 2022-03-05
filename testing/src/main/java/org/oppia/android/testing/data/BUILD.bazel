@@ -7,6 +7,21 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
+    name = "async_result_subject",
+    testonly = True,
+    srcs = [
+        "AsyncResultSubject.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+    ],
+)
+
+kt_android_library(
     name = "data_provider_test_monitor",
     testonly = True,
     srcs = [

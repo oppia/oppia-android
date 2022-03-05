@@ -340,7 +340,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   ) {
     // Ensure that the result is first reset since there will be a delay before the message is
     // processed.
-    resultFlow.value = AsyncResult.pending()
+    resultFlow.value = AsyncResult.Pending()
 
     // This must succeed or the app will be entered into a bad state. Crash instead of trying to
     // recover (though recovery may be possible in the future with some changes and user messaging).
@@ -351,7 +351,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     questionsList: List<Question>
   ): AsyncResult<Any?> {
     controllerCommandQueue.send(ControllerMessage.ReceiveQuestionList(questionsList))
-    return AsyncResult.success(null)
+    return AsyncResult.Success(null)
   }
 
   private suspend fun ControllerState.beginQuestionTrainingSessionInternal(profileId: ProfileId) {
@@ -365,7 +365,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
 
       // Reset the finish flow since the session is beginning.
-      finishSessionResultFlow.value = AsyncResult.pending()
+      finishSessionResultFlow.value = AsyncResult.Pending()
     }
   }
 
@@ -388,13 +388,13 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
 
     // Ensure all state is reset since a session is no longer being played.
-    ephemeralQuestionFlow.value = AsyncResult.pending()
-    calculateScoresFlow.value = AsyncResult.pending()
-    beginSessionResultFlow.value = AsyncResult.pending()
-    submitAnswerResultFlow.value = AsyncResult.pending()
-    submitHintRevealedResultFlow.value = AsyncResult.pending()
-    submitSolutionRevealedResultFlow.value = AsyncResult.pending()
-    moveToNextQuestionResultFlow.value = AsyncResult.pending()
+    ephemeralQuestionFlow.value = AsyncResult.Pending()
+    calculateScoresFlow.value = AsyncResult.Pending()
+    beginSessionResultFlow.value = AsyncResult.Pending()
+    submitAnswerResultFlow.value = AsyncResult.Pending()
+    submitHintRevealedResultFlow.value = AsyncResult.Pending()
+    submitSolutionRevealedResultFlow.value = AsyncResult.Pending()
+    moveToNextQuestionResultFlow.value = AsyncResult.Pending()
   }
 
   private suspend fun ControllerState.submitAnswerInternal(answer: UserAnswer) {
@@ -544,11 +544,11 @@ class QuestionAssessmentProgressController @Inject constructor(
     operation: suspend ControllerState.() -> T
   ) {
     try {
-      resultFlow.value = AsyncResult.success(operation())
+      resultFlow.value = AsyncResult.Success(operation())
       recomputeCurrentQuestionAndNotify()
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      resultFlow.value = AsyncResult.failed(e)
+      resultFlow.value = AsyncResult.Failure(e)
     }
     asyncDataSubscriptionManager.notifyChange(providerId)
   }
@@ -562,7 +562,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       // Only compute the ephemeral question if there's a questions list loaded (otherwise the
       // controller is in a pending state).
       retrieveCurrentQuestionAsync(questionsList)
-    } else AsyncResult.pending()
+    } else AsyncResult.Pending()
     asyncDataSubscriptionManager.notifyChange(CURRENT_QUESTION_PROVIDER_ID)
   }
 
@@ -573,7 +573,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     // strategy used here.
     val scoreCalculator =
       scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
-    calculateScoresFlow.value = AsyncResult.success(scoreCalculator.computeAll())
+    calculateScoresFlow.value = AsyncResult.Success(scoreCalculator.computeAll())
     asyncDataSubscriptionManager.notifyChange(CALCULATE_SCORES_PROVIDER_ID)
   }
 
@@ -582,24 +582,22 @@ class QuestionAssessmentProgressController @Inject constructor(
   ): AsyncResult<EphemeralQuestion> {
     return try {
       when (progress.trainStage) {
-        TrainStage.NOT_IN_TRAINING_SESSION -> AsyncResult.pending()
+        TrainStage.NOT_IN_TRAINING_SESSION -> AsyncResult.Pending()
         TrainStage.LOADING_TRAINING_SESSION -> {
           // If the assessment hasn't yet been initialized, initialize it
           // now that a list of questions is available.
           initializeAssessment(questionsList)
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
-          AsyncResult.success(
-            retrieveEphemeralQuestionState(questionsList)
+          AsyncResult.Success(retrieveEphemeralQuestionState(questionsList)
           )
         }
-        TrainStage.VIEWING_STATE -> AsyncResult.success(
-          retrieveEphemeralQuestionState(questionsList)
+        TrainStage.VIEWING_STATE -> AsyncResult.Success(retrieveEphemeralQuestionState(questionsList)
         )
-        TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
+        TrainStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      AsyncResult.failed(e)
+      AsyncResult.Failure(e)
     }
   }
 
@@ -651,7 +649,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun <T> createAsyncResultStateFlow(): MutableStateFlow<AsyncResult<T>> =
-    MutableStateFlow(AsyncResult.pending())
+    MutableStateFlow(AsyncResult.Pending())
 
   private fun <T> StateFlow<AsyncResult<T>>.convertToDataProvider(id: Any): DataProvider<T> =
     dataProviders.run { convertAsyncToSimpleDataProvider(id) }

@@ -33,7 +33,6 @@ import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.testing.time.FakeSystemClock
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Callable
@@ -46,6 +45,8 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.AsyncResultSubject
+import org.oppia.android.util.data.AsyncResult
 
 /**
  * Tests for [CoroutineExecutorService]. NOTE: significant care should be taken when modifying these
@@ -339,20 +340,19 @@ class CoroutineExecutorServiceTest {
 
     val getResult = testDispatcherScope.async {
       try {
-        AsyncResult.success(callableFuture.get(/* timeout= */ 1, TimeUnit.SECONDS))
+        AsyncResult.Success(callableFuture.get(/* timeout= */ 1, TimeUnit.SECONDS))
       } catch (e: ExecutionException) {
-        AsyncResult.failed<String>(e)
+        AsyncResult.Failure<String>(e)
       }
     }
     testDispatcher.runUntilIdle()
 
     // The getter should return since the task has finished.
     assertThat(getResult.isCompleted).isTrue()
-    assertThat(getResult.getCompleted().isFailure()).isTrue()
-    assertThat(getResult.getCompleted().getErrorOrNull())
-      .isInstanceOf(ExecutionException::class.java)
-    assertThat(getResult.getCompleted().getErrorOrNull()?.cause)
-      .isInstanceOf(TimeoutException::class.java)
+    AsyncResultSubject.assertThat(getResult.getCompleted()).isFailureThat().apply {
+      isInstanceOf(ExecutionException::class.java)
+      isInstanceOf(TimeoutException::class.java)
+    }
   }
 
   @Test

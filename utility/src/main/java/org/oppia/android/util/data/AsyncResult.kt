@@ -2,67 +2,14 @@ package org.oppia.android.util.data
 
 import android.os.SystemClock
 
+// TODO: update documentation to explain how to create these, and how to check the result type.
 /** Represents the result from a single asynchronous function. */
-class AsyncResult<T> private constructor(
-  private val status: Status,
-  private val resultTimeMillis: Long,
-  private val value: T? = null,
-  private val error: Throwable? = null
-) {
-  /** Represents the status of an asynchronous result. */
-  enum class Status {
-    /** Indicates that the asynchronous operation is not yet completed. */
-    PENDING,
-
-    /** Indicates that the asynchronous operation completed successfully and has a result. */
-    SUCCEEDED,
-
-    /** Indicates that the asynchronous operation failed and has an error. */
-    FAILED
-  }
-
-  /** Returns whether this result is still pending. */
-  fun isPending(): Boolean {
-    return status == Status.PENDING
-  }
-
-  /** Returns whether this result has completed successfully. */
-  fun isSuccess(): Boolean {
-    return status == Status.SUCCEEDED
-  }
-
-  /** Returns whether this result has completed unsuccessfully. */
-  fun isFailure(): Boolean {
-    return status == Status.FAILED
-  }
-
-  /** Returns whether this result has completed (successfully or unsuccessfully). */
-  fun isCompleted(): Boolean {
-    return isSuccess() || isFailure()
-  }
+sealed class AsyncResult<T> {
+  protected abstract val resultTimeMillis: Long
 
   /** Returns whether this result is newer than, or the same age as, the specified result of the same type. */
   fun <O> isNewerThanOrSameAgeAs(otherResult: AsyncResult<O>): Boolean {
     return resultTimeMillis >= otherResult.resultTimeMillis
-  }
-
-  /** Returns the value of the result if it succeeded, otherwise the specified default value. */
-  fun getOrDefault(defaultValue: T): T {
-    return if (isSuccess()) value!! else defaultValue
-  }
-
-  /**
-   * Returns the value of the result if it succeeded, otherwise throws the underlying exception. Throws if this result
-   * is not yet completed.
-   */
-  fun getOrThrow(): T {
-    check(isCompleted()) { "Result is not yet completed." }
-    if (isSuccess()) return value!! else throw error!!
-  }
-
-  /** Returns the underlying exception if this result failed, otherwise null. */
-  fun getErrorOrNull(): Throwable? {
-    return if (isFailure()) error else null
   }
 
   /**
@@ -75,9 +22,7 @@ class AsyncResult<T> private constructor(
    * Note also that the specified transformation function should have no side effects, and be non-blocking.
    */
   fun <O> transform(transformFunction: (T) -> O): AsyncResult<O> {
-    return transformWithResult { value ->
-      success(transformFunction(value))
-    }
+    return transformWithResult { value -> Success(transformFunction(value)) }
   }
 
   /**
@@ -108,9 +53,7 @@ class AsyncResult<T> private constructor(
     combineFunction: (T, T2) -> O
   ): AsyncResult<O> {
     return transformWithResult { value1 ->
-      otherResult.transformWithResult { value2 ->
-        success(combineFunction(value1, value2))
-      }
+      otherResult.transformWithResult { value2 -> Success(combineFunction(value1, value2)) }
     }
   }
 
@@ -131,75 +74,36 @@ class AsyncResult<T> private constructor(
   }
 
   private fun <O> transformWithResult(transformFunction: (T) -> AsyncResult<O>): AsyncResult<O> {
-    return when (status) {
-      Status.PENDING -> pending()
-      Status.FAILED -> failed(ChainedFailureException(error!!))
-      Status.SUCCEEDED -> transformFunction(value!!)
+    return when (this) {
+      is Pending -> Pending()
+      is Success -> transformFunction(value)
+      is Failure -> Failure(ChainedFailureException(error))
     }
   }
 
   private suspend fun <O> transformWithResultAsync(
     transformFunction: suspend (T) -> AsyncResult<O>
   ): AsyncResult<O> {
-    return when (status) {
-      Status.PENDING -> pending()
-      Status.FAILED -> failed(ChainedFailureException(error!!))
-      Status.SUCCEEDED -> transformFunction(value!!)
-    }
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) {
-      return true
-    }
-    if (other == null || other.javaClass != javaClass) {
-      return false
-    }
-    val otherResult = other as AsyncResult<*>
-    return otherResult.status == status && otherResult.error == error && otherResult.value == value
-  }
-
-  override fun hashCode(): Int {
-    // Automatically generated hashCode() function that has parity with equals().
-    var result = status.hashCode()
-    result = 31 * result + (value?.hashCode() ?: 0)
-    result = 31 * result + (error?.hashCode() ?: 0)
-    return result
-  }
-
-  override fun toString(): String {
-    return when (status) {
-      Status.PENDING -> "AsyncResult[status=PENDING]"
-      Status.FAILED -> "AsyncResult[status=FAILED, error=$error]"
-      Status.SUCCEEDED -> "AsyncResult[status=SUCCESS, value=$value]"
-    }
-  }
-
-  companion object {
-    /** Returns a pending result. */
-    fun <T> pending(): AsyncResult<T> {
-      return AsyncResult(status = Status.PENDING, resultTimeMillis = SystemClock.uptimeMillis())
-    }
-
-    /** Returns a successful result with the specified payload. */
-    fun <T> success(value: T): AsyncResult<T> {
-      return AsyncResult(
-        status = Status.SUCCEEDED,
-        resultTimeMillis = SystemClock.uptimeMillis(),
-        value = value
-      )
-    }
-
-    /** Returns a failed result with the specified error. */
-    fun <T> failed(error: Throwable): AsyncResult<T> {
-      return AsyncResult(
-        status = Status.FAILED,
-        resultTimeMillis = SystemClock.uptimeMillis(),
-        error = error
-      )
+    return when (this) {
+      is Pending -> Pending()
+      is Success -> transformFunction(value)
+      is Failure -> Failure(ChainedFailureException(error))
     }
   }
 
   /** A chained exception to preserve failure stacktraces for [transform] and [transformAsync]. */
   class ChainedFailureException(cause: Throwable) : Exception(cause)
+
+  data class Pending<T>(
+    override val resultTimeMillis: Long = SystemClock.uptimeMillis()
+  ) : AsyncResult<T>()
+
+  data class Success<T>(
+    val value: T, override val resultTimeMillis: Long = SystemClock.uptimeMillis()
+  ) : AsyncResult<T>() {
+  }
+
+  data class Failure<T>(
+    val error: Throwable, override val resultTimeMillis: Long = SystemClock.uptimeMillis()
+  ) : AsyncResult<T>()
 }

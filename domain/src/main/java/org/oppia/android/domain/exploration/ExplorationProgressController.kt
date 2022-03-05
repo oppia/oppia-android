@@ -368,7 +368,7 @@ class ExplorationProgressController @Inject constructor(
   ) {
     // Ensure that the result is first reset since there will be a delay before the message is
     // processed.
-    resultFlow.value = AsyncResult.pending()
+    resultFlow.value = AsyncResult.Pending()
 
     // This must succeed or the app will be entered into a bad state. Crash instead of trying to
     // recover (though recovery may be possible in the future with some changes and user messaging).
@@ -407,7 +407,7 @@ class ExplorationProgressController @Inject constructor(
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
 
       // Reset the finish flow since the exploration is beginning.
-      finishExplorationResultFlow.value = AsyncResult.pending()
+      finishExplorationResultFlow.value = AsyncResult.Pending()
     }
   }
 
@@ -422,13 +422,13 @@ class ExplorationProgressController @Inject constructor(
     }
 
     // Ensure all state is reset since an exploration is no longer being played.
-    ephemeralStateFlow.value = AsyncResult.pending()
-    beginExplorationResultFlow.value = AsyncResult.pending()
-    submitAnswerResultFlow.value = AsyncResult.pending()
-    submitHintRevealedResultFlow.value = AsyncResult.pending()
-    submitSolutionRevealedResultFlow.value = AsyncResult.pending()
-    moveToPreviousStateResultFlow.value = AsyncResult.pending()
-    moveToNextStateResultFlow.value = AsyncResult.pending()
+    ephemeralStateFlow.value = AsyncResult.Pending()
+    beginExplorationResultFlow.value = AsyncResult.Pending()
+    submitAnswerResultFlow.value = AsyncResult.Pending()
+    submitHintRevealedResultFlow.value = AsyncResult.Pending()
+    submitSolutionRevealedResultFlow.value = AsyncResult.Pending()
+    moveToPreviousStateResultFlow.value = AsyncResult.Pending()
+    moveToNextStateResultFlow.value = AsyncResult.Pending()
   }
 
   private suspend fun ControllerState.submitAnswerInternal(userAnswer: UserAnswer) {
@@ -585,13 +585,13 @@ class ExplorationProgressController @Inject constructor(
     operation: suspend ControllerState.() -> T
   ) {
     try {
-      resultFlow.value = AsyncResult.success(operation())
+      resultFlow.value = AsyncResult.Success(operation())
       if (recomputeState) {
         recomputeCurrentStateAndNotify()
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      resultFlow.value = AsyncResult.failed(e)
+      resultFlow.value = AsyncResult.Failure(e)
     }
     asyncDataSubscriptionManager.notifyChange(providerId)
   }
@@ -609,26 +609,26 @@ class ExplorationProgressController @Inject constructor(
       retrieveStateWithinCache()
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      AsyncResult.failed(e)
+      AsyncResult.Failure(e)
     }
   }
 
   private suspend fun ControllerState.retrieveStateWithinCache(): AsyncResult<EphemeralState> {
     return when (explorationProgress.playStage) {
-      NOT_PLAYING -> AsyncResult.pending()
+      NOT_PLAYING -> AsyncResult.Pending()
       LOADING_EXPLORATION -> {
         try {
           val exploration =
             explorationRetriever.loadExploration(explorationProgress.currentExplorationId)
           finishLoadExploration(exploration, explorationProgress)
-          AsyncResult.success(computeCurrentEphemeralState())
+          AsyncResult.Success(computeCurrentEphemeralState())
         } catch (e: Exception) {
           exceptionsController.logNonFatalException(e)
-          AsyncResult.failed(e)
+          AsyncResult.Failure(e)
         }
       }
-      VIEWING_STATE -> AsyncResult.success(computeCurrentEphemeralState())
-      SUBMITTING_ANSWER -> AsyncResult.pending()
+      VIEWING_STATE -> AsyncResult.Success(computeCurrentEphemeralState())
+      SUBMITTING_ANSWER -> AsyncResult.Pending()
     }
   }
 
@@ -827,7 +827,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun <T> createAsyncResultStateFlow(): MutableStateFlow<AsyncResult<T>> =
-    MutableStateFlow(AsyncResult.pending())
+    MutableStateFlow(AsyncResult.Pending())
 
   private fun <T> StateFlow<AsyncResult<T>>.convertToDataProvider(id: Any): DataProvider<T> =
     dataProviders.run { convertAsyncToSimpleDataProvider(id) }

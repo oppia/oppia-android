@@ -243,7 +243,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
           override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
-            if (it.isSuccess()) {
+            if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               routeToResumeLessonListener.routeToResumeLesson(
                 internalProfileId,
@@ -251,9 +251,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
                 storyId,
                 explorationId,
                 backflowScreen = 0,
-                explorationCheckpoint = it.getOrThrow()
+                explorationCheckpoint = it.value
               )
-            } else if (it.isFailure()) {
+            } else if (it is AsyncResult.Failure) {
               explorationCheckpointLiveData.removeObserver(this)
               playExploration(
                 internalProfileId,
@@ -295,14 +295,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     ).toLiveData().observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> oppiaLogger.d("TopicLessonsFragment", "Loading exploration")
-          result.isFailure() -> oppiaLogger.e(
-            "TopicLessonsFragment",
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
+        when (result) {
+          is AsyncResult.Pending -> oppiaLogger.d("TopicLessonsFragment", "Loading exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e("TopicLessonsFragment", "Failed to load exploration", result.error)
+          is AsyncResult.Success -> {
             oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               internalProfileId,

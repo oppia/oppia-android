@@ -115,7 +115,7 @@ class TopicController @Inject constructor(
   fun getTopic(profileId: ProfileId, topicId: String): DataProvider<Topic> {
     val topicDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_TOPIC_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
+        return@createInMemoryDataProviderAsync AsyncResult.Success(retrieveTopic(topicId))
       }
     val topicProgressDataProvider =
       storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
@@ -142,7 +142,7 @@ class TopicController @Inject constructor(
   ): DataProvider<StorySummary> {
     val storyDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
+        return@createInMemoryDataProviderAsync AsyncResult.Success(retrieveStory(topicId, storyId))
       }
     val storyProgressDataProvider =
       storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
@@ -168,16 +168,15 @@ class TopicController @Inject constructor(
     explorationId: String
   ): DataProvider<ChapterSummary> {
     return dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
+      return@createInMemoryDataProviderAsync AsyncResult.Success(retrieveStory(topicId, storyId))
     }.transformAsync(GET_CHAPTER_PROVIDER_ID) { storySummary ->
       val chapterSummary = fetchChapter(storySummary, explorationId)
       if (chapterSummary != null) {
-        AsyncResult.success(chapterSummary)
+        AsyncResult.Success(chapterSummary)
       } else {
-        AsyncResult.failed(
-          ChapterNotFoundException(
-            "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
-          )
+        AsyncResult.Failure(ChapterNotFoundException(
+          "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
+        )
         )
       }
     }
@@ -246,7 +245,7 @@ class TopicController @Inject constructor(
           )
         )
       }
-      AsyncResult.success(completedStoryListBuilder.build())
+      AsyncResult.Success(completedStoryListBuilder.build())
     }
   }
 
@@ -258,7 +257,7 @@ class TopicController @Inject constructor(
       profileId
     ).transformAsync(GET_ONGOING_TOPIC_LIST_PROVIDER_ID) {
       val ongoingTopicList = createOngoingTopicListFromProgress(it)
-      AsyncResult.success(ongoingTopicList)
+      AsyncResult.Success(ongoingTopicList)
     }
   }
 

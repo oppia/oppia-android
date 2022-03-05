@@ -33,6 +33,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 
 /** Tests for [DataProviderTestMonitor]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -94,46 +95,44 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextResult_pendingDataProvider_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     val result = monitor.waitForNextResult()
 
-    assertThat(result.isPending()).isTrue()
+    assertThat(result).isPending()
   }
 
   @Test
   fun testWaitForNextResult_failingDataProvider_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     val result = monitor.waitForNextResult()
 
-    assertThat(result.isFailure()).isTrue()
-    assertThat(result.getErrorOrNull()).hasMessageThat().contains("Failure")
+    assertThat(result).isFailureThat().hasMessageThat().contains("Failure")
   }
 
   @Test
   fun testWaitForNextResult_successfulDataProvider_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     val result = monitor.waitForNextResult()
 
-    assertThat(result.isSuccess()).isTrue()
-    assertThat(result.getOrThrow()).isEqualTo("str value")
+    assertThat(result).isStringSuccessThat().isEqualTo("str value")
   }
 
   @Test
   fun testWaitForNextResult_failureThenSuccess_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -142,15 +141,14 @@ class DataProviderTestMonitorTest {
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     val result = monitor.waitForNextResult()
 
-    assertThat(result.isSuccess()).isTrue()
-    assertThat(result.getOrThrow()).isEqualTo("str value")
+    assertThat(result).isStringSuccessThat().isEqualTo("str value")
   }
 
   @Test
   fun testWaitForNextResult_differentValues_notified_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("first"), AsyncResult.success("second")
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
@@ -158,8 +156,7 @@ class DataProviderTestMonitorTest {
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     val result = monitor.waitForNextResult()
 
-    assertThat(result.isSuccess()).isTrue()
-    assertThat(result.getOrThrow()).isEqualTo("second")
+    assertThat(result).isStringSuccessThat().isEqualTo("second")
   }
 
   /* Tests for waitForNextSuccessResult */
@@ -167,7 +164,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextSuccessResult_pendingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -179,7 +176,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextSuccessResult_failingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -191,7 +188,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextSuccessResult_successfulDataProvider_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -204,7 +201,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextSuccessResult_failureThenSuccess_notified_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -219,7 +216,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextSuccessResult_successThenFailure_notified_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -234,7 +231,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextSuccessResult_differentValues_notified_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("first"), AsyncResult.success("second")
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -250,7 +247,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testEnsureNextResultIsSuccess_successfulDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -261,7 +258,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testEnsureNextResultIsSuccess_successfulDataProvider_wait_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -274,7 +271,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testEnsureNextResultIsSuccess_pendingDataProvider_wait_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -287,7 +284,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testEnsureNextResultIsSuccess_failingDataProvider_wait_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -301,7 +298,7 @@ class DataProviderTestMonitorTest {
   fun testEnsureNextResultIsSuccess_failureThenSuccess_notified_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -316,7 +313,7 @@ class DataProviderTestMonitorTest {
   fun testEnsureNextResultIsSuccess_failureThenSuccess_notified_wait_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -332,7 +329,7 @@ class DataProviderTestMonitorTest {
   fun testEnsureNextResultIsSuccess_successThenFailure_notified_wait_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -348,7 +345,7 @@ class DataProviderTestMonitorTest {
   fun testEnsureNextResultIsSuccess_differentValues_notified_wait_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("first"), AsyncResult.success("second")
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -365,7 +362,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextFailingResult_pendingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -377,7 +374,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextFailingResult_failingDataProvider_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -389,7 +386,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextFailingResult_successfulDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -402,7 +399,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextFailingResult_successThenFailure_notified_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -417,7 +414,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextFailingResult_failureThenSuccess_notified_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -432,7 +429,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextFailingResult_differentValues_notified_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue<String>(
-        "test", AsyncResult.failed(Exception("First")), AsyncResult.failed(Exception("Second"))
+        "test", AsyncResult.Failure(Exception("First")), AsyncResult.Failure(Exception("Second"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -448,7 +445,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testEnsureNextResultIsFailing_failingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -459,7 +456,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testEnsureNextResultIsFailing_failingDataProvider_wait_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -472,7 +469,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testEnsureNextResultIsFailing_pendingDataProvider_wait_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -485,7 +482,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testEnsureNextResultIsFailing_successfulDataProvider_wait_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -499,7 +496,7 @@ class DataProviderTestMonitorTest {
   fun testEnsureNextResultIsFailing_successThenFailure_notified_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -513,7 +510,7 @@ class DataProviderTestMonitorTest {
   fun testEnsureNextResultIsFailing_successThenFailure_notified_wait_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -529,7 +526,7 @@ class DataProviderTestMonitorTest {
   fun testEnsureNextResultIsFailing_failureThenSuccess_notified_wait_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -545,7 +542,7 @@ class DataProviderTestMonitorTest {
   fun testEnsureNextResultIsFailing_differentValues_notified_wait_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue<String>(
-        "test", AsyncResult.failed(Exception("First")), AsyncResult.failed(Exception("Second"))
+        "test", AsyncResult.Failure(Exception("First")), AsyncResult.Failure(Exception("Second"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -562,7 +559,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testVerifyProviderIsNotUpdated_pendingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -573,7 +570,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testVerifyProviderIsNotUpdated_failingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -584,7 +581,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testVerifyProviderIsNotUpdated_successfulDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
@@ -596,7 +593,7 @@ class DataProviderTestMonitorTest {
   fun testVerifyProviderIsNotUpdated_successThenFailure_notified_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -610,7 +607,7 @@ class DataProviderTestMonitorTest {
   fun testVerifyProviderIsNotUpdated_failureThenSuccess_notified_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -626,7 +623,7 @@ class DataProviderTestMonitorTest {
   fun testVerifyProviderIsNotUpdated_differentValues_notified_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("first"), AsyncResult.success("second")
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult() // Wait for the first result.
@@ -641,7 +638,7 @@ class DataProviderTestMonitorTest {
   fun testVerifyProviderIsNotUpdated_waitForSuccess_noChanges_doesNotThrowException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("first"), AsyncResult.success("second")
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
       )
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextSuccessResult()
@@ -657,7 +654,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextSuccessfulResult_pendingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
 
     val failure =
@@ -671,7 +668,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextSuccessfulResult_failingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
 
     val failure = assertThrows(IllegalStateException::class) {
@@ -684,7 +681,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextSuccessfulResult_successfulDataProvider_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
 
     val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -696,7 +693,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextSuccessfulResult_failureThenSuccess_consumed_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     monitorFactory.waitForNextFailureResult(dataProvider)
 
@@ -709,7 +706,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextSuccessfulResult_successThenFailure_consumed_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
       )
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
 
@@ -724,7 +721,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextSuccessfulResult_differentValues_consumed_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("first"), AsyncResult.success("second")
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
       )
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
 
@@ -737,7 +734,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextSuccessfulResult_twiceForChangedProvider_returnsCorrectValues() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("first"), AsyncResult.success("second")
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
       )
 
     val firstResult = monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -752,7 +749,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextFailureResult_pendingDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
 
     val failure = assertThrows(IllegalStateException::class) {
@@ -765,7 +762,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextFailureResult_failingDataProvider_returnsResult() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
-      AsyncResult.failed(Exception("Failure"))
+      AsyncResult.Failure(Exception("Failure"))
     }
 
     val result = monitorFactory.waitForNextFailureResult(dataProvider)
@@ -776,7 +773,7 @@ class DataProviderTestMonitorTest {
   @Test
   fun testWaitForNextFailureResult_successfulDataProvider_throwsException() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
-      AsyncResult.success("str value")
+      AsyncResult.Success("str value")
     }
 
     val failure = assertThrows(IllegalStateException::class) {
@@ -790,7 +787,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextFailureResult_successThenFailure_consumed_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.success("str value"), AsyncResult.failed(Exception("Failure"))
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
       )
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
 
@@ -803,7 +800,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextFailureResult_failureThenSuccess_consumed_throwsException() {
     val dataProvider =
       createDataProviderWithResultsQueue(
-        "test", AsyncResult.failed(Exception("Failure")), AsyncResult.success("str value")
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
       )
     monitorFactory.waitForNextFailureResult(dataProvider)
 
@@ -818,7 +815,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextFailureResult_differentValues_consumed_returnsLatest() {
     val dataProvider =
       createDataProviderWithResultsQueue<String>(
-        "test", AsyncResult.failed(Exception("First")), AsyncResult.failed(Exception("Second"))
+        "test", AsyncResult.Failure(Exception("First")), AsyncResult.Failure(Exception("Second"))
       )
     monitorFactory.waitForNextFailureResult(dataProvider)
 
@@ -831,7 +828,7 @@ class DataProviderTestMonitorTest {
   fun testWaitForNextFailureResult_twiceForChangedProvider_returnsCorrectValues() {
     val dataProvider =
       createDataProviderWithResultsQueue<String>(
-        "test", AsyncResult.failed(Exception("First")), AsyncResult.failed(Exception("Second"))
+        "test", AsyncResult.Failure(Exception("First")), AsyncResult.Failure(Exception("Second"))
       )
 
     val firstResult = monitorFactory.waitForNextFailureResult(dataProvider)

@@ -17,7 +17,6 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
@@ -27,6 +26,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.android.util.data.AsyncResult
 
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
 private const val APP_LANGUAGE_DATA_PROVIDER_ID = "app_language"
@@ -122,7 +122,7 @@ class TranslationController @Inject constructor(
   fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any> {
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID) {
       updateAppLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
@@ -173,7 +173,7 @@ class TranslationController @Inject constructor(
     val providerId = UPDATE_WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
       updateWrittenTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
@@ -224,7 +224,7 @@ class TranslationController @Inject constructor(
     val providerId = UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
       updateAudioTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 

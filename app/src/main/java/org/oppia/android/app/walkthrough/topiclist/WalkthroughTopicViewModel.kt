@@ -37,14 +37,18 @@ class WalkthroughTopicViewModel @Inject constructor(
   }
 
   private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList {
-    if (topicSummaryListResult.isFailure()) {
-      oppiaLogger.e(
-        "WalkthroughTopicSummaryListFragment",
-        "Failed to retrieve TopicSummary list: ",
-        topicSummaryListResult.getErrorOrNull()!!
-      )
+    return when (topicSummaryListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "WalkthroughTopicSummaryListFragment",
+          "Failed to retrieve TopicSummary list: ",
+          topicSummaryListResult.error
+        )
+        TopicList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> TopicList.getDefaultInstance()
+      is AsyncResult.Success -> topicSummaryListResult.value
     }
-    return topicSummaryListResult.getOrDefault(TopicList.getDefaultInstance())
   }
 
   private fun processCompletedTopicList(topicList: TopicList): List<WalkthroughTopicItemViewModel> {

@@ -2,7 +2,6 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,16 +10,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
@@ -30,18 +21,14 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.STORY_CO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.model.EventLog.Priority
-import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -56,6 +43,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -66,38 +54,18 @@ private const val TEST_SKILL_ID = "test_skillId"
 private const val TEST_SKILL_LIST_ID = "test_skillListId"
 private const val TEST_SUB_TOPIC_ID = 1
 
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var analyticsController: AnalyticsController
-
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-
-  @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Mock
-  lateinit var mockOppiaEventLogsObserver: Observer<AsyncResult<OppiaEventLogs>>
-
-  @Captor
-  lateinit var oppiaEventLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaEventLogs>>
+  @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -360,7 +328,8 @@ class AnalyticsControllerTest {
       .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
   }
 
-  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
+  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to
+  //  the remote service.
 
   @Test
   fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
@@ -376,15 +345,9 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogStore().toLiveData()
-    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val eventLogsProvider = analyticsController.getEventLogStore()
 
-    val eventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+    val eventLog = monitorFactory.waitForNextSuccessfulResult(eventLogsProvider).getEventLog(0)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(eventLog.priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(eventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
@@ -406,15 +369,9 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogStore().toLiveData()
-    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val eventLogsProvider = analyticsController.getEventLogStore()
 
-    val eventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+    val eventLog = monitorFactory.waitForNextSuccessfulResult(eventLogsProvider).getEventLog(0)
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(eventLog.priority).isEqualTo(Priority.OPTIONAL)
     assertThat(eventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
@@ -427,16 +384,10 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
-    val eventLogs = analyticsController.getEventLogStore().toLiveData()
-    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val eventLogsProvider = analyticsController.getEventLogStore()
 
-    val eventLogStoreSize = oppiaEventLogsResultCaptor.value.getOrThrow().eventLogList.size
-    assertThat(eventLogStoreSize).isEqualTo(2)
+    val eventLogs = monitorFactory.waitForNextSuccessfulResult(eventLogsProvider)
+    assertThat(eventLogs.eventLogList).hasSize(2)
   }
 
   @Test
@@ -463,16 +414,11 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogStore().toLiveData()
-    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val eventLogsProvider = analyticsController.getEventLogStore()
 
-    val firstEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
-    val secondEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(1)
+    val eventLogs = monitorFactory.waitForNextSuccessfulResult(eventLogsProvider)
+    val firstEventLog = eventLogs.getEventLog(0)
+    val secondEventLog = eventLogs.getEventLog(1)
 
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(firstEventLog.priority).isEqualTo(Priority.OPTIONAL)
@@ -504,16 +450,10 @@ class AnalyticsControllerTest {
       )
     )
 
-    val cachedEventLogs = analyticsController.getEventLogStore().toLiveData()
-    cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val logsProvider = analyticsController.getEventLogStore()
 
     val uploadedEventLog = fakeEventLogger.getMostRecentEvent()
-    val cachedEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+    val cachedEventLog = monitorFactory.waitForNextSuccessfulResult(logsProvider).getEventLog(0)
 
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(uploadedEventLog.priority).isEqualTo(Priority.ESSENTIAL)
@@ -533,25 +473,23 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
-    val cachedEventLogs = analyticsController.getEventLogStore().toLiveData()
-    cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val logsProvider = analyticsController.getEventLogStore()
 
-    val firstEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
-    val secondEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(1)
-    val eventLogStoreSize = oppiaEventLogsResultCaptor.value.getOrThrow().eventLogList.size
-    assertThat(eventLogStoreSize).isEqualTo(2)
-    // In this case, 3 ESSENTIAL and 1 OPTIONAL event was logged. So while pruning, none of the retained logs should have OPTIONAL priority.
+    val eventLogs = monitorFactory.waitForNextSuccessfulResult(logsProvider)
+    val firstEventLog = eventLogs.getEventLog(0)
+    val secondEventLog = eventLogs.getEventLog(1)
+    assertThat(eventLogs.eventLogList).hasSize(2)
+    // In this case, 3 ESSENTIAL and 1 OPTIONAL event was logged. So while pruning, none of the
+    // retained logs should have OPTIONAL priority.
     assertThat(firstEventLog.priority).isNotEqualTo(Priority.OPTIONAL)
     assertThat(secondEventLog.priority).isNotEqualTo(Priority.OPTIONAL)
-    // If we analyse the implementation of logMultipleEvents(), we can see that record pruning will begin from the logging of the third record.
-    // At first, the second event log will be removed as it has OPTIONAL priority and the event logged at the third place will become the event record at the second place in the store.
-    // When the forth event gets logged then the pruning will be purely based on timestamp of the event as both event logs have ESSENTIAL priority.
-    // As the third event's timestamp was lesser than that of the first event, it will be pruned from the store and the forth event will become the second event in the store.
+    // If we analyse the implementation of logMultipleEvents(), we can see that record pruning will
+    // begin from the logging of the third record. At first, the second event log will be removed as
+    // it has OPTIONAL priority and the event logged at the third place will become the event record
+    // at the second place in the store. When the forth event gets logged then the pruning will be
+    // purely based on timestamp of the event as both event logs have ESSENTIAL priority. As the
+    // third event's timestamp was lesser than that of the first event, it will be pruned from the
+    // store and the forth event will become the second event in the store.
     assertThat(firstEventLog.timestamp).isEqualTo(1556094120000)
     assertThat(secondEventLog.timestamp).isEqualTo(1556094100000)
   }
