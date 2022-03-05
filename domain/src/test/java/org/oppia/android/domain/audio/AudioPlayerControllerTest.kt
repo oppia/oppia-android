@@ -49,8 +49,12 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.AsyncResultSubject
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 
 /** Tests for [AudioPlayerControllerTest]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
@@ -146,8 +150,9 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PREPARED)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
   }
 
   @Test
@@ -159,7 +164,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.changeDataSource(TEST_URL)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
+    assertThat(audioPlayerResultCaptor.value).isPending()
   }
 
   @Test
@@ -169,9 +174,10 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer.invokeCompletionListener()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.COMPLETED)
+      assertThat(position).isEqualTo(0)
+    }
   }
 
   @Test
@@ -181,7 +187,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.changeDataSource(TEST_URL2)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
+    assertThat(audioPlayerResultCaptor.value).isPending()
   }
 
   @Test
@@ -192,7 +198,7 @@ class AudioPlayerControllerTest {
     audioPlayerController.changeDataSource(TEST_URL2)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isPending()).isTrue()
+    assertThat(audioPlayerResultCaptor.value).isPending()
   }
 
   @Test
@@ -203,8 +209,9 @@ class AudioPlayerControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PLAYING)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PLAYING)
+    }
   }
 
   @Test
@@ -218,7 +225,7 @@ class AudioPlayerControllerTest {
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     val results = audioPlayerResultCaptor.allValues
-    val pendingIndex = results.indexOfLast { it.isPending() }
+    val pendingIndex = results.indexOfLast { it is AsyncResult.Pending }
     val preparedIndex = results.indexOfLast { it.hasStatus(PlayStatus.PREPARED) }
     val playingIndex = results.indexOfLast { it.hasStatus(PlayStatus.PLAYING) }
     val completedIndex = results.indexOfLast { it.hasStatus(PlayStatus.COMPLETED) }
@@ -238,8 +245,9 @@ class AudioPlayerControllerTest {
     audioPlayerController.pause()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PAUSED)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PAUSED)
+    }
   }
 
   @Test
@@ -247,7 +255,9 @@ class AudioPlayerControllerTest {
     arrangeMediaPlayer()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(position).isEqualTo(0)
+    }
   }
 
   @Test
@@ -260,7 +270,9 @@ class AudioPlayerControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(500)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(position).isEqualTo(500)
+    }
   }
 
   @Test
@@ -270,7 +282,9 @@ class AudioPlayerControllerTest {
     audioPlayerController.play()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().duration).isEqualTo(2000)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(duration).isEqualTo(2000)
+    }
   }
 
   @Test
@@ -283,7 +297,9 @@ class AudioPlayerControllerTest {
     audioPlayerController.play()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().position).isEqualTo(0)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(position).isEqualTo(0)
+    }
   }
 
   @Test
@@ -295,8 +311,9 @@ class AudioPlayerControllerTest {
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
     // If the observer was still getting updates, the result would be pending
-    assertThat(audioPlayerResultCaptor.value.isSuccess()).isTrue()
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PREPARED)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PREPARED)
+    }
   }
 
   @Test
@@ -309,7 +326,9 @@ class AudioPlayerControllerTest {
     testCoroutineDispatchers.advanceTimeBy(2000)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.PAUSED)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.PAUSED)
+    }
     // Verify: If the test does not hang, the behavior is correct.
   }
 
@@ -323,7 +342,9 @@ class AudioPlayerControllerTest {
     testCoroutineDispatchers.advanceTimeBy(2000)
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.getOrThrow().type).isEqualTo(PlayStatus.COMPLETED)
+    assertThat(audioPlayerResultCaptor.value).hasSuccessValueWhere {
+      assertThat(type).isEqualTo(PlayStatus.COMPLETED)
+    }
     // Verify: If the test does not hang, the behavior is correct.
   }
 
@@ -367,7 +388,7 @@ class AudioPlayerControllerTest {
     shadowMediaPlayer.invokePreparedListener()
 
     verify(mockAudioPlayerObserver, atLeastOnce()).onChanged(audioPlayerResultCaptor.capture())
-    assertThat(audioPlayerResultCaptor.value.isFailure()).isTrue()
+    assertThat(audioPlayerResultCaptor.value).isFailure()
   }
 
   @Test
@@ -440,7 +461,7 @@ class AudioPlayerControllerTest {
   }
 
   private fun AsyncResult<PlayProgress>.hasStatus(playStatus: PlayStatus): Boolean {
-    return isCompleted() && getOrThrow().type == playStatus
+    return (this is AsyncResult.Success) && value.type == playStatus
   }
 
   private fun setUpTestApplicationComponent() {

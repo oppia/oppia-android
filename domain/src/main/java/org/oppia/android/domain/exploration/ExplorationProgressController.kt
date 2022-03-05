@@ -214,11 +214,11 @@ class ExplorationProgressController @Inject constructor(
 
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
 
-        return MutableLiveData(AsyncResult.success(answerOutcome))
+        return MutableLiveData(AsyncResult.Success(answerOutcome))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -260,11 +260,11 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(null))
+        return MutableLiveData(AsyncResult.Success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -305,11 +305,11 @@ class ExplorationProgressController @Inject constructor(
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(null))
+        return MutableLiveData(AsyncResult.Success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -349,10 +349,10 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.stateDeck.navigateToPreviousState()
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
       }
-      return MutableLiveData(AsyncResult.success(null))
+      return MutableLiveData(AsyncResult.Success(null))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -403,10 +403,10 @@ class ExplorationProgressController @Inject constructor(
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
       }
-      return MutableLiveData(AsyncResult.success(null))
+      return MutableLiveData(AsyncResult.Success(null))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -446,7 +446,7 @@ class ExplorationProgressController @Inject constructor(
       retrieveCurrentStateWithinCacheAsync(writtenTranslationContentLocale)
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      AsyncResult.failed(e)
+      AsyncResult.Failure(e)
     }
   }
 
@@ -476,20 +476,20 @@ class ExplorationProgressController @Inject constructor(
           " to ${explorationProgress.currentExplorationId}"
       }
       return when (explorationProgress.playStage) {
-        ExplorationProgress.PlayStage.NOT_PLAYING -> AsyncResult.pending()
+        ExplorationProgress.PlayStage.NOT_PLAYING -> AsyncResult.Pending()
         ExplorationProgress.PlayStage.LOADING_EXPLORATION -> {
           try {
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
-            AsyncResult.success(computeCurrentEphemeralState(writtenTranslationContentLocale))
+            AsyncResult.Success(computeCurrentEphemeralState(writtenTranslationContentLocale))
           } catch (e: Exception) {
             exceptionsController.logNonFatalException(e)
-            AsyncResult.failed(e)
+            AsyncResult.Failure(e)
           }
         }
         ExplorationProgress.PlayStage.VIEWING_STATE ->
-          AsyncResult.success(computeCurrentEphemeralState(writtenTranslationContentLocale))
-        ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
+          AsyncResult.Success(computeCurrentEphemeralState(writtenTranslationContentLocale))
+        ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
       }
     }
   }

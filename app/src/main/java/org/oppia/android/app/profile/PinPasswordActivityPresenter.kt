@@ -14,12 +14,13 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
-import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -88,7 +89,7 @@ class PinPasswordActivityPresenter @Inject constructor(
               .observe(
                 activity,
                 {
-                  if (it.isSuccess()) {
+                  if (it is AsyncResult.Success) {
                     activity.startActivity((HomeActivity.createHomeActivity(activity, profileId)))
                   }
                 }

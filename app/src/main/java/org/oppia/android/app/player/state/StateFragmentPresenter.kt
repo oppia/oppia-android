@@ -282,19 +282,15 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
-    if (result.isFailure()) {
-      oppiaLogger.e(
-        "StateFragment",
-        "Failed to retrieve ephemeral state",
-        result.getErrorOrNull()!!
-      )
-      return
-    } else if (result.isPending()) {
-      // Display nothing until a valid result is available.
-      return
+    when (result) {
+      is AsyncResult.Failure ->
+        oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
+      is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
+      is AsyncResult.Success -> processEphemeralState(result.value)
     }
+  }
 
-    val ephemeralState = result.getOrThrow()
+  private fun processEphemeralState(ephemeralState: EphemeralState) {
     explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
@@ -337,10 +333,8 @@ class StateFragmentPresenter @Inject constructor(
     resultLiveData.observe(
       fragment,
       { result ->
-        if (result.isFailure()) {
-          oppiaLogger.e(
-            "StateFragment", "Failed to retrieve hint/solution", result.getErrorOrNull()!!
-          )
+        if (result is AsyncResult.Failure) {
+          oppiaLogger.e("StateFragment", "Failed to retrieve hint/solution", result.error)
         } else {
           // If the hint/solution, was revealed remove dot and radar.
           viewModel.setHintOpenedAndUnRevealedVisibility(false)
@@ -389,14 +383,16 @@ class StateFragmentPresenter @Inject constructor(
   private fun processAnswerOutcome(
     ephemeralStateResult: AsyncResult<AnswerOutcome>
   ): AnswerOutcome {
-    if (ephemeralStateResult.isFailure()) {
-      oppiaLogger.e(
-        "StateFragment",
-        "Failed to retrieve answer outcome",
-        ephemeralStateResult.getErrorOrNull()!!
-      )
+    return when (ephemeralStateResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.error
+        )
+        AnswerOutcome.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> AnswerOutcome.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralStateResult.value
     }
-    return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {

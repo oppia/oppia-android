@@ -2,7 +2,6 @@ package org.oppia.android.domain.topic
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -10,31 +9,22 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.CacheAssetsLocally
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -45,45 +35,20 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [StoryProgressController]. */
+// FunctionName: test names are conventionally named with underscores.
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryProgressControllerTest.TestApplication::class)
 class StoryProgressControllerTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var storyProgressController: StoryProgressController
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Mock
-  lateinit var mockRecordProgressObserver: Observer<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var recordProgressResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
-
-  @Mock
-  lateinit var mockRetrieveChapterPlayStateObserver: Observer<AsyncResult<ChapterPlayState>>
-
-  @Captor
-  lateinit var retrieveChapterPlayStateCaptor: ArgumentCaptor<AsyncResult<ChapterPlayState>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var storyProgressController: StoryProgressController
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId: ProfileId
 
@@ -99,244 +64,225 @@ class StoryProgressControllerTest {
 
   @Test
   fun testStoryProgressController_recordCompletedChapter_isSuccessful() {
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
+    val recordProvider =
+      storyProgressController.recordCompletedChapter(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
 
-    verifyRecordProgressSucceeded()
+    monitorFactory.waitForNextSuccessfulResult(recordProvider)
   }
 
   @Test
   fun testStoryProgressController_recordChapterAsInProgressSaved_isSuccessful() {
-    storyProgressController.recordChapterAsInProgressSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
+    val recordProvider =
+      storyProgressController.recordChapterAsInProgressSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
 
-    verifyRecordProgressSucceeded()
+    monitorFactory.waitForNextSuccessfulResult(recordProvider)
   }
 
   @Test
   fun testStoryProgressController_chapterCompleted_markChapterAsSaved_playStateIsCompleted() {
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-
-    storyProgressController.recordChapterAsInProgressSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-    verifyChapterPlayStateIsCorrect(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      ChapterPlayState.COMPLETED
+    monitorFactory.ensureDataProviderExecutes(
+      storyProgressController.recordCompletedChapter(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
     )
+
+    val recordInProgressProvider = storyProgressController.recordChapterAsInProgressSaved(
+      profileId,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0,
+      FRACTIONS_EXPLORATION_ID_0,
+      fakeOppiaClock.getCurrentTimeMs()
+    )
+
+    monitorFactory.waitForNextSuccessfulResult(recordInProgressProvider)
+    val playState =
+      retrieveChapterPlayState(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    assertThat(playState).isEqualTo(ChapterPlayState.COMPLETED)
   }
 
   @Test
   fun testStoryProgressController_chapterNotStarted_markChapterAsSaved_playStateIsSaved() {
-    storyProgressController.recordChapterAsInProgressSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
+    val recordCompletionProvider =
+      storyProgressController.recordChapterAsInProgressSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
 
-    verifyRecordProgressSucceeded()
-    verifyChapterPlayStateIsCorrect(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      ChapterPlayState.IN_PROGRESS_SAVED
-    )
+    monitorFactory.waitForNextSuccessfulResult(recordCompletionProvider)
+    val playState =
+      retrieveChapterPlayState(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    assertThat(playState).isEqualTo(ChapterPlayState.IN_PROGRESS_SAVED)
   }
 
   @Test
   fun testStoryProgressController_markChapterAsNotSaved_markChapterAsSaved_playStateIsSaved() {
-    storyProgressController.recordChapterAsInProgressNotSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-
-    storyProgressController.recordChapterAsInProgressSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-    verifyChapterPlayStateIsCorrect(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      ChapterPlayState.IN_PROGRESS_SAVED
+    monitorFactory.ensureDataProviderExecutes(
+      storyProgressController.recordChapterAsInProgressNotSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
     )
+
+    val progressSavedProvider =
+      storyProgressController.recordChapterAsInProgressSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(progressSavedProvider)
+    val playState =
+      retrieveChapterPlayState(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    assertThat(playState).isEqualTo(ChapterPlayState.IN_PROGRESS_SAVED)
   }
 
   @Test
   fun testStoryProgressController_recordChapterAsNotSaved_isSuccessful() {
-    storyProgressController.recordChapterAsInProgressNotSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
+    val recordNotSavedProvider =
+      storyProgressController.recordChapterAsInProgressNotSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
 
-    verifyRecordProgressSucceeded()
+    monitorFactory.waitForNextSuccessfulResult(recordNotSavedProvider)
   }
 
   @Test
   fun testStoryProgressController_chapterCompleted_markChapterAsNotSaved_playStateIsCompleted() {
-    storyProgressController.recordCompletedChapter(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-
-    storyProgressController.recordChapterAsInProgressNotSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-    verifyChapterPlayStateIsCorrect(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      ChapterPlayState.COMPLETED
+    monitorFactory.ensureDataProviderExecutes(
+      storyProgressController.recordCompletedChapter(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
     )
+
+    val recordNotSavedProvider =
+      storyProgressController.recordChapterAsInProgressNotSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(recordNotSavedProvider)
+    val playState =
+      retrieveChapterPlayState(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    assertThat(playState).isEqualTo(ChapterPlayState.COMPLETED)
   }
 
   @Test
   fun testStoryProgressController_chapterNotStarted_markChapterAsSaved_playStateIsNotSaved() {
-    storyProgressController.recordChapterAsInProgressNotSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
+    val progressNotSavedProvider =
+      storyProgressController.recordChapterAsInProgressNotSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
 
-    verifyRecordProgressSucceeded()
-    verifyChapterPlayStateIsCorrect(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      ChapterPlayState.IN_PROGRESS_NOT_SAVED
-    )
+    monitorFactory.waitForNextSuccessfulResult(progressNotSavedProvider)
+    val playState =
+      retrieveChapterPlayState(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    assertThat(playState).isEqualTo(ChapterPlayState.IN_PROGRESS_NOT_SAVED)
   }
 
   @Test
   fun testStoryProgressController_markChapterAsSaved_markChapterAsNotSaved_playStateIsNotSaved() {
-    storyProgressController.recordChapterAsInProgressSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-
-    storyProgressController.recordChapterAsInProgressNotSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    ).toLiveData().observeForever(mockRecordProgressObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyRecordProgressSucceeded()
-    verifyChapterPlayStateIsCorrect(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      ChapterPlayState.IN_PROGRESS_NOT_SAVED
+    monitorFactory.ensureDataProviderExecutes(
+      storyProgressController.recordChapterAsInProgressSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
     )
+
+    val progressNotSavedProvider =
+      storyProgressController.recordChapterAsInProgressNotSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs()
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(progressNotSavedProvider)
+    val playState =
+      retrieveChapterPlayState(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+    assertThat(playState).isEqualTo(ChapterPlayState.IN_PROGRESS_NOT_SAVED)
   }
 
-  private fun verifyChapterPlayStateIsCorrect(
-    profileId: ProfileId,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    chapterPlayState: ChapterPlayState
-  ) {
-    storyProgressController.retrieveChapterPlayStateByExplorationId(
-      profileId,
-      topicId,
-      storyId,
-      explorationId
-    ).toLiveData().observeForever(mockRetrieveChapterPlayStateObserver)
-
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockRetrieveChapterPlayStateObserver, atLeastOnce())
-      .onChanged(retrieveChapterPlayStateCaptor.capture())
-
-    assertThat(retrieveChapterPlayStateCaptor.value.isSuccess()).isTrue()
-    assertThat(retrieveChapterPlayStateCaptor.value.getOrThrow()).isEqualTo(chapterPlayState)
-  }
-
-  private fun verifyRecordProgressSucceeded() {
-    verify(mockRecordProgressObserver, atLeastOnce())
-      .onChanged(recordProgressResultCaptor.capture())
-    assertThat(recordProgressResultCaptor.value.isSuccess()).isTrue()
-    reset(mockRecordProgressObserver)
+  private fun retrieveChapterPlayState(
+    profileId: ProfileId, topicId: String, storyId: String, explorationId: String
+  ): ChapterPlayState {
+    val playStateProvider =
+      storyProgressController.retrieveChapterPlayStateByExplorationId(
+        profileId, topicId, storyId, explorationId
+      )
+    return monitorFactory.waitForNextSuccessfulResult(playStateProvider)
   }
 
   // TODO(#89): Move this to a common test application component.

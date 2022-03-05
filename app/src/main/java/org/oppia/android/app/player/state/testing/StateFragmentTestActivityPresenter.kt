@@ -96,24 +96,20 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       explorationId,
       shouldSavePartialProgress,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
-      .observe(
-        activity,
-        Observer<AsyncResult<Any?>> { result ->
-          when {
-            result.isPending() -> oppiaLogger.d(TEST_ACTIVITY_TAG, "Loading exploration")
-            result.isFailure() -> oppiaLogger.e(
-              TEST_ACTIVITY_TAG,
-              "Failed to load exploration",
-              result.getErrorOrNull()!!
-            )
-            else -> {
-              oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
-              initializeExploration(profileId, topicId, storyId, explorationId)
-            }
+    ).observe(
+      activity,
+      Observer<AsyncResult<Any?>> { result ->
+        when (result) {
+          is AsyncResult.Pending -> oppiaLogger.d(TEST_ACTIVITY_TAG, "Loading exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e(TEST_ACTIVITY_TAG, "Failed to load exploration", result.error)
+          is AsyncResult.Success -> {
+            oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
+            initializeExploration(profileId, topicId, storyId, explorationId)
           }
         }
-      )
+      }
+    )
   }
 
   /**

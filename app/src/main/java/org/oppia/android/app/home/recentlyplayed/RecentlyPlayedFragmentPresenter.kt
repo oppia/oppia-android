@@ -171,11 +171,12 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
-    // If there's an error loading the data, assume the default.
     return Transformations.map(ongoingStoryListSummaryResultLiveData) {
-      it.getOrDefault(
-        PromotedActivityList.getDefaultInstance()
-      )
+      when (it) {
+        // If there's an error loading the data, assume the default.
+        is AsyncResult.Failure, is AsyncResult.Pending -> PromotedActivityList.getDefaultInstance()
+        is AsyncResult.Success -> it.value
+      }
     }
   }
 
@@ -252,7 +253,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
           override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
-            if (it.isSuccess()) {
+            if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               routeToResumeLessonListener.routeToResumeLesson(
                 internalProfileId,
@@ -260,9 +261,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
                 promotedStory.storyId,
                 promotedStory.explorationId,
                 backflowScreen = null,
-                explorationCheckpoint = it.getOrThrow()
+                explorationCheckpoint = it.value
               )
-            } else if (it.isFailure()) {
+            } else if (it is AsyncResult.Failure) {
               explorationCheckpointLiveData.removeObserver(this)
               playExploration(
                 promotedStory.topicId,
@@ -301,14 +302,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     ).observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> oppiaLogger.d("RecentlyPlayedFragment", "Loading exploration")
-          result.isFailure() -> oppiaLogger.e(
-            "RecentlyPlayedFragment",
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
+        when (result) {
+          is AsyncResult.Pending -> oppiaLogger.d("RecentlyPlayedFragment", "Loading exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e("RecentlyPlayedFragment", "Failed to load exploration", result.error)
+          is AsyncResult.Success -> {
             oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               internalProfileId,

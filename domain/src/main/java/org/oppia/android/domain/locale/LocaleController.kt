@@ -215,9 +215,8 @@ class LocaleController @Inject constructor(
   fun retrieveSystemLanguage(): DataProvider<OppiaLanguage> {
     val providerId = SYSTEM_LANGUAGE_DATA_PROVIDER_ID
     return getSystemLocaleProfile().transformAsync(providerId) { systemLocaleProfile ->
-      AsyncResult.success(
-        retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)?.language
-          ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
+      AsyncResult.Success(retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)?.language
+        ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
       )
     }
   }
@@ -303,11 +302,10 @@ class LocaleController @Inject constructor(
     @Suppress("UNCHECKED_CAST") // as? should always be a safe cast, even if unchecked.
     val locale = computeLocale(language, systemLocaleProfile, usageMode) as? T
     return locale?.let {
-      AsyncResult.success(it)
-    } ?: AsyncResult.failed(
-      IllegalStateException(
-        "Language $language for usage $usageMode doesn't match supported language definitions"
-      )
+      AsyncResult.Success(it)
+    } ?: AsyncResult.Failure(IllegalStateException(
+      "Language $language for usage $usageMode doesn't match supported language definitions"
+    )
     )
   }
 

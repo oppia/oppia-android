@@ -188,17 +188,18 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {
-    if (result.isFailure()) {
-      oppiaLogger.e(
-        "QuestionPlayerFragment",
-        "Failed to retrieve ephemeral question",
-        result.getErrorOrNull()!!
-      )
-    } else if (result.isPending()) {
-      // Display nothing until a valid result is available.
-      return
+    when (result) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "QuestionPlayerFragment", "Failed to retrieve ephemeral question", result.error
+        )
+      }
+      is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
+      is AsyncResult.Success -> processEphemeralQuestion(result.value)
     }
-    val ephemeralQuestion = result.getOrThrow()
+  }
+
+  private fun processEphemeralQuestion(ephemeralQuestion: EphemeralQuestion) {
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
 
@@ -282,10 +283,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     resultLiveData.observe(
       fragment,
       { result ->
-        if (result.isFailure()) {
-          oppiaLogger.e(
-            "StateFragment", "Failed to retrieve hint/solution", result.getErrorOrNull()!!
-          )
+        if (result is AsyncResult.Failure) {
+          oppiaLogger.e("StateFragment", "Failed to retrieve hint/solution", result.error)
         } else {
           // If the hint/solution, was revealed remove dot and radar.
           questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
@@ -298,14 +297,18 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun processAnsweredQuestionOutcome(
     answeredQuestionOutcomeResult: AsyncResult<AnsweredQuestionOutcome>
   ): AnsweredQuestionOutcome {
-    if (answeredQuestionOutcomeResult.isFailure()) {
-      oppiaLogger.e(
-        "QuestionPlayerFragment",
-        "Failed to retrieve answer outcome",
-        answeredQuestionOutcomeResult.getErrorOrNull()!!
-      )
+    return when (answeredQuestionOutcomeResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "QuestionPlayerFragment",
+          "Failed to retrieve answer outcome",
+          answeredQuestionOutcomeResult.error
+        )
+        AnsweredQuestionOutcome.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> AnsweredQuestionOutcome.getDefaultInstance()
+      is AsyncResult.Success -> answeredQuestionOutcomeResult.value
     }
-    return answeredQuestionOutcomeResult.getOrDefault(AnsweredQuestionOutcome.getDefaultInstance())
   }
 
   private fun moveToNextState() {

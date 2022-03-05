@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.forEach
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -41,6 +40,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import androidx.core.view.forEach
 
 const val NAVIGATION_PROFILE_ID_ARGUMENT_KEY =
   "NavigationDrawerFragmentPresenter.navigation_profile_id"
@@ -164,14 +164,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e(
-        "NavigationDrawerFragment",
-        "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!
-      )
+    return when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("NavigationDrawerFragment", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private fun getCompletedStoryListCount(): LiveData<CompletedStoryList> {
@@ -193,14 +193,18 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun processGetCompletedStoryListResult(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
-    if (completedStoryListResult.isFailure()) {
-      oppiaLogger.e(
-        "NavigationDrawerFragment",
-        "Failed to retrieve completed story list",
-        completedStoryListResult.getErrorOrNull()!!
-      )
+    return when (completedStoryListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "NavigationDrawerFragment",
+          "Failed to retrieve completed story list",
+          completedStoryListResult.error
+        )
+        CompletedStoryList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> CompletedStoryList.getDefaultInstance()
+      is AsyncResult.Success -> completedStoryListResult.value
     }
-    return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
   }
 
   private fun getOngoingTopicListCount(): LiveData<OngoingTopicList> {
@@ -222,14 +226,18 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   private fun processGetOngoingTopicListResult(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
-    if (ongoingTopicListResult.isFailure()) {
-      oppiaLogger.e(
-        "NavigationDrawerFragment",
-        "Failed to retrieve ongoing topic list",
-        ongoingTopicListResult.getErrorOrNull()!!
-      )
+    return when (ongoingTopicListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "NavigationDrawerFragment",
+          "Failed to retrieve ongoing topic list",
+          ongoingTopicListResult.error
+        )
+        OngoingTopicList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> OngoingTopicList.getDefaultInstance()
+      is AsyncResult.Success -> ongoingTopicListResult.value
     }
-    return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
   }
 
   private fun openActivityByMenuItemId(menuItemId: Int) {

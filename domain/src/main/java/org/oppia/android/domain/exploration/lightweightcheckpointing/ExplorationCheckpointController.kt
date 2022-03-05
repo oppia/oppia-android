@@ -134,7 +134,7 @@ class ExplorationCheckpointController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(
       RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID
     ) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(deferred.await())
+      return@createInMemoryDataProviderAsync AsyncResult.Success(deferred.await())
     }
   }
 
@@ -153,22 +153,20 @@ class ExplorationCheckpointController @Inject constructor(
 
         when {
           checkpoint != null && exploration.version == checkpoint.explorationVersion -> {
-            AsyncResult.success(checkpoint)
+            AsyncResult.Success(checkpoint)
           }
           checkpoint != null && exploration.version != checkpoint.explorationVersion -> {
-            AsyncResult.failed(
-              OutdatedExplorationCheckpointException(
-                "checkpoint with version: ${checkpoint.explorationVersion} cannot be used to " +
-                  "resume exploration $explorationId with version: ${exploration.version}"
-              )
+            AsyncResult.Failure(OutdatedExplorationCheckpointException(
+              "checkpoint with version: ${checkpoint.explorationVersion} cannot be used to " +
+                "resume exploration $explorationId with version: ${exploration.version}"
+            )
             )
           }
           else -> {
-            AsyncResult.failed(
-              ExplorationCheckpointNotFoundException(
-                "Checkpoint with the explorationId $explorationId was not found " +
-                  "for profileId ${profileId.internalId}."
-              )
+            AsyncResult.Failure(ExplorationCheckpointNotFoundException(
+              "Checkpoint with the explorationId $explorationId was not found " +
+                "for profileId ${profileId.internalId}."
+            )
             )
           }
         }
@@ -201,12 +199,11 @@ class ExplorationCheckpointController @Inject constructor(
             .setExplorationTitle(oldestCheckpoint.value.explorationTitle)
             .setExplorationVersion(oldestCheckpoint.value.explorationVersion)
             .build()
-          AsyncResult.success(explorationCheckpointDetails)
+          AsyncResult.Success(explorationCheckpointDetails)
         } else {
-          AsyncResult.failed(
-            ExplorationCheckpointNotFoundException(
-              "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
-            )
+          AsyncResult.Failure(ExplorationCheckpointNotFoundException(
+            "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
+          )
           )
         }
       }
@@ -256,14 +253,12 @@ class ExplorationCheckpointController @Inject constructor(
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
       ExplorationCheckpointActionStatus.CHECKPOINT_NOT_FOUND ->
-        AsyncResult.failed(
-          ExplorationCheckpointNotFoundException(
-            "No saved checkpoint with explorationId ${explorationId!!} found for " +
-              "the profileId ${profileId!!.internalId}."
-          )
+        AsyncResult.Failure(ExplorationCheckpointNotFoundException(
+          "No saved checkpoint with explorationId ${explorationId!!} found for " +
+            "the profileId ${profileId!!.internalId}."
         )
-      ExplorationCheckpointActionStatus.SUCCESS ->
-        AsyncResult.success(null)
+        )
+      ExplorationCheckpointActionStatus.SUCCESS -> AsyncResult.Success(null)
     }
   }
 

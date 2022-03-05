@@ -190,6 +190,7 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
     "//domain/src/main/java/org/oppia/android/domain/testing/oppialogger/loguploader:fake_log_uploader",
     "//testing",
+    "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/network:network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",

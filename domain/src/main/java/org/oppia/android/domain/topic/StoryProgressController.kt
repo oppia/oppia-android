@@ -304,9 +304,9 @@ class StoryProgressController @Inject constructor(
       .transformAsync(RETRIEVE_CHAPTER_PLAY_STATE_DATA_PROVIDER_ID) {
         val chapterProgress = it.chapterProgressMap[explorationId]
         if (chapterProgress != null) {
-          AsyncResult.success(chapterProgress.chapterPlayState)
+          AsyncResult.Success(chapterProgress.chapterPlayState)
         } else {
-          AsyncResult.success(ChapterPlayState.NOT_STARTED)
+          AsyncResult.Success(ChapterPlayState.NOT_STARTED)
         }
       }
   }
@@ -319,7 +319,7 @@ class StoryProgressController @Inject constructor(
       .transformAsync(RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID) { topicProgressDatabase ->
         val topicProgressList = mutableListOf<TopicProgress>()
         topicProgressList.addAll(topicProgressDatabase.topicProgressMap.values)
-        AsyncResult.success(topicProgressList.toList())
+        AsyncResult.Success(topicProgressList.toList())
       }
   }
 
@@ -330,7 +330,7 @@ class StoryProgressController @Inject constructor(
   ): DataProvider<TopicProgress> {
     return retrieveCacheStore(profileId)
       .transformAsync(RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID) {
-        AsyncResult.success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
+        AsyncResult.Success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
       }
   }
 
@@ -342,7 +342,7 @@ class StoryProgressController @Inject constructor(
   ): DataProvider<StoryProgress> {
     return retrieveTopicProgressDataProvider(profileId, topicId)
       .transformAsync(RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID) {
-        AsyncResult.success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
+        AsyncResult.Success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
       }
   }
 
@@ -350,7 +350,7 @@ class StoryProgressController @Inject constructor(
     deferred: Deferred<StoryProgressActionStatus>
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
-      StoryProgressActionStatus.SUCCESS -> AsyncResult.success(null)
+      StoryProgressActionStatus.SUCCESS -> AsyncResult.Success(null)
     }
   }
 

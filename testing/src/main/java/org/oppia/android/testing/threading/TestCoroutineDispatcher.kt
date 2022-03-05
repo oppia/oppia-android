@@ -117,7 +117,8 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
   }
 
   private companion object {
-    private const val STANDARD_TIMEOUT_SECONDS = 10L
+    // TODO: revert
+    private val STANDARD_TIMEOUT_SECONDS = TimeUnit.HOURS.toSeconds(1)
     private val TIMEOUT_WHEN_DEBUGGING_SECONDS = TimeUnit.HOURS.toSeconds(1)
 
     private fun computeTimeout(): Long {

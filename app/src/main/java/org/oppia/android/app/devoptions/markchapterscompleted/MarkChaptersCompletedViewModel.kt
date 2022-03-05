@@ -48,14 +48,16 @@ class MarkChaptersCompletedViewModel @Inject constructor(
   private fun processStoryMapResult(
     storyMap: AsyncResult<Map<String, List<StorySummary>>>
   ): Map<String, List<StorySummary>> {
-    if (storyMap.isFailure()) {
-      oppiaLogger.e(
-        "MarkChaptersCompletedFragment",
-        "Failed to retrieve storyList",
-        storyMap.getErrorOrNull()!!
-      )
+    return when (storyMap) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "MarkChaptersCompletedFragment", "Failed to retrieve storyList", storyMap.error
+        )
+        mapOf()
+      }
+      is AsyncResult.Pending -> mapOf()
+      is AsyncResult.Success -> storyMap.value
     }
-    return storyMap.getOrDefault(mapOf())
   }
 
   private fun processStoryMap(

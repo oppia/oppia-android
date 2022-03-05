@@ -30,6 +30,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.ExplorationCheckpointDetails
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -242,14 +243,11 @@ class ExplorationActivityPresenter @Inject constructor(
       .observe(
         activity,
         Observer<AsyncResult<Any?>> {
-          when {
-            it.isPending() -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
-            it.isFailure() -> oppiaLogger.e(
-              "ExplorationActivity",
-              "Failed to stop exploration",
-              it.getErrorOrNull()!!
-            )
-            else -> {
+          when (it) {
+            is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
+            is AsyncResult.Failure ->
+              oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
+            is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
               backPressActivitySelector(backflowScreen)
               (activity as ExplorationActivity).finish()
@@ -320,14 +318,16 @@ class ExplorationActivityPresenter @Inject constructor(
 
   /** Helper for subscribeToExploration. */
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
-    if (ephemeralStateResult.isFailure()) {
-      oppiaLogger.e(
-        "ExplorationActivity",
-        "Failed to retrieve answer outcome",
-        ephemeralStateResult.getErrorOrNull()!!
-      )
+    return when (ephemeralStateResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralStateResult.error
+        )
+        Exploration.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Exploration.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralStateResult.value
     }
-    return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
   private fun backPressActivitySelector(backflowScreen: Int?) {
@@ -420,15 +420,17 @@ class ExplorationActivityPresenter @Inject constructor(
     ).toLiveData().observe(
       activity,
       Observer {
-        if (it.isSuccess()) {
-          oldestCheckpointExplorationId = it.getOrThrow().explorationId
-          oldestCheckpointExplorationTitle = it.getOrThrow().explorationTitle
-        } else if (it.isFailure()) {
-          oppiaLogger.e(
-            "ExplorationActivity",
-            "Failed to retrieve oldest saved checkpoint details.",
-            it.getErrorOrNull()
-          )
+        when (it) {
+          is AsyncResult.Success -> {
+            oldestCheckpointExplorationId = it.value.explorationId
+            oldestCheckpointExplorationTitle = it.value.explorationTitle
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Wait for an actual result.
         }
       }
     )

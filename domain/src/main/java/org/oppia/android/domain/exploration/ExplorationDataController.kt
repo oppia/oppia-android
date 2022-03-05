@@ -1,7 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
@@ -125,10 +123,10 @@ class ExplorationDataController @Inject constructor(
   @Suppress("RedundantSuspendModifier")
   private suspend fun retrieveExplorationById(explorationId: String): AsyncResult<Exploration> {
     return try {
-      AsyncResult.success(explorationRetriever.loadExploration(explorationId))
+      AsyncResult.Success(explorationRetriever.loadExploration(explorationId))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      AsyncResult.failed(e)
+      AsyncResult.Failure(e)
     }
   }
 }

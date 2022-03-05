@@ -200,11 +200,11 @@ class QuestionAssessmentProgressController @Inject constructor(
 
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
 
-        return MutableLiveData(AsyncResult.success(answeredQuestionOutcome))
+        return MutableLiveData(AsyncResult.Success(answeredQuestionOutcome))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -238,11 +238,11 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(null))
+        return MutableLiveData(AsyncResult.Success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -275,11 +275,11 @@ class QuestionAssessmentProgressController @Inject constructor(
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(null))
+        return MutableLiveData(AsyncResult.Success(null))
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -316,10 +316,10 @@ class QuestionAssessmentProgressController @Inject constructor(
         }
         asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
       }
-      return MutableLiveData(AsyncResult.success<Any?>(null))
+      return MutableLiveData(AsyncResult.Success<Any?>(null))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return MutableLiveData(AsyncResult.Failure(e))
     }
   }
 
@@ -380,7 +380,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     progressLock.withLock {
       val scoreCalculator =
         scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
-      return AsyncResult.success(scoreCalculator.computeAll())
+      return AsyncResult.Success(scoreCalculator.computeAll())
     }
   }
 
@@ -400,24 +400,24 @@ class QuestionAssessmentProgressController @Inject constructor(
     progressLock.withLock {
       return try {
         when (progress.trainStage) {
-          TrainStage.NOT_IN_TRAINING_SESSION -> AsyncResult.pending()
+          TrainStage.NOT_IN_TRAINING_SESSION -> AsyncResult.Pending()
           TrainStage.LOADING_TRAINING_SESSION -> {
             // If the assessment hasn't yet been initialized, initialize it
             // now that a list of questions is available.
             initializeAssessment(questionsList)
             progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
-            AsyncResult.success(
+            AsyncResult.Success(
               retrieveEphemeralQuestionState(questionsList)
             )
           }
-          TrainStage.VIEWING_STATE -> AsyncResult.success(
+          TrainStage.VIEWING_STATE -> AsyncResult.Success(
             retrieveEphemeralQuestionState(questionsList)
           )
-          TrainStage.SUBMITTING_ANSWER -> AsyncResult.pending()
+          TrainStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
         }
       } catch (e: Exception) {
         exceptionsController.logNonFatalException(e)
-        AsyncResult.failed(e)
+        AsyncResult.Failure(e)
       }
     }
   }

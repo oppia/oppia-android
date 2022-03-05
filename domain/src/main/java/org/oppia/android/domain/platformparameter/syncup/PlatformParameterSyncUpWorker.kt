@@ -22,6 +22,7 @@ import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
+import org.oppia.android.util.data.AsyncResult
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
@@ -114,8 +115,8 @@ class PlatformParameterSyncUpWorker private constructor(
         val cachingResult = platformParameterController
           .updatePlatformParameterDatabase(platformParameterList)
           .retrieveData()
-        if (cachingResult.isFailure()) {
-          throw IllegalStateException(cachingResult.getErrorOrNull())
+        if (cachingResult is AsyncResult.Failure) {
+          throw IllegalStateException(cachingResult.error)
         }
         Result.success()
       } else {

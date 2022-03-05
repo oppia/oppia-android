@@ -23,6 +23,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 
 /** The exploration title of Fractions topic, story 0, exploration 0. */
 const val FRACTIONS_EXPLORATION_0_TITLE = "What is a Fraction?"
@@ -240,7 +242,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
       verify(mockExplorationCheckpointObserver, atLeastOnce())
         .onChanged(explorationCheckpointCaptor.capture())
-      assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+      assertThat(explorationCheckpointCaptor.value is AsyncResult.Success).isTrue()
     }
   }
 
@@ -270,11 +272,9 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
       verify(mockExplorationCheckpointObserver, atLeastOnce())
         .onChanged(explorationCheckpointCaptor.capture())
-      assertThat(explorationCheckpointCaptor.value.isFailure()).isTrue()
-
-      assertThat(explorationCheckpointCaptor.value.getErrorOrNull()).isInstanceOf(
-        ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
-      )
+      assertThat(explorationCheckpointCaptor.value)
+        .isFailureThat()
+        .isInstanceOf(ExplorationCheckpointNotFoundException::class.java)
     }
   }
 
@@ -322,7 +322,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
       verify(mockLiveDataObserver, atLeastOnce())
         .onChanged(liveDataResultCaptor.capture())
-      assertThat(liveDataResultCaptor.value.isSuccess()).isTrue()
+      assertThat(liveDataResultCaptor.value is AsyncResult.Success).isTrue()
     }
   }
 
