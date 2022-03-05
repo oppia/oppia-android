@@ -171,7 +171,7 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.SUBMITTING_ANSWER)
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
 
-        lateinit var answerOutcome: AnswerOutcome
+        var answerOutcome: AnswerOutcome? = null
         try {
           val topPendingState = explorationProgress.stateDeck.getPendingTopState()
           val outcome =
@@ -199,7 +199,7 @@ class ExplorationProgressController @Inject constructor(
             }
           }
         } finally {
-          if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
+          if (answerOutcome != null && !doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
             // If the answer was not submitted on behalf of the Continue interaction, update the
             // hint state and save checkpoint because it will be saved when the learner moves to the
             // next state.
@@ -213,6 +213,10 @@ class ExplorationProgressController @Inject constructor(
         }
 
         asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+
+        if (answerOutcome == null) {
+          return MutableLiveData(AsyncResult.failed(Throwable("answerOutcome is not initialized")))
+        }
 
         return MutableLiveData(AsyncResult.success(answerOutcome))
       }
