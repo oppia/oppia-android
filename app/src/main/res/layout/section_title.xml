@@ -33,7 +33,7 @@
       android:layout_marginEnd="@dimen/section_title_text_view_layout_margin_end"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.sectionTitleText}"
-      android:textColor="@color/oppia_primary_text"
+      android:textColor="@color/recently_played_activity_section_title_text_color"
       android:textSize="18sp" />
   </LinearLayout>
 </layout>
