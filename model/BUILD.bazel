@@ -182,17 +182,6 @@ java_lite_proto_library(
     deps = [":voiceover_proto"],
 )
 
-proto_library(
-    name = "route_proto",
-    src = ["src/main/proto/route.proto"],
-)
-
-java_lite_proto_library(
-    name = "route_java_proto_lite",
-    visibility = ["//:oppia_api_visibility"],
-    deps = [":route_proto"],
-)
-
 format_import_proto_library(
     name = "feedback_reporting",
     src = "src/main/proto/feedback_reporting.proto",

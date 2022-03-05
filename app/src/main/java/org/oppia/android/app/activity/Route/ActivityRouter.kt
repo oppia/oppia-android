@@ -1,4 +1,4 @@
-package org.oppia.android.app.activity
+package org.oppia.android.app.activity.Route
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
