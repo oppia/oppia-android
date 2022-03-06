@@ -13,7 +13,7 @@ import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
 import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForText
 
 /** Tests for the topic viewer screen. */
-class TopicTest {
+class TopicViewerTest {
   private lateinit var device: UiDevice
 
   @Before
