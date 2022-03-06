@@ -6,9 +6,9 @@ import android.text.Spannable
 import android.text.Spanned
 
 /** The custom tag corresponding to [LiTagHandler]. */
-const val CUSTOM_BULLET_LIST_TAG = "oppia-li"
-const val CUSTOM_BULLET_UL_LIST_TAG = "oppia-ul"
-const val CUSTOM_BULLET_OL_LIST_TAG = "oppia-ol"
+const val CUSTOM_LIST_LI_TAG = "oppia-li"
+const val CUSTOM_LIST_UL_TAG = "oppia-ul"
+const val CUSTOM_LIST_OL_TAG = "oppia-ol"
 
 /**
  * A custom tag handler for properly formatting bullet items in HTML parsed with
@@ -22,10 +22,10 @@ class LiTagHandler(private val context: Context, private val tag: String) :
   override fun handleOpeningTag(output: Editable) {
     appendNewLine(output)
     when (tag) {
-      CUSTOM_BULLET_UL_LIST_TAG -> {
+      CUSTOM_LIST_UL_TAG -> {
         start(output, BulletListItem())
       }
-      CUSTOM_BULLET_OL_LIST_TAG -> {
+      CUSTOM_LIST_OL_TAG -> {
         start(output, NumberListItem(index))
         index++
       }
@@ -36,12 +36,12 @@ class LiTagHandler(private val context: Context, private val tag: String) :
     appendNewLine(output)
 
     when (tag) {
-      CUSTOM_BULLET_UL_LIST_TAG -> {
+      CUSTOM_LIST_UL_TAG -> {
         getLast<BulletListItem>(output)?.let { mark ->
           setSpanFromMark(output, mark, ListItemLeadingMarginSpan(context, indentation, "•", tag))
         }
       }
-      CUSTOM_BULLET_OL_LIST_TAG -> {
+      CUSTOM_LIST_OL_TAG -> {
         getLast<NumberListItem>(output)?.let { mark ->
           setSpanFromMark(
             output,

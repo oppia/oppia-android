@@ -62,7 +62,7 @@ class ListItemLeadingMarginSpan(
 
       val yPosition = (top + bottom) / 2f
       when (tag) {
-        CUSTOM_BULLET_UL_LIST_TAG -> {
+        CUSTOM_LIST_UL_TAG -> {
           val style = paint.style
           if (trueX == spacingBeforeBullet) {
             paint.style = Paint.Style.FILL
@@ -73,7 +73,7 @@ class ListItemLeadingMarginSpan(
           canvas.drawCircle(trueX.toFloat(), yPosition, bulletRadius.toFloat(), paint)
           paint.style = style
         }
-        CUSTOM_BULLET_OL_LIST_TAG -> {
+        CUSTOM_LIST_OL_TAG -> {
           canvas.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
         }
       }
@@ -82,8 +82,8 @@ class ListItemLeadingMarginSpan(
 
   override fun getLeadingMargin(first: Boolean): Int {
     return when (tag) {
-      CUSTOM_BULLET_UL_LIST_TAG -> spacingBeforeBulletText
-      CUSTOM_BULLET_OL_LIST_TAG -> spacingBeforeNumberedText
+      CUSTOM_LIST_UL_TAG -> spacingBeforeBulletText
+      CUSTOM_LIST_OL_TAG -> spacingBeforeNumberedText
       else -> 0
     }
   }

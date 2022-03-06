@@ -32,6 +32,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
@@ -98,7 +100,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.html.ListItemLeadingMarginSpan
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
@@ -113,8 +114,8 @@ import kotlin.reflect.KClass
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HtmlParserTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class HtmlParserTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
 
   @Rule
   @JvmField
@@ -145,6 +146,12 @@ class HtmlParserTest {
     ActivityScenarioRule(
       Intent(ApplicationProvider.getApplicationContext(), HtmlParserTestActivity::class.java)
     )
+
+  // Note that the locale rule must be initialized first since the scenario rule can depend on the
+  // locale being initialized.
+  @get:Rule
+  val chain: TestRule =
+    RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
 
   @Before
   fun setUp() {
@@ -219,55 +226,6 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_customSpan_isAddedWithCorrectlySpacedLeadingMargin() {
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true
-    )
-    val htmlResult = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      return@runWithActivity htmlParser.parseOppiaHtml(
-        "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or " +
-          "smaller than another<br></li></ul>",
-        textView
-      )
-    }
-
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
-    val bulletSpans =
-      htmlResult.getSpans<ListItemLeadingMarginSpan>(
-        0,
-        htmlResult.length,
-        ListItemLeadingMarginSpan::class.java
-      )
-    assertThat(bulletSpans.size.toLong()).isEqualTo(2)
-
-    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
-    assertThat(bulletSpan0).isNotNull()
-
-    val bulletRadius = activityScenarioRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.bullet_radius
-    )
-    val spacingBeforeBullet = activityScenarioRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_bullet
-    )
-    val spacingBeforeText = activityScenarioRule.scenario.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_bullet_text
-    )
-    val expectedMargin = spacingBeforeBullet + spacingBeforeText + 2 * bulletRadius
-
-    val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
-    assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
-
-    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
-    assertThat(bulletSpan1).isNotNull()
-  }
-
-  @Test
   fun testHtmlContent_bulletList_isAddedCorrectlyWithNewLine() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
@@ -278,9 +236,8 @@ class HtmlParserTest {
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
-        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
-          "<li>How to tell whether one counting number is bigger or " +
-          "smaller than another<br></li></ul>",
+        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
+          "<li>How to tell whether one counting number is bigger or smaller than another</li></ul>",
         textView
       )
     }

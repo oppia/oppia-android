@@ -88,16 +88,16 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("\n\n", "")
     }
     if ("<li>" in htmlContent) {
-      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
-        .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
+        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
     }
     if ("<ul>" in htmlContent) {
-      htmlContent = htmlContent.replace("<ul>", "<$CUSTOM_BULLET_UL_LIST_TAG>")
-        .replace("</ul>", "</$CUSTOM_BULLET_UL_LIST_TAG>")
+      htmlContent = htmlContent.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
+        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
     }
     if ("<ol>" in htmlContent) {
-      htmlContent = htmlContent.replace("<ol>", "<$CUSTOM_BULLET_OL_LIST_TAG>")
-        .replace("</ol>", "</$CUSTOM_BULLET_OL_LIST_TAG>")
+      htmlContent = htmlContent.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
+        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
     }
 
     // https://stackoverflow.com/a/8662457
@@ -125,9 +125,9 @@ class HtmlParser private constructor(
     supportsConceptCards: Boolean
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
-    handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
-    handlersMap[CUSTOM_BULLET_UL_LIST_TAG] = bulletTagHandler
-    handlersMap[CUSTOM_BULLET_OL_LIST_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_LIST_LI_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_LIST_UL_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_LIST_OL_TAG] = bulletTagHandler
     handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
     handlersMap[CUSTOM_MATH_TAG] = mathTagHandler
     if (supportsConceptCards) {

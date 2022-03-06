@@ -12,7 +12,7 @@ import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
-import java.util.Stack
+import java.util.*
 import kotlin.collections.ArrayDeque
 
 /**
@@ -103,28 +103,19 @@ class CustomHtmlContentHandler(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
           when {
-            tag.equals(CUSTOM_BULLET_UL_LIST_TAG) || tag.equals(CUSTOM_BULLET_OL_LIST_TAG) -> {
+            tag.equals(CUSTOM_LIST_UL_TAG) || tag.equals(CUSTOM_LIST_OL_TAG) -> {
               lists.push(LiTagHandler(context, tag))
             }
-            tag.equals(CUSTOM_BULLET_LIST_TAG) -> {
+            tag.equals(CUSTOM_LIST_LI_TAG) -> {
               if (lists.isNotEmpty()) {
                 lists.peek().handleOpeningTag(output)
               }
             }
+            else -> customTagHandlers.getValue(tag).handleOpeningTag(output)
           }
         }
       }
       tag in customTagHandlers -> {
-        when {
-          tag.equals(CUSTOM_BULLET_UL_LIST_TAG) || tag.equals(CUSTOM_BULLET_OL_LIST_TAG) -> {
-            lists.pop()
-          }
-          tag.equals(CUSTOM_BULLET_LIST_TAG) -> {
-            if (lists.isNotEmpty()) {
-              lists.peek().handleClosingTag(output, lists.size - 1)
-            }
-          }
-        }
         check(currentTrackedCustomTags.isNotEmpty()) {
           "Expected tracked custom tag to be initialized."
         }
@@ -133,6 +124,17 @@ class CustomHtmlContentHandler(
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
+        when (tag) {
+          CUSTOM_LIST_UL_TAG, CUSTOM_LIST_OL_TAG -> {
+            lists.pop()
+          }
+          CUSTOM_LIST_LI_TAG -> {
+            if (lists.isNotEmpty()) {
+              lists.peek().handleClosingTag(output, lists.size - 1)
+            }
+          }
+          else -> customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0)
+        }
         customTagHandlers.getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
@@ -255,5 +257,7 @@ fun Attributes.getJsonObjectValue(name: String): JSONObject? {
   // The raw content value is a JSON blob with escaped quotes.
   return try {
     getValue(name)?.replace("&quot;", "\"")?.let { JSONObject(it) }
-  } catch (e: JSONException) { return null }
+  } catch (e: JSONException) {
+    return null
+  }
 }

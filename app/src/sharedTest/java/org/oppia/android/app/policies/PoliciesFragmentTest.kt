@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -13,11 +14,14 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -69,6 +73,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -108,6 +113,9 @@ class PoliciesFragmentTest {
   lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
@@ -129,6 +137,21 @@ class PoliciesFragmentTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+
+  }
+
+  private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent {
+    return PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
+      context,
+      policyPage
+    )
   }
 
   @Test
@@ -147,13 +170,24 @@ class PoliciesFragmentTest {
   @Test
   fun testPoliciesFragment_checkPrivacyPolicyWebLink_isDisplayed() {
     launch<PoliciesFragmentTestActivity>(
-      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
+      createPoliciesFragmentTestIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
-      onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
-        .perform(openLinkWithText("this page"))
+      it.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
+        onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
+        assertThat(textView.text.toString())
+          .isEqualTo(
+            "Please visit [this page] for the latest version of" +
+              " these privacy policy."
+          )
+        onView(withId(R.id.policy_web_link_text_view))
+          .perform(openLinkWithText("this page"))
+      }
     }
   }
 
@@ -173,13 +207,21 @@ class PoliciesFragmentTest {
   @Test
   fun testPoliciesFragment_checkTermsOfServiceWebLink_isDisplayed() {
     launch<PoliciesFragmentTestActivity>(
-      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
+      createPoliciesFragmentTestIntent(
         ApplicationProvider.getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
-      onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
-        .perform(openLinkWithText("this page"))
+      it.onActivity { activity ->
+        val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
+        onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
+        assertThat(textView.text.toString())
+          .isEqualTo("Please visit [this page] for the latest version of these terms.")
+        onView(withId(R.id.policy_web_link_text_view))
+          .perform(openLinkWithText("this page"))
+      }
     }
   }
 

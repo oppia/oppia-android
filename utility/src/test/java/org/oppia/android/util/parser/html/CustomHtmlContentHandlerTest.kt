@@ -5,7 +5,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
-import android.text.style.BulletSpan
+import android.text.style.LeadingMarginSpan
 import android.text.style.StyleSpan
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -191,12 +191,33 @@ class CustomHtmlContentHandlerTest {
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_BULLET_LIST_TAG to LiTagHandler(context, "")
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, CUSTOM_LIST_LI_TAG),
+          CUSTOM_LIST_UL_TAG to LiTagHandler(context, CUSTOM_LIST_UL_TAG)
         )
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
+    assertThat(parsedHtml.getSpansFromWholeString(LeadingMarginSpan::class)).hasLength(1)
+  }
+
+  @Test
+  fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoNumberedListSpan() {
+    val htmlString = "<p>Paragraph 1</p><oppia-ol><oppia-li>Item</oppia-li></oppia-ol>" +
+      "<p>Paragraph 2.</p>"
+
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        context,
+        html = htmlString,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, CUSTOM_LIST_LI_TAG),
+          CUSTOM_LIST_OL_TAG to LiTagHandler(context, CUSTOM_LIST_OL_TAG)
+        )
+      )
+
+    assertThat(parsedHtml.toString()).isNotEmpty()
+    assertThat(parsedHtml.getSpansFromWholeString(LeadingMarginSpan::class)).hasLength(1)
   }
 
   @Test
