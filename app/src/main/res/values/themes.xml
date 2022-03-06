@@ -43,4 +43,9 @@
   <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
     <item name="android:background">@color/shared_activity_action_bar_color</item>
   </style>
+  
+  <style name="Theme.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <item name="background_color">#FFFFFF</item>
+    <item name="text_color">#000000</item>
+  </style>
 </resources>

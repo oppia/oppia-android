@@ -54,7 +54,7 @@
   <string name="previous_responses_header">Previous Responses (%s)</string>
   <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="state_learn_again_button">Learn Again</string>
-  <string name="topic_download_text">(%s)</string>
+  <string name="topic_download_text" translatable="false">(%s)</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
   <string name="FAQs">FAQs</string>
@@ -73,17 +73,17 @@
   <string name="topic_name">Topic: %s</string>
   <string name="topic">Topic</string>
   <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
-  <string name="topic_story_progress_percentage">%s\%%</string>
-  <string name="topic_play_chapter_index">%s.</string>
-  <string name="chapter_name">Chapter %s: %s</string>
+  <string name="topic_story_progress_percentage" translatable="false">%s\%%</string>
+  <string name="topic_play_chapter_index" translatable="false">%s.</string>
+  <string name="chapter_name">Chapter %s: %s</string>ion in the form x/x.</resources>
+<string name="numeric_input_hint">Enter a number.</string>
+<string name="number_with_units_input_hint_text">Write numbers w
   <string name="chapter_completed">Chapter %s with title %s is completed</string>
   <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
   <string name="text_input_default_content_description">Enter text.</string>
   <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
-  <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
-  <string name="numeric_input_hint">Enter a number.</string>
-  <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
+  <string name="fractions_default_hint_text_no_integer">Enter a fractith units here.</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
   <string name="last_played_stories">Last-Played Stories</string>
@@ -140,7 +140,7 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
-  <string name="welcome_profile_name">%s!</string>
+  <string name="welcome_profile_name" translatable="false">%s!</string>
   <string name="chapter_count_with_story_name">%1$s in %2$s</string>
   <plurals name="chapter_count">
     <item quantity="one">
@@ -192,7 +192,7 @@
       %s Topics in Progress
     </item>
   </plurals>
-  <string name="bar_separator">\u0020|\u0020</string>
+  <string name="bar_separator" translatable="false">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_activity_label">Profile selection page</string>
   <string name="profile_chooser_admin">Administrator</string>
@@ -261,8 +261,8 @@
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
   <string name="pin_password_user_enter">Please enter your PIN.</string>
-  <string name="input_pin_password_as_admin">Administrator’s 5-Digit PIN.</string>
-  <string name="input_pin_password_as_user">User’s 3-Digit PIN.</string>
+  <string name="input_pin_password_as_admin" translatable="false">Administrator’s 5-Digit PIN.</string>
+  <string name="input_pin_password_as_user" translatable="false">User’s 3-Digit PIN.</string>
   <string name="pin_password_forgot_pin">I forgot my pin.</string>
   <string name="pin_password_incorrect_pin">Incorrect PIN.</string>
   <string name="pin_password_show">show</string>
@@ -276,7 +276,7 @@
   <string name="password_shown_icon">Password shown icon</string>
   <string name="password_hidden_icon">Password hidden icon</string>
   <string name="enter_your_pin">Enter your PIN</string>
-  <string name="pin_password_toolbar_title">Enter PIN</string>
+  <string name="pin_password_toolbar_title" translatable="false">Enter PIN</string>
   <!-- AdminSettingsDialogFragment -->
   <string name="admin_settings_label">Administrator\'s PIN</string>
   <string name="admin_settings_heading">Access to Administrator Settings</string>
@@ -312,7 +312,7 @@
   <string name="profile_edit_allow_download_heading">Allow Download Access</string>
   <string name="profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
   <!-- ProfilePictureActivity -->
-  <string name="profile_picture_activity_title">Profile Picture</string>
+  <string name="profile_picture_activity_title" translatable="false">Profile Picture</string>
   <!-- ProfileProgressActivity -->
   <string name="profile_progress_edit_dialog_title">Profile Picture</string>
   <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>
@@ -381,7 +381,7 @@
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_title">Stories Completed</string>
   <!-- WalkthroughActivity -->
-  <string name="walkthrough_activity_title">App walkthrough</string>
+  <string name="walkthrough_activity_title" translatable="false">App walkthrough</string>
   <string name="walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
   <string name="welcome">"Welcome %s!"</string>
   <!-- WalkthroughTopicListFragment -->
@@ -407,7 +407,7 @@
   <string name="reveal">Reveal</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
-  <string name="last_logged_in_recently">recently</string>
+  <string name="last_logged_in_recently" translatable="false">recently</string>
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>
@@ -433,9 +433,9 @@
     <item quantity="other">%s days</item>
   </plurals>
   <!-- ViewTags -->
-  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
-  <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
+  <string name="topic_revision_recyclerview_tag" translatable="false">topic_revision_recyclerview_tag</string>
+  <string name="ongoing_recycler_view_tag" translatable="false">ongoing_recycler_view_tag</string>
+  <string name="completed_story_list_recyclerview_tag" translatable="false">completed_story_list_recyclerview_tag</string>
   <string name="item_selection_text">Please select at least one choice.</string>
   <!-- SplashActivity -->
   <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
@@ -464,7 +464,7 @@
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
   <string name="audio_player_off">Audio, OFF</string>
-  <string name="hints_android_solution_correct_answer">%s/%s</string>
+  <string name="hints_android_solution_correct_answer" translatable="false">%s/%s</string>
   <string name="correct_submitted_answer">Correct submitted answer</string>
   <string name="correct_submitted_answer_with_append">Correct submitted answer: %s</string>
   <string name="incorrect_submitted_answer">Incorrect submitted answer</string>

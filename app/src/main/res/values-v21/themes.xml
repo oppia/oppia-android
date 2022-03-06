@@ -40,4 +40,9 @@
     <item name="android:buttonBarNegativeButtonStyle">@style/textAllCaps</item>
     <item name="android:buttonBarPositiveButtonStyle">@style/textAllCaps</item>
   </style>
+
+  <style name="Theme.DarkMode" parent = "Theme.MaterialComponents.DayNight.NoActionBar">
+    <item name="background_color">#000000</item>
+    <item name="text_color">#FFFFFF</item>
+  </style>
 </resources>

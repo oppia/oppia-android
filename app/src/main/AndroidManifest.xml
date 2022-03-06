@@ -88,11 +88,11 @@
     <activity
       android:name=".app.options.AppLanguageActivity"
       android:label="@string/app_language_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/AppTheme.darkMode" />
     <activity
       android:name=".app.options.AudioLanguageActivity"
       android:label="@string/audio_language_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/AppTheme.darkMode" />
     <activity
       android:name=".app.options.OptionsActivity"
       android:label="@string/options_activity_title"
@@ -100,7 +100,7 @@
     <activity
       android:name=".app.options.ReadingTextSizeActivity"
       android:label="@string/reading_text_size_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/AppTheme.darkMode" />
     <activity
       android:name=".app.player.exploration.ExplorationActivity"
       android:label="@string/exploration_activity_title"
@@ -132,7 +132,7 @@
     <activity
       android:name=".app.profileprogress.ProfilePictureActivity"
       android:label="@string/profile_picture_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/AppTheme.darkMode" />
     <activity
       android:name=".app.profileprogress.ProfileProgressActivity"
       android:label="@string/profile_progress_activity_title"
