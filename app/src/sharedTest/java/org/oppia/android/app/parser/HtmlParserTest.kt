@@ -57,13 +57,16 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -546,6 +549,62 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withMathTag_missingFileName_inlineMode_loadsNonMathModeKotlitexMathSpan() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+    )
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "<oppia-noninteractive-math render-type=\"inline\" math_content-with-value=\"{" +
+          "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\frac{2}{5}&amp;quot;}\">" +
+          "</oppia-noninteractive-math>",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
+      textView.text = htmlResult
+    }
+
+    // The rendering mode should be inline for this render type.
+    val loadedInlineImages = testGlideImageLoader.getLoadedMathDrawables()
+    assertThat(loadedInlineImages).hasSize(1)
+    assertThat(loadedInlineImages.first().rawLatex).isEqualTo("\\frac{2}{5}")
+    assertThat(loadedInlineImages.first().useInlineRendering).isTrue()
+  }
+
+  @Test
+  fun testHtmlContent_withMathTag_missingFileName_blockMode_loadsMathModeKotlitexMathSpan() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+    )
+    activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+        "<oppia-noninteractive-math render-type=\"block\" math_content-with-value=\"{" +
+          "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\frac{2}{5}&amp;quot;}\">" +
+          "</oppia-noninteractive-math>",
+        textView,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
+      textView.text = htmlResult
+    }
+
+    // The rendering mode should be non-inline for this render type.
+    val loadedInlineImages = testGlideImageLoader.getLoadedMathDrawables()
+    assertThat(loadedInlineImages).hasSize(1)
+    assertThat(loadedInlineImages.first().rawLatex).isEqualTo("\\frac{2}{5}")
+    assertThat(loadedInlineImages.first().useInlineRendering).isFalse()
+  }
+
+  @Test
   fun testHtmlContent_withMathTag_loadsTextSvg() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
@@ -643,7 +702,9 @@ class HtmlParserTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

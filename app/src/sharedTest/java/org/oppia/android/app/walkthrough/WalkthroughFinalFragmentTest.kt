@@ -44,13 +44,16 @@ import org.oppia.android.app.utility.ProgressMatcher.Companion.withProgress
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -65,7 +68,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -131,7 +133,6 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_firstTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -157,7 +158,6 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -183,7 +183,6 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_configChange_secondTestTopicIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -216,7 +215,6 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_yesNoBtnIsDisplayed() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -240,7 +238,6 @@ class WalkthroughFinalFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testWalkthroughFinalFragment_topicSelected_clickNoBtn_noBtnWorksCorrectly() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -288,7 +285,9 @@ class WalkthroughFinalFragmentTest {
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -18,8 +18,9 @@ import com.bumptech.glide.request.transition.Transition
 import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import javax.inject.Inject
 import kotlin.math.max
@@ -39,10 +40,10 @@ class UrlImageParser private constructor(
   private val imageLoader: ImageLoader,
   private val consoleLogger: ConsoleLogger,
   private val machineLocale: OppiaLocale.MachineLocale
-) : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever {
+) : Html.ImageGetter, ImageRetriever {
   override fun getDrawable(urlString: String): Drawable {
     // Only block images can be loaded through the standard ImageGetter.
-    return loadDrawable(urlString, ImageRetriever.Type.BLOCK_IMAGE)
+    return loadDrawable(urlString, BLOCK_IMAGE)
   }
 
   override fun loadDrawable(filename: String, type: ImageRetriever.Type): Drawable {
@@ -53,21 +54,23 @@ class UrlImageParser private constructor(
     val proxyDrawable = ProxyDrawable()
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     val isSvg = machineLocale.run { imageUrl.endsWithIgnoreCase("svg") }
-    val adjustedType = if (type == ImageRetriever.Type.INLINE_TEXT_IMAGE && !isSvg) {
+    val adjustedType = if (type == INLINE_TEXT_IMAGE && !isSvg) {
       // Treat non-svg in-line images as block, instead, since only SVG is supported.
       consoleLogger.w("UrlImageParser", "Forcing image $filename to block image")
-      ImageRetriever.Type.BLOCK_IMAGE
+      BLOCK_IMAGE
     } else type
 
     return when (adjustedType) {
-      ImageRetriever.Type.INLINE_TEXT_IMAGE -> {
+      INLINE_TEXT_IMAGE -> {
         imageLoader.loadTextSvg(
           imageUrl,
-          createCustomTarget(proxyDrawable, AutoAdjustingImageTarget.TextSvgTarget::create)
+          createCustomTarget(proxyDrawable) {
+            AutoAdjustingImageTarget.InlineTextImage.createForSvg(it)
+          }
         )
         proxyDrawable
       }
-      ImageRetriever.Type.BLOCK_IMAGE -> {
+      BLOCK_IMAGE -> {
         if (isSvg) {
           imageLoader.loadBlockSvg(
             imageUrl,
@@ -87,6 +90,32 @@ class UrlImageParser private constructor(
         }
         proxyDrawable
       }
+    }
+  }
+
+  override fun loadMathDrawable(
+    rawLatex: String,
+    lineHeight: Float,
+    type: ImageRetriever.Type
+  ): Drawable {
+    return ProxyDrawable().also { drawable ->
+      imageLoader.loadMathDrawable(
+        rawLatex,
+        lineHeight,
+        useInlineRendering = type == INLINE_TEXT_IMAGE,
+        createCustomTarget(drawable) {
+          when (type) {
+            INLINE_TEXT_IMAGE -> AutoAdjustingImageTarget.InlineTextImage.createForMath(context, it)
+            BLOCK_IMAGE -> {
+              // Render the LaTeX as a block image, but don't automatically resize it since it's
+              // text (which means resizing may make it unreadable).
+              AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget.create(
+                it, autoResizeImage = false
+              )
+            }
+          }
+        }
+      )
     }
   }
 
@@ -144,7 +173,8 @@ class UrlImageParser private constructor(
      * display them in a "block" fashion.
      */
     sealed class BlockImageTarget<T, D : Drawable>(
-      targetConfiguration: TargetConfiguration
+      targetConfiguration: TargetConfiguration,
+      private val autoResizeImage: Boolean
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
       override fun computeBounds(drawable: D, viewWidth: Int): Rect {
@@ -162,40 +192,42 @@ class UrlImageParser private constructor(
 
         var drawableWidth = drawable.intrinsicWidth.toFloat()
         var drawableHeight = drawable.intrinsicHeight.toFloat()
-        val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
-        if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
-          // The multipleFactor value is used to make sure that the aspect ratio of the image
-          // remains the same.
-          // Example: Height is 90, width is 60 and minimumImageSize is 120.
-          // Then multipleFactor will be 2 (120/60).
-          // The new height will be 180 and new width will be 120.
-          val multipleFactor = if (drawableHeight <= drawableWidth) {
-            // If height is less then the width, multipleFactor value is determined by height.
-            minimumImageSize.toFloat() / drawableHeight
-          } else {
-            // If height is less then the width, multipleFactor value is determined by width.
-            minimumImageSize.toFloat() / drawableWidth
+        if (autoResizeImage) {
+          val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
+          if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
+            // The multipleFactor value is used to make sure that the aspect ratio of the image
+            // remains the same.
+            // Example: Height is 90, width is 60 and minimumImageSize is 120.
+            // Then multipleFactor will be 2 (120/60).
+            // The new height will be 180 and new width will be 120.
+            val multipleFactor = if (drawableHeight <= drawableWidth) {
+              // If height is less then the width, multipleFactor value is determined by height.
+              minimumImageSize.toFloat() / drawableHeight
+            } else {
+              // If height is less then the width, multipleFactor value is determined by width.
+              minimumImageSize.toFloat() / drawableWidth
+            }
+            drawableHeight *= multipleFactor
+            drawableWidth *= multipleFactor
           }
-          drawableHeight *= multipleFactor
-          drawableWidth *= multipleFactor
-        }
-        val maxContentItemPadding =
-          context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
-        val maximumImageSize = maxAvailableWidth - maxContentItemPadding
-        if (drawableWidth >= maximumImageSize) {
-          // The multipleFactor value is used to make sure that the aspect ratio of the image
-          // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
-          // Then multipleFactor will be (200/440). The new height will be 191 and new width will
-          // be 200.
-          val multipleFactor = if (drawableHeight >= drawableWidth) {
-            // If height is greater then the width, multipleFactor value is determined by height.
-            (maximumImageSize.toFloat() / drawableHeight)
-          } else {
-            // If height is greater then the width, multipleFactor value is determined by width.
-            (maximumImageSize.toFloat() / drawableWidth)
+          val maxContentItemPadding =
+            context.resources.getDimensionPixelSize(R.dimen.maximum_content_item_padding)
+          val maximumImageSize = maxAvailableWidth - maxContentItemPadding
+          if (drawableWidth >= maximumImageSize) {
+            // The multipleFactor value is used to make sure that the aspect ratio of the image
+            // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
+            // Then multipleFactor will be (200/440). The new height will be 191 and new width will
+            // be 200.
+            val multipleFactor = if (drawableHeight >= drawableWidth) {
+              // If height is greater then the width, multipleFactor value is determined by height.
+              (maximumImageSize.toFloat() / drawableHeight)
+            } else {
+              // If height is greater then the width, multipleFactor value is determined by width.
+              (maximumImageSize.toFloat() / drawableWidth)
+            }
+            drawableHeight *= multipleFactor
+            drawableWidth *= multipleFactor
           }
-          drawableHeight *= multipleFactor
-          drawableWidth *= multipleFactor
         }
         val drawableLeft = if (imageCenterAlign) {
           calculateInitialMargin(maxAvailableWidth, drawableWidth)
@@ -213,7 +245,9 @@ class UrlImageParser private constructor(
       /** A [BlockImageTarget] used to load & arrange SVGs. */
       internal class SvgTarget(
         targetConfiguration: TargetConfiguration
-      ) : BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(targetConfiguration) {
+      ) : BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(
+        targetConfiguration, autoResizeImage = true
+      ) {
         override fun retrieveDrawable(resource: BlockPictureDrawable): BlockPictureDrawable =
           resource
 
@@ -225,40 +259,63 @@ class UrlImageParser private constructor(
 
       /** A [BlockImageTarget] used to load & arrange bitmaps. */
       internal class BitmapTarget(
-        targetConfiguration: TargetConfiguration
-      ) : BlockImageTarget<Bitmap, BitmapDrawable>(targetConfiguration) {
+        targetConfiguration: TargetConfiguration,
+        autoResizeImage: Boolean
+      ) : BlockImageTarget<Bitmap, BitmapDrawable>(targetConfiguration, autoResizeImage) {
         override fun retrieveDrawable(resource: Bitmap): BitmapDrawable {
           return BitmapDrawable(context.resources, resource)
         }
 
         companion object {
           /** Returns a new [BitmapTarget] for the specified configuration. */
-          fun create(targetConfiguration: TargetConfiguration) = BitmapTarget(targetConfiguration)
+          fun create(targetConfiguration: TargetConfiguration, autoResizeImage: Boolean = true) =
+            BitmapTarget(targetConfiguration, autoResizeImage)
         }
       }
     }
 
     /**
-     * A [AutoAdjustingImageTarget] that should be used for in-line SVG images that will not be
-     * resized or aligned beyond what the SVG itself requires, and what the system performs
-     * automatically.
+     * A [AutoAdjustingImageTarget] that should be used for in-line SVG images and math expressions
+     * that will not be resized or aligned beyond what the target itself requires, and what the
+     * system performs automatically.
      */
-    class TextSvgTarget(
-      targetConfiguration: TargetConfiguration
-    ) : AutoAdjustingImageTarget<TextPictureDrawable, TextPictureDrawable>(targetConfiguration) {
-      override fun retrieveDrawable(resource: TextPictureDrawable): TextPictureDrawable = resource
+    class InlineTextImage<T, D : Drawable>(
+      targetConfiguration: TargetConfiguration,
+      private val computeDrawable: (T) -> D,
+      private val computeDimensions: (D, TextView) -> Unit,
+    ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
+      override fun retrieveDrawable(resource: T): D = computeDrawable(resource)
 
-      override fun computeBounds(
-        drawable: TextPictureDrawable,
-        viewWidth: Int
-      ): Rect {
-        drawable.computeTextPicture(htmlContentTextView.paint)
+      override fun computeBounds(drawable: D, viewWidth: Int): Rect {
+        computeDimensions(drawable, htmlContentTextView)
         return Rect(/* left= */ 0, /* top= */ 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
       }
 
       companion object {
-        /** Returns a new [TextSvgTarget] for the specified configuration. */
-        fun create(targetConfiguration: TargetConfiguration) = TextSvgTarget(targetConfiguration)
+        /** Returns a new [InlineTextImage] for the specified SVG configuration. */
+        fun createForSvg(
+          targetConfiguration: TargetConfiguration
+        ): InlineTextImage<TextPictureDrawable, TextPictureDrawable> {
+          return InlineTextImage(
+            targetConfiguration,
+            computeDrawable = { it },
+            computeDimensions = { drawable, textView ->
+              drawable.computeTextPicture(textView.paint)
+            }
+          )
+        }
+
+        /** Returns a new [InlineTextImage] for the specified math configuration. */
+        fun createForMath(
+          applicationContext: Context,
+          targetConfiguration: TargetConfiguration
+        ): InlineTextImage<Bitmap, Drawable> {
+          return InlineTextImage(
+            targetConfiguration,
+            computeDrawable = { BitmapDrawable(applicationContext.resources, it) },
+            computeDimensions = { _, _ -> }
+          )
+        }
       }
     }
 

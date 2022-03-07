@@ -16,13 +16,16 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -274,7 +277,8 @@ class ExplorationDataControllerTest {
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleProdModule::class
+      AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
