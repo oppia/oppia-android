@@ -1,7 +1,5 @@
 package org.oppia.android.domain.question
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
@@ -29,15 +27,26 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-private const val CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID =
-  "create_current_question_data_provider_id"
-private const val CREATE_CURRENT_QUESTION_DATA_WITH_TRANSLATION_CONTEXT_PROVIDER_ID =
-  "create_current_question_data_with_translation_context_provider_id"
-private const val BEGIN_QUESTION_TRAINING_SESSION_PROVIDER_ID =
-  "begin_question_training_session_provider_id"
-private const val CREATE_EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
-  "create_empty_questions_list_data_provider_id"
-private const val SUBMIT_ANSWER_PROVIDER_ID = "submit_answer_provider_id"
+private const val BEGIN_SESSION_RESULT_PROVIDER_ID =
+  "QuestionAssessmentProgressController.begin_session_result"
+private const val FINISH_SESSION_RESULT_PROVIDER_ID =
+  "QuestionAssessmentProgressController.finish_session_result"
+private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
+  "QuestionAssessmentProgressController.submit_answer_result"
+private const val SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID =
+  "QuestionAssessmentProgressController.submit_hint_revealed_result"
+private const val SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID =
+  "QuestionAssessmentProgressController.submit_solution_revealed_result"
+private const val MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID =
+  "QuestionAssessmentProgressController.move_to_next_question_result"
+private const val CURRENT_QUESTION_PROVIDER_ID =
+  "QuestionAssessmentProgressController.current_question"
+private const val CALCULATE_SCORES_PROVIDER_ID =
+  "QuestionAssessmentProgressController.calculate_scores"
+private const val LOCALIZED_QUESTION_PROVIDER_ID =
+  "QuestionAssessmentProgressController.localized_question"
+private const val EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID =
+  "QuestionAssessmentProgressController.create_empty_questions_list_data_provider_id"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through a
@@ -75,37 +84,57 @@ class QuestionAssessmentProgressController @Inject constructor(
   internal fun beginQuestionTrainingSession(
     questionsListDataProvider: DataProvider<List<Question>>,
     profileId: ProfileId
-  ) {
-    progressLock.withLock {
-      check(progress.trainStage == TrainStage.NOT_IN_TRAINING_SESSION) {
-        "Cannot start a new training session until the previous one is completed."
-      }
-      progress.currentProfileId = profileId
+  ): DataProvider<Any?> {
+    return progressLock.withLock {
+      try {
+        check(progress.trainStage == TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot start a new training session until the previous one is completed."
+        }
+        progress.currentProfileId = profileId
 
-      hintHandler = hintHandlerFactory.create(this)
-      progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
-      currentQuestionDataProvider.setBaseDataProvider(
-        questionsListDataProvider,
-        this::retrieveCurrentQuestionAsync
-      )
-      asyncDataSubscriptionManager.notifyChangeAsync(BEGIN_QUESTION_TRAINING_SESSION_PROVIDER_ID)
+        hintHandler = hintHandlerFactory.create(this)
+        progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
+        currentQuestionDataProvider.setBaseDataProvider(
+          questionsListDataProvider,
+          this::retrieveCurrentQuestionAsync
+        )
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_PROVIDER_ID)
+        return@withLock dataProviders.createInMemoryDataProvider(BEGIN_SESSION_RESULT_PROVIDER_ID) {
+          null
+        }
+      } catch (e: Exception) {
+        exceptionsController.logNonFatalException(e)
+        return@withLock dataProviders.createInMemoryDataProviderAsync(
+          BEGIN_SESSION_RESULT_PROVIDER_ID
+        ) { AsyncResult.Failure(e) }
+      }
     }
   }
 
-  internal fun finishQuestionTrainingSession() {
-    progressLock.withLock {
-      check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
-        "Cannot stop a new training session which wasn't started."
+  internal fun finishQuestionTrainingSession(): DataProvider<Any?> {
+    return progressLock.withLock {
+      try {
+        check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
+          "Cannot stop a new training session which wasn't started."
+        }
+        progress.advancePlayStageTo(TrainStage.NOT_IN_TRAINING_SESSION)
+        currentQuestionDataProvider.setBaseDataProvider(
+          createEmptyQuestionsListDataProvider(), this::retrieveCurrentQuestionAsync
+        )
+        return@withLock dataProviders.createInMemoryDataProvider(
+          FINISH_SESSION_RESULT_PROVIDER_ID
+        ) { null }
+      } catch (e: Exception) {
+        exceptionsController.logNonFatalException(e)
+        return@withLock dataProviders.createInMemoryDataProviderAsync(
+          FINISH_SESSION_RESULT_PROVIDER_ID
+        ) { AsyncResult.Failure(e) }
       }
-      progress.advancePlayStageTo(TrainStage.NOT_IN_TRAINING_SESSION)
-      currentQuestionDataProvider.setBaseDataProvider(
-        createEmptyQuestionsListDataProvider(), this::retrieveCurrentQuestionAsync
-      )
     }
   }
 
   override fun onHelpIndexChanged() {
-    asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
+    asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_PROVIDER_ID)
   }
 
   /**
@@ -137,7 +166,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    * [LiveData] from [getCurrentQuestion]. Also note that the returned [LiveData] will only have a
    * single value and not be reused after that point.
    */
-  fun submitAnswer(answer: UserAnswer): LiveData<AsyncResult<AnsweredQuestionOutcome>> {
+  fun submitAnswer(answer: UserAnswer): DataProvider<AnsweredQuestionOutcome> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -152,7 +181,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
         // Notify observers that the submitted answer is currently pending.
         progress.advancePlayStageTo(TrainStage.SUBMITTING_ANSWER)
-        asyncDataSubscriptionManager.notifyChangeAsync(SUBMIT_ANSWER_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_PROVIDER_ID)
 
         lateinit var answeredQuestionOutcome: AnsweredQuestionOutcome
         try {
@@ -198,13 +227,17 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_PROVIDER_ID)
 
-        return MutableLiveData(AsyncResult.Success(answeredQuestionOutcome))
+        return dataProviders.createInMemoryDataProvider(SUBMIT_ANSWER_RESULT_PROVIDER_ID) {
+          answeredQuestionOutcome
+        }
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.Failure(e))
+      return dataProviders.createInMemoryDataProviderAsync(SUBMIT_ANSWER_RESULT_PROVIDER_ID) {
+        AsyncResult.Failure(e)
+      }
     }
   }
 
@@ -216,7 +249,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
-  fun submitHintIsRevealed(hintIndex: Int): LiveData<AsyncResult<Any?>> {
+  fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -237,12 +270,16 @@ class QuestionAssessmentProgressController @Inject constructor(
           // exception.
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.Success(null))
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_PROVIDER_ID)
+        return dataProviders.createInMemoryDataProvider(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID) {
+          null
+        }
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.Failure(e))
+      return dataProviders.createInMemoryDataProviderAsync(
+        SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID
+      ) { AsyncResult.Failure(e) }
     }
   }
 
@@ -252,7 +289,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
-  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Any?>> {
+  fun submitSolutionIsRevealed(): DataProvider<Any?> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -274,12 +311,16 @@ class QuestionAssessmentProgressController @Inject constructor(
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.Success(null))
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_PROVIDER_ID)
+        return dataProviders.createInMemoryDataProvider(
+          SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID
+        ) { null }
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.Failure(e))
+      return dataProviders.createInMemoryDataProviderAsync(
+        SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID
+      ) { AsyncResult.Failure(e) }
     }
   }
 
@@ -297,7 +338,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     listen to this result for failures, and instead rely on [getCurrentQuestion] for observing
    *     a successful transition to another question.
    */
-  fun moveToNextQuestion(): LiveData<AsyncResult<Any?>> {
+  fun moveToNextQuestion(): DataProvider<Any?> {
     try {
       progressLock.withLock {
         check(progress.trainStage != TrainStage.NOT_IN_TRAINING_SESSION) {
@@ -314,12 +355,16 @@ class QuestionAssessmentProgressController @Inject constructor(
           hintHandler.navigateBackToLatestPendingState()
           progress.processNavigationToNewQuestion()
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_QUESTION_PROVIDER_ID)
       }
-      return MutableLiveData(AsyncResult.Success<Any?>(null))
+      return dataProviders.createInMemoryDataProvider(MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID) {
+        null
+      }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.Failure(e))
+      return dataProviders.createInMemoryDataProviderAsync(
+        MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID
+      ) { AsyncResult.Failure(e) }
     }
   }
 
@@ -346,7 +391,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    * success or failure state back to pending.
    */
   fun getCurrentQuestion(): DataProvider<EphemeralQuestion> = progressLock.withLock {
-    val providerId = CREATE_CURRENT_QUESTION_DATA_WITH_TRANSLATION_CONTEXT_PROVIDER_ID
+    val providerId = LOCALIZED_QUESTION_PROVIDER_ID
     return translationController.getWrittenTranslationContentLocale(
       progress.currentProfileId
     ).combineWith(currentQuestionDataProvider, providerId) { contentLocale, currentQuestion ->
@@ -363,9 +408,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   fun calculateScores(skillIdList: List<String>): DataProvider<UserAssessmentPerformance> =
     progressLock.withLock {
-      return dataProviders.createInMemoryDataProviderAsync(
-        "user_assessment_performance"
-      ) {
+      dataProviders.createInMemoryDataProviderAsync(CALCULATE_SCORES_PROVIDER_ID) {
         retrieveUserAssessmentPerformanceAsync(skillIdList)
       }
     }
@@ -388,7 +431,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     questionsListDataProvider: DataProvider<List<Question>>
   ): NestedTransformedDataProvider<EphemeralQuestion> {
     return questionsListDataProvider.transformNested(
-      CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID,
+      CURRENT_QUESTION_PROVIDER_ID,
       this::retrieveCurrentQuestionAsync
     )
   }
@@ -464,8 +507,8 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   /** Returns a temporary [DataProvider] that always provides an empty list of [Question]s. */
   private fun createEmptyQuestionsListDataProvider(): DataProvider<List<Question>> {
-    return dataProviders.createInMemoryDataProvider(CREATE_EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
-      listOf<Question>()
+    return dataProviders.createInMemoryDataProvider(EMPTY_QUESTIONS_LIST_DATA_PROVIDER_ID) {
+      listOf()
     }
   }
 }

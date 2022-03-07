@@ -41,6 +41,7 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
@@ -275,7 +276,7 @@ class StoryFragmentPresenter @Inject constructor(
       shouldSavePartialProgress = shouldSavePartialProgress,
       // Pass an empty checkpoint if the exploration does not have to be resumed.
       ExplorationCheckpoint.getDefaultInstance()
-    ).observe(
+    ).toLiveData().observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when (result) {

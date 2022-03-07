@@ -292,7 +292,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       shouldSavePartialProgress,
       // Pass an empty checkpoint if the exploration does not have to be resumed.
       ExplorationCheckpoint.getDefaultInstance()
-    ).observe(
+    ).toLiveData().observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
         when (result) {

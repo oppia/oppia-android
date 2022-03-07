@@ -63,36 +63,23 @@ class ExplorationDataController @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
-  ): LiveData<AsyncResult<Any?>> {
-    return try {
-      explorationProgressController.beginExplorationAsync(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        shouldSavePartialProgress,
-        explorationCheckpoint
-      )
-      MutableLiveData(AsyncResult.success<Any?>(null))
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      MutableLiveData(AsyncResult.failed(e))
-    }
+  ): DataProvider<Any?> {
+    return explorationProgressController.beginExplorationAsync(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress,
+      explorationCheckpoint
+    )
   }
 
   /**
    * Finishes the most recent exploration started by [startPlayingExploration]. This method should only be called if an
    * active exploration is being played, otherwise an exception will be thrown.
    */
-  fun stopPlayingExploration(): LiveData<AsyncResult<Any?>> {
-    return try {
-      explorationProgressController.finishExplorationAsync()
-      MutableLiveData(AsyncResult.success(null))
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      MutableLiveData(AsyncResult.failed(e))
-    }
-  }
+  fun stopPlayingExploration(): DataProvider<Any?> =
+    explorationProgressController.finishExplorationAsync()
 
   /**
    * Fetches the details of the oldest saved exploration for a specified profileId.

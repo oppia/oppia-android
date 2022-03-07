@@ -11,13 +11,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.combineWithAsync
 
 private const val RETRIEVE_QUESTION_FOR_SKILLS_ID_PROVIDER_ID =
   "retrieve_question_for_skills_id_provider_id"
 private const val START_QUESTION_TRAINING_SESSION_PROVIDER_ID =
   "start_question_training_session_provider_id"
-private const val STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID =
-  "stop_question_training_session_provider_id"
 
 /** Controller for retrieving a set of questions. */
 @Singleton
@@ -47,14 +47,19 @@ class QuestionTrainingController @Inject constructor(
   fun startQuestionTrainingSession(
     profileId: ProfileId,
     skillIdsList: List<String>
-  ): DataProvider<Any> {
+  ): DataProvider<Any?> {
     return try {
       val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
-      questionAssessmentProgressController.beginQuestionTrainingSession(
-        retrieveQuestionsDataProvider, profileId
-      )
-      // Convert the data provider type to 'Any' via a transformation.
-      retrieveQuestionsDataProvider.transform(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) { it }
+      val beginSessionDataProvider =
+        questionAssessmentProgressController.beginQuestionTrainingSession(
+          questionsListDataProvider = retrieveQuestionsDataProvider, profileId
+        )
+      // Combine the data providers to ensure their results are tied together, but only take the
+      // result from the begin session provider (since that's the one that indicates session start
+      // success/failure, assuming the questions loaded successfully).
+      retrieveQuestionsDataProvider.combineWith(
+        beginSessionDataProvider, START_QUESTION_TRAINING_SESSION_PROVIDER_ID
+      ) { _, sessionResult -> sessionResult }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       dataProviders.createInMemoryDataProviderAsync(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) {
@@ -112,15 +117,6 @@ class QuestionTrainingController @Inject constructor(
    * method should only be called if there is a training session is being played, otherwise an
    * exception will be thrown.
    */
-  fun stopQuestionTrainingSession(): DataProvider<Any> {
-    return try {
-      questionAssessmentProgressController.finishQuestionTrainingSession()
-      dataProviders.createInMemoryDataProvider(STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID) { }
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      dataProviders.createInMemoryDataProviderAsync(STOP_QUESTION_TRAINING_SESSION_PROVIDER_ID) {
-        AsyncResult.failed(e)
-      }
-    }
-  }
+  fun stopQuestionTrainingSession(): DataProvider<Any?> =
+    questionAssessmentProgressController.finishQuestionTrainingSession()
 }
