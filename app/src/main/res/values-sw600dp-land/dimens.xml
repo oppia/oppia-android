@@ -446,4 +446,9 @@
   <!-- OptionAudioLanguage -->
   <dimen name="option_audio_language_padding_start">16dp</dimen>
   <dimen name="option_audio_language_padding_end">16dp</dimen>
+
+  <!--TopicLessonsSummary-->
+  <dimen name="topic_lessons_summary_linear_layout_margin_start">16dp</dimen>
+  <dimen name="topic_lessons_summary_linear_layout_margin_end">16dp</dimen>
+  <dimen name="topic_lessons_summary_story_name_chapter_count_container_margin_start">20dp</dimen>
 </resources>
