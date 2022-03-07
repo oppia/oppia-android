@@ -147,7 +147,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withNegativeNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -166,7 +166,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withWholeNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -185,7 +185,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withFraction_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -209,7 +209,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withNegativeFraction_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -233,7 +233,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withMixedNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -258,7 +258,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withNegativeMixedNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -302,7 +302,7 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withNegativeSignOtherThanAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -322,7 +322,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withNegativeSignAt0MoreThan1_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -342,7 +343,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withDividerMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -362,7 +364,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withDividerAtStart_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -382,7 +385,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withPartialMixedNumber_numberFormatErrorIsNotDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -395,7 +399,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withPartialMixedNumberSubmit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -417,7 +422,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withMixedNumber_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -432,7 +438,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withDivideByZero_errorIsNotDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -445,7 +452,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withDivideByZero_submit_divideByZeroErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
@@ -467,7 +475,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
@@ -488,7 +497,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testFractionInput_withLong_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
@@ -523,7 +533,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withRealNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -545,7 +556,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withRealNumberWithDecimal_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -566,7 +578,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withNegativeRealNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -603,7 +616,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
@@ -624,7 +638,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withLongNumber_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
@@ -647,7 +662,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withLongInteger_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
@@ -670,7 +686,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withMinusSymbol_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_number_input_interaction_view))
@@ -693,7 +710,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withNegativeSymbolNotAt0_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
@@ -709,7 +727,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withNegativeSignAt0MoreThan1_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
@@ -729,7 +748,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withFloatingPointMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
@@ -749,7 +769,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testNumericInput_withDecimalAtStart_numberStartingWithFloatingPointError() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_number_input_interaction_view))
@@ -777,7 +798,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testTextInput_withChar_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
@@ -915,7 +937,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testRatioInput_withZeroRatio_submit_numberWithZerosErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -939,7 +962,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testRatioInput_withInvalidRatio_submit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -965,7 +989,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testRatioInput_withRatioHaving4Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -990,7 +1015,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testRatioInput_withRatioHaving2Terms_submit_invalidSizeErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1015,7 +1041,8 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  @DisableAccessibilityChecks // Disabled, as InputInteractionViewTestActivity is a test file and
+  // will not be used by user
   fun testRatioInput_withRatioHaving3Terms_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
