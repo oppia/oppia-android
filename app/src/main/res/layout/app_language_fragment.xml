@@ -42,7 +42,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/app_language_app_bar_layout">
+      app:layout_constraintTop_toTopOf="parent">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/language_recycler_view"
@@ -51,7 +51,7 @@
         android:background="@color/general_navigation_background"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="132dp"
+        android:paddingBottom="@dimen/app_language_recycler_view_padding_bottom"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -59,12 +59,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_shadow_view"
         app:list="@{viewModel.recyclerViewAppLanguageList}" />
-
-      <View
-        android:id="@+id/app_language_toolbar_shadow_view"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
     </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
