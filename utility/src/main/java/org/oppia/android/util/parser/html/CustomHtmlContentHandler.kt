@@ -24,7 +24,7 @@ import kotlin.collections.ArrayDeque
 class CustomHtmlContentHandler(
   private val context: Context,
   private val customTagHandlers: Map<String, CustomTagHandler>,
-  private val imageRetriever: ImageRetriever
+  private val imageRetriever: ImageRetriever?
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -135,8 +135,13 @@ class CustomHtmlContentHandler(
           }
           else -> customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0)
         }
-        customTagHandlers.getValue(tag)
-          .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+        if (imageRetriever != null) {
+          customTagHandlers.getValue(tag)
+            .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+        } else {
+          customTagHandlers.getValue(tag)
+            .handleTag(attributes, openTagIndex, output.length, output)
+        }
       }
     }
   }
@@ -165,6 +170,24 @@ class CustomHtmlContentHandler(
       closeIndex: Int,
       output: Editable,
       imageRetriever: ImageRetriever
+    ) {
+    }
+
+    /**
+     * Called when a custom tag is encountered. This is always called after the closing tag.
+     * Note that Oppia image loading is specifically not supported (see the other [handleTag]
+     * method if image support is needed)
+     *
+     * @param attributes the tag's attributes
+     * @param openIndex the index in the output [Editable] at which this tag begins
+     * @param closeIndex the index in the output [Editable] at which this tag ends
+     * @param output the destination [Editable] to which spans can be added
+     */
+    fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
     ) {
     }
 
@@ -223,7 +246,7 @@ class CustomHtmlContentHandler(
     fun <T> fromHtml(
       context: Context,
       html: String,
-      imageRetriever: T,
+      imageRetriever: T?,
       customTagHandlers: Map<String, CustomTagHandler>
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag

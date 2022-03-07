@@ -27,12 +27,10 @@ class PolicyPageTagHandler(
     attributes: Attributes,
     openIndex: Int,
     closeIndex: Int,
-    output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever
+    output: Editable
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val text = attributes.getJsonStringValue("link")
-
     if (text != null) {
       when (text) {
         TERMS_OF_SERVICE_PAGE -> {

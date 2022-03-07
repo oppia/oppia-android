@@ -25,8 +25,6 @@
         style="@style/Body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintWidth_default="wrap"
-        app:layout_constraintHeight_default="wrap"
         android:layout_marginBottom="12dp"
         android:textColor="@color/oppia_primary_text"
         app:layout_constraintEnd_toEndOf="parent"

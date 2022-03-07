@@ -14,17 +14,48 @@ import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
-class HtmlParser private constructor(
-  private val urlImageParserFactory: UrlImageParser.Factory,
-  private val gcsResourceName: String,
-  private val entityType: String,
-  private val entityId: String,
-  private val imageCenterAlign: Boolean,
-  private val consoleLogger: ConsoleLogger,
-  customOppiaTagActionListener: CustomOppiaTagActionListener?,
-  policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
-  private val context: Context
-) {
+class HtmlParser {
+  private var urlImageParserFactory: UrlImageParser.Factory? = null
+  private lateinit var gcsResourceName: String
+  private lateinit var entityType: String
+  private lateinit var entityId: String
+  private var imageCenterAlign: Boolean = false
+  private lateinit var consoleLogger: ConsoleLogger
+  private var customOppiaTagActionListener: CustomOppiaTagActionListener? = null
+  private var policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
+  private lateinit var context: Context
+
+  private constructor(
+    urlImageParserFactory: UrlImageParser.Factory,
+    gcsResourceName: String,
+    entityType: String,
+    entityId: String,
+    imageCenterAlign: Boolean,
+    consoleLogger: ConsoleLogger,
+    customOppiaTagActionListener: CustomOppiaTagActionListener?,
+    context: Context
+  ) {
+    this.urlImageParserFactory = urlImageParserFactory
+    this.gcsResourceName = gcsResourceName
+    this.entityId = entityId
+    this.entityType = entityType
+    this.imageCenterAlign = imageCenterAlign
+    this.consoleLogger = consoleLogger
+    this.customOppiaTagActionListener = customOppiaTagActionListener
+    this.context = context
+  }
+
+  constructor(
+    consoleLogger: ConsoleLogger,
+    customOppiaTagActionListener: CustomOppiaTagActionListener?,
+    policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
+    context: Context
+  ) {
+    this.consoleLogger = consoleLogger
+    this.customOppiaTagActionListener = customOppiaTagActionListener
+    this.policyOppiaTagActionListener = policyOppiaTagActionListener
+    this.context = context
+  }
 
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
@@ -106,9 +137,15 @@ class HtmlParser private constructor(
       LinkifyCompat.addLinks(htmlContentTextView, Linkify.WEB_URLS)
     }
 
-    val imageGetter = urlImageParserFactory.create(
-      htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
-    )
+    val imageGetter: UrlImageParser?
+    if (urlImageParserFactory == null) {
+      imageGetter = null
+    } else {
+      imageGetter = urlImageParserFactory?.create(
+        htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
+      )
+    }
+
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContentTextView.context,
       htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
@@ -189,8 +226,7 @@ class HtmlParser private constructor(
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean,
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
-      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
     ): HtmlParser {
       return HtmlParser(
         urlImageParserFactory,
@@ -200,7 +236,6 @@ class HtmlParser private constructor(
         imageCenterAlign,
         consoleLogger,
         customOppiaTagActionListener,
-        policyOppiaTagActionListener,
         context
       )
     }
@@ -216,11 +251,6 @@ class HtmlParser private constructor(
       policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
     ): HtmlParser {
       return HtmlParser(
-        urlImageParserFactory,
-        gcsResourceName = "",
-        entityType = "",
-        entityId = "",
-        imageCenterAlign = false,
         consoleLogger,
         customOppiaTagActionListener,
         policyOppiaTagActionListener,

@@ -157,14 +157,14 @@
       android:label="@string/app_name"
       android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
-<!--      <intent-filter>-->
-<!--        <action android:name="android.intent.action.MAIN" />-->
-<!--        <category android:name="android.intent.category.LAUNCHER" />-->
-<!--      </intent-filter>-->
-<!--      <intent-filter>-->
-<!--        <action android:name="android.intent.action.VIEW" />-->
-<!--        <category android:name="android.intent.category.DEFAULT" />-->
-<!--      </intent-filter>-->
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
     </activity>
     <activity
       android:name=".app.story.StoryActivity"
@@ -191,16 +191,7 @@
     <activity
       android:name=".app.testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
-    <activity android:name=".app.testing.PoliciesFragmentTestActivity" >
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>
-    </activity>
+    <activity android:name=".app.testing.PoliciesFragmentTestActivity" />
     <activity
       android:name=".app.testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
