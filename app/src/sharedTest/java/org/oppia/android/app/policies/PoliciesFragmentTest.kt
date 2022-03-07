@@ -144,7 +144,6 @@ class PoliciesFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-
   }
 
   private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent {
