@@ -55,10 +55,10 @@ class ExplorationActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
     topicId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY to be in intent extras."
+      "Expected $EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY to be in intent extras."
     }
     storyId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)) {
-      "Expected EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY to be in intent extras."
+      "Expected $EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY to be in intent extras."
     }
     explorationId = checkNotNull(
       intent.getStringExtra(

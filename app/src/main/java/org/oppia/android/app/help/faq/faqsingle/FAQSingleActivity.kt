@@ -17,10 +17,10 @@ class FAQSingleActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val question = checkNotNull(intent.getStringExtra(FAQ_SINGLE_ACTIVITY_QUESTION)) {
-      "Expected FAQ_SINGLE_ACTIVITY_QUESTION to be in intent extras."
+      "Expected $FAQ_SINGLE_ACTIVITY_QUESTION to be in intent extras."
     }
     val answer = checkNotNull(intent.getStringExtra(FAQ_SINGLE_ACTIVITY_ANSWER)) {
-      "Expected FAQ_SINGLE_ACTIVITY_ANSWER to be in intent extras."
+      "Expected $FAQ_SINGLE_ACTIVITY_ANSWER to be in intent extras."
     }
     faqSingleActivityPresenter.handleOnCreate(question, answer)
   }

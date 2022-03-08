@@ -17,6 +17,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.R
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -146,6 +147,45 @@ class NetworkConnectionUtilProdImplTest {
       networkState = NetworkInfo.State.CONNECTED
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
+  }
+
+  @Test
+  fun testLocalConnectionName_activeWifiConnection_returnsWifi() {
+    networkConnectionTestUtil.setNetworkInfo(
+      status = ConnectivityManager.TYPE_WIFI,
+      networkState = NetworkInfo.State.CONNECTED
+    )
+    assertThat(context.resources.getString(LOCAL.connectionName)).isEqualTo(
+      context.resources.getString(
+        R.string.network_connection_local
+      )
+    )
+  }
+
+  @Test
+  fun testLocalConnectionName_activeCELLULARConnection_returnsCELLULAR() {
+    networkConnectionTestUtil.setNetworkInfo(
+      status = ConnectivityManager.TYPE_MOBILE,
+      networkState = NetworkInfo.State.CONNECTED
+    )
+    assertThat(context.resources.getString(CELLULAR.connectionName)).isEqualTo(
+      context.resources.getString(
+        R.string.network_connection_cellular
+      )
+    )
+  }
+
+  @Test
+  fun testLocalConnectionName_inactiveWifiConnection_returnsNone() {
+    networkConnectionTestUtil.setNetworkInfo(
+      status = ConnectivityManager.TYPE_WIFI,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
+    assertThat(context.resources.getString(NONE.connectionName)).isEqualTo(
+      context.resources.getString(
+        R.string.network_connection_none
+      )
+    )
   }
 
   // TODO(#89): Move this to a common test application component.

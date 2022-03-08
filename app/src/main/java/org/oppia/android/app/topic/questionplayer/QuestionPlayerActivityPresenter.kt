@@ -94,7 +94,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
       )
     ) {
-      "Expected QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
+      "Expected $QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
     }
     val startDataProvider =
       questionTrainingController.startQuestionTrainingSession(profileId, skillIds)

@@ -37,7 +37,7 @@ class AdminAuthActivityPresenter @Inject constructor(
       (activity as AdminAuthActivity).finish()
     }
     val adminPin = checkNotNull(activity.intent.getStringExtra(ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY)) {
-      "Expected ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY to be in intent extras."
+      "Expected $ADMIN_AUTH_ADMIN_PIN_EXTRA_KEY to be in intent extras."
     }
     binding.apply {
       lifecycleOwner = activity
