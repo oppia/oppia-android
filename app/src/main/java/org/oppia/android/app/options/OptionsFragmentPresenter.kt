@@ -21,10 +21,10 @@ import org.oppia.android.databinding.OptionStoryTextSizeBinding
 import org.oppia.android.databinding.OptionsFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.security.InvalidParameterException
 import javax.inject.Inject
-import org.oppia.android.util.data.AsyncResult
 
 const val READING_TEXT_SIZE = "READING_TEXT_SIZE"
 const val APP_LANGUAGE = "APP_LANGUAGE"

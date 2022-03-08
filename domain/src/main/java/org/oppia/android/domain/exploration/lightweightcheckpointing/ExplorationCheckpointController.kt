@@ -156,17 +156,19 @@ class ExplorationCheckpointController @Inject constructor(
             AsyncResult.Success(checkpoint)
           }
           checkpoint != null && exploration.version != checkpoint.explorationVersion -> {
-            AsyncResult.Failure(OutdatedExplorationCheckpointException(
-              "checkpoint with version: ${checkpoint.explorationVersion} cannot be used to " +
-                "resume exploration $explorationId with version: ${exploration.version}"
-            )
+            AsyncResult.Failure(
+              OutdatedExplorationCheckpointException(
+                "checkpoint with version: ${checkpoint.explorationVersion} cannot be used to " +
+                  "resume exploration $explorationId with version: ${exploration.version}"
+              )
             )
           }
           else -> {
-            AsyncResult.Failure(ExplorationCheckpointNotFoundException(
-              "Checkpoint with the explorationId $explorationId was not found " +
-                "for profileId ${profileId.internalId}."
-            )
+            AsyncResult.Failure(
+              ExplorationCheckpointNotFoundException(
+                "Checkpoint with the explorationId $explorationId was not found " +
+                  "for profileId ${profileId.internalId}."
+              )
             )
           }
         }
@@ -201,9 +203,10 @@ class ExplorationCheckpointController @Inject constructor(
             .build()
           AsyncResult.Success(explorationCheckpointDetails)
         } else {
-          AsyncResult.Failure(ExplorationCheckpointNotFoundException(
-            "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
-          )
+          AsyncResult.Failure(
+            ExplorationCheckpointNotFoundException(
+              "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
+            )
           )
         }
       }
@@ -253,10 +256,11 @@ class ExplorationCheckpointController @Inject constructor(
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
       ExplorationCheckpointActionStatus.CHECKPOINT_NOT_FOUND ->
-        AsyncResult.Failure(ExplorationCheckpointNotFoundException(
-          "No saved checkpoint with explorationId ${explorationId!!} found for " +
-            "the profileId ${profileId!!.internalId}."
-        )
+        AsyncResult.Failure(
+          ExplorationCheckpointNotFoundException(
+            "No saved checkpoint with explorationId ${explorationId!!} found for " +
+              "the profileId ${profileId!!.internalId}."
+          )
         )
       ExplorationCheckpointActionStatus.SUCCESS -> AsyncResult.Success(null)
     }

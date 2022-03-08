@@ -9,12 +9,11 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
@@ -45,6 +44,8 @@ import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [TopicListController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -747,8 +748,11 @@ class TopicListControllerTest {
   private fun retrieveTopicList() =
     monitorFactory.waitForNextSuccessfulResult(topicListController.getTopicList())
 
-  private fun retrievePromotedActivityList() =
-    monitorFactory.waitForNextSuccessfulResult(topicListController.getPromotedActivityList(profileId0))
+  private fun retrievePromotedActivityList(): PromotedActivityList {
+    return monitorFactory.waitForNextSuccessfulResult(
+      topicListController.getPromotedActivityList(profileId0)
+    )
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

@@ -10,10 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -95,6 +91,10 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -2797,7 +2797,8 @@ class ExplorationProgressControllerTest {
   }
 
   private fun retrieveExplorationCheckpoint(
-    profileId: ProfileId, explorationId: String
+    profileId: ProfileId,
+    explorationId: String
   ): ExplorationCheckpoint {
     val explorationCheckpointDataProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
@@ -3194,28 +3195,36 @@ class ExplorationProgressControllerTest {
     pendingState.helpIndex.isSolutionRevealed()
 
   private fun verifyCheckpointHasCorrectPendingStateName(
-    profileId: ProfileId, explorationId: String, pendingStateName: String
+    profileId: ProfileId,
+    explorationId: String,
+    pendingStateName: String
   ) {
     val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
     assertThat(checkpoint.pendingStateName).isEqualTo(pendingStateName)
   }
 
   private fun verifyCheckpointHasCorrectCountOfAnswers(
-    profileId: ProfileId, explorationId: String, countOfAnswers: Int
+    profileId: ProfileId,
+    explorationId: String,
+    countOfAnswers: Int
   ) {
     val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
     assertThat(checkpoint.pendingUserAnswersCount).isEqualTo(countOfAnswers)
   }
 
   private fun verifyCheckpointHasCorrectStateIndex(
-    profileId: ProfileId, explorationId: String, stateIndex: Int
+    profileId: ProfileId,
+    explorationId: String,
+    stateIndex: Int
   ) {
     val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
     assertThat(checkpoint.stateIndex).isEqualTo(stateIndex)
   }
 
   private fun verifyCheckpointHasCorrectHelpIndex(
-    profileId: ProfileId, explorationId: String, helpIndex: HelpIndex
+    profileId: ProfileId,
+    explorationId: String,
+    helpIndex: HelpIndex
   ) {
     val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
     assertThat(checkpoint.helpIndex).isEqualTo(helpIndex)

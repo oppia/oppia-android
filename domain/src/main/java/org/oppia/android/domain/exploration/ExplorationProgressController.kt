@@ -18,6 +18,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
@@ -25,7 +26,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import org.oppia.android.util.data.DataProviders
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -118,7 +118,7 @@ class ExplorationProgressController @Inject constructor(
         ) { null }
       } catch (e: Exception) {
         exceptionsController.logNonFatalException(e)
-        return@withLock  dataProviders.createInMemoryDataProviderAsync(
+        return@withLock dataProviders.createInMemoryDataProviderAsync(
           BEGIN_EXPLORATION_RESULT_PROVIDER_ID
         ) { AsyncResult.Failure(e) }
       }

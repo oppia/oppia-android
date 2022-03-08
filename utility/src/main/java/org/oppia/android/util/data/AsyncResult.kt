@@ -157,11 +157,13 @@ sealed class AsyncResult<T> {
 
   /** [AsyncResult] representing an operation that succeeded with a specific [value]. */
   data class Success<T>(
-    val value: T, override val resultTimeMillis: Long = SystemClock.uptimeMillis()
+    val value: T,
+    override val resultTimeMillis: Long = SystemClock.uptimeMillis()
   ) : AsyncResult<T>()
 
   /** [AsyncResult] representing an operation that failed with a specific [error]. */
   data class Failure<T>(
-    val error: Throwable, override val resultTimeMillis: Long = SystemClock.uptimeMillis()
+    val error: Throwable,
+    override val resultTimeMillis: Long = SystemClock.uptimeMillis()
   ) : AsyncResult<T>()
 }

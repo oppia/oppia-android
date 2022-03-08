@@ -85,7 +85,7 @@ class AsyncResultSubject<T>(
    * except this also verifies that the success value is a [Comparable] (though it can't verify
    * [C] due to type erasure).
    */
-  inline fun <reified C: Comparable<C>> isComparableSuccessThat(): ComparableSubject<C> =
+  inline fun <reified C : Comparable<C>> isComparableSuccessThat(): ComparableSubject<C> =
     assertThat(extractSuccessValue<C>())
 
   /**

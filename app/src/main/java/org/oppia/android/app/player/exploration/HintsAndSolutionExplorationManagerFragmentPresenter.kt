@@ -60,6 +60,5 @@ class HintsAndSolutionExplorationManagerFragmentPresenter @Inject constructor(
         }
       }
     }
-
   }
 }

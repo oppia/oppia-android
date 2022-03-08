@@ -138,7 +138,8 @@ class AudioPlayerController @Inject constructor(
     }
     mediaPlayer.setOnErrorListener { _, what, extra ->
       playProgress?.value =
-        AsyncResult.Failure(AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
+        AsyncResult.Failure(
+          AudioPlayerException("Audio Player put in error state with what: $what and extra: $extra")
         )
       releaseMediaPlayer()
       initializeMediaPlayer()
@@ -211,7 +212,8 @@ class AudioPlayerController @Inject constructor(
       check(prepared) { "Media Player not in a prepared state" }
       if (mediaPlayer.isPlaying) {
         playProgress?.value =
-          AsyncResult.Success(PlayProgress(PlayStatus.PAUSED, mediaPlayer.currentPosition, duration)
+          AsyncResult.Success(
+            PlayProgress(PlayStatus.PAUSED, mediaPlayer.currentPosition, duration)
           )
         mediaPlayer.pause()
         stopUpdatingSeekBar()
@@ -237,7 +239,8 @@ class AudioPlayerController @Inject constructor(
         val position = if (completed) 0 else mediaPlayer.currentPosition
         completed = false
         playProgress?.postValue(
-          AsyncResult.Success(PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
+          AsyncResult.Success(
+            PlayProgress(PlayStatus.PLAYING, position, mediaPlayer.duration)
           )
         )
       }

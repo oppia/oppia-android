@@ -3,21 +3,21 @@ package org.oppia.android.testing.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.platform.app.InstrumentationRegistry
-import java.lang.IllegalStateException
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor.Factory
 import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.lang.IllegalStateException
 import javax.inject.Inject
-import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 
 /**
  * A test monitor for [DataProvider]s that provides operations to simplify waiting for the

@@ -14,17 +14,22 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppLanguage
+import org.oppia.android.app.model.AppLanguage.CHINESE_APP_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -39,11 +44,6 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.AppLanguage.CHINESE_APP_LANGUAGE
-import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
-import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
-import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.util.data.DataProvider
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.

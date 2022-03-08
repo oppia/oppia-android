@@ -20,8 +20,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
@@ -69,6 +67,8 @@ import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.mock.MockRetrofit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [PlatformParameterSyncUpWorker]. */
 // FunctionName: test names are conventionally named with underscores.

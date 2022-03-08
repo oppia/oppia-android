@@ -17,12 +17,12 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.util.getStringFromData
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
-import org.oppia.android.util.data.AsyncResult
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
