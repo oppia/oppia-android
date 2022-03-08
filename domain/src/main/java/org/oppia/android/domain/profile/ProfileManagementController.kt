@@ -125,7 +125,7 @@ class ProfileManagementController @Inject constructor(
       it?.let {
         oppiaLogger.e(
           "DOMAIN",
-          "Failed to prime cache ahead of LiveData conversion for ProfileManagementController.",
+          "Failed to prime cache ahead of data retrieval for ProfileManagementController.",
           it
         )
       }

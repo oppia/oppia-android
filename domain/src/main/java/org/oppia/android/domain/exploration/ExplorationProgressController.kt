@@ -79,13 +79,14 @@ class ExplorationProgressController @Inject constructor(
   //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
   //  make decisions based on a value of the checkpointState which might not be up-to date.
 
-  // TODO: update documentation here & elsewhere that references LiveData instead of data providers (also check for 'live data').
-
   private val explorationProgress = ExplorationProgress()
   private val explorationProgressLock = ReentrantLock()
   private lateinit var hintHandler: HintHandler
 
-  /** Resets this controller to begin playing the specified [Exploration]. */
+  /**
+   * Resets this controller to begin playing the specified [Exploration], and returns a
+   * [DataProvider] indicating whether the start was successful.
+   */
   internal fun beginExplorationAsync(
     internalProfileId: Int,
     topicId: String,
@@ -124,7 +125,10 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  /** Indicates that the current exploration being played is now completed. */
+  /**
+   * Indicates that the current exploration being played is now completed, and returns a
+   * [DataProvider] indicating whether the cleanup was successful.
+   */
   internal fun finishExplorationAsync(): DataProvider<Any?> {
     return explorationProgressLock.withLock {
       try {
@@ -153,17 +157,18 @@ class ExplorationProgressController @Inject constructor(
 
   /**
    * Submits an answer to the current state and returns how the UI should respond to this answer.
-   * The returned [LiveData] will only have at most two results posted: a pending result, and then a
-   * completed success/failure result. Failures in this case represent a failure of the app
+   *
+   * The returned [DataProvider] will only have at most two results posted: a pending result, and
+   * then a completed success/failure result. Failures in this case represent a failure of the app
    * (possibly due to networking conditions). The app should report this error in a consumable way
    * to the user so that they may take action on it. No additional values will be reported to the
-   * [LiveData]. Each call to this method returns a new, distinct, [LiveData] object that must be
-   * observed. Note also that the returned [LiveData] is not guaranteed to begin with a pending
-   * state.
+   * [DataProvider]. Each call to this method returns a new, distinct, [DataProvider] object that
+   * must be observed. Note also that the returned [DataProvider] is not guaranteed to begin with a
+   * pending state.
    *
-   * If the app undergoes a configuration change, calling code should rely on the [LiveData] from
-   * [getCurrentState] to know whether a current answer is pending. That [LiveData] will have its
-   * state changed to pending during answer submission and until answer resolution.
+   * If the app undergoes a configuration change, calling code should rely on the [DataProvider]
+   * from [getCurrentState] to know whether a current answer is pending. That [DataProvider] will
+   * have its state changed to pending during answer submission and until answer resolution.
    *
    * Submitting an answer should result in the learner staying in the current state, moving to a new
    * state in the exploration, being shown a concept card, or being navigated to another exploration
@@ -177,9 +182,9 @@ class ExplorationProgressController @Inject constructor(
    * to submit an answer while a previous answer is pending. That scenario will also result in a
    * failed answer submission.
    *
-   * No assumptions should be made about the completion order of the returned [LiveData] vs. the
-   * [LiveData] from  [getCurrentState]. Also note that the returned [LiveData] will only have a
-   * single value and not be reused after that point.
+   * No assumptions should be made about the completion order of the returned [DataProvider] vs. the
+   * [DataProvider] from [getCurrentState]. Also note that the returned [DataProvider] will only
+   * have a single value and not be reused after that point.
    */
   fun submitAnswer(userAnswer: UserAnswer): DataProvider<AnswerOutcome> {
     try {
@@ -267,7 +272,7 @@ class ExplorationProgressController @Inject constructor(
    *
    * @param hintIndex index of the hint that was revealed in the hint list of the current pending
    *     state
-   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
@@ -315,7 +320,7 @@ class ExplorationProgressController @Inject constructor(
   /**
    * Notifies the controller that the user has revealed the solution to the current state.
    *
-   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
@@ -366,7 +371,7 @@ class ExplorationProgressController @Inject constructor(
    * this method will throw an exception. Calling code is responsible for ensuring this method is
    * only called when it's possible to navigate backward.
    *
-   * @return a one-time [LiveData] indicating whether the movement to the previous state was
+   * @return a one-time [DataProvider] indicating whether the movement to the previous state was
    *     successful, or a failure if state navigation was attempted at an invalid time in the state
    *     graph (e.g. if currently viewing the initial state of the exploration). It's recommended
    *     that calling code only listen to this result for failures, and instead rely on
@@ -417,11 +422,11 @@ class ExplorationProgressController @Inject constructor(
    * that routes to a later state via [submitAnswer] in order for the current state to change to a
    * completed state before forward navigation can occur.
    *
-   * @return a one-time [LiveData] indicating whether the movement to the next state was successful,
-   *     or a failure if state navigation was attempted at an invalid time in the state graph (e.g.
-   *     if the current state is pending or terminal). It's recommended that calling code only
-   *     listen to this result for failures, and instead rely on [getCurrentState] for observing a
-   *     successful transition to another state.
+   * @return a one-time [DataProvider] indicating whether the movement to the next state was
+   *     successful, or a failure if state navigation was attempted at an invalid time in the state
+   *     graph (e.g. if the current state is pending or terminal). It's recommended that calling
+   *     code only listen to this result for failures, and instead rely on [getCurrentState] for
+   *     observing a successful transition to another state.
    */
   fun moveToNextState(): DataProvider<Any?> {
     try {

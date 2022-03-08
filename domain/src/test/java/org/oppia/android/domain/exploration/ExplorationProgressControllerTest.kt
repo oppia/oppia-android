@@ -245,8 +245,6 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.state.name).isEqualTo("Continue")
   }
 
-  // TODO: add pending cases for start/stop playing exploration methods.
-
   @Test
   fun testFinishExploration_beforePlaying_failWithError() {
     val resultDataProvider = explorationDataController.stopPlayingExploration()

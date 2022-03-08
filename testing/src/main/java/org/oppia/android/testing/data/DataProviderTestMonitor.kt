@@ -17,6 +17,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 
 /**
  * A test monitor for [DataProvider]s that provides operations to simplify waiting for the
@@ -155,15 +156,30 @@ class DataProviderTestMonitor<T> private constructor(
       }
     }
 
-    // TODO: add documentation explaining this is useful for arrangement since it's not making
-    //  assumptions about the result (other than there is one), which is necessary since LiveData
-    //  must be active. Also, add tests & verify that users of the next two functions switch to this
-    //  one, instead, when the extra assertion isn't needed.
+    /**
+     * Convenience method for verifying that [dataProvider] has at least one result (whether it be
+     * successful or an error), waiting if needed for the result (see [waitForNextResult]).
+     *
+     * This method ought to be used when data providers need to be processed mid-test since using
+     * [waitForNextSuccessfulResult] or [waitForNextFailureResult] have the disadvantages that they
+     * are also verifying pass/fail state (which is usually not desired mid-test during the
+     * arrangement and act portions). While this method is also verifying something (execution), it
+     * can be considered more of a sanity check than an actual check for correctness (i.e. "this
+     * data provider must have executed for the test to proceed").
+     *
+     * Note that this will fail if the result of the data provider is pending (it must provide at
+     * least one success or failure).
+     */
     fun <T> ensureDataProviderExecutes(dataProvider: DataProvider<T>) {
       // Waiting for a result is the same as ensuring the conditions are right for the provider to
       // execute (since it must return a result if it's executed, even if it's pending).
       val monitor = createMonitor(dataProvider)
-      monitor.waitForNextResult().also { monitor.stopObservingDataProvider() }
+      monitor.waitForNextResult().also {
+        monitor.stopObservingDataProvider()
+      }.also {
+        // There must be an actual result for the provider to be successful.
+        assertThat(it).isNotPending()
+      }
     }
 
     /**

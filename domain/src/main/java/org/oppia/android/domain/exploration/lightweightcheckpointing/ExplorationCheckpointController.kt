@@ -282,8 +282,7 @@ class ExplorationCheckpointController @Inject constructor(
       throwable?.let {
         oppiaLogger.e(
           "ExplorationCheckpointController",
-          "Failed to prime cache ahead of LiveData conversion " +
-            "for ExplorationCheckpointController.",
+          "Failed to prime cache ahead of data retrieval for ExplorationCheckpointController.",
           it
         )
       }
