@@ -233,6 +233,73 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
+  fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_configChange_clickLogout_logoutDialogIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(isRoot()).perform(orientationLandscape())
+      scrollToPosition(position = 4)
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickLogout_configChange_logoutDialogIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_cancel_button)
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 4)
+      onView(withId(R.id.log_out_text_view)).perform(click())
+      verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
+      onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
+      onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_defaultTabletConfig_multiPaneBackButtonGone() {
     launch<AdministratorControlsActivity>(

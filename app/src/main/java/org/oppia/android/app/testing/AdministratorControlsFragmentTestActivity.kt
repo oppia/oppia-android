@@ -7,7 +7,6 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.administratorcontrols.LoadAppVersionListener
 import org.oppia.android.app.administratorcontrols.LoadProfileEditListener
 import org.oppia.android.app.administratorcontrols.LoadProfileListListener
-import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.RouteToAppVersionListener
 import org.oppia.android.app.administratorcontrols.RouteToProfileListListener
 import org.oppia.android.app.administratorcontrols.ShowLogoutDialogListener
@@ -54,6 +53,8 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun loadProfileEdit(profileId: Int, profileName: String) {}
 
+  override fun showLogoutDialog() {}
+
   companion object {
     /** Returns an [Intent] to start this activity. */
     fun createAdministratorControlsFragmentTestActivityIntent(
@@ -69,10 +70,5 @@ class AdministratorControlsFragmentTestActivity :
     fun getIntentKey(): String {
       return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
     }
-  }
-
-  override fun showLogoutDialog() {
-    LogoutDialogFragment.newInstance()
-      .showNow(supportFragmentManager, LogoutDialogFragment.TAG_LOGOUT_DIALOG_FRAGMENT)
   }
 }
