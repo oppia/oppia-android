@@ -129,6 +129,15 @@ git_repository(
     remote = "https://github.com/oppia/androidsvg",
 )
 
+# A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
+# min target SDK version to be compatible with Oppia.
+git_repository(
+    name = "kotlitex",
+    commit = "ba51aaca442d248b7b44b4eeb5bb9846ad45b245",
+    remote = "https://github.com/oppia/kotlitex",
+    shallow_since = "1645642252 -0800",
+)
+
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",

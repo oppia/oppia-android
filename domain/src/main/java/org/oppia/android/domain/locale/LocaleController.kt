@@ -215,8 +215,9 @@ class LocaleController @Inject constructor(
   fun retrieveSystemLanguage(): DataProvider<OppiaLanguage> {
     val providerId = SYSTEM_LANGUAGE_DATA_PROVIDER_ID
     return getSystemLocaleProfile().transformAsync(providerId) { systemLocaleProfile ->
-      AsyncResult.Success(retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)?.language
-        ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
+      AsyncResult.Success(
+        retrieveLanguageDefinitionFromSystemCode(systemLocaleProfile)?.language
+          ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
       )
     }
   }
@@ -303,9 +304,10 @@ class LocaleController @Inject constructor(
     val locale = computeLocale(language, systemLocaleProfile, usageMode) as? T
     return locale?.let {
       AsyncResult.Success(it)
-    } ?: AsyncResult.Failure(IllegalStateException(
-      "Language $language for usage $usageMode doesn't match supported language definitions"
-    )
+    } ?: AsyncResult.Failure(
+      IllegalStateException(
+        "Language $language for usage $usageMode doesn't match supported language definitions"
+      )
     )
   }
 

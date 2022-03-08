@@ -8,13 +8,13 @@ import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.data.AsyncResult
 
 private const val GET_ALL_TOPICS_PROVIDER_ID = "get_all_topics_provider_id"
 private const val GET_ALL_TOPICS_COMBINED_PROVIDER_ID = "get_all_topics_combined_provider_id"

@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,6 +17,7 @@ import org.mockito.exceptions.verification.NeverWantedButInvoked
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -33,7 +35,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 
 /** Tests for [DataProviderTestMonitor]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -44,17 +45,10 @@ import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DataProviderTestMonitorTest.TestApplication::class)
 class DataProviderTestMonitorTest {
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -647,6 +641,119 @@ class DataProviderTestMonitorTest {
 
     // The verification check doesn't throw since nothing's changed since the first result was
     // retrieved.
+  }
+
+  /* Tests for ensureDataProviderExecutes */
+
+  @Test
+  fun testEnsureDataProviderExecutes_pendingDataProvider_throwsException() {
+    val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
+      AsyncResult.Pending()
+    }
+
+    val failure =
+      assertThrows(AssertionError::class) {
+        monitorFactory.ensureDataProviderExecutes(dataProvider)
+      }
+
+    assertThat(failure).hasMessageThat().contains("not to be an instance of")
+    assertThat(failure).hasMessageThat().contains("Pending")
+  }
+
+  @Test
+  fun testEnsureDataProviderExecutes_unfinishedDataProvider_throwsException() {
+    val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
+      delay(1000L)
+      AsyncResult.Success("str value")
+    }
+
+    val failure =
+      assertThrows(AssertionError::class) {
+        monitorFactory.ensureDataProviderExecutes(dataProvider)
+      }
+
+    // The result will fail since the provider never even provided a result (since it required
+    // advancing the test clock before a result would be available).
+    assertThat(failure).hasMessageThat().contains("Wanted but not invoked")
+  }
+
+  @Test
+  fun testEnsureDataProviderExecutes_failingDataProvider_doesNotThrowException() {
+    val dataProvider = dataProviders.createInMemoryDataProviderAsync<String>("test") {
+      AsyncResult.Failure(Exception("Failure"))
+    }
+
+    val failure = assertThrows(IllegalStateException::class) {
+      monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    }
+
+    assertThat(failure).hasMessageThat().contains("Expected next result to be a success")
+  }
+
+  @Test
+  fun testEnsureDataProviderExecutes_successfulDataProvider_doesNotThrowException() {
+    val dataProvider = dataProviders.createInMemoryDataProviderAsync("test") {
+      AsyncResult.Success("str value")
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    assertThat(result).isEqualTo("str value")
+  }
+
+  @Test
+  fun testEnsureDataProviderExecutes_failureThenSuccess_consumed_doesNotThrowException() {
+    val dataProvider =
+      createDataProviderWithResultsQueue(
+        "test", AsyncResult.Failure(Exception("Failure")), AsyncResult.Success("str value")
+      )
+    monitorFactory.waitForNextFailureResult(dataProvider)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    assertThat(result).isEqualTo("str value")
+  }
+
+  @Test
+  fun testEnsureDataProviderExecutes_successThenFailure_consumed_doesNotThrowException() {
+    val dataProvider =
+      createDataProviderWithResultsQueue(
+        "test", AsyncResult.Success("str value"), AsyncResult.Failure(Exception("Failure"))
+      )
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val failure = assertThrows(IllegalStateException::class) {
+      monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    }
+
+    assertThat(failure).hasMessageThat().contains("Expected next result to be a success")
+  }
+
+  @Test
+  fun testEnsureDataProviderExecutes_differentValues_consumed_doesNotThrowException() {
+    val dataProvider =
+      createDataProviderWithResultsQueue(
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
+      )
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    assertThat(result).isEqualTo("second")
+  }
+
+  @Test
+  fun testEnsureDataProviderExecutes_twiceForChangedProvider_doesNotThrowException() {
+    val dataProvider =
+      createDataProviderWithResultsQueue(
+        "test", AsyncResult.Success("first"), AsyncResult.Success("second")
+      )
+
+    val firstResult = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    val secondResult = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+
+    assertThat(firstResult).isEqualTo("first")
+    assertThat(secondResult).isEqualTo("second")
   }
 
   /* Tests for waitForNextSuccessfulResult */

@@ -125,7 +125,7 @@ class ProfileManagementController @Inject constructor(
       it?.let {
         oppiaLogger.e(
           "DOMAIN",
-          "Failed to prime cache ahead of LiveData conversion for ProfileManagementController.",
+          "Failed to prime cache ahead of data retrieval for ProfileManagementController.",
           it
         )
       }
@@ -146,10 +146,11 @@ class ProfileManagementController @Inject constructor(
       if (profile != null) {
         AsyncResult.Success(profile)
       } else {
-        AsyncResult.Failure(ProfileNotFoundException(
-          "ProfileId ${profileId.internalId} does" +
-            " not match an existing Profile"
-        )
+        AsyncResult.Failure(
+          ProfileNotFoundException(
+            "ProfileId ${profileId.internalId} does" +
+              " not match an existing Profile"
+          )
         )
       }
     }
@@ -579,10 +580,11 @@ class ProfileManagementController @Inject constructor(
         currentProfileId = profileId.internalId
         return@createInMemoryDataProviderAsync AsyncResult.Success(0)
       }
-      AsyncResult.Failure(ProfileNotFoundException(
-        "ProfileId ${profileId.internalId} is" +
-          " not associated with an existing profile"
-      )
+      AsyncResult.Failure(
+        ProfileNotFoundException(
+          "ProfileId ${profileId.internalId} is" +
+            " not associated with an existing profile"
+        )
       )
     }
   }
@@ -642,32 +644,48 @@ class ProfileManagementController @Inject constructor(
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
       ProfileActionStatus.SUCCESS -> AsyncResult.Success(null)
-      ProfileActionStatus.INVALID_PROFILE_NAME -> AsyncResult.Failure(ProfileNameOnlyLettersException("$name does not contain only letters")
-      )
-      ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE -> AsyncResult.Failure(ProfileNameNotUniqueException("$name is not unique to other profiles")
-      )
-      ProfileActionStatus.FAILED_TO_STORE_IMAGE -> AsyncResult.Failure(FailedToStoreImageException(
-        "Failed to store user's selected avatar image"
-      )
-      )
-      ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR -> AsyncResult.Failure(FailedToGenerateGravatarException("Failed to generate a gravatar url")
-      )
-      ProfileActionStatus.FAILED_TO_DELETE_DIR -> AsyncResult.Failure(FailedToDeleteDirException(
-        "Failed to delete directory with ${profileId?.internalId}"
-      )
-      )
-      ProfileActionStatus.PROFILE_NOT_FOUND -> AsyncResult.Failure(ProfileNotFoundException(
-        "ProfileId ${profileId?.internalId} does not match an existing Profile"
-      )
-      )
-      ProfileActionStatus.PROFILE_NOT_ADMIN -> AsyncResult.Failure(ProfileNotAdminException(
-        "ProfileId ${profileId?.internalId} does not match an existing admin"
-      )
-      )
-      ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN -> AsyncResult.Failure(ProfileAlreadyHasAdminException(
-        "Profile cannot be an admin"
-      )
-      )
+      ProfileActionStatus.INVALID_PROFILE_NAME ->
+        AsyncResult.Failure(
+          ProfileNameOnlyLettersException("$name does not contain only letters")
+        )
+      ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE ->
+        AsyncResult.Failure(
+          ProfileNameNotUniqueException("$name is not unique to other profiles")
+        )
+      ProfileActionStatus.FAILED_TO_STORE_IMAGE ->
+        AsyncResult.Failure(
+          FailedToStoreImageException(
+            "Failed to store user's selected avatar image"
+          )
+        )
+      ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR ->
+        AsyncResult.Failure(
+          FailedToGenerateGravatarException("Failed to generate a gravatar url")
+        )
+      ProfileActionStatus.FAILED_TO_DELETE_DIR ->
+        AsyncResult.Failure(
+          FailedToDeleteDirException(
+            "Failed to delete directory with ${profileId?.internalId}"
+          )
+        )
+      ProfileActionStatus.PROFILE_NOT_FOUND ->
+        AsyncResult.Failure(
+          ProfileNotFoundException(
+            "ProfileId ${profileId?.internalId} does not match an existing Profile"
+          )
+        )
+      ProfileActionStatus.PROFILE_NOT_ADMIN ->
+        AsyncResult.Failure(
+          ProfileNotAdminException(
+            "ProfileId ${profileId?.internalId} does not match an existing admin"
+          )
+        )
+      ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN ->
+        AsyncResult.Failure(
+          ProfileAlreadyHasAdminException(
+            "Profile cannot be an admin"
+          )
+        )
     }
   }
 

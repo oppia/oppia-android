@@ -10,10 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,13 +35,16 @@ import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -92,6 +91,10 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -241,8 +244,6 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.hasPreviousState).isFalse()
     assertThat(ephemeralState.state.name).isEqualTo("Continue")
   }
-
-  // TODO: add pending cases for start/stop playing exploration methods.
 
   @Test
   fun testFinishExploration_beforePlaying_failWithError() {
@@ -2796,7 +2797,8 @@ class ExplorationProgressControllerTest {
   }
 
   private fun retrieveExplorationCheckpoint(
-    profileId: ProfileId, explorationId: String
+    profileId: ProfileId,
+    explorationId: String
   ): ExplorationCheckpoint {
     val explorationCheckpointDataProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
@@ -3193,28 +3195,36 @@ class ExplorationProgressControllerTest {
     pendingState.helpIndex.isSolutionRevealed()
 
   private fun verifyCheckpointHasCorrectPendingStateName(
-    profileId: ProfileId, explorationId: String, pendingStateName: String
+    profileId: ProfileId,
+    explorationId: String,
+    pendingStateName: String
   ) {
     val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
     assertThat(checkpoint.pendingStateName).isEqualTo(pendingStateName)
   }
 
   private fun verifyCheckpointHasCorrectCountOfAnswers(
-    profileId: ProfileId, explorationId: String, countOfAnswers: Int
+    profileId: ProfileId,
+    explorationId: String,
+    countOfAnswers: Int
   ) {
     val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
     assertThat(checkpoint.pendingUserAnswersCount).isEqualTo(countOfAnswers)
   }
 
   private fun verifyCheckpointHasCorrectStateIndex(
-    profileId: ProfileId, explorationId: String, stateIndex: Int
+    profileId: ProfileId,
+    explorationId: String,
+    stateIndex: Int
   ) {
     val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
     assertThat(checkpoint.stateIndex).isEqualTo(stateIndex)
   }
 
   private fun verifyCheckpointHasCorrectHelpIndex(
-    profileId: ProfileId, explorationId: String, helpIndex: HelpIndex
+    profileId: ProfileId,
+    explorationId: String,
+    helpIndex: HelpIndex
   ) {
     val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
     assertThat(checkpoint.helpIndex).isEqualTo(helpIndex)
@@ -3284,7 +3294,8 @@ class ExplorationProgressControllerTest {
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleProdModule::class
+      AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

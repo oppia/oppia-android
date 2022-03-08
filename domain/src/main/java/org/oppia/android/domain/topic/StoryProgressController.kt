@@ -374,7 +374,7 @@ class StoryProgressController @Inject constructor(
       it?.let { it ->
         oppiaLogger.e(
           "StoryProgressController",
-          "Failed to prime cache ahead of LiveData conversion for StoryProgressController.",
+          "Failed to prime cache ahead of data retrieval for StoryProgressController.",
           it
         )
       }

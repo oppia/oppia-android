@@ -16,7 +16,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandle
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.toAccessibleAnswerString
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.domain.util.toAnswerString
+import org.oppia.android.util.math.toAnswerString
 
 /** [StateItemViewModel] for the ratio expression input interaction. */
 class RatioExpressionInputInteractionViewModel(

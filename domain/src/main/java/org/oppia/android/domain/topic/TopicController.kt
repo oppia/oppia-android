@@ -174,9 +174,10 @@ class TopicController @Inject constructor(
       if (chapterSummary != null) {
         AsyncResult.Success(chapterSummary)
       } else {
-        AsyncResult.Failure(ChapterNotFoundException(
-          "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
-        )
+        AsyncResult.Failure(
+          ChapterNotFoundException(
+            "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
+          )
         )
       }
     }

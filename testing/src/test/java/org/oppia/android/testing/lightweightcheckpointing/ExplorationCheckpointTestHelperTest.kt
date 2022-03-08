@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,6 +42,8 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [ExplorationCheckpointTestHelper]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -135,8 +135,9 @@ class ExplorationCheckpointTestHelperTest {
     val checkpoint = retrieveCheckpoint(profileId, FRACTIONS_EXPLORATION_ID_1)
     assertThat(checkpoint.explorationTitle).isEqualTo(FRACTIONS_EXPLORATION_1_TITLE)
     assertThat(checkpoint.pendingStateName)
-      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME
-    )
+      .isEqualTo(
+        FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME
+      )
 
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration1(
       profileId = profileId,
@@ -188,7 +189,8 @@ class ExplorationCheckpointTestHelperTest {
   }
 
   private fun retrieveCheckpoint(
-    profileId: ProfileId, explorationId: String
+    profileId: ProfileId,
+    explorationId: String
   ): ExplorationCheckpoint {
     val retrieveCheckpointProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)

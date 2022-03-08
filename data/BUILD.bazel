@@ -14,7 +14,7 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
-    "//model:test_models",
+    "//model/src/main/proto:test_models",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",

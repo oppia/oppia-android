@@ -11,6 +11,7 @@ import kotlinx.coroutines.async
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
@@ -18,11 +19,10 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.testing.time.FakeSystemClock
+import org.oppia.android.util.data.AsyncResult.ChainedFailureException
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
-import org.oppia.android.util.data.AsyncResult.ChainedFailureException
 
 /** Tests for [AsyncResult]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -170,7 +170,8 @@ class AsyncResultTest {
     val resultHash = AsyncResult.Pending<String>().hashCode()
 
     assertThat(resultHash).isNotEqualTo(
-      AsyncResult.Failure<String>(UnsupportedOperationException()
+      AsyncResult.Failure<String>(
+        UnsupportedOperationException()
       ).hashCode()
     )
   }

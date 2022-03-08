@@ -3,9 +3,6 @@ package org.oppia.android.util.data
 import android.content.Context
 import androidx.lifecycle.LiveData
 import dagger.Reusable
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

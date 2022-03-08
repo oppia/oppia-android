@@ -137,6 +137,10 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val monitoredQuestionListDataProvider: NestedTransformedDataProvider<Any?> =
     createCurrentQuestionDataProvider(createEmptyQuestionsListDataProvider())
 
+  /**
+   * Begins a training session based on the specified question list data provider and [ProfileId],
+   * and returns a [DataProvider] indicating whether the session was successfully started.
+   */
   internal fun beginQuestionTrainingSession(
     questionsListDataProvider: DataProvider<List<Question>>,
     profileId: ProfileId
@@ -153,6 +157,10 @@ class QuestionAssessmentProgressController @Inject constructor(
     return beginSessionResultDataProvider
   }
 
+  /**
+   * Ends the current training session and returns a [DataProvider] that indicates whether it was
+   * successfully ended.
+   */
   internal fun finishQuestionTrainingSession(): DataProvider<Any?> {
     // Reset the base questions list provider so that the ephemeral question has no question list to
     // reference (since the session finished).
@@ -167,17 +175,18 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   /**
    * Submits an answer to the current question and returns how the UI should respond to this answer.
-   * The returned [LiveData] will only have at most two results posted: a pending result, and then a
-   * completed success/failure result. Failures in this case represent a failure of the app
+   *
+   * The returned [DataProvider] will only have at most two results posted: a pending result, and
+   * then a completed success/failure result. Failures in this case represent a failure of the app
    * (possibly due to networking conditions). The app should report this error in a consumable way
    * to the user so that they may take action on it. No additional values will be reported to the
-   * [LiveData]. Each call to this method returns a new, distinct, [LiveData] object that must be
-   * observed. Note also that the returned [LiveData] is not guaranteed to begin with a pending
-   * state.
+   * [DataProvider]. Each call to this method returns a new, distinct, [DataProvider] object that
+   * must be observed. Note also that the returned [DataProvider] is not guaranteed to begin with a
+   * pending state.
    *
-   * If the app undergoes a configuration change, calling code should rely on the [LiveData] from
-   * [getCurrentQuestion] to know whether a current answer is pending. That [LiveData] will have its
-   * state changed to pending during answer submission and until answer resolution.
+   * If the app undergoes a configuration change, calling code should rely on the [DataProvider]
+   * from [getCurrentQuestion] to know whether a current answer is pending. That [DataProvider] will
+   * have its state changed to pending during answer submission and until answer resolution.
    *
    * Submitting an answer should result in the learner staying in the current question or moving to
    * a new question in the training session. Note that once a correct answer is processed, the
@@ -190,9 +199,9 @@ class QuestionAssessmentProgressController @Inject constructor(
    * allow users to submit an answer while a previous answer is pending. That scenario will also
    * result in a failed answer submission.
    *
-   * No assumptions should be made about the completion order of the returned [LiveData] vs. the
-   * [LiveData] from [getCurrentQuestion]. Also note that the returned [LiveData] will only have a
-   * single value and not be reused after that point.
+   * No assumptions should be made about the completion order of the returned [DataProvider] vs. the
+   * [DataProvider] from [getCurrentQuestion]. Also note that the returned [DataProvider] will only
+   * have a single value and not be reused after that point.
    */
   fun submitAnswer(answer: UserAnswer): DataProvider<AnsweredQuestionOutcome> {
     check(controllerCommandQueue.offer(ControllerMessage.SubmitAnswer(answer))) {
@@ -206,7 +215,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    *
    * @param hintIndex index of the hint that was revealed in the hint list of the current pending
    *     state
-   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
@@ -219,7 +228,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   /**
    * Notifies the controller that the user has revealed the solution to the current state.
    *
-   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
@@ -237,7 +246,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    * Note that if the current question is pending, the user needs to submit a correct answer via
    * [submitAnswer] before forward navigation can occur.
    *
-   * @return a one-time [LiveData] indicating whether the movement to the next question was
+   * @return a one-time [DataProvider] indicating whether the movement to the next question was
    *     successful, or a failure if question navigation was attempted at an invalid time (such as
    *     if the current question is pending or terminal). It's recommended that calling code only
    *     listen to this result for failures, and instead rely on [getCurrentQuestion] for observing

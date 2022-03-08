@@ -38,7 +38,9 @@ class ExplorationDataController @Inject constructor(
   }
 
   /**
-   * Begins playing an exploration of the specified ID. This method is not expected to fail.
+   * Begins playing an exploration of the specified ID.
+   *
+   * This method is not expected to fail.
    *
    * [ExplorationProgressController] should be used to manage the play state, and monitor the load
    * success/failure of the exploration.
@@ -55,8 +57,8 @@ class ExplorationDataController @Inject constructor(
    * @param shouldSavePartialProgress the boolean that indicates if partial progress has to be saved
    *     for the current exploration
    * @param explorationCheckpoint the checkpoint which may be used to resume the exploration
-   * @return a one-time [DataProvider] to observe whether initiating the play request succeeded. The
-   *     exploration may still fail to load, but this provides early-failure detection.
+   * @return a one-time [DataProvider] to observe whether initiating the play request succeeded.
+   *     The exploration may still fail to load, but this provides early-failure detection.
    */
   fun startPlayingExploration(
     internalProfileId: Int,
@@ -77,7 +79,8 @@ class ExplorationDataController @Inject constructor(
   }
 
   /**
-   * Finishes the most recent exploration started by [startPlayingExploration].
+   * Finishes the most recent exploration started by [startPlayingExploration], and returns a
+   * one-off [DataProvider] indicating whether the operation succeeded.
    *
    * This method should only be called if an active exploration is being played, otherwise the
    * resulting provider will fail.
