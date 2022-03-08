@@ -285,9 +285,25 @@ class StringToFractionParserTest {
   }
 
   @Test
+  fun testRealTimeError_noDenominator_returnsInvalidFormat() {
+    val error = stringToFractionParser.getRealTimeAnswerError("3/")
+    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+  }
+
+  @Test
   fun testRealTimeError_noNumerator_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getRealTimeAnswerError("/3")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
+  }
+
+  @Test
+  fun testRealTimeError_noDenominator_invalidFormat_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = stringToFractionParser.getRealTimeAnswerError("3/")
         .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
