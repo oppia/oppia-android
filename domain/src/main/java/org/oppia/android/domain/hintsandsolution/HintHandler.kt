@@ -37,7 +37,9 @@ interface HintHandler {
    * @param state the restored pending state
    * */
   suspend fun resumeHintsForSavedState(
-    trackedWrongAnswerCount: Int, helpIndex: HelpIndex, state: State
+    trackedWrongAnswerCount: Int,
+    helpIndex: HelpIndex,
+    state: State
   )
 
   /**

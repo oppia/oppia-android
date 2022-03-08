@@ -1,8 +1,5 @@
 package org.oppia.android.domain.question
 
-import androidx.lifecycle.LiveData
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -33,6 +30,8 @@ import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID =
   "QuestionAssessmentProgressController.begin_session_result"
@@ -92,7 +91,9 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   private val controllerCommandQueue by lazy { createControllerCommandActor() }
   private val ephemeralQuestionFlow by lazy { createAsyncResultStateFlow<EphemeralQuestion>() }
-  private val calculateScoresFlow by lazy { createAsyncResultStateFlow<UserAssessmentPerformance>() }
+  private val calculateScoresFlow by lazy {
+    createAsyncResultStateFlow<UserAssessmentPerformance>()
+  }
   private val beginSessionResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
   private val finishSessionResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
   private val submitAnswerResultFlow by lazy {
@@ -593,11 +594,14 @@ class QuestionAssessmentProgressController @Inject constructor(
           // now that a list of questions is available.
           initializeAssessment(questionsList)
           progress.advancePlayStageTo(TrainStage.VIEWING_STATE)
-          AsyncResult.Success(retrieveEphemeralQuestionState(questionsList)
+          AsyncResult.Success(
+            retrieveEphemeralQuestionState(questionsList)
           )
         }
-        TrainStage.VIEWING_STATE -> AsyncResult.Success(retrieveEphemeralQuestionState(questionsList)
-        )
+        TrainStage.VIEWING_STATE ->
+          AsyncResult.Success(
+            retrieveEphemeralQuestionState(questionsList)
+          )
         TrainStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
       }
     } catch (e: Exception) {
@@ -683,6 +687,6 @@ class QuestionAssessmentProgressController @Inject constructor(
 
     object MoveToNextQuestion : ControllerMessage()
 
-    data class CalculateScores(val skillIdList: List<String>): ControllerMessage()
+    data class CalculateScores(val skillIdList: List<String>) : ControllerMessage()
   }
 }

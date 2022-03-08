@@ -249,11 +249,11 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(hintIndex: Int) {
-    subscribeToHintSolution(explorationProgressController.submitHintIsRevealed(hintIndex).toLiveData())
+    subscribeToHintSolution(explorationProgressController.submitHintIsRevealed(hintIndex))
   }
 
   fun revealSolution() {
-    subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed().toLiveData())
+    subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
   }
 
   private fun getStateViewModel(): StateViewModel {

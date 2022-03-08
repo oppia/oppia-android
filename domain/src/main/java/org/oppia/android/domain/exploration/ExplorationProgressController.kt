@@ -1,8 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import androidx.lifecycle.LiveData
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -38,13 +35,8 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.system.OppiaClock
-import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.concurrent.withLock
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -492,7 +484,8 @@ class ExplorationProgressController @Inject constructor(
         }
       } finally {
         if (answerOutcome != null &&
-          !doesInteractionAutoContinue(answerOutcome.state.interaction.id)) {
+          !doesInteractionAutoContinue(answerOutcome.state.interaction.id)
+        ) {
           // If the answer was not submitted on behalf of the Continue interaction, update the
           // hint state and save checkpoint because it will be saved when the learner moves to the
           // next state.
@@ -647,7 +640,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.finishLoadExploration(
-    exploration: Exploration, progress: ExplorationProgress
+    exploration: Exploration,
+    progress: ExplorationProgress
   ) {
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
@@ -881,6 +875,6 @@ class ExplorationProgressController @Inject constructor(
       val explorationId: String,
       val lastPlayedTimestamp: Long,
       val newCheckpointState: CheckpointState
-    ): ControllerMessage()
+    ) : ControllerMessage()
   }
 }

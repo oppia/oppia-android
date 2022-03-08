@@ -108,15 +108,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun revealHint(hintIndex: Int) {
-    subscribeToHintSolution(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex).toLiveData()
-    )
+    subscribeToHintSolution(questionAssessmentProgressController.submitHintIsRevealed(hintIndex))
   }
 
   fun revealSolution() {
-    subscribeToHintSolution(
-      questionAssessmentProgressController.submitSolutionIsRevealed().toLiveData()
-    )
+    subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
   fun dismissConceptCard() {

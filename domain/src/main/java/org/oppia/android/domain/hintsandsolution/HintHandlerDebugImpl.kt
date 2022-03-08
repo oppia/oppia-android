@@ -1,11 +1,11 @@
 package org.oppia.android.domain.hintsandsolution
 
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
+import javax.inject.Inject
 
 /**
  * Debug implementation of [HintHandler] that conditionally always shows hints & solutions if
