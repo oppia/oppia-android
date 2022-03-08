@@ -18,7 +18,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-// TODO(#3813): Migrate all data provider tests over to using this utility.
 /**
  * A test monitor for [DataProvider]s that provides operations to simplify waiting for the
  * provider's results, or to verify that notifications actually change the data provider when
