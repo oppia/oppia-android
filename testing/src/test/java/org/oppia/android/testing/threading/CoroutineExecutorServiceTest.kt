@@ -46,6 +46,7 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.testing.data.AsyncResultSubject
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.util.data.AsyncResult
 
 /**
@@ -349,9 +350,9 @@ class CoroutineExecutorServiceTest {
 
     // The getter should return since the task has finished.
     assertThat(getResult.isCompleted).isTrue()
-    AsyncResultSubject.assertThat(getResult.getCompleted()).isFailureThat().apply {
+    assertThat(getResult.getCompleted()).isFailureThat().apply {
       isInstanceOf(ExecutionException::class.java)
-      isInstanceOf(TimeoutException::class.java)
+      hasCauseThat().isInstanceOf(TimeoutException::class.java)
     }
   }
 
