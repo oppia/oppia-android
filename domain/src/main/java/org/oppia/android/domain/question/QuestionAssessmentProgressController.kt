@@ -1,6 +1,15 @@
 package org.oppia.android.domain.question
 
 import androidx.lifecycle.LiveData
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
@@ -23,15 +32,6 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.android.util.locale.OppiaLocale
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.util.threading.BackgroundDispatcher
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID =
@@ -164,10 +164,6 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
     return finishSessionResultDataProvider
   }
-
-//  override fun onHelpIndexChanged() {
-//    asyncDataSubscriptionManager.notifyChangeAsync(CREATE_CURRENT_QUESTION_DATA_PROVIDER_ID)
-//  }
 
   /**
    * Submits an answer to the current question and returns how the UI should respond to this answer.

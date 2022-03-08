@@ -1,25 +1,6 @@
 package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
-import org.oppia.android.app.model.AnswerOutcome
-import org.oppia.android.app.model.CheckpointState
-import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.model.Exploration
-import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.UserAnswer
-import org.oppia.android.domain.classify.AnswerClassificationController
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
-import org.oppia.android.domain.hintsandsolution.HintHandler
-import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.domain.topic.StoryProgressController
-import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,12 +12,31 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.oppia.android.app.model.AnswerOutcome
+import org.oppia.android.app.model.CheckpointState
+import org.oppia.android.app.model.EphemeralState
+import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.LOADING_EXPLORATION
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.NOT_PLAYING
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.SUBMITTING_ANSWER
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.VIEWING_STATE
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.hintsandsolution.HintHandler
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncDataSubscriptionManager
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =

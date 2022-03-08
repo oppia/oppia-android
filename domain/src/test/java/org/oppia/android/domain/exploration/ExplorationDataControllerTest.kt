@@ -74,9 +74,7 @@ import org.robolectric.annotation.LooperMode
 @Config(application = ExplorationDataControllerTest.TestApplication::class)
 class ExplorationDataControllerTest {
   @Inject lateinit var explorationDataController: ExplorationDataController
-  @Inject lateinit var explorationProgressController: ExplorationProgressController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
-  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
@@ -92,7 +90,7 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testController_providesInitialLiveDataForFractions0Exploration() {
+  fun testController_providesInitialStateForFractions0Exploration() {
     val explorationResult = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0)
 
     val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
@@ -102,7 +100,7 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testController_providesInitialLiveDataForFractions1Exploration() {
+  fun testController_providesInitialStateForFractions1Exploration() {
     val explorationResult = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
 
     val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
@@ -112,7 +110,7 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testController_providesInitialLiveDataForRatios0Exploration() {
+  fun testController_providesInitialStateForRatios0Exploration() {
     val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0)
 
     val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
@@ -122,7 +120,7 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testController_providesInitialLiveDataForRatios1Exploration() {
+  fun testController_providesInitialStateForRatios1Exploration() {
     val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1)
 
     val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
@@ -132,7 +130,7 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testController_providesInitialLiveDataForRatios2Exploration() {
+  fun testController_providesInitialStateForRatios2Exploration() {
     val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2)
 
     val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
@@ -142,7 +140,7 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testController_providesInitialLiveDataForRatios3Exploration() {
+  fun testController_providesInitialStateForRatios3Exploration() {
     val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3)
 
     val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)

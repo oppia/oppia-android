@@ -60,7 +60,7 @@ class AppStartupStateControllerTest {
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
   @Test
-  fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() {
+  fun testController_providesInitialState_indicatesUserHasNotOnboardedTheApp() {
     setUpDefaultTestApplicationComponent()
 
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -70,7 +70,7 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() { // ktlint-disable max-line-length
+  fun testControllerObserver_observedAfterSettingAppOnboarded_providesState_userDidNotOnboardApp() {
     setUpDefaultTestApplicationComponent()
     val appStartupState = appStartupStateController.getAppStartupState()
 
@@ -95,7 +95,7 @@ class AppStartupStateControllerTest {
     setUpDefaultTestApplicationComponent()
     val appStartupState = appStartupStateController.getAppStartupState()
 
-    // The app should be considered onboarded since a new LiveData instance was observed after
+    // The app should be considered onboarded since a new DataProvider instance was observed after
     // marking the app as onboarded.
     val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
     assertThat(mode.startupMode).isEqualTo(USER_IS_ONBOARDED)

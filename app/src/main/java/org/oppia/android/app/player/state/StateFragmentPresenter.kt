@@ -44,6 +44,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.util.data.DataProvider
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -329,8 +330,8 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Subscribes to the result of requesting to show a hint or solution. */
-  private fun subscribeToHintSolution(resultLiveData: LiveData<AsyncResult<Any?>>) {
-    resultLiveData.observe(
+  private fun subscribeToHintSolution(resultDataProvider: DataProvider<Any?>) {
+    resultDataProvider.toLiveData().observe(
       fragment,
       { result ->
         if (result is AsyncResult.Failure) {

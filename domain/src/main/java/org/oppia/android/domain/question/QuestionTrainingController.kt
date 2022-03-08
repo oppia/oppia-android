@@ -11,6 +11,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.combineWithAsync
 
 private const val RETRIEVE_QUESTION_FOR_SKILLS_ID_PROVIDER_ID =
   "retrieve_question_for_skills_id_provider_id"
@@ -47,9 +49,17 @@ class QuestionTrainingController @Inject constructor(
     skillIdsList: List<String>
   ): DataProvider<Any?> {
     return try {
-      questionAssessmentProgressController.beginQuestionTrainingSession(
-        questionsListDataProvider = retrieveQuestionsForSkillIds(skillIdsList), profileId
-      )
+      val retrieveQuestionsDataProvider = retrieveQuestionsForSkillIds(skillIdsList)
+      val beginSessionDataProvider =
+        questionAssessmentProgressController.beginQuestionTrainingSession(
+          questionsListDataProvider = retrieveQuestionsDataProvider, profileId
+        )
+      // Combine the data providers to ensure their results are tied together, but only take the
+      // result from the begin session provider (since that's the one that indicates session start
+      // success/failure, assuming the questions loaded successfully).
+      retrieveQuestionsDataProvider.combineWith(
+        beginSessionDataProvider, START_QUESTION_TRAINING_SESSION_PROVIDER_ID
+      ) { _, sessionResult -> sessionResult }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
       dataProviders.createInMemoryDataProviderAsync(START_QUESTION_TRAINING_SESSION_PROVIDER_ID) {

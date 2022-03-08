@@ -37,6 +37,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.util.data.DataProvider
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -283,8 +284,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   /** Subscribes to the result of requesting to show a hint or solution. */
-  private fun subscribeToHintSolution(resultLiveData: LiveData<AsyncResult<Any?>>) {
-    resultLiveData.observe(
+  private fun subscribeToHintSolution(resultDataProvider: DataProvider<Any?>) {
+    resultDataProvider.toLiveData().observe(
       fragment,
       { result ->
         if (result is AsyncResult.Failure) {
