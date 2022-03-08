@@ -378,7 +378,7 @@ class InputInteractionViewTestActivityTest {
 
   @Test
   @DisableAccessibilityChecks
-  fun testFractionInput_withPartialMixedNumber_numberFormatErrorIsNotDisplayed() {
+  fun testFractionInput_withPartialMixedNumber_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
@@ -386,29 +386,13 @@ class InputInteractionViewTestActivityTest {
           "5 5/"
         )
       )
-    onView(withId(R.id.fraction_input_error)).check(matches(withText("")))
-  }
-
-  @Test
-  @DisableAccessibilityChecks
-  fun testFractionInput_withPartialMixedNumberSubmit_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    onView(withId(R.id.test_fraction_input_interaction_view))
-      .perform(
-        editTextInputAction.appendText(
-          "5 5/"
+    onView(withId(R.id.fraction_input_error)).check(
+      matches(
+        withText(
+          R.string.fraction_error_invalid_format
         )
       )
-    closeSoftKeyboard()
-    onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
-    onView(withId(R.id.fraction_input_error))
-      .check(
-        matches(
-          withText(
-            R.string.fraction_error_invalid_format
-          )
-        )
-      )
+    )
   }
 
   @Test
