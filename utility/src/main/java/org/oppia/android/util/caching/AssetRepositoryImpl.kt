@@ -54,7 +54,7 @@ class AssetRepositoryImpl @Inject constructor(
   }
 
   override fun <T : MessageLite> loadProtoFromLocalAssets(assetName: String, baseMessage: T): T {
-    return maybeProtoFromLocalAssetsOrFail(assetName, baseMessage)
+    return maybeLoadProtoFromLocalAssets(assetName, baseMessage)
       ?: error("Asset doesn't exist: $assetName")
   }
 
@@ -62,16 +62,11 @@ class AssetRepositoryImpl @Inject constructor(
     assetName: String,
     defaultMessage: T
   ): T {
-    return maybeProtoFromLocalAssetsOrFail(assetName, defaultMessage) ?: defaultMessage
+    return maybeLoadProtoFromLocalAssets(assetName, defaultMessage) ?: defaultMessage
   }
 
-  override fun getLocalAssetProtoSize(assetName: String): Int {
-    return loadProtoBlobFromLocalAssets(assetName)?.size ?: -1
-  }
-
-  private fun <T : MessageLite> maybeProtoFromLocalAssetsOrFail(
-    assetName: String,
-    baseMessage: T
+  override fun <T : MessageLite> maybeLoadProtoFromLocalAssets(
+    assetName: String, baseMessage: T
   ): T? {
     return loadProtoBlobFromLocalAssets(assetName)?.let { serializedProto ->
       @Suppress("UNCHECKED_CAST") // Safe type-cast per newBuilderForType's contract.
@@ -79,6 +74,10 @@ class AssetRepositoryImpl @Inject constructor(
         .mergeFrom(serializedProto)
         .build() as T
     }
+  }
+
+  override fun getLocalAssetProtoSize(assetName: String): Int {
+    return loadProtoBlobFromLocalAssets(assetName)?.size ?: -1
   }
 
   private fun loadProtoBlobFromLocalAssets(assetName: String): ByteArray? {
