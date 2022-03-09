@@ -17,7 +17,7 @@ import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
 
-/** Test activity for ``AdministratorControlsFragmentTest``. */
+/** Test activity for [AdministratorControlsFragmentTest]. */
 class AdministratorControlsFragmentTestActivity :
   TestActivity(),
   RouteToProfileListListener,
