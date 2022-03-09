@@ -119,7 +119,7 @@
         android:minHeight="48dp"
         android:text="@string/save"
         android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submit_button_inactive_text }"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/admin_pin_input_confirm_pin"
         app:layout_constraintTop_toBottomOf="@+id/admin_pin_input_confirm_pin" />
     </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.core.widget.NestedScrollView>
