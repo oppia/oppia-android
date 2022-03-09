@@ -44,7 +44,7 @@
 
     <TextView
       android:id="@+id/submitted_answer_text_view"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
       android:contentDescription="@{viewModel.submittedAnswerContentDescription}"
@@ -53,7 +53,6 @@
       android:textColor="@color/oppia_primary_text"
       android:textSize="16sp"
       android:visibility="gone"
-      app:layout_constrainedWidth="true"
       app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? @id/answer_tick_guideline : ConstraintSet.PARENT_ID}"
       app:layout_constraintHorizontal_bias="@{viewModel.hasConversationView ? 1 : 0}"
       app:layout_constraintStart_toStartOf="parent"

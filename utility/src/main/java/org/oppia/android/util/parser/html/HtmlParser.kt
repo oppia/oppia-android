@@ -47,12 +47,10 @@ class HtmlParser {
 
   constructor(
     consoleLogger: ConsoleLogger,
-    customOppiaTagActionListener: CustomOppiaTagActionListener?,
     policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
     context: Context
   ) {
     this.consoleLogger = consoleLogger
-    this.customOppiaTagActionListener = customOppiaTagActionListener
     this.policyOppiaTagActionListener = policyOppiaTagActionListener
     this.context = context
   }
@@ -247,12 +245,10 @@ class HtmlParser {
      * needed).
      */
     fun create(
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
       policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
     ): HtmlParser {
       return HtmlParser(
         consoleLogger,
-        customOppiaTagActionListener,
         policyOppiaTagActionListener,
         context
       )

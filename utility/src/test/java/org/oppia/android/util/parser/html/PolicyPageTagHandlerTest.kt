@@ -38,9 +38,9 @@ import javax.inject.Singleton
 import kotlin.reflect.KClass
 
 private const val POLICY_PAGE_LINK_MARKUP_1 =
-  "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\"> Terms of " +
-    "Service </oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">" +
-    "Privacy Policy </oppia-noninteractive-policy>."
+  "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">Terms of Service" +
+    "</oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">" +
+    "Privacy Policy</oppia-noninteractive-policy>."
 
 /** Tests for [PolicyPageTagHandler]. */
 @RunWith(AndroidJUnit4::class)
@@ -49,9 +49,6 @@ class PolicyPageTagHandlerTest {
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Mock
-  lateinit var mockImageRetriever: FakeImageRetriever
 
   @Mock
   lateinit var mockPolicyPageLinkClickListener: PolicyPageLinkClickListener
@@ -87,7 +84,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         context,
         html = "",
-        imageRetriever = mockImageRetriever,
+        imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
@@ -101,7 +98,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         context,
         html = POLICY_PAGE_LINK_MARKUP_1,
-        imageRetriever = mockImageRetriever,
+        imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
@@ -115,7 +112,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         context,
         html = POLICY_PAGE_LINK_MARKUP_1,
-        imageRetriever = mockImageRetriever,
+        imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
@@ -133,7 +130,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         context,
         html = POLICY_PAGE_LINK_MARKUP_1,
-        imageRetriever = mockImageRetriever,
+        imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
@@ -151,7 +148,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         context,
         html = POLICY_PAGE_LINK_MARKUP_1,
-        imageRetriever = mockImageRetriever,
+        imageRetriever = null,
         customTagHandlers = noTagHandlers
       )
 

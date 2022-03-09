@@ -63,7 +63,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -727,7 +726,7 @@ class OnboardingFragmentTest {
       verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
         capture(policyTypeCaptor)
       )
-      assertThat(policyTypeCaptor.value).isEqualTo(PolicyPage.TERMS_OF_SERVICE)
+      assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.TERMS_OF_SERVICE)
     }
   }
 
@@ -769,7 +768,7 @@ class OnboardingFragmentTest {
         capture(policyTypeCaptor)
       )
 
-      assertThat(policyTypeCaptor.value).isEqualTo(PolicyPage.PRIVACY_POLICY)
+      assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
     }
   }
 
