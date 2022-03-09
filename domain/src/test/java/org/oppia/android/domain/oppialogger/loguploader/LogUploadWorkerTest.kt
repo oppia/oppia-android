@@ -2,6 +2,8 @@ package org.oppia.android.domain.oppialogger.loguploader
 
 import android.app.Application
 import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -48,10 +50,19 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeSyncStatusManager
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.SyncStatusManager
 
 private const val TEST_TIMESTAMP = 1556094120000
@@ -59,8 +70,14 @@ private const val TEST_TOPIC_ID = "test_topicId"
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @get:Rule
+  val executorRule = InstantTaskExecutorRule()
 
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
@@ -88,6 +105,12 @@ class LogUploadWorkerTest {
 
   @Inject
   lateinit var fakeSyncStatusManager: FakeSyncStatusManager
+
+  @Mock
+  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
+
+  @Captor
+  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -145,7 +168,7 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(fakeEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
+    assertThat(fakeEventLogger.getMostRecentCachedEvent()).isEqualTo(eventLogTopicContext)
   }
 
   @Test
@@ -272,7 +295,7 @@ class LogUploadWorkerTest {
       LoggingIdentifierModule::class, PlatformParameterSingletonModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -281,5 +304,19 @@ class LogUploadWorkerTest {
     }
 
     fun inject(logUploadWorkerTest: LogUploadWorkerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(logUploadWorkerTest: LogUploadWorkerTest) {
+      component.inject(logUploadWorkerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

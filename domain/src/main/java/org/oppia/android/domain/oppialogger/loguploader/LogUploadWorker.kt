@@ -90,7 +90,7 @@ class LogUploadWorker private constructor(
       val eventLogs = analyticsController.getEventLogStoreList()
       eventLogs.let {
         for (eventLog in it) {
-          eventLogger.logEvent(eventLog)
+          eventLogger.logCachedEvent(eventLog)
           analyticsController.removeFirstEventLogFromStore()
         }
       }

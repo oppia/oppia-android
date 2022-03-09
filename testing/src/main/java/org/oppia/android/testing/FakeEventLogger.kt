@@ -13,10 +13,15 @@ class FakeEventLogger @Inject constructor(
   private val syncStatusManager: SyncStatusManager
 ) : EventLogger {
   private val eventList = ArrayList<EventLog>()
+  private val cachedEventList = mutableListOf<EventLog>()
 
   override fun logEvent(eventLog: EventLog) {
     eventList.add(eventLog)
     syncStatusManager.setSyncStatus(DATA_UPLOADED)
+  }
+
+  override fun logCachedEvent(eventLog: EventLog) {
+    cachedEventList.add(eventLog)
   }
 
   /** Returns the most recently logged event. */
@@ -30,4 +35,16 @@ class FakeEventLogger @Inject constructor(
 
   /** Returns true if there are no events logged. */
   fun noEventsPresent(): Boolean = eventList.isEmpty()
+
+  /** Returns the most recently logged cached event. */
+  fun getMostRecentCachedEvent(): EventLog = cachedEventList.last()
+
+  /** Clears all the cached events that are currently logged. */
+  fun clearAllCachedEvents() = cachedEventList.clear()
+
+  /** Checks if a certain cached event has been logged or not. */
+  fun hasCachedEventLogged(eventLog: EventLog): Boolean = cachedEventList.contains(eventLog)
+
+  /** Returns true if there are no cached events logged. */
+  fun noCachedEventsPresent(): Boolean = cachedEventList.isEmpty()
 }
