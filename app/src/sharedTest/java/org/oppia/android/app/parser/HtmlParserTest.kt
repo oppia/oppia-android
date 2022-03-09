@@ -244,8 +244,10 @@ class HtmlParserTest {
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
     }
-    assertThat(htmlResult.toString()).isEqualTo("The counting numbers (1, 2, 3, 4, 5 ….)" +
-      "\nHow to tell whether one counting number is bigger or smaller than another")
+    assertThat(htmlResult.toString()).isEqualTo(
+      "The counting numbers (1, 2, 3, 4, 5 ….)" +
+        "\nHow to tell whether one counting number is bigger or smaller than another"
+    )
   }
 
   @Test
