@@ -7,7 +7,7 @@
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-  <!--   TODO(#56): Reenable landscape support. -->
+  <!-- TODO(#56): Reenable landscape support. -->
   <application
     android:name=".app.application.OppiaApplication"
     android:allowBackup="true"
