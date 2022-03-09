@@ -19,13 +19,4 @@ class AdministratorControlsFragmentTestActivityPresenter @Inject constructor(
       AdministratorControlsFragment.newInstance(isMultipane = false)
     ).commitNow()
   }
-
-  /** Returns [AdministratorControlsFragment] instance. */
-  private fun getAdministratorControlsFragment(): AdministratorControlsFragment? {
-    return activity
-      .supportFragmentManager
-      .findFragmentById(
-        R.id.administrator_controls_fragment_test_activity_fragment_container
-      ) as? AdministratorControlsFragment
-  }
 }

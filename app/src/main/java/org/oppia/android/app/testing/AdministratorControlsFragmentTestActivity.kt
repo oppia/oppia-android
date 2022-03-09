@@ -65,10 +65,5 @@ class AdministratorControlsFragmentTestActivity :
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       return intent
     }
-
-    /** Returns the argument key used to specify the user's internal profile ID. */
-    fun getIntentKey(): String {
-      return NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-    }
   }
 }
