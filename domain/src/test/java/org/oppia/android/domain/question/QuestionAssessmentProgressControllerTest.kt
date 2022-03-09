@@ -76,6 +76,8 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.AsyncResultSubject
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 
 private const val TOLERANCE = 1e-5
 
@@ -179,29 +181,15 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testStopTrainingSession_withoutStartingSession_fails() {
+  fun testStopTrainingSession_withoutStartingSession_isPending() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val stopDataProvider = questionTrainingController.stopQuestionTrainingSession()
+    val monitor = monitorFactory.createMonitor(stopDataProvider)
 
-    val error = monitorFactory.waitForNextFailureResult(stopDataProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot stop a new training session which wasn't started")
-  }
-
-  @Test
-  fun testStartTrainingSession_withoutFinishingPrevious_fails() {
-    setUpTestApplicationWithSeed(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_012)
-
-    val initiationDataProvider =
-      questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_02)
-
-    val error = monitorFactory.waitForNextFailureResult(initiationDataProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot start a new training session until the previous one is completed")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -235,17 +223,16 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_beforePlaying_failsWithError() {
+  fun testSubmitAnswer_beforePlaying_isPending() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val submitAnswerProvider =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    val monitor = monitorFactory.createMonitor(submitAnswerProvider)
 
-    // Verify that the answer submission failed.
-    val failure = monitorFactory.waitForNextFailureResult(submitAnswerProvider)
-    assertThat(failure)
-      .hasMessageThat()
-      .contains("Cannot submit an answer if a training session has not yet begun.")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -358,15 +345,15 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testMoveToNext_beforePlaying_failsWithError() {
+  fun testMoveToNext_beforePlaying_isPending() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val moveToQuestionResult = questionAssessmentProgressController.moveToNextQuestion()
+    val monitor = monitorFactory.createMonitor(moveToQuestionResult)
 
-    val error = monitorFactory.waitForNextFailureResult(moveToQuestionResult)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot navigate to a next question if a training session has not begun.")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -612,20 +599,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
-    setUpTestApplicationWithSeed(questionSeed = 0)
-
-    questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    testCoroutineDispatchers.runCurrent()
-
-    val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("Cannot submit an answer if a training session has not yet begun.")
-  }
-
-  @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
@@ -687,7 +660,8 @@ class QuestionAssessmentProgressControllerTest {
     waitForGetCurrentQuestionSuccessfulLoad()
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
-    monitorFactory.waitForNextSuccessfulResult(
+    // The actual reveal will fail due to it being invalid.
+    monitorFactory.ensureDataProviderExecutes(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
@@ -1398,7 +1372,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun submitAnswer(answer: UserAnswer): EphemeralQuestion {
-    questionAssessmentProgressController.submitAnswer(answer)
+    monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.submitAnswer(answer)
+    )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 
@@ -1420,8 +1396,10 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun moveToNextQuestion(): EphemeralQuestion {
-    questionAssessmentProgressController.moveToNextQuestion()
-    testCoroutineDispatchers.runCurrent()
+    // This operation might fail for some tests.
+    monitorFactory.ensureDataProviderExecutes(
+      questionAssessmentProgressController.moveToNextQuestion()
+    )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 

@@ -95,6 +95,8 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.AsyncResultSubject
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -246,17 +248,17 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFinishExploration_beforePlaying_failWithError() {
+  fun testFinishExploration_beforePlaying_isPending() {
     val resultDataProvider = explorationDataController.stopPlayingExploration()
+    val monitor = monitorFactory.createMonitor(resultDataProvider)
 
-    val error = monitorFactory.waitForNextFailureResult(resultDataProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot finish playing an exploration that hasn't yet been started")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
-  fun testPlayExploration_withoutFinishingPrevious_failsWithError() {
+  fun testPlayExploration_withoutFinishingPrevious_succeeds() {
     playExploration(
       profileId.internalId,
       TEST_TOPIC_ID_0,
@@ -278,10 +280,8 @@ class ExplorationProgressControllerTest {
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
 
-    val error = monitorFactory.waitForNextFailureResult(resultDataProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Expected to finish previous exploration before starting a new one.")
+    // The new session will overwrite the previous.
+    monitorFactory.waitForNextSuccessfulResult(resultDataProvider)
   }
 
   @Test
@@ -317,14 +317,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_beforePlaying_failsWithError() {
-    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+  fun testSubmitAnswer_beforePlaying_isPending() {
+    val resultProvider = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    val monitor = monitorFactory.createMonitor(resultProvider)
 
-    // Verify that the answer submission failed.
-    val error = monitorFactory.waitForNextFailureResult(result)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot submit an answer if an exploration is not being played.")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -483,13 +482,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testMoveToNext_beforePlaying_failsWithError() {
+  fun testMoveToNext_beforePlaying_isPending() {
     val moveToStateResult = explorationProgressController.moveToNextState()
+    val monitor = monitorFactory.createMonitor(moveToStateResult)
 
-    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot navigate to a next state if an exploration is not being played.")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -575,14 +574,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testMoveToPrevious_beforePlaying_failsWithError() {
+  fun testMoveToPrevious_beforePlaying_isPending() {
     val moveToStateResult = explorationProgressController.moveToPreviousState()
-    testCoroutineDispatchers.runCurrent()
+    val monitor = monitorFactory.createMonitor(moveToStateResult)
 
-    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot navigate to a previous state if an exploration is not being played.")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -1488,17 +1486,6 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testMoveToNext_beforePlaying_failsWithError_logsException() {
-    explorationProgressController.moveToNextState()
-    testCoroutineDispatchers.runCurrent()
-
-    val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Cannot navigate to a next state if an exploration is not being played.")
-  }
-
-  @Test
   fun testMoveToPrevious_navigatedForwardThenBackToInitial_failsWithError_logsException() {
     playExploration(
       profileId.internalId,
@@ -1520,17 +1507,6 @@ class ExplorationProgressControllerTest {
     assertThat(exception)
       .hasMessageThat()
       .contains("Cannot navigate to previous state; at initial state.")
-  }
-
-  @Test
-  fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
-    explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    testCoroutineDispatchers.runCurrent()
-
-    val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Cannot submit an answer if an exploration is not being played.")
   }
 
   @Test

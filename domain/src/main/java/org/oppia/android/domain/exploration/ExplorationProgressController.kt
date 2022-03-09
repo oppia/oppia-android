@@ -1,5 +1,7 @@
 package org.oppia.android.domain.exploration
 
+import java.lang.IllegalStateException
+import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -56,6 +58,14 @@ private const val CURRENT_STATE_PROVIDER_ID = "ExplorationProgressController.cur
 private const val LOCALIZED_STATE_PROVIDER_ID = "ExplorationProgressController.localized_state"
 
 /**
+ * A default session ID to be used before a session has been initialized.
+ *
+ * This session ID will never match, so messages that are received with this ID will never be
+ * processed.
+ */
+private const val DEFAULT_SESSION_ID = "default_session_id"
+
+/**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
  * exploration. Note that this controller only supports one active exploration at a time.
  *
@@ -96,10 +106,15 @@ class ExplorationProgressController @Inject constructor(
   // TODO: update documentation to clarify that DataProviders will reset their state between submit calls.
   // TODO: update documentation & PR description to explain that this now eagerly compute ephemeral state rather than lazily due to it being a better fit with flows.
   // TODO: update relevant method documentations to indicate that data providers for operations do not necessarily need to be monitored for their action to complete.
+  // TODO: update documentation for here & questions to mention that finish only serves to cause operations to fail until the next start (but doesn't need to be called to start the session). Mention that pending doesn't mean they get queued (they actually get ignored, instead).
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentState).
   private lateinit var profileId: ProfileId
+
+  private var mostRecentSessionId: String? = null
+  private val activeSessionId: String
+    get() = mostRecentSessionId ?: DEFAULT_SESSION_ID
 
   private val controllerCommandQueue by lazy { createControllerCommandActor() }
   private val ephemeralStateFlow by lazy { createAsyncResultStateFlow<EphemeralState>() }
@@ -151,6 +166,7 @@ class ExplorationProgressController @Inject constructor(
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
+    val sessionId = UUID.randomUUID().toString().also { mostRecentSessionId = it }
     val initializeMessage =
       ControllerMessage.InitializeController(
         profileId,
@@ -158,7 +174,8 @@ class ExplorationProgressController @Inject constructor(
         storyId,
         explorationId,
         shouldSavePartialProgress,
-        explorationCheckpoint
+        explorationCheckpoint,
+        sessionId
       )
     this.profileId = profileId
     check(controllerCommandQueue.offer(initializeMessage)) {
@@ -172,7 +189,7 @@ class ExplorationProgressController @Inject constructor(
    * [DataProvider] indicating whether the cleanup was successful.
    */
   internal fun finishExplorationAsync(): DataProvider<Any?> {
-    check(controllerCommandQueue.offer(ControllerMessage.FinishExploration)) {
+    check(controllerCommandQueue.offer(ControllerMessage.FinishExploration(activeSessionId))) {
       "Failed to schedule command for cleaning up after finishing the exploration."
     }
     return finishExplorationResultDataProvider
@@ -210,9 +227,9 @@ class ExplorationProgressController @Inject constructor(
    * have a single value and not be reused after that point.
    */
   fun submitAnswer(userAnswer: UserAnswer): DataProvider<AnswerOutcome> {
-    sendCommandForOperation(submitAnswerResultFlow, ControllerMessage.SubmitAnswer(userAnswer)) {
-      "Failed to schedule command for answer submission."
-    }
+    sendCommandForOperation(
+      submitAnswerResultFlow, ControllerMessage.SubmitAnswer(userAnswer, activeSessionId)
+    ) { "Failed to schedule command for answer submission." }
     return submitAnswerResultDataProvider
   }
 
@@ -226,7 +243,7 @@ class ExplorationProgressController @Inject constructor(
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
     sendCommandForOperation(
-      submitHintRevealedResultFlow, ControllerMessage.HintIsRevealed(hintIndex)
+      submitHintRevealedResultFlow, ControllerMessage.HintIsRevealed(hintIndex, activeSessionId)
     ) {
       "Failed to schedule command for revealing hint: $hintIndex."
     }
@@ -241,7 +258,7 @@ class ExplorationProgressController @Inject constructor(
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
     sendCommandForOperation(
-      submitSolutionRevealedResultFlow, ControllerMessage.SolutionIsRevealed
+      submitSolutionRevealedResultFlow, ControllerMessage.SolutionIsRevealed(activeSessionId)
     ) {
       "Failed to schedule command for revealing the solution."
     }
@@ -260,9 +277,9 @@ class ExplorationProgressController @Inject constructor(
    *     [getCurrentState] for observing a successful transition to another state.
    */
   fun moveToPreviousState(): DataProvider<Any?> {
-    sendCommandForOperation(moveToPreviousStateResultFlow, ControllerMessage.MoveToPreviousState) {
-      "Failed to schedule command for moving to the previous state."
-    }
+    sendCommandForOperation(
+      moveToPreviousStateResultFlow, ControllerMessage.MoveToPreviousState(activeSessionId)
+    ) { "Failed to schedule command for moving to the previous state." }
     return moveToPreviousStateResultDataProvider
   }
 
@@ -282,9 +299,9 @@ class ExplorationProgressController @Inject constructor(
    *     observing a successful transition to another state.
    */
   fun moveToNextState(): DataProvider<Any?> {
-    sendCommandForOperation(moveToNextStateResultFlow, ControllerMessage.MoveToNextState) {
-      "Failed to schedule command for moving to the next state."
-    }
+    sendCommandForOperation(
+      moveToNextStateResultFlow, ControllerMessage.MoveToNextState(activeSessionId)
+    ) { "Failed to schedule command for moving to the next state." }
     return moveToNextStateResultDataProvider
   }
 
@@ -327,41 +344,78 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun createControllerCommandActor(): SendChannel<ControllerMessage> {
-    val controllerState = ControllerState(ExplorationProgress())
+    var controllerState: ControllerState? = null
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
     // the main thread or scheduling an extra coroutine.
     return CoroutineScope(backgroundCoroutineDispatcher).actor(capacity = Channel.UNLIMITED) {
       for (message in channel) {
-        @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
-        val unused = when (message) {
-          is ControllerMessage.InitializeController -> {
-            controllerState.beginExplorationInternal(
-              message.profileId,
-              message.topicId,
-              message.storyId,
-              message.explorationId,
-              message.shouldSavePartialProgress,
-              message.explorationCheckpoint
-            )
+        try {
+          // Since the loop essentially never ends, this is needed to ensure that the controller
+          // state can be reset across sessions.
+          val initedControllerState by lazy {
+            checkNotNull(controllerState) { "Expected controller state to be initialized." }
           }
-          ControllerMessage.FinishExploration -> controllerState.finishExplorationInternal()
-          is ControllerMessage.SubmitAnswer ->
-            controllerState.submitAnswerInternal(message.userAnswer)
-          is ControllerMessage.HintIsRevealed ->
-            controllerState.submitHintIsRevealedInternal(message.hintIndex)
-          ControllerMessage.SolutionIsRevealed -> controllerState.submitSolutionIsRevealedInternal()
-          ControllerMessage.MoveToPreviousState -> controllerState.moveToPreviousStateInternal()
-          ControllerMessage.MoveToNextState -> controllerState.moveToNextStateInternal()
-          is ControllerMessage.ProcessSavedCheckpointResult ->
-            controllerState.processSaveCheckpointResult(
-              message.profileId,
-              message.topicId,
-              message.storyId,
-              message.explorationId,
-              message.lastPlayedTimestamp,
-              message.newCheckpointState
-            )
-          ControllerMessage.SaveCheckpoint -> controllerState.saveExplorationCheckpoint()
+
+          // If there's an active controller, ignore messages not tied to this session since
+          // leftovers from previous sessions may conflate the state of the active session.
+          val currentSessionId = controllerState?.sessionId
+          if (currentSessionId != null && message.sessionId != currentSessionId) continue
+
+          @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
+          val unused = when (message) {
+            is ControllerMessage.InitializeController -> {
+              // Ensure the state is completely recreated for each session to avoid leaking state
+              // across sessions.
+              controllerState = ControllerState(ExplorationProgress(), message.sessionId).also {
+                it.beginExplorationImpl(
+                  message.profileId,
+                  message.topicId,
+                  message.storyId,
+                  message.explorationId,
+                  message.shouldSavePartialProgress,
+                  message.explorationCheckpoint
+                )
+              }
+            }
+            is ControllerMessage.FinishExploration -> {
+              try {
+                // Ensure finish is always executed even if the controller state isn't yet
+                // initialized.
+                controllerState.finishExplorationImpl()
+              } finally {
+                // Ensure the controller state is always reset.
+                controllerState = null
+              }
+            }
+            is ControllerMessage.SubmitAnswer ->
+              initedControllerState.submitAnswerImpl(message.userAnswer)
+            is ControllerMessage.HintIsRevealed ->
+              initedControllerState.submitHintIsRevealedImpl(message.hintIndex)
+            is ControllerMessage.SolutionIsRevealed ->
+              initedControllerState.submitSolutionIsRevealedImpl()
+            is ControllerMessage.MoveToPreviousState ->
+              initedControllerState.moveToPreviousStateImpl()
+            is ControllerMessage.MoveToNextState -> initedControllerState.moveToNextStateImpl()
+            is ControllerMessage.ProcessSavedCheckpointResult ->
+              initedControllerState.processSaveCheckpointResult(
+                message.profileId,
+                message.topicId,
+                message.storyId,
+                message.explorationId,
+                message.lastPlayedTimestamp,
+                message.newCheckpointState
+              )
+            is ControllerMessage.SaveCheckpoint -> initedControllerState.saveExplorationCheckpoint()
+            is ControllerMessage.RecomputeStateAndNotify ->
+              initedControllerState.recomputeCurrentStateAndNotifyImpl()
+          }
+        } catch (e: Exception) {
+          exceptionsController.logNonFatalException(e)
+          oppiaLogger.w(
+            "ExplorationProgressController",
+            "Encountered exception while processing command: $message",
+            e
+          )
         }
       }
     }
@@ -381,7 +435,7 @@ class ExplorationProgressController @Inject constructor(
     check(controllerCommandQueue.offer(message), lazyFailureMessage)
   }
 
-  private suspend fun ControllerState.beginExplorationInternal(
+  private suspend fun ControllerState.beginExplorationImpl(
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -407,8 +461,8 @@ class ExplorationProgressController @Inject constructor(
       hintHandler.getCurrentHelpIndex().onEach {
         // Fire an event to save the latest progress state in a checkpoint to avoid cross-thread
         // synchronization being required (since the state of hints/solutions has changed).
-        controllerCommandQueue.send(ControllerMessage.SaveCheckpoint)
-        recomputeCurrentStateAndNotify()
+        controllerCommandQueue.send(ControllerMessage.SaveCheckpoint(sessionId))
+        recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
 
@@ -417,13 +471,11 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.finishExplorationInternal() {
+  private suspend fun ControllerState?.finishExplorationImpl() {
+    checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(
       FINISH_EXPLORATION_RESULT_PROVIDER_ID, finishExplorationResultFlow, recomputeState = false
     ) {
-      check(explorationProgress.playStage != NOT_PLAYING) {
-        "Cannot finish playing an exploration that hasn't yet been started"
-      }
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
     }
 
@@ -437,7 +489,7 @@ class ExplorationProgressController @Inject constructor(
     moveToNextStateResultFlow.value = AsyncResult.Pending()
   }
 
-  private suspend fun ControllerState.submitAnswerInternal(userAnswer: UserAnswer) {
+  private suspend fun ControllerState.submitAnswerImpl(userAnswer: UserAnswer) {
     tryOperation(SUBMIT_ANSWER_RESULT_PROVIDER_ID, submitAnswerResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot submit an answer if an exploration is not being played."
@@ -451,7 +503,7 @@ class ExplorationProgressController @Inject constructor(
 
       // Notify observers that the submitted answer is currently pending.
       explorationProgress.advancePlayStageTo(SUBMITTING_ANSWER)
-      recomputeCurrentStateAndNotify()
+      recomputeCurrentStateAndNotifySync()
 
       var answerOutcome: AnswerOutcome? = null
       try {
@@ -502,7 +554,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.submitHintIsRevealedInternal(hintIndex: Int) {
+  private suspend fun ControllerState.submitHintIsRevealedImpl(hintIndex: Int) {
     tryOperation(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID, submitHintRevealedResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot submit an answer if an exploration is not being played."
@@ -524,7 +576,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.submitSolutionIsRevealedInternal() {
+  private suspend fun ControllerState.submitSolutionIsRevealedImpl() {
     tryOperation(SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID, submitSolutionRevealedResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot submit an answer if an exploration is not being played."
@@ -546,7 +598,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.moveToPreviousStateInternal() {
+  private suspend fun ControllerState.moveToPreviousStateImpl() {
     tryOperation(MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID, moveToPreviousStateResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot navigate to a previous state if an exploration is not being played."
@@ -562,7 +614,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.moveToNextStateInternal() {
+  private suspend fun ControllerState.moveToNextStateImpl() {
     tryOperation(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID, moveToNextStateResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot navigate to a next state if an exploration is not being played."
@@ -594,7 +646,7 @@ class ExplorationProgressController @Inject constructor(
     try {
       resultFlow.value = AsyncResult.Success(operation())
       if (recomputeState) {
-        recomputeCurrentStateAndNotify()
+        recomputeCurrentStateAndNotifySync()
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
@@ -603,7 +655,29 @@ class ExplorationProgressController @Inject constructor(
     asyncDataSubscriptionManager.notifyChange(providerId)
   }
 
-  private suspend fun ControllerState.recomputeCurrentStateAndNotify() {
+  /**
+   * Immediately recomputes the current state & notifies it's been changed.
+   *
+   * This should only be called when the caller can guarantee that the current [ControllerState] is
+   * correct and up-to-date (i.e. that this is being called via a direct call path from the actor).
+   *
+   * All other cases must use [recomputeCurrentStateAndNotifyAsync].
+   */
+  private suspend fun ControllerState.recomputeCurrentStateAndNotifySync() {
+    recomputeCurrentStateAndNotifyImpl()
+  }
+
+  /**
+   * Sends a message to recompute the current state & notify it's been changed.
+   *
+   * This must be used in cases when the current [ControllerState] may no longer be up-to-date to
+   * ensure state isn't leaked across play sessions.
+   */
+  private suspend fun ControllerState.recomputeCurrentStateAndNotifyAsync() {
+    controllerCommandQueue.send(ControllerMessage.RecomputeStateAndNotify(sessionId))
+  }
+
+  private suspend fun ControllerState.recomputeCurrentStateAndNotifyImpl() {
     // Note the explicit notification here is chosen instead of emit() because emit() won't notify
     // observers if the value hasn't changed and it may be the case that previous state hasn't yet
     // been notified even though the flow looks different from the perspective of StateFlow.
@@ -728,9 +802,16 @@ class ExplorationProgressController @Inject constructor(
 
       // Schedule an event to process the checkpoint results in a synchronized environment to avoid
       // needing to lock on ControllerState.
-      val processEvent = ControllerMessage.ProcessSavedCheckpointResult(
-        profileId, topicId, storyId, explorationId, oppiaClock.getCurrentTimeMs(), checkpointState
-      )
+      val processEvent =
+        ControllerMessage.ProcessSavedCheckpointResult(
+          profileId,
+          topicId,
+          storyId,
+          explorationId,
+          oppiaClock.getCurrentTimeMs(),
+          checkpointState,
+          sessionId
+        )
       check(controllerCommandQueue.offer(processEvent)) {
         "Failed to schedule command for processing a saved checkpoint."
       }
@@ -791,7 +872,7 @@ class ExplorationProgressController @Inject constructor(
       explorationProgress.updateCheckpointState(newCheckpointState)
 
       // The ephemeral state technically changes when a checkpoint is successfully saved.
-      recomputeCurrentStateAndNotify()
+      recomputeCurrentStateAndNotifySync()
     }
   }
 
@@ -840,33 +921,44 @@ class ExplorationProgressController @Inject constructor(
   private fun <T> StateFlow<AsyncResult<T>>.convertToDataProvider(id: Any): DataProvider<T> =
     dataProviders.run { convertAsyncToSimpleDataProvider(id) }
 
-  private class ControllerState(val explorationProgress: ExplorationProgress) {
+  private class ControllerState(
+    val explorationProgress: ExplorationProgress, val sessionId: String
+  ) {
     lateinit var hintHandler: HintHandler
   }
 
   private sealed class ControllerMessage {
+    abstract val sessionId: String
+
     data class InitializeController(
       val profileId: ProfileId,
       val topicId: String,
       val storyId: String,
       val explorationId: String,
       val shouldSavePartialProgress: Boolean,
-      val explorationCheckpoint: ExplorationCheckpoint
+      val explorationCheckpoint: ExplorationCheckpoint,
+      override val sessionId: String
     ) : ControllerMessage()
 
-    object FinishExploration : ControllerMessage()
+    data class FinishExploration(override val sessionId: String) : ControllerMessage()
 
-    data class SubmitAnswer(val userAnswer: UserAnswer) : ControllerMessage()
+    data class SubmitAnswer(
+      val userAnswer: UserAnswer,
+      override val sessionId: String
+    ) : ControllerMessage()
 
-    data class HintIsRevealed(val hintIndex: Int) : ControllerMessage()
+    data class HintIsRevealed(
+      val hintIndex: Int,
+      override val sessionId: String
+    ) : ControllerMessage()
 
-    object SolutionIsRevealed : ControllerMessage()
+    data class SolutionIsRevealed(override val sessionId: String) : ControllerMessage()
 
-    object MoveToPreviousState : ControllerMessage()
+    data class MoveToPreviousState(override val sessionId: String) : ControllerMessage()
 
-    object MoveToNextState : ControllerMessage()
+    data class MoveToNextState(override val sessionId: String) : ControllerMessage()
 
-    object SaveCheckpoint : ControllerMessage()
+    data class SaveCheckpoint(override val sessionId: String) : ControllerMessage()
 
     data class ProcessSavedCheckpointResult(
       val profileId: ProfileId,
@@ -874,7 +966,10 @@ class ExplorationProgressController @Inject constructor(
       val storyId: String,
       val explorationId: String,
       val lastPlayedTimestamp: Long,
-      val newCheckpointState: CheckpointState
+      val newCheckpointState: CheckpointState,
+      override val sessionId: String
     ) : ControllerMessage()
+
+    data class RecomputeStateAndNotify(override val sessionId: String): ControllerMessage()
   }
 }

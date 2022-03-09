@@ -167,20 +167,6 @@ class QuestionTrainingControllerTest {
   }
 
   @Test
-  fun testController_startTrainingSession_noSkills_fails_logsException() {
-    setUpTestApplicationComponent(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
-    questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
-    testCoroutineDispatchers.runCurrent()
-
-    val exception = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Cannot start a new training session until the previous one is completed.")
-  }
-
-  @Test
   fun testStopTrainingSession_withoutStartingSession_fails_logsException() {
     setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.stopQuestionTrainingSession()
