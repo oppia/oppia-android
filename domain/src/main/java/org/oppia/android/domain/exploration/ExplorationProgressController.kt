@@ -90,23 +90,10 @@ class ExplorationProgressController @Inject constructor(
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   // TODO(#179): Add support for parameters.
-  // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
-  //  blocking cache to simplify state locking. However, doing this correctly requires a fix in
-  //  MediatorLiveData to avoid unexpected cancellations in chained cross-scope coroutines. Note
-  //  that this is also essential to ensure post-load operations can be queued before load completes
-  //  to avoid cases in tests where the exploration load operation needs to be fully finished before
-  //  performing a post-load operation. The current state of the controller is leaking this
-  //  implementation detail to tests.
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
   //  callback on the deferred returned on saving checkpoints. In this case ExplorationActivity will
   //  make decisions based on a value of the checkpointState which might not be up-to date.
-
-  // TODO: update documentation & callsites to properly handle that returned providers will initially provide pending states.
-  // TODO: update documentation to clarify that DataProviders will reset their state between submit calls.
-  // TODO: update documentation & PR description to explain that this now eagerly compute ephemeral state rather than lazily due to it being a better fit with flows.
-  // TODO: update relevant method documentations to indicate that data providers for operations do not necessarily need to be monitored for their action to complete.
-  // TODO: update documentation for here & questions to mention that finish only serves to cause operations to fail until the next start (but doesn't need to be called to start the session). Mention that pending doesn't mean they get queued (they actually get ignored, instead).
 
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentState).
@@ -157,6 +144,9 @@ class ExplorationProgressController @Inject constructor(
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
    * [DataProvider] indicating whether the start was successful.
+   *
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
    */
   internal fun beginExplorationAsync(
     profileId: ProfileId,
@@ -187,6 +177,11 @@ class ExplorationProgressController @Inject constructor(
   /**
    * Indicates that the current exploration being played is now completed, and returns a
    * [DataProvider] indicating whether the cleanup was successful.
+   *
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer] with one additional caveat: this method does not actually need to be called when
+   * a session is over. Calling it ensures all other [DataProvider]s reset to a correct
+   * out-of-session state, but subsequent calls to [beginExplorationAsync] will reset the session.
    */
   internal fun finishExplorationAsync(): DataProvider<Any?> {
     check(controllerCommandQueue.offer(ControllerMessage.FinishExploration(activeSessionId))) {
@@ -197,14 +192,6 @@ class ExplorationProgressController @Inject constructor(
 
   /**
    * Submits an answer to the current state and returns how the UI should respond to this answer.
-   *
-   * The returned [DataProvider] will only have at most two results posted: a pending result, and
-   * then a completed success/failure result. Failures in this case represent a failure of the app
-   * (possibly due to networking conditions). The app should report this error in a consumable way
-   * to the user so that they may take action on it. No additional values will be reported to the
-   * [DataProvider]. Each call to this method returns a new, distinct, [DataProvider] object that
-   * must be observed. Note also that the returned [DataProvider] is not guaranteed to begin with a
-   * pending state.
    *
    * If the app undergoes a configuration change, calling code should rely on the [DataProvider]
    * from [getCurrentState] to know whether a current answer is pending. That [DataProvider] will
@@ -217,14 +204,25 @@ class ExplorationProgressController @Inject constructor(
    * completed that card. The learner can then proceed from the current completed state to the next
    * pending state using [moveToNextState].
    *
-   * This method cannot be called until an exploration has started and [getCurrentState] returns a
-   * non-pending result or the result will fail. Calling code must also take care not to allow users
-   * to submit an answer while a previous answer is pending. That scenario will also result in a
-   * failed answer submission.
+   * ### Lifecycle behavior
+   * The returned [DataProvider] will initially be pending until the operation completes. Note that
+   * the same provider is returned for each call, so it can be monitored long-term for subsequent
+   * answer submissions (where new submissions and session restarts will change the provider to
+   * pending). Furthermore, the returned provider does not actually need to be monitored in order
+   * for the operation to complete, though it's recommended since [getCurrentState] can only be used
+   * to monitor the effects of the operation, not whether the operation itself succeeded.
+   *
+   * If this is called before a session begins it will return a provider that stays pending with no
+   * updates. The operation will also silently fail rather than queue up in these circumstances, so
+   * starting a session will not trigger an answer submission from an older call.
+   *
+   * Multiple subsequent calls during a valid session will queue up and have results delivered in
+   * order (though based on the eventual consistency nature of [DataProvider]s no assumptions can be
+   * made about whether all results will actually be received--[getCurrentState] should be used as
+   * the source of truth for the current state of the session).
    *
    * No assumptions should be made about the completion order of the returned [DataProvider] vs. the
-   * [DataProvider] from [getCurrentState]. Also note that the returned [DataProvider] will only
-   * have a single value and not be reused after that point.
+   * [DataProvider] from [getCurrentState].
    */
   fun submitAnswer(userAnswer: UserAnswer): DataProvider<AnswerOutcome> {
     sendCommandForOperation(
@@ -236,10 +234,13 @@ class ExplorationProgressController @Inject constructor(
   /**
    * Notifies the controller that the user wishes to reveal a hint.
    *
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
+   *
    * @param hintIndex index of the hint that was revealed in the hint list of the current pending
    *     state
-   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
-   *     payload of the result isn't relevant)
+   * @return a [DataProvider] that indicates success/failure of the operation (the actual payload of
+   *     the result isn't relevant)
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
     sendCommandForOperation(
@@ -253,8 +254,11 @@ class ExplorationProgressController @Inject constructor(
   /**
    * Notifies the controller that the user has revealed the solution to the current state.
    *
-   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
-   *     payload of the result isn't relevant)
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
+   *
+   * @return a [DataProvider] that indicates success/failure of the operation (the actual payload of
+   *     the result isn't relevant)
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
     sendCommandForOperation(
@@ -270,11 +274,14 @@ class ExplorationProgressController @Inject constructor(
    * this method will throw an exception. Calling code is responsible for ensuring this method is
    * only called when it's possible to navigate backward.
    *
-   * @return a one-time [DataProvider] indicating whether the movement to the previous state was
-   *     successful, or a failure if state navigation was attempted at an invalid time in the state
-   *     graph (e.g. if currently viewing the initial state of the exploration). It's recommended
-   *     that calling code only listen to this result for failures, and instead rely on
-   *     [getCurrentState] for observing a successful transition to another state.
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
+   *
+   * @return a [DataProvider] indicating whether the movement to the previous state was successful,
+   *     or a failure if state navigation was attempted at an invalid time in the state graph (e.g.
+   *     if currently viewing the initial state of the exploration). It's recommended that calling
+   *     code only listen to this result for failures, and instead rely on [getCurrentState] for
+   *     observing a successful transition to another state.
    */
   fun moveToPreviousState(): DataProvider<Any?> {
     sendCommandForOperation(
@@ -292,11 +299,11 @@ class ExplorationProgressController @Inject constructor(
    * that routes to a later state via [submitAnswer] in order for the current state to change to a
    * completed state before forward navigation can occur.
    *
-   * @return a one-time [DataProvider] indicating whether the movement to the next state was
-   *     successful, or a failure if state navigation was attempted at an invalid time in the state
-   *     graph (e.g. if the current state is pending or terminal). It's recommended that calling
-   *     code only listen to this result for failures, and instead rely on [getCurrentState] for
-   *     observing a successful transition to another state.
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
+   *
+   * @return a [DataProvider] indicating whether the movement to the next state was successful (see
+   *     [moveToPreviousState] for details on potential failure cases)
    */
   fun moveToNextState(): DataProvider<Any?> {
     sendCommandForOperation(
@@ -307,7 +314,9 @@ class ExplorationProgressController @Inject constructor(
 
   /**
    * Returns a [DataProvider] monitoring the current [EphemeralState] the learner is currently
-   * viewing. If this state corresponds to a a terminal state, then the learner has completed the
+   * viewing.
+   *
+   * If this state corresponds to a a terminal state, then the learner has completed the
    * exploration. Note that [moveToPreviousState] and [moveToNextState] will automatically update
    * observers of this data provider when the next state is navigated to.
    *
@@ -320,11 +329,15 @@ class ExplorationProgressController @Inject constructor(
    *
    * The underlying state returned by this function can only be changed by calls to
    * [moveToNextState] and [moveToPreviousState], or the exploration data controller if another
-   * exploration is loaded. UI code can be confident only calls from the UI layer will trigger state
-   * changes here to ensure atomicity between receiving and making state changes.
+   * exploration is loaded. UI code cannot assume that only calls from the UI layer will trigger
+   * state changes here since internal domain processes may also affect state (such as hint timers).
    *
    * This method is safe to be called before an exploration has started. If there is no ongoing
    * exploration, it should return a pending state.
+   *
+   * This method does not actually need to be called for the [EphemeralState] to be computed; it's
+   * always computed eagerly by other state-changing methods regardless of whether there's an active
+   * subscription to this method's returned [DataProvider].
    */
   fun getCurrentState(): DataProvider<EphemeralState> {
     val writtenTranslationContentLocale =
@@ -678,11 +691,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.recomputeCurrentStateAndNotifyImpl() {
-    // Note the explicit notification here is chosen instead of emit() because emit() won't notify
-    // observers if the value hasn't changed and it may be the case that previous state hasn't yet
-    // been notified even though the flow looks different from the perspective of StateFlow.
-    ephemeralStateFlow.value = retrieveCurrentStateAsync()
-    asyncDataSubscriptionManager.notifyChange(CURRENT_STATE_PROVIDER_ID)
+    ephemeralStateFlow.emit(retrieveCurrentStateAsync())
   }
 
   private suspend fun ControllerState.retrieveCurrentStateAsync(): AsyncResult<EphemeralState> {
@@ -921,15 +930,40 @@ class ExplorationProgressController @Inject constructor(
   private fun <T> StateFlow<AsyncResult<T>>.convertToDataProvider(id: Any): DataProvider<T> =
     dataProviders.run { convertAsyncToSimpleDataProvider(id) }
 
+  /**
+   * Represents the current synchronized state of the controller.
+   *
+   * This object's instance is tied directly to a single exploration session, and it's not
+   * thread-safe so all access must be synchronized.
+   *
+   * @property explorationProgress the [ExplorationProgress] corresponding to the session
+   * @property sessionId the GUID corresponding to the session
+   */
   private class ControllerState(
     val explorationProgress: ExplorationProgress, val sessionId: String
   ) {
+    /**
+     * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
+     * controller state.
+     */
     lateinit var hintHandler: HintHandler
   }
 
+  /**
+   * Represents a message that can be sent to [controllerCommandQueue] to process changes to
+   * [ControllerState] (since all changes must be synchronized).
+   *
+   * Messages are expected to be resolved serially (though their scheduling can occur across
+   * multiple threads, so order cannot be guaranteed until they're enqueued).
+   */
   private sealed class ControllerMessage {
+    /**
+     * The session ID corresponding to this message (the message is expected to be ignored if it
+     * doesn't correspond to an active session).
+     */
     abstract val sessionId: String
 
+    /** [ControllerMessage] for initializing a new play session. */
     data class InitializeController(
       val profileId: ProfileId,
       val topicId: String,
@@ -940,26 +974,48 @@ class ExplorationProgressController @Inject constructor(
       override val sessionId: String
     ) : ControllerMessage()
 
+    /** [ControllerMessage] for ending the current play session. */
     data class FinishExploration(override val sessionId: String) : ControllerMessage()
 
+    /** [ControllerMessage] for submitting a new [UserAnswer]. */
     data class SubmitAnswer(
       val userAnswer: UserAnswer,
       override val sessionId: String
     ) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] for indicating that the user revealed the hint corresponding to
+     * [hintIndex].
+     */
     data class HintIsRevealed(
       val hintIndex: Int,
       override val sessionId: String
     ) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] for indicating that the user revealed the solution for the current state.
+     */
     data class SolutionIsRevealed(override val sessionId: String) : ControllerMessage()
 
+    /** [ControllerMessage] to move to the previous state in the exploration. */
     data class MoveToPreviousState(override val sessionId: String) : ControllerMessage()
 
+    /** [ControllerMessage] to move to the next state in the exploration. */
     data class MoveToNextState(override val sessionId: String) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] to indicate that the session's current partial completion progress should
+     * be saved to disk.
+     *
+     * Note that this does not actually guarantee an update to the tracked progress of the
+     * exploration (see [ProcessSavedCheckpointResult]).
+     */
     data class SaveCheckpoint(override val sessionId: String) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] to ensure a successfully saved checkpoint is reflected in other parts of
+     * the app (e.g. that an exploration is considered 'in-progress' in such circumstances).
+     */
     data class ProcessSavedCheckpointResult(
       val profileId: ProfileId,
       val topicId: String,
@@ -970,6 +1026,13 @@ class ExplorationProgressController @Inject constructor(
       override val sessionId: String
     ) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] which recomputes the current [EphemeralState] and notifies subscribers of
+     * the [DataProvider] returned by [getCurrentState] of the change.
+     *
+     * This is only used in cases where an external operation trigger changes that are only
+     * reflected when recomputing the state (e.g. a new hint needing to be shown).
+     */
     data class RecomputeStateAndNotify(override val sessionId: String): ControllerMessage()
   }
 }

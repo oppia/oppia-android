@@ -122,8 +122,7 @@ class ExplorationProgressControllerTest {
   //  - testSubmitAnswer_whileSubmittingAnotherAnswer_failsWithError
   //  - testMoveToPrevious_whileSubmittingAnswer_failsWithError
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var context: Context
   @Inject lateinit var explorationDataController: ExplorationDataController

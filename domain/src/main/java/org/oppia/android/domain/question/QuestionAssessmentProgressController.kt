@@ -96,8 +96,6 @@ class QuestionAssessmentProgressController @Inject constructor(
   // TODO(#248): Add support for the assessment ending prematurely due to learner demonstrating
   //  sufficient proficiency.
 
-  // TODO: update the documentation in this class similar to the changes needed in ExplorationProgressController.
-
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentQuestion).
   private lateinit var profileId: ProfileId
@@ -158,6 +156,9 @@ class QuestionAssessmentProgressController @Inject constructor(
   /**
    * Begins a training session based on the specified question list data provider and [ProfileId],
    * and returns a [DataProvider] indicating whether the session was successfully started.
+   *
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
    */
   internal fun beginQuestionTrainingSession(
     questionsListDataProvider: DataProvider<List<Question>>,
@@ -180,6 +181,12 @@ class QuestionAssessmentProgressController @Inject constructor(
   /**
    * Ends the current training session and returns a [DataProvider] that indicates whether it was
    * successfully ended.
+   *
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer] with one additional caveat: this method does not actually need to be called when
+   * a session is over. Calling it ensures all other [DataProvider]s reset to a correct
+   * out-of-session state, but subsequent calls to [beginQuestionTrainingSession] will reset the
+   * session.
    */
   internal fun finishQuestionTrainingSession(): DataProvider<Any?> {
     // Reset the base questions list provider so that the ephemeral question has no question list to
@@ -194,15 +201,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
-   * Submits an answer to the current question and returns how the UI should respond to this answer.
-   *
-   * The returned [DataProvider] will only have at most two results posted: a pending result, and
-   * then a completed success/failure result. Failures in this case represent a failure of the app
-   * (possibly due to networking conditions). The app should report this error in a consumable way
-   * to the user so that they may take action on it. No additional values will be reported to the
-   * [DataProvider]. Each call to this method returns a new, distinct, [DataProvider] object that
-   * must be observed. Note also that the returned [DataProvider] is not guaranteed to begin with a
-   * pending state.
+   * Submits an answer to the current state and returns how the UI should respond to this answer.
    *
    * If the app undergoes a configuration change, calling code should rely on the [DataProvider]
    * from [getCurrentQuestion] to know whether a current answer is pending. That [DataProvider] will
@@ -214,14 +213,25 @@ class QuestionAssessmentProgressController @Inject constructor(
    * completed question since the learner completed that question card. The learner can then proceed
    * from the current completed question to the next pending question using [moveToNextQuestion].
    *
-   * This method cannot be called until a training session has started and [getCurrentQuestion]
-   * returns a non-pending result or the result will fail. Calling code must also take care not to
-   * allow users to submit an answer while a previous answer is pending. That scenario will also
-   * result in a failed answer submission.
+   * ### Lifecycle behavior
+   * The returned [DataProvider] will initially be pending until the operation completes. Note that
+   * the same provider is returned for each call, so it can be monitored long-term for subsequent
+   * answer submissions (where new submissions and session restarts will change the provider to
+   * pending). Furthermore, the returned provider does not actually need to be monitored in order
+   * for the operation to complete, though it's recommended since [getCurrentQuestion] can only be
+   * used to monitor the effects of the operation, not whether the operation itself succeeded.
+   *
+   * If this is called before a session begins it will return a provider that stays pending with no
+   * updates. The operation will also silently fail rather than queue up in these circumstances, so
+   * starting a session will not trigger an answer submission from an older call.
+   *
+   * Multiple subsequent calls during a valid session will queue up and have results delivered in
+   * order (though based on the eventual consistency nature of [DataProvider]s no assumptions can be
+   * made about whether all results will actually be received--[getCurrentQuestion] should be used
+   * as the source of truth for the current state of the session).
    *
    * No assumptions should be made about the completion order of the returned [DataProvider] vs. the
-   * [DataProvider] from [getCurrentQuestion]. Also note that the returned [DataProvider] will only
-   * have a single value and not be reused after that point.
+   * [DataProvider] from [getCurrentQuestion].
    */
   fun submitAnswer(answer: UserAnswer): DataProvider<AnsweredQuestionOutcome> {
     check(controllerCommandQueue.offer(ControllerMessage.SubmitAnswer(answer, activeSessionId))) {
@@ -233,10 +243,13 @@ class QuestionAssessmentProgressController @Inject constructor(
   /**
    * Notifies the controller that the user wishes to reveal a hint.
    *
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
+   *
    * @param hintIndex index of the hint that was revealed in the hint list of the current pending
    *     state
-   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
-   *     payload of the result isn't relevant)
+   * @return a [DataProvider] that indicates success/failure of the operation (the actual payload of
+   *     the result isn't relevant)
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
     check(controllerCommandQueue.offer(
@@ -248,8 +261,11 @@ class QuestionAssessmentProgressController @Inject constructor(
   /**
    * Notifies the controller that the user has revealed the solution to the current state.
    *
-   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
-   *     payload of the result isn't relevant)
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
+   *
+   * @return a [DataProvider] that indicates success/failure of the operation (the actual payload of
+   *     the result isn't relevant)
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
     check(controllerCommandQueue.offer(ControllerMessage.SolutionIsRevealed(activeSessionId))) {
@@ -266,11 +282,14 @@ class QuestionAssessmentProgressController @Inject constructor(
    * Note that if the current question is pending, the user needs to submit a correct answer via
    * [submitAnswer] before forward navigation can occur.
    *
-   * @return a one-time [DataProvider] indicating whether the movement to the next question was
-   *     successful, or a failure if question navigation was attempted at an invalid time (such as
-   *     if the current question is pending or terminal). It's recommended that calling code only
-   *     listen to this result for failures, and instead rely on [getCurrentQuestion] for observing
-   *     a successful transition to another question.
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer].
+   *
+   * @return a [DataProvider] indicating whether the movement to the next question was successful,
+   *     or a failure if question navigation was attempted at an invalid time (such as if the
+   *     current question is pending or terminal). It's recommended that calling code only listen to
+   *     this result for failures, and instead rely on [getCurrentQuestion] for observing a
+   *     successful transition to another question.
    */
   fun moveToNextQuestion(): DataProvider<Any?> {
     check(controllerCommandQueue.offer(ControllerMessage.MoveToNextQuestion(activeSessionId))) {
@@ -281,9 +300,11 @@ class QuestionAssessmentProgressController @Inject constructor(
 
   /**
    * Returns a [DataProvider] monitoring the current [EphemeralQuestion] the learner is currently
-   * viewing. If this state corresponds to a a terminal state, then the learner has completed the
-   * training session. Note that [moveToNextQuestion] will automatically update observers of this
-   * data provider when the next question is navigated to.
+   * viewing.
+   *
+   * If this state corresponds to a terminal state, then the learner has completed the training
+   * session. Note that [moveToNextQuestion] will automatically update observers of this data
+   * provider when the next question is navigated to.
    *
    * This [DataProvider] may switch from a completed to a pending result during transient operations
    * like submitting an answer via [submitAnswer]. Calling code should be made resilient to this by
@@ -294,12 +315,16 @@ class QuestionAssessmentProgressController @Inject constructor(
    *
    * The underlying question returned by this function can only be changed by calls to
    * [moveToNextQuestion], or the question training controller if another question session begins.
-   * UI code can be confident only calls from the UI layer will trigger changes here to ensure
-   * atomicity between receiving and making question state changes.
+   * UI code cannot assume that only calls from the UI layer will trigger state changes here since
+   * internal domain processes may also affect state (such as hint timers).
    *
    * This method is safe to be called before a training session has started. If there is no ongoing
-   * session, it should return a pending state, which means the returned value can switch from a
+   * session, it will return a pending state, which means the returned value can switch from a
    * success or failure state back to pending.
+   *
+   * This method does not actually need to be called for the [EphemeralQuestion] to be computed;
+   * it's always computed eagerly by other state-changing methods regardless of whether there's an
+   * active subscription to this method's returned [DataProvider].
    */
   fun getCurrentQuestion(): DataProvider<EphemeralQuestion> {
     val writtenTranslationContentLocale =
@@ -317,13 +342,18 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  // TODO: update documentation to mention subsequent calls will only return based on last call.
   /**
    * Returns a [DataProvider] monitoring the [UserAssessmentPerformance] corresponding to the user's
    * computed overall performance this practice session.
    *
    * This method should only be called at the end of a practice session, after all the questions
    * have been completed.
+   *
+   * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
+   * [submitAnswer], which in practice means that subsequent calls to this function may result in
+   * multiple [UserAssessmentPerformance]s being computed and sent to the returned [DataProvider],
+   * though per eventual consistency it's expected the final result received will always be
+   * corresponding to the most recent call to this method.
    */
   fun calculateScores(skillIdList: List<String>): DataProvider<UserAssessmentPerformance> {
     check(
@@ -612,34 +642,27 @@ class QuestionAssessmentProgressController @Inject constructor(
    * Sends a message to recompute the current question & notify it's been changed.
    *
    * This must be used in cases when the current [ControllerState] may no longer be up-to-date to
-   * ensure state isn't leaked across play sessions.
+   * ensure state isn't leaked across training sessions.
    */
   private suspend fun ControllerState.recomputeCurrentQuestionAndNotifyAsync() {
     controllerCommandQueue.send(ControllerMessage.RecomputeQuestionAndNotify(sessionId))
   }
-  
+
   private suspend fun ControllerState.recomputeCurrentQuestionAndNotifyImpl() {
-    // Note the explicit notification here is chosen instead of emit() because emit() won't notify
-    // observers if the value hasn't changed and it may be the case that previous question hasn't
-    // yet been notified even though the flow looks different from the perspective of StateFlow.
-    // This also ensures the base questions list is loaded and the session is fully initialized.
-    ephemeralQuestionFlow.value = if (isQuestionsListInitialized) {
-      // Only compute the ephemeral question if there's a questions list loaded (otherwise the
-      // controller is in a pending state).
-      retrieveCurrentQuestionAsync(questionsList)
-    } else AsyncResult.Pending()
-    asyncDataSubscriptionManager.notifyChange(CURRENT_QUESTION_PROVIDER_ID)
+    ephemeralQuestionFlow.emit(
+      if (isQuestionsListInitialized) {
+        // Only compute the ephemeral question if there's a questions list loaded (otherwise the
+        // controller is in a pending state).
+        retrieveCurrentQuestionAsync(questionsList)
+      } else AsyncResult.Pending()
+    )
   }
 
   private suspend fun ControllerState.recomputeUserAssessmentPerformanceAndNotify(
     skillIdList: List<String>
   ) {
-    // See the message in recomputeCurrentQuestionAndNotify for details on the notification strategy
-    // used here.
-    val scoreCalculator =
-      scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
-    calculateScoresFlow.value = AsyncResult.Success(scoreCalculator.computeAll())
-    asyncDataSubscriptionManager.notifyChange(CALCULATE_SCORES_PROVIDER_ID)
+    val calculator = scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
+    calculateScoresFlow.emit(AsyncResult.Success(calculator.computeAll()))
   }
 
   private suspend fun ControllerState.retrieveCurrentQuestionAsync(
@@ -722,44 +745,105 @@ class QuestionAssessmentProgressController @Inject constructor(
   private fun <T> StateFlow<AsyncResult<T>>.convertToDataProvider(id: Any): DataProvider<T> =
     dataProviders.run { convertAsyncToSimpleDataProvider(id) }
 
+  /**
+   * Represents the current synchronized state of the controller.
+   *
+   * This object's instance is tied directly to a single training session, and it's not thread-safe
+   * so all access must be synchronized.
+   *
+   * @property progress the [QuestionAssessmentProgress] corresponding to the session
+   * @property sessionId the GUID corresponding to the session
+   */
   private class ControllerState(
     val progress: QuestionAssessmentProgress = QuestionAssessmentProgress(), val sessionId: String
   ) {
+    /**
+     * The [HintHandler] used to monitor and trigger hints in the training session corresponding to
+     * this controller state.
+     */
     lateinit var hintHandler: HintHandler
+
+    /**
+     * The list of [Question]s currently being played in the training session.
+     *
+     * Because this is updated based on [ControllerMessage.ReceiveQuestionList], it may not be
+     * initialized at the beginning of a training session. Callers should check
+     * [isQuestionsListInitialized] prior to accessing this field.
+     */
     lateinit var questionsList: List<Question>
+
+    /** Indicates whether [questionsList] is initialized with values. */
     val isQuestionsListInitialized: Boolean
       get() = ::questionsList.isInitialized
   }
 
+  /**
+   * Represents a message that can be sent to [controllerCommandQueue] to process changes to
+   * [ControllerState] (since all changes must be synchronized).
+   *
+   * Messages are expected to be resolved serially (though their scheduling can occur across
+   * multiple threads, so order cannot be guaranteed until they're enqueued).
+   */
   private sealed class ControllerMessage {
+    /**
+     * The session ID corresponding to this message (the message is expected to be ignored if it
+     * doesn't correspond to an active session).
+     */
     abstract val sessionId: String
 
+    /** [ControllerMessage] for initializing a new training session. */
     data class StartInitializingController(
       val profileId: ProfileId, override val sessionId: String
     ) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] for finishing the initialization of the training session by providing a
+     * list of [Question]s to play.
+     */
     data class ReceiveQuestionList(
       val questionsList: List<Question>, override val sessionId: String
     ) : ControllerMessage()
 
+    /** [ControllerMessage] for ending the current training session. */
     data class FinishSession(override val sessionId: String) : ControllerMessage()
 
+    /** [ControllerMessage] for submitting a new [UserAnswer]. */
     data class SubmitAnswer(
       val userAnswer: UserAnswer, override val sessionId: String
     ) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] for indicating that the user revealed the hint corresponding to
+     * [hintIndex].
+     */
     data class HintIsRevealed(
       val hintIndex: Int, override val sessionId: String
     ) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] for indicating that the user revealed the solution for the current
+     * question.
+     */
     data class SolutionIsRevealed(override val sessionId: String) : ControllerMessage()
 
+    /** [ControllerMessage] to move to the next question in the training session. */
     data class MoveToNextQuestion(override val sessionId: String) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] to calculate the current scores of the training session by computing a
+     * new [UserAssessmentPerformance].
+     */
     data class CalculateScores(
       val skillIdList: List<String>, override val sessionId: String
     ) : ControllerMessage()
 
+    /**
+     * [ControllerMessage] which recomputes the current [EphemeralQuestion] and notifies subscribers
+     * of the [DataProvider] returned by [getCurrentQuestion] of the change.
+     *
+     * This is only used in cases where an external operation trigger changes that are only
+     * reflected when recomputing the question (e.g. a new hint needing to be shown).
+     */
     data class RecomputeQuestionAndNotify(override val sessionId: String): ControllerMessage()
   }
 }

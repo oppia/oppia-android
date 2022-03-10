@@ -54,6 +54,7 @@ oppia_android_test(
         ":dagger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
+        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",

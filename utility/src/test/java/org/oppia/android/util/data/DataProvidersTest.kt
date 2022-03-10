@@ -44,6 +44,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import org.oppia.android.testing.data.DataProviderTestMonitor
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
@@ -68,41 +72,23 @@ private const val COMBINED_STR_VALUE_02 = "I used to be indecisive. At least I t
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DataProvidersTest.TestApplication::class)
 class DataProvidersTest {
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
-  @Mock
-  lateinit var mockStringLiveDataObserver: Observer<AsyncResult<String>>
-
-  @Mock
-  lateinit var mockIntLiveDataObserver: Observer<AsyncResult<Int>>
-
-  @Captor
-  lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
-
-  @Captor
-  lateinit var intResultCaptor: ArgumentCaptor<AsyncResult<Int>>
+  @Mock lateinit var mockStringLiveDataObserver: Observer<AsyncResult<String>>
+  @Mock lateinit var mockIntLiveDataObserver: Observer<AsyncResult<Int>>
+  @Captor lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
+  @Captor lateinit var intResultCaptor: ArgumentCaptor<AsyncResult<Int>>
 
   private var inMemoryCachedStr: String? = null
   private var inMemoryCachedStr2: String? = null
@@ -2712,9 +2698,525 @@ class DataProvidersTest {
     assertThat(exception).hasMessageThat().contains("Combine failure")
   }
 
-  private fun transformString(str: String): Int {
-    return str.length
+  @Test
+  fun testConvertToSimpleDataProvider_singletonFlow_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    assertThat(result).isEqualTo("test str")
   }
+
+  @Test
+  fun testConvertToSimpleDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
+    val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider should not be changed again since the flow didn't change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertToSimpleDataProvider_mutableFlow_flowChanges_providerNotChanged() {
+    val mutableFlow = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = "new str"
+
+    // The provider should not be changed again since the flow isn't being monitored.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertToSimpleDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
+    val mutableFlow = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = "new str"
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The flow changed and it was explicitly notified, so the new value should be received.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_singletonFlow_pending_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> = MutableStateFlow(AsyncResult.Pending())
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_singletonFlow_success_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Success("test str"))
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    assertThat(result).isEqualTo("test str")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_singletonFlow_failure_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Failure(IllegalStateException("Some internal failure")))
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val error = monitorFactory.waitForNextFailureResult(dataProvider)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider should not be changed again since the flow didn't change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_mutableFlow_flowChanges_providerNotChanged() {
+    val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+
+    // The provider should not be changed again since the flow isn't being monitored.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_mutableFlow_flowChanges_notifyProv_providerChanged() {
+    val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The flow changed and it was explicitly notified, so the new value should be received.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowPendingToSuccess_andNotify_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The provider's value has changed.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowPendingToFailure_andNotify_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Failure(IllegalStateException("Some internal failure"))
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The provider's value has changed.
+    val error = monitor.ensureNextResultIsFailing()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowSuccessToPending_andNotify_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Pending()
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowFailureToPending_andNotify_providerChanged() {
+    val mutableFlow =
+      MutableStateFlow<AsyncResult<String>>(
+        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+      )
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Pending()
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowSuccessToFailure_andNotify_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Failure(IllegalStateException("Some internal failure"))
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The provider's value has changed.
+    val error = monitor.ensureNextResultIsFailing()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowFailureToSuccess_andNotify_providerChanged() {
+    val mutableFlow =
+      MutableStateFlow<AsyncResult<String>>(
+        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+      )
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The provider's value has changed.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertToAutomaticDataProvider_singletonFlow_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    assertThat(result).isEqualTo("test str")
+  }
+
+  @Test
+  fun testConvertToAutomaticDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
+    val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider should not be changed again since the flow didn't change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertToAutomaticDataProvider_mutableFlow_flowChanges_providerChanged() {
+    val mutableFlow = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = "new str"
+
+    // The provider should be changed since it's being automatically monitored.
+    val result = monitor.waitForNextSuccessResult()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertToAutomaticDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
+    val mutableFlow = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = "new str"
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The flow changed and it was explicitly notified, so the new value should be received.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_singletonFlow_pending_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> = MutableStateFlow(AsyncResult.Pending())
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_singletonFlow_success_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Success("test str"))
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    assertThat(result).isEqualTo("test str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_singletonFlow_failure_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Failure(IllegalStateException("Some internal failure")))
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val error = monitorFactory.waitForNextFailureResult(dataProvider)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider should not be changed again since the flow didn't change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_mutableFlow_flowChanges_providerChanged() {
+    val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+
+    // The provider should be changed since it's being automatically monitored.
+    val result = monitor.waitForNextSuccessResult()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
+    val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The flow changed and it was explicitly notified, so the new value should be received.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowPendingToSuccess_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextSuccessResult()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowPendingToFailure_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Failure(IllegalStateException("Some internal failure"))
+
+    // The provider's value has changed.
+    val error = monitor.waitForNextFailingResult()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowSuccessToPending_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Pending()
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowFailureToPending_providerChanged() {
+    val mutableFlow =
+      MutableStateFlow<AsyncResult<String>>(
+        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+      )
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Pending()
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowSuccessToFailure_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Failure(IllegalStateException("Some internal failure"))
+
+    // The provider's value has changed.
+    val error = monitor.waitForNextFailingResult()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowFailureToSuccess_providerChanged() {
+    val mutableFlow =
+      MutableStateFlow<AsyncResult<String>>(
+        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+      )
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextSuccessResult()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  private fun transformString(str: String): Int = str.length
 
   /**
    * Transforms the specified string into an integer in the same way as [transformString], except in
@@ -2736,9 +3238,7 @@ class DataProvidersTest {
     return AsyncResult.Success(deferred.getCompleted())
   }
 
-  private fun combineStrings(str1: String, str2: String): String {
-    return "$str1 $str2"
-  }
+  private fun combineStrings(str1: String, str2: String): String = "$str1 $str2"
 
   /**
    * Combines the specified strings into a new string in the same way as [combineStrings], except in
