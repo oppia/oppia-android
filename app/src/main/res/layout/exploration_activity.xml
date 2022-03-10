@@ -28,7 +28,7 @@
         android:id="@+id/exploration_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppia_primary"
+        android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationIcon="@drawable/ic_close_white_24dp">

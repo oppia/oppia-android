@@ -48,7 +48,7 @@
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
-      android:textColor="@color/oppia_primary_text"
+      android:textColor="@color/question_player_activity_textview_highlighted_color"
       android:textSize="16sp"
       android:visibility="@{htmlContent.length() > 0 ? View.VISIBLE : View.GONE, default=gone}"
       app:explorationSplitViewPaddingApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"

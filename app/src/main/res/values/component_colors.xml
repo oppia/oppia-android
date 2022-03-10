@@ -5,6 +5,8 @@
   <!-- Themes.xml -->
   <color name="shared_activity_status_bar_color">@color/status_bar_color</color>
   <color name="shared_activity_action_bar_color">@color/action_bar_color</color>
+  <color name="shared_activity_dialog_background_color">@color/container_background_color</color>
+  <color name="shared_activity_dialog_title_color">@color/dialog_primary_text_color</color>
   <!-- Styles.xml -->
   <color name="shared_text_view_text_color">@color/primary_text_color</color>
   <color name="shared_text_view_heading_text_color">@color/highlighted_text_color</color>
@@ -36,4 +38,12 @@
   <color name="admin_pin_activity_layout_background_color">@color/background_color</color>
   <!-- Pin Password Activity -->
   <color name="pin_password_activity_layout_background_color">@color/background_color</color>
+  <!-- QuestionPlayerActivity -->
+  <color name="question_player_activity_layout_background_color">@color/primary_background_color</color>
+  <color name="question_player_activity_layout_container_color">@color/container_background_color</color>
+  <color name="question_player_activity_textview_highlighted_color">@color/highlighted_text_color</color>
+  <color name="question_player_activity_textview_secondary_color">@color/secondary_text_color</color>
+  <!-- ExplorationActivity -->
+  <color name="exploration_activity_layout_background_color">@color/primary_background_color</color>
+  <color name="exploration_activity_layout_container_color">@color/container_background_color</color>
 </resources>
