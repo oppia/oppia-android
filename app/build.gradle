@@ -137,7 +137,7 @@ dependencies {
       'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1',
       'org.mockito:mockito-core:2.7.22',
   )
   compileOnly(

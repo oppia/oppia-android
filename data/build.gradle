@@ -70,7 +70,7 @@ dependencies {
       'com.google.protobuf:protobuf-javalite:3.17.3',
       'com.squareup.moshi:moshi-kotlin:1.11.0',
       'com.squareup.okhttp3:okhttp:4.1.0',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1',
   )
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
