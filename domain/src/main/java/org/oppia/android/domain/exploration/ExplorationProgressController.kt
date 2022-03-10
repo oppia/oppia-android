@@ -1,7 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import java.lang.IllegalStateException
-import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -37,6 +35,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -940,7 +939,8 @@ class ExplorationProgressController @Inject constructor(
    * @property sessionId the GUID corresponding to the session
    */
   private class ControllerState(
-    val explorationProgress: ExplorationProgress, val sessionId: String
+    val explorationProgress: ExplorationProgress,
+    val sessionId: String
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
@@ -1033,6 +1033,6 @@ class ExplorationProgressController @Inject constructor(
      * This is only used in cases where an external operation trigger changes that are only
      * reflected when recomputing the state (e.g. a new hint needing to be shown).
      */
-    data class RecomputeStateAndNotify(override val sessionId: String): ControllerMessage()
+    data class RecomputeStateAndNotify(override val sessionId: String) : ControllerMessage()
   }
 }

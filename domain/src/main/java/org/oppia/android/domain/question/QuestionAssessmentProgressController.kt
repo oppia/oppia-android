@@ -1,6 +1,5 @@
 package org.oppia.android.domain.question
 
-import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -8,6 +7,8 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
@@ -19,6 +20,7 @@ import org.oppia.android.app.model.UserAssessmentPerformance
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.classify.ClassificationResult.OutcomeWithMisconception
 import org.oppia.android.domain.hintsandsolution.HintHandler
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.android.domain.translation.TranslationController
@@ -31,11 +33,9 @@ import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.threading.BackgroundDispatcher
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import org.oppia.android.domain.oppialogger.OppiaLogger
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID =
   "QuestionAssessmentProgressController.begin_session_result"
@@ -252,8 +252,10 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     the result isn't relevant)
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
-    check(controllerCommandQueue.offer(
-      ControllerMessage.HintIsRevealed(hintIndex, activeSessionId))
+    check(
+      controllerCommandQueue.offer(
+        ControllerMessage.HintIsRevealed(hintIndex, activeSessionId)
+      )
     ) { "Failed to schedule command for submitting a hint reveal" }
     return submitHintRevealedResultDataProvider
   }
@@ -625,7 +627,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
     asyncDataSubscriptionManager.notifyChange(providerId)
   }
-  
+
   /**
    * Immediately recomputes the current question & notifies it's been changed.
    *
@@ -755,7 +757,8 @@ class QuestionAssessmentProgressController @Inject constructor(
    * @property sessionId the GUID corresponding to the session
    */
   private class ControllerState(
-    val progress: QuestionAssessmentProgress = QuestionAssessmentProgress(), val sessionId: String
+    val progress: QuestionAssessmentProgress = QuestionAssessmentProgress(),
+    val sessionId: String
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the training session corresponding to
@@ -793,7 +796,8 @@ class QuestionAssessmentProgressController @Inject constructor(
 
     /** [ControllerMessage] for initializing a new training session. */
     data class StartInitializingController(
-      val profileId: ProfileId, override val sessionId: String
+      val profileId: ProfileId,
+      override val sessionId: String
     ) : ControllerMessage()
 
     /**
@@ -801,7 +805,8 @@ class QuestionAssessmentProgressController @Inject constructor(
      * list of [Question]s to play.
      */
     data class ReceiveQuestionList(
-      val questionsList: List<Question>, override val sessionId: String
+      val questionsList: List<Question>,
+      override val sessionId: String
     ) : ControllerMessage()
 
     /** [ControllerMessage] for ending the current training session. */
@@ -809,7 +814,8 @@ class QuestionAssessmentProgressController @Inject constructor(
 
     /** [ControllerMessage] for submitting a new [UserAnswer]. */
     data class SubmitAnswer(
-      val userAnswer: UserAnswer, override val sessionId: String
+      val userAnswer: UserAnswer,
+      override val sessionId: String
     ) : ControllerMessage()
 
     /**
@@ -817,7 +823,8 @@ class QuestionAssessmentProgressController @Inject constructor(
      * [hintIndex].
      */
     data class HintIsRevealed(
-      val hintIndex: Int, override val sessionId: String
+      val hintIndex: Int,
+      override val sessionId: String
     ) : ControllerMessage()
 
     /**
@@ -834,7 +841,8 @@ class QuestionAssessmentProgressController @Inject constructor(
      * new [UserAssessmentPerformance].
      */
     data class CalculateScores(
-      val skillIdList: List<String>, override val sessionId: String
+      val skillIdList: List<String>,
+      override val sessionId: String
     ) : ControllerMessage()
 
     /**
@@ -844,6 +852,6 @@ class QuestionAssessmentProgressController @Inject constructor(
      * This is only used in cases where an external operation trigger changes that are only
      * reflected when recomputing the question (e.g. a new hint needing to be shown).
      */
-    data class RecomputeQuestionAndNotify(override val sessionId: String): ControllerMessage()
+    data class RecomputeQuestionAndNotify(override val sessionId: String) : ControllerMessage()
   }
 }

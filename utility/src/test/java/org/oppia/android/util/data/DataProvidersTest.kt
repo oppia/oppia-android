@@ -13,6 +13,8 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,6 +31,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -44,10 +47,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import org.oppia.android.testing.data.DataProviderTestMonitor
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
