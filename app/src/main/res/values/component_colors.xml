@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="shared_edit_text_cursor_color">@color/primary_text_color</color>
-  <color name="shared_activity_toolbar_color">@color/toolbar_color</color>
+  <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <!-- Themes.xml -->
   <color name="shared_activity_status_bar_color">@color/status_bar_color</color>
   <color name="shared_activity_action_bar_color">@color/action_bar_color</color>
   <color name="shared_activity_dialog_background_color">@color/container_background_color</color>
   <color name="shared_activity_dialog_title_color">@color/dialog_primary_text_color</color>
+  <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
+  <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
   <!-- Styles.xml -->
-  <color name="shared_text_view_text_color">@color/primary_text_color</color>
-  <color name="shared_text_view_heading_text_color">@color/highlighted_text_color</color>
-  <color name="shared_text_input_layout_text_color">@color/primary_text_color</color>
-  <color name="shared_text_input_layout_stroke_color">@color/primary_text_color</color>
-  <color name="shared_text_input_edit_text_text_color">@color/primary_text_color</color>
-  <color name="shared_input_interaction_edit_text_text_color">@color/primary_text_color</color>
-  <color name="shared_text_input_layout_background_color">@color/text_input_background_color</color>
-  <color name="shared_text_input_layout_error_color">@color/error_color</color>
+  <color name="component_color_shared_text_view_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_input_interaction_edit_text_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_text_input_layout_background_color">@color/color_palette_text_input_background_color</color>
+  <color name="component_color_shared_text_input_layout_error_color">@color/color_palette_error_color</color>
   <!-- Admin Auth Activity -->
-  <color name="admin_auth_secondary_text_color">@color/description_text_color</color>
-  <color name="admin_auth_layout_background_color">@color/background_color</color>
-  <color name="admin_auth_activity_toolbar_color">@color/toolbar_color</color>
+  <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
+  <color name="component_color_admin_auth_layout_background_color">@color/color_palette_background_color</color>
+  <color name="component_color_admin_auth_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <!-- Add Profile Activity -->
-  <color name="add_profile_activity_label_text_color">@color/primary_text_color</color>
-  <color name="add_profile_activity_switch_text_color">@color/dark_text_color</color>
-  <color name="add_profile_activity_switch_description_color">@color/description_text_color</color>
-  <color name="add_profile_activity_layout_background_color">@color/background_color</color>
+  <color name="component_color_add_profile_activity_label_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_add_profile_activity_switch_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
+  <color name="component_color_add_profile_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Administrator Controls -->
-  <color name="admin_controls_background_color">@color/dark_background_color</color>
-  <color name="admin_controls_options_background_color">@color/container_background_color</color>
-  <color name="admin_controls_options_highlighted_background_color">@color/highlighted_background_color</color>
-  <color name="admin_controls_sub_heading_color">@color/primary_color</color>
-  <color name="admin_controls_switch_description_color">@color/description_text_color</color>
-  <color name="admin_controls_menu_options_text_color">@color/dark_text_color</color>
-  <color name="admin_controls_sub_heading_background_color">@color/dark_background_color</color>
-  <color name="admin_controls_view_divider_color">@color/dark_background_color</color>
+  <color name="component_color_admin_controls_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_admin_controls_options_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_admin_controls_options_highlighted_background_color">@color/color_palette_highlighted_background_color</color>
+  <color name="component_color_admin_controls_sub_heading_color">@color/color_palette_primary_color</color>
+  <color name="component_color_admin_controls_switch_description_color">@color/color_palette_description_text_color</color>
+  <color name="component_color_admin_controls_menu_options_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_admin_controls_sub_heading_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_admin_controls_view_divider_color">@color/color_palette_dark_background_color</color>
   <!-- Admin Pin Activity -->
-  <color name="admin_pin_activity_layout_background_color">@color/background_color</color>
+  <color name="component_color_admin_pin_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Pin Password Activity -->
   <color name="pin_password_activity_layout_background_color">@color/background_color</color>
   <!-- QuestionPlayerActivity -->
@@ -46,4 +48,6 @@
   <!-- ExplorationActivity -->
   <color name="exploration_activity_layout_background_color">@color/primary_background_color</color>
   <color name="exploration_activity_layout_container_color">@color/container_background_color</color>
+
+  <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
 </resources>

@@ -183,7 +183,7 @@
         android:lineSpacingExtra="1dp"
         android:text="@string/correct"
         android:textAllCaps="true"
-        android:textColor="@color/green_shade"
+        android:textColor="@color/color_def_green_shade"
         android:textSize="20sp"
         android:visibility="invisible" />
 
