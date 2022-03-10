@@ -23,7 +23,7 @@
       android:layout_width="160dp"
       android:layout_height="160dp"
       android:layout_marginStart="@dimen/profile_edit_image_layout_margin_start"
-      android:background="@color/white_light"
+      android:background="@color/color_def_white_light"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"
