@@ -78,7 +78,7 @@
         android:minHeight="48dp"
         android:onClick="@{(v) -> viewModel.clickOnGetStarted()}"
         android:text="@string/get_started"
-        android:textColor="@color/white"
+        android:textColor="@color/color_def_white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
