@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="primary_color">@color/oppia_green</color>
-  <color name="primary_dark_color">@color/dark_green</color>
-  <color name="accent_color">@color/oppia_dark_blue</color>
-  <color name="primary_text_color">@color/accessible_grey</color>
-  <color name="highlighted_text_color">@color/accessible_grey</color>
-  <color name="background_color">@color/oppia_light_yellow</color>
-  <color name="dark_background_color">@color/mid_grey_30</color>
-  <color name="description_text_color">@color/accessible_light_grey</color>
-  <color name="text_input_background_color">@color/white</color>
-  <color name="dark_text_color">@color/black_87</color>
-  <color name="error_color">@color/oppia_red</color>
-  <color name="container_background_color">@color/white</color>
-  <color name="toolbar_color">@color/oppia_green</color>
-  <color name="status_bar_color">@color/dark_green</color>
-  <color name="action_bar_color">@color/oppia_green</color>
-  <color name="highlighted_background_color">@color/highlight_blue</color>
-  <color name="image_background_color">@color/white_light</color>
-  <color name="secondary_text_color">@color/oppia_stroke_black</color>
-  <color name="primary_background_color">@color/white_light</color>
-  <color name="dialog_primary_text_color">@color/black</color>
   <color name="color_palette_primary_color">@color/color_def_oppia_green</color>
   <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
   <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
@@ -36,4 +16,9 @@
   <color name="color_palette_status_bar_color">@color/color_def_dark_green</color>
   <color name="color_palette_action_bar_color">@color/color_def_oppia_green</color>
   <color name="color_palette_highlighted_background_color">@color/color_def_highlight_blue</color>
+  <color name="color_palette_image_background_color">@color/color_def_white_light</color>
+  <color name="color_palette_secondary_text_color">@color/color_def_oppia_stroke_black</color>
+  <color name="color_palette_primary_background_color">@color/color_def_white_light</color>
+  <color name="color_palette_dialog_primary_text_color">@color/color_def_black</color>
+
 </resources>

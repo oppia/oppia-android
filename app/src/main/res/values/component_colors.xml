@@ -3,10 +3,10 @@
   <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <!-- Themes.xml -->
-  <color name="shared_activity_status_bar_color">@color/status_bar_color</color>
-  <color name="shared_activity_action_bar_color">@color/action_bar_color</color>
-  <color name="shared_activity_dialog_background_color">@color/container_background_color</color>
-  <color name="shared_activity_dialog_title_color">@color/dialog_primary_text_color</color>
+  <color name="shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
+  <color name="shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
+  <color name="shared_activity_dialog_background_color">@color/color_palette_container_background_color</color>
+  <color name="shared_activity_dialog_title_color">@color/color_palette_dialog_primary_text_color</color>
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
   <!-- Styles.xml -->
@@ -39,15 +39,12 @@
   <!-- Admin Pin Activity -->
   <color name="component_color_admin_pin_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Pin Password Activity -->
-  <color name="pin_password_activity_layout_background_color">@color/background_color</color>
-  <!-- QuestionPlayerActivity -->
-  <color name="question_player_activity_layout_background_color">@color/primary_background_color</color>
-  <color name="question_player_activity_layout_container_color">@color/container_background_color</color>
-  <color name="question_player_activity_textview_highlighted_color">@color/highlighted_text_color</color>
-  <color name="question_player_activity_textview_secondary_color">@color/secondary_text_color</color>
-  <!-- ExplorationActivity -->
-  <color name="exploration_activity_layout_background_color">@color/primary_background_color</color>
-  <color name="exploration_activity_layout_container_color">@color/container_background_color</color>
-
+  <color name="pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
+  <!-- QuestionPlayerActivity -->
+  <color name="question_player_activity_layout_background_color">@color/color_palette_primary_background_color</color>
+  <color name="question_player_activity_textview_highlighted_color">@color/color_palette_highlighted_text_color</color>
+  <color name="question_player_activity_textview_secondary_color">@color/color_palette_secondary_text_color</color>
+  <!-- ExplorationActivity -->
+  <color name="exploration_activity_layout_background_color">@color/color_palette_primary_background_color</color>
 </resources>

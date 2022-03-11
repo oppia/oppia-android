@@ -27,9 +27,8 @@
   </style>
 
   <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
-    <item name="colorAccent">@color/primary_color</item>
     <item name="android:background">@color/shared_activity_dialog_background_color</item>
-    <item name="android:textColorPrimary">@color/dialog_primary_text_color</item>
+    <item name="android:textColorPrimary">@color/color_palette_dialog_primary_text_color</item>
     <item name="colorAccent">@color/color_palette_primary_color</item>
   </style>
 
