@@ -127,7 +127,6 @@ class InputInteractionViewTestActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testFractionInput_withFraction_configChange_hasCorrectPendingAnswer() {
