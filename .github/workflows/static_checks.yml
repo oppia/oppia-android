@@ -179,6 +179,7 @@ jobs:
         run: |
           gh issue list --limit 2000 --repo oppia/oppia-android --json number > $(pwd)/open_issues.json
           bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb open_issues.json
+
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to
   # ensure the results exactly match the current state of the repository).
