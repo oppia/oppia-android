@@ -212,16 +212,6 @@ kt_jvm_binary(
         "//scripts/src/java/org/oppia/android/scripts/todo:todo_issue_comment_check_lib",
     ],
 )
-
-kt_jvm_binary(
-    name = "colors_validation_check",
-    testonly = True,
-    main_class = "org.oppia.android.scripts.color.ColorsValidationCheckKt",
-    runtime_deps = [
-        "//scripts/src/java/org/oppia/android/scripts/color:colors_validation_check_lib",
-    ],
-)
-
 # Note that this is intentionally not test-only since it's used by the app build pipeline. Also,
 # this apparently needs to be a java_binary to set up runfiles correctly when executed within a
 # Starlark rule as a tool.
