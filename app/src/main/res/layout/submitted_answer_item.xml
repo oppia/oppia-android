@@ -44,7 +44,7 @@
 
     <TextView
       android:id="@+id/submitted_answer_text_view"
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/submitted_answer_background"
       android:contentDescription="@{viewModel.submittedAnswerContentDescription}"

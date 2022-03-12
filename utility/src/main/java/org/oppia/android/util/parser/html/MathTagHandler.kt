@@ -23,7 +23,7 @@ class MathTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     // Only insert the image tag if it's parsed correctly.
     val content = MathContent.parseMathContent(
@@ -34,7 +34,7 @@ class MathTagHandler(
       // could also load a LaTeX span, instead. Note that this approach is based on Android's Html
       // parser.
       val drawable =
-        imageRetriever.loadDrawable(
+        imageRetriever!!.loadDrawable(
           content.svgFilename,
           CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
         )

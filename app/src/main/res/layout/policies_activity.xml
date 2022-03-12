@@ -24,7 +24,7 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

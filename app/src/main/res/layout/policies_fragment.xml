@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <ScrollView
     android:layout_width="match_parent"
@@ -14,11 +14,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="@color/color_def_white"
       android:paddingStart="@dimen/policies_fragment_page_padding_start"
       android:paddingTop="@dimen/policies_fragment_page_padding_top"
       android:paddingEnd="@dimen/policies_fragment_page_padding_end"
-      android:paddingBottom="@dimen/policies_fragment_page_padding_bottom"
-    android:background="@color/white">
+      android:paddingBottom="@dimen/policies_fragment_page_padding_bottom">
 
       <TextView
         android:id="@+id/policy_description_text_view"
@@ -29,7 +29,7 @@
         android:textColor="@color/oppia_primary_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
         android:id="@+id/policy_web_link_text_view"

@@ -1,3 +1,5 @@
+
+
 package org.oppia.android.util.parser.html
 
 import android.content.Context
@@ -135,13 +137,8 @@ class CustomHtmlContentHandler(
           }
           else -> customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0)
         }
-        if (imageRetriever != null) {
           customTagHandlers.getValue(tag)
             .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
-        } else {
-          customTagHandlers.getValue(tag)
-            .handleTag(attributes, openTagIndex, output.length, output)
-        }
       }
     }
   }
@@ -169,25 +166,7 @@ class CustomHtmlContentHandler(
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: ImageRetriever
-    ) {
-    }
-
-    /**
-     * Called when a custom tag is encountered. This is always called after the closing tag.
-     * Note that Oppia image loading is specifically not supported (see the other [handleTag]
-     * method if image support is needed)
-     *
-     * @param attributes the tag's attributes
-     * @param openIndex the index in the output [Editable] at which this tag begins
-     * @param closeIndex the index in the output [Editable] at which this tag ends
-     * @param output the destination [Editable] to which spans can be added
-     */
-    fun handleTag(
-      attributes: Attributes,
-      openIndex: Int,
-      closeIndex: Int,
-      output: Editable
+      imageRetriever: ImageRetriever?
     ) {
     }
 

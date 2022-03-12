@@ -21,7 +21,7 @@ class ImageTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     val source = attributes.getJsonStringValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)
     if (source != null) {
@@ -34,7 +34,7 @@ class ImageTagHandler(
         return@run startIndex to length
       }
       val drawable =
-        imageRetriever.loadDrawable(
+        imageRetriever!!.loadDrawable(
           source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
         )
       output.setSpan(
