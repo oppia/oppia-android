@@ -70,9 +70,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       this.viewModel = viewModel
       lifecycleOwner = fragment
     }
-    return binding.root.apply {
-      setBackgroundResource(R.color.topic_activity_layout_background_color)
-    }
+    return binding.root
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicPracticeItemViewModel> {
