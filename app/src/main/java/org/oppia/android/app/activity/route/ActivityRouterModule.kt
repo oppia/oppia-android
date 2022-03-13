@@ -1,4 +1,4 @@
-package org.oppia.android.app.activity.Route
+package org.oppia.android.app.activity.route
 
 import dagger.Binds
 import dagger.Module
