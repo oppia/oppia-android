@@ -12,7 +12,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_faq_container_background_color">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         android:layout_marginEnd="@dimen/faq_item_header_margin_end"
         android:layout_marginBottom="@dimen/faq_item_header_margin_bottom"
         android:text="@string/featured_questions"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_faq_activity_text_color"
         android:textSize="18sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

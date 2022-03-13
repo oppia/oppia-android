@@ -13,7 +13,7 @@
     android:id="@+id/help_item_text_view"
     style="@style/Subtitle1ViewStart"
     android:layout_width="match_parent"
-    android:background="@drawable/general_item_background_border"
+    android:background="@color/component_color_help_activity_container_color"
     android:onClick="@{() -> viewModel.onClick(viewModel.title)}"
     android:paddingStart="16dp"
     android:paddingTop="20dp"
