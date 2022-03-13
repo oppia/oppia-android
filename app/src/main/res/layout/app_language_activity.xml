@@ -26,7 +26,7 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/app_language_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
