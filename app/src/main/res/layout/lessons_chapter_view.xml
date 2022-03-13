@@ -59,7 +59,7 @@
       android:fontFamily="sans-serif"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:text="@{viewModel.chapterName}"
-      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/primary_text_color : @color/disabled_text_color}"
+      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/topic_activity_primary_text_color : @color/topic_activity_disabled_text_color}"
       android:textSize="14sp" />
   </LinearLayout>
 </layout>
