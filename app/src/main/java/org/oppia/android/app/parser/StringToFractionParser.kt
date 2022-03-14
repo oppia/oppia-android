@@ -29,7 +29,7 @@ class StringToFractionParser {
   fun getSubmitTimeError(text: String): FractionParsingError {
     if (invalidCharsLengthRegex.find(text) != null)
       return FractionParsingError.NUMBER_TOO_LONG
-    if(invalidCharsRegex.matches(text))
+    if (invalidCharsRegex.matches(text))
       return FractionParsingError.INVALID_FORMAT
     val fraction = parseFraction(text)
     return when {
