@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <!-- NetworkConnectionUtil -->
-  <string name="network_connection_local">Local</string>
-  <string name="network_connection_cellular">Cellular</string>
-  <string name="network_connection_none">None</string>
-</resources>

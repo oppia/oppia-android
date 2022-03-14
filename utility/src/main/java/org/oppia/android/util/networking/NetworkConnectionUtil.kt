@@ -7,15 +7,15 @@ import org.oppia.android.util.R
 interface NetworkConnectionUtil {
 
   /** Enum to distinguish different connection statuses for the device. */
-  enum class ProdConnectionStatus(@StringRes var connectionName: Int) : ConnectionStatus {
+  enum class ProdConnectionStatus(val logName: String) : ConnectionStatus {
     /** Connected to WIFI or Ethernet. */
-    LOCAL(connectionName = R.string.network_connection_local),
+    LOCAL(logName = "Local"),
 
     /** Connected to Mobile or WiMax. */
-    CELLULAR(connectionName = R.string.network_connection_cellular),
+    CELLULAR(logName = "Cellular"),
 
     /** Not connected to a network. */
-    NONE(connectionName = R.string.network_connection_none)
+    NONE(logName = "None")
   }
 
   /** Returns a [ProdConnectionStatus] indicating the current connection status of the device. */

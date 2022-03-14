@@ -150,42 +150,30 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   @Test
-  fun testLocalConnectionName_activeWifiConnection_returnsWifi() {
+  fun testLocalLogName_activeWifiConnection_returnsLocal() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(context.resources.getString(LOCAL.connectionName)).isEqualTo(
-      context.resources.getString(
-        R.string.network_connection_local
-      )
-    )
+    assertThat(LOCAL.logName).isEqualTo("Local")
   }
 
   @Test
-  fun testLocalConnectionName_activeCELLULARConnection_returnsCELLULAR() {
+  fun testCellularLogName_activeCellularConnection_returnsCellular() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
       networkState = NetworkInfo.State.CONNECTED
     )
-    assertThat(context.resources.getString(CELLULAR.connectionName)).isEqualTo(
-      context.resources.getString(
-        R.string.network_connection_cellular
-      )
-    )
+    assertThat(CELLULAR.logName).isEqualTo("Cellular")
   }
 
   @Test
-  fun testLocalConnectionName_inactiveWifiConnection_returnsNone() {
+  fun testNoneLogName_inactiveWifiConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
       networkState = NetworkInfo.State.DISCONNECTED
     )
-    assertThat(context.resources.getString(NONE.connectionName)).isEqualTo(
-      context.resources.getString(
-        R.string.network_connection_none
-      )
-    )
+    assertThat(NONE.logName).isEqualTo("None")
   }
 
   // TODO(#89): Move this to a common test application component.

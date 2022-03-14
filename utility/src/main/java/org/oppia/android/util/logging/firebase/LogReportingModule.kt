@@ -22,9 +22,7 @@ class LogReportingModule {
 
   @Singleton
   @Provides
-  fun provideEventLogger(
-    networkConnectionUtil: NetworkConnectionUtil
-  ): EventLogger {
+  fun provideEventLogger(networkConnectionUtil: NetworkConnectionUtil): EventLogger {
     return FirebaseEventLogger(
       FirebaseAnalytics.getInstance(Application()),
       EventBundleCreator(),
