@@ -404,7 +404,9 @@ class TopicController @Inject constructor(
           diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
           addAllSubtopic(subtopics)
           topicPlayAvailability = TopicPlayAvailability.newBuilder().apply {
-            if (topicRecord.isPublished) availableToPlayNow = true else availableToPlayInFuture = true
+            if (topicRecord.isPublished) {
+              availableToPlayNow = true
+            } else availableToPlayInFuture = true
           }.build()
         }.build()
       }

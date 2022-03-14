@@ -6,9 +6,11 @@ import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -123,7 +125,14 @@ class UrlImageParser private constructor(
       val drawable = retrieveDrawable(resource)
       htmlContentTextView.post {
         htmlContentTextView.width { viewWidth ->
-          proxyDrawable.initialize(drawable, computeBounds(drawable, viewWidth))
+          val padding =
+            Rect(
+              htmlContentTextView.paddingLeft,
+              htmlContentTextView.paddingTop,
+              htmlContentTextView.paddingRight,
+              htmlContentTextView.paddingBottom
+            )
+          proxyDrawable.initialize(drawable, computeBounds(context, drawable, viewWidth, padding))
           htmlContentTextView.text = htmlContentTextView.text
           htmlContentTextView.invalidate()
         }
@@ -137,7 +146,9 @@ class UrlImageParser private constructor(
      * Returns the bounds and/or alignment of the specified drawable, given the current text view's
      * width.
      */
-    protected abstract fun computeBounds(drawable: D, viewWidth: Int): Rect
+    protected abstract fun computeBounds(
+      context: Context, drawable: D, viewWidth: Int, padding: Rect
+    ): Rect
 
     /**
      * A [AutoAdjustingImageTarget] that may automatically center and/or resize loaded images to
@@ -147,21 +158,33 @@ class UrlImageParser private constructor(
       targetConfiguration: TargetConfiguration
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
-      override fun computeBounds(drawable: D, viewWidth: Int): Rect {
+      override fun computeBounds(
+        context: Context, drawable: D, viewWidth: Int, padding: Rect
+      ): Rect {
         val layoutParams = htmlContentTextView.layoutParams
-        val maxAvailableWidth = if (layoutParams.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
-          // Assume that wrap_content cases means that the view cannot exceed its parent's width
-          // minus margins.
-          val parent = htmlContentTextView.parent
-          if (parent is View && layoutParams is ViewGroup.MarginLayoutParams) {
-            // Only pick the computed space if it allows the view to expand to accommodate larger
-            // images.
-            max(viewWidth, parent.width - (layoutParams.leftMargin + layoutParams.rightMargin))
-          } else viewWidth
-        } else viewWidth
+        val maxAvailableWidth = when (layoutParams.width) {
+          ViewGroup.LayoutParams.WRAP_CONTENT -> {
+            // Assume that wrap_content cases means that the view cannot exceed its parent's width
+            // minus margins.
+            val parent = htmlContentTextView.parent
+            if (parent is View && layoutParams is ViewGroup.MarginLayoutParams) {
+              // Only pick the computed space if it allows the view to expand to accommodate larger
+              // images.
+              max(viewWidth, parent.width - (layoutParams.leftMargin + layoutParams.rightMargin))
+            } else viewWidth
+          }
+          ViewGroup.LayoutParams.MATCH_PARENT -> {
+            // match_parent means the view's width likely represents the maximum space that can be
+            // taken up, but padding must be subtracted to avoid the image being cut-off.
+            viewWidth - (padding.left + padding.right)
+          }
+          else -> viewWidth // The view's width
+        }
 
-        var drawableWidth = drawable.intrinsicWidth.toFloat()
-        var drawableHeight = drawable.intrinsicHeight.toFloat()
+        // Treat the drawable's dimensions as dp so that the image scales for higher density
+        // displays.
+        var drawableWidth = context.dpToPx(drawable.intrinsicWidth)
+        var drawableHeight = context.dpToPx(drawable.intrinsicHeight)
         val minimumImageSize = context.resources.getDimensionPixelSize(R.dimen.minimum_image_size)
         if (drawableHeight <= minimumImageSize || drawableWidth <= minimumImageSize) {
           // The multipleFactor value is used to make sure that the aspect ratio of the image
@@ -249,10 +272,11 @@ class UrlImageParser private constructor(
       override fun retrieveDrawable(resource: TextPictureDrawable): TextPictureDrawable = resource
 
       override fun computeBounds(
-        drawable: TextPictureDrawable,
-        viewWidth: Int
+        context: Context, drawable: TextPictureDrawable, viewWidth: Int, padding: Rect
       ): Rect {
         drawable.computeTextPicture(htmlContentTextView.paint)
+        // Note that the original size is used here since inline images should be sized based on the
+        // text line height (which is already adjusted for both font and display scaling/density).
         return Rect(/* left= */ 0, /* top= */ 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
       }
 
@@ -378,3 +402,6 @@ private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
     computeWidthOnGlobalLayout(width)
   }
 }
+
+private fun Context.dpToPx(dp: Int): Float =
+  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), resources.displayMetrics)
