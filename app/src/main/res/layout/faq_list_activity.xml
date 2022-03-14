@@ -20,7 +20,7 @@
         android:layout_gravity="end"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/Widget.AppCompat.ActionBar"
+        android:theme="@style/OppiaTheme"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
