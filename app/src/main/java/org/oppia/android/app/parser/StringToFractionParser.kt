@@ -29,6 +29,8 @@ class StringToFractionParser {
   fun getSubmitTimeError(text: String): FractionParsingError {
     if (invalidCharsLengthRegex.find(text) != null)
       return FractionParsingError.NUMBER_TOO_LONG
+    if(invalidCharsRegex.matches(text))
+      return FractionParsingError.INVALID_FORMAT
     val fraction = parseFraction(text)
     return when {
       fraction == null -> FractionParsingError.INVALID_FORMAT
@@ -50,7 +52,6 @@ class StringToFractionParser {
     return when {
       !normalized.matches(invalidCharsRegex) -> FractionParsingError.INVALID_CHARS
       normalized.startsWith("/") -> FractionParsingError.INVALID_FORMAT
-      normalized.endsWith("/") -> FractionParsingError.INVALID_FORMAT
       normalized.count { it == '/' } > 1 -> FractionParsingError.INVALID_FORMAT
       normalized.lastIndexOf('-') > 0 -> FractionParsingError.INVALID_FORMAT
       else -> FractionParsingError.VALID
