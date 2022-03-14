@@ -39,7 +39,7 @@
   <color name="confetti_yellow">#FFE558</color>
   <color name="confetti_blue">#2D4A9D</color>
   <!-- AUDIO COMPONENT -->
-  <color name="audio_component_background">@color/oppia_dark_blue</color>
+  <color name="audio_component_background">@color/color_def_oppia_dark_blue</color>
   <!-- PROFILE COMPONENT -->
   <color name="avatar_border">#707070</color>
   <color name="hints_and_solution_background">#E4F2F1</color>

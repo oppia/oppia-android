@@ -25,7 +25,7 @@
       app:layout_constraintTop_toTopOf="parent"
       app:title="@string/concept_card_toolbar_title"
       app:titleTextAppearance="@style/ToolbarTextAppearance"
-      app:titleTextColor="@color/white" />
+      app:titleTextColor="@color/color_def_white" />
 
     <FrameLayout
       android:layout_width="0dp"
