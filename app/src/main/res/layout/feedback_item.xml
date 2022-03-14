@@ -43,6 +43,8 @@
       android:id="@+id/feedback_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:minHeight="48dp"
+      android:minWidth="48dp"
       android:breakStrategy="simple"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
