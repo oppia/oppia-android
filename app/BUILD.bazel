@@ -750,6 +750,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//domain/src/main/java/org/oppia/android/domain/system:prod_module",
         "//model:arguments_java_proto_lite",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//third_party:androidx_databinding_databinding-adapters",

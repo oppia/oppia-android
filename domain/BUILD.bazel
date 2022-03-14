@@ -107,6 +107,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
         "//domain/src/main/java/org/oppia/android/domain/state:state_graph",
         "//domain/src/main/java/org/oppia/android/domain/state:state_list",

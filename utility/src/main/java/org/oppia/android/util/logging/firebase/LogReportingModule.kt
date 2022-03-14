@@ -10,9 +10,7 @@ import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import javax.inject.Singleton
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
-import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.logging.SyncStatusManagerImpl
+import org.oppia.android.util.logging.SyncStatusManager
 
 /** Provides Firebase-specific logging implementations. */
 @Module
@@ -27,14 +25,10 @@ class LogReportingModule {
   @Provides
   fun provideEventLogger(
     context: Context,
-    dataProviders: DataProviders,
-    asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+    syncStatusManager: SyncStatusManager,
   ): EventLogger {
     return FirebaseEventLogger(
-      FirebaseAnalytics.getInstance(Application()),
-      EventBundleCreator(),
-      SyncStatusManagerImpl(dataProviders, asyncDataSubscriptionManager),
-      context
+      FirebaseAnalytics.getInstance(Application()), EventBundleCreator(), syncStatusManager, context
     )
   }
 }

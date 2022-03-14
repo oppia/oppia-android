@@ -53,12 +53,11 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.DeviceIdSeed
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeUUIDImpl
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UUIDWrapper
+import org.oppia.android.util.system.UserIdGenerator
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -1099,7 +1098,7 @@ class ProfileManagementControllerTest {
     fun provideDeviceIdSeed(): Long = deviceIdSeed
 
     @Provides
-    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UUIDWrapper = fakeUUIDImpl
+    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UserIdGenerator = fakeUUIDImpl
   }
 
   // TODO(#89): Move this to a common test application component.
