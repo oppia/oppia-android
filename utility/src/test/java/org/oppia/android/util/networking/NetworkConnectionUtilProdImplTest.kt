@@ -17,7 +17,6 @@ import org.junit.runner.RunWith
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.R
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel

@@ -1,8 +1,5 @@
 package org.oppia.android.util.networking
 
-import androidx.annotation.StringRes
-import org.oppia.android.util.R
-
 /** Utility to get the current connection status of the device. */
 interface NetworkConnectionUtil {
 
