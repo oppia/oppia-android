@@ -224,7 +224,7 @@ class StringToFractionParserTest {
   }
 
   @Test
-  fun testRealTimeError_noDenominator_invalidFormat_hasRelevantErrorMessage() {
+  fun testSubmitTimeError_noDenominator_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
       val errorMessage = stringToFractionParser.getSubmitTimeError("3/")
         .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
