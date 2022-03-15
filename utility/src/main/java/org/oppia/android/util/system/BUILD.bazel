@@ -28,11 +28,14 @@ kt_android_library(
     name = "prod_module",
     srcs = [
         "OppiaClockModule.kt",
+        "UserIdProdModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         ":oppia_clock_impl",
+        ":user_id_generator",
+        ":user_id_generator_impl",
     ],
 )
 
@@ -55,6 +58,25 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":oppia_clock_injector",
+    ],
+)
+
+kt_android_library(
+    name = "user_id_generator",
+    srcs = [
+        "UserIdGenerator.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+kt_android_library(
+    name = "user_id_generator_impl",
+    srcs = [
+        "UserIdGeneratorImpl.kt",
+    ],
+    deps = [
+        ":dagger",
+        ":user_id_generator",
     ],
 )
 

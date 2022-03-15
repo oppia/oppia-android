@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO: Should this go in app package?
 /** Observer that observes application lifecycle. */
 @Singleton
 class ApplicationLifecycleObserver @Inject constructor(

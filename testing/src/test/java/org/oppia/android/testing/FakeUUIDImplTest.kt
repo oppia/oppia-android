@@ -13,7 +13,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.util.system.UUIDWrapper
+import org.oppia.android.util.system.UserIdGenerator
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -30,7 +30,7 @@ class FakeUUIDImplTest {
   lateinit var fakeUUIDImpl: FakeUUIDImpl
 
   @Inject
-  lateinit var uuidWrapper: UUIDWrapper
+  lateinit var userIdGenerator: UserIdGenerator
 
   @Before
   fun setUp() {
@@ -40,7 +40,7 @@ class FakeUUIDImplTest {
   @Test
   fun testFakeUUIDImpl_getRandomUUID_returnsDefaultValue() {
     val expectedValue = fakeUUIDImpl.getUUIDValue()
-    val returnedValue = uuidWrapper.randomUUIDString()
+    val returnedValue = userIdGenerator.generateRandomUserId()
 
     assertThat(returnedValue).isEqualTo(expectedValue)
   }
@@ -49,16 +49,16 @@ class FakeUUIDImplTest {
   fun testFakeUUIDImpl_setRandomUUID_returnsNewValue() {
     fakeUUIDImpl.setUUIDValue(TEST_UUID)
 
-    val returnedValue = uuidWrapper.randomUUIDString()
+    val returnedValue = userIdGenerator.generateRandomUserId()
     assertThat(returnedValue).isEqualTo(TEST_UUID)
   }
 
   @Test
   fun testFakeUUIDImpl_getRandomUUID_updateUUIDValue_getRandomUUID_returnsUpdatedValue() {
     val defaultValue = fakeUUIDImpl.getUUIDValue()
-    val initialValue = uuidWrapper.randomUUIDString()
+    val initialValue = userIdGenerator.generateRandomUserId()
     fakeUUIDImpl.setUUIDValue(TEST_UUID)
-    val updatedValue = uuidWrapper.randomUUIDString()
+    val updatedValue = userIdGenerator.generateRandomUserId()
 
     assertThat(initialValue).isEqualTo(defaultValue)
     assertThat(updatedValue).isEqualTo(TEST_UUID)
@@ -84,7 +84,7 @@ class FakeUUIDImplTest {
   @Module
   interface TestUUIDModule {
     @Binds
-    fun bindUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UUIDWrapper
+    fun bindUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UserIdGenerator
   }
 
   // TODO(#89): Move this to a common test application component.

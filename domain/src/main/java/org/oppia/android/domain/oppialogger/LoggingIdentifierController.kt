@@ -6,6 +6,7 @@ import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.system.UUIDWrapper
+import org.oppia.android.util.system.UserIdGenerator
 import java.security.MessageDigest
 import java.util.Random
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class LoggingIdentifierController @Inject constructor(
   private val dataProviders: DataProviders,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   @DeviceIdSeed private val deviceIdSeed: Long,
-  private val uuidWrapper: UUIDWrapper
+  private val userIdGenerator: UserIdGenerator
 ) {
 
   private val wifiManager =
@@ -39,7 +40,7 @@ class LoggingIdentifierController @Inject constructor(
   /** Creates and returns a unique identifier which will be used to identify the current learner. */
   fun createLearnerId(): String = String.format("%08x", Random(deviceIdSeed).nextInt())
 
-  private fun computeSessionId(): String = uuidWrapper.randomUUIDString()
+  private fun computeSessionId(): String = userIdGenerator.generateRandomUserId()
 
   /**
    * Returns an in-memory data provider pointing to a class variable of [sessionId].

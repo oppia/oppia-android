@@ -1,0 +1,48 @@
+"""
+Domain definitions for system-specific domain components and integrations.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "learner_analytics_inactivity_limit",
+    srcs = [
+        "LearnerAnalyticsInactivityLimit.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "application_lifecycle_observer",
+    srcs = [
+        "ApplicationLifecycleObserver.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":learner_analytics_inactivity_limit",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//third_party:androidx_lifecycle_lifecycle-extensions",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+kt_android_library(
+    name = "prod_module",
+    srcs = [
+        "ApplicationLifecycleModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":application_lifecycle_observer",
+        ":dagger",
+        ":learner_analytics_inactivity_limit",
+    ],
+)
+
+dagger_rules()

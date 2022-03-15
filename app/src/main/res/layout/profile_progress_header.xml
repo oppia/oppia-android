@@ -24,7 +24,7 @@
       android:id="@+id/profile_edit_image"
       android:layout_width="100dp"
       android:layout_height="100dp"
-      android:background="@color/white_light"
+      android:background="@color/color_def_white_light"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"

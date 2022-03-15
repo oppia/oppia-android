@@ -63,6 +63,20 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.FakeSyncStatusManager
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.logging.SyncStatusManager
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -103,6 +117,15 @@ class LogUploadWorkerTest {
   lateinit var dataProviders: DataProviders
 
   @Inject
+  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
+
+  @Mock
+  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
+
+  @Captor
+  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
+
+  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
@@ -117,10 +140,9 @@ class LogUploadWorkerTest {
   private lateinit var context: Context
 
   private val eventLogTopicContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setTopicContext(
+        .setOpenInfoTab(
           EventLog.TopicContext.newBuilder()
             .setTopicId(TEST_TOPIC_ID)
             .build()
@@ -149,8 +171,7 @@ class LogUploadWorkerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       eventLogTopicContext.timestamp,
-      eventLogTopicContext.actionName,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
@@ -202,6 +223,34 @@ class LogUploadWorkerTest {
     assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
   }
 
+  @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyCorrectSyncStatusSequence() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logTransitionEvent(
+      eventLogTopicContext.timestamp,
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+    )
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val syncStatusList = fakeSyncStatusManager.getSyncStatusList()
+    assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.NETWORK_ERROR)
+    assertThat(syncStatusList[1]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+    assertThat(syncStatusList[2]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
+  }
+
   /**
    * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
    * comparison in a way that's consistent across JDK versions.
@@ -232,6 +281,9 @@ class LogUploadWorkerTest {
     fun provideContext(application: Application): Context {
       return application
     }
+
+    @Provides
+    fun provideSyncStatusManager(fakeSyncStatusManager: FakeSyncStatusManager): SyncStatusManager = fakeSyncStatusManager
   }
 
   @Module

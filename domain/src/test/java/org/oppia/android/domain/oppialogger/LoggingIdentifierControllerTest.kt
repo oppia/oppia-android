@@ -48,7 +48,7 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAUL
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
-import org.oppia.android.util.system.UUIDWrapper
+import org.oppia.android.util.system.UserIdGenerator
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -189,7 +189,7 @@ class LoggingIdentifierControllerTest {
     fun provideDeviceIdSeed(): Long = deviceIdSeed
 
     @Provides
-    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UUIDWrapper = fakeUUIDImpl
+    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UserIdGenerator = fakeUUIDImpl
   }
 
   @Module

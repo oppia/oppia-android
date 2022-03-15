@@ -5,6 +5,8 @@ import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 
 /**  A test specific fake for the event logger. */
 @Singleton
@@ -12,11 +14,11 @@ class FakeEventLogger @Inject constructor(
   private val syncStatusManager: SyncStatusManager
 ) : EventLogger {
   private val eventList = ArrayList<EventLog>()
-  private val cachedEventList = ArrayList<EventLog>()
+  private val cachedEventList = mutableListOf<EventLog>()
 
   override fun logEvent(eventLog: EventLog) {
     eventList.add(eventLog)
-    syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
+    syncStatusManager.setSyncStatus(DATA_UPLOADED)
   }
 
   override fun logCachedEvent(eventLog: EventLog) {

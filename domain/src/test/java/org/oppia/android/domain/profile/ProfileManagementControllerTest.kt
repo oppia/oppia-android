@@ -57,6 +57,12 @@ import java.io.FileInputStream
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.DeviceIdSeed
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.FakeUUIDImpl
+import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.system.UserIdGenerator
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -258,6 +264,28 @@ class ProfileManagementControllerTest {
     }
     assertThat(profiles.size).isEqualTo(PROFILES_LIST.size + 1)
     checkTestProfilesArePresent(profiles)
+  }
+
+  @Test
+  fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_checkUpdateIsSuccessful() {
+    val defaultLearnerId =
+      String.format("%08x", Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
+    addTestProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    profileManagementController.updateLearnerId(profileId)
+      .toLiveData()
+      .observeForever(mockUpdateResultObserver)
+    profileManagementController.getProfile(
+      profileId
+    ).toLiveData().observeForever(mockProfileObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    verifyUpdateSucceeded()
+    verifyGetProfileSucceeded()
+    assertThat(profileResultCaptor.value.getOrThrow().learnerId)
+      .isEqualTo(defaultLearnerId)
   }
 
   @Test
@@ -1100,7 +1128,7 @@ class ProfileManagementControllerTest {
     fun provideDeviceIdSeed(): Long = deviceIdSeed
 
     @Provides
-    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UUIDWrapper = fakeUUIDImpl
+    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UserIdGenerator = fakeUUIDImpl
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1111,7 +1139,7 @@ class ProfileManagementControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class
+      TestLoggingIdentifierModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -57,6 +57,10 @@ import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.system.ApplicationLifecycleModule
+import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.system.UserIdProdModule
 
 /**
  * Root Dagger component for the application. All application-scoped modules should be included in
@@ -95,10 +99,10 @@ import javax.inject.Singleton
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
     NetworkConnectionUtilDebugModule::class, NetworkConfigProdModule::class, AssetModule::class,
     LocaleProdModule::class, ActivityRecreatorProdModule::class, LoggingIdentifierModule::class,
-    ApplicationLifecycleModule::class,
+    ApplicationLifecycleModule::class, UserIdProdModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
-    NetworkConnectionDebugUtilModule::class
+    NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class, SyncStatusModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {
