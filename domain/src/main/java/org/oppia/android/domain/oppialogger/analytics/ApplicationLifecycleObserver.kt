@@ -1,4 +1,4 @@
-package org.oppia.android.domain.system
+package org.oppia.android.domain.oppialogger.analytics
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -7,33 +7,31 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.util.system.OppiaClock
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// TODO: Should this go in app package?
 /** Observer that observes application lifecycle. */
 @Singleton
 class ApplicationLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val loggingIdentifierController: LoggingIdentifierController,
-  @LearnerAnalyticsInactivityLimit private val inactivityLimit: Int
+  @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long
 ) : ApplicationStartupListener, LifecycleObserver {
 
   override fun onCreate() {
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
   }
 
-  private var firstTimestamp: Long = 0
+  // Use a large Long value such that the time difference based on any timestamp will be negative
+  // and thus ignored until the app goes into the background at least once.
+  private var firstTimestamp: Long = Long.MAX_VALUE
 
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
-    if (firstTimestamp > 0) {
-      val timeDifference = oppiaClock.getCurrentTimeMs() - firstTimestamp
-      if (TimeUnit.MILLISECONDS.toMinutes(timeDifference) > inactivityLimit) {
-        loggingIdentifierController.updateSessionId()
-      }
+    val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
+    if (timeDifferenceMs > inactivityLimitMillis) {
+      loggingIdentifierController.updateSessionId()
     }
   }
 

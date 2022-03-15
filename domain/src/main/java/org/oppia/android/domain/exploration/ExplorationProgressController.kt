@@ -113,7 +113,7 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.currentExplorationId,
         explorationProgress.currentExploration.version.toString(),
         explorationProgress.stateDeck.getCurrentState().name,
-        oppiaLogger.createLearnerDetailsContext(getLearnerId()?:"")
+        oppiaLogger.createLearnerDetailsContext(getLearnerId() ?: "")
       )
     )
     explorationProgressLock.withLock {
@@ -724,6 +724,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun getLearnerId(): String? {
+    // TODO: This isn't going to work since the live data won't be processed.
     return Transformations.map(
       profileManagementController.getProfile(explorationProgress.currentProfileId).toLiveData(),
       ::processGetProfileResult

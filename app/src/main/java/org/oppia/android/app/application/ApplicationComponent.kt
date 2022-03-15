@@ -56,7 +56,7 @@ import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.system.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.system.UserIdProdModule
 

@@ -114,6 +114,9 @@ kt_android_library(
     srcs = [
         "SyncStatusManagerImpl.kt",
     ],
+    visibility = [
+        "//testing/src/main/java/org/oppia/android/testing/logging:__pkg__",
+    ],
     deps = [
         ":sync_status_manager",
         "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",

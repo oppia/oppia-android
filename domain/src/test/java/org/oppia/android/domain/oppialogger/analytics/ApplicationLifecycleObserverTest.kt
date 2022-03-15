@@ -1,8 +1,7 @@
-package org.oppia.android.domain.system
+package org.oppia.android.domain.oppialogger.analytics
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -10,29 +9,21 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.domain.oppialogger.DeviceIdSeed
+import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakeUUIDImpl
+import org.oppia.android.testing.logging.FakeUserIdGenerator
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -49,104 +40,83 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAUL
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
-import org.oppia.android.util.system.UserIdGenerator
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.UserIdTestModule
 
-private const val TEST_UUID = "test_uuid"
-private const val TEST_TIMESTAMP_ONE = 1610322960000
-private const val TEST_TIMESTAMP_TWO = 1610326560000
-private const val TEST_TIMESTAMP_THREE = 1610323560000
+private const val TEST_ID = "test_id"
 
+/** Tests for [ApplicationLifecycleObserver]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ApplicationLifecycleObserverTest.TestApplication::class)
 class ApplicationLifecycleObserverTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var loggingIdentifierController: LoggingIdentifierController
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var fakeUUIDImpl: FakeUUIDImpl
-
-  @Mock
-  lateinit var mockStringLiveDataObserver: Observer<AsyncResult<String>>
-
-  @Captor
-  lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
+  @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var fakeUserIdGenerator: FakeUserIdGenerator
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
   }
 
+  @Test
+  fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+    val monitor = monitorFactory.createMonitor(sessionIdProvider)
+
+    fakeUserIdGenerator.randomUserId = TEST_ID
+    waitInBackgroundFor(TimeUnit.MINUTES.toMillis(45))
+
+    val latestSessionId = monitor.ensureNextResultIsSuccess()
+    assertThat(latestSessionId).isEqualTo(TEST_ID)
+  }
+
+  @Test
+  fun testObserver_getSessionId_backgroundApp_thenForeground_limitNotExceeded_sessionIdUnchanged() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    val defaultId = fakeUserIdGenerator.randomUserId
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+    val monitor = monitorFactory.createMonitor(sessionIdProvider)
+
+    fakeUserIdGenerator.randomUserId = TEST_ID
+    waitInBackgroundFor(TimeUnit.MINUTES.toMillis(15))
+
+    val latestSessionId = monitor.ensureNextResultIsSuccess()
+    assertThat(latestSessionId).isEqualTo(defaultId)
+  }
+
+  @Test
+  fun testObserver_appInForeground_getSessionId_returnsDefaultSessionId() {
+    applicationLifecycleObserver.onAppInBackground()
+    val defaultId = fakeUserIdGenerator.randomUserId
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+
+    val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(latestSessionId).isEqualTo(defaultId)
+  }
+
+  private fun waitInBackgroundFor(millis: Long) {
+    applicationLifecycleObserver.onAppInBackground()
+    testCoroutineDispatchers.runCurrent()
+    fakeOppiaClock.setCurrentTimeMs(fakeOppiaClock.getCurrentTimeMs() + millis)
+    testCoroutineDispatchers.advanceTimeBy(millis)
+
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
-  }
-
-  @Test
-  fun testObserver_getSessionID_goInBackground_returnToForegroundAfterExceedingLimit_verifyUpdatesSessionId() { // ktlint-disable max-line-length
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val sessionId = loggingIdentifierController.getSessionId()
-    sessionId.toLiveData().observeForever(mockStringLiveDataObserver)
-
-    fakeUUIDImpl.setUUIDValue(TEST_UUID)
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_ONE)
-    applicationLifecycleObserver.onAppInBackground()
-    // moving time to more than 30 minutes later.
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_TWO)
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(TEST_UUID)
-  }
-
-  @Test
-  fun testObserver_getSessionID_goInBackground_returnToForegroundWithoutExceedingLimit_verifyDoesNotUpdateSessionId() { // ktlint-disable max-line-length
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val defaultUUID = fakeUUIDImpl.getUUIDValue()
-    val sessionId = loggingIdentifierController.getSessionId()
-    sessionId.toLiveData().observeForever(mockStringLiveDataObserver)
-
-    fakeUUIDImpl.setUUIDValue(TEST_UUID)
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_ONE)
-    applicationLifecycleObserver.onAppInBackground()
-    // moving time to less than 30 minutes later.
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_THREE)
-    applicationLifecycleObserver.onAppInForeground()
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(defaultUUID)
-  }
-
-  @Test
-  fun testObserver_appInForeground_getSessionID_returnsDefaultSessionId() {
-    applicationLifecycleObserver.onAppInBackground()
-    val defaultUUID = fakeUUIDImpl.getUUIDValue()
-    val sessionId = loggingIdentifierController.getSessionId()
-
-    sessionId.toLiveData().observeForever(mockStringLiveDataObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(defaultUUID)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -185,15 +155,12 @@ class ApplicationLifecycleObserverTest {
   class TestLoggingIdentifierModule {
 
     companion object {
-      const val deviceIdSeed = 1L
+      const val applicationIdSeed = 1L
     }
 
     @Provides
-    @DeviceIdSeed
-    fun provideDeviceIdSeed(): Long = deviceIdSeed
-
-    @Provides
-    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UserIdGenerator = fakeUUIDImpl
+    @ApplicationIdSeed
+    fun provideApplicationIdSeed(): Long = applicationIdSeed
   }
 
   @Module
@@ -240,7 +207,7 @@ class ApplicationLifecycleObserverTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class, UserIdTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

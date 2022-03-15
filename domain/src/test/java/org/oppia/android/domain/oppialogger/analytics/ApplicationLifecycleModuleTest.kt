@@ -1,28 +1,35 @@
-package org.oppia.android.util.logging
+package org.oppia.android.domain.oppialogger.analytics
 
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.Multibinds
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.domain.oppialogger.ApplicationIdSeed
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.UserIdTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
+import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
@@ -34,19 +41,18 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import org.oppia.android.testing.data.DataProviderTestMonitor
 
-/** Tests for [SyncStatusManagerImpl]. */
+/** Tests for [ApplicationLifecycleModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = SyncStatusManagerImplTest.TestApplication::class)
-class SyncStatusManagerImplTest {
-  @Inject lateinit var syncStatusManager: SyncStatusManager
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+@Config(application = ApplicationLifecycleModuleTest.TestApplication::class)
+class ApplicationLifecycleModuleTest {
+  @Inject lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
+
+  @field:[JvmField Inject LearnerAnalyticsInactivityLimitMillis]
+  var inactivityLimitMillis: Long = Long.MIN_VALUE
 
   @Before
   fun setUp() {
@@ -54,66 +60,16 @@ class SyncStatusManagerImplTest {
   }
 
   @Test
-  fun testGetSyncStatus_initialState_returnsUnknown() {
-    val syncStatusProvider = syncStatusManager.getSyncStatus()
-
-    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
-    assertThat(syncStatus).isEqualTo(INITIAL_UNKNOWN)
+  fun testInjectApplicationStartupListenerSet_includesApplicationLifecycleObserver() {
+    assertThat(startupListeners.any { it is ApplicationLifecycleObserver }).isTrue()
   }
 
   @Test
-  fun testGetSyncStatus_setSyncStatus_toDataUploading_returnsUploading() {
-    val syncStatusProvider = syncStatusManager.getSyncStatus()
-
-    syncStatusManager.setSyncStatus(DATA_UPLOADING)
-
-    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
-    assertThat(syncStatus).isEqualTo(DATA_UPLOADING)
-  }
-
-  @Test
-  fun testGetSyncStatus_setSyncStatus_toDataUploaded_returnsUploaded() {
-    val syncStatusProvider = syncStatusManager.getSyncStatus()
-
-    syncStatusManager.setSyncStatus(DATA_UPLOADED)
-
-    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
-    assertThat(syncStatus).isEqualTo(DATA_UPLOADED)
-  }
-
-  @Test
-  fun testGetSyncStatus_setSyncStatus_toNetworkError_returnsNetworkError() {
-    val syncStatusProvider = syncStatusManager.getSyncStatus()
-
-    syncStatusManager.setSyncStatus(NETWORK_ERROR)
-
-    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
-    assertThat(syncStatus).isEqualTo(NETWORK_ERROR)
-  }
-
-  @Test
-  fun testGetSyncStatus_setSyncStatus_toDataUploading_thenNetworkError_returnsNetworkError() {
-    val syncStatusProvider = syncStatusManager.getSyncStatus()
-    syncStatusManager.setSyncStatus(DATA_UPLOADING)
-
-    syncStatusManager.setSyncStatus(NETWORK_ERROR)
-
-    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
-    assertThat(syncStatus).isEqualTo(NETWORK_ERROR)
-  }
-
-  @Test
-  fun testGetSyncStatus_setSyncStatus_toUploading_thenNetworkError_existingSub_notifiesChange() {
-    val syncStatusProvider = syncStatusManager.getSyncStatus()
-    val monitor = monitorFactory.createMonitor(syncStatusProvider)
-    syncStatusManager.setSyncStatus(DATA_UPLOADING)
-    monitor.waitForNextResult()
-
-    syncStatusManager.setSyncStatus(NETWORK_ERROR)
-
-    // The latest value should be sent to the existing observer as a notification.
-    val syncStatus = monitor.waitForNextSuccessResult()
-    assertThat(syncStatus).isEqualTo(NETWORK_ERROR)
+  fun testLearnerAnalyticsInactivityLimit_isDefaultValue() {
+    // This is a change detector test to ensure that changes to the inactivity limit are explicitly
+    // considered to help avoid potential unintended changes to this analytics behavioral
+    // configuration property.
+    assertThat(inactivityLimitMillis).isEqualTo(TimeUnit.MINUTES.toMillis(30))
   }
 
   private fun setUpTestApplicationComponent() {
@@ -122,26 +78,32 @@ class SyncStatusManagerImplTest {
 
   // TODO(#89): Move this to a common test application component.
   @Module
-  class TestModule {
+  interface TestModule {
+    @Binds
+    fun provideContext(application: Application): Context
+
+    @Multibinds
+    fun bindStartupListenerSet(): Set<ApplicationStartupListener>
+  }
+
+  @Module
+  class TestLogStorageModule {
+
     @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+  }
+
+  @Module
+  class TestLoggingIdentifierModule {
+
+    companion object {
+      const val applicationIdSeed = 1L
     }
 
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
     @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+    @ApplicationIdSeed
+    fun provideApplicationIdSeed(): Long = applicationIdSeed
   }
 
   @Module
@@ -184,10 +146,12 @@ class SyncStatusManagerImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class,
+      TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, SyncStatusModule::class
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      UserIdTestModule::class, LoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -198,18 +162,18 @@ class SyncStatusManagerImplTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(syncStatusControllerTest: SyncStatusManagerImplTest)
+    fun inject(applicationLifecycleObserverImplTest: ApplicationLifecycleModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSyncStatusManagerImplTest_TestApplicationComponent.builder()
+      DaggerApplicationLifecycleModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(syncStatusControllerTest: SyncStatusManagerImplTest) {
-      component.inject(syncStatusControllerTest)
+    fun inject(test: ApplicationLifecycleModuleTest) {
+      component.inject(test)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component

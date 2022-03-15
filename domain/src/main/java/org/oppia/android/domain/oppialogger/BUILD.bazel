@@ -6,9 +6,9 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "device_id_seed",
+    name = "application_id_seed",
     srcs = [
-        "DeviceIdSeed.kt",
+        "ApplicationIdSeed.kt",
     ],
     visibility = ["//domain:__subpackages__"],
     deps = [
@@ -45,9 +45,12 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":device_id_seed",
+        ":application_id_seed",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//third_party:com_google_firebase_firebase-installations",
         "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
         "//utility/src/main/java/org/oppia/android/util/system:user_id_generator",
     ],
 )
@@ -63,8 +66,8 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__",
     ],
     deps = [
+        ":application_id_seed",
         ":dagger",
-        ":device_id_seed",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )

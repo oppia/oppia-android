@@ -52,10 +52,11 @@ import java.io.FileInputStream
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.DeviceIdSeed
+import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakeUUIDImpl
+import org.oppia.android.testing.logging.FakeUserIdGenerator
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.system.UserIdGenerator
 
@@ -79,6 +80,9 @@ class ProfileManagementControllerTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
 
   @Mock
   lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
@@ -129,8 +133,9 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddProfile_addProfile_checkProfileIsAdded() {
-    val defaultLearnerId =
-      String.format("%08x", Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
+    val defaultLearnerId = machineLocale.run {
+      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    }
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -260,8 +265,9 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_checkUpdateIsSuccessful() {
-    val defaultLearnerId =
-      String.format("%08x", Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
+    val defaultLearnerId = machineLocale.run {
+      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    }
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
@@ -1090,15 +1096,15 @@ class ProfileManagementControllerTest {
   class TestLoggingIdentifierModule {
 
     companion object {
-      const val deviceIdSeed = 1L
+      const val applicationIdSeed = 1L
     }
 
     @Provides
-    @DeviceIdSeed
-    fun provideDeviceIdSeed(): Long = deviceIdSeed
+    @ApplicationIdSeed
+    fun provideApplicationIdSeed(): Long = applicationIdSeed
 
     @Provides
-    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UserIdGenerator = fakeUUIDImpl
+    fun provideUUIDWrapper(fakeUserIdGenerator: FakeUserIdGenerator): UserIdGenerator = fakeUserIdGenerator
   }
 
   // TODO(#89): Move this to a common test application component.

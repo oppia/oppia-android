@@ -1,10 +1,12 @@
-package org.oppia.android.domain.system
+package org.oppia.android.domain.oppialogger.analytics
 
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
+import java.util.concurrent.TimeUnit
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
+/** Application-level module that provides application-bound domain utilities. */
 @Module
 class ApplicationLifecycleModule {
   @Provides
@@ -14,6 +16,6 @@ class ApplicationLifecycleModule {
   ): ApplicationStartupListener = applicationLifecycleObserver
 
   @Provides
-  @LearnerAnalyticsInactivityLimit
-  fun provideLearnerAnalyticsInactivityLimit(): Int = 30
+  @LearnerAnalyticsInactivityLimitMillis
+  fun provideLearnerAnalyticsInactivityLimitMillis(): Long = TimeUnit.MINUTES.toMillis(30)
 }

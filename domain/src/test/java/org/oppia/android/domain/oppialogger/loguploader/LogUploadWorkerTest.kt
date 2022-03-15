@@ -59,7 +59,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakeSyncStatusManager
+import org.oppia.android.testing.logging.FakeSyncStatusManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -223,7 +223,7 @@ class LogUploadWorkerTest {
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
-    val syncStatusList = fakeSyncStatusManager.getSyncStatusList()
+    val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
     assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.NETWORK_ERROR)
     assertThat(syncStatusList[1]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
     assertThat(syncStatusList[2]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
@@ -259,9 +259,6 @@ class LogUploadWorkerTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
-    @Provides
-    fun provideSyncStatusManager(fakeSyncStatusManager: FakeSyncStatusManager): SyncStatusManager = fakeSyncStatusManager
   }
 
   @Module

@@ -16,9 +16,11 @@ import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 
-/** Controller for handling analytics event logging.
- * [OppiaLogger] should be the only caller of this class. Any other classes that want to log
- * events should call either [OppiaLogger.logTransitionEvent] or [OppiaLogger.logClickEvent].
+/**
+ * Controller for handling analytics event logging.
+ *
+ * ``OppiaLogger`` should be the only caller of this class. Any other classes that want to log
+ * events should call either ``OppiaLogger.logTransitionEvent`` or ``OppiaLogger.logClickEvent``.
  */
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger,
