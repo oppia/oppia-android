@@ -26,9 +26,9 @@ kt_android_library(
 kt_android_library(
     name = "tag_handlers",
     srcs = [
-        "BulletTagHandler.kt",
         "ConceptCardTagHandler.kt",
         "ImageTagHandler.kt",
+        "LiTagHandler.kt",
         "MathTagHandler.kt",
         "PolicyPageTagHandler.kt",
     ],
@@ -43,7 +43,7 @@ kt_android_library(
 kt_android_library(
     name = "custom_bullet_span",
     srcs = [
-        "CustomBulletSpan.kt",
+        "ListItemLeadingMarginSpan.kt",
     ],
     visibility = [
         "//app:__subpackages__",
