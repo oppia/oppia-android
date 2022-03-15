@@ -44,7 +44,7 @@ class LiTagHandler(private val context: Context, private val tag: String) :
         }
       }
       CUSTOM_LIST_OL_TAG -> {
-        val numberFormat: NumberFormat = DecimalFormat("##");
+        val numberFormat: NumberFormat = DecimalFormat("##")
         getLast<NumberListItem>(output)?.let { mark ->
           setSpanFromMark(
             output,
