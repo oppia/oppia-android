@@ -7,9 +7,13 @@ import android.text.Spanned
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
-/** The custom tag corresponding to [LiTagHandler]. */
+/** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
+
+/** The custom <ul> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_UL_TAG = "oppia-ul"
+
+/** The custom <ol> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_OL_TAG = "oppia-ol"
 
 /**

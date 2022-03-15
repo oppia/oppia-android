@@ -13,6 +13,8 @@ import javax.inject.Inject
 class PoliciesFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
+
+  /** Handles onCreate() method of the [PoliciesFragmentTestActivity]. */
   fun handleOnCreate(policiesActivityParams: PoliciesActivityParams) {
     activity.setContentView(R.layout.policies_fragment_test_activity)
     if (getPoliciesFragment() == null) {

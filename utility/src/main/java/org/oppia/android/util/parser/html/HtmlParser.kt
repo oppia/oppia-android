@@ -45,7 +45,7 @@ class HtmlParser {
     this.context = context
   }
 
-  constructor(
+  private constructor(
     consoleLogger: ConsoleLogger,
     policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
     context: Context

@@ -378,7 +378,6 @@ exempted_file_path: "testing/src/test/java/org/oppia/android/testing/threading/T
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/EventBundleCreator.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/LogLevel.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/ConceptCardTagHandler.kt"
-exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/ListItemLeadingMarginSpan.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/MathTagHandler.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/ScalableVectorGraphic.kt"
