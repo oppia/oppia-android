@@ -27,10 +27,12 @@ class StringToFractionParser {
    * detection should be done using [getRealTimeAnswerError], instead.
    */
   fun getSubmitTimeError(text: String): FractionParsingError {
-    if (invalidCharsLengthRegex.find(text) != null)
+    if (invalidCharsLengthRegex.find(text) != null) {
       return FractionParsingError.NUMBER_TOO_LONG
-    if (text.endsWith("/"))
+    }
+    if (text.endsWith("/")) {
       return FractionParsingError.INVALID_FORMAT
+    }
     val fraction = parseFraction(text)
     return when {
       fraction == null -> FractionParsingError.INVALID_FORMAT
