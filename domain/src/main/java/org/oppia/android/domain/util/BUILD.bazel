@@ -21,6 +21,7 @@ kt_android_library(
 kt_android_library(
     name = "extensions",
     srcs = [
+        "ContextExtensions.kt",
         "FloatExtensions.kt",
         "FractionExtensions.kt",
         "InteractionObjectExtensions.kt",

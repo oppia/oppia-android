@@ -33,7 +33,12 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeUUIDImpl
+import org.oppia.android.domain.oppialogger.ApplicationIdSeed
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.FakeUserIdGenerator
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -44,12 +49,15 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.system.UUIDWrapper
+import org.oppia.android.util.system.UserIdGenerator
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
@@ -57,12 +65,6 @@ import java.io.FileInputStream
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.DeviceIdSeed
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakeUUIDImpl
-import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdGenerator
 
 /** Tests for [ProfileManagementControllerTest]. */
 @RunWith(AndroidJUnit4::class)
@@ -86,7 +88,7 @@ class ProfileManagementControllerTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var fakeUUIDImpl: FakeUUIDImpl
+  lateinit var machineLocale: OppiaLocale.MachineLocale
 
   @Mock
   lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
@@ -137,8 +139,9 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddProfile_addProfile_checkProfileIsAdded() {
-    val defaultLearnerId =
-      String.format("%08x", Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
+    val defaultLearnerId = machineLocale.run {
+      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    }
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -268,8 +271,9 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_checkUpdateIsSuccessful() {
-    val defaultLearnerId =
-      String.format("%08x", Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
+    val defaultLearnerId = machineLocale.run {
+      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    }
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
@@ -1120,15 +1124,16 @@ class ProfileManagementControllerTest {
   class TestLoggingIdentifierModule {
 
     companion object {
-      const val deviceIdSeed = 1L
+      const val applicationIdSeed = 1L
     }
 
     @Provides
-    @DeviceIdSeed
-    fun provideDeviceIdSeed(): Long = deviceIdSeed
+    @ApplicationIdSeed
+    fun provideApplicationIdSeed(): Long = applicationIdSeed
 
     @Provides
-    fun provideUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UserIdGenerator = fakeUUIDImpl
+    fun provideUUIDWrapper(fakeUserIdGenerator: FakeUserIdGenerator): UserIdGenerator =
+      fakeUserIdGenerator
   }
 
   // TODO(#89): Move this to a common test application component.

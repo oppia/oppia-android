@@ -1,11 +1,10 @@
-package org.oppia.android.testing
+package org.oppia.android.testing.logging
 
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -19,18 +18,14 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TEST_UUID = "test_uuid"
-
+/** Tests for [UserIdTestModule]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class FakeUUIDImplTest {
-
-  @Inject
-  lateinit var fakeUUIDImpl: FakeUUIDImpl
-
-  @Inject
-  lateinit var userIdGenerator: UserIdGenerator
+class UserIdTestModuleTest {
+  @Inject lateinit var userIdGenerator: UserIdGenerator
 
   @Before
   fun setUp() {
@@ -38,34 +33,12 @@ class FakeUUIDImplTest {
   }
 
   @Test
-  fun testFakeUUIDImpl_getRandomUUID_returnsDefaultValue() {
-    val expectedValue = fakeUUIDImpl.getUUIDValue()
-    val returnedValue = userIdGenerator.generateRandomUserId()
-
-    assertThat(returnedValue).isEqualTo(expectedValue)
-  }
-
-  @Test
-  fun testFakeUUIDImpl_setRandomUUID_returnsNewValue() {
-    fakeUUIDImpl.setUUIDValue(TEST_UUID)
-
-    val returnedValue = userIdGenerator.generateRandomUserId()
-    assertThat(returnedValue).isEqualTo(TEST_UUID)
-  }
-
-  @Test
-  fun testFakeUUIDImpl_getRandomUUID_updateUUIDValue_getRandomUUID_returnsUpdatedValue() {
-    val defaultValue = fakeUUIDImpl.getUUIDValue()
-    val initialValue = userIdGenerator.generateRandomUserId()
-    fakeUUIDImpl.setUUIDValue(TEST_UUID)
-    val updatedValue = userIdGenerator.generateRandomUserId()
-
-    assertThat(initialValue).isEqualTo(defaultValue)
-    assertThat(updatedValue).isEqualTo(TEST_UUID)
+  fun testInjectUserIdGenerator_isInstanceOfFakeUserIdGenerator() {
+    assertThat(userIdGenerator).isInstanceOf(FakeUserIdGenerator::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFakeUUIDImplTest_TestApplicationComponent.builder()
+    DaggerUserIdTestModuleTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -81,15 +54,9 @@ class FakeUUIDImplTest {
     }
   }
 
-  @Module
-  interface TestUUIDModule {
-    @Binds
-    fun bindUUIDWrapper(fakeUUIDImpl: FakeUUIDImpl): UserIdGenerator
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestUUIDModule::class])
+  @Component(modules = [TestModule::class, UserIdTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -98,6 +65,6 @@ class FakeUUIDImplTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(fakeUUIDImplTest: FakeUUIDImplTest)
+    fun inject(test: UserIdTestModuleTest)
   }
 }

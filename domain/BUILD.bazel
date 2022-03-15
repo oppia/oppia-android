@@ -192,6 +192,8 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/testing/oppialogger/loguploader:fake_log_uploader",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+    "//testing/src/main/java/org/oppia/android/testing/logging:fake_user_id_generator",
+    "//testing/src/main/java/org/oppia/android/testing/logging:user_id_test_module",
     "//testing/src/main/java/org/oppia/android/testing/network:network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",

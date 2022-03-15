@@ -750,8 +750,8 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
-        "//domain/src/main/java/org/oppia/android/domain/system:prod_module",
         "//model:arguments_java_proto_lite",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",
@@ -907,7 +907,7 @@ MIGRATED_TESTS = [
     manifest_values = {
         "applicationId": "org.oppia.android",
         "minSdkVersion": "19",
-        "targetSdkVersion": "28",
+        "targetSdkVersion": "30",
         "versionCode": "0",
         "versionName": "0.1-alpha",
     },
@@ -923,7 +923,7 @@ MIGRATED_TESTS = [
     manifest_values = {
         "applicationId": "org.oppia.android",
         "minSdkVersion": "19",
-        "targetSdkVersion": "28",
+        "targetSdkVersion": "30",
         "versionCode": "0",
         "versionName": "0.1-alpha",
     },

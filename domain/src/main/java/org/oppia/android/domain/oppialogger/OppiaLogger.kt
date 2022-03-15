@@ -1,6 +1,7 @@
 package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
@@ -9,6 +10,7 @@ import javax.inject.Inject
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 /** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(
@@ -337,30 +339,26 @@ class OppiaLogger @Inject constructor(
   }
 
   /**
-   * Returns a learner details data object that contains [deviceId] and [learnerId]. These
-   * identifiers are logged across all Learner Study Analytics events.
+   * Returns a learner details data object that contains a device id and the specified [learnerId].
    *
-   * @param deviceId: device-specific identifier which is unique to each device.
-   * @param learnerId: profile-specific identifier which is unique to each profile on a device.
-   * */
-  fun createLearnerDetailsContext(
-    learnerId: String
-  ): EventLog.LearnerDetailsContext {
+   * These identifiers are logged across all Learner Study Analytics events.
+   *
+   * @param learnerId profile-specific identifier which is unique to each profile on a device
+   */
+  fun createLearnerDetailsContext(learnerId: String): EventLog.LearnerDetailsContext {
+    // TODO: This would need to be a data provider since the device ID isn't known synchronously.
+    // However, given that the point is to populate one field in an event log context, perhaps it
+    // would actually be cleaner to send event logs to be cached without the device ID, and have the
+    // ID filled in later once it's available (this gets a bit complicated).
     return EventLog.LearnerDetailsContext.newBuilder()
-      .setDeviceId(loggingIdentifierController.deviceId)
+//      .setDeviceId(loggingIdentifierController.deviceId)
       .setLearnerId(learnerId)
       .build()
   }
 
   /**
-   * Returns an exploration-specific data object that contains [sessionId], [explorationId],
-   * [explorationVersion] and [stateName].
-   *
-   * @param sessionId: session-specific identifier which is unique to each session.
-   * @param explorationId: id of the exploration.
-   * @param explorationVersion: version of the exploration.
-   * @param stateName: name of the current state.
-   * @param learnerDetails:
+   * Returns an exploration-specific data object that contains the specified [sessionId],
+   * [explorationId], [explorationVersion], [stateName], and [learnerDetails].
    */
   fun createExplorationDetailsContext(
     sessionId: String,
@@ -369,13 +367,13 @@ class OppiaLogger @Inject constructor(
     stateName: String,
     learnerDetails: EventLog.LearnerDetailsContext
   ): EventLog.ExplorationContext {
-    return EventLog.ExplorationContext.newBuilder()
-      .setSessionId(sessionId)
-      .setExplorationId(explorationId)
-      .setExplorationVersion(explorationVersion)
-      .setStateName(stateName)
-      .setLearnerDetails(learnerDetails)
-      .build()
+    return EventLog.ExplorationContext.newBuilder().apply {
+      this.sessionId = sessionId
+      this.explorationId = explorationId
+      this.explorationVersion = explorationVersion
+      this.stateName = stateName
+      this.learnerDetails = learnerDetails
+    }.build()
   }
 
   /** Returns the context of an event related to starting an exploration card. */

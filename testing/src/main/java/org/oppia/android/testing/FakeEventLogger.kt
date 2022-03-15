@@ -7,6 +7,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**  A test specific fake for the event logger. */
 @Singleton

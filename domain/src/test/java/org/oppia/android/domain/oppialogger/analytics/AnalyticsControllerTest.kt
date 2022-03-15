@@ -64,6 +64,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.FakeSyncStatusManager
+import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.logging.UserIdTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -88,11 +91,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakeSyncStatusManager
-import org.oppia.android.util.logging.SyncStatusManager
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -930,7 +928,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeSyncStatusManager.getSyncStatusList().last()).isEqualTo(
+    assertThat(fakeSyncStatusManager.getSyncStatuses().last()).isEqualTo(
       SyncStatusManager.SyncStatus.NETWORK_ERROR
     )
   }
@@ -971,7 +969,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeSyncStatusManager.getSyncStatusList().last()).isEqualTo(
+    assertThat(fakeSyncStatusManager.getSyncStatuses().last()).isEqualTo(
       SyncStatusManager.SyncStatus.DATA_UPLOADED
     )
   }
@@ -987,7 +985,7 @@ class AnalyticsControllerTest {
         )
       )
     )
-    val syncStatusList = fakeSyncStatusManager.getSyncStatusList()
+    val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
     assertThat(syncStatusList.size).isEqualTo(2)
     assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
     assertThat(syncStatusList[1]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
@@ -1061,10 +1059,6 @@ class AnalyticsControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    fun provideSyncStatusManager(fakeSyncStatusManager: FakeSyncStatusManager): SyncStatusManager =
-      fakeSyncStatusManager
   }
 
   @Module
@@ -1083,7 +1077,7 @@ class AnalyticsControllerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, UserIdTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
