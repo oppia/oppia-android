@@ -4,6 +4,8 @@ import android.content.Context
 import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 /** The custom tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -42,11 +44,17 @@ class LiTagHandler(private val context: Context, private val tag: String) :
         }
       }
       CUSTOM_LIST_OL_TAG -> {
+        val numberFormat: NumberFormat = DecimalFormat("##");
         getLast<NumberListItem>(output)?.let { mark ->
           setSpanFromMark(
             output,
             mark,
-            ListItemLeadingMarginSpan(context, indentation, "${mark.number}.", tag)
+            ListItemLeadingMarginSpan(
+              context,
+              indentation,
+              "${numberFormat.format(mark.number)}.",
+              tag
+            )
           )
         }
       }
