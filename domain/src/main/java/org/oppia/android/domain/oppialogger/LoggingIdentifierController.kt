@@ -3,19 +3,19 @@ package org.oppia.android.domain.oppialogger
 import android.content.Context
 import android.provider.Settings
 import com.google.firebase.installations.FirebaseInstallations
-import java.io.File
+import org.oppia.android.domain.util.getSecureString
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.UserIdGenerator
+import java.io.File
 import java.security.MessageDigest
 import java.util.Random
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.util.getSecureString
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.locale.OppiaLocale
 
 private const val SESSION_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.session_id"
 private const val FIREBASE_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.firebase_id"

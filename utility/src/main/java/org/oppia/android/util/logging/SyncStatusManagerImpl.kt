@@ -1,9 +1,9 @@
 package org.oppia.android.util.logging
 
-import java.util.concurrent.atomic.AtomicReference
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -3,8 +3,8 @@ package org.oppia.android.domain.oppialogger.analytics
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
-import java.util.concurrent.TimeUnit
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import java.util.concurrent.TimeUnit
 
 /** Application-level module that provides application-bound domain utilities. */
 @Module

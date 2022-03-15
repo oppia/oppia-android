@@ -9,8 +9,8 @@ import dagger.Provides
 import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
-import javax.inject.Singleton
 import org.oppia.android.util.logging.SyncStatusManager
+import javax.inject.Singleton
 
 /** Provides Firebase-specific logging implementations. */
 @Module

@@ -9,18 +9,22 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.hintsandsolution.HintHandler
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
@@ -28,10 +32,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import org.oppia.android.app.model.Profile
-import org.oppia.android.domain.oppialogger.LoggingIdentifierController
-import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
 
@@ -109,7 +109,7 @@ class ExplorationProgressController @Inject constructor(
   internal fun finishExplorationAsync() {
     oppiaLogger.createFinishExplorationContext(
       oppiaLogger.createExplorationDetailsContext(
-        getSessionId()?:"",
+        getSessionId() ?: "",
         explorationProgress.currentExplorationId,
         explorationProgress.currentExploration.version.toString(),
         explorationProgress.stateDeck.getCurrentState().name,

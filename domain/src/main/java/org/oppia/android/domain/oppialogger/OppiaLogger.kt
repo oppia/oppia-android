@@ -1,12 +1,12 @@
 package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.logging.ConsoleLogger
-import javax.inject.Inject
-import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 /** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(

@@ -4,19 +4,19 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import com.google.common.truth.Truth.assertThat
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [LoggingIdentifierModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -61,7 +61,7 @@ class LoggingIdentifierModuleTest {
     // call, and the fake defaults to wall-clock time and can't be configured until after injection
     // time.
     @Provides
-    fun provideOppiaClock(): OppiaClock = object: OppiaClock {
+    fun provideOppiaClock(): OppiaClock = object : OppiaClock {
       override fun getCurrentTimeMs(): Long = FIXED_CURRENT_TIME_MS
     }
   }

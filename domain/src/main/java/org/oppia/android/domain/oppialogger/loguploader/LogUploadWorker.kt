@@ -16,12 +16,12 @@ import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
-import org.oppia.android.util.threading.BackgroundDispatcher
-import javax.inject.Inject
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
+import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */
 class LogUploadWorker private constructor(

@@ -1,9 +1,9 @@
 package org.oppia.android.testing.logging
 
-import java.util.concurrent.CopyOnWriteArrayList
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManagerImpl
+import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
 

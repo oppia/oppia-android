@@ -12,11 +12,14 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.logging.FakeUserIdGenerator
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.FakeUserIdGenerator
+import org.oppia.android.testing.logging.UserIdTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -24,6 +27,7 @@ import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -44,10 +48,6 @@ import java.security.MessageDigest
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Ignore
-import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.logging.UserIdTestModule
-import org.oppia.android.util.locale.OppiaLocale
 
 private const val TEST_ID = "test_id"
 private const val TEST_MAC_ADDRESS = "test_mac_address"
