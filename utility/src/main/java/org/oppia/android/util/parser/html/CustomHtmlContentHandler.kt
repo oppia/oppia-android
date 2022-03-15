@@ -1,5 +1,3 @@
-
-
 package org.oppia.android.util.parser.html
 
 import android.content.Context
@@ -14,7 +12,7 @@ import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
-import java.util.Stack
+import java.util.*
 import kotlin.collections.ArrayDeque
 
 /**
@@ -137,8 +135,8 @@ class CustomHtmlContentHandler(
           }
           else -> customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0)
         }
-          customTagHandlers.getValue(tag)
-            .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+        customTagHandlers.getValue(tag)
+          .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
     }
   }
