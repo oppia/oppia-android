@@ -25,27 +25,13 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
-import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
@@ -55,6 +41,13 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -949,7 +942,7 @@ class AnalyticsControllerTest {
         )
       )
     )
-    
+
     testCoroutineDispatchers.advanceUntilIdle()
     verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
     assertThat(syncStatusResultCaptor.value.getOrThrow()).isEqualTo(

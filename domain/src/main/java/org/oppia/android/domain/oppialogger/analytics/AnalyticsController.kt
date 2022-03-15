@@ -15,12 +15,6 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import javax.inject.Inject
-import org.oppia.android.util.logging.SyncStatusManager
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
-import org.oppia.android.util.networking.NetworkConnectionUtil
-import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
-import javax.inject.Inject
 
 /**
  * Controller for handling analytics event logging.

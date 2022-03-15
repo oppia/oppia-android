@@ -7,10 +7,6 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
 
 /** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(
@@ -435,7 +431,7 @@ class OppiaLogger @Inject constructor(
           .build()
       ).build()
   }
-  
+
   /** Returns the context of an event related to offering a hint when it becomes available. */
   fun createHintOfferedContext(
     hintIndex: HelpIndex,

@@ -182,7 +182,8 @@ class CellularAudioDialogControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class,LocaleProdModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
+      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class,
+      LocaleProdModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class
     ]

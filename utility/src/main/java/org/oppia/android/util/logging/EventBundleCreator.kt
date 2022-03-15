@@ -24,17 +24,6 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 
 const val TIMESTAMP_KEY = "timestamp"
 const val TOPIC_ID_KEY = "topicId"
