@@ -58,7 +58,6 @@ class LiTagHandler(private val context: Context, private val tag: String) :
               tag
             )
           )
-
         }
       }
     }
