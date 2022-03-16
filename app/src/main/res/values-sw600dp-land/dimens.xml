@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <dimen name="home_padding_end">64dp</dimen>
   <dimen name="home_padding_start">96dp</dimen>
   <dimen name="home_outer_margin">96dp</dimen>
@@ -345,6 +345,11 @@
   <dimen name="topic_practice_subtopic_layout_margin_end">0dp</dimen>
   <dimen name="topic_practice_subtopic_layout_width">360dp</dimen>
 
+  <!-- ProfileProgressFragment -->
+  <dimen name="profile_progress_fragment_margin_start">64dp</dimen>
+  <dimen name="profile_progress_fragment_margin_end">64dp</dimen>
+  <dimen name="profile_progress_fragment_padding_bottom">112dp</dimen>
+
   <!-- Topic Lessons Fragment -->
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
 
@@ -396,7 +401,45 @@
   <dimen name="section_title_text_view_layout_margin_top">32dp</dimen>
   <dimen name="section_title_text_view_layout_margin_end">96dp</dimen>
 
+  <!-- TopicSummaryView -->
+  <dimen name="topic_summary_lesson_count_text_view_padding_bottom">12dp</dimen>
+  
+  <!-- TopicPracticeFragment -->
+  <dimen name="topic_practice_fragment_padding_bottom">112dp</dimen>
+
+  <!--  PromotedStoryList-->
+  <dimen name="promoted_story_list_layout_margin_end">96dp</dimen>
+  <dimen name="promoted_story_list_layout_margin_start">96dp</dimen>
+
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
+  <!-- AppLanguageFragment -->
+  <dimen name="app_language_recycler_view_padding_bottom">132dp</dimen>
+  
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">32dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">32dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">28dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">0dp</dimen>
+
+  <!-- RevisionCardFragment -->
+  <dimen name="revision_card_fragment_layout_tablet_min_width">640dp</dimen>
+  <dimen name="revision_card_fragment_padding_bottom">148dp</dimen>
+  <dimen name="revision_card_fragment_layout_text_margin_top">32dp</dimen>
+  <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
+
+  <!-- Hints and Solution Fragment -->
+  <dimen name="hints_and_solution_recycler_view_padding_top">4dp</dimen>
+  <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
+  
+  <!-- AdministratorControlDownloadPermissionsView -->
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_widget_switch_compat_margin_end">4dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
 </resources>

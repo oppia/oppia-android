@@ -131,6 +131,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
@@ -192,6 +193,9 @@ class StateFragmentLocalTest {
   lateinit var editTextInputAction: EditTextInputAction
 
   @Inject
+  lateinit var accessibilityManager: FakeAccessibilityService
+
+  @Inject
   lateinit var translationController: TranslationController
 
   @Inject
@@ -216,7 +220,6 @@ class StateFragmentLocalTest {
         .setAnimationExecutor(executorService)
         .setSourceExecutor(executorService)
     )
-
     profileTestHelper.initializeProfiles()
     ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
   }
@@ -246,6 +249,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
       onView(withSubstring("the pieces must be the same size.")).perform(click())
       testCoroutineDispatchers.runCurrent()
+      clickSubmitAnswerButton()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.continue_navigation_button)).perform(click())
@@ -349,6 +353,58 @@ class StateFragmentLocalTest {
 
       onView(withId(R.id.congratulations_text_view))
         .check(matches(isCompletelyDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_portrait_submitCorrectAnswerWithFeedback_correctIsNotAnnounced() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      playThroughFractionsState2()
+      accessibilityManager.resetLatestAnnouncement()
+      playThroughFractionsState3()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isNull()
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_landscape_submitCorrectAnswerWithFeedback_correctIsNotAnnounced() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      playThroughFractionsState2()
+      accessibilityManager.resetLatestAnnouncement()
+      playThroughFractionsState3()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isNull()
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+port")
+  fun testStateFragment_portrait_submitCorrectAnswer_correctIsAnnounced() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      playThroughFractionsState2()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "+land")
+  fun testStateFragment_landscape_submitCorrectAnswer_correctIsAnnounced() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      playThroughFractionsState2()
+
+      assertThat(accessibilityManager.getLatestAnnouncement()).isEqualTo("Correct!")
     }
   }
 
@@ -1541,6 +1597,7 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
+    clickSubmitAnswerButton()
     clickContinueNavigationButton()
   }
 
@@ -1764,6 +1821,7 @@ class StateFragmentLocalTest {
       expectedText = expectedOptionText,
       targetTextViewId = R.id.multiple_choice_content_text_view
     )
+    clickSubmitAnswerButton()
   }
 
   private fun selectItemSelectionCheckbox(optionPosition: Int, expectedOptionText: String) {

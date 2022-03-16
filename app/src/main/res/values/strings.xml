@@ -289,7 +289,7 @@
   <!-- ResetPinDialogFragment -->
   <string name="reset_pin_enter">Enter a New Pin</string>
   <!-- MyDownloadsActivity -->
-  <string name="my_downloads">My Downloads</string>
+  <string name="my_downloads_activity_title">My Downloads</string>
   <string name="tab_downloads">Downloads</string>
   <string name="tab_updates">Updates (2)</string>
   <!-- HomeActivityBackDialog -->
@@ -408,6 +408,7 @@
   <string name="reveal">Reveal</string>
   <!-- TextViewBindingAdapters -->
   <string name="just_now">just now</string>
+  <string name="last_logged_in_recently">recently</string>
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>

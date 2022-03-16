@@ -30,15 +30,15 @@
 
     <ImageView
       android:id="@+id/back_button"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
-      android:layout_margin="16dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:padding="16dp"
       android:clickable="true"
       android:contentDescription="@string/back_button"
       android:focusable="true"
       android:onClick="@{(v) -> presenter.moveToPreviousPage(viewModel.currentProgress)}"
       app:srcCompat="@drawable/ic_arrow_back_white_24dp"
-      android:tint="@color/grey"
+      android:tint="@color/color_def_grey"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
