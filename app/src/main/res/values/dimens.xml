@@ -613,6 +613,9 @@
   <!-- AudioLanguageFragment -->
   <dimen name="audio_language_recycler_view_padding_bottom">132dp</dimen>
 
+  <!-- AppLanguageFragment -->
+  <dimen name="app_language_recycler_view_padding_bottom">132dp</dimen>
+   
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">160dp</dimen>
 
@@ -629,7 +632,55 @@
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
 
+  <!-- ProfileProgressRecentlyPlayedStoryCard -->
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_start">8dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_end">8dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_top">12dp</dimen>
+  <dimen name="profile_progress_recently_played_story_card_layout_margin_bottom">12dp</dimen>
+
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
+  
+  <!-- AdministratorControlDownloadPermissionsView -->
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_topic_update_on_wifi_widget_switch_compat_margin_end">4dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_download_permissions_view_auto_update_topic_widget_switch_compat_margin_end">4dp</dimen>
+
+  <!-- AdministratorControlAccountActionsView -->
+  <dimen name="administrator_control_account_actions_view_account_actions_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_account_actions_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_log_out_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_control_account_actions_view_log_out_text_view_padding_end">16dp</dimen>
+
+  <!-- AdministratorControlsAppInformationView -->
+  <dimen name="administrator_controls_app_information_view_app_information_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_app_information_view_app_information_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_app_information_view_app_version_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_app_information_view_app_version_text_view_padding_end">16dp</dimen>
+
+  <!-- AdministratorControlsFragment -->
+  <dimen name="administrator_controls_fragment_recycler_view_padding_bottom">80dp</dimen>
+
+  <!-- AdministratorControlsGeneralView -->
+  <dimen name="administrator_controls_general_view_general_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_general_view_general_text_view_padding_top">20dp</dimen>
+  <dimen name="administrator_controls_general_view_general_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_general_view_edit_account_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_general_view_edit_account_text_view_padding_end">16dp</dimen>
+
+  <!-- AdministratorControlsProfileView -->
+  <dimen name="administrator_controls_profile_view_profile_management_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_profile_view_profile_management_text_view_padding_end">16dp</dimen>
+  <dimen name="administrator_controls_profile_view_edit_profiles_text_view_padding_start">16dp</dimen>
+  <dimen name="administrator_controls_profile_view_edit_profiles_text_view_padding_end">16dp</dimen>
+
+  <!-- OptionAudioLanguage -->
+  <dimen name="option_audio_language_padding_start">16dp</dimen>
+  <dimen name="option_audio_language_padding_end">16dp</dimen>
 </resources>

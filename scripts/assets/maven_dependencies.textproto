@@ -663,7 +663,7 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.squareup.okhttp3:okhttp:4.1.0"
+  artifact_name: "com.squareup.okhttp3:okhttp:4.7.2"
   artifact_version: "4.1.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
@@ -674,8 +674,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.squareup.okio:okio:2.2.2"
-  artifact_version: "2.2.2"
+  artifact_name: "com.squareup.okio:okio:2.6.0"
+  artifact_version: "2.6.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"

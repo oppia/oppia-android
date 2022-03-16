@@ -116,6 +116,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private fun addRecentlyPlayedStoryListSection(
     recentlyPlayedStoryList: MutableList<PromotedStory>
   ) {
+    itemList.clear()
     val recentSectionTitleViewModel =
       SectionTitleViewModel(
         resourceHandler.getStringInLocale(R.string.ongoing_story_last_week), false
