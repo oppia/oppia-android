@@ -57,7 +57,7 @@
       android:layout_marginEnd="20dp"
       android:fontFamily="sans-serif"
       android:text="@string/profile_chooser_admin"
-      android:textColor="@color/accessible_light_grey"
+      android:textColor="@color/color_def_accessible_light_grey"
       android:textSize="12sp"
       android:textStyle="italic"
       android:visibility="@{profile.isAdmin ? View.VISIBLE : View.GONE}"

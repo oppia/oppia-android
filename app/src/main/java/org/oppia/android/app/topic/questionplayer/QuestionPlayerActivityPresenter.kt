@@ -89,8 +89,13 @@ class QuestionPlayerActivityPresenter @Inject constructor(
   }
 
   private fun startTrainingSessionWithCallback(callback: () -> Unit) {
-    val skillIds =
-      activity.intent.getStringArrayListExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY)
+    val skillIds = checkNotNull(
+      activity.intent.getStringArrayListExtra(
+        QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY
+      )
+    ) {
+      "Expected $QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
+    }
     val startDataProvider =
       questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
     startDataProvider.toLiveData().observe(

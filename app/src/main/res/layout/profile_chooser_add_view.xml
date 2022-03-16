@@ -56,7 +56,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-medium"
           android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           android:textSize="14sp" />
 
         <TextView
@@ -67,7 +67,7 @@
           android:layout_marginTop="4dp"
           android:fontFamily="sans-serif"
           android:text="@string/set_up_multiple_profiles_description"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           android:textSize="12sp"
           android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
       </LinearLayout>

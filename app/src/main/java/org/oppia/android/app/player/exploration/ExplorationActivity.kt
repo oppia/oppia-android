@@ -54,9 +54,19 @@ class ExplorationActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
-    topicId = intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)
-    storyId = intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)
-    explorationId = intent.getStringExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY)
+    topicId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
+      "Expected $EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY to be in intent extras."
+    }
+    storyId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)) {
+      "Expected $EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY to be in intent extras."
+    }
+    explorationId = checkNotNull(
+      intent.getStringExtra(
+        EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY
+      )
+    ) {
+      "Expected EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY to be in intent extras."
+    }
     backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
     isCheckpointingEnabled =
       intent.getBooleanExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, false)
@@ -123,7 +133,7 @@ class ExplorationActivity :
     return super.onCreateOptionsMenu(menu)
   }
 
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
     return explorationActivityPresenter.handleOnOptionsItemSelected(item)
   }
 
