@@ -611,7 +611,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
-        "//utility/src/main/java/org/oppia/android/util/parser/html:policy_type",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",

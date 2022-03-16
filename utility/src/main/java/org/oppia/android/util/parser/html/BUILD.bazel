@@ -15,7 +15,6 @@ kt_android_library(
         ":custom_html_content_handler",
         ":list_item_leading_margin_span",
         ":tag_handlers",
-        "//model:arguments_java_proto_lite",
         "//third_party:androidx_core_core-ktx",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
