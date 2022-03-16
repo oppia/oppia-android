@@ -72,8 +72,8 @@ class MachineLocaleImpl @Inject constructor(
     timeFormat.format(Date(oppiaClock.getCurrentTimeMs()))
 
   override fun numberFormatter(number: Int): String {
-      val numberFormat: NumberFormat = DecimalFormat("##")
-      return numberFormat.format(number)
+    val numberFormat: NumberFormat = DecimalFormat("##")
+    return numberFormat.format(number)
   }
 
   override fun toString(): String = "MachineLocaleImpl[context=$machineLocaleContext]"
