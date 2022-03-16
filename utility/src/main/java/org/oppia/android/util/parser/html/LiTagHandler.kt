@@ -20,7 +20,7 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
  * [CustomHtmlContentHandler].
  */
 class LiTagHandler(private val context: Context, private val tag: String) :
-  CustomHtmlContentHandler.CustomTagHandler,OppiaLocale.OppiaNumberFormatter() {
+  CustomHtmlContentHandler.CustomTagHandler, OppiaLocale.OppiaNumberFormatter() {
 
   private var index = 1
 
