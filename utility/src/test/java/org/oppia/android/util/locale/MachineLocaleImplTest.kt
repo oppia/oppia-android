@@ -225,6 +225,13 @@ class MachineLocaleImplTest {
   }
 
   @Test
+  fun testOppiaNumberFormatter_validNumberFormat_returnsString() {
+    val number = machineLocale.numberFormatter(1)
+
+    assertThat(number).isEqualTo("1")
+  }
+
+  @Test
   fun testParseOppiaDate_validDateFormat_returnsDateObject() {
     val date = machineLocale.parseOppiaDate(dateString = "2019-04-24")
 

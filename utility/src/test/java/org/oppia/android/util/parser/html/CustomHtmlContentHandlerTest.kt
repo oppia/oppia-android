@@ -27,6 +27,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
@@ -43,8 +44,8 @@ class CustomHtmlContentHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   @Mock
   lateinit var mockImageRetriever: FakeImageRetriever
@@ -59,7 +60,8 @@ class CustomHtmlContentHandlerTest {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         context,
-        html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf()
+        html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf(),
+        machineLocale = machineLocale
       )
 
     assertThat(parsedHtml.length).isEqualTo(0)
@@ -72,7 +74,8 @@ class CustomHtmlContentHandlerTest {
         context,
         html = "<strong>Text</strong>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf()
+        customTagHandlers = mapOf(),
+        machineLocale = machineLocale
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("Text")
@@ -85,7 +88,8 @@ class CustomHtmlContentHandlerTest {
       context,
       html = "<img src=\"test_source.png\"></img>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf()
+      customTagHandlers = mapOf(),
+      machineLocale = machineLocale
     )
 
     verify(mockImageRetriever).getDrawable(anyString())
@@ -100,7 +104,8 @@ class CustomHtmlContentHandlerTest {
         context,
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+        customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
+        machineLocale = machineLocale
       )
 
     assertThat(fakeTagHandler.handleTagCalled).isTrue()
@@ -116,7 +121,8 @@ class CustomHtmlContentHandlerTest {
       context,
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
+      machineLocale = machineLocale
     )
 
     assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
@@ -136,7 +142,8 @@ class CustomHtmlContentHandlerTest {
         context,
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf()
+        customTagHandlers = mapOf(),
+        machineLocale = machineLocale
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("content")
@@ -151,7 +158,8 @@ class CustomHtmlContentHandlerTest {
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           "custom-tag" to ReplacingTagHandler("custom-attribute")
-        )
+        ),
+        machineLocale = machineLocale
       )
 
     // Verify that handlers which wish to replace text can successfully do so.
@@ -171,7 +179,8 @@ class CustomHtmlContentHandlerTest {
         customTagHandlers = mapOf(
           "outer-tag" to outerFakeTagHandler,
           "inner-tag" to innerFakeTagHandler
-        )
+        ),
+        machineLocale = machineLocale
       )
 
     // Verify that both tag handlers are called (showing support for nesting).
@@ -191,9 +200,10 @@ class CustomHtmlContentHandlerTest {
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, CUSTOM_LIST_LI_TAG),
-          CUSTOM_LIST_UL_TAG to LiTagHandler(context, CUSTOM_LIST_UL_TAG)
-        )
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, CUSTOM_LIST_LI_TAG, machineLocale),
+          CUSTOM_LIST_UL_TAG to LiTagHandler(context, CUSTOM_LIST_UL_TAG, machineLocale)
+        ),
+        machineLocale = machineLocale
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -211,9 +221,10 @@ class CustomHtmlContentHandlerTest {
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, CUSTOM_LIST_LI_TAG),
-          CUSTOM_LIST_OL_TAG to LiTagHandler(context, CUSTOM_LIST_OL_TAG)
-        )
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, CUSTOM_LIST_LI_TAG, machineLocale),
+          CUSTOM_LIST_OL_TAG to LiTagHandler(context, CUSTOM_LIST_OL_TAG, machineLocale)
+        ),
+        machineLocale = machineLocale
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()

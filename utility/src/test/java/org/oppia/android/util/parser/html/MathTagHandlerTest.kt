@@ -28,6 +28,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
@@ -72,6 +73,7 @@ class MathTagHandlerTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithMathSupport: Map<String, CustomTagHandler>
@@ -94,7 +96,8 @@ class MathTagHandlerTest {
         context,
         html = "",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport
+        customTagHandlers = tagHandlersWithMathSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -108,7 +111,8 @@ class MathTagHandlerTest {
         context,
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport
+        customTagHandlers = tagHandlersWithMathSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -122,7 +126,8 @@ class MathTagHandlerTest {
         context,
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport
+        customTagHandlers = tagHandlersWithMathSupport,
+        machineLocale = machineLocale
       )
 
     // The image only adds a control character, so there aren't any human-readable characters.
@@ -138,7 +143,8 @@ class MathTagHandlerTest {
         context,
         html = MATH_WITHOUT_CONTENT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport
+        customTagHandlers = tagHandlersWithMathSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -152,7 +158,8 @@ class MathTagHandlerTest {
         context,
         html = MATH_WITHOUT_RAW_LATEX_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport
+        customTagHandlers = tagHandlersWithMathSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -166,7 +173,8 @@ class MathTagHandlerTest {
         context,
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport
+        customTagHandlers = tagHandlersWithMathSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -180,7 +188,8 @@ class MathTagHandlerTest {
         context,
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = noTagHandlers
+        customTagHandlers = noTagHandlers,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -194,7 +203,8 @@ class MathTagHandlerTest {
         context,
         html = "$MATH_MARKUP_1 and $MATH_MARKUP_2",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport
+        customTagHandlers = tagHandlersWithMathSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -207,7 +217,8 @@ class MathTagHandlerTest {
       context,
       html = MATH_MARKUP_1,
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithMathSupport
+      customTagHandlers = tagHandlersWithMathSupport,
+      machineLocale = machineLocale
     )
 
     verify(mockImageRetriever).loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
@@ -221,7 +232,8 @@ class MathTagHandlerTest {
       context,
       html = "$MATH_MARKUP_2 and $MATH_MARKUP_1",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithMathSupport
+      customTagHandlers = tagHandlersWithMathSupport,
+      machineLocale = machineLocale
     )
 
     // Verify that both images are loaded in order.

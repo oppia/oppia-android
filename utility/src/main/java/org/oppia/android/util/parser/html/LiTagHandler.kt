@@ -19,8 +19,12 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
  * A custom tag handler for properly formatting bullet items in HTML parsed with
  * [CustomHtmlContentHandler].
  */
-class LiTagHandler(private val context: Context, private val tag: String) :
-  CustomHtmlContentHandler.CustomTagHandler, OppiaLocale.OppiaNumberFormatter() {
+class LiTagHandler(
+  private val context: Context,
+  private val tag: String,
+  private val machineLocale: OppiaLocale.MachineLocale
+) :
+  CustomHtmlContentHandler.CustomTagHandler {
 
   private var index = 1
 
@@ -54,7 +58,7 @@ class LiTagHandler(private val context: Context, private val tag: String) :
             ListItemLeadingMarginSpan(
               context,
               indentation,
-              "${numberFormatter(mark.number)}.",
+              "${machineLocale.numberFormatter(mark.number)}.",
               tag
             )
           )

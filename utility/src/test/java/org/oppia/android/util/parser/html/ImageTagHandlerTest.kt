@@ -28,6 +28,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
@@ -65,6 +66,7 @@ class ImageTagHandlerTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithImageTagSupport: Map<String, CustomTagHandler>
@@ -87,7 +89,8 @@ class ImageTagHandlerTest {
         context,
         html = "",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
+        customTagHandlers = tagHandlersWithImageTagSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -101,7 +104,8 @@ class ImageTagHandlerTest {
         context,
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
+        customTagHandlers = tagHandlersWithImageTagSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -115,7 +119,8 @@ class ImageTagHandlerTest {
         context,
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
+        customTagHandlers = tagHandlersWithImageTagSupport,
+        machineLocale = machineLocale
       )
 
     // The image only adds a control character, so there aren't any human-readable characters.
@@ -131,7 +136,8 @@ class ImageTagHandlerTest {
         context,
         html = IMAGE_TAG_WITHOUT_FILEPATH_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
+        customTagHandlers = tagHandlersWithImageTagSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -145,7 +151,8 @@ class ImageTagHandlerTest {
         context,
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = noTagHandlers
+        customTagHandlers = noTagHandlers,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -159,7 +166,8 @@ class ImageTagHandlerTest {
         context,
         html = "$IMAGE_TAG_MARKUP_1 and $IMAGE_TAG_MARKUP_2",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
+        customTagHandlers = tagHandlersWithImageTagSupport,
+        machineLocale = machineLocale
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -172,7 +180,8 @@ class ImageTagHandlerTest {
       context,
       html = IMAGE_TAG_MARKUP_1,
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithImageTagSupport
+      customTagHandlers = tagHandlersWithImageTagSupport,
+      machineLocale = machineLocale
     )
 
     verify(mockImageRetriever).loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
@@ -186,7 +195,8 @@ class ImageTagHandlerTest {
       context,
       html = "$IMAGE_TAG_MARKUP_2 and $IMAGE_TAG_MARKUP_1",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithImageTagSupport
+      customTagHandlers = tagHandlersWithImageTagSupport,
+      machineLocale = machineLocale
     )
 
     // Verify that both images are loaded in order.

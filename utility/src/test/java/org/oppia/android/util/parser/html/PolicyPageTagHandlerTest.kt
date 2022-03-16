@@ -28,6 +28,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
@@ -58,6 +59,7 @@ class PolicyPageTagHandlerTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithPolicyPageSupport: Map<String, CustomTagHandler>
@@ -85,7 +87,8 @@ class PolicyPageTagHandlerTest {
         context,
         html = "",
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        machineLocale = machineLocale
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -99,7 +102,8 @@ class PolicyPageTagHandlerTest {
         context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        machineLocale = machineLocale
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -113,7 +117,8 @@ class PolicyPageTagHandlerTest {
         context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        machineLocale = machineLocale
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -131,7 +136,8 @@ class PolicyPageTagHandlerTest {
         context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        machineLocale = machineLocale
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -149,7 +155,8 @@ class PolicyPageTagHandlerTest {
         context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = noTagHandlers
+        customTagHandlers = noTagHandlers,
+        machineLocale = machineLocale
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)

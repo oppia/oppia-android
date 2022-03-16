@@ -8,8 +8,6 @@ import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
-import java.text.DecimalFormat
-import java.text.NumberFormat
 
 /**
  * Represents a locale in the app. This is similar to Android's locale in that all locale-based
@@ -76,17 +74,6 @@ sealed class OppiaLocale {
   abstract override fun hashCode(): Int
 
   abstract override fun toString(): String
-
-  /** An abstract representation of a number. */
-  abstract class OppiaNumberFormatter {
-    /**
-     * Returns a locally formatted number string representing for the specified integer value.
-     */
-    fun numberFormatter(number: Int): String {
-      val numberFormat: NumberFormat = DecimalFormat("##")
-      return numberFormat.format(number)
-    }
-  }
 
   /**
    * An [OppiaLocale] that is used only for machine-readable strings and should *never* be used for
@@ -165,6 +152,9 @@ sealed class OppiaLocale {
      * included, or in how this information is presented).
      */
     abstract fun computeCurrentTimeString(): String
+
+    /** An abstract representation of a number. */
+    abstract fun numberFormatter(number: Int): String
 
     /** Represents different times of day. */
     enum class TimeOfDay {

@@ -8,6 +8,7 @@ import android.text.Spannable
 import androidx.core.text.HtmlCompat
 import org.json.JSONException
 import org.json.JSONObject
+import org.oppia.android.util.locale.OppiaLocale
 import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
@@ -24,7 +25,8 @@ import kotlin.collections.ArrayDeque
 class CustomHtmlContentHandler(
   private val context: Context,
   private val customTagHandlers: Map<String, CustomTagHandler>,
-  private val imageRetriever: ImageRetriever?
+  private val imageRetriever: ImageRetriever?,
+  private val machineLocale: OppiaLocale.MachineLocale
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -104,7 +106,7 @@ class CustomHtmlContentHandler(
           )
           when {
             tag.equals(CUSTOM_LIST_UL_TAG) || tag.equals(CUSTOM_LIST_OL_TAG) -> {
-              lists.push(LiTagHandler(context, tag))
+              lists.push(LiTagHandler(context, tag, machineLocale))
             }
             tag.equals(CUSTOM_LIST_LI_TAG) -> {
               if (lists.isNotEmpty()) {
@@ -224,7 +226,8 @@ class CustomHtmlContentHandler(
       context: Context,
       html: String,
       imageRetriever: T?,
-      customTagHandlers: Map<String, CustomTagHandler>
+      customTagHandlers: Map<String, CustomTagHandler>,
+      machineLocale: OppiaLocale.MachineLocale
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking.
@@ -232,7 +235,7 @@ class CustomHtmlContentHandler(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
-        CustomHtmlContentHandler(context, customTagHandlers, imageRetriever),
+        CustomHtmlContentHandler(context, customTagHandlers, imageRetriever, machineLocale),
       ) as Spannable
     }
   }

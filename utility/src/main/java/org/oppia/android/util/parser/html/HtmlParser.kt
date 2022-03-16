@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
@@ -24,6 +25,7 @@ class HtmlParser {
   private var customOppiaTagActionListener: CustomOppiaTagActionListener? = null
   private var policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
   private lateinit var context: Context
+  private lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private constructor(
     urlImageParserFactory: UrlImageParser.Factory,
@@ -33,7 +35,8 @@ class HtmlParser {
     imageCenterAlign: Boolean,
     consoleLogger: ConsoleLogger,
     customOppiaTagActionListener: CustomOppiaTagActionListener?,
-    context: Context
+    context: Context,
+    machineLocale: OppiaLocale.MachineLocale
   ) {
     this.urlImageParserFactory = urlImageParserFactory
     this.gcsResourceName = gcsResourceName
@@ -43,16 +46,19 @@ class HtmlParser {
     this.consoleLogger = consoleLogger
     this.customOppiaTagActionListener = customOppiaTagActionListener
     this.context = context
+    this.machineLocale = machineLocale
   }
 
   private constructor(
     consoleLogger: ConsoleLogger,
     policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
-    context: Context
+    context: Context,
+    machineLocale: OppiaLocale.MachineLocale
   ) {
     this.consoleLogger = consoleLogger
     this.policyOppiaTagActionListener = policyOppiaTagActionListener
     this.context = context
+    this.machineLocale = machineLocale
   }
 
   private val conceptCardTagHandler by lazy {
@@ -76,7 +82,7 @@ class HtmlParser {
       consoleLogger
     )
   }
-  private val bulletTagHandler by lazy { LiTagHandler(context, "") }
+  private val bulletTagHandler by lazy { LiTagHandler(context, "", machineLocale) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
   private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
@@ -146,7 +152,8 @@ class HtmlParser {
 
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContentTextView.context,
-      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards)
+      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards),
+      machineLocale
     )
 
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
@@ -213,7 +220,8 @@ class HtmlParser {
   class Factory @Inject constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
     private val consoleLogger: ConsoleLogger,
-    private val context: Context
+    private val context: Context,
+    private val machineLocale: OppiaLocale.MachineLocale
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -234,7 +242,8 @@ class HtmlParser {
         imageCenterAlign,
         consoleLogger,
         customOppiaTagActionListener,
-        context
+        context,
+        machineLocale
       )
     }
 
@@ -250,7 +259,8 @@ class HtmlParser {
       return HtmlParser(
         consoleLogger,
         policyOppiaTagActionListener,
-        context
+        context,
+        machineLocale
       )
     }
   }

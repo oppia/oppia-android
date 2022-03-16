@@ -7,6 +7,8 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.util.system.OppiaClock
 import java.text.DateFormat
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -68,6 +70,11 @@ class MachineLocaleImpl @Inject constructor(
 
   override fun computeCurrentTimeString(): String =
     timeFormat.format(Date(oppiaClock.getCurrentTimeMs()))
+
+  override fun numberFormatter(number: Int): String {
+      val numberFormat: NumberFormat = DecimalFormat("##")
+      return numberFormat.format(number)
+  }
 
   override fun toString(): String = "MachineLocaleImpl[context=$machineLocaleContext]"
 
