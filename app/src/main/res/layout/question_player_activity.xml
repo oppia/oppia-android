@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:background="?attr/colorPrimary"
+        android:background="@color/color_def_oppia_green"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationIcon="@drawable/ic_close_white_24dp"
