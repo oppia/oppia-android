@@ -4,8 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
-import java.text.DecimalFormat
-import java.text.NumberFormat
+import org.oppia.android.util.locale.OppiaLocale
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -21,7 +20,7 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
  * [CustomHtmlContentHandler].
  */
 class LiTagHandler(private val context: Context, private val tag: String) :
-  CustomHtmlContentHandler.CustomTagHandler {
+  CustomHtmlContentHandler.CustomTagHandler,OppiaLocale.OppiaNumberFormatter() {
 
   private var index = 1
 
@@ -48,7 +47,6 @@ class LiTagHandler(private val context: Context, private val tag: String) :
         }
       }
       CUSTOM_LIST_OL_TAG -> {
-        val numberFormat: NumberFormat = DecimalFormat("##")
         getLast<NumberListItem>(output)?.let { mark ->
           setSpanFromMark(
             output,
@@ -56,10 +54,11 @@ class LiTagHandler(private val context: Context, private val tag: String) :
             ListItemLeadingMarginSpan(
               context,
               indentation,
-              "${numberFormat.format(mark.number)}.",
+              "${numberFormatter(mark.number)}.",
               tag
             )
           )
+
         }
       }
     }
