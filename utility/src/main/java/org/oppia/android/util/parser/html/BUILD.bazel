@@ -12,8 +12,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":custom_bullet_span",
         ":custom_html_content_handler",
+        ":list_item_leading_margin_span",
         ":tag_handlers",
         "//model:arguments_java_proto_lite",
         "//third_party:androidx_core_core-ktx",
@@ -41,7 +41,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "custom_bullet_span",
+    name = "list_item_leading_margin_span",
     srcs = [
         "ListItemLeadingMarginSpan.kt",
     ],

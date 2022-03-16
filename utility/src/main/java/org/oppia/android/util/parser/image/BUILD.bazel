@@ -140,6 +140,16 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "policy_type",
+    srcs = [
+        "PolicyType.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+)
+
+kt_android_library(
     name = "repository_glide_module",
     srcs = [
         "RepositoryGlideModule.kt",
