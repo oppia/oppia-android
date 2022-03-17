@@ -51,7 +51,7 @@
       android:layout_width="0dp"
       android:layout_height="6dp"
       android:layout_marginTop="4dp"
-      android:background="@color/oppia_light_brown"
+      android:background="@color/color_def_oppia_light_brown"
       app:layout_constraintEnd_toEndOf="@id/welcome_message_container"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="@+id/welcome_message_container"

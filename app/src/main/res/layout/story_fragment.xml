@@ -13,7 +13,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_def_white">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/topic_app_bar_layout"
@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="@color/white"
+        android:background="@color/color_def_white"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/story_fragment_padding_bottom"

@@ -517,6 +517,7 @@ class QuestionPlayerActivityTest {
   @Suppress("SameParameterValue")
   private fun selectMultipleChoiceOption(optionPosition: Int) {
     clickSelection(optionPosition, targetViewId = R.id.multiple_choice_radio_button)
+    clickSubmitAnswerButton()
   }
 
   @Suppress("SameParameterValue")
