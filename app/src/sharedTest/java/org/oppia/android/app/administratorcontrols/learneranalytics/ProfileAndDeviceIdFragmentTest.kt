@@ -142,6 +142,10 @@ class ProfileAndDeviceIdFragmentTest {
   @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
   @Inject lateinit var syncStatusManager: SyncStatusManager
 
+  private val clipboardManager by lazy {
+    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+  }
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -167,8 +171,6 @@ class ProfileAndDeviceIdFragmentTest {
     // There should be three items: a header, a profile, and the sync status.
     onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 3))
   }
-
-  // TODO: add tests to verify header presence, value, copying, and consistency across app instances.
 
   @Test
   fun testFragment_withOnlyAdminProfile_hasDeviceIdHeader() {
@@ -196,6 +198,7 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     onView(deviceIdCopyButtonAt(position = 0)).perform(click())
+    testCoroutineDispatchers.runCurrent()
 
     val clipData = getCurrentClipData()
     assertThat(clipData?.description?.label).isEqualTo("Oppia installed device ID")
@@ -236,6 +239,7 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     onView(learnerIdCopyButtonAt(position = 1)).perform(click())
+    testCoroutineDispatchers.runCurrent()
 
     val clipData = getCurrentClipData()
     assertThat(clipData?.description?.label).isEqualTo("Admin's learner ID")
@@ -290,6 +294,7 @@ class ProfileAndDeviceIdFragmentTest {
     initializeActivityAndAddFragment()
 
     onView(learnerIdCopyButtonAt(position = 2)).perform(click())
+    testCoroutineDispatchers.runCurrent()
 
     val clipData = getCurrentClipData()
     assertThat(clipData?.description?.label).isEqualTo("A's learner ID")
@@ -304,13 +309,61 @@ class ProfileAndDeviceIdFragmentTest {
     onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copy")))
   }
 
-  // TODO: add a version of this for the clipboard status, too, and verify the clipboard status.
-  //
-  // testFragment_adminProfile_initialState_learnerIdCopyButtonHasCopyLabel
-  // testFragment_adminProfile_clickDeviceIdCopyButton_deviceIdIsCopiedButNotLearnerId
-  // testFragment_adminProfile_clickLearnerIdCopyButton_learnerIdIsCopiedButNotDeviceId
-  // testFragment_adminProfile_clickLearnerIdCopyButton_copyInOtherApp_nothingIsCopied
-  // testFragment_adminProfile_clickLearnerIdCopyButton_rotate_learnerIdStillCopied
+  @Test
+  fun testFragment_adminProfile_initialState_learnerIdCopyButtonHasCopyLabel() {
+    initializeActivityAndAddFragment()
+
+    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copy")))
+  }
+
+  @Test
+  fun testFragment_adminProfile_clickDeviceIdCopyButton_deviceIdIsCopiedButNotLearnerId() {
+    initializeActivityAndAddFragment()
+
+    onView(deviceIdCopyButtonAt(position = 0)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copied")))
+    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copy")))
+  }
+
+  @Test
+  fun testFragment_adminProfile_clickLearnerIdCopyButton_learnerIdIsCopiedButNotDeviceId() {
+    initializeActivityAndAddFragment()
+
+    onView(learnerIdCopyButtonAt(position = 1)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copy")))
+    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copied")))
+  }
+
+  @Test
+  fun testFragment_adminProfile_clickLearnerIdCopyButton_copyInOtherApp_nothingIsCopied() {
+    initializeActivityAndAddFragment()
+    onView(learnerIdCopyButtonAt(position = 1)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    updateClipDataAsThoughFromAnotherApp()
+
+    // Changing the clipboard in a different app should reset the labels.
+    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copy")))
+    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copy")))
+  }
+
+  @Test
+  fun testFragment_adminProfile_clickLearnerIdCopyButton_rotate_learnerIdStillCopied() {
+    initializeActivityAndAddFragment()
+    onView(learnerIdCopyButtonAt(position = 1)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
+
+    // The button label should be restored after a rotation.
+    onView(deviceIdCopyButtonAt(position = 0)).check(matches(withText("Copy")))
+    onView(learnerIdCopyButtonAt(position = 1)).check(matches(withText("Copied")))
+  }
 
   @Test
   fun testFragment_multipleProfiles_rotate_profilesStillPresent() {
@@ -492,8 +545,18 @@ class ProfileAndDeviceIdFragmentTest {
     )
   }
 
-  private fun getCurrentClipData(): ClipData? =
-    (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip
+  private fun getCurrentClipData(): ClipData? = clipboardManager.primaryClip
+
+  private fun updateClipDataAsThoughFromAnotherApp() {
+    // This must use the setter since property syntax seems to break on SDK 30.
+    @Suppress("UsePropertyAccessSyntax")
+    clipboardManager.setPrimaryClip(
+      ClipData.newPlainText(
+        /* label= */ "Label of text from another app", /* text= */ "Text copied from another app"
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
 
   private fun queueAnalyticsEvent() {
     val learnerDetails = oppiaLogger.createLearnerDetailsContext(learnerId = "test_learner_id")
