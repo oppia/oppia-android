@@ -13,7 +13,7 @@
     android:id="@+id/developer_options_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mid_grey_30"
+    android:background="@color/color_def_mid_grey_30"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:paddingBottom="80dp"
