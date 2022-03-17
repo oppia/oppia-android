@@ -12,7 +12,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_def_white">
 
     <FrameLayout
       android:layout_width="0dp"
@@ -67,7 +67,7 @@
           android:enabled="@{viewModel.inputName.length > 0}"
           android:text="@string/profile_rename_save"
           android:textAllCaps="true"
-          android:textColor="@{viewModel.inputName.length > 0 ? @color/white : @color/submit_button_inactive_text }"
+          android:textColor="@{viewModel.inputName.length > 0 ? @color/color_def_white : @color/submit_button_inactive_text }"
           android:textSize="14sp"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@id/profile_rename_input" />

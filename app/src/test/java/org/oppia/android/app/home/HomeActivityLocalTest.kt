@@ -24,7 +24,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -107,9 +107,8 @@ class HomeActivityLocalTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       val event = fakeEventLogger.getMostRecentEvent()
 
-      assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_HOME)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(ACTIVITYCONTEXT_NOT_SET)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
     }
   }
 

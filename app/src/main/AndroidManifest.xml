@@ -6,6 +6,7 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
   <!-- TODO(#56): Reenable landscape support. -->
   <application
@@ -16,6 +17,11 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
+    <activity
+      android:name=".app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity"
+      android:label="@string/profile_and_device_id_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar"/>
+
     <meta-data
       android:name="firebase_analytics_collection_deactivated"
       android:value="true" />
@@ -75,6 +81,7 @@
     <activity
       android:name=".app.mydownloads.MyDownloadsActivity"
       android:screenOrientation="portrait"
+      android:label="@string/my_downloads_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
@@ -153,8 +160,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.splash.SplashActivity"
-      android:screenOrientation="portrait"
       android:label="@string/app_name"
+      android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -173,6 +180,7 @@
     <activity android:name=".app.testing.BindableAdapterTestActivity" />
     <activity android:name=".app.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".app.testing.DragDropTestActivity" />
+    <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity"/>
     <activity android:name=".app.testing.ExplorationInjectionActivity" />
     <activity android:name=".app.testing.ExplorationTestActivity" />
     <activity
@@ -193,6 +201,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
+    <activity android:name=".app.testing.TextViewBindingAdaptersTestActivity"/>
     <activity
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -200,7 +209,7 @@
       android:name=".app.testing.TopicTestActivityForStory"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.TopicRevisionTestActivity" />
-    <activity android:name=".app.testing.ViewBindingAdaptersTestActivity"/>
+    <activity android:name=".app.testing.ViewBindingAdaptersTestActivity" />
     <activity
       android:name=".app.topic.questionplayer.QuestionPlayerActivity"
       android:label="@string/question_player_activity_title"

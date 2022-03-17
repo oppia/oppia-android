@@ -30,6 +30,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -334,7 +335,7 @@ class TextInputEqualsRuleClassifierProviderTest {
       TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
       TestModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class
+      LoggingIdentifierModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent {

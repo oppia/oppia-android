@@ -36,6 +36,7 @@ package_group(
 package_group(
     name = "app_testing_visibility",
     packages = [
+        "//app/src/sharedTest/...",
         "//app/src/test/...",
     ],
 )
@@ -44,6 +45,12 @@ filegroup(
     name = "test_manifest",
     srcs = ["src/test/AndroidManifest.xml"],
     visibility = ["//:oppia_testing_visibility"],
+)
+
+filegroup(
+    name = "data_binder_mapper_impl",
+    srcs = ["src/test/java/DataBinderMapperImpl.java"],
+    visibility = [":app_testing_visibility"],
 )
 
 # Source files for the migrated source files library. The files inside the migrated source files
@@ -84,8 +91,10 @@ ANNOTATIONS = [
 # keep sorted
 LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadAppVersionListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/LoadLearnerAnalyticsListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/RouteToLearnerAnalyticsListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt",
@@ -168,6 +177,10 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/appversion/AppVersionViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/DeviceIdItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileLearnerIdItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/SyncStatusItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
@@ -226,6 +239,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsProfileAndDeviceIdViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsProfileViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicViewModel.kt",
@@ -380,6 +394,7 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 
 # keep sorted
 VIEWS = [
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/CopyIdMaterialButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
@@ -649,6 +664,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
+        "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//third_party:androidx_core_core",
@@ -731,6 +747,17 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/translation:prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput:drag_and_drop_sort_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:fraction_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/imageClickInput:image_click_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/itemselectioninput:item_selection_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/multiplechoiceinput:multiple_choice_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numberwithunits:number_with_units_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector_provider",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
@@ -740,6 +767,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//model:arguments_java_proto_lite",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",
@@ -813,6 +841,16 @@ TEST_DEPS = [
     "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//domain",
     "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput:drag_and_drop_sort_input_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:fraction_input_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/imageClickInput:image_click_input_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/itemselectioninput:item_selection_input_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/multiplechoiceinput:multiple_choice_input_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/numberwithunits:number_with_units_rule_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
+    "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:fake_exploration_meta_data_retriever",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
     "//testing",
@@ -885,7 +923,7 @@ MIGRATED_TESTS = [
     manifest_values = {
         "applicationId": "org.oppia.android",
         "minSdkVersion": "19",
-        "targetSdkVersion": "28",
+        "targetSdkVersion": "30",
         "versionCode": "0",
         "versionName": "0.1-alpha",
     },
@@ -901,7 +939,7 @@ MIGRATED_TESTS = [
     manifest_values = {
         "applicationId": "org.oppia.android",
         "minSdkVersion": "19",
-        "targetSdkVersion": "28",
+        "targetSdkVersion": "30",
         "versionCode": "0",
         "versionName": "0.1-alpha",
     },

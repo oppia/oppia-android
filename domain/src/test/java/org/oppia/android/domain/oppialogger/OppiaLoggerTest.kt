@@ -14,6 +14,17 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -25,6 +36,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
@@ -208,80 +220,130 @@ class OppiaLoggerTest {
   }
 
   @Test
-  fun testController_createExplorationContext_returnsCorrectExplorationContext() {
-    val eventContext = oppiaLogger.createExplorationContext(
+  fun testController_createOpenExplorationActivityContext_returnsCorrectExplorationContext() {
+    val eventContext = oppiaLogger.createOpenExplorationActivityContext(
       TEST_TOPIC_ID,
       TEST_STORY_ID,
       TEST_EXPLORATION_ID
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
-    )
-    assertThat(eventContext.explorationContext.topicId).matches(TEST_TOPIC_ID)
-    assertThat(eventContext.explorationContext.storyId).matches(TEST_STORY_ID)
-    assertThat(eventContext.explorationContext.explorationId).matches(TEST_EXPLORATION_ID)
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_EXPLORATION_ACTIVITY)
+    assertThat(eventContext.openExplorationActivity.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.openExplorationActivity.storyId).matches(TEST_STORY_ID)
+    assertThat(eventContext.openExplorationActivity.explorationId).matches(TEST_EXPLORATION_ID)
+  }
+
+  @Test
+  fun testController_createOpenHomeContext_returnsCorrectExplorationContext() {
+    val eventContext = oppiaLogger.createOpenHomeContext()
+
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_HOME)
+  }
+
+  @Test
+  fun testController_createOpenProfileChooserContext_returnsCorrectExplorationContext() {
+    val eventContext = oppiaLogger.createOpenProfileChooserContext()
+
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_PROFILE_CHOOSER)
   }
 
   @Test
   fun testController_createQuestionContext_returnsCorrectQuestionContext() {
-    val eventContext = oppiaLogger.createQuestionContext(
+    val eventContext = oppiaLogger.createOpenQuestionPlayerContext(
       TEST_QUESTION_ID,
       listOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID)
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
-    )
-    assertThat(eventContext.questionContext.questionId).matches(TEST_QUESTION_ID)
-    assertThat(eventContext.questionContext.skillIdList)
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_QUESTION_PLAYER)
+    assertThat(eventContext.openQuestionPlayer.questionId).matches(TEST_QUESTION_ID)
+    assertThat(eventContext.openQuestionPlayer.skillIdList)
       .containsAtLeastElementsIn(arrayOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID))
   }
 
   @Test
   fun testController_createStoryContext_returnsCorrectStoryContext() {
-    val eventContext = oppiaLogger.createStoryContext(
+    val eventContext = oppiaLogger.createOpenStoryActivityContext(
       TEST_TOPIC_ID,
       TEST_STORY_ID
     )
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.STORY_CONTEXT
-    )
-    assertThat(eventContext.storyContext.topicId).matches(TEST_TOPIC_ID)
-    assertThat(eventContext.storyContext.storyId).matches(TEST_STORY_ID)
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_STORY_ACTIVITY)
+    assertThat(eventContext.openStoryActivity.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.openStoryActivity.storyId).matches(TEST_STORY_ID)
   }
 
   @Test
-  fun testController_createTopicContext_returnsCorrectTopicContext() {
-    val eventContext = oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+  fun testController_createOpenInfoTabContext_returnsCorrectTopicContext() {
+    val eventContext = oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
-    )
-    assertThat(eventContext.topicContext.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_INFO_TAB)
+    assertThat(eventContext.openInfoTab.topicId).matches(TEST_TOPIC_ID)
   }
 
   @Test
-  fun testController_createConceptCardContext_returnsCorrectConceptCardContext() {
-    val eventContext = oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
+  fun testController_createOpenLessonsTabContext_returnsCorrectTopicContext() {
+    val eventContext = oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
-    )
-    assertThat(eventContext.conceptCardContext.skillId).matches(TEST_SKILL_ID)
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_LESSONS_TAB)
+    assertThat(eventContext.openLessonsTab.topicId).matches(TEST_TOPIC_ID)
   }
 
   @Test
-  fun testController_createRevisionCardContext_returnsCorrectRevisionCardContext() {
+  fun testController_createOpenPracticeTabContext_returnsCorrectTopicContext() {
+    val eventContext = oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_PRACTICE_TAB)
+    assertThat(eventContext.openPracticeTab.topicId).matches(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testController_createOpenRevisionTabContext_returnsCorrectTopicContext() {
+    val eventContext = oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_REVISION_TAB)
+    assertThat(eventContext.openRevisionTab.topicId).matches(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testController_createOpenConceptCardContext_returnsCorrectConceptCardContext() {
+    val eventContext = oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_CONCEPT_CARD)
+    assertThat(eventContext.openConceptCard.skillId).matches(TEST_SKILL_ID)
+  }
+
+  @Test
+  fun testController_createOpenRevisionCardContext_returnsCorrectRevisionCardContext() {
     val eventContext =
-      oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
 
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
+    assertThat(eventContext.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
+    assertThat(eventContext.openRevisionCard.topicId).matches(TEST_TOPIC_ID)
+    assertThat(eventContext.openRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
+  }
+
+  @Test
+  fun testController_featureDisabled_logLearnerAnalyticsEvent_verifyEventNotLogged() {
+    TestPlatformParameterModule.forceLearnerAnalyticsStudy = false
+    oppiaLogger.logLearnerAnalyticsEvent(
+      TEST_TIMESTAMP,
+      oppiaLogger.createOpenHomeContext()
     )
-    assertThat(eventContext.revisionCardContext.topicId).matches(TEST_TOPIC_ID)
-    assertThat(eventContext.revisionCardContext.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
+
+    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testController_featureEnabled_logLearnerAnalyticsEvent_verifyEventLogged() {
+    TestPlatformParameterModule.forceLearnerAnalyticsStudy = true
+    setUpTestApplicationComponent()
+
+    oppiaLogger.logLearnerAnalyticsEvent(
+      TEST_TIMESTAMP,
+      oppiaLogger.createOpenHomeContext()
+    )
+
+    assertThat(fakeEventLogger.noEventsPresent()).isFalse()
   }
 
   @Test
@@ -548,6 +610,42 @@ class OppiaLoggerTest {
   }
 
   @Module
+  class TestPlatformParameterModule {
+
+    companion object {
+      var forceLearnerAnalyticsStudy: Boolean = false
+    }
+
+    @Provides
+    @SplashScreenWelcomeMsg
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
+    }
+
+    @Provides
+    @SyncUpWorkerTimePeriodHours
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @EnableLanguageSelectionUi
+    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(
+        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @LearnerStudyAnalytics
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
+    }
+  }
+
+  @Module
   class TestLogStorageModule {
 
     @Provides
@@ -599,7 +697,7 @@ class OppiaLoggerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class
+      LoggingIdentifierModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent {

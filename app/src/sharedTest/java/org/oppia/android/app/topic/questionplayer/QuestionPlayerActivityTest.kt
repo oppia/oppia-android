@@ -108,9 +108,7 @@ import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.AccessibilityTestRule
 import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -154,9 +152,6 @@ class QuestionPlayerActivityTest {
 
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
-
-  @get:Rule
-  val accessibilityTestRule = AccessibilityTestRule()
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -433,7 +428,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3927): Feedback item should be min 48dp in height.
   fun testQuestionPlayer_terminalState_recyclerViewItemCount_countIsTwo() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -453,7 +447,6 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // TODO(#3927): Feedback item should be min 48dp in height.
   fun testQuestionPlayer_terminalState_recyclerView_contentItem_isNotEmpty() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -524,6 +517,7 @@ class QuestionPlayerActivityTest {
   @Suppress("SameParameterValue")
   private fun selectMultipleChoiceOption(optionPosition: Int) {
     clickSelection(optionPosition, targetViewId = R.id.multiple_choice_radio_button)
+    clickSubmitAnswerButton()
   }
 
   @Suppress("SameParameterValue")

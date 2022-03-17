@@ -25,27 +25,28 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
-import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -55,6 +56,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.FakeSyncStatusManager
+import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.logging.UserIdTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -70,6 +74,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
@@ -79,7 +84,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.FakeSyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -94,7 +99,7 @@ private const val TEST_DEVICE_ID = "test_deviceId"
 private const val TEST_SESSION_ID = "test_sessionId"
 private const val TEST_EXPLORATION_VERSION = "test_exploration_version"
 private const val TEST_STATE_NAME = "test_state_name"
-private const val TEST_HINT_INDEX = "test_hint_index"
+private const val TEST_HINT_INDEX = 0
 private const val TEST_IS_ANSWER_CORRECT = true
 private const val TEST_CONTENT_ID = "test_contentId"
 
@@ -102,6 +107,19 @@ private const val TEST_CONTENT_ID = "test_contentId"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
+  private companion object {
+    private val LEARNER_DETAILS_CONTEXT = EventLog.LearnerDetailsContext.newBuilder().apply {
+      deviceId = TEST_DEVICE_ID
+      learnerId = TEST_LEARNER_ID
+    }.build()
+
+    private val EXPLORATION_CONTEXT = EventLog.ExplorationContext.newBuilder().apply {
+      sessionId = TEST_SESSION_ID
+      explorationId = TEST_EXPLORATION_ID
+      explorationVersion = TEST_EXPLORATION_VERSION
+      stateName = TEST_STATE_NAME
+    }.build()
+  }
 
   @Rule
   @JvmField
@@ -120,6 +138,9 @@ class AnalyticsControllerTest {
   lateinit var fakeEventLogger: FakeEventLogger
 
   @Inject
+  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
+
+  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
@@ -129,32 +150,11 @@ class AnalyticsControllerTest {
   @field:BackgroundDispatcher
   lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  @Inject
-  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-
   @Mock
   lateinit var mockOppiaEventLogsObserver: Observer<AsyncResult<OppiaEventLogs>>
 
   @Captor
   lateinit var oppiaEventLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaEventLogs>>
-
-  @Mock
-  lateinit var mockSyncStatusLiveDataObserverImpl: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
-
-  @Captor
-  lateinit var syncStatusResultCaptorImpl: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
-
-  private val GENERIC_DATA = EventLog.GenericData.newBuilder()
-    .setDeviceId(TEST_DEVICE_ID)
-    .setLearnerId(TEST_LEARNER_ID)
-    .build()
-
-  private val EXPLORATION_DATA = EventLog.ExplorationData.newBuilder()
-    .setSessionId(TEST_SESSION_ID)
-    .setExplorationId(TEST_EXPLORATION_ID)
-    .setExplorationVersion(TEST_EXPLORATION_VERSION)
-    .setStateName(TEST_STATE_NAME)
-    .build()
 
   @Before
   fun setUp() {
@@ -165,8 +165,7 @@ class AnalyticsControllerTest {
   fun testController_logTransitionEvent_withQuestionContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -174,114 +173,115 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(QUESTION_CONTEXT)
+      .isEqualTo(OPEN_QUESTION_PLAYER)
   }
 
   @Test
   fun testController_logTransitionEvent_withExplorationContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createExplorationContext(
+      oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
       )
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(EXPLORATION_CONTEXT)
+      .isEqualTo(OPEN_EXPLORATION_ACTIVITY)
   }
 
   @Test
-  fun testController_logTransitionEvent_withTopicContext_checkLogsEvent() {
+  fun testController_logTransitionEvent_withOpenInfoTabContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+      TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
+    // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(TOPIC_CONTEXT)
+      .isEqualTo(OPEN_INFO_TAB)
+  }
+
+  @Test
+  fun testController_logTransitionEvent_withOpenPracticeTabContext_checkLogsEvent() {
+    analyticsController.logTransitionEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(OPEN_PRACTICE_TAB)
+  }
+
+  @Test
+  fun testController_logTransitionEvent_withOpenLessonsTabContext_checkLogsEvent() {
+    analyticsController.logTransitionEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(OPEN_LESSONS_TAB)
+  }
+
+  @Test
+  fun testController_logTransitionEvent_withOpenRevisionTabContext_checkLogsEvent() {
+    analyticsController.logTransitionEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(OPEN_REVISION_TAB)
   }
 
   @Test
   fun testController_logTransitionEvent_withStoryContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(STORY_CONTEXT)
+      .isEqualTo(OPEN_STORY_ACTIVITY)
   }
 
   @Test
   fun testController_logTransitionEvent_withRevisionContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(REVISION_CARD_CONTEXT)
-  }
-
-  @Test
-  fun testController_logTransitionEvent_withConceptCardContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
-    )
-
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(CONCEPT_CARD_CONTEXT)
+      .isEqualTo(OPEN_REVISION_CARD)
   }
 
   @Test
   fun testController_logTransitionEvent_withStartCardContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.START_CARD,
-      oppiaLogger.createStartCardContext(TEST_SKILL_ID, GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createStartCardContext(TEST_SKILL_ID, EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.START_CARD)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -292,13 +292,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withEndCardContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.END_CARD,
-      oppiaLogger.createEndCardContext(TEST_SKILL_ID, GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createEndCardContext(TEST_SKILL_ID, EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.END_CARD)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -309,13 +305,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withHintOfferedContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.HINT_OFFERED,
-      oppiaLogger.createHintOfferedContext(TEST_HINT_INDEX, GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createHintOfferedContext(TEST_HINT_INDEX, EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.HINT_OFFERED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -326,13 +318,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withAccessHintContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.ACCESS_HINT,
-      oppiaLogger.createAccessHintContext(TEST_HINT_INDEX, GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createAccessHintContext(TEST_HINT_INDEX, EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.ACCESS_HINT)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -343,13 +331,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withSolutionOfferedContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.SOLUTION_OFFERED,
-      oppiaLogger.createSolutionOfferedContext(GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createSolutionOfferedContext(EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.SOLUTION_OFFERED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -360,13 +344,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withAccessSolutionContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.ACCESS_SOLUTION,
-      oppiaLogger.createAccessSolutionContext(GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createAccessSolutionContext(EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.ACCESS_SOLUTION)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -378,12 +358,9 @@ class AnalyticsControllerTest {
   fun testController_logTransitionEvent_withSubmitAnswerContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
-      EventAction.SUBMIT_ANSWER,
-      oppiaLogger.createSubmitAnswerContext(TEST_IS_ANSWER_CORRECT, GENERIC_DATA, EXPLORATION_DATA)
+      oppiaLogger.createSubmitAnswerContext(TEST_IS_ANSWER_CORRECT, EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.SUBMIT_ANSWER)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -394,13 +371,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withPlayVoiceOverContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.PLAY_VOICE_OVER,
-      oppiaLogger.createPlayVoiceOverContext(TEST_CONTENT_ID, GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createPlayVoiceOverContext(TEST_CONTENT_ID, EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.PLAY_VOICE_OVER)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -411,13 +384,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withAppInBackgroundContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.APP_IN_BACKGROUND,
-      oppiaLogger.createAppInBackgroundContext(GENERIC_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createAppInBackgroundContext(LEARNER_DETAILS_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.APP_IN_BACKGROUND)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -428,13 +397,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withAppInForegroundContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.APP_IN_FOREGROUND,
-      oppiaLogger.createAppInForegroundContext(GENERIC_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createAppInForegroundContext(LEARNER_DETAILS_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.APP_IN_FOREGROUND)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -445,13 +410,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withExitExplorationContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EXIT_EXPLORATION,
-      oppiaLogger.createExitExplorationContext(GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createExitExplorationContext(EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EXIT_EXPLORATION)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -462,13 +423,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withFinishExplorationContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.FINISH_EXPLORATION,
-      oppiaLogger.createFinishExplorationContext(GENERIC_DATA, EXPLORATION_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createFinishExplorationContext(EXPLORATION_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.FINISH_EXPLORATION)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -479,13 +436,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withResumeExplorationContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.RESUME_EXPLORATION,
-      oppiaLogger.createResumeExplorationContext(GENERIC_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createResumeExplorationContext(LEARNER_DETAILS_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.RESUME_EXPLORATION)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -496,13 +449,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withStartOverExplorationContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.START_OVER_EXPLORATION,
-      oppiaLogger.createStartOverExplorationContext(GENERIC_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createStartOverExplorationContext(LEARNER_DETAILS_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.START_OVER_EXPLORATION)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -513,13 +462,9 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withDeleteProfileContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.DELETE_PROFILE,
-      oppiaLogger.createDeleteProfileContext(GENERIC_DATA)
+      TEST_TIMESTAMP, oppiaLogger.createDeleteProfileContext(LEARNER_DETAILS_CONTEXT)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.DELETE_PROFILE)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
@@ -528,28 +473,23 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_logTransitionEvent_withNoContext_checkLogsEvent() {
+  fun testController_logTransitionEvent_withConceptCardContext_checkLogsEvent() {
     analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      null
+      TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
+      .isEqualTo(OPEN_CONCEPT_CARD)
   }
 
   @Test
   fun testController_logClickEvent_withQuestionContext_checkLogsEvent() {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -557,119 +497,120 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(QUESTION_CONTEXT)
+      .isEqualTo(OPEN_QUESTION_PLAYER)
   }
 
   @Test
   fun testController_logClickEvent_withExplorationContext_checkLogsEvent() {
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createExplorationContext(
+      oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
       )
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(EXPLORATION_CONTEXT)
+      .isEqualTo(OPEN_EXPLORATION_ACTIVITY)
   }
 
   @Test
-  fun testController_logClickEvent_withTopicContext_checkLogsEvent() {
+  fun testController_logClickEvent_withOpenInfoTabContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+      TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(TOPIC_CONTEXT)
+      .isEqualTo(OPEN_INFO_TAB)
+  }
+
+  @Test
+  fun testController_logClickEvent_withOpenPracticeTabContext_checkLogsEvent() {
+    analyticsController.logClickEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(OPEN_PRACTICE_TAB)
+  }
+
+  @Test
+  fun testController_logClickEvent_withOpenLessonsTabContext_checkLogsEvent() {
+    analyticsController.logClickEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(OPEN_LESSONS_TAB)
+  }
+
+  @Test
+  fun testController_logClickEvent_withOpenRevisionTabContext_checkLogsEvent() {
+    analyticsController.logClickEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
+    )
+
+    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
+    // OPTIONAL priority confirms that the event logged is a click event.
+    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
+    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
+      .isEqualTo(OPEN_REVISION_TAB)
   }
 
   @Test
   fun testController_logClickEvent_withStoryContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+      TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(STORY_CONTEXT)
+      .isEqualTo(OPEN_STORY_ACTIVITY)
   }
 
   @Test
   fun testController_logClickEvent_withRevisionContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(REVISION_CARD_CONTEXT)
+      .isEqualTo(OPEN_REVISION_CARD)
   }
 
   @Test
   fun testController_logClickEvent_withConceptCardContext_checkLogsEvent() {
     analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
+      TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
     assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
     assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(CONCEPT_CARD_CONTEXT)
-  }
-
-  @Test
-  fun testController_logClickEvent_withNoContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      null
-    )
-
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
+      .isEqualTo(OPEN_CONCEPT_CARD)
   }
 
   // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
@@ -679,8 +620,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -699,9 +639,8 @@ class AnalyticsControllerTest {
     val eventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(eventLog.priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(eventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
+    assertThat(eventLog.context.activityContextCase).isEqualTo(OPEN_QUESTION_PLAYER)
     assertThat(eventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
   }
 
   @Test
@@ -709,8 +648,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -729,9 +667,8 @@ class AnalyticsControllerTest {
     val eventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(eventLog.priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(eventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
+    assertThat(eventLog.context.activityContextCase).isEqualTo(OPEN_QUESTION_PLAYER)
     assertThat(eventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
   }
 
   @Test
@@ -756,8 +693,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -766,8 +702,7 @@ class AnalyticsControllerTest {
     )
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -796,8 +731,7 @@ class AnalyticsControllerTest {
   fun testController_logTransitionEvent_switchToNoNetwork_logClickEvent_checkManagement() {
     analyticsController.logTransitionEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -807,8 +741,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logClickEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -829,15 +762,13 @@ class AnalyticsControllerTest {
 
     // ESSENTIAL priority confirms that the event logged is a transition event.
     assertThat(uploadedEventLog.priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(uploadedEventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
+    assertThat(uploadedEventLog.context.activityContextCase).isEqualTo(OPEN_QUESTION_PLAYER)
     assertThat(uploadedEventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
-    assertThat(uploadedEventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
 
     // OPTIONAL priority confirms that the event logged is a click event.
     assertThat(cachedEventLog.priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(cachedEventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
+    assertThat(cachedEventLog.context.activityContextCase).isEqualTo(OPEN_QUESTION_PLAYER)
     assertThat(cachedEventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
-    assertThat(cachedEventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
   }
 
   @Test
@@ -873,8 +804,7 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       1556094120000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -882,15 +812,14 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeSyncStatusManager.getSyncStatusList().last()).isEqualTo(NETWORK_ERROR)
+    assertThat(fakeSyncStatusManager.getSyncStatuses().last()).isEqualTo(NETWORK_ERROR)
   }
 
   @Test
   fun testController_logEvent_afterCompletion_verifySyncStatusEqualsDataUploaded() {
     analyticsController.logTransitionEvent(
       1556094120000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -898,28 +827,26 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeSyncStatusManager.getSyncStatusList().last()).isEqualTo(
-      SyncStatusManager.SyncStatus.DATA_UPLOADED
-    )
+    assertThat(fakeSyncStatusManager.getSyncStatuses().last()).isEqualTo(DATA_UPLOADED)
   }
 
   @Test
   fun testController_logEvent_beforeCompletion_verifySyncStatusEqualsDataUploading() {
     analyticsController.logTransitionEvent(
       1556094120000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
       )
     )
-    val syncStatusList = fakeSyncStatusManager.getSyncStatusList()
+    val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
     assertThat(syncStatusList.size).isEqualTo(2)
-    assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
-    assertThat(syncStatusList[1]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
+    assertThat(syncStatusList[0]).isEqualTo(DATA_UPLOADING)
+    assertThat(syncStatusList[1]).isEqualTo(DATA_UPLOADED)
   }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -927,8 +854,7 @@ class AnalyticsControllerTest {
   private fun logMultipleEvents() {
     analyticsController.logTransitionEvent(
       1556094120000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -938,8 +864,7 @@ class AnalyticsControllerTest {
 
     analyticsController.logClickEvent(
       1556094110000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -949,8 +874,7 @@ class AnalyticsControllerTest {
 
     analyticsController.logTransitionEvent(
       1556093100000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -960,8 +884,7 @@ class AnalyticsControllerTest {
 
     analyticsController.logTransitionEvent(
       1556094100000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -1010,7 +933,7 @@ class AnalyticsControllerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, UserIdTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

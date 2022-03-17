@@ -5,6 +5,7 @@ import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
@@ -54,6 +55,7 @@ import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
+import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.testing.ExplorationTestActivity
 import org.oppia.android.app.testing.HomeFragmentTestActivity
@@ -69,6 +71,7 @@ import org.oppia.android.app.testing.SplashTestActivity
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
+import org.oppia.android.app.testing.TextViewBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TopicRevisionTestActivity
 import org.oppia.android.app.testing.TopicTestActivity
 import org.oppia.android.app.testing.TopicTestActivityForStory
@@ -112,6 +115,7 @@ interface ActivityComponentImpl :
   fun inject(developerOptionsActivity: DeveloperOptionsActivity)
   fun inject(developerOptionsTestActivity: DeveloperOptionsTestActivity)
   fun inject(dragDropTestActivity: DragDropTestActivity)
+  fun inject(drawableBindingAdaptersTestActivity: DrawableBindingAdaptersTestActivity)
   fun inject(explorationActivity: ExplorationActivity)
   fun inject(explorationInjectionActivity: ExplorationInjectionActivity)
   fun inject(explorationTestActivity: ExplorationTestActivity)
@@ -142,6 +146,7 @@ interface ActivityComponentImpl :
   fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
+  fun inject(profileAndDeviceIdActivity: ProfileAndDeviceIdActivity)
   fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
@@ -170,6 +175,7 @@ interface ActivityComponentImpl :
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
+  fun inject(textViewBindingAdaptersTestActivity: TextViewBindingAdaptersTestActivity)
   fun inject(thirdPartyDependencyListActivity: ThirdPartyDependencyListActivity)
   fun inject(topicActivity: TopicActivity)
   fun inject(topicRevisionTestActivity: TopicRevisionTestActivity)

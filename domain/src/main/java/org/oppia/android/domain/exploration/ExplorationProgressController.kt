@@ -2,24 +2,29 @@ package org.oppia.android.domain.exploration
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.hintsandsolution.HintHandler
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
@@ -50,7 +55,9 @@ class ExplorationProgressController @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   private val hintHandlerFactory: HintHandler.Factory,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val loggingIdentifierController: LoggingIdentifierController,
+  private val profileManagementController: ProfileManagementController
 ) : HintHandler.HintMonitor {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
@@ -100,6 +107,15 @@ class ExplorationProgressController @Inject constructor(
 
   /** Indicates that the current exploration being played is now completed. */
   internal fun finishExplorationAsync() {
+    oppiaLogger.createFinishExplorationContext(
+      oppiaLogger.createExplorationDetailsContext(
+        getSessionId() ?: "",
+        explorationProgress.currentExplorationId,
+        explorationProgress.currentExploration.version.toString(),
+        explorationProgress.stateDeck.getCurrentState().name,
+        oppiaLogger.createLearnerDetailsContext(getLearnerId() ?: "")
+      )
+    )
     explorationProgressLock.withLock {
       check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
         "Cannot finish playing an exploration that hasn't yet been started"
@@ -687,5 +703,42 @@ class ExplorationProgressController @Inject constructor(
       explorationId,
       lastPlayedTimestamp
     )
+  }
+
+  private fun getSessionId(): String? {
+    return Transformations.map(
+      loggingIdentifierController.getSessionId().toLiveData(),
+      ::processGetSessionIdResult
+    ).value
+  }
+
+  private fun processGetSessionIdResult(sessionIdResult: AsyncResult<String>): String {
+    if (sessionIdResult.isFailure()) {
+      oppiaLogger.e(
+        "ExplorationProgressController",
+        "Failed to retrieve session id",
+        sessionIdResult.getErrorOrNull()!!
+      )
+    }
+    return sessionIdResult.getOrDefault("")
+  }
+
+  private fun getLearnerId(): String? {
+    // TODO: This isn't going to work since the live data won't be processed.
+    return Transformations.map(
+      profileManagementController.getProfile(explorationProgress.currentProfileId).toLiveData(),
+      ::processGetProfileResult
+    ).value?.learnerId
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+    if (profileResult.isFailure()) {
+      oppiaLogger.e(
+        "ExplorationProgressController",
+        "Failed to retrieve profile",
+        profileResult.getErrorOrNull()!!
+      )
+    }
+    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 }

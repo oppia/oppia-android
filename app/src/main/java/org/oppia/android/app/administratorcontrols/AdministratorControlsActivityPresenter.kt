@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
@@ -45,6 +46,9 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       when (lastLoadedFragment) {
         PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
         APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
+        PROFILE_AND_DEVICE_ID_FRAGMENT -> (
+          activity as AdministratorControlsActivity
+          ).loadLearnerAnalyticsData()
       }
     }
   }
@@ -87,6 +91,15 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
+    ).commitNow()
+  }
+
+  fun loadLearnerAnalyticsData() {
+    lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.administrator_controls_fragment_multipane_placeholder,
+      ProfileAndDeviceIdFragment()
     ).commitNow()
   }
 

@@ -19,8 +19,6 @@ import org.oppia.android.util.system.OppiaClockInjectorProvider;
 /** Holds all custom binding adapters that bind to [TextView]. */
 public final class TextViewBindingAdapters {
 
-  // TODO(#3846): Add tests for these adapters.
-
   /** Binds date text with relative time. */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
@@ -46,6 +44,17 @@ public final class TextViewBindingAdapters {
     textView.setText(profileLastVisited);
   }
 
+  /** Binds an AndroidX KitKat-compatible drawable top to the specified text view. */
+  @BindingAdapter("app:drawableTopCompat")
+  public static void setDrawableTopCompat(
+      @NonNull TextView imageView,
+      Drawable drawable
+  ) {
+    imageView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+        /* start= */ null, /* top= */ drawable, /* end= */ null, /* bottom= */ null
+    );
+  }
+
   /** Binds an AndroidX KitKat-compatible drawable end to the specified text view. */
   @BindingAdapter("app:drawableEndCompat")
   public static void setDrawableEndCompat(
@@ -53,21 +62,21 @@ public final class TextViewBindingAdapters {
       Drawable drawable
   ) {
     imageView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-        /* start= */ null, /* top= */ null, /* end= */ drawable, /* bottom=*/ null
+        /* start= */ null, /* top= */ null, /* end= */ drawable, /* bottom= */ null
     );
   }
 
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
     long timeStampMillis = ensureTimestampIsInMilliseconds(lastVisitedTimestamp);
     long currentTimeMillis = getOppiaClock(view).getCurrentTimeMs();
+    AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
 
     if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
-      return "";
+      return resourceHandler.getStringInLocale(R.string.last_logged_in_recently);
     }
 
     long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
 
-    AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
     if (timeDifferenceMillis < (int) TimeUnit.MINUTES.toMillis(1)) {
       return resourceHandler.getStringInLocale(R.string.just_now);
     } else if (timeDifferenceMillis < TimeUnit.MINUTES.toMillis(50)) {

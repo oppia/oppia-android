@@ -44,8 +44,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.FakeSyncStatusManager
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.FakeSyncStatusManager
+import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -109,6 +110,9 @@ class LogUploadWorkerTest {
   @Inject
   lateinit var fakeSyncStatusManager: FakeSyncStatusManager
 
+  @Inject
+  lateinit var syncStatusController: SyncStatusManager
+
   @Mock
   lateinit var mockSyncStatusLiveDataObserverImpl: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
 
@@ -118,10 +122,9 @@ class LogUploadWorkerTest {
   private lateinit var context: Context
 
   private val eventLogTopicContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setTopicContext(
+        .setOpenInfoTab(
           EventLog.TopicContext.newBuilder()
             .setTopicId(TEST_TOPIC_ID)
             .build()
@@ -150,8 +153,7 @@ class LogUploadWorkerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       eventLogTopicContext.timestamp,
-      eventLogTopicContext.actionName,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
@@ -232,6 +234,34 @@ class LogUploadWorkerTest {
     assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
   }
 
+  @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyCorrectSyncStatusSequence() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logTransitionEvent(
+      eventLogTopicContext.timestamp,
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+    )
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
+    assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.NETWORK_ERROR)
+    assertThat(syncStatusList[1]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+    assertThat(syncStatusList[2]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
+  }
+
   /**
    * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
    * comparison in a way that's consistent across JDK versions.
@@ -292,7 +322,8 @@ class LogUploadWorkerTest {
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      SyncStatusTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

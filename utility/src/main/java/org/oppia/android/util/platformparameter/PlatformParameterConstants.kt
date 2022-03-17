@@ -79,4 +79,4 @@ const val LEARNER_STUDY_ANALYTICS = "learner_study_analytics"
  * Default value of the platform parameter that controls the visibility of [ProfileAndDeviceIdActivity]
  * and working of learner study related analytics logging.
  */
-const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
+const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = true

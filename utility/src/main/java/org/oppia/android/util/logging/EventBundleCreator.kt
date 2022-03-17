@@ -7,23 +7,17 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_S
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 
 const val TIMESTAMP_KEY = "timestamp"
 const val TOPIC_ID_KEY = "topicId"
@@ -69,12 +63,6 @@ class EventBundleCreator {
   fun createEventBundle(eventLog: EventLog): Bundle {
     bundle =
       when (eventLog.context.activityContextCase) {
-        EXPLORATION_CONTEXT -> createExplorationContextBundle(eventLog)
-        QUESTION_CONTEXT -> createQuestionContextBundle(eventLog)
-        STORY_CONTEXT -> createStoryContextBundle(eventLog)
-        TOPIC_CONTEXT -> createTopicContextBundle(eventLog)
-        CONCEPT_CARD_CONTEXT -> createConceptCardContextBundle(eventLog)
-        REVISION_CARD_CONTEXT -> createRevisionCardContextBundle(eventLog)
         START_CARD_CONTEXT -> createStartCardContextBundle(eventLog)
         END_CARD_CONTEXT -> createEndCardContextBundle(eventLog)
         ACTIVITYCONTEXT_NOT_SET -> createNoContextBundle(eventLog)
@@ -96,93 +84,33 @@ class EventBundleCreator {
     return bundle
   }
 
-  /** Returns a bundle from event having exploration context. */
-  private fun createExplorationContextBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(TOPIC_ID_KEY, eventLog.context.explorationContext.topicId)
-    bundle.putString(STORY_ID_KEY, eventLog.context.explorationContext.storyId)
-    bundle.putString(EXPLORATION_ID_KEY, eventLog.context.explorationContext.explorationId)
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
-  }
-
-  /** Returns a bundle from event having question context. */
-  private fun createQuestionContextBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    val skillIdList = eventLog.context.questionContext.skillIdList
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(QUESTION_ID_KEY, eventLog.context.questionContext.questionId)
-    bundle.putString(SKILL_ID_KEY, skillIdList.joinToString())
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
-  }
-
-  /** Returns a bundle from event having question context. */
-  private fun createTopicContextBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(TOPIC_ID_KEY, eventLog.context.topicContext.topicId)
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
-  }
-
-  /** Returns a bundle from event having question context. */
-  private fun createStoryContextBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(TOPIC_ID_KEY, eventLog.context.storyContext.topicId)
-    bundle.putString(STORY_ID_KEY, eventLog.context.storyContext.storyId)
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
-  }
-
-  /** Returns a bundle from event having concept card context. */
-  private fun createConceptCardContextBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(SKILL_ID_KEY, eventLog.context.conceptCardContext.skillId)
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
-  }
-
-  /** Returns a bundle from event having revision card context. */
-  private fun createRevisionCardContextBundle(eventLog: EventLog): Bundle {
-    val bundle = Bundle()
-    bundle.putLong(TIMESTAMP_KEY, eventLog.timestamp)
-    bundle.putString(TOPIC_ID_KEY, eventLog.context.revisionCardContext.topicId)
-    bundle.putInt(SUB_TOPIC_ID_KEY, eventLog.context.revisionCardContext.subTopicId)
-    bundle.putString(PRIORITY_KEY, eventLog.priority.toString())
-    return bundle
-  }
-
   /** Returns a bundle from event having start card context. */
   private fun createStartCardContextBundle(eventLog: EventLog): Bundle {
     val bundle = Bundle()
     bundle.putLong(START_CARD_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.startCardContext.genericData.learnerId
+      eventLog.context.startCardContext.explorationDetails.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.startCardContext.genericData.deviceId
+      eventLog.context.startCardContext.explorationDetails.learnerDetails.deviceId
     )
     bundle.putString(
       SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.startCardContext.explorationData.sessionId
+      eventLog.context.startCardContext.explorationDetails.sessionId
     )
     bundle.putString(
       EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.startCardContext.explorationData.explorationId
+      eventLog.context.startCardContext.explorationDetails.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.startCardContext.explorationData.explorationVersion
+      eventLog.context.startCardContext.explorationDetails.explorationVersion
     )
     bundle.putString(
       STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.startCardContext.explorationData.stateName
+      eventLog.context.startCardContext.explorationDetails.stateName
     )
     bundle.putString(SKILL_ID_KEY_LEARNER_ANALYTICS, eventLog.context.startCardContext.skillId)
     return bundle
@@ -194,27 +122,26 @@ class EventBundleCreator {
     bundle.putLong(END_CARD_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.endCardContext.genericData.learnerId
+      eventLog.context.endCardContext.explorationDetails.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.endCardContext.genericData.deviceId
+      eventLog.context.endCardContext.explorationDetails.learnerDetails.deviceId
     )
     bundle.putString(
       SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.endCardContext.explorationData.sessionId
+      eventLog.context.endCardContext.explorationDetails.sessionId
     )
     bundle.putString(
       EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.endCardContext.explorationData.explorationId
+      eventLog.context.endCardContext.explorationDetails.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.endCardContext.explorationData.explorationVersion
+      eventLog.context.endCardContext.explorationDetails.explorationVersion
     )
     bundle.putString(
-      STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.endCardContext.explorationData.stateName
+      STATE_NAME_KEY_LEARNER_ANALYTICS, eventLog.context.endCardContext.explorationDetails.stateName
     )
     bundle.putString(SKILL_ID_KEY_LEARNER_ANALYTICS, eventLog.context.endCardContext.skillId)
     return bundle
@@ -226,32 +153,29 @@ class EventBundleCreator {
     bundle.putLong(HINT_OFFERED_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.hintOfferedContext.genericData.learnerId
+      eventLog.context.hintOfferedContext.explorationDetails.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.hintOfferedContext.genericData.deviceId
+      eventLog.context.hintOfferedContext.explorationDetails.learnerDetails.deviceId
     )
     bundle.putString(
       SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.hintOfferedContext.explorationData.sessionId
+      eventLog.context.hintOfferedContext.explorationDetails.sessionId
     )
     bundle.putString(
       EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.hintOfferedContext.explorationData.explorationId
+      eventLog.context.hintOfferedContext.explorationDetails.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.hintOfferedContext.explorationData.explorationVersion
+      eventLog.context.hintOfferedContext.explorationDetails.explorationVersion
     )
     bundle.putString(
       STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.hintOfferedContext.explorationData.stateName
+      eventLog.context.hintOfferedContext.explorationDetails.stateName
     )
-    bundle.putString(
-      HINT_INDEX_KEY_LEARNER_ANALYTICS,
-      eventLog.context.hintOfferedContext.hintIndex
-    )
+    bundle.putInt(HINT_INDEX_KEY_LEARNER_ANALYTICS, eventLog.context.hintOfferedContext.hintIndex)
     return bundle
   }
 
@@ -261,29 +185,29 @@ class EventBundleCreator {
     bundle.putLong(ACCESS_HINT_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessHintContext.genericData.learnerId
+      eventLog.context.accessHintContext.explorationDetails.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessHintContext.genericData.deviceId
+      eventLog.context.accessHintContext.explorationDetails.learnerDetails.deviceId
     )
     bundle.putString(
       SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessHintContext.explorationData.sessionId
+      eventLog.context.accessHintContext.explorationDetails.sessionId
     )
     bundle.putString(
       EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessHintContext.explorationData.explorationId
+      eventLog.context.accessHintContext.explorationDetails.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessHintContext.explorationData.explorationVersion
+      eventLog.context.accessHintContext.explorationDetails.explorationVersion
     )
     bundle.putString(
       STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessHintContext.explorationData.stateName
+      eventLog.context.accessHintContext.explorationDetails.stateName
     )
-    bundle.putString(HINT_INDEX_KEY_LEARNER_ANALYTICS, eventLog.context.accessHintContext.hintIndex)
+    bundle.putInt(HINT_INDEX_KEY_LEARNER_ANALYTICS, eventLog.context.accessHintContext.hintIndex)
     return bundle
   }
 
@@ -293,27 +217,24 @@ class EventBundleCreator {
     bundle.putLong(SOLUTION_OFFERED_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.solutionOfferedContext.genericData.learnerId
+      eventLog.context.solutionOfferedContext.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.solutionOfferedContext.genericData.deviceId
+      eventLog.context.solutionOfferedContext.learnerDetails.deviceId
     )
     bundle.putString(
-      SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.solutionOfferedContext.explorationData.sessionId
+      SESSION_ID_KEY_LEARNER_ANALYTICS, eventLog.context.solutionOfferedContext.sessionId
     )
     bundle.putString(
-      EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.solutionOfferedContext.explorationData.explorationId
+      EXPLORATION_ID_KEY_LEARNER_ANALYTICS, eventLog.context.solutionOfferedContext.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.solutionOfferedContext.explorationData.explorationVersion
+      eventLog.context.solutionOfferedContext.explorationVersion
     )
     bundle.putString(
-      STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.solutionOfferedContext.explorationData.stateName
+      STATE_NAME_KEY_LEARNER_ANALYTICS, eventLog.context.solutionOfferedContext.stateName
     )
     return bundle
   }
@@ -324,27 +245,24 @@ class EventBundleCreator {
     bundle.putLong(ACCESS_SOLUTION_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessSolutionContext.genericData.learnerId
+      eventLog.context.accessSolutionContext.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessSolutionContext.genericData.deviceId
+      eventLog.context.accessSolutionContext.learnerDetails.deviceId
     )
     bundle.putString(
-      SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessSolutionContext.explorationData.sessionId
+      SESSION_ID_KEY_LEARNER_ANALYTICS, eventLog.context.accessSolutionContext.sessionId
     )
     bundle.putString(
-      EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessSolutionContext.explorationData.explorationId
+      EXPLORATION_ID_KEY_LEARNER_ANALYTICS, eventLog.context.accessSolutionContext.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessSolutionContext.explorationData.explorationVersion
+      eventLog.context.accessSolutionContext.explorationVersion
     )
     bundle.putString(
-      STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.accessSolutionContext.explorationData.stateName
+      STATE_NAME_KEY_LEARNER_ANALYTICS, eventLog.context.accessSolutionContext.stateName
     )
     return bundle
   }
@@ -355,27 +273,27 @@ class EventBundleCreator {
     bundle.putLong(SUBMIT_ANSWER_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.submitAnswerContext.genericData.learnerId
+      eventLog.context.submitAnswerContext.explorationDetails.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.submitAnswerContext.genericData.deviceId
+      eventLog.context.submitAnswerContext.explorationDetails.learnerDetails.deviceId
     )
     bundle.putString(
       SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.submitAnswerContext.explorationData.sessionId
+      eventLog.context.submitAnswerContext.explorationDetails.sessionId
     )
     bundle.putString(
       EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.submitAnswerContext.explorationData.explorationId
+      eventLog.context.submitAnswerContext.explorationDetails.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.submitAnswerContext.explorationData.explorationVersion
+      eventLog.context.submitAnswerContext.explorationDetails.explorationVersion
     )
     bundle.putString(
       STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.submitAnswerContext.explorationData.stateName
+      eventLog.context.submitAnswerContext.explorationDetails.stateName
     )
     bundle.putString(
       ANSWER_LABEL_KEY_LEARNER_ANALYTICS,
@@ -390,31 +308,30 @@ class EventBundleCreator {
     bundle.putLong(PLAY_VOICE_OVER_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.playVoiceOverContext.genericData.learnerId
+      eventLog.context.playVoiceOverContext.explorationDetails.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.playVoiceOverContext.genericData.deviceId
+      eventLog.context.playVoiceOverContext.explorationDetails.learnerDetails.deviceId
     )
     bundle.putString(
       SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.playVoiceOverContext.explorationData.sessionId
+      eventLog.context.playVoiceOverContext.explorationDetails.sessionId
     )
     bundle.putString(
       EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.playVoiceOverContext.explorationData.explorationId
+      eventLog.context.playVoiceOverContext.explorationDetails.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.playVoiceOverContext.explorationData.explorationVersion
+      eventLog.context.playVoiceOverContext.explorationDetails.explorationVersion
     )
     bundle.putString(
       STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.playVoiceOverContext.explorationData.stateName
+      eventLog.context.playVoiceOverContext.explorationDetails.stateName
     )
     bundle.putString(
-      CONTENT_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.playVoiceOverContext.contentId.toString()
+      CONTENT_ID_KEY_LEARNER_ANALYTICS, eventLog.context.playVoiceOverContext.contentId
     )
     return bundle
   }
@@ -424,12 +341,10 @@ class EventBundleCreator {
     val bundle = Bundle()
     bundle.putLong(APP_IN_BACKGROUND_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
-      LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.appInBackgroundContext.genericData.learnerId
+      LEARNER_ID_KEY_LEARNER_ANALYTICS, eventLog.context.appInBackgroundContext.learnerId
     )
     bundle.putString(
-      DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.appInBackgroundContext.genericData.deviceId
+      DEVICE_ID_KEY_LEARNER_ANALYTICS, eventLog.context.appInBackgroundContext.deviceId
     )
     return bundle
   }
@@ -439,12 +354,10 @@ class EventBundleCreator {
     val bundle = Bundle()
     bundle.putLong(APP_IN_FOREGROUND_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
-      LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.appInForegroundContext.genericData.learnerId
+      LEARNER_ID_KEY_LEARNER_ANALYTICS, eventLog.context.appInForegroundContext.learnerId
     )
     bundle.putString(
-      DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.appInForegroundContext.genericData.deviceId
+      DEVICE_ID_KEY_LEARNER_ANALYTICS, eventLog.context.appInForegroundContext.deviceId
     )
     return bundle
   }
@@ -455,27 +368,24 @@ class EventBundleCreator {
     bundle.putLong(EXIT_EXPLORATION_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.exitExplorationContext.genericData.learnerId
+      eventLog.context.exitExplorationContext.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.exitExplorationContext.genericData.deviceId
+      eventLog.context.exitExplorationContext.learnerDetails.deviceId
     )
     bundle.putString(
-      SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.exitExplorationContext.explorationData.sessionId
+      SESSION_ID_KEY_LEARNER_ANALYTICS, eventLog.context.exitExplorationContext.sessionId
     )
     bundle.putString(
-      EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.exitExplorationContext.explorationData.explorationId
+      EXPLORATION_ID_KEY_LEARNER_ANALYTICS, eventLog.context.exitExplorationContext.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.exitExplorationContext.explorationData.explorationVersion
+      eventLog.context.exitExplorationContext.explorationVersion
     )
     bundle.putString(
-      STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.exitExplorationContext.explorationData.stateName
+      STATE_NAME_KEY_LEARNER_ANALYTICS, eventLog.context.exitExplorationContext.stateName
     )
     return bundle
   }
@@ -486,27 +396,24 @@ class EventBundleCreator {
     bundle.putLong(FINISH_EXPLORATION_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
       LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.finishExplorationContext.genericData.learnerId
+      eventLog.context.finishExplorationContext.learnerDetails.learnerId
     )
     bundle.putString(
       DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.finishExplorationContext.genericData.deviceId
+      eventLog.context.finishExplorationContext.learnerDetails.deviceId
     )
     bundle.putString(
-      SESSION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.finishExplorationContext.explorationData.sessionId
+      SESSION_ID_KEY_LEARNER_ANALYTICS, eventLog.context.finishExplorationContext.sessionId
     )
     bundle.putString(
-      EXPLORATION_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.finishExplorationContext.explorationData.explorationId
+      EXPLORATION_ID_KEY_LEARNER_ANALYTICS, eventLog.context.finishExplorationContext.explorationId
     )
     bundle.putString(
       EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS,
-      eventLog.context.finishExplorationContext.explorationData.explorationVersion
+      eventLog.context.finishExplorationContext.explorationVersion
     )
     bundle.putString(
-      STATE_NAME_KEY_LEARNER_ANALYTICS,
-      eventLog.context.finishExplorationContext.explorationData.stateName
+      STATE_NAME_KEY_LEARNER_ANALYTICS, eventLog.context.finishExplorationContext.stateName
     )
     return bundle
   }
@@ -516,12 +423,10 @@ class EventBundleCreator {
     val bundle = Bundle()
     bundle.putLong(RESUME_EXPLORATION_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
-      LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.resumeExplorationContext.genericData.learnerId
+      LEARNER_ID_KEY_LEARNER_ANALYTICS, eventLog.context.resumeExplorationContext.learnerId
     )
     bundle.putString(
-      DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.resumeExplorationContext.genericData.deviceId
+      DEVICE_ID_KEY_LEARNER_ANALYTICS, eventLog.context.resumeExplorationContext.deviceId
     )
     return bundle
   }
@@ -531,12 +436,10 @@ class EventBundleCreator {
     val bundle = Bundle()
     bundle.putLong(START_OVER_EXPLORATION_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
-      LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.startOverExplorationContext.genericData.learnerId
+      LEARNER_ID_KEY_LEARNER_ANALYTICS, eventLog.context.startOverExplorationContext.learnerId
     )
     bundle.putString(
-      DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.startOverExplorationContext.genericData.deviceId
+      DEVICE_ID_KEY_LEARNER_ANALYTICS, eventLog.context.startOverExplorationContext.deviceId
     )
     return bundle
   }
@@ -546,12 +449,10 @@ class EventBundleCreator {
     val bundle = Bundle()
     bundle.putLong(DELETE_PROFILE_TIMESTAMP_KEY, eventLog.timestamp)
     bundle.putString(
-      LEARNER_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.deleteProfileContext.genericData.learnerId
+      LEARNER_ID_KEY_LEARNER_ANALYTICS, eventLog.context.deleteProfileContext.learnerId
     )
     bundle.putString(
-      DEVICE_ID_KEY_LEARNER_ANALYTICS,
-      eventLog.context.deleteProfileContext.genericData.deviceId
+      DEVICE_ID_KEY_LEARNER_ANALYTICS, eventLog.context.deleteProfileContext.deviceId
     )
     return bundle
   }

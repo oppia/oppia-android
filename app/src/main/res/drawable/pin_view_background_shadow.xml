@@ -3,7 +3,7 @@
   <item>
     <shape>
       <corners android:radius="6dp" />
-      <solid android:color="@color/mid_grey_03" />
+      <solid android:color="@color/color_def_mid_grey_03" />
       <padding
         android:bottom="1dp"
         android:left="1dp"
@@ -14,7 +14,7 @@
   <item>
     <shape>
       <corners android:radius="4dp" />
-      <solid android:color="@color/mid_grey_03" />
+      <solid android:color="@color/color_def_mid_grey_03" />
       <padding
         android:bottom="1dp"
         android:left="1dp"
@@ -25,7 +25,7 @@
   <item>
     <shape>
       <corners android:radius="4dp" />
-      <solid android:color="@color/mid_grey_03" />
+      <solid android:color="@color/color_def_mid_grey_03" />
       <padding
         android:bottom="1dp"
         android:left="1dp"
@@ -35,7 +35,7 @@
   </item>  <item>
     <shape>
       <corners android:radius="4dp" />
-      <solid android:color="@color/mid_grey_05" />
+      <solid android:color="@color/color_def_mid_grey_05" />
       <padding
         android:bottom="1dp"
         android:left="1dp"
@@ -46,7 +46,7 @@
   <item>
     <shape>
       <corners android:radius="4dp" />
-      <solid android:color="@color/mid_grey_05" />
+      <solid android:color="@color/color_def_mid_grey_05" />
       <padding
         android:bottom="1dp"
         android:left="1dp"
@@ -57,7 +57,7 @@
   <item>
     <shape>
       <corners android:radius="2dp" />
-      <solid android:color="@color/white" />
+      <solid android:color="@color/color_def_white" />
     </shape>
   </item>
 </layer-list>
