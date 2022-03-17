@@ -12,7 +12,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppia_light_green"
+    android:background="@color/color_def_oppia_light_green"
     android:overScrollMode="never"
     android:scrollbars="none">
 
@@ -47,7 +47,7 @@
           android:paddingEnd="32dp"
           android:text="@string/return_to_topic"
           android:textAllCaps="true"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           android:textSize="14sp" />
       </LinearLayout>
     </LinearLayout>
