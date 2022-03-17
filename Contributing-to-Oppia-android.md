@@ -114,6 +114,10 @@ For now, you generally won't need to do this, until the Android app supports on-
 
 Welcome! Please make sure to follow the onboarding instructions above if you haven’t already, and also read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). After that, we’d strongly recommend tackling some part of one of the following starter issues.
 
+**Testing**
+
+ - [Add missing tests](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+tests)
+
 **UI**
 
  - [Merge different versions of a xml into a single xml file](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+single+xml+file)
@@ -125,9 +129,6 @@ Welcome! Please make sure to follow the onboarding instructions above if you hav
 
  - [Accessibility support](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+a11y)
 
-**Testing**
-
- - [Add missing tests](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+tests)
 
 ## Communication channels
 
