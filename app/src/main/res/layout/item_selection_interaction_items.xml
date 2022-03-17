@@ -31,7 +31,7 @@
       android:clickable="false"
       android:focusable="false"
       android:labelFor="@id/item_selection_contents_text_view"
-      app:buttonTint="@color/oppia_dark_blue" />
+      app:buttonTint="@color/color_def_oppia_dark_blue" />
 
     <TextView
       android:id="@+id/item_selection_contents_text_view"
@@ -43,7 +43,7 @@
       android:layout_toEndOf="@+id/item_selection_checkbox"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
-      android:textColor="@color/oppia_dark_blue"
+      android:textColor="@color/color_def_oppia_dark_blue"
       android:textSize="16sp" />
   </RelativeLayout>
 </layout>

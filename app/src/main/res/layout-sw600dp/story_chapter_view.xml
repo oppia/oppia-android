@@ -35,7 +35,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:visibility="@{viewModel.index == (viewModel.totalChapters - 1) ? View.INVISIBLE : View.VISIBLE}"
-        app:color="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? @color/grey : @color/oppia_primary}" />
+        app:color="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? @color/color_def_grey : @color/oppia_primary}" />
 
       <ImageView
         android:id="@+id/progress_image_view"
