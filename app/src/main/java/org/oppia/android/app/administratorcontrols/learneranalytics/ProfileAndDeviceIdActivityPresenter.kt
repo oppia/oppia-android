@@ -6,7 +6,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 
-@ActivityScope
 class ProfileAndDeviceIdActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
@@ -22,17 +21,14 @@ class ProfileAndDeviceIdActivityPresenter @Inject constructor(
   }
 
   private fun setToolbar() {
-    val appVersionToolbar: Toolbar =
-      activity.findViewById(R.id.profile_and_device_id_toolbar) as Toolbar
+    val appVersionToolbar = activity.findViewById(R.id.profile_and_device_id_toolbar) as Toolbar
     activity.setSupportActionBar(appVersionToolbar)
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
   }
 
   private fun getProfileAndDeviceIdFragment(): ProfileAndDeviceIdFragment? {
-    return activity
-      .supportFragmentManager
-      .findFragmentById(
-        R.id.profile_and_device_id_fragment_placeholder
-      ) as ProfileAndDeviceIdFragment?
+    val fragManager = activity.supportFragmentManager
+    val fragment = fragManager.findFragmentById(R.id.profile_and_device_id_fragment_placeholder)
+    return fragment as? ProfileAndDeviceIdFragment
   }
 }

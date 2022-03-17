@@ -1,7 +1,6 @@
 package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
@@ -12,38 +11,14 @@ import javax.inject.Inject
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val consoleLogger: ConsoleLogger,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
-  private val loggingIdentifierController: LoggingIdentifierController
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
-  // TODO: Clean up this file (remove extras post-merge).
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
     timestamp: Long,
     eventContext: EventLog.Context
   ) {
     analyticsController.logTransitionEvent(timestamp, eventContext)
-  }
-
-  /** Logs transition events which are specifically related to Learner Study Analytics. These events
-   * will only get logged if the value of [LearnerStudyAnalytics] platform parameter is set to true.
-   * See [AnalyticsController.logTransitionEvent] for more context.
-   */
-  fun logLearnerAnalyticsEvent(
-    timestamp: Long,
-    eventAction: EventAction,
-    eventContext: EventLog.Context?
-  ) {
-    if (learnerStudyAnalytics.value) {
-      analyticsController.logTransitionEvent(timestamp, eventAction, eventContext)
-    }
-  }
-
-  /** Logs click events. See [AnalyticsController.logClickEvent] for more context. */
-  fun logClickEvent(
-    timestamp: Long,
-    eventContext: EventLog.Context
-  ) {
-    analyticsController.logClickEvent(timestamp, eventContext)
   }
 
   /** Logs transition events which are specifically related to Learner Study Analytics. These events
@@ -122,46 +97,6 @@ class OppiaLogger @Inject constructor(
    */
   fun e(tag: String, msg: String, tr: Throwable?) {
     consoleLogger.e(tag, msg, tr)
-  }
-
-  /**
-   * Returns a generic data object that contains [deviceId] and [learnerId]. These identifiers are
-   * logged across all Learner Study Analytics events.
-   *
-   * @param deviceId: device-specific identifier which is unique to each device.
-   * @param learnerId: profile-specific identifier which is unique to each profile on a device.
-   * */
-  fun createGenericData(
-    deviceId: String,
-    learnerId: String
-  ): EventLog.GenericData {
-    return EventLog.GenericData.newBuilder()
-      .setDeviceId(loggingIdentifierController.deviceId)
-      .setLearnerId(learnerId)
-      .build()
-  }
-
-  /**
-   * Returns an exploration-specific data object that contains [sessionId], [explorationId],
-   * [explorationVersion] and [stateName].
-   *
-   * @param sessionId: session-specific identifier which is unique to each session.
-   * @param explorationId: id of the exploration.
-   * @param explorationVersion: version of the exploration.
-   * @param stateName: name of the current state.
-   */
-  fun createExplorationData(
-    sessionId: String,
-    explorationId: String,
-    explorationVersion: String,
-    stateName: String
-  ): EventLog.ExplorationData {
-    return EventLog.ExplorationData.newBuilder()
-      .setSessionId(sessionId)
-      .setExplorationId(explorationId)
-      .setExplorationVersion(explorationVersion)
-      .setStateName(stateName)
-      .build()
   }
 
   /** Returns the context of an event related to exploration. */
@@ -318,22 +253,6 @@ class OppiaLogger @Inject constructor(
       .build()
   }
 
-  /** Returns the context of an event related to starting an exploration card. */
-  fun createStartCardContext(
-    skillId: String,
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setStartCardContext(
-        EventLog.StartCardContext.newBuilder()
-          .setSkillId(skillId)
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
-  }
-
   /**
    * Returns a learner details data object that contains a device id and the specified [learnerId].
    *
@@ -389,22 +308,6 @@ class OppiaLogger @Inject constructor(
   /** Returns the context of an event related to ending an exploration card. */
   fun createEndCardContext(
     skillId: String,
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setEndCardContext(
-        EventLog.EndCardContext.newBuilder()
-          .setSkillId(skillId)
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to ending an exploration card. */
-  fun createEndCardContext(
-    skillId: String,
     explorationContext: EventLog.ExplorationContext
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
@@ -416,102 +319,42 @@ class OppiaLogger @Inject constructor(
       ).build()
   }
 
-  /** Returns the context of an event related to offering a hint when it becomes available. */
+  /** Returns the context of an event related to offering a hint in a lesson card. */
   fun createHintOfferedContext(
-    hintIndex: String,
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setHintOfferedContext(
-        EventLog.HintOfferedContext.newBuilder()
-          .setHintIndex(hintIndex)
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to offering a hint when it becomes available. */
-  fun createHintOfferedContext(
-    hintIndex: HelpIndex,
+    hintIndex: Int,
     explorationContext: EventLog.ExplorationContext
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setHintOfferedContext(
         EventLog.HintContext.newBuilder()
-          .setHelpIndex(hintIndex)
+          .setHintIndex(hintIndex)
           .setExplorationDetails(explorationContext)
           .build()
       ).build()
   }
 
-  /** Returns the context of an event related to accessing a hint. */
+  /** Returns the context of an event related to accessing a hint in a lesson card. */
   fun createAccessHintContext(
-    hintIndex: String,
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setAccessHintContext(
-        EventLog.AccessHintContext.newBuilder()
-          .setHintIndex(hintIndex)
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to accessing a hint. */
-  fun createAccessHintContext(
-    hintIndex: HelpIndex,
+    hintIndex: Int,
     explorationContext: EventLog.ExplorationContext
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setAccessHintContext(
         EventLog.HintContext.newBuilder()
-          .setHelpIndex(hintIndex)
+          .setHintIndex(hintIndex)
           .setExplorationDetails(explorationContext)
           .build()
       ).build()
   }
 
-  /** Returns the context of an event related to offering a solution when it becomes available. */
-  fun createSolutionOfferedContext(
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setSolutionOfferedContext(
-        EventLog.SolutionOfferedContext.newBuilder()
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to offering a solution when it becomes available. */
+  /** Returns the context of an event related to offering a solution in a lesson card. */
   fun createSolutionOfferedContext(
     explorationContext: EventLog.ExplorationContext
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setSolutionOfferedContext(explorationContext).build()
   }
 
-  /** Returns the context of an event related to accessing a solution. */
-  fun createAccessSolutionContext(
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setAccessSolutionContext(
-        EventLog.AccessSolutionContext.newBuilder()
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to accessing a solution. */
+  /** Returns the context of an event related to accessing a solution in a lesson card. */
   fun createAccessSolutionContext(
     explorationContext: EventLog.ExplorationContext
   ): EventLog.Context {
@@ -521,45 +364,13 @@ class OppiaLogger @Inject constructor(
   /** Returns the context of an event related to submitting an answer. */
   fun createSubmitAnswerContext(
     isAnswerCorrect: Boolean,
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setSubmitAnswerContext(
-        EventLog.SubmitAnswerContext.newBuilder()
-          .setIsAnswerCorrect(isAnswerCorrect)
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to submitting an answer. */
-  fun createSubmitAnswerContext(
-    isAnswerCorrect: Boolean,
     explorationContext: EventLog.ExplorationContext
   ): EventLog.Context {
     return EventLog.Context.newBuilder()
       .setSubmitAnswerContext(
         EventLog.SubmitAnswerContext.newBuilder()
-          .setIsAnswerCorrect(isAnswerCorrect)
           .setExplorationDetails(explorationContext)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to playing a voice over. */
-  fun createPlayVoiceOverContext(
-    contentId: String,
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setPlayVoiceOverContext(
-        EventLog.PlayVoiceOverContext.newBuilder()
-          .setContentId(contentId)
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
+          .setIsAnswerCorrect(isAnswerCorrect)
           .build()
       ).build()
   }
@@ -572,21 +383,8 @@ class OppiaLogger @Inject constructor(
     return EventLog.Context.newBuilder()
       .setPlayVoiceOverContext(
         EventLog.PlayVoiceOverContext.newBuilder()
-          .setContentId(contentId)
           .setExplorationDetails(explorationContext)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to backgrounding of the application. */
-  fun createAppInBackgroundContext(
-    genericData: EventLog.GenericData,
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setAppInBackgroundContext(
-        EventLog.AppInBackgroundContext.newBuilder()
-          .setGenericData(genericData)
-          .build()
+          .setContentId(contentId)
       ).build()
   }
 
@@ -599,35 +397,9 @@ class OppiaLogger @Inject constructor(
 
   /** Returns the context of an event related to foregrounding of the application. */
   fun createAppInForegroundContext(
-    genericData: EventLog.GenericData,
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setAppInForegroundContext(
-        EventLog.AppInForegroundContext.newBuilder()
-          .setGenericData(genericData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to foregrounding of the application. */
-  fun createAppInForegroundContext(
     learnerDetails: EventLog.LearnerDetailsContext
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setAppInForegroundContext(learnerDetails).build()
-  }
-
-  /** Returns the context of an event related to exiting an exploration. */
-  fun createExitExplorationContext(
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setExitExplorationContext(
-        EventLog.ExitExplorationContext.newBuilder()
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
   }
 
   /** Returns the context of an event related to exiting an exploration. */
@@ -639,35 +411,9 @@ class OppiaLogger @Inject constructor(
 
   /** Returns the context of an event related to finishing an exploration. */
   fun createFinishExplorationContext(
-    genericData: EventLog.GenericData,
-    explorationData: EventLog.ExplorationData
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setFinishExplorationContext(
-        EventLog.FinishExplorationContext.newBuilder()
-          .setGenericData(genericData)
-          .setExplorationData(explorationData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to finishing an exploration. */
-  fun createFinishExplorationContext(
     explorationContext: EventLog.ExplorationContext
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setFinishExplorationContext(explorationContext).build()
-  }
-
-  /** Returns the context of an event related to resuming an exploration. */
-  fun createResumeExplorationContext(
-    genericData: EventLog.GenericData,
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setResumeExplorationContext(
-        EventLog.ResumeExplorationContext.newBuilder()
-          .setGenericData(genericData)
-          .build()
-      ).build()
   }
 
   /** Returns the context of an event related to resuming an exploration. */
@@ -679,33 +425,9 @@ class OppiaLogger @Inject constructor(
 
   /** Returns the context of an event related to starting over an exploration. */
   fun createStartOverExplorationContext(
-    genericData: EventLog.GenericData,
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setStartOverExplorationContext(
-        EventLog.StartOverExplorationContext.newBuilder()
-          .setGenericData(genericData)
-          .build()
-      ).build()
-  }
-
-  /** Returns the context of an event related to starting over an exploration. */
-  fun createStartOverExplorationContext(
     learnerDetails: EventLog.LearnerDetailsContext
   ): EventLog.Context {
     return EventLog.Context.newBuilder().setStartOverExplorationContext(learnerDetails).build()
-  }
-
-  /** Returns the context of an event related to deleting a profile. */
-  fun createDeleteProfileContext(
-    genericData: EventLog.GenericData,
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setDeleteProfileContext(
-        EventLog.DeleteProfileContext.newBuilder()
-          .setGenericData(genericData)
-          .build()
-      ).build()
   }
 
   /** Returns the context of an event related to deleting a profile. */

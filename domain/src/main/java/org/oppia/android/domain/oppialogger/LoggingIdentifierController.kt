@@ -13,6 +13,7 @@ import org.oppia.android.util.system.UserIdGenerator
 import java.io.File
 import java.security.MessageDigest
 import java.util.Random
+import java.util.UUID
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,6 +35,12 @@ class LoggingIdentifierController @Inject constructor(
 
   // TODO(#4249): Replace this with a StateFlow & the DataProvider with a StateFlow-converted one.
   private var sessionId = AtomicReference(computeSessionId())
+
+  // TODO: finish this.
+  private val deviceId by lazy {
+    val entropy = ByteArray(16).also { learnerIdRandom.nextBytes(it) }
+    UUID.nameUUIDFromBytes(entropy).toString()
+  }
 
   /**
    * Creates and returns a unique identifier which will be used to identify the current learner.
@@ -86,21 +93,27 @@ class LoggingIdentifierController @Inject constructor(
     // https://stackoverflow.com/a/2785493/3689782 there's no reliable way to compute a device ID.
     // The following is an unreliable approximation that's more or less tied to the installation of
     // the app, though *an* ID is at least guaranteed to be returned.
-    val fidResult = AtomicReference(AsyncResult.pending<String>())
-    FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
-      val fid = if (task.isSuccessful) task.result else null
-      val deviceId = fid ?: retrieveSecureAndroidId() ?: computeInstallTimeBasedId()
-      val hashedId = machineLocale.run {
+//    val fidResult = AtomicReference(AsyncResult.pending<String>())
+//    FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
+//      val fid = if (task.isSuccessful) task.result else null
+//      val deviceId = fid ?: retrieveSecureAndroidId() ?: computeInstallTimeBasedId()
+//      val hashedId = machineLocale.run {
+//        MessageDigest.getInstance("SHA-1")
+//          .digest(deviceId.toByteArray())
+//          .joinToString("") { "%02x".formatForMachines(it) }
+//          .substring(startIndex = 0, endIndex = 12)
+//      }
+//      fidResult.set(AsyncResult.success(hashedId))
+//      asyncDataSubscriptionManager.notifyChangeAsync(FIREBASE_ID_DATA_PROVIDER_ID)
+//    }
+    return dataProviders.createInMemoryDataProvider(FIREBASE_ID_DATA_PROVIDER_ID) {
+      machineLocale.run {
         MessageDigest.getInstance("SHA-1")
           .digest(deviceId.toByteArray())
           .joinToString("") { "%02x".formatForMachines(it) }
           .substring(startIndex = 0, endIndex = 12)
       }
-      fidResult.set(AsyncResult.success(hashedId))
-      asyncDataSubscriptionManager.notifyChangeAsync(FIREBASE_ID_DATA_PROVIDER_ID)
-    }
-    return dataProviders.createInMemoryDataProviderAsync(FIREBASE_ID_DATA_PROVIDER_ID) {
-      fidResult.get()
+//      fidResult.get()
     }
   }
 

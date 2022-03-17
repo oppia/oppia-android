@@ -87,19 +87,15 @@ class LogUploadWorker private constructor(
   private suspend fun uploadEvents(): Result {
     return try {
       syncStatusManager.setSyncStatus(DATA_UPLOADING)
-      val eventLogs = analyticsController.getEventLogStoreList()
-      eventLogs.let {
-        for (eventLog in it) {
-          eventLogger.logCachedEvent(eventLog)
-          analyticsController.removeFirstEventLogFromStore()
-        }
+      analyticsController.getEventLogStoreList().forEach { eventLog ->
+        eventLogger.logCachedEvent(eventLog)
+        analyticsController.removeFirstEventLogFromStore()
       }
       syncStatusManager.setSyncStatus(DATA_UPLOADED)
       Result.success()
     } catch (e: Exception) {
       syncStatusManager.setSyncStatus(NETWORK_ERROR)
       consoleLogger.e(TAG, "Failed to upload events", e)
-      syncStatusManager.setSyncStatus(NETWORK_ERROR)
       Result.failure()
     }
   }

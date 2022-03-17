@@ -61,7 +61,7 @@ class AdministratorControlsActivity :
   }
 
   override fun routeToLearnerAnalytics() {
-    startActivity(ProfileAndDeviceIdActivity.createProfileAndDeviceActivityIntent(this))
+    startActivity(ProfileAndDeviceIdActivity.createIntent(this))
   }
 
   companion object {

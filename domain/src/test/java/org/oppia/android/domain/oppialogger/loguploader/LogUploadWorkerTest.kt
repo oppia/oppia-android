@@ -64,6 +64,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.logging.SyncStatusTestModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -104,16 +105,10 @@ class LogUploadWorkerTest {
   lateinit var dataProviders: DataProviders
 
   @Inject
-  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-
-  @Mock
-  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
-
-  @Captor
-  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
 
   @Inject
   lateinit var syncStatusController: SyncStatusManager
@@ -298,7 +293,8 @@ class LogUploadWorkerTest {
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      SyncStatusTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

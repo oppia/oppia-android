@@ -3,77 +3,18 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
-    <import type="android.view.View" />
-
-    <variable
-      name="profile"
-      type="org.oppia.android.app.model.Profile" />
-
     <variable
       name="viewModel"
-      type="org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdViewModel" />
+      type="org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel" />
   </data>
 
-  <RelativeLayout
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/profile_and_device_id_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="28dp"
-    android:layout_marginEnd="28dp">
-
-    <LinearLayout
-      android:id="@+id/l"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center_horizontal"
-      android:orientation="horizontal">
-
-      <TextView
-        style="@style/Heading2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
-        android:text="@{viewModel.deviceId}"
-        android:textColor="@color/black" />
-
-      <LinearLayout
-        android:id="@+id/device_id_copy_button_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="36dp"
-        android:orientation="vertical">
-
-        <ImageView
-          android:layout_width="20dp"
-          android:layout_height="24dp"
-          android:layout_gravity="center"
-          android:src="@{viewModel.currentCopiedId == viewModel.deviceId ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_content_copy_24}" />
-
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:text="@{viewModel.currentCopiedId == viewModel.deviceId ? @string/learner_analytics_copied_to_clipboard_label : @string/learner_analytics_copy_to_clipboard_label}"
-          android:textAllCaps="true"
-          android:textSize="12sp" />
-      </LinearLayout>
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/profile_and_device_id_recyclerView"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/l"
-      app:data="@{viewModel.profiles}"
-      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/profile_and_device_id_recyclerView"
-      android:gravity="bottom"
-      android:text="@{viewModel.syncStatus}"
-      android:textSize="16sp" />
-  </RelativeLayout>
+    app:data="@{viewModel.profileModels}"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    android:layout_margin="28dp"
+    android:overScrollMode="never"
+    android:scrollbars="none" />
 </layout>

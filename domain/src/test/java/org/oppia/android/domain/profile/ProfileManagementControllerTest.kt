@@ -467,8 +467,9 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_checkUpdateIsSuccessful() {
-    val defaultLearnerId =
-      String.format("%08x", Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
+    val defaultLearnerId = machineLocale.run {
+      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
+    }
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 

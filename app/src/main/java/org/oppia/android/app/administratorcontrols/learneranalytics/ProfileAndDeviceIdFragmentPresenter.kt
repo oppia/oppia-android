@@ -4,68 +4,66 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileAndDeviceIdFragmentBinding
-import org.oppia.android.databinding.ProfileIdListViewBinding
+import org.oppia.android.databinding.ProfileListDeviceIdItemBinding
+import org.oppia.android.databinding.ProfileListLearnerIdItemBinding
+import org.oppia.android.databinding.ProfileListSyncStatusItemBinding
 import javax.inject.Inject
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewType
 
-@FragmentScope
 class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ProfileAndDeviceIdViewModel>
+  private val profileListViewModelFactory: ProfileListViewModel.Factory
 ) {
   private lateinit var binding: ProfileAndDeviceIdFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = ProfileAndDeviceIdFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    binding.let {
-      it.lifecycleOwner = fragment
-      it.viewModel = getProfileAndDeviceIdViewModel()
+    binding.apply {
+      lifecycleOwner = fragment
+      this.viewModel = profileListViewModelFactory.create()
     }
-
     binding.profileAndDeviceIdRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
-    }
-
-    binding.deviceIdCopyButtonLayout.setOnClickListener {
-      getProfileAndDeviceIdViewModel().setCurrentCopiedId(
-        getProfileAndDeviceIdViewModel().deviceId
-      )
     }
     return binding.root
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<Profile> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<Profile>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = ProfileIdListViewBinding::inflate,
-        setViewModel = ::bindProfileView
+  private fun createRecyclerViewAdapter(): BindableAdapter<ProfileListItemViewModel> {
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<ProfileListItemViewModel, ProfileListItemViewType> { viewModel ->
+        when (viewModel) {
+          is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
+          is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID
+          is SyncStatusItemViewModel -> ProfileListItemViewType.SYNC_STATUS
+          else -> error("Encountered unexpected view model: $viewModel")
+        }
+      }
+      .setLifecycleOwner(fragment)
+      .registerViewDataBinder(
+        viewType = ProfileListItemViewType.DEVICE_ID,
+        inflateDataBinding = ProfileListDeviceIdItemBinding::inflate,
+        setViewModel = ProfileListDeviceIdItemBinding::setViewModel,
+        transformViewModel = { it as DeviceIdItemViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ProfileListItemViewType.LEARNER_ID,
+        inflateDataBinding = ProfileListLearnerIdItemBinding::inflate,
+        setViewModel = ProfileListLearnerIdItemBinding::setViewModel,
+        transformViewModel = { it as ProfileLearnerIdItemViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ProfileListItemViewType.SYNC_STATUS,
+        inflateDataBinding = ProfileListSyncStatusItemBinding::inflate,
+        setViewModel = ProfileListSyncStatusItemBinding::setViewModel,
+        transformViewModel = { it as SyncStatusItemViewModel }
       )
       .build()
-  }
-
-  private fun bindProfileView(
-    binding: ProfileIdListViewBinding,
-    profile: Profile
-  ) {
-    binding.profile = profile
-    binding.profileIdViewCopyStatusImage.setOnClickListener {
-      getProfileAndDeviceIdViewModel().setCurrentCopiedId(profile.learnerId)
-    }
-    binding.profileIdViewCopyStatusText.setOnClickListener {
-      getProfileAndDeviceIdViewModel().setCurrentCopiedId(profile.learnerId)
-    }
-  }
-
-  private fun getProfileAndDeviceIdViewModel(): ProfileAndDeviceIdViewModel {
-    return viewModelProvider.getForFragment(fragment, ProfileAndDeviceIdViewModel::class.java)
   }
 }

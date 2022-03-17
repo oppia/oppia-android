@@ -9,9 +9,7 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 class ProfileAndDeviceIdActivity : InjectableAppCompatActivity() {
-
-  @Inject
-  lateinit var profileAndDeviceIdActivityPresenter: ProfileAndDeviceIdActivityPresenter
+  @Inject lateinit var profileAndDeviceIdActivityPresenter: ProfileAndDeviceIdActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -19,15 +17,15 @@ class ProfileAndDeviceIdActivity : InjectableAppCompatActivity() {
     profileAndDeviceIdActivityPresenter.handleOnCreate()
   }
 
-  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-    if (item?.itemId == android.R.id.home) {
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    if (item.itemId == android.R.id.home) {
       onBackPressed()
     }
     return super.onOptionsItemSelected(item)
   }
 
   companion object {
-    fun createProfileAndDeviceActivityIntent(context: Context): Intent {
+    fun createIntent(context: Context): Intent {
       return Intent(context, ProfileAndDeviceIdActivity::class.java)
     }
   }
