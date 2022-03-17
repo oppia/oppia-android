@@ -95,7 +95,6 @@ class LogUploadWorker private constructor(
       }
       Result.success()
     } catch (e: Exception) {
-      syncStatusManager.setSyncStatus(NETWORK_ERROR)
       consoleLogger.e(TAG, "Failed to upload events", e)
       Result.failure()
     }
