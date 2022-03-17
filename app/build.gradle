@@ -6,12 +6,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 29
+  compileSdkVersion 30
   buildToolsVersion "29.0.2"
   defaultConfig {
     applicationId "org.oppia.android"
     minSdkVersion 19
-    targetSdkVersion 29
+    targetSdkVersion 30
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
@@ -156,8 +156,8 @@ dependencies {
       'com.github.bumptech.glide:mocks:4.11.0',
       'com.google.truth:truth:1.1.3',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'org.robolectric:annotations:4.4',
-      'org.robolectric:robolectric:4.4',
+      'org.robolectric:annotations:4.5',
+      'org.robolectric:robolectric:4.5',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.mockito:mockito-core:2.7.22',
@@ -173,7 +173,7 @@ dependencies {
       'com.google.truth:truth:1.1.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',
-      'org.robolectric:annotations:4.4',
+      'org.robolectric:annotations:4.5',
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
   // exclude them before adding the testing module to the androidTestImplementation dependencies

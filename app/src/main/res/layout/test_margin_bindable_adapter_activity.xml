@@ -12,7 +12,7 @@
       android:fontFamily="sans-serif-medium"
       android:text="@string/all_topics"
       android:padding="10dp"
-      android:background="@color/oppia_stroke_blue"
+      android:background="@color/color_def_oppia_stroke_blue"
       android:textColor="@color/oppia_primary_text"
       android:textSize="18sp" />
   </FrameLayout>

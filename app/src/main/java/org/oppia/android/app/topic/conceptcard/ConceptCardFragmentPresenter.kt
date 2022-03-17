@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ConceptCardFragmentBinding
@@ -88,8 +87,7 @@ class ConceptCardFragmentPresenter @Inject constructor(
   private fun logConceptCardEvent(skillId: String) {
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_CONCEPT_CARD,
-      oppiaLogger.createConceptCardContext(skillId)
+      oppiaLogger.createOpenConceptCardContext(skillId)
     )
   }
 }

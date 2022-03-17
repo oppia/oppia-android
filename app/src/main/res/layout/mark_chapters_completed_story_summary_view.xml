@@ -18,7 +18,7 @@
       android:id="@+id/mark_chapters_completed_story_name_text_view"
       style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
-      android:background="@color/white"
+      android:background="@color/color_def_white"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"

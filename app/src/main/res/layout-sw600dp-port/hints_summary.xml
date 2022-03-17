@@ -52,7 +52,7 @@
         android:minWidth="160dp"
         android:minHeight="48dp"
         android:text="@string/reveal_hint"
-        android:textColor="@color/white"
+        android:textColor="@color/color_def_white"
         android:textSize="14sp"
         android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"

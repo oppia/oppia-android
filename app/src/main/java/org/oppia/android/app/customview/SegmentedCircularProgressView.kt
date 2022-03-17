@@ -85,7 +85,7 @@ class SegmentedCircularProgressView : View {
     if (chaptersFinished != 0) {
       setupArcPaint(chapterNotStartedArcPaint, R.color.oppia_progress_chapter_not_finished)
     } else {
-      setupArcPaint(chapterNotStartedArcPaint, R.color.grey_shade_20)
+      setupArcPaint(chapterNotStartedArcPaint, R.color.color_def_grey_shade_20)
     }
   }
 

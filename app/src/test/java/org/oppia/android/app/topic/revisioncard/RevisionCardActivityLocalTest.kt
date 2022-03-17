@@ -21,7 +21,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -106,9 +106,8 @@ class RevisionCardActivityLocalTest {
     ).use {
       val event = fakeEventLogger.getMostRecentEvent()
 
-      assertThat(event.context.activityContextCase).isEqualTo(REVISION_CARD_CONTEXT)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_REVISION_CARD)
     }
   }
 

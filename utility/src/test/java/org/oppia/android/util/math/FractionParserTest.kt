@@ -91,6 +91,12 @@ class FractionParserTest {
   }
 
   @Test
+  fun testSubmitTimeError_noDenominator_returnsInvalidFormat() {
+    val error = fractionParser.getSubmitTimeError("3/")
+    assertThat(error).isEqualTo(FractionParser.FractionParsingError.INVALID_FORMAT)
+  }
+
+  @Test
   fun testRealTimeError_regularFraction_returnsValid() {
     val error = fractionParser.getRealTimeAnswerError("2/3")
     assertThat(error).isEqualTo(FractionParser.FractionParsingError.VALID)
