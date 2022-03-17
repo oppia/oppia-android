@@ -44,13 +44,12 @@ class InteractionViewModelModule {
   fun provideMultipleChoiceInputViewModelFactory(
     translationController: TranslationController
   ): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
+    return { entityId, hasConversationView, interaction, _,
       interactionAnswerErrorReceiver, _, isSplitView, writtenTranslationContext ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
         interaction,
-        interactionAnswerReceiver,
         interactionAnswerErrorReceiver,
         isSplitView,
         writtenTranslationContext,
@@ -65,13 +64,12 @@ class InteractionViewModelModule {
   fun provideItemSelectionInputViewModelFactory(
     translationController: TranslationController
   ): InteractionViewModelFactory {
-    return { entityId, hasConversationView, interaction, interactionAnswerReceiver,
+    return { entityId, hasConversationView, interaction, _,
       interactionAnswerErrorReceiver, _, isSplitView, writtenTranslationContext ->
       SelectionInteractionViewModel(
         entityId,
         hasConversationView,
         interaction,
-        interactionAnswerReceiver,
         interactionAnswerErrorReceiver,
         isSplitView,
         writtenTranslationContext,
