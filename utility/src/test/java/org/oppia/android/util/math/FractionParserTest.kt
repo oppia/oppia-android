@@ -6,7 +6,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.parser.StringToFractionParser
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -94,7 +93,7 @@ class FractionParserTest {
   @Test
   fun testSubmitTimeError_noDenominator_returnsInvalidFormat() {
     val error = fractionParser.getSubmitTimeError("3/")
-    assertThat(error).isEqualTo(StringToFractionParser.FractionParsingError.INVALID_FORMAT)
+    assertThat(error).isEqualTo(FractionParser.FractionParsingError.INVALID_FORMAT)
   }
 
   @Test
