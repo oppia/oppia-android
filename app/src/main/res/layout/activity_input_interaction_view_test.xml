@@ -159,6 +159,6 @@
       android:layout_margin="8dp"
       android:onClick="getPendingAnswerErrorOnSubmitClick"
       android:text="Submit"
-      android:textColor="@color/white" />
+      android:textColor="@color/color_def_white" />
   </LinearLayout>
 </layout>

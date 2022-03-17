@@ -5,7 +5,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_def_white">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/faq_single_app_bar_layout"
@@ -26,7 +26,7 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -49,7 +49,7 @@
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/white"
+          android:background="@color/color_def_white"
           android:orientation="vertical"
           android:paddingStart="@dimen/faq_single_padding_start"
           android:paddingTop="@dimen/faq_single_padding_top"
