@@ -67,7 +67,7 @@
           android:maxLines="2"
           android:singleLine="false"
           android:text="@{viewModel.profile.name}"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_name_margin_top_profile_already_added : @dimen/space_0dp}" />
 
         <!-- Note: The style set here is without the Gravity property, as the gravity set for this TextView is conditional and its not doable through styles. -->
@@ -78,7 +78,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="4dp"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
           profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
@@ -90,7 +90,7 @@
           android:layout_marginTop="4dp"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
           android:text="@string/profile_chooser_admin"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
       </LinearLayout>
     </LinearLayout>

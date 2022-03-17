@@ -18,7 +18,7 @@ android_binary(
     manifest_values = {
         "applicationId": "org.oppia.android",
         "minSdkVersion": "19",
-        "targetSdkVersion": "29",
+        "targetSdkVersion": "30",
         "versionCode": "0",
         "versionName": "0.1-test",
     },

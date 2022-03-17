@@ -21,7 +21,7 @@
       android:id="@+id/event_log_time_and_priority_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/white"
+      android:background="@color/color_def_white"
       android:orientation="horizontal"
       app:layout_constraintBottom_toTopOf="@+id/view_event_logs_context_text_view"
       app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
         android:id="@+id/view_event_logs_time_text_view"
         style="@style/Subtitle2ViewStart"
         android:layout_weight="1"
-        android:background="@color/white"
+        android:background="@color/color_def_white"
         android:paddingStart="16dp"
         android:paddingTop="24dp"
         android:paddingEnd="16dp"
@@ -52,7 +52,7 @@
         android:paddingEnd="20dp"
         android:paddingBottom="6dp"
         android:text="@{viewModel.formatPriorityString()}"
-        android:textColor="@color/white"
+        android:textColor="@color/color_def_white"
         android:visibility="@{viewModel.eventLog.priority != EventLog.Priority.PRIORITY_UNSPECIFIED ? View.VISIBLE : View.GONE }" />
     </LinearLayout>
 
@@ -60,42 +60,25 @@
       android:id="@+id/view_event_logs_context_text_view"
       style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
-      android:background="@color/white"
-      android:paddingStart="16dp"
-      android:paddingTop="6dp"
-      android:paddingEnd="16dp"
-      android:paddingBottom="6dp"
-      android:text="@{viewModel.formatContextString()}"
-      android:textColor="@color/oppia_primary_text_dark"
-      android:visibility="@{viewModel.eventLog.context.activityContextCase != EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET ? View.VISIBLE : View.GONE}"
-      app:layout_constraintBottom_toTopOf="@id/view_event_logs_action_name_text_view"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/event_log_time_and_priority_layout" />
-
-    <TextView
-      android:id="@+id/view_event_logs_action_name_text_view"
-      style="@style/Subtitle1ViewStart"
-      android:layout_width="match_parent"
-      android:background="@color/white"
+      android:background="@color/color_def_white"
       android:paddingStart="16dp"
       android:paddingTop="6dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
-      android:text="@{viewModel.formatActionNameString()}"
+      android:text="@{viewModel.formatContextString()}"
       android:textColor="@color/oppia_primary_text_dark"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/view_event_logs_context_text_view" />
+      app:layout_constraintTop_toBottomOf="@id/event_log_time_and_priority_layout" />
 
     <View
       android:id="@+id/view_divider"
       android:layout_width="match_parent"
       android:layout_height="2dp"
-      android:background="@color/mid_grey_30"
+      android:background="@color/color_def_mid_grey_30"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/view_event_logs_action_name_text_view" />
+      app:layout_constraintTop_toBottomOf="@id/view_event_logs_context_text_view" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
