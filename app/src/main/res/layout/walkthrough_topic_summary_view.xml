@@ -66,7 +66,7 @@
           android:maxLines="2"
           android:minLines="2"
           android:text="@{viewModel.name}"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           android:textSize="14sp"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -79,7 +79,7 @@
           android:fontFamily="sans-serif-light"
           android:lines="1"
           android:text="@{viewModel.computeWalkthroughLessonCountText()}"
-          android:textColor="@color/white_80"
+          android:textColor="@color/color_def_white_80"
           android:textSize="14sp"
           android:textStyle="italic"
           app:layout_constraintStart_toStartOf="parent"
