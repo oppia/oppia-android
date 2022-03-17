@@ -2647,6 +2647,7 @@ class ExplorationProgressControllerTest {
   /* Localization-based tests. */
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     forceDefaultLocale(Locale.US)
     playExploration(
@@ -2707,6 +2708,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)

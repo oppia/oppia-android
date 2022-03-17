@@ -1247,6 +1247,7 @@ class QuestionAssessmentProgressControllerTest {
   /* Localization-based tests. */
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     forceDefaultLocale(Locale.US)
@@ -1289,6 +1290,7 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
     setUpTestApplicationWithSeed(questionSeed = 1)
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 2 }.build()

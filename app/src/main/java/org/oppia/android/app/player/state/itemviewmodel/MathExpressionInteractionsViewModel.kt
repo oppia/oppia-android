@@ -171,6 +171,7 @@ class MathExpressionInteractionsViewModel private constructor(
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
         }
+        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {
