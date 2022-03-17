@@ -9,6 +9,11 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
+/**
+ * Fragment which is used to show a list of analytics IDs.
+ *
+ * See [ProfileAndDeviceIdActivity] for specifics.
+ */
 class ProfileAndDeviceIdFragment : InjectableFragment() {
   @Inject
   lateinit var profileAndDeviceIdFragmentPresenter: ProfileAndDeviceIdFragmentPresenter
@@ -22,7 +27,7 @@ class ProfileAndDeviceIdFragment : InjectableFragment() {
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): View {
     return profileAndDeviceIdFragmentPresenter.handleCreateView(inflater, container)
   }
 }

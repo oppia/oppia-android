@@ -4,21 +4,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewType
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileAndDeviceIdFragmentBinding
 import org.oppia.android.databinding.ProfileListDeviceIdItemBinding
 import org.oppia.android.databinding.ProfileListLearnerIdItemBinding
 import org.oppia.android.databinding.ProfileListSyncStatusItemBinding
 import javax.inject.Inject
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
-import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewType
 
+/** Presenter for arranging [ProfileAndDeviceIdFragment]'s UI. */
 class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileListViewModelFactory: ProfileListViewModel.Factory
 ) {
   private lateinit var binding: ProfileAndDeviceIdFragmentBinding
 
+  /** Handles [ProfileAndDeviceIdFragment]'s creation flow. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = ProfileAndDeviceIdFragmentBinding.inflate(
       inflater,

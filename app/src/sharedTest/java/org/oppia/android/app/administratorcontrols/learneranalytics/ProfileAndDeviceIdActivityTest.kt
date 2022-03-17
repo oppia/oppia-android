@@ -15,13 +15,12 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -52,7 +51,10 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -74,22 +76,20 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.system.OppiaClock
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.oppia.android.R
-import org.oppia.android.domain.oppialogger.ApplicationIdSeed
-import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
-import org.oppia.android.util.logging.SyncStatusManager
-import org.oppia.android.util.networking.NetworkConnectionDebugUtil
-import org.oppia.android.util.system.OppiaClock
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [ProfileAndDeviceIdActivity]. */
 // Function name: test names are conventionally named with underscores.
@@ -169,7 +169,7 @@ class ProfileAndDeviceIdActivityTest {
     @ApplicationIdSeed
     fun provideFakeApplicationIdSeed(): Long = FIXED_APPLICATION_ID
   }
-  
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(

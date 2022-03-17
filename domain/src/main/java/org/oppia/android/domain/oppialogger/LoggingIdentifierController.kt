@@ -2,10 +2,8 @@ package org.oppia.android.domain.oppialogger
 
 import android.content.Context
 import android.provider.Settings
-import com.google.firebase.installations.FirebaseInstallations
 import org.oppia.android.domain.util.getSecureString
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.locale.OppiaLocale

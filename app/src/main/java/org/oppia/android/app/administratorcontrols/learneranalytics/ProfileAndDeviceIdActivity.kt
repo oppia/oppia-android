@@ -8,6 +8,13 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
+/**
+ * Activity for showing a list of analytics IDs corresponding to the user's device and profiles of
+ * the app.
+ *
+ * These IDs are meant to help facilitators of app user studies correspond specific logged events to
+ * a particular user or group.
+ */
 class ProfileAndDeviceIdActivity : InjectableAppCompatActivity() {
   @Inject lateinit var profileAndDeviceIdActivityPresenter: ProfileAndDeviceIdActivityPresenter
 
@@ -25,6 +32,7 @@ class ProfileAndDeviceIdActivity : InjectableAppCompatActivity() {
   }
 
   companion object {
+    /** Returns an [Intent] to launch [ProfileAndDeviceIdActivity]. */
     fun createIntent(context: Context): Intent {
       return Intent(context, ProfileAndDeviceIdActivity::class.java)
     }

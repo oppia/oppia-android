@@ -52,7 +52,7 @@
       android:minHeight="48dp"
       android:textColor="#333333"
       android:text="@{viewModel.currentCopiedId == viewModel.profile.learnerId ? @string/learner_analytics_copied_to_clipboard_label : @string/learner_analytics_copy_to_clipboard_label}"
-      android:onClick="@{(v) -> viewModel.clickOnCopyIdButton()}"
+      android:onClick="@{(v) -> viewModel.copyLearnerId()}"
       app:icon="@{viewModel.currentCopiedId == viewModel.profile.learnerId ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_content_copy_24}"
       app:iconGravity="top"
       app:iconSize="24dp"

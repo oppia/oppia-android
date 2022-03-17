@@ -1,4 +1,4 @@
- org.oppia.android.testing.threading
+package org.oppia.android.testing.threading
 
 import android.app.Application
 import android.content.Context

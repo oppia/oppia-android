@@ -35,7 +35,7 @@
       style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
       android:background="@color/color_def_white"
-      android:onClick="@{(v) -> viewModel.onProfileAndDeviceIdsClicked()}"
+      android:onClick="@{(v) -> viewModel.showLearnerAnalyticsScreen()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"

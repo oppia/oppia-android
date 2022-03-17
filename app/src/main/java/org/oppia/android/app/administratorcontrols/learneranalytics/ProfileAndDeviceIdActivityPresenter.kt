@@ -3,12 +3,13 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
-import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 
+/** The presenter for arranging the UI of [ProfileAndDeviceIdActivity]. */
 class ProfileAndDeviceIdActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
+  /** Handles [ProfileAndDeviceIdActivity]'s creation flow. */
   fun handleOnCreate() {
     activity.setContentView(R.layout.profile_and_device_id_activity)
     setToolbar()

@@ -74,6 +74,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
@@ -83,7 +84,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"

@@ -35,7 +35,7 @@
       android:textColor="#333333"
       android:enabled="@{viewModel.deviceId != null}"
       android:text="@{viewModel.currentCopiedId == viewModel.deviceId ? @string/learner_analytics_copied_to_clipboard_label : @string/learner_analytics_copy_to_clipboard_label}"
-      android:onClick="@{(v) -> viewModel.clickOnCopyIdButton(viewModel.deviceId)}"
+      android:onClick="@{(v) -> viewModel.copyDeviceId(viewModel.deviceId)}"
       app:icon="@{viewModel.currentCopiedId == viewModel.deviceId ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_content_copy_24}"
       app:iconGravity="top"
       app:iconSize="24dp"
