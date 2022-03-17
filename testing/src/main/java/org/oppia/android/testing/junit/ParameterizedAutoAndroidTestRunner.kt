@@ -48,15 +48,16 @@ class ParameterizedAutoAndroidTestRunner internal constructor(
 
     // Load the runner class using reflection since the Robolectric implementation relies on
     // Robolectric (which can't be pulled into Espresso builds of shared tests).
+    val targetRunnerName = if (runningOnAndroid) {
+      "org.oppia.android.testing.junit.ParameterizedAndroidJunit4TestRunner"
+    } else "org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner"
     return@lazy try {
-      if (runningOnAndroid) {
-        Class.forName("org.oppia.android.testing.junit.ParameterizedAndroidJUnit4ClassRunner")
-      } else Class.forName("org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner")
+      Class.forName(targetRunnerName)
     } catch (e: Exception) {
       throw IllegalStateException(
-        "Failed to load delegate test runner class. Did you forget to add either" +
-          " parameterized_android_junit4_class_runner or parameterized_robolectric_test_runner" +
-          " as a dependency?",
+        "Failed to load delegate test runner class ($targetRunnerName). Did you forget to add" +
+          " either parameterized_android_junit4_class_runner or" +
+          " parameterized_robolectric_test_runner as a dependency?",
         e
       )
     }
