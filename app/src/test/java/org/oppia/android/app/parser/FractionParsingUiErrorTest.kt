@@ -211,6 +211,16 @@ class FractionParsingUiErrorTest {
     }
   }
 
+  @Test
+  fun testSubmitTimeError_noDenominator_invalidFormat_hasRelevantErrorMessage() {
+    activityRule.scenario.onActivity { activity ->
+      val errorMessage = fractionParser.getSubmitTimeError("3/")
+        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      assertThat(errorMessage)
+        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }

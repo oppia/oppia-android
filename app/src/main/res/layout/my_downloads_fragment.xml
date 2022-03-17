@@ -24,7 +24,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/my_downloads_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
 
       <com.google.android.material.tabs.TabLayout
         android:id="@+id/my_downloads_tabs_container"
