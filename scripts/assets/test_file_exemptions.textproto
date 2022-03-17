@@ -650,6 +650,7 @@ exempted_file_path: "testing/src/main/java/org/oppia/android/testing/RichTextVie
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TestImageLoaderModule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TestLogReportingModule.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/TextInputActionTestActivity.kt"
+exempted_file_path: "testing/src/main/java/org/oppia/android/testing/data/AsyncResultSubject.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/environment/TestEnvironmentConfig.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/EditTextInputAction.kt"
 exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/GenericViewMatchers.kt"

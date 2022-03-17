@@ -985,7 +985,7 @@ class StoryProgressTestHelper @Inject constructor(
     // Verify that the observer was called, and that the result was successful.
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
       verify(mockLiveDataObserver, atLeastOnce()).onChanged(liveDataResultCaptor.capture())
-      assertThat(liveDataResultCaptor.value.isSuccess()).isTrue()
+      assertThat(liveDataResultCaptor.value is AsyncResult.Success).isTrue()
     }
   }
 

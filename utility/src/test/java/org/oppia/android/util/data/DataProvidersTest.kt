@@ -13,6 +13,8 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,6 +30,8 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -61,45 +65,29 @@ private const val COMBINED_STR_VALUE_21 = "At least I thought I was. Now I'm not
 private const val COMBINED_STR_VALUE_02 = "I used to be indecisive. At least I thought I was."
 
 /** Tests for [DataProviders], [DataProvider]s, and [AsyncDataSubscriptionManager]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DataProvidersTest.TestApplication::class)
 class DataProvidersTest {
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
-  @Mock
-  lateinit var mockStringLiveDataObserver: Observer<AsyncResult<String>>
-
-  @Mock
-  lateinit var mockIntLiveDataObserver: Observer<AsyncResult<Int>>
-
-  @Captor
-  lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
-
-  @Captor
-  lateinit var intResultCaptor: ArgumentCaptor<AsyncResult<Int>>
+  @Mock lateinit var mockStringLiveDataObserver: Observer<AsyncResult<String>>
+  @Mock lateinit var mockIntLiveDataObserver: Observer<AsyncResult<Int>>
+  @Captor lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
+  @Captor lateinit var intResultCaptor: ArgumentCaptor<AsyncResult<Int>>
 
   private var inMemoryCachedStr: String? = null
   private var inMemoryCachedStr2: String? = null
@@ -126,7 +114,7 @@ class DataProvidersTest {
 
       override suspend fun retrieveData(): AsyncResult<Int> {
         hasRetrieveBeenCalled = true
-        return AsyncResult.pending()
+        return AsyncResult.Pending()
       }
     }
 
@@ -145,7 +133,7 @@ class DataProvidersTest {
 
       override suspend fun retrieveData(): AsyncResult<Int> {
         hasRetrieveBeenCalled = true
-        return AsyncResult.pending()
+        return AsyncResult.Pending()
       }
     }
 
@@ -160,15 +148,14 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.success(123)
+      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
     }
 
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(123)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(123)
   }
 
   @Test
@@ -177,7 +164,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.success(providerValue)
+      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
     }
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
 
@@ -186,8 +173,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(456)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(456)
   }
 
   @Test
@@ -196,7 +182,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.success(providerValue)
+      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
     }
     providerValue = 456
     asyncDataSubscriptionManager.notifyChangeAsync(simpleDataProvider.getId())
@@ -208,8 +194,7 @@ class DataProvidersTest {
 
     // The newer value should be observed.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(456)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(456)
   }
 
   @Test
@@ -217,7 +202,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.success(123)
+      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
     }
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -233,9 +218,9 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_multipleUpdatesNoObserver_newObserver_observerReceivesLatest() {
-    val providerOldResult = AsyncResult.success(123)
+    val providerOldResult = AsyncResult.Success(123)
     testCoroutineDispatchers.advanceTimeBy(10)
-    val providerNewResult = AsyncResult.success(456)
+    val providerNewResult = AsyncResult.Success(456)
     val simpleDataProvider = object : DataProvider<Int>(context) {
       var callCount = 0
 
@@ -249,7 +234,7 @@ class DataProvidersTest {
         return when (++callCount) {
           1 -> providerNewResult
           2 -> providerOldResult
-          else -> AsyncResult.failed(AssertionError("Invalid test case"))
+          else -> AsyncResult.Failure(AssertionError("Invalid test case"))
         }
       }
     }
@@ -262,8 +247,7 @@ class DataProvidersTest {
 
     // The more recent value should be observed despite it being retrieved first.
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(456)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(456)
     assertThat(simpleDataProvider.callCount).isEqualTo(2) // Sanity check for the test logic itself.
   }
 
@@ -275,8 +259,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -304,8 +287,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
@@ -322,8 +304,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -338,8 +319,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
@@ -358,8 +338,7 @@ class DataProvidersTest {
 
     // The first value should be observed since a completely different provider was notified.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -407,31 +386,29 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      IllegalStateException::class.java
-    )
+    assertThat(stringResultCaptor.value)
+      .isFailureThat()
+      .isInstanceOf(IllegalStateException::class.java)
   }
 
   @Test
   fun testAsyncInMemoryDataProvider_toLiveData_deliversInMemoryValue() {
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.success(STR_VALUE_0)
+      AsyncResult.Success(STR_VALUE_0)
     }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
   fun testAsyncInMemoryDataProvider_toLiveData_withChangedValue_beforeReg_deliversSecondValue() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.success(inMemoryCachedStr!!)
+      AsyncResult.Success(inMemoryCachedStr!!)
     }
 
     inMemoryCachedStr = STR_VALUE_1
@@ -439,15 +416,14 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
   fun testAsyncInMemoryDataProvider_toLiveData_withChangedValue_afterReg_deliversFirstValue() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.success(inMemoryCachedStr!!)
+      AsyncResult.Success(inMemoryCachedStr!!)
     }
 
     // Ensure the initial state is sent before changing the cache.
@@ -458,15 +434,14 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
   fun testAsyncInMemoryDataProvider_changedValueAfterReg_notified_deliversValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.success(inMemoryCachedStr!!)
+      AsyncResult.Success(inMemoryCachedStr!!)
     }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -475,8 +450,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
@@ -484,7 +458,7 @@ class DataProvidersTest {
     // Ensure the suspend operation is initially blocked.
     val blockingOperation = backgroundCoroutineScope.async { STR_VALUE_0 }
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.success(blockingOperation.await())
+      AsyncResult.Success(blockingOperation.await())
     }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -498,7 +472,7 @@ class DataProvidersTest {
     // Ensure the suspend operation is initially blocked.
     val blockingOperation = backgroundCoroutineScope.async { STR_VALUE_0 }
     val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.success(blockingOperation.await())
+      AsyncResult.Success(blockingOperation.await())
     }
 
     // Start observing the provider, then complete its suspend function.
@@ -509,8 +483,7 @@ class DataProvidersTest {
     // The provider will deliver a value immediately when the suspend function completes (no
     // additional notification is needed).
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -518,7 +491,7 @@ class DataProvidersTest {
     var fakeLoadMemoryCallbackCalled = false
     val fakeLoadMemoryCallback: suspend () -> AsyncResult<String> = {
       fakeLoadMemoryCallbackCalled = true
-      AsyncResult.success(STR_VALUE_0)
+      AsyncResult.Success(STR_VALUE_0)
     }
     val dataProvider =
       dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0, fakeLoadMemoryCallback)
@@ -535,7 +508,7 @@ class DataProvidersTest {
     var fakeLoadMemoryCallbackCalled = false
     val fakeLoadMemoryCallback: suspend () -> AsyncResult<String> = {
       fakeLoadMemoryCallbackCalled = true
-      AsyncResult.success(STR_VALUE_0)
+      AsyncResult.Success(STR_VALUE_0)
     }
     val dataProvider =
       dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0, fakeLoadMemoryCallback)
@@ -555,7 +528,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isPending()).isTrue()
+    assertThat(stringResultCaptor.value).isPending()
   }
 
   @Test
@@ -567,10 +540,9 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      IllegalStateException::class.java
-    )
+    assertThat(stringResultCaptor.value)
+      .isFailureThat()
+      .isInstanceOf(IllegalStateException::class.java)
   }
 
   @Test
@@ -582,8 +554,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_0)
   }
 
   @Test
@@ -600,8 +571,7 @@ class DataProvidersTest {
 
     // Notifying the base results in observers of the transformed provider also being called.
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -618,8 +588,7 @@ class DataProvidersTest {
 
     // Notifying the transformed provider has the same result as notifying the base provider.
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -638,8 +607,7 @@ class DataProvidersTest {
     // Having a transformed data provider with an observer does not change the base's notification
     // behavior.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
@@ -661,8 +629,7 @@ class DataProvidersTest {
     // However, notifying that the transformed provider has changed should not affect base
     // subscriptions even if the base has changed.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -674,7 +641,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isPending()).isTrue()
+    assertThat(intResultCaptor.value).isPending()
   }
 
   @Test
@@ -687,12 +654,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isFailure()).isTrue()
-    assertThat(intResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(intResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -778,12 +743,10 @@ class DataProvidersTest {
     // Note that the exception type here is not chained since the failure occurred in the transform
     // function.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isFailure()).isTrue()
-    assertThat(intResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      IllegalStateException::class.java
-    )
-    assertThat(intResultCaptor.value.getErrorOrNull()).hasMessageThat()
-      .contains("Transform failure")
+    assertThat(intResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(IllegalStateException::class.java)
+      hasMessageThat().contains("Transform failure")
+    }
   }
 
   @Test
@@ -796,14 +759,11 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isFailure()).isTrue()
-    assertThat(intResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
-    assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat().hasMessageThat()
-      .contains("Base failure")
+    assertThat(intResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+      hasCauseThat().hasMessageThat().contains("Base failure")
+    }
   }
 
   @Test
@@ -817,8 +777,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_0)
   }
 
   @Test
@@ -837,8 +796,7 @@ class DataProvidersTest {
 
     // Notifying the base results in observers of the transformed provider also being called.
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -857,8 +815,7 @@ class DataProvidersTest {
 
     // Notifying the transformed provider has the same result as notifying the base provider.
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -879,8 +836,7 @@ class DataProvidersTest {
     // Having a transformed data provider with an observer does not change the base's notification
     // behavior.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
@@ -904,8 +860,7 @@ class DataProvidersTest {
     // However, notifying that the transformed provider has changed should not affect base
     // subscriptions even if the base has changed.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -935,8 +890,7 @@ class DataProvidersTest {
 
     // The value should now be delivered since the async function was unblocked.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_0)
   }
 
   @Test
@@ -955,15 +909,14 @@ class DataProvidersTest {
     // Verify that even though the transformed provider is blocked, the base can still properly
     // publish changes.
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
   fun testTransformAsync_toLiveData_transformedPending_deliversPending() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider = baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -971,14 +924,14 @@ class DataProvidersTest {
 
     // The transformation result yields a pending delivered result.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isPending()).isTrue()
+    assertThat(intResultCaptor.value).isPending()
   }
 
   @Test
   fun testTransformAsync_toLiveData_transformedFailure_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider = baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      AsyncResult.failed(IllegalStateException("Transform failure"))
+      AsyncResult.Failure(IllegalStateException("Transform failure"))
     }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -987,12 +940,10 @@ class DataProvidersTest {
     // Note that the failure exception in this case is not chained since the failure occurred in the
     // transform function.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isFailure()).isTrue()
-    assertThat(intResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      IllegalStateException::class.java
-    )
-    assertThat(intResultCaptor.value.getErrorOrNull()).hasMessageThat()
-      .contains("Transform failure")
+    assertThat(intResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(IllegalStateException::class.java)
+      hasMessageThat().contains("Transform failure")
+    }
   }
 
   @Test
@@ -1007,7 +958,7 @@ class DataProvidersTest {
 
     // Since the base provider is pending, so is the transformed provider.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isPending()).isTrue()
+    assertThat(intResultCaptor.value).isPending()
   }
 
   @Test
@@ -1024,14 +975,11 @@ class DataProvidersTest {
     // Note that the failure exception in this case is not chained since the failure occurred in the
     // transform function.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isFailure()).isTrue()
-    assertThat(intResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
-    assertThat(intResultCaptor.value.getErrorOrNull()).hasCauseThat().hasMessageThat()
-      .contains("Base failure")
+    assertThat(intResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+      hasCauseThat().hasMessageThat().contains("Base failure")
+    }
   }
 
   @Test
@@ -1115,8 +1063,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_01)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_01)
   }
 
   @Test
@@ -1137,8 +1084,7 @@ class DataProvidersTest {
     // Notifying the first base provider results in observers of the combined provider also being
     // called.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_21)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_21)
   }
 
   @Test
@@ -1159,8 +1105,7 @@ class DataProvidersTest {
     // Notifying the combined provider results in observers of the combined provider also being
     // called.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_21)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_21)
   }
 
   @Test
@@ -1180,8 +1125,7 @@ class DataProvidersTest {
 
     // The combined data provider is irrelevant; the base provider's change should be observed.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_2)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_2)
   }
 
   @Test
@@ -1205,8 +1149,7 @@ class DataProvidersTest {
     // Notifying the combined data provider will not trigger observers of the changed provider
     // becoming aware of the change.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -1227,8 +1170,7 @@ class DataProvidersTest {
     // Notifying the second base provider results in observers of the combined provider also being
     // called.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_02)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_02)
   }
 
   @Test
@@ -1249,8 +1191,7 @@ class DataProvidersTest {
     // Notifying the combined provider results in observers of the combined provider also being
     // called.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_02)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_02)
   }
 
   @Test
@@ -1270,8 +1211,7 @@ class DataProvidersTest {
 
     // The combined data provider is irrelevant; the base provider's change should be observed.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_2)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_2)
   }
 
   @Test
@@ -1295,8 +1235,7 @@ class DataProvidersTest {
     // Notifying the combined data provider will not trigger observers of the changed provider
     // becoming aware of the change.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
@@ -1311,7 +1250,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isPending()).isTrue()
+    assertThat(stringResultCaptor.value).isPending()
   }
 
   @Test
@@ -1326,7 +1265,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isPending()).isTrue()
+    assertThat(stringResultCaptor.value).isPending()
   }
 
   @Test
@@ -1341,7 +1280,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isPending()).isTrue()
+    assertThat(stringResultCaptor.value).isPending()
   }
 
   @Test
@@ -1357,12 +1296,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -1378,12 +1315,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -1400,12 +1335,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -1567,12 +1500,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -1590,12 +1521,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -1616,12 +1545,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -1639,10 +1566,9 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      IllegalStateException::class.java
-    )
+    assertThat(stringResultCaptor.value)
+      .isFailureThat()
+      .isInstanceOf(IllegalStateException::class.java)
   }
 
   @Test
@@ -1658,8 +1584,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_01)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_01)
   }
 
   @Test
@@ -1681,8 +1606,7 @@ class DataProvidersTest {
     // Notifying the first base provider results in observers of the combined provider also being
     // called.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_21)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_21)
   }
 
   @Test
@@ -1704,8 +1628,7 @@ class DataProvidersTest {
     // Notifying the combined provider results in observers of the combined provider also being
     // called.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_21)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_21)
   }
 
   @Test
@@ -1725,8 +1648,7 @@ class DataProvidersTest {
 
     // The combined data provider is irrelevant; the base provider's change should be observed.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_2)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_2)
   }
 
   @Test
@@ -1750,8 +1672,7 @@ class DataProvidersTest {
     // Notifying the combined data provider will not trigger observers of the changed provider
     // becoming aware of the change.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -1773,8 +1694,7 @@ class DataProvidersTest {
     // Notifying the second base provider results in observers of the combined provider also being
     // called.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_02)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_02)
   }
 
   @Test
@@ -1796,8 +1716,7 @@ class DataProvidersTest {
     // Notifying the combined provider results in observers of the combined provider also being
     // called.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_02)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_02)
   }
 
   @Test
@@ -1817,8 +1736,7 @@ class DataProvidersTest {
 
     // The combined data provider is irrelevant; the base provider's change should be observed.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_2)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_2)
   }
 
   @Test
@@ -1842,8 +1760,7 @@ class DataProvidersTest {
     // Notifying the combined data provider will not trigger observers of the changed provider
     // becoming aware of the change.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
@@ -1859,7 +1776,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isPending()).isTrue()
+    assertThat(stringResultCaptor.value).isPending()
   }
 
   @Test
@@ -1875,7 +1792,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isPending()).isTrue()
+    assertThat(stringResultCaptor.value).isPending()
   }
 
   @Test
@@ -1891,7 +1808,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isPending()).isTrue()
+    assertThat(stringResultCaptor.value).isPending()
   }
 
   @Test
@@ -1908,12 +1825,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -1930,12 +1845,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -1953,12 +1866,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -2121,12 +2032,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -2145,12 +2054,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -2172,12 +2079,10 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      AsyncResult.ChainedFailureException::class.java
-    )
-    assertThat(stringResultCaptor.value.getErrorOrNull()).hasCauseThat()
-      .isInstanceOf(IllegalStateException::class.java)
+    assertThat(stringResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+    }
   }
 
   @Test
@@ -2189,7 +2094,7 @@ class DataProvidersTest {
       baseProvider1.combineWithAsync(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
         // Note that this doesn't use combineStringsAsync since that relies on the blocked
         // backgroundTestCoroutineDispatcher.
-        AsyncResult.success(combineStrings(v1, v2))
+        AsyncResult.Success(combineStrings(v1, v2))
       }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -2207,7 +2112,7 @@ class DataProvidersTest {
       baseProvider1.combineWithAsync(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
         // Note that this doesn't use combineStringsAsync since that relies on the blocked
         // backgroundTestCoroutineDispatcher.
-        AsyncResult.success(combineStrings(v1, v2))
+        AsyncResult.Success(combineStrings(v1, v2))
       }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -2216,8 +2121,7 @@ class DataProvidersTest {
 
     // The value should now be delivered since the provider was allowed to finish.
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_01)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_01)
   }
 
   @Test
@@ -2229,7 +2133,7 @@ class DataProvidersTest {
       baseProvider1.combineWithAsync(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
         // Note that this doesn't use combineStringsAsync since that relies on the blocked
         // backgroundTestCoroutineDispatcher.
-        AsyncResult.success(combineStrings(v1, v2))
+        AsyncResult.Success(combineStrings(v1, v2))
       }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -2247,7 +2151,7 @@ class DataProvidersTest {
       baseProvider1.combineWithAsync(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
         // Note that this doesn't use combineStringsAsync since that relies on the blocked
         // backgroundTestCoroutineDispatcher.
-        AsyncResult.success(combineStrings(v1, v2))
+        AsyncResult.Success(combineStrings(v1, v2))
       }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -2256,8 +2160,7 @@ class DataProvidersTest {
 
     // The value should now be delivered since the provider was allowed to finish.
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_01)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_01)
   }
 
   @Test
@@ -2292,8 +2195,7 @@ class DataProvidersTest {
 
     // The value should be delivered since the async function was allowed to finish.
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(COMBINED_STR_VALUE_01)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(COMBINED_STR_VALUE_01)
   }
 
   @Test
@@ -2304,14 +2206,14 @@ class DataProvidersTest {
       baseProvider2,
       COMBINED_PROVIDER_ID
     ) { _: String, _: String ->
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isPending()).isTrue()
+    assertThat(stringResultCaptor.value).isPending()
   }
 
   @Test
@@ -2322,17 +2224,16 @@ class DataProvidersTest {
       baseProvider2,
       COMBINED_PROVIDER_ID
     ) { _: String, _: String ->
-      AsyncResult.failed(IllegalStateException("Combine failure"))
+      AsyncResult.Failure(IllegalStateException("Combine failure"))
     }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isFailure()).isTrue()
-    assertThat(stringResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      IllegalStateException::class.java
-    )
+    assertThat(stringResultCaptor.value)
+      .isFailureThat()
+      .isInstanceOf(IllegalStateException::class.java)
   }
 
   @Test
@@ -2346,8 +2247,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_0)
   }
 
   @Test
@@ -2366,8 +2266,7 @@ class DataProvidersTest {
 
     // Notifying the base results in observers of the transformed provider also being called.
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -2386,8 +2285,7 @@ class DataProvidersTest {
 
     // Notifying the transformed provider has the same result as notifying the base provider.
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -2408,8 +2306,7 @@ class DataProvidersTest {
     // Having a transformed data provider with an observer does not change the base's
     // notification behavior.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_1)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_1)
   }
 
   @Test
@@ -2433,8 +2330,7 @@ class DataProvidersTest {
     // However, notifying that the transformed provider has changed should not affect base
     // subscriptions even if the base has changed.
     verify(mockStringLiveDataObserver, atLeastOnce()).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
@@ -2464,8 +2360,7 @@ class DataProvidersTest {
 
     // The value should now be delivered since the async function was unblocked.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_0)
   }
 
   @Test
@@ -2484,15 +2379,14 @@ class DataProvidersTest {
     // Verify that even though the transformed provider is blocked, the base can still properly
     // publish changes.
     verify(mockStringLiveDataObserver).onChanged(stringResultCaptor.capture())
-    assertThat(stringResultCaptor.value.isSuccess()).isTrue()
-    assertThat(stringResultCaptor.value.getOrThrow()).isEqualTo(STR_VALUE_0)
+    assertThat(stringResultCaptor.value).isStringSuccessThat().isEqualTo(STR_VALUE_0)
   }
 
   @Test
   fun testNestedXformedProvider_toLiveData_transformedPending_deliversPending() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider = baseProvider.transformNested<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      AsyncResult.pending()
+      AsyncResult.Pending()
     }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -2500,14 +2394,14 @@ class DataProvidersTest {
 
     // The transformation result yields a pending delivered result.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isPending()).isTrue()
+    assertThat(intResultCaptor.value).isPending()
   }
 
   @Test
   fun testNestedXformedProvider_toLiveData_transformedFailure_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val dataProvider = baseProvider.transformNested<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      AsyncResult.failed(IllegalStateException("Transform failure"))
+      AsyncResult.Failure(IllegalStateException("Transform failure"))
     }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -2516,11 +2410,10 @@ class DataProvidersTest {
     // Note that the failure exception in this case is not chained since the failure occurred in the
     // transform function.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isFailure()).isTrue()
-    assertThat(intResultCaptor.value.getErrorOrNull())
-      .isInstanceOf(IllegalStateException::class.java)
-    assertThat(intResultCaptor.value.getErrorOrNull())
-      .hasMessageThat().contains("Transform failure")
+    assertThat(intResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(IllegalStateException::class.java)
+      hasMessageThat().contains("Transform failure")
+    }
   }
 
   @Test
@@ -2535,7 +2428,7 @@ class DataProvidersTest {
 
     // Since the base provider is pending, so is the transformed provider.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isPending()).isTrue()
+    assertThat(intResultCaptor.value).isPending()
   }
 
   @Test
@@ -2552,13 +2445,11 @@ class DataProvidersTest {
     // Note that the failure exception in this case is not chained since the failure occurred in the
     // transform function.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isFailure()).isTrue()
-    assertThat(intResultCaptor.value.getErrorOrNull())
-      .isInstanceOf(AsyncResult.ChainedFailureException::class.java)
-    assertThat(intResultCaptor.value.getErrorOrNull())
-      .hasCauseThat().isInstanceOf(IllegalStateException::class.java)
-    assertThat(intResultCaptor.value.getErrorOrNull())
-      .hasCauseThat().hasMessageThat().contains("Base failure")
+    assertThat(intResultCaptor.value).isFailureThat().apply {
+      isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+      hasCauseThat().isInstanceOf(IllegalStateException::class.java)
+      hasCauseThat().hasMessageThat().contains("Base failure")
+    }
   }
 
   @Test
@@ -2645,8 +2536,7 @@ class DataProvidersTest {
 
     // The observer should get the newest value immediately.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -2664,8 +2554,7 @@ class DataProvidersTest {
 
     // The observer should get the newest value immediately.
     verify(mockIntLiveDataObserver).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_0_DOUBLED)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_0_DOUBLED)
   }
 
   @Test
@@ -2683,8 +2572,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -2707,8 +2595,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_2)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_2)
   }
 
   @Test
@@ -2731,8 +2618,7 @@ class DataProvidersTest {
 
     // Since the base provider was replaced, it shouldn't result in any observed change.
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_2)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_2)
   }
 
   @Test
@@ -2758,8 +2644,7 @@ class DataProvidersTest {
     // Since the base provider was replaced, the old notification should not trigger a newly
     // change even though the new base technically did change (but it wasn't notified yet).
     verify(mockIntLiveDataObserver, atLeastOnce()).onChanged(intResultCaptor.capture())
-    assertThat(intResultCaptor.value.isSuccess()).isTrue()
-    assertThat(intResultCaptor.value.getOrThrow()).isEqualTo(INT_XFORMED_STR_VALUE_1)
+    assertThat(intResultCaptor.value).isIntSuccessThat().isEqualTo(INT_XFORMED_STR_VALUE_1)
   }
 
   @Test
@@ -2812,9 +2697,525 @@ class DataProvidersTest {
     assertThat(exception).hasMessageThat().contains("Combine failure")
   }
 
-  private fun transformString(str: String): Int {
-    return str.length
+  @Test
+  fun testConvertToSimpleDataProvider_singletonFlow_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    assertThat(result).isEqualTo("test str")
   }
+
+  @Test
+  fun testConvertToSimpleDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
+    val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider should not be changed again since the flow didn't change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertToSimpleDataProvider_mutableFlow_flowChanges_providerNotChanged() {
+    val mutableFlow = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = "new str"
+
+    // The provider should not be changed again since the flow isn't being monitored.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertToSimpleDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
+    val mutableFlow = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = "new str"
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The flow changed and it was explicitly notified, so the new value should be received.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_singletonFlow_pending_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> = MutableStateFlow(AsyncResult.Pending())
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_singletonFlow_success_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Success("test str"))
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    assertThat(result).isEqualTo("test str")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_singletonFlow_failure_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Failure(IllegalStateException("Some internal failure")))
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val error = monitorFactory.waitForNextFailureResult(dataProvider)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider should not be changed again since the flow didn't change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_mutableFlow_flowChanges_providerNotChanged() {
+    val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+
+    // The provider should not be changed again since the flow isn't being monitored.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_mutableFlow_flowChanges_notifyProv_providerChanged() {
+    val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The flow changed and it was explicitly notified, so the new value should be received.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowPendingToSuccess_andNotify_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The provider's value has changed.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowPendingToFailure_andNotify_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Failure(IllegalStateException("Some internal failure"))
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The provider's value has changed.
+    val error = monitor.ensureNextResultIsFailing()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowSuccessToPending_andNotify_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Pending()
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowFailureToPending_andNotify_providerChanged() {
+    val mutableFlow =
+      MutableStateFlow<AsyncResult<String>>(
+        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+      )
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Pending()
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowSuccessToFailure_andNotify_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Failure(IllegalStateException("Some internal failure"))
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The provider's value has changed.
+    val error = monitor.ensureNextResultIsFailing()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToSimpleDataProvider_changeFlowFailureToSuccess_andNotify_providerChanged() {
+    val mutableFlow =
+      MutableStateFlow<AsyncResult<String>>(
+        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+      )
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The provider's value has changed.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertToAutomaticDataProvider_singletonFlow_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    assertThat(result).isEqualTo("test str")
+  }
+
+  @Test
+  fun testConvertToAutomaticDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
+    val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider should not be changed again since the flow didn't change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertToAutomaticDataProvider_mutableFlow_flowChanges_providerChanged() {
+    val mutableFlow = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = "new str"
+
+    // The provider should be changed since it's being automatically monitored.
+    val result = monitor.waitForNextSuccessResult()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertToAutomaticDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
+    val mutableFlow = MutableStateFlow("test str")
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = "new str"
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The flow changed and it was explicitly notified, so the new value should be received.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_singletonFlow_pending_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> = MutableStateFlow(AsyncResult.Pending())
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_singletonFlow_success_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Success("test str"))
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    assertThat(result).isEqualTo("test str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_singletonFlow_failure_providerReturnsFlowValue() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Failure(IllegalStateException("Some internal failure")))
+
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+
+    val error = monitorFactory.waitForNextFailureResult(dataProvider)
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
+    val singletonFlow: StateFlow<AsyncResult<String>> =
+      MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+
+    // The provider should not be changed again since the flow didn't change.
+    monitor.verifyProviderIsNotUpdated()
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_mutableFlow_flowChanges_providerChanged() {
+    val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+
+    // The provider should be changed since it's being automatically monitored.
+    val result = monitor.waitForNextSuccessResult()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
+    val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // The flow changed and it was explicitly notified, so the new value should be received.
+    val result = monitor.ensureNextResultIsSuccess()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowPendingToSuccess_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextSuccessResult()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowPendingToFailure_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Failure(IllegalStateException("Some internal failure"))
+
+    // The provider's value has changed.
+    val error = monitor.waitForNextFailingResult()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowSuccessToPending_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Pending()
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowFailureToPending_providerChanged() {
+    val mutableFlow =
+      MutableStateFlow<AsyncResult<String>>(
+        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+      )
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Pending()
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowSuccessToFailure_providerChanged() {
+    val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Failure(IllegalStateException("Some internal failure"))
+
+    // The provider's value has changed.
+    val error = monitor.waitForNextFailingResult()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+    assertThat(error).hasMessageThat().contains("Some internal failure")
+  }
+
+  @Test
+  fun testConvertAsyncToAutoDataProvider_changeFlowFailureToSuccess_providerChanged() {
+    val mutableFlow =
+      MutableStateFlow<AsyncResult<String>>(
+        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+      )
+    val dataProvider = dataProviders.run {
+      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+    }
+    val monitor = monitorFactory.createMonitor(dataProvider)
+    monitor.waitForNextResult()
+
+    mutableFlow.value = AsyncResult.Success("new str")
+
+    // The provider's value has changed.
+    val result = monitor.waitForNextSuccessResult()
+    assertThat(result).isEqualTo("new str")
+  }
+
+  private fun transformString(str: String): Int = str.length
 
   /**
    * Transforms the specified string into an integer in the same way as [transformString], except in
@@ -2823,7 +3224,7 @@ class DataProvidersTest {
   private suspend fun transformStringAsync(str: String): AsyncResult<Int> {
     val deferred = backgroundCoroutineScope.async { transformString(str) }
     deferred.await()
-    return AsyncResult.success(deferred.getCompleted())
+    return AsyncResult.Success(deferred.getCompleted())
   }
 
   /**
@@ -2833,12 +3234,10 @@ class DataProvidersTest {
   private suspend fun transformStringDoubledAsync(str: String): AsyncResult<Int> {
     val deferred = backgroundCoroutineScope.async { transformString(str) * 2 }
     deferred.await()
-    return AsyncResult.success(deferred.getCompleted())
+    return AsyncResult.Success(deferred.getCompleted())
   }
 
-  private fun combineStrings(str1: String, str2: String): String {
-    return "$str1 $str2"
-  }
+  private fun combineStrings(str1: String, str2: String): String = "$str1 $str2"
 
   /**
    * Combines the specified strings into a new string in the same way as [combineStrings], except in
@@ -2847,7 +3246,7 @@ class DataProvidersTest {
   private suspend fun combineStringsAsync(str1: String, str2: String): AsyncResult<String> {
     val deferred = backgroundCoroutineScope.async { combineStrings(str1, str2) }
     deferred.await()
-    return AsyncResult.success(deferred.getCompleted())
+    return AsyncResult.Success(deferred.getCompleted())
   }
 
   private fun <T> createSuccessfulDataProvider(id: Any, value: T): DataProvider<T> {
@@ -2858,7 +3257,7 @@ class DataProvidersTest {
     return dataProviders.createInMemoryDataProviderAsync(id) {
       // Android Studio incorrectly suggests to remove the explicit argument.
       @Suppress("RemoveExplicitTypeArguments")
-      AsyncResult.pending<T>()
+      (AsyncResult.Pending())
     }
   }
 
@@ -2866,7 +3265,7 @@ class DataProvidersTest {
     return dataProviders.createInMemoryDataProviderAsync(id) {
       // Android Studio incorrectly suggests to remove the explicit argument.
       @Suppress("RemoveExplicitTypeArguments")
-      AsyncResult.failed<T>(failure)
+      (AsyncResult.Failure(failure))
     }
   }
 
@@ -2879,7 +3278,7 @@ class DataProvidersTest {
     return dataProviders.createInMemoryDataProviderAsync(id) {
       val deferred = backgroundCoroutineScope.async { value }
       deferred.await()
-      AsyncResult.success(deferred.getCompleted())
+      AsyncResult.Success(deferred.getCompleted())
     }
   }
 

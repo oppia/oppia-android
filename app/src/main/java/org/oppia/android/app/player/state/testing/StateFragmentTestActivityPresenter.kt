@@ -19,6 +19,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 private const val TEST_ACTIVITY_TAG = "TestActivity"
@@ -96,24 +97,20 @@ class StateFragmentTestActivityPresenter @Inject constructor(
       explorationId,
       shouldSavePartialProgress,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
-      .observe(
-        activity,
-        Observer<AsyncResult<Any?>> { result ->
-          when {
-            result.isPending() -> oppiaLogger.d(TEST_ACTIVITY_TAG, "Loading exploration")
-            result.isFailure() -> oppiaLogger.e(
-              TEST_ACTIVITY_TAG,
-              "Failed to load exploration",
-              result.getErrorOrNull()!!
-            )
-            else -> {
-              oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
-              initializeExploration(profileId, topicId, storyId, explorationId)
-            }
+    ).toLiveData().observe(
+      activity,
+      Observer<AsyncResult<Any?>> { result ->
+        when (result) {
+          is AsyncResult.Pending -> oppiaLogger.d(TEST_ACTIVITY_TAG, "Loading exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e(TEST_ACTIVITY_TAG, "Failed to load exploration", result.error)
+          is AsyncResult.Success -> {
+            oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
+            initializeExploration(profileId, topicId, storyId, explorationId)
           }
         }
-      )
+      }
+    )
   }
 
   /**

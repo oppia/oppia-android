@@ -2,8 +2,6 @@ package org.oppia.android.domain.question
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -16,15 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
@@ -67,6 +56,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -74,8 +64,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -101,59 +89,15 @@ private const val TOLERANCE = 1e-5
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = QuestionAssessmentProgressControllerTest.TestApplication::class)
 class QuestionAssessmentProgressControllerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var questionTrainingController: QuestionTrainingController
-
-  @Inject
-  lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  // TODO(#3813): Migrate all tests in this suite to use this factory.
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Mock
-  lateinit var mockScoreAndMasteryLiveDataObserver:
-    Observer<AsyncResult<UserAssessmentPerformance>>
-
-  @Mock
-  lateinit var mockAsyncNullableResultLiveDataObserver: Observer<AsyncResult<Any?>>
-
-  @Mock
-  lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnsweredQuestionOutcome>>
-
-  @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<*>>
-
-  @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any>>
-
-  @Captor
-  lateinit var performanceCalculationCaptor: ArgumentCaptor<AsyncResult<UserAssessmentPerformance>>
-
-  @Captor
-  lateinit var asyncNullableResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnsweredQuestionOutcome>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var questionTrainingController: QuestionTrainingController
+  @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var translationController: TranslationController
 
   private lateinit var profileId1: ProfileId
 
@@ -237,29 +181,15 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testStopTrainingSession_withoutStartingSession_fails() {
+  fun testStopTrainingSession_withoutStartingSession_isPending() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val stopDataProvider = questionTrainingController.stopQuestionTrainingSession()
+    val monitor = monitorFactory.createMonitor(stopDataProvider)
 
-    val error = monitorFactory.waitForNextFailureResult(stopDataProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot stop a new training session which wasn't started")
-  }
-
-  @Test
-  fun testStartTrainingSession_withoutFinishingPrevious_fails() {
-    setUpTestApplicationWithSeed(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_012)
-
-    val initiationDataProvider =
-      questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_02)
-
-    val error = monitorFactory.waitForNextFailureResult(initiationDataProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot start a new training session until the previous one is completed")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -293,22 +223,16 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_beforePlaying_failsWithError() {
+  fun testSubmitAnswer_beforePlaying_isPending() {
     setUpTestApplicationWithSeed(questionSeed = 0)
-    val result =
-      questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
 
-    // Verify that the answer submission failed.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isFailure()).isTrue()
-    assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot submit an answer if a training session has not yet begun.")
+    val submitAnswerProvider =
+      questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
+    val monitor = monitorFactory.createMonitor(submitAnswerProvider)
+
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -317,17 +241,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(1))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(1))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(result)
   }
 
   @Test
@@ -336,17 +253,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(1))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(1))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.feedback.html).contains("That's correct!")
     assertThat(answerOutcome.isCorrectAnswer).isTrue()
   }
@@ -357,17 +267,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(result)
   }
 
   @Test
@@ -376,17 +279,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.feedback.html).contains("Incorrect. Try again.")
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
   }
@@ -449,20 +345,15 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testMoveToNext_beforePlaying_failsWithError() {
+  fun testMoveToNext_beforePlaying_isPending() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
-    val moveToStateResult =
-      questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
+    val moveToQuestionResult = questionAssessmentProgressController.moveToNextQuestion()
+    val monitor = monitorFactory.createMonitor(moveToQuestionResult)
 
-    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(
-      asyncNullableResultCaptor.capture()
-    )
-    assertThat(asyncNullableResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to a next question if a training session has not begun.")
+    // The operation should be pending since the session hasn't started.
+    val result = monitor.waitForNextResult()
+    assertThat(result).isPending()
   }
 
   @Test
@@ -471,17 +362,11 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val moveToStateResult =
-      questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToQuestionResult = questionAssessmentProgressController.moveToNextQuestion()
 
     // Verify that we can't move ahead since the current state isn't yet completed.
-    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(
-      asyncNullableResultCaptor.capture()
-    )
-    assertThat(asyncNullableResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToQuestionResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
   }
@@ -493,15 +378,9 @@ class QuestionAssessmentProgressControllerTest {
     waitForGetCurrentQuestionSuccessfulLoad()
     submitMultipleChoiceAnswer(1)
 
-    val moveToStateResult =
-      questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToQuestionResult = questionAssessmentProgressController.moveToNextQuestion()
 
-    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(
-      asyncNullableResultCaptor.capture()
-    )
-    assertThat(asyncNullableResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(moveToQuestionResult)
   }
 
   @Test
@@ -525,17 +404,11 @@ class QuestionAssessmentProgressControllerTest {
     moveToNextQuestion()
 
     // Try skipping past the current state.
-    val moveToStateResult =
-      questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToQuestionResult = questionAssessmentProgressController.moveToNextQuestion()
 
     // Verify we can't move ahead since the new state isn't yet completed.
-    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(
-      asyncNullableResultCaptor.capture()
-    )
-    assertThat(asyncNullableResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToQuestionResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
   }
@@ -546,17 +419,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createTextInputAnswer("1/4"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createTextInputAnswer("1/4"))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.isCorrectAnswer).isTrue()
     assertThat(answerOutcome.feedback.html).contains("That's correct!")
   }
@@ -567,18 +433,11 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_01)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createTextInputAnswer("2/4"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createTextInputAnswer("2/4"))
 
     // Verify that the answer was wrong, and that there's no handler for it so the default outcome
     // is returned.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
     assertThat(answerOutcome.feedback.html).isEmpty()
   }
@@ -590,9 +449,7 @@ class QuestionAssessmentProgressControllerTest {
     waitForGetCurrentQuestionSuccessfulLoad()
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(5.0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(5.0))
     testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. It should stay pending, and the wrong answer should be
@@ -614,9 +471,7 @@ class QuestionAssessmentProgressControllerTest {
     waitForGetCurrentQuestionSuccessfulLoad()
     submitNumericInputAnswerAndMoveToNextQuestion(3.0)
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(4.0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(4.0))
     testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. It should now be completed with the correct answer.
@@ -636,17 +491,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(3.0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(3.0))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.isCorrectAnswer).isTrue()
     assertThat(answerOutcome.feedback.html).contains("That's correct!")
   }
@@ -657,17 +505,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
 
     // Verify that the answer submission failed as expected.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
     assertThat(answerOutcome.feedback.html).isEmpty()
   }
@@ -697,17 +538,11 @@ class QuestionAssessmentProgressControllerTest {
     submitNumericInputAnswerAndMoveToNextQuestion(5.0)
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
-    val moveToStateResult =
-      questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToQuestionResult = questionAssessmentProgressController.moveToNextQuestion()
 
     // Verify we can't navigate past the last state of the training session.
-    verify(mockAsyncNullableResultLiveDataObserver, atLeastOnce()).onChanged(
-      asyncNullableResultCaptor.capture()
-    )
-    assertThat(asyncNullableResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncNullableResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToQuestionResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
   }
@@ -754,31 +589,13 @@ class QuestionAssessmentProgressControllerTest {
     submitNumericInputAnswerAndMoveToNextQuestion(5.0)
     submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
-    val moveToStateResult =
-      questionAssessmentProgressController.moveToNextQuestion()
-    moveToStateResult.observeForever(mockAsyncNullableResultLiveDataObserver)
+    questionAssessmentProgressController.moveToNextQuestion()
     testCoroutineDispatchers.runCurrent()
-    val exception = fakeExceptionLogger.getMostRecentException()
 
+    val exception = fakeExceptionLogger.getMostRecentException()
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
-  }
-
-  @Test
-  fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
-    setUpTestApplicationWithSeed(questionSeed = 0)
-
-    val result =
-      questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
-    val exception = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("Cannot submit an answer if a training session has not yet begun.")
   }
 
   @Test
@@ -787,17 +604,10 @@ class QuestionAssessmentProgressControllerTest {
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
     waitForGetCurrentQuestionSuccessfulLoad()
 
-    val result =
-      questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.submitAnswer(createNumericInputAnswer(2.0))
 
     // Verify that the answer submission failed as expected.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.isCorrectAnswer).isFalse()
     assertThat(answerOutcome.feedback.html).isEmpty()
 
@@ -832,7 +642,7 @@ class QuestionAssessmentProgressControllerTest {
       .isEqualTo(2)
     val hintAndSolution = currentQuestion.ephemeralState.state.interaction.getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
-    verifyOperationSucceeds(
+    monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
 
@@ -850,7 +660,8 @@ class QuestionAssessmentProgressControllerTest {
     waitForGetCurrentQuestionSuccessfulLoad()
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
-    verifyOperationSucceeds(
+    // The actual reveal will fail due to it being invalid.
+    monitorFactory.ensureDataProviderExecutes(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
@@ -863,7 +674,9 @@ class QuestionAssessmentProgressControllerTest {
     val hintAndSolution = currentQuestion.ephemeralState.state.interaction.solution
     assertThat(hintAndSolution.correctAnswer.correctAnswer).contains("1/4")
 
-    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
+    monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.submitSolutionIsRevealed()
+    )
 
     // Verify that the current state updates. Hint revealed is true.
     val updatedState = waitForGetCurrentQuestionSuccessfulLoad()
@@ -1016,7 +829,7 @@ class QuestionAssessmentProgressControllerTest {
     // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     submitIncorrectAnswerForQuestion3("3/4")
-    verifyOperationSucceeds(
+    monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
     submitIncorrectAnswerForQuestion3("3/4")
@@ -1079,7 +892,7 @@ class QuestionAssessmentProgressControllerTest {
     // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     submitIncorrectAnswerForQuestion3("3/4")
-    verifyOperationSucceeds(
+    monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
     submitIncorrectAnswerForQuestion3("3/4")
@@ -1224,7 +1037,7 @@ class QuestionAssessmentProgressControllerTest {
     // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     submitIncorrectAnswerForQuestion3("3/4")
-    verifyOperationSucceeds(
+    monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
     submitIncorrectAnswerForQuestion3("3/4")
@@ -1291,7 +1104,7 @@ class QuestionAssessmentProgressControllerTest {
     // Submit question 3 wrong answer
     submitIncorrectAnswerForQuestion3("3/4")
     submitIncorrectAnswerForQuestion3("3/4")
-    verifyOperationSucceeds(
+    monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
     submitIncorrectAnswerForQuestion3("3/4")
@@ -1539,11 +1352,6 @@ class QuestionAssessmentProgressControllerTest {
     )
   }
 
-  private fun subscribeToScoreAndMasteryCalculations(skillIdList: List<String>) {
-    questionAssessmentProgressController.calculateScores(skillIdList).toLiveData()
-      .observeForever(mockScoreAndMasteryLiveDataObserver)
-  }
-
   private fun startSuccessfulTrainingSession(skillIdList: List<String>) {
     startSuccessfulTrainingSession(profileId1, skillIdList)
   }
@@ -1573,7 +1381,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun submitAnswer(answer: UserAnswer): EphemeralQuestion {
-    questionAssessmentProgressController.submitAnswer(answer)
+    monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.submitAnswer(answer)
+    )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 
@@ -1595,8 +1405,10 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun moveToNextQuestion(): EphemeralQuestion {
-    questionAssessmentProgressController.moveToNextQuestion()
-    testCoroutineDispatchers.runCurrent()
+    // This operation might fail for some tests.
+    monitorFactory.ensureDataProviderExecutes(
+      questionAssessmentProgressController.moveToNextQuestion()
+    )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 
@@ -1658,7 +1470,7 @@ class QuestionAssessmentProgressControllerTest {
     } else if (index == 1) {
       assertThat(hint.hintContent.html).contains("<p>Second hint text will appear here</p>")
     }
-    verifyOperationSucceeds(
+    monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = index)
     )
   }
@@ -1674,7 +1486,7 @@ class QuestionAssessmentProgressControllerTest {
   private fun viewHintForQuestion2(ephemeralQuestion: EphemeralQuestion) {
     val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
     assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
-    verifyOperationSucceeds(
+    monitorFactory.waitForNextSuccessfulResult(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
   }
@@ -1682,7 +1494,9 @@ class QuestionAssessmentProgressControllerTest {
   private fun viewSolutionForQuestion2(ephemeralQuestion: EphemeralQuestion) {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.correctAnswer).isEqualTo("3.0")
-    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
+    monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.submitSolutionIsRevealed()
+    )
   }
 
   private fun submitCorrectAnswerForQuestion3(): EphemeralQuestion {
@@ -1696,7 +1510,9 @@ class QuestionAssessmentProgressControllerTest {
   private fun viewSolutionForQuestion3(ephemeralQuestion: EphemeralQuestion) {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.correctAnswer).isEqualTo("1/2")
-    verifyOperationSucceeds(questionAssessmentProgressController.submitSolutionIsRevealed())
+    monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.submitSolutionIsRevealed()
+    )
   }
 
   private fun submitCorrectAnswerForQuestion4(): EphemeralQuestion {
@@ -1730,32 +1546,9 @@ class QuestionAssessmentProgressControllerTest {
     pendingState.helpIndex.isSolutionRevealed()
 
   private fun getExpectedGrade(skillIdList: List<String>): UserAssessmentPerformance {
-    subscribeToScoreAndMasteryCalculations(skillIdList)
-    testCoroutineDispatchers.runCurrent()
-    verify(
-      mockScoreAndMasteryLiveDataObserver,
-      atLeastOnce()
-    ).onChanged(performanceCalculationCaptor.capture())
-    return performanceCalculationCaptor.value.getOrThrow()
-  }
-
-  /**
-   * Verifies that the specified live data provides at least one successful operation. This will
-   * change test-wide mock state, and synchronizes background execution.
-   */
-  private fun <T : Any?> verifyOperationSucceeds(liveData: LiveData<AsyncResult<T>>) {
-    reset(mockAsyncResultLiveDataObserver)
-    liveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
-    asyncResultCaptor.value.apply {
-      // This bit of conditional logic is used to add better error reporting when failures occur.
-      if (isFailure()) {
-        throw AssertionError("Operation failed", getErrorOrNull())
-      }
-      assertThat(isSuccess()).isTrue()
-    }
-    reset(mockAsyncResultLiveDataObserver)
+    return monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.calculateScores(skillIdList)
+    )
   }
 
   // TODO(#89): Move this to a common test application component.
