@@ -11,6 +11,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -411,6 +412,8 @@ class InputInteractionViewTestActivityTest {
         )
       )
     closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).perform(scrollTo())
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
     onView(withId(R.id.fraction_input_error))
       .check(
@@ -434,6 +437,8 @@ class InputInteractionViewTestActivityTest {
         )
       )
     closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).perform(scrollTo())
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
     onView(withId(R.id.fraction_input_error)).check(matches(withText("")))
   }
@@ -464,6 +469,8 @@ class InputInteractionViewTestActivityTest {
         )
       )
     closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).perform(scrollTo())
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
     onView(withId(R.id.fraction_input_error))
       .check(
@@ -509,6 +516,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.fraction_input_error))
         .check(
@@ -650,6 +659,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.number_input_error))
         .check(
@@ -674,6 +685,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.number_input_error))
         .check(
@@ -698,6 +711,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.number_input_error))
         .check(
@@ -950,6 +965,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ratio_input_error))
         .check(
@@ -975,6 +992,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -1003,6 +1022,8 @@ class InputInteractionViewTestActivityTest {
         )
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ratio_input_error))
         .check(
@@ -1029,6 +1050,8 @@ class InputInteractionViewTestActivityTest {
         )
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ratio_input_error))
         .check(
@@ -1054,6 +1077,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ratio_input_error)).check(matches(withText("")))
     }
