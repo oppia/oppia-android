@@ -3,7 +3,6 @@ package org.oppia.android.domain.oppialogger.loguploader
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -25,9 +24,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EventLog
@@ -50,7 +46,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -109,15 +104,6 @@ class LogUploadWorkerTest {
 
   @Inject
   lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-
-  @Inject
-  lateinit var syncStatusController: SyncStatusManager
-
-  @Mock
-  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatusManager.SyncStatus>>
-
-  @Captor
-  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatusManager.SyncStatus>>
 
   private lateinit var context: Context
 

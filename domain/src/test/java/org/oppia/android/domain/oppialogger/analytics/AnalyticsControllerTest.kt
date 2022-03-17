@@ -73,8 +73,8 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
@@ -144,9 +144,6 @@ class AnalyticsControllerTest {
 
   @Inject
   lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var syncStatusManager: SyncStatusManager
 
   @Inject
   @field:BackgroundDispatcher
@@ -845,7 +842,7 @@ class AnalyticsControllerTest {
     )
     val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
     assertThat(syncStatusList.size).isEqualTo(2)
-    assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+    assertThat(syncStatusList[0]).isEqualTo(DATA_UPLOADING)
     assertThat(syncStatusList[1]).isEqualTo(DATA_UPLOADED)
   }
 
