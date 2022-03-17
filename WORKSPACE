@@ -11,7 +11,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 28,
+    api_level = 30,
     build_tools_version = "29.0.2",
 )
 
@@ -96,8 +96,8 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    strip_prefix = "robolectric-bazel-4.4",
-    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.4.tar.gz"],
+    strip_prefix = "robolectric-bazel-4.5",
+    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.5.tar.gz"],
 )
 
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")

@@ -23,7 +23,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -138,12 +138,11 @@ class ExplorationActivityLocalTest {
       testCoroutineDispatchers.runCurrent()
       val event = fakeEventLogger.getMostRecentEvent()
 
-      assertThat(event.context.activityContextCase).isEqualTo(EXPLORATION_CONTEXT)
-      assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_EXPLORATION_ACTIVITY)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_EXPLORATION_ACTIVITY)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.context.explorationContext.explorationId).matches(TEST_EXPLORATION_ID_2)
-      assertThat(event.context.explorationContext.topicId).matches(TEST_TOPIC_ID_0)
-      assertThat(event.context.explorationContext.storyId).matches(TEST_STORY_ID_0)
+      assertThat(event.context.openExplorationActivity.explorationId).matches(TEST_EXPLORATION_ID_2)
+      assertThat(event.context.openExplorationActivity.topicId).matches(TEST_TOPIC_ID_0)
+      assertThat(event.context.openExplorationActivity.storyId).matches(TEST_STORY_ID_0)
     }
   }
 

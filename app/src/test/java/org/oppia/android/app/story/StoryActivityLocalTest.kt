@@ -24,7 +24,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -115,10 +115,9 @@ class StoryActivityLocalTest {
       val event = fakeEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_STORY_ACTIVITY)
-      assertThat(event.context.activityContextCase).isEqualTo(STORY_CONTEXT)
-      assertThat(event.context.storyContext.storyId).matches(TEST_STORY_ID)
-      assertThat(event.context.storyContext.topicId).matches(TEST_TOPIC_ID)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_STORY_ACTIVITY)
+      assertThat(event.context.openStoryActivity.storyId).matches(TEST_STORY_ID)
+      assertThat(event.context.openStoryActivity.topicId).matches(TEST_TOPIC_ID)
     }
   }
 
