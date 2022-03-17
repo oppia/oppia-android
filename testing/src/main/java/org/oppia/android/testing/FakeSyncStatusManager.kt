@@ -1,16 +1,16 @@
 package org.oppia.android.testing
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManagerImpl
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** A test-specific fake for the Sync Manager. */
 @Singleton
 class FakeSyncStatusManager @Inject constructor(
   private val syncStatusManagerImpl: SyncStatusManagerImpl
-): SyncStatusManager {
+) : SyncStatusManager {
 
   private val syncStatusList = ArrayList<SyncStatusManager.SyncStatus>()
 

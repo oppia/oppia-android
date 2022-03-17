@@ -59,7 +59,6 @@ import org.oppia.android.util.system.UserIdProdModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
-import org.oppia.android.util.logging.SyncStatusModule
 
 /**
  * Root Dagger component for the application. All application-scoped modules should be included in
