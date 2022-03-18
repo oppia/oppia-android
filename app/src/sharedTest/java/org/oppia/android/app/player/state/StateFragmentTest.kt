@@ -1189,7 +1189,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withContentDescription("Correct submitted answer: 4 to 5")))
+        .check(matches(withContentDescription("Correct submitted: 4 to 5")))
     }
   }
 
