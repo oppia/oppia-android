@@ -103,7 +103,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [shard0, shard0, shard0, shard0]
+        shard: [shard0, shard1, shard2, shard3]
     steps:
       - uses: actions/checkout@v2
 
