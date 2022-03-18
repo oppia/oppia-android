@@ -39,6 +39,12 @@ import android.os.SystemClock
  * to utilize it as a signal that a long operation is underway). This API may be changed in the
  * future to make these design choices more clear-cut and deliberate when implementing data
  * providers.
+ *
+ * **A note on equality:** Two [AsyncResult]s may not be equal or have the same hash code if they
+ * are different ages as indicated by [resultTimeMillis]. For this reason, care must be taken when
+ * storing results in hash or equivalence based data structures. When comparing two results where
+ * the results' ages should be ignored, one can use [hasSameEffectiveValueAs] instead of direct
+ * equality checking.
  */
 sealed class AsyncResult<T> {
   /**
@@ -56,6 +62,22 @@ sealed class AsyncResult<T> {
    */
   fun <O> isNewerThanOrSameAgeAs(otherResult: AsyncResult<O>): Boolean {
     return resultTimeMillis >= otherResult.resultTimeMillis
+  }
+
+  /**
+   * Returns whether this result has the same effective value as [other], that is, that the two can
+   * be considered equal in value but not necessarily age.
+   *
+   * This function is useful for cases when the end effect of processing an [AsyncResult] is not
+   * dependent on the age of the result (indicated by [resultTimeMillis]) which may affect functions
+   * like [equals] and [hashCode].
+   */
+  fun <O> hasSameEffectiveValueAs(other: AsyncResult<O>): Boolean {
+    return when (val thisResult = this) {
+      is Pending -> other is Pending // Two pending results are effectively equal.
+      is Success -> if (other is Success) thisResult.isEffectivelyEqualTo(other) else false
+      is Failure -> if (other is Failure) thisResult.isEffectivelyEqualTo(other) else false
+    }
   }
 
   /**
@@ -159,11 +181,25 @@ sealed class AsyncResult<T> {
   data class Success<T>(
     val value: T,
     override val resultTimeMillis: Long = SystemClock.uptimeMillis()
-  ) : AsyncResult<T>()
+  ) : AsyncResult<T>() {
+    /**
+     * Returns whether this [Success] is effectively equal to [otherResult] (i.e., has the same
+     * [value], but not necessarily the same [resultTimeMillis]).
+     */
+    internal fun <O> isEffectivelyEqualTo(otherResult: Success<O>): Boolean =
+      value == otherResult.value
+  }
 
   /** [AsyncResult] representing an operation that failed with a specific [error]. */
   data class Failure<T>(
     val error: Throwable,
     override val resultTimeMillis: Long = SystemClock.uptimeMillis()
-  ) : AsyncResult<T>()
+  ) : AsyncResult<T>() {
+    /**
+     * Returns whether this [Failure] is effectively equal to [otherResult] (i.e., has the same
+     * [error], but not necessarily the same [resultTimeMillis]).
+     */
+    internal fun <O> isEffectivelyEqualTo(otherResult: Failure<O>): Boolean =
+      error == otherResult.error
+  }
 }

@@ -170,6 +170,13 @@ class AsyncResultSubject<T>(
   }
 
   /**
+   * Returns a [BooleanSubject] for verifying whether the [AsyncResult] under test and [other]
+   * effectively have the same value per [AsyncResult.hasSameEffectiveValueAs].
+   */
+  fun <O> hasSameEffectiveValueAs(other: AsyncResult<O>): BooleanSubject =
+    assertThat(actual.hasSameEffectiveValueAs(other))
+
+  /**
    * Verifies the result under test is successful (per [ensureActualIsType]) and returns its
    * [AsyncResult.Success.value] as type [T] (this method will fail if the conversion can't happen).
    *
