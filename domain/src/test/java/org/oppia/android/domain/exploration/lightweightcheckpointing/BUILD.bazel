@@ -13,7 +13,7 @@ oppia_android_test(
     test_manifest = "//domain:test_manifest",
     deps = [
         ":dagger",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:storage_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -38,7 +38,7 @@ oppia_android_test(
     test_manifest = "//domain:test_manifest",
     deps = [
         ":dagger",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:storage_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

@@ -4,14 +4,12 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** Logger that handles event logging. */
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
-  private val consoleLogger: ConsoleLogger,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+  private val consoleLogger: ConsoleLogger
 ) {
   /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
   fun logTransitionEvent(
@@ -29,9 +27,8 @@ class OppiaLogger @Inject constructor(
     timestamp: Long,
     eventContext: EventLog.Context
   ) {
-    if (learnerStudyAnalytics.value) {
-      analyticsController.logTransitionEvent(timestamp, eventContext)
-    }
+    // TODO: add support for logging this events conditioned on whether the learner study analytics feature is enabled.
+    d("OppiaLogger", "logLearnerAnalyticsEvent($timestamp, $eventContext)")
   }
 
   /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context */

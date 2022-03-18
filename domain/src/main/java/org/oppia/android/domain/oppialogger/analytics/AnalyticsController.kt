@@ -9,9 +9,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
-import org.oppia.android.util.logging.SyncStatusManager
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import javax.inject.Inject
@@ -28,7 +25,6 @@ class AnalyticsController @Inject constructor(
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
-  private val syncStatusManager: SyncStatusManager,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int
 ) {
   private val eventLogStore =
@@ -91,7 +87,7 @@ class AnalyticsController @Inject constructor(
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NONE -> cacheEventLog(eventLog)
       else -> {
-        syncStatusManager.setSyncStatus(DATA_UPLOADING)
+        // TODO: update sync status for immediate uploading.
         eventLogger.logEvent(eventLog)
       }
     }
@@ -105,7 +101,6 @@ class AnalyticsController @Inject constructor(
    * After this, the [eventLog] is added to the store.
    * */
   private fun cacheEventLog(eventLog: EventLog) {
-    syncStatusManager.setSyncStatus(NETWORK_ERROR)
     eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       val storeSize = oppiaEventLogs.eventLogList.size
       if (storeSize + 1 > eventLogStorageCacheSize) {

@@ -742,7 +742,8 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeSyncStatusManager.getSyncStatuses().last()).isEqualTo(NETWORK_ERROR)
+    // TODO: verify that this is an error.
+    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
   }
 
   @Test
@@ -757,7 +758,8 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeSyncStatusManager.getSyncStatuses().last()).isEqualTo(DATA_UPLOADED)
+    // TODO: verify that this is a uploaded.
+    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
   }
 
   @Test
@@ -771,10 +773,9 @@ class AnalyticsControllerTest {
         )
       )
     )
+    // TODO: Verify sync status order: uploading then uploaded.
     val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
-    assertThat(syncStatusList.size).isEqualTo(2)
-    assertThat(syncStatusList[0]).isEqualTo(DATA_UPLOADING)
-    assertThat(syncStatusList[1]).isEqualTo(DATA_UPLOADED)
+    assertThat(syncStatusList).isEmpty()
   }
 
   private fun setUpTestApplicationComponent() {
