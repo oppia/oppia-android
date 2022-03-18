@@ -20,15 +20,14 @@ import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ReadingTextSize
-import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
+import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.logging.FakeUserIdGenerator
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.FakeUserIdGenerator
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -193,18 +192,12 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.updateLearnerId(profileId)
-      .toLiveData()
-      .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(
-      profileId
-    ).toLiveData().observeForever(mockProfileObserver)
-    testCoroutineDispatchers.runCurrent()
+    val updateProvider = profileManagementController.updateLearnerId(profileId)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+    val profileProvider = profileManagementController.getProfile(profileId)
 
-    verifyUpdateSucceeded()
-    verifyGetProfileSucceeded()
-    assertThat(profileResultCaptor.value.getOrThrow().learnerId)
-      .isEqualTo(defaultLearnerId)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+    assertThat(profile.learnerId).isEqualTo(defaultLearnerId)
   }
 
   @Test
@@ -326,29 +319,6 @@ class ProfileManagementControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.appLanguage).isEqualTo(CHINESE_APP_LANGUAGE)
-  }
-
-  @Test
-  fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_checkUpdateIsSuccessful() {
-    val defaultLearnerId = machineLocale.run {
-      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.deviceIdSeed).nextInt())
-    }
-    addTestProfiles()
-    testCoroutineDispatchers.runCurrent()
-
-    val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    profileManagementController.updateLearnerId(profileId)
-      .toLiveData()
-      .observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfile(
-      profileId
-    ).toLiveData().observeForever(mockProfileObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verifyUpdateSucceeded()
-    verifyGetProfileSucceeded()
-    assertThat(profileResultCaptor.value.getOrThrow().learnerId)
-      .isEqualTo(defaultLearnerId)
   }
 
   @Test

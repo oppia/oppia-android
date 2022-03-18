@@ -1,7 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -37,11 +35,9 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -95,7 +91,7 @@ class ExplorationProgressController @Inject constructor(
   private val hintHandlerFactory: HintHandler.Factory,
   private val translationController: TranslationController,
   private val loggingIdentifierController: LoggingIdentifierController,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
   private val dataProviders: DataProviders,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
@@ -952,33 +948,38 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun processGetSessionIdResult(sessionIdResult: AsyncResult<String>): String {
-    if (sessionIdResult.isFailure()) {
-      oppiaLogger.e(
-        "ExplorationProgressController",
-        "Failed to retrieve session id",
-        sessionIdResult.getErrorOrNull()!!
-      )
+    return when (sessionIdResult) {
+      is AsyncResult.Pending -> "" // Wait for an actual result.
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ExplorationProgressController", "Failed to retrieve session id", sessionIdResult.error
+        )
+        "" // No known session ID.
+      }
+      is AsyncResult.Success -> sessionIdResult.value
     }
-    return sessionIdResult.getOrDefault("")
   }
 
   private fun getLearnerId(): String? {
     // TODO: This isn't going to work since the live data won't be processed.
-    return Transformations.map(
-      profileManagementController.getProfile(explorationProgress.currentProfileId).toLiveData(),
-      ::processGetProfileResult
-    ).value?.learnerId
+    return "invalid"
+//    return Transformations.map(
+//      profileManagementController.getProfile(explorationProgress.currentProfileId).toLiveData(),
+//      ::processGetProfileResult
+//    ).value?.learnerId
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e(
-        "ExplorationProgressController",
-        "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!
-      )
+    return when (profileResult) {
+      is AsyncResult.Pending -> Profile.getDefaultInstance() // Wait for an actual result.
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ExplorationProgressController", "Failed to retrieve profile", profileResult.error
+        )
+        Profile.getDefaultInstance() // No profile to return.
+      }
+      is AsyncResult.Success -> profileResult.value
     }
-    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private fun <T> createAsyncResultStateFlow(): MutableStateFlow<AsyncResult<T>> =

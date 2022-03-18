@@ -33,23 +33,28 @@ class ProfileListViewModel private constructor(
   }
 
   private fun processProfiles(
-    profiles: AsyncResult<List<Profile>>
+    profilesResult: AsyncResult<List<Profile>>
   ): List<ProfileListItemViewModel> {
-    if (profiles.isFailure()) {
-      oppiaLogger.e(
-        "ProfileAndDeviceIdViewModel",
-        "Failed to retrieve the list of profiles",
-        profiles.getErrorOrNull()!!
-      )
-    }
-
     val deviceIdViewModel = deviceIdItemViewModelFactory.create()
     val syncStatusViewModel = syncStatusItemViewModelFactory.create()
 
-    // Ensure that admins are listed first, then profiles should be sorted by name.
-    val learnerIdModels = profiles.getOrDefault(emptyList())
-      .sortedWith(compareByDescending(Profile::getIsAdmin).thenBy(Profile::getName))
-      .map(profileLearnerIdItemViewModelFactory::create)
+    val learnerIdModels = when (profilesResult) {
+      is AsyncResult.Pending -> listOf()
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileAndDeviceIdViewModel",
+          "Failed to retrieve the list of profiles",
+          profilesResult.error
+        )
+        listOf()
+      }
+      is AsyncResult.Success -> {
+        // Ensure that admins are listed first, then profiles should be sorted by name.
+        profilesResult.value
+          .sortedWith(compareByDescending(Profile::getIsAdmin).thenBy(Profile::getName))
+          .map(profileLearnerIdItemViewModelFactory::create)
+      }
+    }
 
     return listOf(deviceIdViewModel) + learnerIdModels + listOf(syncStatusViewModel)
   }
