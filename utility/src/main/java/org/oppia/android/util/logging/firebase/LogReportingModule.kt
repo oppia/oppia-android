@@ -1,6 +1,7 @@
 package org.oppia.android.util.logging.firebase
 
 import android.app.Application
+import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
@@ -8,6 +9,7 @@ import dagger.Provides
 import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Singleton
 
@@ -22,10 +24,15 @@ class LogReportingModule {
 
   @Singleton
   @Provides
-  fun provideEventLogger(networkConnectionUtil: NetworkConnectionUtil): EventLogger {
+  fun provideEventLogger(
+    context: Context,
+    syncStatusManager: SyncStatusManager,
+    networkConnectionUtil: NetworkConnectionUtil
+  ): EventLogger {
     return FirebaseEventLogger(
-      FirebaseAnalytics.getInstance(Application()),
+      FirebaseAnalytics.getInstance(context.applicationContext as Application),
       EventBundleCreator(),
+      syncStatusManager,
       networkConnectionUtil
     )
   }

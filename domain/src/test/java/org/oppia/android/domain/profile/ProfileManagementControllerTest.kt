@@ -21,9 +21,13 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
+import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.FakeUserIdGenerator
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -33,15 +37,19 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.system.UserIdGenerator
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
 import java.io.FileInputStream
+import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,6 +65,7 @@ class ProfileManagementControllerTest {
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -90,6 +99,9 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddProfile_addProfile_checkProfileIsAdded() {
+    val defaultLearnerId = machineLocale.run {
+      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    }
     val dataProvider = addAdminProfile(name = "James", pin = "123")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -103,6 +115,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
     assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.learnerId).isEqualTo(defaultLearnerId)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
   }
 
@@ -168,6 +181,23 @@ class ProfileManagementControllerTest {
     }
     assertThat(profiles.size).isEqualTo(PROFILES_LIST.size + 1)
     checkTestProfilesArePresent(profiles)
+  }
+
+  @Test
+  fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_checkUpdateIsSuccessful() {
+    val defaultLearnerId = machineLocale.run {
+      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    }
+    addTestProfiles()
+    testCoroutineDispatchers.runCurrent()
+
+    val profileId = ProfileId.newBuilder().setInternalId(2).build()
+    val updateProvider = profileManagementController.updateLearnerId(profileId)
+    monitorFactory.ensureDataProviderExecutes(updateProvider)
+    val profileProvider = profileManagementController.getProfile(profileId)
+
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+    assertThat(profile.learnerId).isEqualTo(defaultLearnerId)
   }
 
   @Test
@@ -650,13 +680,31 @@ class ProfileManagementControllerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  class TestLoggingIdentifierModule {
+
+    companion object {
+      const val applicationIdSeed = 1L
+    }
+
+    @Provides
+    @ApplicationIdSeed
+    fun provideApplicationIdSeed(): Long = applicationIdSeed
+
+    @Provides
+    fun provideUUIDWrapper(fakeUserIdGenerator: FakeUserIdGenerator): UserIdGenerator =
+      fakeUserIdGenerator
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestLoggingIdentifierModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

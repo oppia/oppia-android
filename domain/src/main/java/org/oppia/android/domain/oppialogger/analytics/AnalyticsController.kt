@@ -9,13 +9,18 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import javax.inject.Inject
 
-/** Controller for handling analytics event logging.
- * [OppiaLogger] should be the only caller of this class. Any other classes that want to log
- * events should call either [OppiaLogger.logTransitionEvent] or [OppiaLogger.logClickEvent].
+/**
+ * Controller for handling analytics event logging.
+ *
+ * ``OppiaLogger`` should be the only caller of this class. Any other classes that want to log
+ * events should call either ``OppiaLogger.logTransitionEvent`` or ``OppiaLogger.logClickEvent``.
  */
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger,
@@ -23,6 +28,7 @@ class AnalyticsController @Inject constructor(
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
+  private val syncStatusManager: SyncStatusManager,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int
 ) {
   private val eventLogStore =
@@ -84,7 +90,10 @@ class AnalyticsController @Inject constructor(
   private fun uploadOrCacheEventLog(eventLog: EventLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NONE -> cacheEventLog(eventLog)
-      else -> eventLogger.logEvent(eventLog)
+      else -> {
+        syncStatusManager.setSyncStatus(DATA_UPLOADING)
+        eventLogger.logEvent(eventLog)
+      }
     }
   }
 
@@ -96,6 +105,7 @@ class AnalyticsController @Inject constructor(
    * After this, the [eventLog] is added to the store.
    * */
   private fun cacheEventLog(eventLog: EventLog) {
+    syncStatusManager.setSyncStatus(NETWORK_ERROR)
     eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       val storeSize = oppiaEventLogs.eventLogList.size
       if (storeSize + 1 > eventLogStorageCacheSize) {

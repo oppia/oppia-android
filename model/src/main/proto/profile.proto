@@ -65,6 +65,9 @@ message Profile {
 
   // Represents user selected app-language.
   AppLanguage app_language = 12;
+
+  // Represents user learner id.
+  string learner_id = 13;
 }
 
 // Represents a profile avatar image.
