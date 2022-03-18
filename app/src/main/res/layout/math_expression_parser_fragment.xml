@@ -16,7 +16,7 @@
     android:id="@+id/math_expression_parser_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_def_white">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/math_expression_parser_app_bar_layout"
@@ -38,7 +38,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/developer_options_math_expressions"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
@@ -85,7 +85,7 @@
           style="@style/TextViewStart"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:background="@color/white"
+          android:background="@color/color_def_white"
           android:layout_margin="4dp"
           android:text="@string/math_expression_parse_type_label"
           android:textColor="@color/oppia_primary_text"
@@ -139,7 +139,7 @@
           android:id="@+id/math_expression_result_type_label_text_view"
           style="@style/TextViewStart"
           android:layout_width="match_parent"
-          android:background="@color/white"
+          android:background="@color/color_def_white"
           android:layout_margin="4dp"
           android:text="@string/math_expression_result_type_label"
           android:textColor="@color/oppia_primary_text"
@@ -240,7 +240,7 @@
             android:id="@+id/math_expression_parse_result_text_view"
             style="@style/TextViewStart"
             android:layout_width="wrap_content"
-            android:background="@color/white"
+            android:background="@color/color_def_white"
             android:layout_margin="16dp"
             android:textColor="@color/oppia_primary_text"
             android:fontFamily="serif-monospace"
