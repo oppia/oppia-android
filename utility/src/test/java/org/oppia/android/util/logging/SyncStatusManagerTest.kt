@@ -35,7 +35,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DEFAULT
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
@@ -51,84 +51,60 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SyncStatusManagerTest.TestApplication::class)
 class SyncStatusManagerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var syncStatusManager: SyncStatusManager
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockSyncStatusLiveDataObserver: Observer<AsyncResult<SyncStatus>>
-
-  @Captor
-  lateinit var syncStatusResultCaptor: ArgumentCaptor<AsyncResult<SyncStatus>>
-
-  private lateinit var notifierDispatcher: CoroutineDispatcher
+  @Inject lateinit var syncStatusManager: SyncStatusManager
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    notifierDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
   }
 
   @Test
   fun testController_getSyncStatus_verifyDefaultCase() {
-    val syncStatus = syncStatusManager.getSyncStatus()
-    syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
+    val syncStatusProvider = syncStatusManager.getSyncStatus()
 
-    verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
-    assertThat(syncStatusResultCaptor.value.getOrThrow()).isEqualTo(DEFAULT)
+    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
+    assertThat(syncStatus).isEqualTo(INITIAL_UNKNOWN)
   }
 
   @Test
   fun testController_getSyncStatus_updateSyncStatus_toDataUploading_verifyReturnsUpdatedStatus() {
-    val syncStatus = syncStatusManager.getSyncStatus()
-    syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
+    val syncStatusProvider = syncStatusManager.getSyncStatus()
 
     syncStatusManager.setSyncStatus(DATA_UPLOADING)
-    testCoroutineDispatchers.runCurrent()
 
-    verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
-    assertThat(syncStatusResultCaptor.value.getOrThrow()).isEqualTo(DATA_UPLOADING)
+    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
+    assertThat(syncStatus).isEqualTo(DATA_UPLOADING)
   }
 
   @Test
   fun testController_getSyncStatus_updateSyncStatus_toDataUploaded_verifyReturnsUpdatedStatus() {
-    val syncStatus = syncStatusManager.getSyncStatus()
-    syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
+    val syncStatusProvider = syncStatusManager.getSyncStatus()
 
     syncStatusManager.setSyncStatus(DATA_UPLOADED)
-    testCoroutineDispatchers.runCurrent()
 
-    verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
-    assertThat(syncStatusResultCaptor.value.getOrThrow()).isEqualTo(DATA_UPLOADED)
+    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
+    assertThat(syncStatus).isEqualTo(DATA_UPLOADED)
   }
 
   @Test
   fun testController_getSyncStatus_updateSyncStatus_toNetworkError_verifyReturnsUpdatedStatus() {
-    val syncStatus = syncStatusManager.getSyncStatus()
-    syncStatus.toLiveData().observeForever(mockSyncStatusLiveDataObserver)
+    val syncStatusProvider = syncStatusManager.getSyncStatus()
 
     syncStatusManager.setSyncStatus(NETWORK_ERROR)
-    testCoroutineDispatchers.runCurrent()
 
-    verify(mockSyncStatusLiveDataObserver).onChanged(syncStatusResultCaptor.capture())
-    assertThat(syncStatusResultCaptor.value.getOrThrow()).isEqualTo(NETWORK_ERROR)
+    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
+    assertThat(syncStatus).isEqualTo(NETWORK_ERROR)
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

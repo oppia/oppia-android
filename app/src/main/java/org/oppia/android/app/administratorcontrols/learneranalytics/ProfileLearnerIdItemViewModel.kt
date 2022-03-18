@@ -42,7 +42,7 @@ class ProfileLearnerIdItemViewModel private constructor(
       ),
       profile.learnerId
     ).toLiveData().observe(fragment) {
-      if (!it.isSuccess()) {
+      if (it !is AsyncResult.Success) {
         oppiaLogger.w(
           "ProfileLearnerIdItemViewModel",
           "Encountered unexpected non-successful result when copying to clipboard: $it"
@@ -52,8 +52,8 @@ class ProfileLearnerIdItemViewModel private constructor(
   }
 
   private fun processCurrentClip(result: AsyncResult<CurrentClip>): String? {
-    return if (result.isSuccess()) {
-      when (val clip = result.getOrThrow()) {
+    return if (result is AsyncResult.Success) {
+      when (val clip = result.value) {
         is CurrentClip.SetWithAppText -> clip.text
         CurrentClip.SetWithOtherContent, CurrentClip.Unknown -> null
       }

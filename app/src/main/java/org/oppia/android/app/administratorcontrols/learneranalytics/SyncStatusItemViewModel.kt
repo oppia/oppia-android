@@ -30,23 +30,26 @@ class SyncStatusItemViewModel private constructor(
   private fun processSyncStatusResult(
     syncStatusResult: AsyncResult<SyncStatusManager.SyncStatus>
   ): String {
-    if (syncStatusResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileAndDeviceIdViewModel",
-        "Failed to retrieve sync status",
-        syncStatusResult.getErrorOrNull()!!
-      )
+    val resId = when (syncStatusResult) {
+      is AsyncResult.Pending -> R.string.learner_analytics_sync_status_default
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileAndDeviceIdViewModel", "Failed to retrieve sync status", syncStatusResult.error
+        )
+        R.string.learner_analytics_sync_status_default
+      }
+      is AsyncResult.Success -> when (syncStatusResult.value) {
+        SyncStatusManager.SyncStatus.INITIAL_UNKNOWN ->
+          R.string.learner_analytics_sync_status_default
+        SyncStatusManager.SyncStatus.DATA_UPLOADING ->
+          R.string.learner_analytics_sync_status_data_uploading
+        SyncStatusManager.SyncStatus.DATA_UPLOADED ->
+          R.string.learner_analytics_sync_status_data_uploaded
+        SyncStatusManager.SyncStatus.NETWORK_ERROR ->
+          R.string.learner_analytics_sync_status_network_error
+      }
     }
-    return when (syncStatusResult.getOrDefault(SyncStatusManager.SyncStatus.INITIAL_UNKNOWN)) {
-      SyncStatusManager.SyncStatus.INITIAL_UNKNOWN ->
-        resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_default)
-      SyncStatusManager.SyncStatus.DATA_UPLOADING ->
-        resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_data_uploading)
-      SyncStatusManager.SyncStatus.DATA_UPLOADED ->
-        resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_data_uploaded)
-      SyncStatusManager.SyncStatus.NETWORK_ERROR ->
-        resourceHandler.getStringInLocale(R.string.learner_analytics_sync_status_network_error)
-    }
+    return resourceHandler.getStringInLocale(resId)
   }
 
   /** Factory for creating new [SyncStatusItemViewModel]s. */
