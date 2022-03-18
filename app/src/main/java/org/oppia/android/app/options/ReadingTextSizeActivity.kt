@@ -12,14 +12,11 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
 
   @Inject
   lateinit var readingTextSizeActivityPresenter: ReadingTextSizeActivityPresenter
-  private lateinit var prefKey: String
-  private lateinit var prefSummaryValue: String
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    prefKey = intent.getStringExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE)
-    prefSummaryValue = (
+    val prefSummaryValue = (
       if (savedInstanceState != null) {
         savedInstanceState.get(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE)
       } else {

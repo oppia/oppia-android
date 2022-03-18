@@ -151,6 +151,45 @@ class AsyncResultTest {
   }
 
   @Test
+  fun testPendingResult_andPendingResult_sameExceptAge_areNotEqual() {
+    val result1 = AsyncResult.Pending<String>()
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Pending<String>()
+
+    assertThat(result1).isNotEqualTo(result2)
+  }
+
+  @Test
+  fun testPendingResult_andPendingResult_sameExceptAge_areEffectivelyEqual() {
+    val result1 = AsyncResult.Pending<String>()
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Pending<String>()
+
+    // Two pending results are always effectively equal.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isTrue()
+  }
+
+  @Test
+  fun testPendingResult_andSuccessResult_areNotEffectivelyEqual() {
+    val result1 = AsyncResult.Pending<String>()
+    val result2 = AsyncResult.Success("Success")
+
+    // A pending result is never equivalent to a successful one.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isFalse()
+  }
+
+  @Test
+  fun testPendingResult_andFailureResult_areNotEffectivelyEqual() {
+    val result1 = AsyncResult.Pending<String>()
+    val result2 = AsyncResult.Failure<String>(UnsupportedOperationException())
+
+    // A pending result is never equivalent to a failing one.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isFalse()
+  }
+
+  @Test
   fun testPendingResult_hashCode_isEqualToAnotherPendingResult() {
     val resultHash = AsyncResult.Pending<String>().hashCode()
 
@@ -174,6 +213,16 @@ class AsyncResultTest {
         UnsupportedOperationException()
       ).hashCode()
     )
+  }
+
+  @Test
+  fun testPendingResult_andPendingResult_sameExceptAge_hashCodes_areNotEqual() {
+    val result1 = AsyncResult.Pending<String>()
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Pending<String>()
+
+    assertThat(result1.hashCode()).isNotEqualTo(result2.hashCode())
   }
 
   @Test
@@ -414,6 +463,53 @@ class AsyncResultTest {
   }
 
   @Test
+  fun testSucceededResult_andSuccessfulResult_sameExceptAge_areNotEqual() {
+    val result1 = AsyncResult.Success("Success")
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Success("Success")
+
+    assertThat(result1).isNotEqualTo(result2)
+  }
+
+  @Test
+  fun testSucceededResult_andPendingResult_areNotEffectivelyEqual() {
+    val result1 = AsyncResult.Success("Success")
+    val result2 = AsyncResult.Pending<String>()
+
+    // A successful result is never equivalent to a pending one.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isFalse()
+  }
+
+  @Test
+  fun testSucceededResult_andSucceededResult_sameValue_differentAges_areEffectivelyEqual() {
+    val result1 = AsyncResult.Success("Success")
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Success("Success")
+
+    assertThat(result1).hasSameEffectiveValueAs(result2).isTrue()
+  }
+
+  @Test
+  fun testSucceededResult_andSucceededResult_differentValues_areNotEffectivelyEqual() {
+    val result1 = AsyncResult.Success("Success1")
+    val result2 = AsyncResult.Success("Success2")
+
+    // The two results have different effective values.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isFalse()
+  }
+
+  @Test
+  fun testSucceededResult_andFailureResult_areNotEffectivelyEqual() {
+    val result1 = AsyncResult.Success("Success1")
+    val result2 = AsyncResult.Failure<String>(UnsupportedOperationException())
+
+    // A successful result is never equivalent to a failing one.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isFalse()
+  }
+
+  @Test
   fun testSucceededResult_hashCode_isNotEqualToPendingResult() {
     val resultHash = AsyncResult.Success("Success").hashCode()
 
@@ -449,6 +545,16 @@ class AsyncResultTest {
     assertThat(resultHash).isNotEqualTo(
       AsyncResult.Failure<String>(UnsupportedOperationException()).hashCode()
     )
+  }
+
+  @Test
+  fun testSucceededResult_andSucceededResult_sameExceptAge_hashCodes_areNotEqual() {
+    val result1 = AsyncResult.Success("Success")
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Success("Success")
+
+    assertThat(result1.hashCode()).isNotEqualTo(result2.hashCode())
   }
 
   @Test
@@ -693,6 +799,54 @@ class AsyncResultTest {
   }
 
   @Test
+  fun testFailedResult_andFailedResult_sameExceptAge_areNotEqual() {
+    val result1 = AsyncResult.Failure<String>(UnsupportedOperationException())
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Failure<String>(UnsupportedOperationException())
+
+    assertThat(result1).isNotEqualTo(result2)
+  }
+
+  @Test
+  fun testFailedResult_andPendingResult_areNotEffectivelyEqual() {
+    val result1 = AsyncResult.Failure<String>(UnsupportedOperationException())
+    val result2 = AsyncResult.Pending<String>()
+
+    // A failing result is never equivalent to a pending one.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isFalse()
+  }
+
+  @Test
+  fun testFailedResult_andSucceededResult_areNotEffectivelyEqual() {
+    val result1 = AsyncResult.Failure<String>(UnsupportedOperationException())
+    val result2 = AsyncResult.Success("Success1")
+
+    // A failing result is never equivalent to a successful one.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isFalse()
+  }
+
+  @Test
+  fun testFailedResult_andFailedResult_sameException_differentAges_areEffectivelyEqual() {
+    val exception = UnsupportedOperationException("Reason")
+    val result1 = AsyncResult.Failure<String>(exception)
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Failure<String>(exception)
+
+    assertThat(result1).hasSameEffectiveValueAs(result2).isTrue()
+  }
+
+  @Test
+  fun testFailedResult_andFailedResult_differentValues_areNotEffectivelyEqual() {
+    val result1 = AsyncResult.Failure<String>(UnsupportedOperationException("Reason 1"))
+    val result2 = AsyncResult.Failure<String>(UnsupportedOperationException("Reason 2"))
+
+    // The two results have different effective values.
+    assertThat(result1).hasSameEffectiveValueAs(result2).isFalse()
+  }
+
+  @Test
   fun testFailedResult_hashCode_isNotEqualToPendingResult() {
     val resultHash = AsyncResult.Failure<String>(UnsupportedOperationException("Reason")).hashCode()
 
@@ -725,6 +879,17 @@ class AsyncResultTest {
     assertThat(resultHash).isNotEqualTo(
       AsyncResult.Failure<String>(UnsupportedOperationException("Reason")).hashCode()
     )
+  }
+
+  @Test
+  fun testFailedResult_andFailedResult_sameExceptAge_hashCodes_areNotEqual() {
+    val exception = UnsupportedOperationException("Reason")
+    val result1 = AsyncResult.Failure<String>(exception)
+
+    fakeSystemClock.advanceTime(millis = 10)
+    val result2 = AsyncResult.Failure<String>(exception)
+
+    assertThat(result1.hashCode()).isNotEqualTo(result2.hashCode())
   }
 
   @Test

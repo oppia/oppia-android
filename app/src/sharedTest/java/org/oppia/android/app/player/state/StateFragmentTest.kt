@@ -534,7 +534,7 @@ class StateFragmentTest {
       startPlayingExploration()
       clickContinueInteractionButton()
 
-      // Attempt to submit an wrong answer.
+      // Attempt to submit a correct answer.
       typeFractionText("1/2")
       clickSubmitAnswerButton()
 
@@ -546,6 +546,154 @@ class StateFragmentTest {
           )
         )
       )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_hasDisabledSubmitButton() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_changeConfiguration_thirdState_hasDisabledSubmitButton() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      rotateToLandscape()
+
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_selectAnswer_submitButtonIsEnabled() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_selectAnswer_clickSubmit_continueButtonIsVisible() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_landscape_thirdState_selectAnswer_submitButtonIsEnabled() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      rotateToLandscape()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_land_thirdState_selectAnswer_clickSubmit_continueIsVisible() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      rotateToLandscape()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Attempt to submit an invalid answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
+      clickSubmitAnswerButton()
+
+      // The submission button should now be disabled and there should be an error.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_disablesSubmitButton() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Attempt to submit an invalid answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
+      clickSubmitAnswerButton()
+
+      // The submission button should now be disabled and there should be an error.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadExp_thirdState_invalidAnswer_updated_submitAnswerIsEnabled() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      // Attempt to submit an invalid answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Chicken")
+      clickSubmitAnswerButton()
+
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+
+      // The submit button should be re-enabled since the item selected again.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
   }
 
@@ -1057,6 +1205,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // Entering incorrect answer twice.
@@ -1078,6 +1227,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // Entering incorrect answer twice.
@@ -1103,6 +1253,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // Entering incorrect answer twice.
@@ -1128,6 +1279,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // This answer is incorrect and a detected misconception.
@@ -1152,6 +1304,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
 
       // This answer is incorrect and a detected misconception.
@@ -1175,6 +1328,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
       typeFractionText("3/2") // Misconception.
       clickSubmitAnswerButton()
@@ -1198,6 +1352,7 @@ class StateFragmentTest {
         optionPosition = 3,
         expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
       )
+      clickSubmitAnswerButton()
       clickContinueNavigationButton()
       typeFractionText("3/2") // Misconception.
       clickSubmitAnswerButton()
@@ -1720,6 +1875,7 @@ class StateFragmentTest {
       playThroughPrototypeState2()
 
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("Eagle")))
     }
@@ -1758,6 +1914,7 @@ class StateFragmentTest {
       playThroughPrototypeState2()
 
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
+      clickSubmitAnswerButton()
 
       onView(withId(R.id.submitted_answer_text_view))
         .check(matches(withText(containsString("النسر"))))
@@ -1774,6 +1931,7 @@ class StateFragmentTest {
       playThroughPrototypeState1()
       playThroughPrototypeState2()
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
+      clickSubmitAnswerButton()
 
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
@@ -2359,12 +2517,14 @@ class StateFragmentTest {
   private fun playThroughPrototypeState3() {
     // Third state: Multiple choice. Correct answer: Eagle.
     selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+    clickSubmitAnswerButton()
     clickContinueNavigationButton()
   }
 
   private fun playThroughPrototypeState4() {
     // Fourth state: Item selection (radio buttons). Correct answer: Green.
     selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
+    clickSubmitAnswerButton()
     clickContinueNavigationButton()
   }
 

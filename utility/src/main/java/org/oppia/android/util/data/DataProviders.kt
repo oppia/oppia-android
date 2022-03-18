@@ -386,7 +386,9 @@ class DataProviders @Inject constructor(
       checkNotNull(value) { "Null values should not be posted to NotifiableAsyncLiveData." }
       val currentCache = cache // This is safe because cache can only be changed on the main thread.
       if (currentCache != null) {
-        if (value.isNewerThanOrSameAgeAs(currentCache) && currentCache != value) {
+        if (value.isNewerThanOrSameAgeAs(currentCache) &&
+          !currentCache.hasSameEffectiveValueAs(value)
+        ) {
           // Only propagate the value if it's changed and is newer since it's possible for observer
           // callbacks to happen out-of-order.
           cache = value
