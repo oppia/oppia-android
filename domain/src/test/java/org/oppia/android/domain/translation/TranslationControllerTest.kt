@@ -1148,7 +1148,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testComputeTranslationContext_englishLocale_emptyMap_returnsEmptyContext() {
+  fun testComputeTranslationContext_englishLocale_emptyMap_returnsContextWithEngAndNoXlations() {
     ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
     val writtenTranslationsMap = mapOf<String, TranslationMapping>()
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
@@ -1157,11 +1157,14 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    assertThat(translationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(translationContext).isEqualTo(expectedContext)
   }
 
   @Test
-  fun testComputeTranslationContext_englishLocale_returnsEmptyContext() {
+  fun testComputeTranslationContext_englishLocale_returnsContextWithEnglishAndNoTranslations() {
     ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
     val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
@@ -1170,11 +1173,14 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    assertThat(translationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(translationContext).isEqualTo(expectedContext)
   }
 
   @Test
-  fun testComputeTranslationContext_defaultMismatchedLocale_returnsEmptyContext() {
+  fun testComputeTranslationContext_defaultMismatchedLocale_returnsContextWithEngAndNoXlations() {
     val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
     val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
@@ -1182,11 +1188,14 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    assertThat(translationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(translationContext).isEqualTo(expectedContext)
   }
 
   @Test
-  fun testComputeTranslationContext_arabicLocale_noArabicTranslationsInMap_returnsEmptyContext() {
+  fun testComputeTranslationContext_arabicLocale_emptyXlationsMap_returnsArabicContextNoXlations() {
     ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ARABIC)
     val writtenTranslationsWithoutArabicMap = createTranslationMappingWithout("ar")
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
@@ -1197,7 +1206,10 @@ class TranslationControllerTest {
         writtenTranslationsWithoutArabicMap, contentLocale
       )
 
-    assertThat(translationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ARABIC
+    }.build()
+    assertThat(translationContext).isEqualTo(expectedContext)
   }
 
   @Test

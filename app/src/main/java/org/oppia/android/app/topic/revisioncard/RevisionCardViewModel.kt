@@ -54,13 +54,15 @@ class RevisionCardViewModel @Inject constructor(
   private fun processRevisionCard(
     revisionCardResult: AsyncResult<EphemeralRevisionCard>
   ): EphemeralRevisionCard {
-    if (revisionCardResult.isFailure()) {
-      oppiaLogger.e(
-        "RevisionCardFragment",
-        "Failed to retrieve Revision Card",
-        revisionCardResult.getErrorOrNull()!!
-      )
+    return when (revisionCardResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "RevisionCardFragment", "Failed to retrieve Revision Card", revisionCardResult.error
+        )
+        EphemeralRevisionCard.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> EphemeralRevisionCard.getDefaultInstance()
+      is AsyncResult.Success -> revisionCardResult.value
     }
-    return revisionCardResult.getOrDefault(EphemeralRevisionCard.getDefaultInstance())
   }
 }

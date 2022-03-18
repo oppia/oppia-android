@@ -1,0 +1,959 @@
+{
+  "exploration_id": "test_exp_id_5",
+  "preferred_audio_language_code": "<unknown>",
+  "correctness_feedback_enabled": false,
+  "version": 0,
+  "record_playthrough_probability": 0.0,
+  "exploration": {
+    "init_state_name": "NumericExpressionInput.MatchesExactlyWith",
+    "param_changes": [],
+    "param_specs": {},
+    "states": {
+      "NumericExpressionInput.MatchesExactlyWith": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What numeric expression represents one plus two with no reordering allowed? Note: divisions are treated as fractions for this state.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "NumericExpressionInput",
+          "customization_args": {
+            "placeholder": {
+              "value": {
+                "content_id": "ca_placeholder_0",
+                "unicode_str": "Input a numeric expression."
+              }
+            },
+            "useFractionForDivision": {
+              "value": true
+            }
+          },
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "MatchesExactlyWith",
+              "inputs": {
+                "x": "1 + 2"
+              }
+            }],
+            "outcome": {
+              "dest": "NumericExpressionInput.MatchesUpToTrivialManipulations",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "NumericExpressionInput.MatchesExactlyWith",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Que expressão numérica representa uma mais duas sem reordenação permitida? Nota: As divisões são tratadas como frações para este estado. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هو التعبير الرقمي يمثل واحد زائد اثنين دون إعادة ترتيب المسموح به؟ ملاحظة: يتم التعامل مع الانقسامات ككسور لهذه الولاية. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            },
+            "ca_placeholder_0": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "Insira uma expressão numérica."},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "إدخال تعبير رقمي."},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "NumericExpressionInput.MatchesUpToTrivialManipulations": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What numeric expression represents one plus two? Note that commutative and associative reordering is allowed.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "NumericExpressionInput",
+          "customization_args": {},
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "MatchesUpToTrivialManipulations",
+              "inputs": {
+                "x": "1 + 2"
+              }
+            }],
+            "outcome": {
+              "dest": "NumericExpressionInput.IsEquivalentTo",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "NumericExpressionInput.MatchesUpToTrivialManipulations",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Que expressão numérica representa um mais dois? Note que a reordenação comutativa e associativa é permitida. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هو التعبير الرقمي يمثل واحد زائد اثنين؟ لاحظ أن إعادة ترتيب التوزيع والزملية مسموح بها. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "NumericExpressionInput.IsEquivalentTo": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What numeric expression represents one plus two? Note that any equivalent expression is allowed.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "NumericExpressionInput",
+          "customization_args": {},
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEquivalentTo",
+              "inputs": {
+                "x": "1 + 2"
+              }
+            }],
+            "outcome": {
+              "dest": "AlgebraicExpressionInput.MatchesExactlyWith",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "NumericExpressionInput.IsEquivalentTo",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Que expressão numérica representa um mais dois? Observe que qualquer expressão equivalente é permitida. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هو التعبير الرقمي يمثل واحد زائد اثنين؟ لاحظ أن أي تعبير معادل مسموح به. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "AlgebraicExpressionInput.MatchesExactlyWith": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What algebraic expression represents the product of (x+1)(x-2)? Note: divisions are treated as fractions for this state.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "AlgebraicExpressionInput",
+          "customization_args": {
+            "useFractionForDivision": {
+              "value": true
+            },
+            "customOskLetters": {
+              "value": ["x"]
+            }
+          },
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "MatchesExactlyWith",
+              "inputs": {
+                "x": "x^2 - x - 2"
+              }
+            }],
+            "outcome": {
+              "dest": "AlgebraicExpressionInput.MatchesUpToTrivialManipulations",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "AlgebraicExpressionInput.MatchesExactlyWith",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Qual expressão algébrica representa o produto de (x + 1) (x-2)? Nota: As divisões são tratadas como frações para este estado. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هو التعبير الجبري يمثل نتاج (x + 1) (x-2)؟ ملاحظة: يتم التعامل مع الانقسامات ككسور لهذه الولاية. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> هذه الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "AlgebraicExpressionInput.MatchesUpToTrivialManipulations": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What algebraic expression represents the product of (x+1)(x-2)? Note that commutative and associative reordering is allowed.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "AlgebraicExpressionInput",
+          "customization_args": {
+            "customOskLetters": {
+              "value": ["x"]
+            }
+          },
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "MatchesUpToTrivialManipulations",
+              "inputs": {
+                "x": "x^2 - x - 2"
+              }
+            }],
+            "outcome": {
+              "dest": "AlgebraicExpressionInput.IsEquivalentTo",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "AlgebraicExpressionInput.MatchesUpToTrivialManipulations",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Qual expressão algébrica representa o produto de (x + 1) (x-2)? Note que a reordenação comutativa e associativa é permitida. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هو التعبير الجبري يمثل نتاج (x + 1) (x-2)؟ لاحظ أن إعادة ترتيب التوزيع والزملية مسموح بها. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "AlgebraicExpressionInput.IsEquivalentTo": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What algebraic expression represents the product of (x+1)(x-2)? Note that any equivalent expression is allowed.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "AlgebraicExpressionInput",
+          "customization_args": {
+            "customOskLetters": {
+              "value": ["x"]
+            }
+          },
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEquivalentTo",
+              "inputs": {
+                "x": "x^2 - x - 2"
+              }
+            }],
+            "outcome": {
+              "dest": "MathEquationInput.MatchesExactlyWith",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "AlgebraicExpressionInput.IsEquivalentTo",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Qual expressão algébrica representa o produto de (x + 1) (x-2)? Observe que qualquer expressão equivalente é permitida. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هو التعبير الجبري يمثل نتاج (x + 1) (x-2)؟ لاحظ أن أي تعبير معادل مسموح به. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "MathEquationInput.MatchesExactlyWith": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note: divisions are treated as fractions for this state.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "MathEquationInput",
+          "customization_args": {
+            "useFractionForDivision": {
+              "value": true
+            },
+            "customOskLetters": {
+              "value": ["x", "y"]
+            }
+          },
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "MatchesExactlyWith",
+              "inputs": {
+                "x": "2y = x^2 - x - 2"
+              }
+            }],
+            "outcome": {
+              "dest": "MathEquationInput.MatchesUpToTrivialManipulations",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "MathEquationInput.MatchesExactlyWith",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Que equação algébrica representa a quantidade de dois y e (x + 1) (x-2)? Observação: as divisões são tratadas como frações para este estado. </p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هي المعادلة الجبرية تمثل كمية اثنين من y و (x + 1) (x-2)؟ ملاحظة: يتم التعامل مع الانقسامات ككسور لهذه الولاية. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "MathEquationInput.MatchesUpToTrivialManipulations": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note that commutative and associative reordering is allowed.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "MathEquationInput",
+          "customization_args": {
+            "customOskLetters": {
+              "value": ["x", "y"]
+            }
+          },
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "MatchesUpToTrivialManipulations",
+              "inputs": {
+                "x": "2y = x^2 - x - 2"
+              }
+            }],
+            "outcome": {
+              "dest": "MathEquationInput.IsEquivalentTo",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "MathEquationInput.MatchesUpToTrivialManipulations",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Qual equação algébrica representa a quantidade de dois y e (x + 1) (x-2)? Note que a reordenação comutativa e associativa é permitida. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما المعادلة الجبرية التي تمثل كمية اثنين y و (x + 1) (x-2)؟ لاحظ أنه يُسمح بإعادة الترتيب التبادلي والرابطي. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "MathEquationInput.IsEquivalentTo": {
+        "content": {
+          "content_id": "content",
+          "html": "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note that any equivalent expression is allowed, including reordering around the equals sign.</p>"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "MathEquationInput",
+          "customization_args": {
+            "customOskLetters": {
+              "value": ["x", "y"]
+            }
+          },
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "IsEquivalentTo",
+              "inputs": {
+                "x": "2y = x^2 - x - 2"
+              }
+            }],
+            "outcome": {
+              "dest": "End",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "<p>Correct!</p>"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "MathEquationInput.IsEquivalentTo",
+            "feedback": {
+              "content_id": "default_outcome",
+              "html": "<p>That answer isn't correct. Try again.</p>"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "feedback_1": {},
+            "content": {},
+            "default_outcome": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "feedback_1": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> correto! </ p>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> صحيح! </ p>"},
+                "needs_update": false
+              }
+            },
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Qual equação algébrica representa a quantidade de dois y e (x + 1) (x-2)? Observe que qualquer expressão equivalente é permitida, incluindo reordenando em torno do sinal de igual. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> ما هي المعادلة الجبرية تمثل كمية اثنين من y و (x + 1) (x-2)؟ لاحظ أن أي تعبير معادل مسموح به، بما في ذلك إعادة ترتيب حول علامة التساوي. </ p>"},
+                "needs_update": false
+              }
+            },
+            "default_outcome": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> Essa resposta não está correta. Tente novamente. </ P>"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "<p> تلك الإجابة غير صحيحة. حاول مرة أخرى. </ p>"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      },
+      "End": {
+        "content": {
+          "content_id": "content",
+          "html": "Congratulations, you have finished!"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "EndExploration",
+          "customization_args": {
+            "recommendedExplorationIds": {
+              "value": []
+            }
+          },
+          "answer_groups": [],
+          "default_outcome": null,
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {
+            "content": {}
+          }
+        },
+        "written_translations": {
+          "translations_mapping": {
+            "content": {
+              "pt": {
+                "data_format": "html",
+                "translation": {"translation" : "Parabéns, você terminou!"},
+                "needs_update": false
+              },
+              "ar": {
+                "data_format": "html",
+                "translation": {"translation" : "تهانينا، لقد انتهيت!"},
+                "needs_update": false
+              }
+            }
+          }
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1
+      }
+    },
+    "objective": "Demonstrate math interactions.",
+    "language_code": "en",
+    "correctness_feedback_enabled": false,
+    "title": "Math Expressions"
+  }
+}

@@ -1,0 +1,1107 @@
+id: "test_exp_id_5"
+states {
+  key: "NumericExpressionInput.MatchesExactlyWith"
+  value {
+    name: "NumericExpressionInput.MatchesExactlyWith"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What numeric expression represents one plus two with no reordering allowed? Note: divisions are treated as fractions for this state.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Que express\303\243o num\303\251rica representa uma mais duas sem reordena\303\247\303\243o permitida? Nota: As divis\303\265es s\303\243o tratadas como fra\303\247\303\265es para este estado. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\261\331\202\331\205\331\212 \331\212\331\205\330\253\331\204 \331\210\330\247\330\255\330\257 \330\262\330\247\330\246\330\257 \330\247\330\253\331\206\331\212\331\206 \330\257\331\210\331\206 \330\245\330\271\330\247\330\257\330\251 \330\252\330\261\330\252\331\212\330\250 \330\247\331\204\331\205\330\263\331\205\331\210\330\255 \330\250\331\207\330\237 \331\205\331\204\330\247\330\255\330\270\330\251: \331\212\330\252\331\205 \330\247\331\204\330\252\330\271\330\247\331\205\331\204 \331\205\330\271 \330\247\331\204\330\247\331\206\331\202\330\263\330\247\331\205\330\247\330\252 \331\203\331\203\330\263\331\210\330\261 \331\204\331\207\330\260\331\207 \330\247\331\204\331\210\331\204\330\247\331\212\330\251. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "ca_placeholder_0"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "Insira uma express\303\243o num\303\251rica."
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\245\330\257\330\256\330\247\331\204 \330\252\330\271\330\250\331\212\330\261 \330\261\331\202\331\205\331\212."
+          }
+        }
+      }
+    }
+    interaction {
+      id: "NumericExpressionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "NumericExpressionInput.MatchesUpToTrivialManipulations"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "1 + 2"
+            }
+          }
+          rule_type: "MatchesExactlyWith"
+        }
+      }
+      default_outcome {
+        dest_state_name: "NumericExpressionInput.MatchesExactlyWith"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "placeholder"
+        value {
+          custom_schema_value {
+            subtitled_unicode {
+              unicode_str: "Input a numeric expression."
+              content_id: "ca_placeholder_0"
+            }
+          }
+        }
+      }
+      customization_args {
+        key: "useFractionForDivision"
+        value {
+          bool_value: true
+        }
+      }
+    }
+  }
+}
+states {
+  key: "NumericExpressionInput.MatchesUpToTrivialManipulations"
+  value {
+    name: "NumericExpressionInput.MatchesUpToTrivialManipulations"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What numeric expression represents one plus two? Note that commutative and associative reordering is allowed.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Que express\303\243o num\303\251rica representa um mais dois? Note que a reordena\303\247\303\243o comutativa e associativa \303\251 permitida. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\261\331\202\331\205\331\212 \331\212\331\205\330\253\331\204 \331\210\330\247\330\255\330\257 \330\262\330\247\330\246\330\257 \330\247\330\253\331\206\331\212\331\206\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\245\330\271\330\247\330\257\330\251 \330\252\330\261\330\252\331\212\330\250 \330\247\331\204\330\252\331\210\330\262\331\212\330\271 \331\210\330\247\331\204\330\262\331\205\331\204\331\212\330\251 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207\330\247. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "NumericExpressionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "NumericExpressionInput.IsEquivalentTo"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "1 + 2"
+            }
+          }
+          rule_type: "MatchesUpToTrivialManipulations"
+        }
+      }
+      default_outcome {
+        dest_state_name: "NumericExpressionInput.MatchesUpToTrivialManipulations"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "NumericExpressionInput.IsEquivalentTo"
+  value {
+    name: "NumericExpressionInput.IsEquivalentTo"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What numeric expression represents one plus two? Note that any equivalent expression is allowed.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Que express\303\243o num\303\251rica representa um mais dois? Observe que qualquer express\303\243o equivalente \303\251 permitida. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\261\331\202\331\205\331\212 \331\212\331\205\330\253\331\204 \331\210\330\247\330\255\330\257 \330\262\330\247\330\246\330\257 \330\247\330\253\331\206\331\212\331\206\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\243\331\212 \330\252\330\271\330\250\331\212\330\261 \331\205\330\271\330\247\330\257\331\204 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "NumericExpressionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "AlgebraicExpressionInput.MatchesExactlyWith"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "1 + 2"
+            }
+          }
+          rule_type: "IsEquivalentTo"
+        }
+      }
+      default_outcome {
+        dest_state_name: "NumericExpressionInput.IsEquivalentTo"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+    }
+  }
+}
+states {
+  key: "AlgebraicExpressionInput.MatchesExactlyWith"
+  value {
+    name: "AlgebraicExpressionInput.MatchesExactlyWith"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What algebraic expression represents the product of (x+1)(x-2)? Note: divisions are treated as fractions for this state.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Qual express\303\243o alg\303\251brica representa o produto de (x + 1) (x-2)? Nota: As divis\303\265es s\303\243o tratadas como fra\303\247\303\265es para este estado. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\254\330\250\330\261\331\212 \331\212\331\205\330\253\331\204 \331\206\330\252\330\247\330\254 (x + 1) (x-2)\330\237 \331\205\331\204\330\247\330\255\330\270\330\251: \331\212\330\252\331\205 \330\247\331\204\330\252\330\271\330\247\331\205\331\204 \331\205\330\271 \330\247\331\204\330\247\331\206\331\202\330\263\330\247\331\205\330\247\330\252 \331\203\331\203\330\263\331\210\330\261 \331\204\331\207\330\260\331\207 \330\247\331\204\331\210\331\204\330\247\331\212\330\251. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\207\330\260\331\207 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "AlgebraicExpressionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "AlgebraicExpressionInput.MatchesUpToTrivialManipulations"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "x^2 - x - 2"
+            }
+          }
+          rule_type: "MatchesExactlyWith"
+        }
+      }
+      default_outcome {
+        dest_state_name: "AlgebraicExpressionInput.MatchesExactlyWith"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "useFractionForDivision"
+        value {
+          bool_value: true
+        }
+      }
+      customization_args {
+        key: "customOskLetters"
+        value {
+          schema_object_list {
+            schema_object {
+              normalized_string: "x"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "AlgebraicExpressionInput.MatchesUpToTrivialManipulations"
+  value {
+    name: "AlgebraicExpressionInput.MatchesUpToTrivialManipulations"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What algebraic expression represents the product of (x+1)(x-2)? Note that commutative and associative reordering is allowed.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Qual express\303\243o alg\303\251brica representa o produto de (x + 1) (x-2)? Note que a reordena\303\247\303\243o comutativa e associativa \303\251 permitida. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\254\330\250\330\261\331\212 \331\212\331\205\330\253\331\204 \331\206\330\252\330\247\330\254 (x + 1) (x-2)\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\245\330\271\330\247\330\257\330\251 \330\252\330\261\330\252\331\212\330\250 \330\247\331\204\330\252\331\210\330\262\331\212\330\271 \331\210\330\247\331\204\330\262\331\205\331\204\331\212\330\251 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207\330\247. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "AlgebraicExpressionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "AlgebraicExpressionInput.IsEquivalentTo"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "x^2 - x - 2"
+            }
+          }
+          rule_type: "MatchesUpToTrivialManipulations"
+        }
+      }
+      default_outcome {
+        dest_state_name: "AlgebraicExpressionInput.MatchesUpToTrivialManipulations"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "customOskLetters"
+        value {
+          schema_object_list {
+            schema_object {
+              normalized_string: "x"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "AlgebraicExpressionInput.IsEquivalentTo"
+  value {
+    name: "AlgebraicExpressionInput.IsEquivalentTo"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What algebraic expression represents the product of (x+1)(x-2)? Note that any equivalent expression is allowed.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Qual express\303\243o alg\303\251brica representa o produto de (x + 1) (x-2)? Observe que qualquer express\303\243o equivalente \303\251 permitida. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\210 \330\247\331\204\330\252\330\271\330\250\331\212\330\261 \330\247\331\204\330\254\330\250\330\261\331\212 \331\212\331\205\330\253\331\204 \331\206\330\252\330\247\330\254 (x + 1) (x-2)\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\243\331\212 \330\252\330\271\330\250\331\212\330\261 \331\205\330\271\330\247\330\257\331\204 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "AlgebraicExpressionInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "MathEquationInput.MatchesExactlyWith"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "x^2 - x - 2"
+            }
+          }
+          rule_type: "IsEquivalentTo"
+        }
+      }
+      default_outcome {
+        dest_state_name: "AlgebraicExpressionInput.IsEquivalentTo"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "customOskLetters"
+        value {
+          schema_object_list {
+            schema_object {
+              normalized_string: "x"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "MathEquationInput.MatchesExactlyWith"
+  value {
+    name: "MathEquationInput.MatchesExactlyWith"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note: divisions are treated as fractions for this state.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Que equa\303\247\303\243o alg\303\251brica representa a quantidade de dois y e (x + 1) (x-2)? Observa\303\247\303\243o: as divis\303\265es s\303\243o tratadas como fra\303\247\303\265es para este estado. </p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\212 \330\247\331\204\331\205\330\271\330\247\330\257\331\204\330\251 \330\247\331\204\330\254\330\250\330\261\331\212\330\251 \330\252\331\205\330\253\331\204 \331\203\331\205\331\212\330\251 \330\247\330\253\331\206\331\212\331\206 \331\205\331\206 y \331\210 (x + 1) (x-2)\330\237 \331\205\331\204\330\247\330\255\330\270\330\251: \331\212\330\252\331\205 \330\247\331\204\330\252\330\271\330\247\331\205\331\204 \331\205\330\271 \330\247\331\204\330\247\331\206\331\202\330\263\330\247\331\205\330\247\330\252 \331\203\331\203\330\263\331\210\330\261 \331\204\331\207\330\260\331\207 \330\247\331\204\331\210\331\204\330\247\331\212\330\251. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "MathEquationInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "MathEquationInput.MatchesUpToTrivialManipulations"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "2y = x^2 - x - 2"
+            }
+          }
+          rule_type: "MatchesExactlyWith"
+        }
+      }
+      default_outcome {
+        dest_state_name: "MathEquationInput.MatchesExactlyWith"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "useFractionForDivision"
+        value {
+          bool_value: true
+        }
+      }
+      customization_args {
+        key: "customOskLetters"
+        value {
+          schema_object_list {
+            schema_object {
+              normalized_string: "x"
+            }
+            schema_object {
+              normalized_string: "y"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "MathEquationInput.MatchesUpToTrivialManipulations"
+  value {
+    name: "MathEquationInput.MatchesUpToTrivialManipulations"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note that commutative and associative reordering is allowed.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Qual equa\303\247\303\243o alg\303\251brica representa a quantidade de dois y e (x + 1) (x-2)? Note que a reordena\303\247\303\243o comutativa e associativa \303\251 permitida. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \330\247\331\204\331\205\330\271\330\247\330\257\331\204\330\251 \330\247\331\204\330\254\330\250\330\261\331\212\330\251 \330\247\331\204\330\252\331\212 \330\252\331\205\330\253\331\204 \331\203\331\205\331\212\330\251 \330\247\330\253\331\206\331\212\331\206 y \331\210 (x + 1) (x-2)\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206\331\207 \331\212\331\217\330\263\331\205\330\255 \330\250\330\245\330\271\330\247\330\257\330\251 \330\247\331\204\330\252\330\261\330\252\331\212\330\250 \330\247\331\204\330\252\330\250\330\247\330\257\331\204\331\212 \331\210\330\247\331\204\330\261\330\247\330\250\330\267\331\212. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "MathEquationInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "MathEquationInput.IsEquivalentTo"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "2y = x^2 - x - 2"
+            }
+          }
+          rule_type: "MatchesUpToTrivialManipulations"
+        }
+      }
+      default_outcome {
+        dest_state_name: "MathEquationInput.MatchesUpToTrivialManipulations"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "customOskLetters"
+        value {
+          schema_object_list {
+            schema_object {
+              normalized_string: "x"
+            }
+            schema_object {
+              normalized_string: "y"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "MathEquationInput.IsEquivalentTo"
+  value {
+    name: "MathEquationInput.IsEquivalentTo"
+    recorded_voiceovers {
+      key: "feedback_1"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    recorded_voiceovers {
+      key: "default_outcome"
+      value {
+      }
+    }
+    content {
+      html: "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note that any equivalent expression is allowed, including reordering around the equals sign.</p>"
+      content_id: "content"
+    }
+    written_translations {
+      key: "feedback_1"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> correto! </ p>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\265\330\255\331\212\330\255! </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Qual equa\303\247\303\243o alg\303\251brica representa a quantidade de dois y e (x + 1) (x-2)? Observe que qualquer express\303\243o equivalente \303\251 permitida, incluindo reordenando em torno do sinal de igual. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \331\205\330\247 \331\207\331\212 \330\247\331\204\331\205\330\271\330\247\330\257\331\204\330\251 \330\247\331\204\330\254\330\250\330\261\331\212\330\251 \330\252\331\205\330\253\331\204 \331\203\331\205\331\212\330\251 \330\247\330\253\331\206\331\212\331\206 \331\205\331\206 y \331\210 (x + 1) (x-2)\330\237 \331\204\330\247\330\255\330\270 \330\243\331\206 \330\243\331\212 \330\252\330\271\330\250\331\212\330\261 \331\205\330\271\330\247\330\257\331\204 \331\205\330\263\331\205\331\210\330\255 \330\250\331\207\330\214 \330\250\331\205\330\247 \331\201\331\212 \330\260\331\204\331\203 \330\245\330\271\330\247\330\257\330\251 \330\252\330\261\330\252\331\212\330\250 \330\255\331\210\331\204 \330\271\331\204\330\247\331\205\330\251 \330\247\331\204\330\252\330\263\330\247\331\210\331\212. </ p>"
+          }
+        }
+      }
+    }
+    written_translations {
+      key: "default_outcome"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "<p> Essa resposta n\303\243o est\303\241 correta. Tente novamente. </ P>"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "<p> \330\252\331\204\331\203 \330\247\331\204\330\245\330\254\330\247\330\250\330\251 \330\272\331\212\330\261 \330\265\330\255\331\212\330\255\330\251. \330\255\330\247\331\210\331\204 \331\205\330\261\330\251 \330\243\330\256\330\261\331\211. </ p>"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "MathEquationInput"
+      answer_groups {
+        outcome {
+          dest_state_name: "End"
+          feedback {
+            html: "<p>Correct!</p>"
+            content_id: "feedback_1"
+          }
+          labelled_as_correct: true
+        }
+        rule_specs {
+          input {
+            key: "x"
+            value {
+              math_expression: "2y = x^2 - x - 2"
+            }
+          }
+          rule_type: "IsEquivalentTo"
+        }
+      }
+      default_outcome {
+        dest_state_name: "MathEquationInput.IsEquivalentTo"
+        feedback {
+          html: "<p>That answer isn\'t correct. Try again.</p>"
+          content_id: "default_outcome"
+        }
+      }
+      customization_args {
+        key: "customOskLetters"
+        value {
+          schema_object_list {
+            schema_object {
+              normalized_string: "x"
+            }
+            schema_object {
+              normalized_string: "y"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+states {
+  key: "End"
+  value {
+    name: "End"
+    recorded_voiceovers {
+      key: "content"
+      value {
+      }
+    }
+    content {
+      html: "Congratulations, you have finished!"
+      content_id: "content"
+    }
+    written_translations {
+      key: "content"
+      value {
+        translation_mapping {
+          key: "pt"
+          value {
+            html: "Parab\303\251ns, voc\303\252 terminou!"
+          }
+        }
+        translation_mapping {
+          key: "ar"
+          value {
+            html: "\330\252\331\207\330\247\331\206\331\212\331\206\330\247\330\214 \331\204\331\202\330\257 \330\247\331\206\330\252\331\207\331\212\330\252!"
+          }
+        }
+      }
+    }
+    interaction {
+      id: "EndExploration"
+      customization_args {
+        key: "recommendedExplorationIds"
+        value {
+          schema_object_list {
+          }
+        }
+      }
+    }
+  }
+}
+init_state_name: "NumericExpressionInput.MatchesExactlyWith"
+objective: "Demonstrate math interactions."
+title: "Math Expressions"
+language_code: "en"

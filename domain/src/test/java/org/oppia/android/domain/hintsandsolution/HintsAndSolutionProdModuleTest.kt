@@ -38,9 +38,7 @@ class HintsAndSolutionProdModuleTest {
 
   @Test
   fun testHintHandlerFactoryInjection_constructNewHandler_providesFactoryForProdImplHandler() {
-    val hintHandler = hintHandlerFactory.create(object : HintHandler.HintMonitor {
-      override fun onHelpIndexChanged() {}
-    })
+    val hintHandler = hintHandlerFactory.create()
 
     assertThat(hintHandler).isInstanceOf(HintHandlerProdImpl::class.java)
   }

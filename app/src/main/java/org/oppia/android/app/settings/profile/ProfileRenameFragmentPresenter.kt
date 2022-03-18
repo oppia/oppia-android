@@ -101,12 +101,12 @@ class ProfileRenameFragmentPresenter @Inject constructor(
   }
 
   private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
-    if (result.isSuccess()) {
+    if (result is AsyncResult.Success) {
       val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       activity.startActivity(intent)
-    } else if (result.isFailure()) {
-      when (result.getErrorOrNull()) {
+    } else if (result is AsyncResult.Failure) {
+      when (result.error) {
         is ProfileManagementController.ProfileNameNotUniqueException ->
           renameViewModel.nameErrorMsg.set(
             resourceHandler.getStringInLocale(

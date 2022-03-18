@@ -59,7 +59,7 @@
                 "content_id": "feedback_1",
                 "html": "<b>Correct!</b>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -270,7 +270,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct! Eagles can sustain flight.</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -421,7 +421,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -568,7 +568,7 @@
               "content_id": "default_outcome",
               "html": "Continuing onward."
             },
-            "labelled_as_correct": false,
+            "labelled_as_correct": true,
             "param_changes": [],
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
@@ -636,7 +636,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -861,7 +861,7 @@
                 "content_id": "feedback_2",
                 "html": "<p>Correct</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -880,7 +880,7 @@
                 "content_id": "feedback_3",
                 "html": "<p>Correct</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -1025,7 +1025,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -1162,7 +1162,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -1311,7 +1311,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>That's correct</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -1538,7 +1538,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>That's correct</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""

@@ -15,7 +15,7 @@ kt_android_library(
         ":dagger",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
-        "//model:event_logger_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",

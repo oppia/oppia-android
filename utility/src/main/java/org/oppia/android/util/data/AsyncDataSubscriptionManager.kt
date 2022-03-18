@@ -24,7 +24,6 @@ class AsyncDataSubscriptionManager @Inject constructor(
   private val subscriptionLock = ReentrantLock()
   private val subscriptionMap = mutableMapOf<Any, MutableSet<ObserveAsyncChange>>()
   private val associatedIds = mutableMapOf<Any, MutableSet<Any>>()
-  private val backgroundCoroutineScope = CoroutineScope(backgroundDispatcher)
 
   /** Subscribes the specified callback function to the specified [DataProvider] ID. */
   fun subscribe(id: Any, observeChange: ObserveAsyncChange) {
@@ -94,7 +93,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
    * changes on a background thread.
    */
   fun notifyChangeAsync(id: Any) {
-    backgroundCoroutineScope.launch { notifyChange(id) }
+    CoroutineScope(backgroundDispatcher).launch { notifyChange(id) }
   }
 
   /**
