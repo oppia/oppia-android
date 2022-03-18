@@ -2,7 +2,6 @@ package org.oppia.android.domain.oppialogger.loguploader
 
 import android.app.Application
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -21,38 +20,27 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.logging.FakeSyncStatusManager
-import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProvidersInjector
-import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -66,14 +54,8 @@ private const val TEST_TOPIC_ID = "test_topicId"
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = LogUploadWorkerTest.TestApplication::class)
+@Config(manifest = Config.NONE)
 class LogUploadWorkerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @get:Rule
-  val executorRule = InstantTaskExecutorRule()
 
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
@@ -101,9 +83,6 @@ class LogUploadWorkerTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
 
   private lateinit var context: Context
 
@@ -158,7 +137,7 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(fakeEventLogger.getMostRecentCachedEvent()).isEqualTo(eventLogTopicContext)
+    assertThat(fakeEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
   }
 
   @Test
@@ -189,34 +168,6 @@ class LogUploadWorkerTest {
     // The following can't be an exact match for the stack trace since new properties are added to
     // stack trace elements in newer versions of Java (such as module name).
     assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
-  }
-
-  @Test
-  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyCorrectSyncStatusSequence() {
-    networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logTransitionEvent(
-      eventLogTopicContext.timestamp,
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
-    )
-
-    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
-
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
-
-    workManager.enqueue(request)
-    testCoroutineDispatchers.runCurrent()
-
-    val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
-    assertThat(syncStatusList[0]).isEqualTo(SyncStatusManager.SyncStatus.NETWORK_ERROR)
-    assertThat(syncStatusList[1]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADING)
-    assertThat(syncStatusList[2]).isEqualTo(SyncStatusManager.SyncStatus.DATA_UPLOADED)
   }
 
   /**
@@ -278,12 +229,10 @@ class LogUploadWorkerTest {
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class
+      LoggerModule::class, AssetModule::class, LoggerModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -292,19 +241,5 @@ class LogUploadWorkerTest {
     }
 
     fun inject(logUploadWorkerTest: LogUploadWorkerTest)
-  }
-
-  class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build()
-    }
-
-    fun inject(logUploadWorkerTest: LogUploadWorkerTest) {
-      component.inject(logUploadWorkerTest)
-    }
-
-    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
