@@ -130,7 +130,7 @@ jobs:
       - name: Robolectric tests - App Module
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
-          sudo ./gradlew --full-stacktrace :app:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
+          sudo ./gradlew --full-stacktrace :app:testDebugUnitTest --${{ matrix.shard }} -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
