@@ -17,7 +17,6 @@ import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
@@ -70,8 +69,7 @@ class ProfileManagementController @Inject constructor(
   private val directoryManagementUtil: DirectoryManagementUtil,
   private val exceptionsController: ExceptionsController,
   private val oppiaClock: OppiaClock,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  private val loggingIdentifierController: LoggingIdentifierController
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -215,8 +213,8 @@ class ProfileManagementController @Inject constructor(
 
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
-      val learnerId = loggingIdentifierController.createLearnerId()
 
+      // TODO: fill in the learner ID below.
       val newProfileBuilder = Profile.newBuilder()
         .setName(name)
         .setPin(pin)
@@ -227,7 +225,7 @@ class ProfileManagementController @Inject constructor(
         .setReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
         .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
         .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
-        .setLearnerId(learnerId)
+        .setLearnerId("uninitialized")
 
       if (avatarImagePath != null) {
         val imageUri =
@@ -546,8 +544,8 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val learnerId = loggingIdentifierController.createLearnerId()
-      val updatedProfile = profile.toBuilder().setLearnerId(learnerId).build()
+      // TODO: update the learner ID below.
+      val updatedProfile = profile.toBuilder().setLearnerId("uninitialized").build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile
