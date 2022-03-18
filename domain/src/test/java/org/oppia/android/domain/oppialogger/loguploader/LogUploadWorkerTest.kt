@@ -87,10 +87,9 @@ class LogUploadWorkerTest {
   private lateinit var context: Context
 
   private val eventLogTopicContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setTopicContext(
+        .setOpenInfoTab(
           EventLog.TopicContext.newBuilder()
             .setTopicId(TEST_TOPIC_ID)
             .build()
@@ -119,8 +118,7 @@ class LogUploadWorkerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       eventLogTopicContext.timestamp,
-      eventLogTopicContext.actionName,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())

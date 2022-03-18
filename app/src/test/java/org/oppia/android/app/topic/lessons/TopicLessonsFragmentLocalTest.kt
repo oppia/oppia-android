@@ -105,10 +105,9 @@ class TopicLessonsFragmentLocalTest {
       val event = fakeEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase)
-        .isEqualTo(EventLog.Context.ActivityContextCase.TOPIC_CONTEXT)
+        .isEqualTo(EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_LESSONS_TAB)
-      assertThat(event.context.topicContext.topicId).matches(TEST_TOPIC_ID)
+      assertThat(event.context.openLessonsTab.topicId).matches(TEST_TOPIC_ID)
     }
   }
 

@@ -12,10 +12,10 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
-import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -28,7 +28,6 @@ class SelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
-  private val interactionAnswerReceiver: InteractionAnswerReceiver,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
@@ -69,11 +68,6 @@ class SelectionInteractionViewModel private constructor(
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-  }
-
-  override fun isExplicitAnswerSubmissionRequired(): Boolean {
-    // If more than one answer is allowed, then a submission button is needed.
-    return maxAllowableSelectionCount > 1
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -126,45 +120,43 @@ class SelectionInteractionViewModel private constructor(
 
   /** Catalogs an item being clicked by the user and returns whether the item should be considered selected. */
   fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
-    if (areCheckboxesBound()) {
-      if (isCurrentlySelected) {
+    return when {
+      isCurrentlySelected -> {
         selectedItems -= itemIndex
-        val wasSelectedItemListEmpty = isAnswerAvailable.get()
-        if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
-          isAnswerAvailable.set(selectedItems.isNotEmpty())
-        }
-        return false
-      } else if (selectedItems.size < maxAllowableSelectionCount) {
+        updateIsAnswerAvailable()
+        false
+      }
+      !areCheckboxesBound() -> {
+        // Disable all items to simulate a radio button group.
+        choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
+        selectedItems.clear()
+        selectedItems += itemIndex
+        updateIsAnswerAvailable()
+        true
+      }
+      selectedItems.size < maxAllowableSelectionCount -> {
         // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
         //  number required.
         selectedItems += itemIndex
-        val wasSelectedItemListEmpty = isAnswerAvailable.get()
-        if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
-          isAnswerAvailable.set(selectedItems.isNotEmpty())
-        }
-        return true
+        updateIsAnswerAvailable()
+        true
       }
-    } else {
-      // Disable all items to simulate a radio button group.
-      choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
-      selectedItems.clear()
-      selectedItems += itemIndex
-      val wasSelectedItemListEmpty = isAnswerAvailable.get()
-      if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
-        isAnswerAvailable.set(selectedItems.isNotEmpty())
+      else -> {
+        // Do not change the current status if it isn't valid to do so.
+        isCurrentlySelected
       }
-      // Only push the answer if explicit submission isn't required.
-      if (maxAllowableSelectionCount == 1) {
-        interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
-      }
-      return true
     }
-    // Do not change the current status if it isn't valid to do so.
-    return isCurrentlySelected
   }
 
   private fun areCheckboxesBound(): Boolean {
     return interactionId == "ItemSelectionInput" && maxAllowableSelectionCount > 1
+  }
+
+  private fun updateIsAnswerAvailable() {
+    val wasSelectedItemListEmpty = isAnswerAvailable.get()
+    if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
+      isAnswerAvailable.set(selectedItems.isNotEmpty())
+    }
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
@@ -185,7 +177,6 @@ class SelectionInteractionViewModel private constructor(
         entityId,
         hasConversationView,
         interaction,
-        interactionAnswerReceiver,
         answerErrorReceiver,
         isSplitView,
         writtenTranslationContext,

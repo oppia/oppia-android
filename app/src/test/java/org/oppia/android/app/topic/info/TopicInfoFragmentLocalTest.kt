@@ -23,6 +23,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
@@ -104,10 +105,9 @@ class TopicInfoFragmentLocalTest {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
       val event = fakeEventLogger.getMostRecentEvent()
 
-      assertThat(event.context.activityContextCase).isEqualTo(TOPIC_CONTEXT)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_INFO_TAB)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.actionName).isEqualTo(EventLog.EventAction.OPEN_INFO_TAB)
-      assertThat(event.context.topicContext.topicId).matches(TEST_TOPIC_ID)
+      assertThat(event.context.openInfoTab.topicId).matches(TEST_TOPIC_ID)
     }
   }
 

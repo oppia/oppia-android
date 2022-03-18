@@ -21,8 +21,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
-import org.oppia.android.app.model.EventLog.EventAction
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -102,8 +101,7 @@ class ProfileChooserFragmentLocalTest {
       val event = fakeEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
-      assertThat(event.actionName).isEqualTo(EventAction.OPEN_PROFILE_CHOOSER)
-      assertThat(event.context.activityContextCase).isEqualTo(ACTIVITYCONTEXT_NOT_SET)
+      assertThat(event.context.activityContextCase).isEqualTo(OPEN_PROFILE_CHOOSER)
     }
   }
 

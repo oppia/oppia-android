@@ -25,7 +25,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyZeroInteractions
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.FakeExceptionLogger
@@ -36,6 +36,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.combineWithAsync
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -88,6 +89,9 @@ class DataProvidersTest {
   @Mock lateinit var mockIntLiveDataObserver: Observer<AsyncResult<Int>>
   @Captor lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
   @Captor lateinit var intResultCaptor: ArgumentCaptor<AsyncResult<Int>>
+
+  @Inject
+  lateinit var fakeSystemClock: FakeSystemClock
 
   private var inMemoryCachedStr: String? = null
   private var inMemoryCachedStr2: String? = null
@@ -213,7 +217,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     // The observer should have no interactions since the data hasn't changed.
-    verifyZeroInteractions(mockIntLiveDataObserver)
+    verifyNoMoreInteractions(mockIntLiveDataObserver)
   }
 
   @Test
@@ -252,6 +256,28 @@ class DataProvidersTest {
   }
 
   @Test
+  fun testConvertToLiveData_dataProvider_providesPendingResultTwice_doesNotRedeliver() {
+    val simpleDataProvider = object : DataProvider<Int>(context) {
+      override fun getId(): Any = "simple_data_provider"
+
+      // Return a new pending result for each call.
+      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Pending()
+    }
+    // Ensure the initial value is retrieved.
+    simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
+    testCoroutineDispatchers.advanceUntilIdle()
+    reset(mockIntLiveDataObserver)
+
+    testCoroutineDispatchers.advanceTimeBy(10)
+    asyncDataSubscriptionManager.notifyChangeAsync(simpleDataProvider.getId())
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Despite there being a notification, it shouldn't redeliver the result since the two values
+    // are effectively equal.
+    verifyNoMoreInteractions(mockIntLiveDataObserver)
+  }
+
+  @Test
   fun testInMemoryDataProvider_toLiveData_deliversInMemoryValue() {
     val dataProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
 
@@ -273,7 +299,7 @@ class DataProvidersTest {
     testCoroutineDispatchers.advanceUntilIdle()
 
     // The observer should not be notified again since the value hasn't changed.
-    verifyZeroInteractions(mockStringLiveDataObserver)
+    verifyNoMoreInteractions(mockStringLiveDataObserver)
   }
 
   @Test
@@ -464,7 +490,7 @@ class DataProvidersTest {
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
 
     // The observer should never be called since the underlying async function hasn't yet completed.
-    verifyZeroInteractions(mockStringLiveDataObserver)
+    verifyNoMoreInteractions(mockStringLiveDataObserver)
   }
 
   @Test
@@ -874,7 +900,7 @@ class DataProvidersTest {
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
 
     // No value should be delivered since the async function is blocked.
-    verifyZeroInteractions(mockIntLiveDataObserver)
+    verifyNoMoreInteractions(mockIntLiveDataObserver)
   }
 
   @Test
@@ -2100,7 +2126,7 @@ class DataProvidersTest {
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
 
     // The value should not yet be delivered since the first provider is blocked.
-    verifyZeroInteractions(mockStringLiveDataObserver)
+    verifyNoMoreInteractions(mockStringLiveDataObserver)
   }
 
   @Test
@@ -2139,7 +2165,7 @@ class DataProvidersTest {
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
 
     // The value should not yet be delivered since the first provider is blocked.
-    verifyZeroInteractions(mockStringLiveDataObserver)
+    verifyNoMoreInteractions(mockStringLiveDataObserver)
   }
 
   @Test
@@ -2176,7 +2202,7 @@ class DataProvidersTest {
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
 
     // The value should not yet be delivered.
-    verifyZeroInteractions(mockStringLiveDataObserver)
+    verifyNoMoreInteractions(mockStringLiveDataObserver)
   }
 
   @Test
@@ -2344,7 +2370,7 @@ class DataProvidersTest {
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
 
     // No value should be delivered since the async function is blocked.
-    verifyZeroInteractions(mockIntLiveDataObserver)
+    verifyNoMoreInteractions(mockIntLiveDataObserver)
   }
 
   @Test
