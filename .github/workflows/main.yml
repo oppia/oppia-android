@@ -135,7 +135,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
-          name: app reports
+          name: app reports ${{ matrix.shard }}
           path: app/build/reports
 
   app_tests:
