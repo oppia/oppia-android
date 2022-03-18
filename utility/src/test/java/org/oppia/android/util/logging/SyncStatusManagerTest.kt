@@ -2,7 +2,6 @@ package org.oppia.android.util.logging
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -10,29 +9,17 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.asCoroutineDispatcher
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
@@ -48,10 +35,8 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.data.DataProviderTestMonitor
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
