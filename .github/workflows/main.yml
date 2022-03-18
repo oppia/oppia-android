@@ -97,12 +97,13 @@ jobs:
           name: testing reports
           path: testing/build/reports
 
-  app_tests:
-    name: App Module Robolectric Tests
-    runs-on: ${{ matrix.os }}
+  run_app_module_test:
+    name: Run app module Robolectric test shard
+    runs-on: ubuntu-18.04
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-18.04]
+        shard: [shard0, shard0, shard0, shard0]
     steps:
       - uses: actions/checkout@v2
 
@@ -136,3 +137,16 @@ jobs:
         with:
           name: app reports
           path: app/build/reports
+
+  app_tests:
+    name: App Module Robolectric Tests
+    needs: run_app_module_test
+    if: ${{ always() }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    steps:
+      - name: Check tests passed (for tests that ran)
+        if: ${{ needs.run_app_module_test.result != 'success' }}
+        run: exit 1
