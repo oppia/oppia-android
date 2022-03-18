@@ -1,6 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import androidx.lifecycle.Transformations
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -16,7 +15,6 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
-import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
@@ -26,17 +24,14 @@ import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.SUBMIT
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.VIEWING_STATE
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.hintsandsolution.HintHandler
-import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -97,8 +92,6 @@ class ExplorationProgressController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val hintHandlerFactory: HintHandler.Factory,
   private val translationController: TranslationController,
-  private val loggingIdentifierController: LoggingIdentifierController,
-  private val profileManagementController: ProfileManagementController,
   private val dataProviders: DataProviders,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
@@ -935,28 +928,6 @@ class ExplorationProgressController @Inject constructor(
       explorationId,
       lastPlayedTimestamp
     )
-  }
-
-  private fun getLearnerId(): String? {
-    // TODO: This isn't going to work since the live data won't be processed.
-    return "invalid"
-//    return Transformations.map(
-//      profileManagementController.getProfile(explorationProgress.currentProfileId).toLiveData(),
-//      ::processGetProfileResult
-//    ).value?.learnerId
-  }
-
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    return when (profileResult) {
-      is AsyncResult.Pending -> Profile.getDefaultInstance() // Wait for an actual result.
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ExplorationProgressController", "Failed to retrieve profile", profileResult.error
-        )
-        Profile.getDefaultInstance() // No profile to return.
-      }
-      is AsyncResult.Success -> profileResult.value
-    }
   }
 
   private fun <T> createAsyncResultStateFlow(initialValue: AsyncResult<T> = AsyncResult.Pending()) =

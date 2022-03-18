@@ -2,7 +2,6 @@
 Library for providing logging analytics to the Oppia android app.
 """
 
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -12,9 +11,8 @@ kt_android_library(
     ],
     visibility = ["//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__"],
     deps = [
-        ":dagger",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:storage_module",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
@@ -23,45 +21,3 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
     ],
 )
-
-kt_android_library(
-    name = "learner_analytics_inactivity_limit_millis",
-    srcs = [
-        "LearnerAnalyticsInactivityLimitMillis.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "application_lifecycle_observer",
-    srcs = [
-        "ApplicationLifecycleObserver.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":dagger",
-        ":learner_analytics_inactivity_limit_millis",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//third_party:androidx_lifecycle_lifecycle-extensions",
-        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
-    ],
-)
-
-kt_android_library(
-    name = "prod_module",
-    srcs = [
-        "ApplicationLifecycleModule.kt",
-    ],
-    visibility = ["//:oppia_prod_module_visibility"],
-    deps = [
-        ":application_lifecycle_observer",
-        ":dagger",
-        ":learner_analytics_inactivity_limit_millis",
-    ],
-)
-
-dagger_rules()

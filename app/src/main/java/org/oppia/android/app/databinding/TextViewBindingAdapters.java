@@ -44,17 +44,6 @@ public final class TextViewBindingAdapters {
     textView.setText(profileLastVisited);
   }
 
-  /** Binds an AndroidX KitKat-compatible drawable top to the specified text view. */
-  @BindingAdapter("app:drawableTopCompat")
-  public static void setDrawableTopCompat(
-      @NonNull TextView imageView,
-      Drawable drawable
-  ) {
-    imageView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-        /* start= */ null, /* top= */ drawable, /* end= */ null, /* bottom= */ null
-    );
-  }
-
   /** Binds an AndroidX KitKat-compatible drawable end to the specified text view. */
   @BindingAdapter("app:drawableEndCompat")
   public static void setDrawableEndCompat(
@@ -62,7 +51,7 @@ public final class TextViewBindingAdapters {
       Drawable drawable
   ) {
     imageView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-        /* start= */ null, /* top= */ null, /* end= */ drawable, /* bottom= */ null
+        /* start= */ null, /* top= */ null, /* end= */ drawable, /* bottom=*/ null
     );
   }
 

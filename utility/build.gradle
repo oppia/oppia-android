@@ -67,7 +67,7 @@ dependencies {
       'com.github.oppia:androidsvg:6bd15f69caee3e6857fcfcd123023716b4adec1d',
       'com.github.oppia:kotlitex:6b7db8ff9e0f4a70bdaa25f482143e038fd0c301',
       'com.github.bumptech.glide:glide:4.11.0',
-      'com.google.dagger:dagger:2.34',
+      'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
       'com.google.firebase:firebase-core:17.5.0',
       'com.google.firebase:firebase-crashlytics:17.0.0',
@@ -83,7 +83,7 @@ dependencies {
   testImplementation(
       'androidx.test.ext:junit:1.1.1',
       'androidx.test.ext:truth:1.4.0',
-      'com.google.dagger:dagger:2.34',
+      'com.google.dagger:dagger:2.24',
       'com.google.truth:truth:1.1.3',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
       'junit:junit:4.12',
@@ -95,10 +95,10 @@ dependencies {
   )
   kapt(
       'com.github.bumptech.glide:compiler:4.11.0',
-      'com.google.dagger:dagger-compiler:2.34'
+      'com.google.dagger:dagger-compiler:2.24'
   )
   kaptTest(
-      'com.google.dagger:dagger-compiler:2.34'
+      'com.google.dagger:dagger-compiler:2.24'
   )
   // TODO(#59): Remove this once Bazel is introduced
   // sufficiently visible for generated Dagger code. This can be done more cleanly via Bazel since dependencies can be
