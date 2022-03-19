@@ -1,0 +1,59 @@
+# TODO: Remove this file once development is completed (since modularized app module tests aren't being added yet?)
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//app:app_test.bzl", "app_test")
+load("//app:test_with_resources.bzl", "test_with_resources")
+
+app_test(
+    name = "ProfileAndDeviceIdActivityTest",
+    processed_src = test_with_resources("ProfileAndDeviceIdActivityTest.kt"),
+    test_class = "org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivityTest",
+    deps = [
+        ":dagger",
+        "//app",
+        "//app:test_deps",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/logging:user_id_test_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_work_work-testing",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+app_test(
+    name = "ProfileAndDeviceIdFragmentTest",
+    processed_src = test_with_resources("ProfileAndDeviceIdFragmentTest.kt"),
+    test_class = "org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragmentTest",
+    deps = [
+        ":dagger",
+        "//app",
+        "//app:test_deps",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
+        "//testing/src/main/java/org/oppia/android/testing/logging:user_id_test_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_work_work-testing",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+dagger_rules()

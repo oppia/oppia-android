@@ -16,6 +16,7 @@ import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -173,6 +174,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.viewModel = model
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
+      updateLearnerIdIfAbsent(model.profile)
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).toLiveData().observe(
           fragment,
@@ -254,5 +256,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(), eventContext = oppiaLogger.createOpenProfileChooserContext()
     )
+  }
+
+  private fun updateLearnerIdIfAbsent(profile: Profile) {
+    if (profile.learnerId.isNullOrEmpty()) {
+      profileManagementController.updateLearnerId(profile.id)
+    }
   }
 }
