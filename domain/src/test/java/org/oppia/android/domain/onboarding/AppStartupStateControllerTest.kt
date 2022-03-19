@@ -43,6 +43,12 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.system.UserIdProdModule
 
 /** Tests for [AppStartupStateController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -365,7 +371,10 @@ class AppStartupStateControllerTest {
       TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
       NetworkConnectionUtilDebugModule::class,
       OppiaClockModule::class, LocaleProdModule::class,
-      ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
+      ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

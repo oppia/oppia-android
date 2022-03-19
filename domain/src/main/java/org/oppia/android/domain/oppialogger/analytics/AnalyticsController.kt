@@ -12,6 +12,7 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import javax.inject.Inject
+import org.oppia.android.util.logging.SyncStatusManager
 
 /**
  * Controller for handling analytics event logging.
@@ -25,6 +26,7 @@ class AnalyticsController @Inject constructor(
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
+  private val syncStatusManager: SyncStatusManager,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int
 ) {
   private val eventLogStore =
@@ -85,10 +87,14 @@ class AnalyticsController @Inject constructor(
    */
   private fun uploadOrCacheEventLog(eventLog: EventLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
-      NONE -> cacheEventLog(eventLog)
+      NONE -> {
+        syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NO_CONNECTIVITY)
+        cacheEventLog(eventLog)
+      }
       else -> {
-        // TODO: update sync status for immediate uploading.
+        syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
         eventLogger.logEvent(eventLog)
+        syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
       }
     }
   }

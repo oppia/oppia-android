@@ -68,6 +68,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.system.UserIdProdModule
 
 /** Tests for [ExplorationDataController]. */
 // Function name: test names are conventionally named with underscores.
@@ -272,7 +278,10 @@ class ExplorationDataControllerTest {
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

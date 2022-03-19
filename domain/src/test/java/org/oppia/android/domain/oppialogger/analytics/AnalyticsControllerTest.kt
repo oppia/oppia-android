@@ -70,6 +70,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -730,7 +732,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_logEvent_withoutNetwork_verifySyncStatusEqualsNetworkError() {
+  fun testController_logEvent_withoutNetwork_verifySyncStatusEqualsNoConnectivity() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logTransitionEvent(
       1556094120000,
@@ -742,8 +744,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    // TODO: verify that this is an error.
-    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
+    assertThat(fakeSyncStatusManager.getSyncStatuses().last()).isEqualTo(NO_CONNECTIVITY)
   }
 
   @Test
@@ -758,8 +759,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    // TODO: verify that this is a uploaded.
-    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
+    assertThat(fakeSyncStatusManager.getSyncStatuses().last()).isEqualTo(DATA_UPLOADED)
   }
 
   @Test
@@ -773,9 +773,8 @@ class AnalyticsControllerTest {
         )
       )
     )
-    // TODO: Verify sync status order: uploading then uploaded.
     val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
-    assertThat(syncStatusList).isEmpty()
+    assertThat(syncStatusList).containsExactly(DATA_UPLOADING, DATA_UPLOADED).inOrder()
   }
 
   private fun setUpTestApplicationComponent() {

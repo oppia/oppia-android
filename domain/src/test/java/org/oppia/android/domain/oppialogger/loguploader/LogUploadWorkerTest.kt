@@ -52,7 +52,6 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -60,6 +59,13 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
+import org.oppia.android.util.system.UserIdProdModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -213,9 +219,8 @@ class LogUploadWorkerTest {
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
-    val syncStatusList = fakeSyncStatusManager.getSyncStatuses()
-    // TODO: Verify correct sequence: error -> uploading -> uploaded.
-    assertThat(syncStatusList).isEmpty()
+    val statusList = fakeSyncStatusManager.getSyncStatuses()
+    assertThat(statusList).containsExactly(NO_CONNECTIVITY, DATA_UPLOADING, DATA_UPLOADED).inOrder()
   }
 
   /**
@@ -279,7 +284,7 @@ class LogUploadWorkerTest {
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class
+      SyncStatusTestModule::class, ApplicationLifecycleModule::class, UserIdProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

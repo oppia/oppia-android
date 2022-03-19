@@ -25,6 +25,12 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KCallable
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.system.UserIdProdModule
 
 /**
  * Test for [ReportSchemaVersion] that validates the proper schema version is sent in feedback
@@ -167,7 +173,10 @@ class ReportSchemaVersionTest {
   @Component(
     modules = [
       TestModule::class, FeedbackReportingModule::class, TestDispatcherModule::class,
-      TestLogReportingModule::class, RobolectricModule::class
+      TestLogReportingModule::class, RobolectricModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {

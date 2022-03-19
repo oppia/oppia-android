@@ -4,6 +4,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.util.logging.EventLogger
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusManager
 
 /**  A test specific fake for the event logger. */
 @Singleton
@@ -13,7 +14,6 @@ class FakeEventLogger @Inject constructor() : EventLogger {
 
   override fun logEvent(eventLog: EventLog) {
     eventList.add(eventLog)
-    // TODO: update sync status for fake events.
   }
 
   override fun logCachedEvent(eventLog: EventLog) {
