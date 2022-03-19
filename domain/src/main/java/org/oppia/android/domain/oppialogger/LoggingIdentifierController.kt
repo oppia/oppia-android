@@ -35,10 +35,8 @@ class LoggingIdentifierController @Inject constructor(
   private var sessionId = AtomicReference(computeSessionId())
 
   // TODO: finish this.
-  private val deviceId by lazy {
-    val entropy = ByteArray(16).also { learnerIdRandom.nextBytes(it) }
-    UUID.nameUUIDFromBytes(entropy).toString()
-  }
+  private val deviceId =
+    UUID.nameUUIDFromBytes(ByteArray(16).also { learnerIdRandom.nextBytes(it) }).toString()
 
   /**
    * Creates and returns a unique identifier which will be used to identify the current learner.

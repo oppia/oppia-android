@@ -31,6 +31,7 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -69,7 +70,8 @@ class ProfileManagementController @Inject constructor(
   private val directoryManagementUtil: DirectoryManagementUtil,
   private val exceptionsController: ExceptionsController,
   private val oppiaClock: OppiaClock,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val loggingIdentifierController: LoggingIdentifierController
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -214,7 +216,6 @@ class ProfileManagementController @Inject constructor(
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
-      // TODO: fill in the learner ID below.
       val newProfileBuilder = Profile.newBuilder()
         .setName(name)
         .setPin(pin)
@@ -225,7 +226,7 @@ class ProfileManagementController @Inject constructor(
         .setReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
         .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
         .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
-        .setLearnerId("uninitialized")
+        .setLearnerId(loggingIdentifierController.createLearnerId())
 
       if (avatarImagePath != null) {
         val imageUri =
@@ -544,8 +545,9 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      // TODO: update the learner ID below.
-      val updatedProfile = profile.toBuilder().setLearnerId("uninitialized").build()
+      val updatedProfile = profile.toBuilder().apply {
+        learnerId = loggingIdentifierController.createLearnerId()
+      }.build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile

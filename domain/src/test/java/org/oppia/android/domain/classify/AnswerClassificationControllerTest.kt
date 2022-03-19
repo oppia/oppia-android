@@ -58,6 +58,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.system.UserIdProdModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -849,7 +855,9 @@ class AnswerClassificationControllerTest {
       LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class
+      MathEquationInputModule::class, LoggingIdentifierModule::class,
+      ApplicationLifecycleModule::class, SyncStatusModule::class, UserIdProdModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent {

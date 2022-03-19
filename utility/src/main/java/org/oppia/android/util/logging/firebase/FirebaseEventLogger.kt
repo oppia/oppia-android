@@ -18,7 +18,6 @@ private const val COUNTRY_USER_PROPERTY = "COUNTRY"
 class FirebaseEventLogger(
   private val firebaseAnalytics: FirebaseAnalytics,
   private val eventBundleCreator: EventBundleCreator,
-  private val syncStatusManager: SyncStatusManager,
   private val networkConnectionUtil: NetworkConnectionUtil
 ) : EventLogger {
   private var bundle = Bundle()
@@ -30,7 +29,6 @@ class FirebaseEventLogger(
     // TODO(#3792): Remove this usage of Locale.
     firebaseAnalytics.setUserProperty(COUNTRY_USER_PROPERTY, Locale.getDefault().displayCountry)
     firebaseAnalytics.setUserProperty(NETWORK_USER_PROPERTY, getNetworkStatus())
-    syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
   }
 
   override fun logCachedEvent(eventLog: EventLog) {

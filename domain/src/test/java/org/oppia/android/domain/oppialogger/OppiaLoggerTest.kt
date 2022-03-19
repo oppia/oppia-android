@@ -51,6 +51,8 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.util.system.UserIdProdModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -335,7 +337,7 @@ class OppiaLoggerTest {
   }
 
   @Test
-  fun testController_featureEnabled_logLearnerAnalyticsEvent_verifyEventNotLogged() {
+  fun testController_featureEnabled_logLearnerAnalyticsEvent_verifyEventLogged() {
     TestPlatformParameterModule.forceLearnerAnalyticsStudy = true
     setUpTestApplicationComponent()
 
@@ -344,8 +346,7 @@ class OppiaLoggerTest {
       oppiaLogger.createOpenHomeContext()
     )
 
-    // TODO: Update to verify that it is logged once the feature is enabled.
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeEventLogger.noEventsPresent()).isFalse()
   }
 
   /*@Test
@@ -637,7 +638,8 @@ class OppiaLoggerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusModule::class
+      LoggingIdentifierModule::class, SyncStatusModule::class, ApplicationLifecycleModule::class,
+      UserIdProdModule::class
     ]
   )
   interface TestApplicationComponent {
