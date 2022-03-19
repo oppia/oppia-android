@@ -2,7 +2,6 @@ package org.oppia.android.app.testing
 
 import android.view.View
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.databinding.ActivityFractionInputInteractionViewTestBinding
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
@@ -10,6 +9,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.databinding.ActivityFractionInputInteractionViewTestBinding
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
 
