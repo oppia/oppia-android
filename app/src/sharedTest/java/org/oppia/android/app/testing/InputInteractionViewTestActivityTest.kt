@@ -128,25 +128,6 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
-  fun testFractionInput_withFraction_configChange_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
-    )
-    onView(withId(R.id.test_fraction_input_interaction_view))
-      .perform(
-        editTextInputAction.appendText(
-          "9/5"
-        )
-      )
-    activityScenario.onActivity { activity ->
-      activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
-    }
-    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(isDisplayed()))
-      .check(matches(withText("9/5")))
-  }
-
-  @Test
   fun testNumericInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java

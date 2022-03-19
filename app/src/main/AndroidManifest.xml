@@ -271,6 +271,9 @@
     <activity
       android:name=".app.testing.activity.TestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.testing.FractionInputInteractionViewTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
 
     <provider
       android:name="androidx.work.impl.WorkManagerInitializer"

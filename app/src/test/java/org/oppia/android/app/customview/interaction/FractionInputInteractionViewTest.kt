@@ -2,22 +2,25 @@ package org.oppia.android.app.customview.interaction
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -30,7 +33,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.player.state.StateFragmentTest
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.InputInteractionViewTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -57,7 +59,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -80,6 +81,10 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.junit.Ignore
+import org.oppia.android.R
+import org.oppia.android.app.testing.FractionInputInteractionViewTestActivity
+import org.oppia.android.testing.DisableAccessibilityChecks
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -129,14 +134,14 @@ class FractionInputInteractionViewTest {
   @Test
   fun testFractionInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      FractionInputInteractionViewTestActivity::class.java
     )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(0)
-      Truth.assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(0)
-      Truth.assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(0)
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(0)
+      assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(0)
+      assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(0)
     }
   }
 
@@ -144,18 +149,18 @@ class FractionInputInteractionViewTest {
   @DisableAccessibilityChecks
   fun testFractionInput_withNegativeNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      FractionInputInteractionViewTestActivity::class.java
     )
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(editTextInputAction.appendText("-9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
         InteractionObject.ObjectTypeCase.FRACTION
       )
-      Truth.assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
-      Truth.assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(9)
+      assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
+      assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(9)
     }
   }
 
@@ -163,18 +168,18 @@ class FractionInputInteractionViewTest {
   @DisableAccessibilityChecks
   fun testFractionInput_withWholeNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      FractionInputInteractionViewTestActivity::class.java
     )
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(editTextInputAction.appendText("9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
         InteractionObject.ObjectTypeCase.FRACTION
       )
-      Truth.assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
-      Truth.assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(9)
+      assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
+      assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(9)
     }
   }
 
@@ -182,9 +187,9 @@ class FractionInputInteractionViewTest {
   @DisableAccessibilityChecks
   fun testFractionInput_withFraction_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      FractionInputInteractionViewTestActivity::class.java
     )
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "9/10"
@@ -192,13 +197,13 @@ class FractionInputInteractionViewTest {
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
         InteractionObject.ObjectTypeCase.FRACTION
       )
-      Truth.assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
-      Truth.assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(9)
-      Truth.assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(10)
+      assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
+      assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(9)
+      assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(10)
     }
   }
 
@@ -206,9 +211,9 @@ class FractionInputInteractionViewTest {
   @DisableAccessibilityChecks
   fun testFractionInput_withNegativeFraction_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      FractionInputInteractionViewTestActivity::class.java
     )
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "-9/10"
@@ -216,13 +221,13 @@ class FractionInputInteractionViewTest {
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
         InteractionObject.ObjectTypeCase.FRACTION
       )
-      Truth.assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
-      Truth.assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(9)
-      Truth.assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(10)
+      assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
+      assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(9)
+      assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(10)
     }
   }
 
@@ -230,9 +235,9 @@ class FractionInputInteractionViewTest {
   @DisableAccessibilityChecks
   fun testFractionInput_withMixedNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      FractionInputInteractionViewTestActivity::class.java
     )
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "5 9/10"
@@ -240,14 +245,14 @@ class FractionInputInteractionViewTest {
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
         InteractionObject.ObjectTypeCase.FRACTION
       )
-      Truth.assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
-      Truth.assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(5)
-      Truth.assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(9)
-      Truth.assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(10)
+      assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
+      assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(5)
+      assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(9)
+      assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(10)
     }
   }
 
@@ -255,9 +260,9 @@ class FractionInputInteractionViewTest {
   @DisableAccessibilityChecks
   fun testFractionInput_withNegativeMixedNumber_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
-      InputInteractionViewTestActivity::class.java
+      FractionInputInteractionViewTestActivity::class.java
     )
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "-55 59/9"
@@ -265,31 +270,31 @@ class FractionInputInteractionViewTest {
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
-      Truth.assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
-      Truth.assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
+      assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
+      assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
         InteractionObject.ObjectTypeCase.FRACTION
       )
-      Truth.assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
-      Truth.assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(55)
-      Truth.assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(59)
-      Truth.assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(9)
+      assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
+      assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(55)
+      assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(59)
+      assertThat(pendingAnswer.answer.fraction.denominator).isEqualTo(9)
     }
   }
 
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withNegativeSignOtherThanAt0_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "55-"
         )
       )
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
+    onView(withId(R.id.fraction_input_error))
       .check(
-        ViewAssertions.matches(
-          ViewMatchers.withText(
+        matches(
+          withText(
             R.string.fraction_error_invalid_format
           )
         )
@@ -299,17 +304,17 @@ class FractionInputInteractionViewTest {
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withNegativeSignAt0MoreThan1_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "--55"
         )
       )
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
+    onView(withId(R.id.fraction_input_error))
       .check(
-        ViewAssertions.matches(
-          ViewMatchers.withText(
+        matches(
+          withText(
             R.string.fraction_error_invalid_format
           )
         )
@@ -319,17 +324,17 @@ class FractionInputInteractionViewTest {
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withDividerMoreThanOnce_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "5/5/"
         )
       )
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
+    onView(withId(R.id.fraction_input_error))
       .check(
-        ViewAssertions.matches(
-          ViewMatchers.withText(
+        matches(
+          withText(
             R.string.fraction_error_invalid_format
           )
         )
@@ -339,17 +344,17 @@ class FractionInputInteractionViewTest {
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withDividerAtStart_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "/5"
         )
       )
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
+    onView(withId(R.id.fraction_input_error))
       .check(
-        ViewAssertions.matches(
-          ViewMatchers.withText(
+        matches(
+          withText(
             R.string.fraction_error_invalid_format
           )
         )
@@ -359,34 +364,34 @@ class FractionInputInteractionViewTest {
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withPartialMixedNumber_numberFormatErrorIsNotDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "5 5/"
         )
       )
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
-      .check(ViewAssertions.matches(ViewMatchers.withText("")))
+    onView(withId(R.id.fraction_input_error))
+      .check(matches(withText("")))
   }
 
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withPartialMixedNumberSubmit_numberFormatErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "5 5/"
         )
       )
-    Espresso.closeSoftKeyboard()
-    Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-      .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button))
+      .check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.fraction_input_error))
       .check(
-        ViewAssertions.matches(
-          ViewMatchers.withText(
+        matches(
+          withText(
             R.string.fraction_error_invalid_format
           )
         )
@@ -396,51 +401,51 @@ class FractionInputInteractionViewTest {
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withMixedNumber_submit_noErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "3 1/2"
         )
       )
-    Espresso.closeSoftKeyboard()
-    Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-      .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
-      .check(ViewAssertions.matches(ViewMatchers.withText("")))
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button))
+      .check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.fraction_input_error))
+      .check(matches(withText("")))
   }
 
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withDivideByZero_errorIsNotDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "1/0"
         )
       )
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
-      .check(ViewAssertions.matches(ViewMatchers.withText("")))
+    onView(withId(R.id.fraction_input_error))
+      .check(matches(withText("")))
   }
 
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withDivideByZero_submit_divideByZeroErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java)
-    Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
+    onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
           "1/0"
         )
       )
-    Espresso.closeSoftKeyboard()
-    Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-      .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-    Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
+    closeSoftKeyboard()
+    onView(withId(R.id.submit_button))
+      .check(matches(isDisplayed())).perform(click())
+    onView(withId(R.id.fraction_input_error))
       .check(
-        ViewAssertions.matches(
-          ViewMatchers.withText(
+        matches(
+          withText(
             R.string.fraction_error_divide_by_zero
           )
         )
@@ -450,17 +455,17 @@ class FractionInputInteractionViewTest {
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
           editTextInputAction.appendText(
             "."
           )
         )
-      Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
+      onView(withId(R.id.fraction_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.fraction_error_invalid_chars
             )
           )
@@ -471,24 +476,43 @@ class FractionInputInteractionViewTest {
   @Test
   @DisableAccessibilityChecks
   fun testFractionInput_withLong_submit_numberTooLongErrorIsDisplayed() {
-    ActivityScenario.launch(InputInteractionViewTestActivity::class.java).use {
-      Espresso.onView(ViewMatchers.withId(R.id.test_fraction_input_interaction_view))
+    ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
+      onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
           editTextInputAction.appendText(
             "12345678"
           )
         )
-      Espresso.closeSoftKeyboard()
-      Espresso.onView(ViewMatchers.withId(R.id.submit_button))
-        .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-      Espresso.onView(ViewMatchers.withId(R.id.fraction_input_error))
+      closeSoftKeyboard()
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.fraction_input_error))
         .check(
-          ViewAssertions.matches(
-            ViewMatchers.withText(
+          matches(
+            withText(
               R.string.fraction_error_larger_than_seven_digits
             )
           )
         )
+    }
+
+    @Test
+    @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
+    fun testFractionInput_withFraction_configChange_hasCorrectPendingAnswer() {
+      val activityScenario = ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java
+      )
+      onView(withId(R.id.test_fraction_input_interaction_view))
+        .perform(
+          editTextInputAction.appendText(
+            "9/5"
+          )
+        )
+      activityScenario.onActivity { activity ->
+        activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
+      }
+      onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(isDisplayed()))
+        .check(matches(withText("9/5")))
     }
   }
 
