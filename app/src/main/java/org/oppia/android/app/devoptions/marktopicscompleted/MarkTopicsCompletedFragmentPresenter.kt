@@ -67,7 +67,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
       if (binding.isAllChecked == null || binding.isAllChecked == false)
         binding.isAllChecked = true
       else
-        binding.isAllChecked = false   // Toggle the checkbox
+        binding.isAllChecked = false
     }
 
     binding.markTopicsCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -75,8 +75,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
         getMarkTopicsCompletedViewModel().getTopicList().forEach { viewModel ->
           if (!viewModel.isCompleted) topicSelected(viewModel.topic.topicId)
         }
-      }
-      else{
+      } else {
         getMarkTopicsCompletedViewModel().getTopicList().forEach { viewModel ->
           if (!viewModel.isCompleted) topicUnselected(viewModel.topic.topicId)
         }
