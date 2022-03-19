@@ -85,6 +85,6 @@ class NetworkModule {
 
   private companion object {
     private fun <T, V> Optional<T>.map(mapFunc: (T) -> V): Optional<V> =
-      transform { mapFunc(checkNotNull(it)) } // Paylaod should never actually be null.
+      transform { mapFunc(checkNotNull(it)) } // Payload should never actually be null.
   }
 }

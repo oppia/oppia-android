@@ -13,7 +13,7 @@
     android:id="@+id/view_event_logs_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_def_white">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/view_event_logs_app_bar_layout"
@@ -35,7 +35,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/developer_options_event_logs"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
