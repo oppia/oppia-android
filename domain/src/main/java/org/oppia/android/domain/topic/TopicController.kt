@@ -25,7 +25,6 @@ import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
-import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever

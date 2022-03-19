@@ -31,7 +31,8 @@ class TestNoOpAssetRepository @Inject constructor() : AssetRepository {
   ): T = defaultMessage // Just return default since the asset doesn't exist.
 
   override fun <T : MessageLite> maybeLoadProtoFromLocalAssets(
-    assetName: String, baseMessage: T
+    assetName: String,
+    baseMessage: T
   ): T? = null // The asset doesn't exist.
 
   override fun getLocalAssetProtoSize(assetName: String): Int = -1 // Asset doesn't exist.

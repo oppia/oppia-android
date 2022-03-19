@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.PixelFormat
 import android.graphics.Rect
-import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
@@ -147,7 +146,10 @@ class UrlImageParser private constructor(
      * width.
      */
     protected abstract fun computeBounds(
-      context: Context, drawable: D, viewWidth: Int, padding: Rect
+      context: Context,
+      drawable: D,
+      viewWidth: Int,
+      padding: Rect
     ): Rect
 
     /**
@@ -159,7 +161,10 @@ class UrlImageParser private constructor(
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 
       override fun computeBounds(
-        context: Context, drawable: D, viewWidth: Int, padding: Rect
+        context: Context,
+        drawable: D,
+        viewWidth: Int,
+        padding: Rect
       ): Rect {
         val layoutParams = htmlContentTextView.layoutParams
         val maxAvailableWidth = when (layoutParams.width) {
@@ -272,7 +277,10 @@ class UrlImageParser private constructor(
       override fun retrieveDrawable(resource: TextPictureDrawable): TextPictureDrawable = resource
 
       override fun computeBounds(
-        context: Context, drawable: TextPictureDrawable, viewWidth: Int, padding: Rect
+        context: Context,
+        drawable: TextPictureDrawable,
+        viewWidth: Int,
+        padding: Rect
       ): Rect {
         drawable.computeTextPicture(htmlContentTextView.paint)
         // Note that the original size is used here since inline images should be sized based on the

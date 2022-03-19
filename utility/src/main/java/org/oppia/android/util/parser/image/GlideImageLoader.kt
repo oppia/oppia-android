@@ -11,7 +11,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.Resource
 import com.bumptech.glide.load.resource.SimpleResource
 import com.bumptech.glide.request.RequestOptions
-import java.security.MessageDigest
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
@@ -20,6 +19,7 @@ import org.oppia.android.util.parser.svg.ScalableVectorGraphic
 import org.oppia.android.util.parser.svg.SvgBlurTransformation
 import org.oppia.android.util.parser.svg.SvgDecoder
 import org.oppia.android.util.parser.svg.SvgPictureDrawable
+import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -118,21 +118,21 @@ class GlideImageLoader @Inject constructor(
 
   private fun List<ImageTransformation>.toBitmapGlideTransformations():
     List<Transformation<Bitmap>> {
-    return map {
-      when (it) {
-        ImageTransformation.BLUR -> bitmapBlurTransformation
+      return map {
+        when (it) {
+          ImageTransformation.BLUR -> bitmapBlurTransformation
+        }
       }
     }
-  }
 
   private fun List<ImageTransformation>.toPictureGlideTransformations(imageUrl: String):
     List<Transformation<ScalableVectorGraphic>> {
-    return map {
-      when (it) {
-        ImageTransformation.BLUR -> pictureBitmapBlurTransformation
-      }
-    } + UpdatePictureDrawableSize(imageUrl)
-  }
+      return map {
+        when (it) {
+          ImageTransformation.BLUR -> pictureBitmapBlurTransformation
+        }
+      } + UpdatePictureDrawableSize(imageUrl)
+    }
 
   private class UpdatePictureDrawableSize(
     private val url: String
@@ -157,9 +157,11 @@ class GlideImageLoader @Inject constructor(
       outWidth: Int,
       outHeight: Int
     ): Resource<ScalableVectorGraphic> {
-      return SimpleResource(toTransform.get().also {
-        it.initializeWithExtractedDimensions(extractedWidth, extractedHeight)
-      })
+      return SimpleResource(
+        toTransform.get().also {
+          it.initializeWithExtractedDimensions(extractedWidth, extractedHeight)
+        }
+      )
     }
 
     private companion object {
