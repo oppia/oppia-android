@@ -26,13 +26,11 @@ class LogReportingModule {
   @Provides
   fun provideEventLogger(
     context: Context,
-    syncStatusManager: SyncStatusManager,
     networkConnectionUtil: NetworkConnectionUtil
   ): EventLogger {
     return FirebaseEventLogger(
       FirebaseAnalytics.getInstance(context.applicationContext as Application),
       EventBundleCreator(),
-      syncStatusManager,
       networkConnectionUtil
     )
   }
