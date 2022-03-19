@@ -1,7 +1,6 @@
 package org.oppia.android.app.testing
 
 import android.view.View
-import javax.inject.Inject
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.databinding.ActivityFractionInputInteractionViewTestBinding
 import org.oppia.android.app.model.Interaction
@@ -12,6 +11,7 @@ import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewM
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
+import javax.inject.Inject
 
 class FractionInputInteractionViewTestActivity :
   InjectableAppCompatActivity(),
@@ -26,7 +26,7 @@ class FractionInputInteractionViewTestActivity :
   lateinit var translationController: TranslationController
 
   val fractionInteractionViewModel by lazy {
-      FractionInteractionViewModel(
+    FractionInteractionViewModel(
       interaction = Interaction.getDefaultInstance(),
       hasConversationView = false,
       isSplitView = false,
