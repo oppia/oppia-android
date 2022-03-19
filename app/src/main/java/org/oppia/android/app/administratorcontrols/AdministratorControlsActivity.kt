@@ -7,6 +7,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -18,12 +19,15 @@ const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
 const val LAST_LOADED_FRAGMENT_EXTRA_KEY = "AdministratorControlsActivity.last_loaded_fragment"
 const val PROFILE_LIST_FRAGMENT = "PROFILE_LIST_FRAGMENT"
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 
 /** Activity for Administrator Controls. */
 class AdministratorControlsActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
   RouteToAppVersionListener,
+  RouteToLearnerAnalyticsListener,
+  LoadLearnerAnalyticsListener,
   LoadProfileListListener,
   LoadAppVersionListener,
   ShowLogoutDialogListener {
@@ -56,6 +60,10 @@ class AdministratorControlsActivity :
     startActivity(ProfileListActivity.createProfileListActivityIntent(this))
   }
 
+  override fun routeToLearnerAnalytics() {
+    startActivity(ProfileAndDeviceIdActivity.createIntent(this))
+  }
+
   companion object {
     fun createAdministratorControlsActivityIntent(context: Context, profileId: Int?): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
@@ -84,6 +92,15 @@ class AdministratorControlsActivity :
         resourceHandler.getStringInLocale(R.string.administrator_controls_app_version)
       )
     administratorControlsActivityPresenter.loadAppVersion()
+  }
+
+  override fun loadLearnerAnalyticsData() {
+    lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
+    administratorControlsActivityPresenter.setExtraControlsTitle(
+      resourceHandler.getStringInLocale(R.string.profile_and_device_id_activity_title)
+      // TODO(LearnerAnalytics): Replace with new string
+    )
+    administratorControlsActivityPresenter.loadLearnerAnalyticsData()
   }
 
   override fun showLogoutDialog() {

@@ -44,10 +44,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -113,9 +109,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -668,15 +661,6 @@ class OptionsFragmentTest {
     }
 
     @Provides
-    @LearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Boolean> {
-      return platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
-        ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
-    }
-
-    @Provides
     @CacheLatexRendering
     fun provideCacheLatexRendering(
       platformParameterSingleton: PlatformParameterSingleton
@@ -709,9 +693,7 @@ class OptionsFragmentTest {
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, UserIdProdModule::class
+      MathEquationInputModule::class, SplitScreenInteractionModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

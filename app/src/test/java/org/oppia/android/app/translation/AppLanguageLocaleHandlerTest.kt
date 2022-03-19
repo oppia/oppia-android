@@ -40,12 +40,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 /** Tests for [AppLanguageLocaleHandler]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -330,10 +324,7 @@ class AppLanguageLocaleHandlerTest {
       TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
       RobolectricModule::class, LoggerModule::class, LogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

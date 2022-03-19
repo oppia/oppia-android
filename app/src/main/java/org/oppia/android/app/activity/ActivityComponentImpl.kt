@@ -5,6 +5,7 @@ import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
@@ -147,6 +148,7 @@ interface ActivityComponentImpl :
   fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
+  fun inject(profileAndDeviceIdActivity: ProfileAndDeviceIdActivity)
   fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)
