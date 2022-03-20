@@ -1,0 +1,85 @@
+"""
+Domain components for answer classification.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "answer_classification_controller",
+    srcs = [
+        "AnswerClassificationController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":classification_result",
+        ":interaction_classifier",
+        "//model:exploration_java_proto_lite",
+        "//model:interaction_object_java_proto_lite",
+        "//model:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "classification_result",
+    srcs = [
+        "ClassificationResult.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model:exploration_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "generic_interaction_classifier",
+    srcs = [
+        "GenericInteractionClassifier.kt",
+    ],
+    deps = [
+        ":interaction_classifier",
+        ":rule_classifier",
+    ],
+)
+
+kt_android_library(
+    name = "interaction_classifier",
+    srcs = [
+        "InteractionClassifier.kt",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        ":rule_classifier",
+    ],
+)
+
+kt_android_library(
+    name = "interactions_module",
+    srcs = [
+        "InteractionsModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":generic_interaction_classifier",
+        ":interaction_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:exploration_meta_data_retriever",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "rule_classifier",
+    srcs = [
+        "RuleClassifier.kt",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//model:interaction_object_java_proto_lite",
+        "//model:translation_java_proto_lite",
+    ],
+)
+
+dagger_rules()

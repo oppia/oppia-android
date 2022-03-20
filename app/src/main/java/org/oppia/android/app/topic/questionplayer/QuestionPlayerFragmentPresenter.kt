@@ -16,7 +16,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
@@ -269,7 +268,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         recyclerViewAssembler.isCorrectAnswer.set(result.isCorrectAnswer)
         if (result.isCorrectAnswer) {
           questionViewModel.setHintBulbVisibility(false)
-          recyclerViewAssembler.showCelebrationOnCorrectAnswer()
+          recyclerViewAssembler.showCelebrationOnCorrectAnswer(result.feedback)
         } else {
           questionViewModel.setCanSubmitAnswer(canSubmitAnswer = false)
         }
@@ -357,8 +356,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_QUESTION_PLAYER,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         questionId,
         skillIds
       )
