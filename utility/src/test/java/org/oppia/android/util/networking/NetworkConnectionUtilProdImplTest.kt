@@ -148,6 +148,33 @@ class NetworkConnectionUtilProdImplTest {
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
 
+  @Test
+  fun testLocalLogName_activeWifiConnection_returnsLocal() {
+    networkConnectionTestUtil.setNetworkInfo(
+      status = ConnectivityManager.TYPE_WIFI,
+      networkState = NetworkInfo.State.CONNECTED
+    )
+    assertThat(LOCAL.logName).isEqualTo("Local")
+  }
+
+  @Test
+  fun testCellularLogName_activeCellularConnection_returnsCellular() {
+    networkConnectionTestUtil.setNetworkInfo(
+      status = ConnectivityManager.TYPE_MOBILE,
+      networkState = NetworkInfo.State.CONNECTED
+    )
+    assertThat(CELLULAR.logName).isEqualTo("Cellular")
+  }
+
+  @Test
+  fun testNoneLogName_inactiveWifiConnection_returnsNone() {
+    networkConnectionTestUtil.setNetworkInfo(
+      status = ConnectivityManager.TYPE_WIFI,
+      networkState = NetworkInfo.State.DISCONNECTED
+    )
+    assertThat(NONE.logName).isEqualTo("None")
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
