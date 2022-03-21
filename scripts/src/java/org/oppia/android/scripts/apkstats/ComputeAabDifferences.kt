@@ -524,7 +524,8 @@ class ComputeAabDifferences(
       val totalDifference = totalNewCount - totalOldCount
       if (itemize || totalDifference != 0) {
         stream.println(
-          "Resources: $totalOldCount (old), $totalNewCount (new), **$totalDifference** (difference)"
+          "Resources: $totalOldCount (old), $totalNewCount (new)," +
+            " **${totalDifference.absoluteValue}** (${totalDifference.convertToDiffString()})"
         )
         resources.forEach { (typeName, resourcesList) ->
           if (itemize || resourcesList.hasDifference()) {
@@ -726,7 +727,8 @@ class ComputeAabDifferences(
     ) {
       val indent = " ".repeat(listIndentation)
       stream.print(
-        "$linePrefix: $oldCount (old), $newCount (new), **$countDifference** (difference)"
+        "$linePrefix: $oldCount (old), $newCount (new)," +
+          " **${countDifference.absoluteValue}** (${countDifference.convertToDiffString()})"
       )
       if (itemize && hasDifference()) {
         stream.println(":")
@@ -742,24 +744,39 @@ class ComputeAabDifferences(
     }
 
     private fun DiffLong.writeCountTo(stream: PrintStream, linePrefix: String) {
-      stream.println("$linePrefix: $oldValue (old), $newValue (new), **$difference** (difference)")
+      stream.println(
+        "$linePrefix: $oldValue (old), $newValue (new)," +
+          " **${difference.absoluteValue}** (${difference.convertToDiffString()})"
+      )
     }
 
     private fun DiffLong.writeBytesTo(stream: PrintStream, linePrefix: String) {
       stream.println(
         "$linePrefix: ${oldValue.formatAsBytes()} (old), ${newValue.formatAsBytes()} (new)," +
-          " **${difference.formatAsBytes()}** (difference)"
+          " **${difference.formatAsBytes()}** (${difference.convertToDiffString()})"
       )
     }
 
     private fun Long.formatAsBytes(): String {
       val magnitude = absoluteValue
       return when {
-        magnitude < 10_000L -> "$this bytes"
-        magnitude < 10_000_000L -> "${this / 1024} KiB"
-        magnitude < 10_000_000_000L -> "${this / (1024 * 1024)} MiB"
-        else -> "${this / (1024 * 1024 * 1024)} GiB"
+        magnitude < 10_000L -> "$magnitude bytes"
+        magnitude < 10_000_000L -> "${magnitude / 1024} KiB"
+        magnitude < 10_000_000_000L -> "${magnitude / (1024 * 1024)} MiB"
+        else -> "${magnitude / (1024 * 1024 * 1024)} GiB"
       }
+    }
+
+    private fun Int.convertToDiffString() = when {
+      this > 0 -> "Added"
+      this < 0 -> "Removed"
+      else -> "No change"
+    }
+
+    private fun Long.convertToDiffString() = when {
+      this > 0 -> "Added"
+      this < 0 -> "Removed"
+      else -> "No change"
     }
   }
 }
