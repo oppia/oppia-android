@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package model;
 
+import "languages.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -37,4 +39,10 @@ message HtmlTranslationList {
 message WrittenTranslationContext {
   // A map from content ID to translation.
   map<string, Translation> translations = 1;
+
+  // The written language used for translations. Note that this will only represent the desired
+  // translation language, not necessarily the actual language corresponding to the translations
+  // (since they may fall back to a different language if no corresponding translation exists for
+  // this language).
+  OppiaLanguage language = 2;
 }

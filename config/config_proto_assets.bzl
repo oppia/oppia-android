@@ -23,8 +23,8 @@ def generate_supported_languages_configuration_from_text_proto(
         names = [supported_language_text_proto_file_name],
         proto_dep_name = "languages",
         proto_type_name = "SupportedLanguages",
-        name_prefix = name,
+        name_prefix = "supported_languages",
         asset_dir = "languages",
-        proto_dep_bazel_target_prefix = "//model",
+        proto_dep_bazel_target_prefix = "//model/src/main/proto",
         proto_package = "model",
     )

@@ -2,7 +2,6 @@ package org.oppia.android.domain.oppialogger.exceptions
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,28 +10,17 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.OppiaExceptionLogs
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -46,38 +34,18 @@ import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = UncaughtExceptionLoggerStartupListenerTest.TestApplication::class)
 class UncaughtExceptionLoggerStartupListenerTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var uncaughtExceptionLoggerStartupListener: UncaughtExceptionLoggerStartupListener
-
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-
-  @Inject
-  lateinit var exceptionsController: ExceptionsController
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockOppiaExceptionLogsObserver: Observer<AsyncResult<OppiaExceptionLogs>>
-
-  @Captor
-  lateinit var oppiaExceptionLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaExceptionLogs>>
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var uncaughtExceptionStartupListener: UncaughtExceptionLoggerStartupListener
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -88,28 +56,22 @@ class UncaughtExceptionLoggerStartupListenerTest {
   fun testHandler_throwException_withNoNetwork_verifyLogInCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     val exceptionThrown = Exception("TEST")
-    uncaughtExceptionLoggerStartupListener.uncaughtException(
+    uncaughtExceptionStartupListener.uncaughtException(
       Thread.currentThread(),
       exceptionThrown
     )
 
     val cachedExceptions = exceptionsController.getExceptionLogStore()
-    cachedExceptions.toLiveData().observeForever(mockOppiaExceptionLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
 
-    verify(mockOppiaExceptionLogsObserver, atLeastOnce())
-      .onChanged(oppiaExceptionLogsResultCaptor.capture())
-
-    val exceptionLog = oppiaExceptionLogsResultCaptor.value.getOrThrow().getExceptionLog(0)
-    val exception = exceptionLog.toException()
-
+    val exceptionLogs = monitorFactory.waitForNextSuccessfulResult(cachedExceptions)
+    val exception = exceptionLogs.getExceptionLog(0).toException()
     assertThat(exception.message).matches("java.lang.Exception: TEST")
   }
 
   @Test
   fun testHandler_throwException_withNetwork_verifyLogToRemoteService() {
     val exceptionThrown = Exception("TEST")
-    uncaughtExceptionLoggerStartupListener.uncaughtException(
+    uncaughtExceptionStartupListener.uncaughtException(
       Thread.currentThread(),
       exceptionThrown
     )

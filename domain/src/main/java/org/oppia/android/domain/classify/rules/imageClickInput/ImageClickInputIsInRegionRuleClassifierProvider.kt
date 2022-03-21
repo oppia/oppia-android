@@ -2,7 +2,7 @@ package org.oppia.android.domain.classify.rules.imageClickInput
 
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -31,7 +31,7 @@ class ImageClickInputIsInRegionRuleClassifierProvider @Inject constructor(
   override fun matches(
     answer: ClickOnImage,
     input: String,
-    writtenTranslationContext: WrittenTranslationContext
+    classificationContext: ClassificationContext
   ): Boolean {
     return answer.clickedRegionsList.indexOf(input) != -1
   }

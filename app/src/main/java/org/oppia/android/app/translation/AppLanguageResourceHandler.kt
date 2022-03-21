@@ -115,6 +115,12 @@ class AppLanguageResourceHandler @Inject constructor(
     }
   }
 
+  /** See [OppiaLocale.DisplayLocale.formatLong] for specific behavior. */
+  fun formatLong(value: Long): String = getDisplayLocale().formatLong(value)
+
+  /** See [OppiaLocale.DisplayLocale.formatDouble] for specific behavior. */
+  fun formatDouble(value: Double): String = getDisplayLocale().formatDouble(value)
+
   /** See [OppiaLocale.DisplayLocale.computeDateString]. */
   fun computeDateString(timestampMillis: Long): String =
     getDisplayLocale().computeDateString(timestampMillis)

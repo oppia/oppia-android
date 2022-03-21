@@ -13,13 +13,15 @@ import org.oppia.android.app.parser.StringToRatioParser
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.toAccessibleAnswerString
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.domain.util.toAnswerString
+import org.oppia.android.util.math.toAnswerString
+import javax.inject.Inject
 
 /** [StateItemViewModel] for the ratio expression input interaction. */
-class RatioExpressionInputInteractionViewModel(
+class RatioExpressionInputInteractionViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
@@ -122,6 +124,33 @@ class RatioExpressionInputInteractionViewModel(
       placeholder1.isNotEmpty() -> placeholder1
       placeholder2.isNotEmpty() -> placeholder2
       else -> resourceHandler.getStringInLocale(R.string.ratio_default_hint_text)
+    }
+  }
+
+  /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
+  class FactoryImpl @Inject constructor(
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController
+  ) : InteractionItemFactory {
+    override fun create(
+      entityId: String,
+      hasConversationView: Boolean,
+      interaction: Interaction,
+      interactionAnswerReceiver: InteractionAnswerReceiver,
+      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+      hasPreviousButton: Boolean,
+      isSplitView: Boolean,
+      writtenTranslationContext: WrittenTranslationContext
+    ): StateItemViewModel {
+      return RatioExpressionInputInteractionViewModel(
+        interaction,
+        hasConversationView,
+        isSplitView,
+        answerErrorReceiver,
+        writtenTranslationContext,
+        resourceHandler,
+        translationController
+      )
     }
   }
 }

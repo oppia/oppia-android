@@ -11,6 +11,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -39,19 +40,23 @@ import org.oppia.android.app.customview.interaction.RatioInputInteractionView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -126,6 +131,8 @@ class InputInteractionViewTestActivityTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
+
+  // TODO(#4135): Move fraction input tests to a dedicated test suite.
 
   @Test
   fun testFractionInput_withNoInput_hasCorrectPendingAnswerType() {
@@ -405,6 +412,8 @@ class InputInteractionViewTestActivityTest {
         )
       )
     closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).perform(scrollTo())
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
     onView(withId(R.id.fraction_input_error))
       .check(
@@ -428,6 +437,8 @@ class InputInteractionViewTestActivityTest {
         )
       )
     closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).perform(scrollTo())
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
     onView(withId(R.id.fraction_input_error)).check(matches(withText("")))
   }
@@ -458,6 +469,8 @@ class InputInteractionViewTestActivityTest {
         )
       )
     closeSoftKeyboard()
+    onView(withId(R.id.submit_button)).perform(scrollTo())
+    testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
     onView(withId(R.id.fraction_input_error))
       .check(
@@ -503,6 +516,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.fraction_input_error))
         .check(
@@ -644,6 +659,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.number_input_error))
         .check(
@@ -668,6 +685,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.number_input_error))
         .check(
@@ -692,6 +711,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.number_input_error))
         .check(
@@ -944,6 +965,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ratio_input_error))
         .check(
@@ -969,6 +992,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -997,6 +1022,8 @@ class InputInteractionViewTestActivityTest {
         )
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ratio_input_error))
         .check(
@@ -1023,6 +1050,8 @@ class InputInteractionViewTestActivityTest {
         )
       closeSoftKeyboard()
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ratio_input_error))
         .check(
@@ -1048,6 +1077,8 @@ class InputInteractionViewTestActivityTest {
           )
         )
       closeSoftKeyboard()
+      onView(withId(R.id.submit_button)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.submit_button)).check(matches(isDisplayed())).perform(click())
       onView(withId(R.id.ratio_input_error)).check(matches(withText("")))
     }
@@ -1094,7 +1125,9 @@ class InputInteractionViewTestActivityTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

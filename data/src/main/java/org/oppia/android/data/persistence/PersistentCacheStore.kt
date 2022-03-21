@@ -64,7 +64,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       // First, determine whether the current cache has been attempted to be retrieved from disk.
       if (cachePayload.state == CacheState.UNLOADED) {
         deferLoadFile()
-        return AsyncResult.pending()
+        return AsyncResult.Pending()
       }
 
       // Second, check if a previous deferred read failed. The store stays in a failed state until
@@ -74,13 +74,13 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       failureLock.withLock {
         deferredLoadCacheFailure?.let {
           // A previous read failed.
-          return AsyncResult.failed(it)
+          return AsyncResult.Failure(it)
         }
       }
 
       // Finally, check if there's an in-memory cached value that can be loaded now.
       // Otherwise, there should be a guaranteed in-memory value to use, instead.
-      return AsyncResult.success(cachePayload.value)
+      return AsyncResult.Success(cachePayload.value)
     }
   }
 

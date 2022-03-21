@@ -9,6 +9,7 @@ import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import java.text.DateFormat
+import java.text.NumberFormat
 import java.util.Date
 import java.util.Locale
 import java.util.Objects
@@ -33,6 +34,7 @@ class DisplayLocaleImpl(
   private val dateTimeFormat by lazy {
     DateFormat.getDateTimeInstance(DATE_FORMAT_LENGTH, TIME_FORMAT_LENGTH, formattingLocale)
   }
+  private val numberFormat by lazy { NumberFormat.getNumberInstance(formattingLocale) }
   private val bidiFormatter by lazy { formatterFactory.createFormatter(formattingLocale) }
 
   // TODO(#3766): Restrict to be 'internal'.
@@ -45,6 +47,10 @@ class DisplayLocaleImpl(
   fun setAsDefault(configuration: Configuration) {
     configuration.setLocale(formattingLocale)
   }
+
+  override fun formatLong(value: Long): String = numberFormat.format(value)
+
+  override fun formatDouble(value: Double): String = numberFormat.format(value)
 
   override fun computeDateString(timestampMillis: Long): String =
     dateFormat.format(Date(timestampMillis))
