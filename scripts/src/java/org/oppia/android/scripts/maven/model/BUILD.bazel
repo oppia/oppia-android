@@ -1,5 +1,5 @@
 """
-Data structures corresponding to parsing maven_install.json.
+Data structures corresponding to parsing Maven installation manifests.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")

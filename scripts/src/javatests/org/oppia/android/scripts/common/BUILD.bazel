@@ -19,6 +19,15 @@ kt_jvm_test(
 )
 
 kt_jvm_test(
+    name = "AndroidBuildSdkPropertiesTest",
+    srcs = ["AndroidBuildSdkPropertiesTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
     name = "CommandExecutorImplTest",
     srcs = ["CommandExecutorImplTest.kt"],
     deps = [

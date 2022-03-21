@@ -93,7 +93,7 @@ class RetrieveLicenseTexts(
   }
 
   /**
-   * Retrieve the list of maven dependencies from maven_dependencies.textproto.
+   * Retrieve the list of Maven dependencies from maven_dependencies.textproto.
    *
    * @param pathToPbFile path to the pb file to be parsed
    * @return list of [MavenDependency]s

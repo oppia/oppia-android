@@ -776,8 +776,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
-  artifact_version: "1.4.10"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32"
+  artifact_version: "1.4.32"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -787,8 +787,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10"
-  artifact_version: "1.4.10"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32"
+  artifact_version: "1.4.32"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"

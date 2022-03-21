@@ -4,6 +4,17 @@ generic operations.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+
+kt_jvm_library(
+    name = "android_build_sdk_properties",
+    testonly = True,
+    srcs = [
+        "AndroidBuildSdkProperties.kt",
+    ],
+    resources = [":sdk_info_properties"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+)
 
 kt_jvm_library(
     name = "bazel_client",
@@ -36,6 +47,9 @@ kt_jvm_library(
         "CommandResult.kt",
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
 )
 
 kt_jvm_library(
@@ -53,4 +67,14 @@ kt_jvm_library(
     testonly = True,
     srcs = ["RepositoryFile.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
+)
+
+genrule(
+    name = "sdk_info_properties",
+    srcs = [],
+    outs = ["sdk_info.properties"],
+    cmd = """
+    echo build_sdk_version={0} > \"$@\"
+    echo build_tools_version={1} >> \"$@\"
+    """.format(BUILD_SDK_VERSION, BUILD_TOOLS_VERSION),
 )

@@ -242,7 +242,7 @@ _bundle_module_zip_into_deployable_aab = rule(
         "_bundletool_tool": attr.label(
             executable = True,
             cfg = "host",
-            default = "//third_party:android_bundletool",
+            default = "//third_party:android_bundletool_binary",
         ),
     },
     implementation = _bundle_module_zip_into_deployable_aab_impl,
@@ -278,7 +278,7 @@ _generate_apks_and_install = rule(
         "_bundletool_tool": attr.label(
             executable = True,
             cfg = "host",
-            default = "//third_party:android_bundletool",
+            default = "//third_party:android_bundletool_binary",
         ),
     },
     executable = True,

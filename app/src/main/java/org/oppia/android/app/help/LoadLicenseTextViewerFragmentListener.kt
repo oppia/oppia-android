@@ -4,7 +4,7 @@ package org.oppia.android.app.help
 interface LoadLicenseTextViewerFragmentListener {
   /**
    * Called when the user wants to see the license text for a particular copyright license of a
-   * third-party maven dependency in a tablet device.
+   * third-party Maven dependency in a tablet device.
    *
    * @param dependencyIndex index of the dependency clicked by the user in
    *   [ThirdPartyDependencyListFragment]

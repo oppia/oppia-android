@@ -1,0 +1,64 @@
+"""
+Libraries corresponding to developer scripts that help with computing APK & AAB stats.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "compute_aab_differences_lib",
+    testonly = True,
+    srcs = [
+        "ComputeAabDifferences.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":aapt2_client",
+        ":apk_analyzer_client",
+        ":bundle_tool_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
+    ],
+)
+
+kt_jvm_library(
+    name = "aapt2_client",
+    testonly = True,
+    srcs = [
+        "Aapt2Client.kt",
+    ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "apk_analyzer_client",
+    testonly = True,
+    srcs = [
+        "ApkAnalyzerClient.kt",
+    ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    runtime_deps = [
+        "//third_party:com_google_archivepatcher",
+    ],
+    deps = [
+        ":aapt2_client",
+        "//third_party:com_android_tools_apkparser_apkanalyzer",
+    ],
+)
+
+kt_jvm_library(
+    name = "bundle_tool_client",
+    testonly = True,
+    srcs = [
+        "BundleToolClient.kt",
+    ],
+    visibility = ["//scripts:oppia_script_test_visibility"],
+    runtime_deps = [
+        "//third_party:android_bundletool",
+        "//third_party:com_google_guava_guava_jre",
+    ],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)

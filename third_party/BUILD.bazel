@@ -22,20 +22,15 @@ load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPEND
 [android_library(
     name = name.replace(":", "_").replace(".", "_"),
     visibility = ["//visibility:public"],
-    exports = [
-        artifact("%s:%s" % (name, version)),
-    ],
-) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
+    exports = [artifact(name)],
+) for name, details in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()]
 
-# Create an android library wrapper for all test dependencies.
+# Create an android library wrapper for each test dependency.
 [android_library(
     name = name.replace(":", "_").replace(".", "_"),
-    testonly = True,
     visibility = ["//visibility:public"],
-    exports = [
-        artifact("%s:%s" % (name, version)),
-    ],
-) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
+    exports = [artifact(name)],
+) for name, details in MAVEN_TEST_DEPENDENCY_VERSIONS.items()]
 
 android_library(
     name = "circularimageview_circular_image_view",
@@ -61,6 +56,14 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         "@robolectric//bazel:android-all",
+    ],
+)
+
+android_library(
+    name = "com_google_archivepatcher",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@archive_patcher//tools",
     ],
 )
 
@@ -94,9 +97,24 @@ java_library(
     ],
 )
 
-java_binary(
+android_library(
     name = "android_bundletool",
+    visibility = ["//visibility:public"],
+    exports = ["@android_bundletool//jar"],
+)
+
+java_binary(
+    name = "android_bundletool_binary",
     main_class = "com.android.tools.build.bundletool.BundleToolMain",
     visibility = ["//visibility:public"],
-    runtime_deps = ["@android_bundletool//jar"],
+    runtime_deps = [":android_bundletool"],
+)
+
+android_library(
+    name = "com_google_guava_guava_jre",
+    visibility = ["//scripts:__subpackages__"],
+    exports = [artifact(
+        "com.google.guava:guava",
+        repository_name = "isolated_script_maven_deps",
+    )],
 )

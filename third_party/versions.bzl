@@ -89,6 +89,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:core": "1.0.0",
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
+    "com.android.tools.apkparser:apkanalyzer": "30.0.4",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
@@ -104,6 +105,16 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.mockito:mockito-core": "2.19.0",
     "org.robolectric:annotations": "4.5",
     "org.robolectric:robolectric": "4.5",
+}
+
+# Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
+# This list should only contain script-only dependencies. These are dependencies that are guaranteed
+# cannot be included in production builds of the app. Note also that this dict should only include
+# dependencies that can't be pulled in from the test dependencies (i.e. due to a conflict with an
+# Android-specific dependency). As a result, these require special handling by whichever class is
+# using them.
+MAVEN_ISOLATED_SCRIPT_DEPENDENCY_VERSIONS = {
+    "com.google.guava:guava": "28.1-jre",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
@@ -128,8 +139,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "4.1",
     },
     "rules_kotlin": {
-        "sha": "6194a864280e1989b6d8118a4aee03bb50edeeae4076e5bc30eef8a98dcd4f07",
-        "version": "v1.5.0-alpha-2",
+        "sha": "6cbd4e5768bdfae1598662e40272729ec9ece8b7bded8f0d2c81c8ff96dc139d",
+        "version": "v1.5.0-beta-4",
     },
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
@@ -137,9 +148,17 @@ HTTP_DEPENDENCY_VERSIONS = {
     },
 }
 
-def get_maven_dependencies():
+MAVEN_REPOSITORIES = [
+    "https://maven.fabric.io/public",
+    "https://maven.google.com",
+    "https://repo1.maven.org/maven2",
+]
+
+def get_maven_dependencies(dependency_versions):
     """
     Returns a list of maven dependencies to install to fulfill third-party dependencies.
     """
-    return (["%s:%s" % (name, version) for name, version in MAVEN_PRODUCTION_DEPENDENCY_VERSIONS.items()] +
-            ["%s:%s" % (name, version) for name, version in MAVEN_TEST_DEPENDENCY_VERSIONS.items()])
+    return [
+        "%s:%s" % (name, details["version"] if type(details) == "dict" else details)
+        for name, details in dependency_versions.items()
+    ]

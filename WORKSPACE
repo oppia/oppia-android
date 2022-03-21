@@ -4,15 +4,16 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_ISOLATED_SCRIPT_DEPENDENCY_VERSIONS", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "MAVEN_TEST_DEPENDENCY_VERSIONS", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 30,
-    build_tools_version = "29.0.2",
+    api_level = BUILD_SDK_VERSION,
+    build_tools_version = BUILD_TOOLS_VERSION,
 )
 
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
@@ -30,16 +31,11 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
-# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
-load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
-
-kt_download_local_dev_dependencies()
-
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
 
 kotlin_repositories()
 
-kt_register_toolchains()
+register_toolchains("//tools/kotlin:kotlin_14_toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 # module while helping us avoid the unnecessary compilation of protoc. Referecences:
@@ -138,6 +134,12 @@ git_repository(
     shallow_since = "1647554845 -0700",
 )
 
+git_repository(
+    name = "archive_patcher",
+    commit = "d1c18b0035d5f669ddaefadade49cae0748f9df2",
+    remote = "https://github.com/oppia/archive-patcher",
+)
+
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",
@@ -174,16 +176,29 @@ http_jar(
 )
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
+# Further, multiple maven_installs are used to separate Android-specific & isolated script
+# dependencies per https://github.com/bazelbuild/rules_jvm_external#multiple-maven_install-declarations-for-isolated-artifact-version-trees.
+# Note that this is called 'maven' since Dagger expects it to be called that.
 maven_install(
-    artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    name = "maven",
+    artifacts = (
+        DAGGER_ARTIFACTS + (
+            get_maven_dependencies(MAVEN_PRODUCTION_DEPENDENCY_VERSIONS)
+        ) + (
+            get_maven_dependencies(MAVEN_TEST_DEPENDENCY_VERSIONS)
+        )
+    ),
     fail_if_repin_required = True,
     fetch_sources = True,
     maven_install_json = "//third_party:maven_install.json",
-    repositories = DAGGER_REPOSITORIES + [
-        "https://maven.fabric.io/public",
-        "https://maven.google.com",
-        "https://repo1.maven.org/maven2",
-    ],
+    repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
+)
+
+maven_install(
+    name = "isolated_script_maven_deps",
+    artifacts = get_maven_dependencies(MAVEN_ISOLATED_SCRIPT_DEPENDENCY_VERSIONS),
+    fetch_sources = True,
+    repositories = MAVEN_REPOSITORIES,
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")

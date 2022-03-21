@@ -23,3 +23,5 @@
 -dontwarn sun.misc.SignalHandler
 -dontwarn sun.misc.Signal
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+# Potentially a Kotlin 1.4-only exception.
+-dontwarn kotlin.time.jdk8.DurationConversionsJDK8Kt

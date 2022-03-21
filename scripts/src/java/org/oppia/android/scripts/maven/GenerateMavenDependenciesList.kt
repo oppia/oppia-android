@@ -18,7 +18,7 @@ import org.oppia.android.scripts.proto.MavenDependencyList
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
- * - path_to_maven_install_json: relative path to the maven_install.json file.
+ * - path_to_maven_install_json: relative path to the Maven install manifest file.
  * - path_to_maven_dependencies_textproto: relative path to the maven_dependencies.textproto
  * - path_to_maven_dependencies_pb: relative path to the maven_dependencies.pb file.
  * Example:
@@ -36,7 +36,7 @@ class GenerateMavenDependenciesList(
   private val commandExecutor: CommandExecutor = CommandExecutorImpl()
 ) {
   /**
-   * Compiles a list of third-party maven dependencies along with their license links on
+   * Compiles a list of third-party Maven dependencies along with their license links on
    * which Oppia Android depends and write them in maven_dependencies.textproto.
    */
   fun main(args: Array<String>) {
