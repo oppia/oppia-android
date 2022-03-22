@@ -118,9 +118,7 @@ class BundleToolClient(
       // Guava: Android & JRE. Bundle tool requires the JRE version, and there's no obvious way to
       // separate out the Maven dependencies without risking duplicate versions & automatic conflict
       // resolution.
-      return File(this).name.let { name ->
-        "guava" in name && "android" in name
-      }
+      return "guava_android" in File(this).absolutePath
     }
   }
 }
