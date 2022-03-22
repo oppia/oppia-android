@@ -79,12 +79,12 @@ jobs:
 
       - name: Check Bazel environment
         run: bazel info
-      - name: Change to develop
+      - name: Change to add-build-stats-ci-workflow
         run: |
-          git checkout develop
+          git checkout add-build-stats-ci-workflow
           git log -n 1
 
-      - name: Build Oppia dev, alpha, and KitKat alpha (develop)
+      - name: Build Oppia dev, alpha, and KitKat alpha (add-build-stats-ci-workflow)
         run: |
           bazel build -- //:oppia_dev //:oppia_alpha //:oppia_alpha_kitkat
           cp bazel-bin/oppia_dev.aab ./oppia_dev_without_changes.aab
