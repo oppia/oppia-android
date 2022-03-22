@@ -160,6 +160,10 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
         "version": "31.0.1",
     },
+    "guava_jre": {
+        "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
+        "version": "31.0.1",
+    },
 }
 
 MAVEN_REPOSITORIES = [

@@ -192,27 +192,39 @@ maven_install(
     repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
 )
 
-maven_install(
-    name = "isolated_script_maven_deps",
-    artifacts = get_maven_dependencies(MAVEN_ISOLATED_SCRIPT_DEPENDENCY_VERSIONS),
-    fetch_sources = True,
-    repositories = MAVEN_REPOSITORIES,
-)
-
 load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
 
-http_jar(
-    name = "guava_android",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["guava_android"]["sha"],
-    url = "https://repo1.maven.org/maven2/com/google/guava/guava/{0}-android/guava-{0}-android.jar".format(HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"]),
-)
+[
+    http_jar(
+        name = "guava_%s" % guava_type,
+        sha256 = HTTP_DEPENDENCY_VERSIONS["guava_%s" % guava_type]["sha"],
+        urls = [
+            "{0}/com/google/guava/guava/{1}-{2}/guava-{1}-{2}.jar".format(
+                url_base,
+                HTTP_DEPENDENCY_VERSIONS["guava_%s" % guava_type]["version"],
+                guava_type,
+            )
+            for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+        ],
+    )
+    for guava_type in [
+        "android",
+        "jre",
+    ]
+]
 
 http_jar(
     name = "kotlinx-coroutines-core-jvm",
     sha256 = HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["sha"],
-    url = "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{0}/kotlinx-coroutines-core-jvm-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"]),
+    urls = [
+        "{0}/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{1}/kotlinx-coroutines-core-jvm-{1}.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
 )
 
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")

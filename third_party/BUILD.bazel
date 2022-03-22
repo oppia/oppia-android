@@ -102,6 +102,18 @@ kt_jvm_import(
     ],
 )
 
+java_library(
+    name = "guava_jre",
+    exports = [
+        "//third_party:com_google_errorprone_error_prone_annotations",
+        "//third_party:com_google_guava_failureaccess",
+        "//third_party:com_google_j2objc_j2objc-annotations",
+        "//third_party:org_checkerframework_checker-compat-qual",
+        "//third_party:org_checkerframework_checker-qual",
+        "@guava_jre//jar",
+    ],
+)
+
 # This solution is based on https://github.com/Bencodes/bazel_issue_13553 for Bazel issue:
 # https://github.com/bazelbuild/bazel/issues/13553.
 genrule(
@@ -131,6 +143,12 @@ alias(
     visibility = ["//visibility:public"],
 )
 
+alias(
+    name = "com_google_guava_guava_jre",
+    actual = ":guava_jre",
+    visibility = ["//scripts:__subpackages__"],
+)
+
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
 # can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
 # Android assets which java_library targets do not export.
@@ -151,13 +169,4 @@ java_binary(
     main_class = "com.android.tools.build.bundletool.BundleToolMain",
     visibility = ["//visibility:public"],
     runtime_deps = [":android_bundletool"],
-)
-
-android_library(
-    name = "com_google_guava_guava_jre",
-    visibility = ["//scripts:__subpackages__"],
-    exports = [artifact(
-        "com.google.guava:guava",
-        repository_name = "isolated_script_maven_deps",
-    )],
 )
