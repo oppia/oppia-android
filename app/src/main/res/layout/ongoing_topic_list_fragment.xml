@@ -19,7 +19,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      android:background="@color/shared_activity_toolbar_color"
+      android:background="@color/component_color_shared_activity_toolbar_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
@@ -34,7 +34,7 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/topics_in_progress"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

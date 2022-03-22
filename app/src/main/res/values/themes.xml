@@ -2,47 +2,48 @@
 <resources>
 
   <style name="OppiaTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
-    <item name="colorPrimary">@color/primary_color</item>
-    <item name="colorPrimaryDark">@color/primary_dark_color</item>
-    <item name="colorAccent">@color/primary_color</item>
+    <item name="colorPrimary">@color/color_palette_primary_color</item>
+    <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
+    <item name="colorAccent">@color/color_palette_primary_color</item>
     <item name="actionBarTheme">@style/OppiaActionBarTheme</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorPrimary">@color/primary_color</item>
-    <item name="colorPrimaryDark">@color/primary_dark_color</item>
-    <item name="colorAccent">@color/accent_color</item>
+    <item name="colorPrimary">@color/color_palette_primary_color</item>
+    <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
+    <item name="colorAccent">@color/color_palette_accent_color</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorPrimary">@color/primary_color</item>
-    <item name="colorPrimaryDark">@color/primary_dark_color</item>
-    <item name="colorAccent">@color/primary_color</item>
+    <item name="colorPrimary">@color/color_palette_primary_color</item>
+    <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
+    <item name="colorAccent">@color/color_palette_primary_color</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
   <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
-    <item name="colorAccent">@color/primary_color</item>
-    <item name="android:background">@color/shared_activity_dialog_background_color</item>
-    <item name="android:textColorPrimary">@color/dialog_primary_text_color</item>
+    <item name="android:background">@color/component_color_shared_activity_dialog_background_color</item>
+    <item name="android:textColorPrimary">@color/color_palette_dialog_primary_text_color</item>
+
+    <item name="colorAccent">@color/color_palette_primary_color</item>
   </style>
 
   <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorControlActivated">@color/primary_color</item>
+    <item name="colorControlActivated">@color/color_palette_primary_color</item>
   </style>
 
   <style name="OppiaAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
-    <item name="colorPrimary">@color/primary_color</item>
-    <item name="colorPrimaryDark">@color/primary_dark_color</item>
-    <item name="colorAccent">@color/primary_color</item>
+    <item name="colorPrimary">@color/color_palette_primary_color</item>
+    <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
+    <item name="colorAccent">@color/color_palette_primary_color</item>
   </style>
 
   <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
-    <item name="android:background">@color/shared_activity_action_bar_color</item>
+    <item name="android:background">@color/component_color_shared_activity_action_bar_color</item>
   </style>
 </resources>
