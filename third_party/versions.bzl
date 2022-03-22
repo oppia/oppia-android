@@ -114,16 +114,6 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
-# This list should only contain script-only dependencies. These are dependencies that are guaranteed
-# cannot be included in production builds of the app. Note also that this dict should only include
-# dependencies that can't be pulled in from the test dependencies (i.e. due to a conflict with an
-# Android-specific dependency). As a result, these require special handling by whichever class is
-# using them.
-MAVEN_ISOLATED_SCRIPT_DEPENDENCY_VERSIONS = {
-    "com.google.guava:guava": "28.1-jre",
-}
-
-# Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
 HTTP_DEPENDENCY_VERSIONS = {
     "android_bundletool": {
         "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
@@ -133,12 +123,20 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
         "version": "2.41",
     },
-    "protobuf_tools": {
-        "version": "3.11.0",
+    "guava_android": {
+        "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
+        "version": "31.0.1",
+    },
+    "guava_jre": {
+        "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
+        "version": "31.0.1",
     },
     "kotlinx-coroutines-core-jvm": {
         "sha": "acc8c74b1fb88121c51221bfa7b6f5e920201bc20183ebf74165dcf5d45a8003",
         "version": "1.6.0",
+    },
+    "protobuf_tools": {
+        "version": "3.11.0",
     },
     "rules_java": {
         "sha": "34b41ec683e67253043ab1a3d1e8b7c61e4e8edefbcad485381328c934d072fe",
@@ -155,14 +153,6 @@ HTTP_DEPENDENCY_VERSIONS = {
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
-    },
-    "guava_android": {
-        "sha": "9425a423a4cb9d9db0356300722d9bd8e634cf539f29d97bb84f457cccd16eb8",
-        "version": "31.0.1",
-    },
-    "guava_jre": {
-        "sha": "d5be94d65e87bd219fb3193ad1517baa55a3b88fc91d21cf735826ab5af087b9",
-        "version": "31.0.1",
     },
 }
 
