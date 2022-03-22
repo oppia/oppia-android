@@ -167,7 +167,7 @@ class ExplorationProgressController @Inject constructor(
         sessionId
       )
     this.profileId = profileId
-    check(controllerCommandQueue.offer(initializeMessage)) {
+    check(controllerCommandQueue.trySend(initializeMessage).getOrNull() != null) {
       "Failed to schedule command for initializing the exploration progress controller."
     }
     return beginExplorationResultDataProvider
@@ -183,7 +183,7 @@ class ExplorationProgressController @Inject constructor(
    * out-of-session state, but subsequent calls to [beginExplorationAsync] will reset the session.
    */
   internal fun finishExplorationAsync(): DataProvider<Any?> {
-    check(controllerCommandQueue.offer(ControllerMessage.FinishExploration(activeSessionId))) {
+    check(controllerCommandQueue.trySend(ControllerMessage.FinishExploration(activeSessionId)).getOrNull() != null) {
       "Failed to schedule command for cleaning up after finishing the exploration."
     }
     return finishExplorationResultDataProvider
@@ -444,7 +444,7 @@ class ExplorationProgressController @Inject constructor(
 
     // This must succeed or the app will be entered into a bad state. Crash instead of trying to
     // recover (though recovery may be possible in the future with some changes and user messaging).
-    check(controllerCommandQueue.offer(message), lazyFailureMessage)
+    check(controllerCommandQueue.trySend(message).getOrNull() != null, lazyFailureMessage)
   }
 
   private suspend fun ControllerState.beginExplorationImpl(
@@ -820,7 +820,7 @@ class ExplorationProgressController @Inject constructor(
           checkpointState,
           sessionId
         )
-      check(controllerCommandQueue.offer(processEvent)) {
+      check(controllerCommandQueue.trySend(processEvent).getOrNull() != null) {
         "Failed to schedule command for processing a saved checkpoint."
       }
     }

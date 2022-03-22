@@ -172,7 +172,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     )
     this.profileId = profileId
     val initializeMessage = ControllerMessage.StartInitializingController(profileId, sessionId)
-    check(controllerCommandQueue.offer(initializeMessage)) {
+    check(controllerCommandQueue.trySend(initializeMessage).getOrNull() != null) {
       "Failed to schedule command for initializing the question assessment progress controller."
     }
     return beginSessionResultDataProvider
@@ -234,7 +234,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    * [DataProvider] from [getCurrentQuestion].
    */
   fun submitAnswer(answer: UserAnswer): DataProvider<AnsweredQuestionOutcome> {
-    check(controllerCommandQueue.offer(ControllerMessage.SubmitAnswer(answer, activeSessionId))) {
+    check(controllerCommandQueue.trySend(ControllerMessage.SubmitAnswer(answer, activeSessionId)).getOrNull() != null) {
       "Failed to schedule command for submitting an answer."
     }
     return submitAnswerResultDataProvider
@@ -253,9 +253,9 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
     check(
-      controllerCommandQueue.offer(
+      controllerCommandQueue.trySend(
         ControllerMessage.HintIsRevealed(hintIndex, activeSessionId)
-      )
+      ).getOrNull() != null
     ) { "Failed to schedule command for submitting a hint reveal" }
     return submitHintRevealedResultDataProvider
   }
@@ -270,7 +270,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     the result isn't relevant)
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
-    check(controllerCommandQueue.offer(ControllerMessage.SolutionIsRevealed(activeSessionId))) {
+    check(controllerCommandQueue.trySend(ControllerMessage.SolutionIsRevealed(activeSessionId)).getOrNull() != null) {
       "Failed to schedule command for submitting a solution reveal"
     }
     return submitSolutionRevealedResultDataProvider
@@ -294,7 +294,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     successful transition to another question.
    */
   fun moveToNextQuestion(): DataProvider<Any?> {
-    check(controllerCommandQueue.offer(ControllerMessage.MoveToNextQuestion(activeSessionId))) {
+    check(controllerCommandQueue.trySend(ControllerMessage.MoveToNextQuestion(activeSessionId)).getOrNull() != null) {
       "Failed to schedule command for moving to the next question."
     }
     return moveToNextQuestionResultDataProvider
@@ -359,7 +359,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   fun calculateScores(skillIdList: List<String>): DataProvider<UserAssessmentPerformance> {
     check(
-      controllerCommandQueue.offer(ControllerMessage.CalculateScores(skillIdList, activeSessionId))
+      controllerCommandQueue.trySend(ControllerMessage.CalculateScores(skillIdList, activeSessionId)).getOrNull() != null
     ) { "Failed to schedule command for moving to the next question." }
     return calculateScoresDataProvider
   }
@@ -439,7 +439,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
     // This must succeed or the app will be entered into a bad state. Crash instead of trying to
     // recover (though recovery may be possible in the future with some changes and user messaging).
-    check(controllerCommandQueue.offer(message), lazyFailureMessage)
+    check(controllerCommandQueue.trySend(message).getOrNull() != null, lazyFailureMessage)
   }
 
   private suspend fun sendReceiveQuestionListEvent(
