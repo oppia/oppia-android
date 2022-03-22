@@ -35,7 +35,7 @@ load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
 
 kotlin_repositories()
 
-register_toolchains("//tools/kotlin:kotlin_14_toolchain")
+register_toolchains("//tools/kotlin:kotlin_16_toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 # module while helping us avoid the unnecessary compilation of protoc. Referecences:
@@ -188,9 +188,16 @@ maven_install(
             get_maven_dependencies(MAVEN_TEST_DEPENDENCY_VERSIONS)
         )
     ),
+    excluded_artifacts = [
+        "org.jetbrains.kotlin:kotlin-reflect",
+    ],
     fail_if_repin_required = True,
     fetch_sources = True,
     maven_install_json = "//third_party:maven_install.json",
+    override_targets = {
+        "com.google.guava:guava": "@//third_party:guava_android",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "@//third_party:kotlinx-coroutines-core-jvm",
+    },
     repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
 )
 
@@ -204,3 +211,19 @@ maven_install(
 load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
+
+http_jar(
+    name = "guava_android",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["guava_android"]["sha"],
+    url = "https://repo1.maven.org/maven2/com/google/guava/guava/{0}-android/guava-{0}-android.jar".format(HTTP_DEPENDENCY_VERSIONS["guava_android"]["version"]),
+)
+
+http_jar(
+    name = "kotlinx-coroutines-core-jvm",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["sha"],
+    url = "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{0}/kotlinx-coroutines-core-jvm-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"]),
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()

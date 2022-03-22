@@ -7,7 +7,6 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -38,7 +37,6 @@ class LogUploadWorker private constructor(
     const val EXCEPTION_WORKER = "exception_worker"
   }
 
-  @ExperimentalCoroutinesApi
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {

@@ -137,6 +137,7 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/parser/svg:__pkg__",
     ],
 )
 
@@ -208,6 +209,7 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:__pkg__",
     ],
     deps = [
         ":image_loader",
