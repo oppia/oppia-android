@@ -26,7 +26,7 @@
     app:cardBackgroundColor="@color/topic_lessons_story_summary_card_background_color"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
-    app:rippleColor="@color/transparent">
+    app:rippleColor="@color/color_def_transparent">
 
     <LinearLayout
       android:layout_width="match_parent"
