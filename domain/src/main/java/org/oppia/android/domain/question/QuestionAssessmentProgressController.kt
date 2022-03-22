@@ -172,7 +172,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     )
     this.profileId = profileId
     val initializeMessage = ControllerMessage.StartInitializingController(profileId, sessionId)
-    check(controllerCommandQueue.trySend(initializeMessage).getOrNull() != null) {
+    check(controllerCommandQueue.tryToSend(initializeMessage)) {
       "Failed to schedule command for initializing the question assessment progress controller."
     }
     return beginSessionResultDataProvider
@@ -234,7 +234,8 @@ class QuestionAssessmentProgressController @Inject constructor(
    * [DataProvider] from [getCurrentQuestion].
    */
   fun submitAnswer(answer: UserAnswer): DataProvider<AnsweredQuestionOutcome> {
-    check(controllerCommandQueue.trySend(ControllerMessage.SubmitAnswer(answer, activeSessionId)).getOrNull() != null) {
+    val submitAnswerMessage = ControllerMessage.SubmitAnswer(answer, activeSessionId)
+    check(controllerCommandQueue.tryToSend(submitAnswerMessage)) {
       "Failed to schedule command for submitting an answer."
     }
     return submitAnswerResultDataProvider
@@ -253,9 +254,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
     check(
-      controllerCommandQueue.trySend(
-        ControllerMessage.HintIsRevealed(hintIndex, activeSessionId)
-      ).getOrNull() != null
+      controllerCommandQueue.tryToSend(ControllerMessage.HintIsRevealed(hintIndex, activeSessionId))
     ) { "Failed to schedule command for submitting a hint reveal" }
     return submitHintRevealedResultDataProvider
   }
@@ -270,7 +269,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     the result isn't relevant)
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
-    check(controllerCommandQueue.trySend(ControllerMessage.SolutionIsRevealed(activeSessionId)).getOrNull() != null) {
+    check(controllerCommandQueue.tryToSend(ControllerMessage.SolutionIsRevealed(activeSessionId))) {
       "Failed to schedule command for submitting a solution reveal"
     }
     return submitSolutionRevealedResultDataProvider
@@ -294,7 +293,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     successful transition to another question.
    */
   fun moveToNextQuestion(): DataProvider<Any?> {
-    check(controllerCommandQueue.trySend(ControllerMessage.MoveToNextQuestion(activeSessionId)).getOrNull() != null) {
+    check(controllerCommandQueue.tryToSend(ControllerMessage.MoveToNextQuestion(activeSessionId))) {
       "Failed to schedule command for moving to the next question."
     }
     return moveToNextQuestionResultDataProvider
@@ -358,9 +357,10 @@ class QuestionAssessmentProgressController @Inject constructor(
    * corresponding to the most recent call to this method.
    */
   fun calculateScores(skillIdList: List<String>): DataProvider<UserAssessmentPerformance> {
-    check(
-      controllerCommandQueue.trySend(ControllerMessage.CalculateScores(skillIdList, activeSessionId)).getOrNull() != null
-    ) { "Failed to schedule command for moving to the next question." }
+    val calcScoresMessage = ControllerMessage.CalculateScores(skillIdList, activeSessionId)
+    check(controllerCommandQueue.tryToSend(calcScoresMessage)) {
+      "Failed to schedule command for moving to the next question."
+    }
     return calculateScoresDataProvider
   }
 
@@ -439,7 +439,7 @@ class QuestionAssessmentProgressController @Inject constructor(
 
     // This must succeed or the app will be entered into a bad state. Crash instead of trying to
     // recover (though recovery may be possible in the future with some changes and user messaging).
-    check(controllerCommandQueue.trySend(message).getOrNull() != null, lazyFailureMessage)
+    check(controllerCommandQueue.tryToSend(message), lazyFailureMessage)
   }
 
   private suspend fun sendReceiveQuestionListEvent(
@@ -855,3 +855,5 @@ class QuestionAssessmentProgressController @Inject constructor(
     data class RecomputeQuestionAndNotify(override val sessionId: String) : ControllerMessage()
   }
 }
+
+private fun <T> SendChannel<T>.tryToSend(value: T): Boolean = trySend(value).getOrNull() != null

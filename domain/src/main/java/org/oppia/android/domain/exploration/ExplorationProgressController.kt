@@ -167,7 +167,7 @@ class ExplorationProgressController @Inject constructor(
         sessionId
       )
     this.profileId = profileId
-    check(controllerCommandQueue.trySend(initializeMessage).getOrNull() != null) {
+    check(controllerCommandQueue.tryToSend(initializeMessage)) {
       "Failed to schedule command for initializing the exploration progress controller."
     }
     return beginExplorationResultDataProvider
@@ -183,7 +183,7 @@ class ExplorationProgressController @Inject constructor(
    * out-of-session state, but subsequent calls to [beginExplorationAsync] will reset the session.
    */
   internal fun finishExplorationAsync(): DataProvider<Any?> {
-    check(controllerCommandQueue.trySend(ControllerMessage.FinishExploration(activeSessionId)).getOrNull() != null) {
+    check(controllerCommandQueue.tryToSend(ControllerMessage.FinishExploration(activeSessionId))) {
       "Failed to schedule command for cleaning up after finishing the exploration."
     }
     return finishExplorationResultDataProvider
@@ -444,7 +444,7 @@ class ExplorationProgressController @Inject constructor(
 
     // This must succeed or the app will be entered into a bad state. Crash instead of trying to
     // recover (though recovery may be possible in the future with some changes and user messaging).
-    check(controllerCommandQueue.trySend(message).getOrNull() != null, lazyFailureMessage)
+    check(controllerCommandQueue.tryToSend(message), lazyFailureMessage)
   }
 
   private suspend fun ControllerState.beginExplorationImpl(
@@ -820,7 +820,7 @@ class ExplorationProgressController @Inject constructor(
           checkpointState,
           sessionId
         )
-      check(controllerCommandQueue.trySend(processEvent).getOrNull() != null) {
+      check(controllerCommandQueue.tryToSend(processEvent)) {
         "Failed to schedule command for processing a saved checkpoint."
       }
     }
@@ -1036,3 +1036,5 @@ class ExplorationProgressController @Inject constructor(
     data class RecomputeStateAndNotify(override val sessionId: String) : ControllerMessage()
   }
 }
+
+private fun <T> SendChannel<T>.tryToSend(value: T): Boolean = trySend(value).getOrNull() != null

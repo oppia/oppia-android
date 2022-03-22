@@ -282,7 +282,7 @@ class UrlImageParser private constructor(
      * that will not be resized or aligned beyond what the target itself requires, and what the
      * system performs automatically.
      */
-    class InlineTextImage<T: Any, D : Drawable>(
+    class InlineTextImage<T : Any, D : Drawable>(
       targetConfiguration: TargetConfiguration,
       private val computeDrawable: (T) -> D,
       private val computeDimensions: (D, TextView) -> Unit,
