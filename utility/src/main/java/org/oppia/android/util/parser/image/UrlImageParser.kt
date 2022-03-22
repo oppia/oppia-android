@@ -100,13 +100,16 @@ class UrlImageParser private constructor(
     return CustomImageTarget(createTarget(configuration))
   }
 
+  // T must be bounded to a non-null value per https://youtrack.jetbrains.com/issue/KT-50961 and
+  // https://youtrack.jetbrains.com/issue/KT-26245 to ensure that the Kotlin compiler can be
+  // confident an NPE can't unwittingly happen.
   /**
    * A [CustomTarget] that can automatically resized, or align, the loaded image as needed. This
    * class coordinates with a [ProxyDrawable] defined as part of the specified
    * [TargetConfiguration], and ensures that the drawable is only adjusted when it's safe to do so
    * per the holding TextView's lifecycle.
    */
-  private sealed class AutoAdjustingImageTarget<T, D : Drawable>(
+  private sealed class AutoAdjustingImageTarget<T : Any, D : Drawable>(
     private val targetConfiguration: TargetConfiguration
   ) : CustomTarget<T>() {
 
@@ -119,7 +122,7 @@ class UrlImageParser private constructor(
       // No resources to clear.
     }
 
-    override fun onResourceReady(resource: T, transition: Transition<in T>?) {
+    override fun onResourceReady(resource: T, transition: Transition<in T?>?) {
       val drawable = retrieveDrawable(resource)
       htmlContentTextView.post {
         htmlContentTextView.width { viewWidth ->
@@ -143,7 +146,7 @@ class UrlImageParser private constructor(
      * A [AutoAdjustingImageTarget] that may automatically center and/or resize loaded images to
      * display them in a "block" fashion.
      */
-    sealed class BlockImageTarget<T, D : Drawable>(
+    sealed class BlockImageTarget<T : Any, D : Drawable>(
       targetConfiguration: TargetConfiguration
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
 

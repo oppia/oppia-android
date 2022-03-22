@@ -160,13 +160,13 @@ class ExceptionsController @Inject constructor(
   private fun getLeastRecentExceptionIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
       .filter { it.value.exceptionType == ExceptionType.NON_FATAL }
-      .minBy { it.value.timestampInMillis }?.index
+      .minByOrNull { it.value.timestampInMillis }?.index
       ?: getLeastRecentGeneralEventIndex(oppiaExceptionLogs)
 
   /** Returns the index of the least recent exception regardless of their exception type. */
   private fun getLeastRecentGeneralEventIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
-      .minBy { it.value.timestampInMillis }?.index
+      .minByOrNull { it.value.timestampInMillis }?.index
 
   /** Returns a data provider for exception log reports that have been recorded for upload. */
   fun getExceptionLogStore(): DataProvider<OppiaExceptionLogs> {

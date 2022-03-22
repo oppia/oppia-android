@@ -67,8 +67,8 @@ dependencies {
       'androidx.annotation:annotation:1.1.0',
       'androidx.appcompat:appcompat:1.1.0',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
-      'androidx.core:core-ktx:1.0.2',
-      "androidx.test:core:1.0.0",
+      'androidx.core:core-ktx:1.3.0',
+      "androidx.test:core:1.4.0",
       'androidx.test.espresso:espresso-accessibility:3.1.0',
       'androidx.test.espresso:espresso-core:3.2.0',
       'androidx.test:runner:1.2.0',
@@ -81,7 +81,7 @@ dependencies {
       'org.robolectric:robolectric:4.5',
       'org.jetbrains.kotlin:kotlin-reflect:$kotlin_version',
       'org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version',
-      'org.mockito:mockito-core:2.19.0',
+      'org.mockito:mockito-core:3.9.0',
       project(":domain"),
       project(":utility"),
   )
@@ -95,9 +95,9 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'com.google.android.material:material:1.2.0-alpha02',
       'com.google.truth:truth:1.1.3',
-      'junit:junit:4.12',
+      'junit:junit:4.13.2',
       "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
-      'org.mockito:mockito-core:2.19.0',
+      'org.mockito:mockito-core:3.9.0',
       project(":domain"),
   )
   kapt(

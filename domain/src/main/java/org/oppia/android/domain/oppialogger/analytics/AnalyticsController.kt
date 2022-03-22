@@ -134,12 +134,12 @@ class AnalyticsController @Inject constructor(
   private fun getLeastRecentEventIndex(oppiaEventLogs: OppiaEventLogs): Int? =
     oppiaEventLogs.eventLogList.withIndex()
       .filter { it.value.priority == Priority.OPTIONAL }
-      .minBy { it.value.timestamp }?.index ?: getLeastRecentGeneralEventIndex(oppiaEventLogs)
+      .minByOrNull { it.value.timestamp }?.index ?: getLeastRecentGeneralEventIndex(oppiaEventLogs)
 
   /** Returns the index of the least recent event regardless of their priority. */
   private fun getLeastRecentGeneralEventIndex(oppiaEventLogs: OppiaEventLogs): Int? =
     oppiaEventLogs.eventLogList.withIndex()
-      .minBy { it.value.timestamp }?.index
+      .minByOrNull { it.value.timestamp }?.index
 
   /** Returns a data provider for log reports that have been recorded for upload. */
   fun getEventLogStore(): DataProvider<OppiaEventLogs> {
