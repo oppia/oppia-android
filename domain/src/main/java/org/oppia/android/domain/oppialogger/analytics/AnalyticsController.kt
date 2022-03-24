@@ -32,11 +32,7 @@ class AnalyticsController @Inject constructor(
   private val eventLogStore =
     cacheStoreFactory.create("event_logs", OppiaEventLogs.getDefaultInstance())
 
-  /**
-   * Logs transition events.
-   * These events are given HIGH priority.
-   */
-  fun logTransitionEvent(
+  fun logImportantEvent(
     timestamp: Long,
     eventContext: EventLog.Context
   ) {
@@ -49,11 +45,7 @@ class AnalyticsController @Inject constructor(
     )
   }
 
-  /**
-   * Logs click events.
-   * These events are given LOW priority.
-   */
-  fun logClickEvent(
+  fun logLowPriorityEvent(
     timestamp: Long,
     eventContext: EventLog.Context
   ) {
@@ -86,7 +78,8 @@ class AnalyticsController @Inject constructor(
    * Uploads to remote service in the presence of it.
    */
   private fun uploadOrCacheEventLog(eventLog: EventLog) {
-    when (networkConnectionUtil.getCurrentConnectionStatus()) {
+    val status = networkConnectionUtil.getCurrentConnectionStatus()
+    when (status) {
       NONE -> {
         syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NO_CONNECTIVITY)
         cacheEventLog(eventLog)

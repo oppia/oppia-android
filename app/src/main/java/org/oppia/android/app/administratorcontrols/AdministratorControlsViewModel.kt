@@ -32,7 +32,6 @@ class AdministratorControlsViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val IntentFactoryShim: IntentFactoryShim,
   @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener

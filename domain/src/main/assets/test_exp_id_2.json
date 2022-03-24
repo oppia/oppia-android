@@ -10,6 +10,7 @@
     "param_specs": {},
     "states": {
       "ItemSelectionMulti": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>What are the primary colors of light?</p>"
@@ -236,6 +237,7 @@
         "next_content_id_index": -1
       },
       "MultipleChoice": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>Which bird can sustain flight for long periods of time?</p>"
@@ -379,6 +381,7 @@
         "next_content_id_index": -1
       },
       "Fractions": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>What fraction represents half of something?</p>"
@@ -549,6 +552,7 @@
         "next_content_id_index": -1
       },
       "Continue": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>Test exploration with interactions. <oppia-noninteractive-link text-with-value=\"&quot;Oppia&quot;\" url-with-value=\"&quot;https://oppia.github.io&quot;\"></oppia-noninteractive-link></p>"
@@ -615,6 +619,7 @@
         "next_content_id_index": -1
       },
       "NumberInput": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>What is 11 times 11?</p>"
@@ -811,6 +816,7 @@
         "next_content_id_index": -1
       },
       "RatioInput": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>Two numbers are respectively 20% and 50% more than a third number. The ratio of the two numbers is:</p>"
@@ -991,6 +997,7 @@
         "next_content_id_index": -1
       },
       "Text": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>In which language does Oppia mean 'to learn'?</p>"
@@ -1122,6 +1129,7 @@
         "next_content_id_index": -1
       },
       "ItemSelectionMinOne": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>What color does the 'G' in 'RGB' correspond to?</p>"
@@ -1271,6 +1279,7 @@
         "next_content_id_index": -1
       },
       "DragDropNoGroup": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>Sort the following in descending order.</p>"
@@ -1498,6 +1507,7 @@
         "next_content_id_index": -1
       },
       "DragDropGroup": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "<p>Sort the following in descending order, putting equal items in the same position.</p>"
@@ -1694,6 +1704,7 @@
         "next_content_id_index": -1
       },
       "End": {
+        "linked_skill_id": "test_skill_id_0",
         "content": {
           "content_id": "content",
           "html": "Congratulations, you have finished!"

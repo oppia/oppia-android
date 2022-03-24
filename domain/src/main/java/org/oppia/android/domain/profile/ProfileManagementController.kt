@@ -32,6 +32,7 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -71,7 +72,8 @@ class ProfileManagementController @Inject constructor(
   private val exceptionsController: ExceptionsController,
   private val oppiaClock: OppiaClock,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val loggingIdentifierController: LoggingIdentifierController
+  private val loggingIdentifierController: LoggingIdentifierController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -124,7 +126,7 @@ class ProfileManagementController @Inject constructor(
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
   init {
-    profileDataStore.primeCacheAsync().invokeOnCompletion {
+    profileDataStore.primeInMemoryCacheAsync().invokeOnCompletion {
       it?.let {
         oppiaLogger.e(
           "DOMAIN",
@@ -653,10 +655,10 @@ class ProfileManagementController @Inject constructor(
       if (!directoryManagementUtil.deleteDir(profileId.internalId.toString())) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_DELETE_DIR)
       }
-      val profileDatabaseBuilder = it.toBuilder().removeProfiles(
-        profileId.internalId
-      )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      val learnerId = it.profilesMap.getValue(profileId.internalId).learnerId
+      learnerAnalyticsLogger.logDeleteProfile(installationId, learnerId)
+      Pair(it.toBuilder().removeProfiles(profileId.internalId).build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
@@ -669,6 +671,14 @@ class ProfileManagementController @Inject constructor(
    */
   fun getCurrentProfileId(): ProfileId {
     return ProfileId.newBuilder().setInternalId(currentProfileId).build()
+  }
+
+  suspend fun fetchCurrentLearnerId(): String? = fetchLearnerId(getCurrentProfileId())
+
+  // TODO: document that this is a one-time learner ID and that it can change.
+  suspend fun fetchLearnerId(profileId: ProfileId): String? {
+    val profileDatabase = profileDataStore.readDataAsync().await()
+    return profileDatabase.profilesMap[profileId.internalId]?.learnerId
   }
 
   private suspend fun getDeferredResult(

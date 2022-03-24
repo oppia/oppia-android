@@ -25,6 +25,21 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "learner_analytics_logger",
+    srcs = [
+        "LearnerAnalyticsLogger.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
+    ],
+)
+
+kt_android_library(
     name = "learner_analytics_inactivity_limit_millis",
     srcs = [
         "LearnerAnalyticsInactivityLimitMillis.kt",
@@ -44,8 +59,10 @@ kt_android_library(
     deps = [
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
+        ":learner_analytics_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//third_party:androidx_lifecycle_lifecycle-extensions",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],

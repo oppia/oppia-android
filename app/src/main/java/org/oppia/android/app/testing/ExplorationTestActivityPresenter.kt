@@ -48,14 +48,12 @@ class ExplorationTestActivityPresenter @Inject constructor(
   }
 
   private fun playExplorationButton() {
-    explorationDataController.stopPlayingExploration()
-    explorationDataController.startPlayingExploration(
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+    explorationDataController.replayExploration(
       INTERNAL_PROFILE_ID,
       TOPIC_ID,
       STORY_ID,
-      EXPLORATION_ID,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      EXPLORATION_ID
     ).toLiveData().observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->

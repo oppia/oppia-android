@@ -10,6 +10,7 @@
     "param_specs": {},
     "states": {
       "End": {
+        "linked_skill_id": "test_skill_id_1",
         "content": {
           "content_id": "content",
           "html": "<p>This is the end&nbsp;</p>"
@@ -53,6 +54,7 @@
         "next_content_id_index": -1
       },
       "ImageClickInput": {
+        "linked_skill_id": "test_skill_id_1",
         "content": {
           "content_id": "content",
           "html": "<p>Our Solar System consists of nine planets orbiting around our sun: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto. They range from huge gas giants to small icy dwarf planets.</p><p> </p><p>Click on the planets below to find out more about each one!</p>"

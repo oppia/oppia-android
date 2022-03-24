@@ -10,6 +10,7 @@
     "param_specs": {},
     "states": {
       "NumericExpressionInput.MatchesExactlyWith": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What numeric expression represents one plus two with no reordering allowed? Note: divisions are treated as fractions for this state.</p>"
@@ -126,6 +127,7 @@
         "next_content_id_index": -1
       },
       "NumericExpressionInput.MatchesUpToTrivialManipulations": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What numeric expression represents one plus two? Note that commutative and associative reordering is allowed.</p>"
@@ -220,6 +222,7 @@
         "next_content_id_index": -1
       },
       "NumericExpressionInput.IsEquivalentTo": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What numeric expression represents one plus two? Note that any equivalent expression is allowed.</p>"
@@ -314,6 +317,7 @@
         "next_content_id_index": -1
       },
       "AlgebraicExpressionInput.MatchesExactlyWith": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What algebraic expression represents the product of (x+1)(x-2)? Note: divisions are treated as fractions for this state.</p>"
@@ -415,6 +419,7 @@
         "next_content_id_index": -1
       },
       "AlgebraicExpressionInput.MatchesUpToTrivialManipulations": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What algebraic expression represents the product of (x+1)(x-2)? Note that commutative and associative reordering is allowed.</p>"
@@ -513,6 +518,7 @@
         "next_content_id_index": -1
       },
       "AlgebraicExpressionInput.IsEquivalentTo": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What algebraic expression represents the product of (x+1)(x-2)? Note that any equivalent expression is allowed.</p>"
@@ -611,6 +617,7 @@
         "next_content_id_index": -1
       },
       "MathEquationInput.MatchesExactlyWith": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note: divisions are treated as fractions for this state.</p>"
@@ -712,6 +719,7 @@
         "next_content_id_index": -1
       },
       "MathEquationInput.MatchesUpToTrivialManipulations": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note that commutative and associative reordering is allowed.</p>"
@@ -810,6 +818,7 @@
         "next_content_id_index": -1
       },
       "MathEquationInput.IsEquivalentTo": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "<p>What algebraic equation represents the quantity of two y and (x+1)(x-2)? Note that any equivalent expression is allowed, including reordering around the equals sign.</p>"
@@ -908,6 +917,7 @@
         "next_content_id_index": -1
       },
       "End": {
+        "linked_skill_id": "test_skill_id_2",
         "content": {
           "content_id": "content",
           "html": "Congratulations, you have finished!"

@@ -37,6 +37,67 @@ class ExplorationDataController @Inject constructor(
     }
   }
 
+  fun startPlayingNewExploration(
+    internalProfileId: Int, topicId: String, storyId: String, explorationId: String
+  ): DataProvider<Any?> {
+    return startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
+      isRestart = false
+    )
+  }
+
+  fun resumeExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    explorationCheckpoint: ExplorationCheckpoint
+  ): DataProvider<Any?> {
+    return startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = true,
+      explorationCheckpoint,
+      isRestart = false
+    )
+  }
+
+  fun restartExploration(
+    internalProfileId: Int, topicId: String, storyId: String, explorationId: String
+  ): DataProvider<Any?> {
+    return startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = true, // Implied since only checkpointed lessons can be restarted.
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
+      isRestart = true
+    )
+  }
+
+  fun replayExploration(
+    internalProfileId: Int, topicId: String, storyId: String, explorationId: String
+  ): DataProvider<Any?> {
+    return startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = false, // Finished lessons can't be partially saved.
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
+      isRestart = false
+    )
+  }
+
+  // TODO: Fix this documentation (w.r.t. the new methods), and remove this method.
   /**
    * Begins playing an exploration of the specified ID.
    *
@@ -58,16 +119,20 @@ class ExplorationDataController @Inject constructor(
    * @param shouldSavePartialProgress indicates if partial progress should be saved for the new play
    *     session
    * @param explorationCheckpoint the checkpoint which may be used to resume the exploration
+   * @param isRestart whether starting this exploration is erasing a previous checkpoint. In cases
+   *     where this is ``true``, [explorationCheckpoint] is expected to be the default proto
+   *     instance.
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */
-  fun startPlayingExploration(
+  private fun startPlayingExploration(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
+    isRestart: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -75,7 +140,8 @@ class ExplorationDataController @Inject constructor(
       storyId,
       explorationId,
       shouldSavePartialProgress,
-      explorationCheckpoint
+      explorationCheckpoint,
+      isRestart
     )
   }
 
@@ -91,9 +157,12 @@ class ExplorationDataController @Inject constructor(
    * Note that the returned provider monitors the long-term stopping state of exploration sessions
    * and will be reset to 'pending' when a session is currently active, or before any session has
    * started.
+   *
+   * @param isCompletion indicates whether this stop action is fully ending the exploration (i.e. no
+   *     checkpoint will be saved since this indicates the exploration is completed)
    */
-  fun stopPlayingExploration(): DataProvider<Any?> =
-    explorationProgressController.finishExplorationAsync()
+  fun stopPlayingExploration(isCompletion: Boolean): DataProvider<Any?> =
+    explorationProgressController.finishExplorationAsync(isCompletion)
 
   /**
    * Fetches the details of the oldest saved exploration for a specified profileId.

@@ -178,7 +178,7 @@ class StateFragmentPresenter @Inject constructor(
     hideKeyboard()
     markExplorationCompleted()
     (activity as StopStatePlayingSessionWithSavedProgressListener)
-      .deleteCurrentProgressAndStopSession()
+      .deleteCurrentProgressAndStopSession(isCompletion = true)
   }
 
   private fun showOrHideAudioByState(state: State) {

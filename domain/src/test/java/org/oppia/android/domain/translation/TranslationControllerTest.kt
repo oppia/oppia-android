@@ -64,7 +64,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 /** Tests for [TranslationController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -1382,7 +1381,7 @@ class TranslationControllerTest {
       TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
       AssetModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )
