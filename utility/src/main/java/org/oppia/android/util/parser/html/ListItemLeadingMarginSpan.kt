@@ -79,7 +79,7 @@ class ListItemLeadingMarginSpan(
       }
     }
   }
-
+  
   override fun getLeadingMargin(first: Boolean): Int {
     return when (tag) {
       CUSTOM_LIST_UL_TAG -> spacingBeforeBulletText

@@ -59,7 +59,7 @@ kt_android_library(
         "PolicyType.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//:oppia_api_visibility",
     ],
 )
 

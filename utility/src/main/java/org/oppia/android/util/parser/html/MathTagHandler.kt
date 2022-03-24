@@ -34,10 +34,13 @@ class MathTagHandler(
       // could also load a LaTeX span, instead. Note that this approach is based on Android's Html
       // parser.
       val drawable =
-        imageRetriever!!.loadDrawable(
+        checkNotNull(imageRetriever!!.loadDrawable(
           content.svgFilename,
           CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
-        )
+        )) {
+          "Expected imageRetriever to be not null."
+        }
+
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"
         // the image when rendering the HTML.

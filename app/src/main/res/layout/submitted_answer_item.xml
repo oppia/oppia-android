@@ -53,6 +53,7 @@
       android:textColor="@color/oppia_primary_text"
       android:textSize="16sp"
       android:visibility="gone"
+      app:layout_constrainedWidth="true"
       app:layout_constraintEnd_toEndOf="@{viewModel.isCorrectAnswer &amp;&amp; !viewModel.hasConversationView ? @id/answer_tick_guideline : ConstraintSet.PARENT_ID}"
       app:layout_constraintHorizontal_bias="@{viewModel.hasConversationView ? 1 : 0}"
       app:layout_constraintStart_toStartOf="parent"

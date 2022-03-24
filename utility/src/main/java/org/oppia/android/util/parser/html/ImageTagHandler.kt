@@ -34,9 +34,12 @@ class ImageTagHandler(
         return@run startIndex to length
       }
       val drawable =
-        imageRetriever!!.loadDrawable(
+        checkNotNull(imageRetriever!!.loadDrawable(
           source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
-        )
+        )) {
+          "Expected imageRetriever to be not null."
+        }
+
       output.setSpan(
         ImageSpan(drawable, source),
         startIndex,

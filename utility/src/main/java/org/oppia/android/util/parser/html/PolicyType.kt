@@ -4,6 +4,6 @@ package org.oppia.android.util.parser.html
 enum class PolicyType {
   /** Corresponds to the Privacy Policy. */
   PRIVACY_POLICY,
-  /** Corresponds to the Terms of Service type. */
+  /** Corresponds to the Terms of Service. */
   TERMS_OF_SERVICE
 }

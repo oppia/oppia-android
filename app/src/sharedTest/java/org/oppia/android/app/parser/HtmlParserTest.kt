@@ -507,7 +507,7 @@ class HtmlParserTest {
       imageCenterAlign = true,
       customOppiaTagActionListener = mockCustomOppiaTagActionListener
     )
-    val htmlResult = activityScenarioRule.scenario.runWithActivity {
+    val textView = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
@@ -528,7 +528,7 @@ class HtmlParserTest {
       capture(viewCaptor),
       capture(stringCaptor)
     )
-//    assertThat(viewCaptor.value).isEqualTo(textView)
+    assertThat(viewCaptor.value).isEqualTo(textView)
     assertThat(stringCaptor.value).isEqualTo("skill_id_1")
   }
 

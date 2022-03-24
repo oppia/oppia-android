@@ -30,13 +30,13 @@ enum HighlightItem {
   DEVELOPER_OPTIONS_ITEM = 4;
 }
 
-// Arguments needed to open the policy page.
+// Activity Parameters needed to open the policy page.
 message PoliciesActivityParams {
   // The specific policy page that should be displayed.
   PolicyPage policy_page = 1;
 }
 
-// Arguments needed to open the policy page.
+// Fragment arguments needed to open the policy page.
 message PoliciesFragmentArguments {
   // The specific policy page that should be displayed.
   PolicyPage policy_page = 1;
