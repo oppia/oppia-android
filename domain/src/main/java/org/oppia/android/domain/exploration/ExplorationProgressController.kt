@@ -114,7 +114,7 @@ class ExplorationProgressController @Inject constructor(
       AsyncResult.Failure(IllegalStateException("Exploration is not yet initialized."))
     )
 
-  private val controllerCommandQueue by lazy { createControllerCommandActor() }
+  private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
 
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
@@ -135,6 +135,7 @@ class ExplorationProgressController @Inject constructor(
     val sessionId = UUID.randomUUID().toString().also {
       mostRecentSessionId = it
       mostRecentEphemeralStateFlow = ephemeralStateFlow
+      mostRecentCommandQueue = createControllerCommandActor()
     }
     val beginExplorationResultFlow = createAsyncResultStateFlow<Any?>()
     val message =
@@ -191,14 +192,15 @@ class ExplorationProgressController @Inject constructor(
    * pending state using [moveToNextState].
    *
    * ### Lifecycle behavior
-   * The returned [DataProvider] will initially be pending until the operation completes. Note that
-   * a different provider is returned for each call, though it's tied to the same session so it can
-   * be monitored medium-term (i.e. for the duration of the play session, but not past it).
-   * Furthermore, the returned provider does not actually need to be monitored in order for the
-   * operation to complete, though it's recommended since [getCurrentState] can only be used to
-   * monitor the effects of the operation, not whether the operation itself succeeded.
+   * The returned [DataProvider] will initially be pending until the operation completes (unless
+   * called before a session is started). Note that a different provider is returned for each call,
+   * though it's tied to the same session so it can be monitored medium-term (i.e. for the duration
+   * of the play session, but not past it). Furthermore, the returned provider does not actually
+   * need to be monitored in order for the operation to complete, though it's recommended since
+   * [getCurrentState] can only be used to monitor the effects of the operation, not whether the
+   * operation itself succeeded.
    *
-   * If this is called before a session begins it will return a provider that stays pending with no
+   * If this is called before a session begins it will return a provider that stays failing with no
    * updates. The operation will also silently fail rather than queue up in these circumstances, so
    * starting a session will not trigger an answer submission from an older call.
    *
@@ -351,18 +353,16 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
-    var controllerState: ControllerState? = null
+    lateinit var controllerState: ControllerState
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
     // the main thread or scheduling an extra coroutine.
-    return CoroutineScope(backgroundCoroutineDispatcher).actor(capacity = Channel.UNLIMITED) {
+    @Suppress("JoinDeclarationAndAssignment") // Warning is incorrect in this case.
+    lateinit var commandQueue: SendChannel<ControllerMessage<*>>
+    commandQueue = CoroutineScope(
+      backgroundCoroutineDispatcher
+    ).actor(capacity = Channel.UNLIMITED) {
       for (message in channel) {
         try {
-          // Since the loop essentially never ends, this is needed to ensure that the controller
-          // state can be reset across sessions.
-          val initedControllerState by lazy {
-            checkNotNull(controllerState) { "Expected controller state to be initialized." }
-          }
-
           @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
           val unused = when (message) {
             is ControllerMessage.InitializeController -> {
@@ -370,7 +370,7 @@ class ExplorationProgressController @Inject constructor(
               // across sessions.
               controllerState =
                 ControllerState(
-                  ExplorationProgress(), message.sessionId, message.ephemeralStateFlow
+                  ExplorationProgress(), message.sessionId, message.ephemeralStateFlow, commandQueue
                 ).also {
                   it.beginExplorationImpl(
                     message.callbackFlow,
@@ -389,25 +389,23 @@ class ExplorationProgressController @Inject constructor(
                 // initialized.
                 controllerState.finishExplorationImpl(message.callbackFlow)
               } finally {
-                // Ensure the controller state is always reset.
-                controllerState = null
+                // Ensure the actor ends since the session requires no further message processing.
+                break
               }
             }
             is ControllerMessage.SubmitAnswer ->
-              initedControllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
+              controllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
             is ControllerMessage.HintIsRevealed -> {
-              initedControllerState.submitHintIsRevealedImpl(
-                message.callbackFlow, message.hintIndex
-              )
+              controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             }
             is ControllerMessage.SolutionIsRevealed ->
-              initedControllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
+              controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
             is ControllerMessage.MoveToPreviousState ->
-              initedControllerState.moveToPreviousStateImpl(message.callbackFlow)
+              controllerState.moveToPreviousStateImpl(message.callbackFlow)
             is ControllerMessage.MoveToNextState ->
-              initedControllerState.moveToNextStateImpl(message.callbackFlow)
-            is ControllerMessage.ProcessSavedCheckpointResult ->
-              initedControllerState.processSaveCheckpointResult(
+              controllerState.moveToNextStateImpl(message.callbackFlow)
+            is ControllerMessage.ProcessSavedCheckpointResult -> {
+              controllerState.processSaveCheckpointResult(
                 message.profileId,
                 message.topicId,
                 message.storyId,
@@ -415,9 +413,10 @@ class ExplorationProgressController @Inject constructor(
                 message.lastPlayedTimestamp,
                 message.newCheckpointState
               )
-            is ControllerMessage.SaveCheckpoint -> initedControllerState.saveExplorationCheckpoint()
+            }
+            is ControllerMessage.SaveCheckpoint -> controllerState.saveExplorationCheckpoint()
             is ControllerMessage.RecomputeStateAndNotify ->
-              initedControllerState.recomputeCurrentStateAndNotifyImpl()
+              controllerState.recomputeCurrentStateAndNotifyImpl()
           }
         } catch (e: Exception) {
           exceptionsController.logNonFatalException(e)
@@ -429,19 +428,31 @@ class ExplorationProgressController @Inject constructor(
         }
       }
     }
+    return commandQueue
   }
 
   private fun <T> sendCommandForOperation(
     message: ControllerMessage<T>,
     lazyFailureMessage: () -> String
   ) {
-    // Ensure that the result is first reset since there will be a delay before the message is
-    // processed (if there's a flow).
-    message.callbackFlow?.value = AsyncResult.Pending()
+    // TODO(#4119): Switch this to use trySend(), instead, which is much cleaner and doesn't require
+    //  catching an exception.
+    val flowResult: AsyncResult<T> = try {
+      val commandQueue = mostRecentCommandQueue
+      when {
+        commandQueue == null ->
+          AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
+        !commandQueue.offer(message) ->
+          AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
+        // Ensure that the result is first reset since there will be a delay before the message is
+        // processed (if there's a flow).
+        else -> AsyncResult.Pending()
+      }
+    } catch (e: Exception) { AsyncResult.Failure(e) }
 
-    // This must succeed or the app will be entered into a bad state. Crash instead of trying to
-    // recover (though recovery may be possible in the future with some changes and user messaging).
-    check(controllerCommandQueue.offer(message), lazyFailureMessage)
+    // This must be assigned separately since flowResult should always be calculated, even if
+    // there's no callbackFlow to report it.
+    message.callbackFlow?.value = flowResult
   }
 
   private suspend fun ControllerState.beginExplorationImpl(
@@ -471,7 +482,7 @@ class ExplorationProgressController @Inject constructor(
       hintHandler.getCurrentHelpIndex().onEach {
         // Fire an event to save the latest progress state in a checkpoint to avoid cross-thread
         // synchronization being required (since the state of hints/solutions has changed).
-        controllerCommandQueue.send(ControllerMessage.SaveCheckpoint(sessionId))
+        commandQueue.send(ControllerMessage.SaveCheckpoint(sessionId))
         recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
@@ -682,7 +693,7 @@ class ExplorationProgressController @Inject constructor(
    * ensure state isn't leaked across play sessions.
    */
   private suspend fun ControllerState.recomputeCurrentStateAndNotifyAsync() {
-    controllerCommandQueue.send(ControllerMessage.RecomputeStateAndNotify(sessionId))
+    commandQueue.send(ControllerMessage.RecomputeStateAndNotify(sessionId))
   }
 
   private suspend fun ControllerState.recomputeCurrentStateAndNotifyImpl() {
@@ -936,11 +947,15 @@ class ExplorationProgressController @Inject constructor(
    *
    * @property explorationProgress the [ExplorationProgress] corresponding to the session
    * @property sessionId the GUID corresponding to the session
+   * @property ephemeralStateFlow the [MutableStateFlow] that the updated [EphemeralState] is
+   *     delivered to
+   * @property commandQueue the actor command queue executing all messages that change this state
    */
   private class ControllerState(
     val explorationProgress: ExplorationProgress,
     val sessionId: String,
-    val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>
+    val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
+    val commandQueue: SendChannel<ControllerMessage<*>>
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
@@ -950,7 +965,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   /**
-   * Represents a message that can be sent to [controllerCommandQueue] to process changes to
+   * Represents a message that can be sent to [mostRecentCommandQueue] to process changes to
    * [ControllerState] (since all changes must be synchronized).
    *
    * Messages are expected to be resolved serially (though their scheduling can occur across

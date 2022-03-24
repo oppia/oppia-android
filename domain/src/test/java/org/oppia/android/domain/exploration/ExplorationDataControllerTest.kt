@@ -179,15 +179,12 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testStopPlayingExploration_withoutStartingSession_fails() {
-    explorationDataController.stopPlayingExploration()
-    testCoroutineDispatchers.runCurrent()
+  fun testStopPlayingExploration_withoutStartingSession_returnsFailure() {
+    val resultProvider = explorationDataController.stopPlayingExploration()
 
-    val exception = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(exception).isInstanceOf(java.lang.IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Cannot finish playing an exploration that hasn't yet been started")
+    val result = monitorFactory.waitForNextFailureResult(resultProvider)
+    assertThat(result).isInstanceOf(java.lang.IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
